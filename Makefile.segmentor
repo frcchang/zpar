@@ -1,0 +1,30 @@
+
+
+SRC_SEGMENTOR = $(SRC_CHINESE)/segmentor
+DIST_SEGMENTOR = $(DIST_DIR)/segmentor
+OBJECT_SEGMENTOR = $(OBJECT_DIR)/segmentor
+$(DIST_SEGMENTOR):
+	mkdir $(DIST_SEGMENTOR)
+$(OBJECT_SEGMENTOR):
+	mkdir $(OBJECT_SEGMENTOR)
+segmentor: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_SEGMENTOR) $(DIST_SEGMENTOR) $(DIST_SEGMENTOR)/segmentor $(DIST_SEGMENTOR)/train
+	@echo The Chinese word segmentor system is compiled successfully into $(DIST_SEGMENTOR).
+
+# the segmentor function object, processed differently
+#
+# SEGMENTOR_IMPL is used in two places:
+# I. it is used when for implementation file of segmentor - agenda.cpp or chart.cpp
+# II. it is used to include impl.h from implementations/agenda or chart subdir
+$(OBJECT_DIR)/segmentor.o: $(SRC_INCLUDES)/hash.h $(SRC_SEGMENTOR)/segmentor.h $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp -o $(OBJECT_DIR)/segmentor.o
+
+# the segmentor executable
+$(DIST_SEGMENTOR)/segmentor: $(SRC_SEGMENTOR)/main.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/main.cpp -o $(OBJECT_SEGMENTOR)/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/segmentor $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+# the trainer for segmentor
+$(DIST_SEGMENTOR)/train: $(SRC_SEGMENTOR)/train.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/train.cpp -o $(OBJECT_SEGMENTOR)/train.o
+	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/train $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
