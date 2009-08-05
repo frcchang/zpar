@@ -1,0 +1,75 @@
+/****************************************************************
+ *                                                              *
+ * tagger_base.h - the sentence POS tagger.                     *
+ *                                                              *
+ * Author: Yue Zhang                                            *
+ *                                                              *
+ * Computing Laboratory, Oxford. 2006.10                        *
+ *                                                              *
+ ****************************************************************/
+
+#ifndef _CHINESE_TAGGER_BASE_H
+#define _CHINESE_TAGGER_BASE_H 
+
+#include "base_include.h" // the common included modules
+
+/*===============================================================
+ *
+ * Global items
+ *
+ *==============================================================*/
+
+namespace chinese {
+
+namespace tagger {
+
+#include "segmentationprune.h"
+
+}; // namespace tagger
+}; // namespace chinese
+
+#include "weight.h"
+
+namespace chinese {
+
+#include "wordcache.h"
+
+/*===============================================================
+ *
+ * CTagger - the tagger for Chinese 
+ *
+ * Tag a sentence character by character, generating possible
+ * tagged sentences into a beam agenda. 
+ *
+ *==============================================================*/
+
+class CTaggerBase {
+
+protected:
+   tagger::CWeight *m_weights;
+   int m_nNumberOfCurrentTrainingExample;
+   bool m_bTrain;
+
+public:
+   CTaggerBase(string sFeatureDBPath, bool bTrain=false) : m_bTrain(bTrain) { 
+      m_weights = new tagger::CWeight(sFeatureDBPath, bTrain); 
+      m_nNumberOfCurrentTrainingExample = 0;
+   }
+   virtual ~CTaggerBase() { }
+   CTaggerBase(CTaggerBase& tagger) { cerr<<"CTagger does not support copy constructor!"; cerr.flush(); assert(1==0); }
+
+public:
+   virtual void loadKnowledge(const string &sKnowledgePath) = 0 ; // load knowledge should be implemented by sub class
+   virtual void train(const CSentenceRaw *sentence, const CSentenceTagged *correct, int round) = 0;
+   // The input sentence to tag() must be a raw sentence of characters
+   // For the tagger that processes segmented input sent, we must set word_ends
+   virtual void tag(const CSentenceRaw *sentence, CSentenceTagged *retval, double *out_scores=NULL, int nBest=1, const CBitArray *word_ends=NULL) = 0;
+   virtual void finishTraining(int nTotalNumberOfTrainingExamples) = 0 ;
+   virtual void updateScores(const CSentenceTagged* tagged, const CSentenceTagged* correct, int round) = 0;
+};
+
+}; // namespace chinese
+
+#endif
+
+

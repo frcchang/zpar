@@ -1,0 +1,91 @@
+
+SRC_COMMON_DEPPARSER = $(SRC_COMMON)/depparser
+
+ifeq ($(CHINESE_DEPPARSER_IMPL), joint)
+	SRC_CHINESE_DEPPARSER = $(SRC_CHINESE)/depparser
+else
+	SRC_CHINESE_DEPPARSER = $(SRC_COMMON_DEPPARSER)
+endif
+
+ifeq ($(CHINESE_DEPPARSER_LABELED), true)
+	CHINESE_DEPPARSER_D = -DLABELED
+endif
+
+ifeq ($(ENGLISH_DEPPARSER_LABELED), true)
+	ENGLISH_DEPPARSER_D = -DLABELED
+endif
+
+ifeq ($(CHINESE_DEPPARSER_IMPL), combined)
+	CHINESE_DEPPARSER_D := $(CHINESE_DEPPARSER_D) -DCOMBINED
+	CHINESE_DEPPARSER_IMPL = nivre
+endif
+
+ifeq ($(ENGLISH_DEPPARSER_IMPL), combined)
+	ENGLISH_DEPPARSER_D := $(ENGLISH_DEPPARSER_D) -DCOMBINED
+	ENGLISH_DEPPARSER_IMPL = nivre
+endif
+
+#====================================================
+
+DIST_DEPPARSER = $(DIST_DIR)/chinese.depparser
+OBJECT_DEPPARSER = $(OBJECT_DIR)/chinese.depparser
+$(DIST_DEPPARSER):
+	mkdir $(DIST_DEPPARSER)
+$(OBJECT_DEPPARSER):
+	mkdir $(OBJECT_DEPPARSER)
+chinese.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DEPPARSER) $(DIST_DEPPARSER) $(DIST_DEPPARSER)/depparser $(DIST_DEPPARSER)/train
+	@echo The Chinese dependency parser system is compiled successfully into $(DIST_DEPPARSER).
+
+# the weight module
+$(OBJECT_DEPPARSER)/weight.o: $(SRC_CHINESE_DEPPARSER)/weight_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/weight.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/weight.cpp -o $(OBJECT_DEPPARSER)/weight.o
+
+# the depparser object
+$(OBJECT_DIR)/chinese.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_DEPPARSER)/depparser_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/stateitem.h ./Makefile
+	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/chinese.depparser.o
+
+# the main executable
+$(DIST_DEPPARSER)/depparser: $(SRC_CHINESE_DEPPARSER)/main.cpp $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/main.cpp -o $(OBJECT_DEPPARSER)/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_DEPPARSER)/depparser $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECT_DEPPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+# the trainer for depparser
+$(DIST_DEPPARSER)/train: $(SRC_CHINESE_DEPPARSER)/train.cpp $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/train.cpp -o $(OBJECT_DEPPARSER)/train.o
+	$(LD) $(LDFLAGS) -o $(DIST_DEPPARSER)/train $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECT_DEPPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+#====================================================
+
+
+DIST_ENGLISH_DEPPARSER = $(DIST_DIR)/english.depparser
+OBJECT_ENGLISH_DEPPARSER = $(OBJECT_DIR)/english.depparser
+$(DIST_ENGLISH_DEPPARSER):
+	mkdir $(DIST_ENGLISH_DEPPARSER)
+$(OBJECT_ENGLISH_DEPPARSER):
+	mkdir $(OBJECT_ENGLISH_DEPPARSER)
+english.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_ENGLISH_DEPPARSER) $(DIST_ENGLISH_DEPPARSER) $(DIST_ENGLISH_DEPPARSER)/depparser $(DIST_ENGLISH_DEPPARSER)/train $(DIST_ENGLISH_DEPPARSER)/unit_test
+	@echo The English dependency parser system is compiled successfully into $(DIST_ENGLISH_DEPPARSER).
+
+# the weight module
+$(OBJECT_ENGLISH_DEPPARSER)/weight.o: $(SRC_COMMON_DEPPARSER)/weight_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.cpp -o $(OBJECT_ENGLISH_DEPPARSER)/weight.o
+
+# the depparser object
+$(OBJECT_DIR)/english.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPPARSER)/depparser_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/stateitem.h ./Makefile
+	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/english.depparser.o
+
+# the main executable
+$(DIST_ENGLISH_DEPPARSER)/depparser: $(SRC_COMMON_DEPPARSER)/main.cpp $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/main.cpp -o $(OBJECT_ENGLISH_DEPPARSER)/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_DEPPARSER)/depparser $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECT_ENGLISH_DEPPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+# the trainer for depparser
+$(DIST_ENGLISH_DEPPARSER)/train: $(SRC_COMMON_DEPPARSER)/train.cpp $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/train.cpp -o $(OBJECT_ENGLISH_DEPPARSER)/train.o
+	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_DEPPARSER)/train $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECT_ENGLISH_DEPPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+# the unitest for depparser
+$(DIST_ENGLISH_DEPPARSER)/unit_test: $(SRC_COMMON_DEPPARSER)/test.cpp $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/test.cpp -o $(OBJECT_ENGLISH_DEPPARSER)/test.o
+	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_DEPPARSER)/unit_test $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECT_ENGLISH_DEPPARSER)/test.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+

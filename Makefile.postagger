@@ -1,0 +1,70 @@
+# the flags for train
+ifeq ($(CHINESE_TAGGER_IMPL), segmented) # if segmented	
+	TAGGER_TRAIN_FLAGS = -DSEGMENTED
+	TAGGER_TEST_FLAGS = -DSEGMENTED
+else 
+	ifeq ($(CHINESE_TAGGER_IMPL), bidirectional) # else if bidirectional
+		TAGGER_TRAIN_FLAGS = -DSEGMENTED -DAUTO
+		TAGGER_TEST_FLAGS = -DSEGMENTED
+	endif
+endif
+
+
+SRC_TAGGER = $(SRC_CHINESE)/tagger
+DIST_TAGGER = $(DIST_DIR)/chinese.postagger
+OBJECT_TAGGER = $(OBJECT_DIR)/chinese.postagger
+$(DIST_TAGGER):
+	mkdir $(DIST_TAGGER)
+$(OBJECT_TAGGER):
+	mkdir $(OBJECT_TAGGER)
+chinese.postagger: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_TAGGER) $(DIST_TAGGER) $(DIST_TAGGER)/tagger $(DIST_TAGGER)/train
+	@echo The Chinese word tagger system is compiled successfully into $(DIST_TAGGER).
+
+# the weight module
+$(OBJECT_TAGGER)/weight.o: $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp -o $(OBJECT_TAGGER)/weight.o
+
+# the tagger module
+$(OBJECT_DIR)/chinese.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp -o $(OBJECT_DIR)/chinese.postagger.o
+
+# the tagger executable
+$(DIST_TAGGER)/tagger: $(SRC_TAGGER)/main.cpp $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECTS)
+	$(CXX) $(TAGGER_TRAIN_FLAGS) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/main.cpp -o $(OBJECT_TAGGER)/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/tagger $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/main.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+# the trainer for tagger
+$(DIST_TAGGER)/train: $(SRC_TAGGER)/train.cpp $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECTS)
+	$(CXX) $(TAGGER_TEST_FLAGS) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/train.cpp -o $(OBJECT_TAGGER)/train.o
+	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/train $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_TAGGER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+#==============================
+
+SRC_ENGLISH_TAGGER = $(SRC_ENGLISH)/tagger
+DIST_ENGLISH_TAGGER = $(DIST_DIR)/english.postagger
+OBJECT_ENGLISH_TAGGER = $(OBJECT_DIR)/english.postagger
+$(DIST_ENGLISH_TAGGER):
+	mkdir $(DIST_ENGLISH_TAGGER)
+$(OBJECT_ENGLISH_TAGGER):
+	mkdir $(OBJECT_ENGLISH_TAGGER)
+english.postagger: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_ENGLISH_TAGGER) $(DIST_ENGLISH_TAGGER) $(DIST_ENGLISH_TAGGER)/tagger $(DIST_ENGLISH_TAGGER)/train
+	@echo The English part-of-speech tagging system is compiled successfully into $(DIST_ENGLISH_TAGGER).
+
+# the weight module
+$(OBJECT_ENGLISH_TAGGER)/weight.o: $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.h $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -I$(SRC_ENGLISH) -I$(SRC_ENGLISH_TAGGER) -c $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.cpp -o $(OBJECT_ENGLISH_TAGGER)/weight.o
+
+# the tagging object
+$(OBJECT_DIR)/english.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_ENGLISH_TAGGER)/tagger.h $(SRC_ENGLISH_TAGGER)/$(ENGLISH_TAGGER_IMPL).cpp $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.h $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -I$(SRC_ENGLISH) -I$(SRC_ENGLISH_TAGGER) -I$(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL) -c $(SRC_ENGLISH_TAGGER)/$(ENGLISH_TAGGER_IMPL).cpp -o $(OBJECT_DIR)/english.postagger.o
+
+# the main executable file
+$(DIST_ENGLISH_TAGGER)/tagger: $(SRC_ENGLISH_TAGGER)/main.cpp $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -I$(SRC_ENGLISH) -I$(SRC_ENGLISH_TAGGER) -I$(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL) -c $(SRC_ENGLISH_TAGGER)/main.cpp -o $(OBJECT_ENGLISH_TAGGER)/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_TAGGER)/tagger $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_ENGLISH_TAGGER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
+# the trainer for english pos tagging
+$(DIST_ENGLISH_TAGGER)/train: $(SRC_ENGLISH_TAGGER)/train.cpp $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -I$(SRC_ENGLISH) -I$(SRC_ENGLISH_TAGGER) -I$(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL) -c $(SRC_ENGLISH_TAGGER)/train.cpp -o $(OBJECT_ENGLISH_TAGGER)/train.o
+	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_TAGGER)/train $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_ENGLISH_TAGGER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+
