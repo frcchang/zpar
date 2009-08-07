@@ -21,10 +21,10 @@ $(OBJECT_DIR)/segmentor.o: $(SRC_INCLUDES)/hash.h $(SRC_SEGMENTOR)/segmentor.h $
 # the segmentor executable
 $(DIST_SEGMENTOR)/segmentor: $(SRC_SEGMENTOR)/main.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/main.cpp -o $(OBJECT_SEGMENTOR)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/segmentor $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/segmentor $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 # the trainer for segmentor
 $(DIST_SEGMENTOR)/train: $(SRC_SEGMENTOR)/train.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/train.cpp -o $(OBJECT_SEGMENTOR)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/train $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/train $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 

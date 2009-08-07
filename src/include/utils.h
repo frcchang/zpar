@@ -87,4 +87,25 @@ string toString(const vector<VE> &v) {
    return os.str();
 }
 
+/*===============================================================
+ *
+ * string utilities
+ *
+ *==============================================================*/
+
+/*--------------------------------------------------------------
+ *
+ * fromString
+ *
+ *--------------------------------------------------------------*/
+
+template <class T>
+bool fromString(T& t, 
+                 const std::string& s, 
+                 std::ios_base& (*f)(std::ios_base&)=std::dec)
+{
+  std::istringstream iss(s);
+  return !(iss >> f >> t).fail();
+}
+
 #endif

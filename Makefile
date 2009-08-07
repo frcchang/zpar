@@ -98,7 +98,7 @@ LDFLAGS =
 # the objects
 OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o  $(OBJECT_DIR)/options.o
 
-$(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp
+$(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # the directories
