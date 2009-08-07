@@ -62,13 +62,17 @@ private:
 //-------------------------------------------------------------
 // Constructor destructor
 public:
-   CSegmentor(string sFeatureDBPath, bool bTrain=false) : segmentor::CSegmentorImpl() { 
+   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="") : segmentor::CSegmentorImpl(), m_bTrain(bTrain), m_CharCat(0), m_WordLst(0), m_CharCatForRules(0) { 
       m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain); 
       m_lWordCache = new CWord[segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_WORD_SIZE];
-      m_CharCat = 0;
-      m_WordLst = 0;
-      m_CharCatForRules = 0;
-      m_bTrain = bTrain;
+      if (!bTrain) {
+         if (m_Feature->m_bCharCat && sCharCatFile.empty())
+            THROW("model requires character category knowledge but this file is not specified");
+         if (m_Feature->m_bLexicon && sLexiconFile.empty())
+            THROW("model requires lexicon knowledge but this file is not specified");
+      }
+      if (!sCharCatFile.empty()) loadCharCat(sCharCatFile);
+      if (!sLexiconFile.empty()) loadLexiconDict(sLexiconFile);
    }
    virtual ~CSegmentor() { delete m_Feature; delete [] m_lWordCache; clearKnowledge(); }
    CSegmentor(CSegmentor& segmentor) { throw("CSegmentor does not support copy constructor!"); }

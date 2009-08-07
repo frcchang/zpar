@@ -11,7 +11,7 @@
 
 const int CHAR_CAT_BITS = 3;
 
-#define iterate_weight(left,right) \
+#define iterate_templates(left,right) \
    left(m_weights.m_mapCharUnigram)right\
    left(m_weights.m_mapCharBigram)right\
    left(m_weights.m_mapSeenWords)right\

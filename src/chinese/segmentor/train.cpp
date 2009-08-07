@@ -12,6 +12,7 @@
 #include "reader.h"
 #include "writer.h"
 #include "file_utils.h"
+#include "options.h"
 
 #include <cstring>
 
@@ -55,9 +56,7 @@ void extract_features(const string &sTextFile, const string &sFeatureFile) {
 
 void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool &bNoFWAndCD, const string &sCharCatFile, const string &sLexiconDict) {
    CSegmentor *segmentor;
-   segmentor = new CSegmentor(sFeatureFile, true);
-   if (!sCharCatFile.empty()) segmentor->loadCharCat(sCharCatFile);
-   if (!sLexiconDict.empty()) segmentor->loadLexiconDict(sLexiconDict);
+   segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict);
    CSentenceReader ref_reader(sOutputFile);
    CSentenceRaw *input_sent = new CSentenceRaw;
    CSentenceRaw *ref_sent = new CSentenceRaw; 
@@ -90,9 +89,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
 
 void train(const string &sOutputFile, const string &sFeatureFile, const bool &bAggressive, const bool &bNoFWAndCD, const string &sCharCatFile, const string &sLexiconDict) {
    CSegmentor *segmentor ; 
-   segmentor = new CSegmentor(sFeatureFile, true);
-   if (!sCharCatFile.empty()) segmentor->loadCharCat(sCharCatFile);
-   if (!sLexiconDict.empty()) segmentor->loadLexiconDict(sLexiconDict);
+   segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict);
    CSentenceReader ref_reader(sOutputFile);
 #ifdef DEBUG
    CSentenceWriter ref_writer("");
@@ -150,71 +147,47 @@ void train(const string &sOutputFile, const string &sFeatureFile, const bool &bA
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " training_input_file feature_file number_of_iterations [-a] [-cFile] [-r] [-s] [-wFile]\n\n\
-Options:\n\
--a agressive learning: make sure one example is segmented correctly before moving on to the next example\n\
--s implementation specific training by the segmentor, instead of the standard perceptron updating\n\
--c provide character type information in File\n\
--w privide word list in File\n\
--r use rules to segment English letters and Arabic numbers\n\
-";
-   if (argc < 4) {
-      cout << "\nUsage: " << argv[0] << hint << endl;
+   COptions options(argc, argv);
+   CConfigurations configurations;
+   configurations.defineConfiguration("a", "", "agressive learning: make sure one example is segmented correctly before moving on to the next example", "");
+   configurations.defineConfiguration("s", "", "implementation specific training by the segmentor, instead of the standard perceptron training", "");
+   configurations.defineConfiguration("c", "Path", "provide character type info in Path", "");
+   configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
+   configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
+   if (options.args.size() != 4) {
+      cout << "Usage: " << argv[0] << " training_data model_file iterations" << endl;
+      cout << configurations.message() << endl;
       return 1;
    }
-   int training_rounds = atoi(argv[3]);
-   if (training_rounds < 0)
-      training_rounds = TRAINING_ROUND;
-
-   bool bAggressive = false;
-   bool bAutomatic = false;
-   string sCharCatFile = "";
-   string sLexiconDict = "";
-   bool bNoFWAndCD = true;
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-         switch (argv[i][1]) {
-            case 'a':
-               bAggressive = true;
-               break;
-            case 'r':
-               bNoFWAndCD = false;
-               break;
-            case 's':
-               bAutomatic = true;
-               break;
-            case 'c':
-               if (strlen(argv[i])<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               sCharCatFile = string(&(argv[i][2]));
-               break;
-            case 'w':
-               if (strlen(argv[i])<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               sLexiconDict = string(&(argv[i][2]));
-               break;
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
-      }
+   unsigned training_rounds;
+   if (!fromString(training_rounds, options.args[3])) {
+      cout << "The number of training iterations must be an integer." << endl;
+      return 1;
    }
 
-   if (bAutomatic)
-      if (bAggressive||bNoFWAndCD)
-         cout << "Warning: all other configurations will be ignored since automatic training is chosen." << endl;
+   configurations.loadConfigurations(options.opts);
 
-   cout << "Training started" << endl;
+   bool bAggressive = configurations.getConfiguration("a").empty() ? false : true;
+   bool bAutomatic = configurations.getConfiguration("s").empty() ? false : true;
+   bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
+   string sCharCatFile = configurations.getConfiguration("c");
+   string sLexiconDict = configurations.getConfiguration("w");
+
+   if (bAutomatic && (bAggressive||bNoFWAndCD))
+      cout << "Warning: all other configurations will be ignored since automatic training is chosen." << endl;
+
+   cout << "Training started ..." << endl;
    int time_start = clock();
 
 #ifdef NO_NEG_FEATURE
-   extract_features(argv[1], argv[2]);
+   extract_features(options.args[1], options.args[2]);
 #endif
 
    for (int i=0; i<training_rounds; ++i)
       if (bAutomatic)
-         auto_train(argv[1], argv[2], bNoFWAndCD, sCharCatFile, sLexiconDict);
+         auto_train(options.args[1], options.args[2], bNoFWAndCD, sCharCatFile, sLexiconDict);
       else
-         train(argv[1], argv[2], bAggressive, bNoFWAndCD, sCharCatFile, sLexiconDict);
+         train(options.args[1], options.args[2], bAggressive, bNoFWAndCD, sCharCatFile, sLexiconDict);
    cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    return 0;
 }

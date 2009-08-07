@@ -13,6 +13,7 @@
 #include "reader.h"
 #include "writer.h"
 #include "stdlib.h"
+#include "options.h"
 
 using namespace chinese ;
 
@@ -26,9 +27,7 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
    cout<<"Segmenting started"<<endl;
    int time_start = clock();
    CSegmentor *segmentor ;
-   segmentor = new CSegmentor(sFeatureFile, false);
-   if (!sCharCatFile.empty()) segmentor->loadCharCat(sCharCatFile);
-   if (!sLexiconDict.empty()) segmentor->loadLexiconDict(sLexiconDict);
+   segmentor = new CSegmentor(sFeatureFile, false, sCharCatFile, sLexiconDict);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
    CSentenceRaw *input_sent = new CSentenceRaw;
@@ -72,55 +71,31 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " input_file output_file feature_file [-cFile] [-dFile] [-nN] [-r] [-wFile]\n\n\
-Options:\n\
--n n best list output\n\
--d output scores to File\n\
--c make use of character type information from File\n\
--w make use of word list from File\n\
--r use rule to segment English letters and Arabic numbers\n\
-Note that -c -w -r should be set in consistence with the training method\n\
-";
+   COptions options(argc, argv);
+   CConfigurations configurations;
+   configurations.defineConfiguration("n", "N", "N best list output", "1");
+   configurations.defineConfiguration("d", "Path", "save scores to Path", "");
+   configurations.defineConfiguration("c", "Path", "provide character type info in Path", "");
+   configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
+   configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
    // check arguments
-   if (argc < 4) {
-      cout << "\nUsage: " << argv[0] << hint << endl;
+   if (options.args.size() != 4) {
+      cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
+      cout << configurations.message() << endl;
       return 1;
    }
    // check options
-   int nBest = 1;
-   string sOutputScores = ""; // the file of scores
-   string sCharCatFile = "";
-   string sLexiconDict = "";
-   bool bNoFWAndCD = false;
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-         switch (argv[i][1]) {
-            case 'n':
-               nBest = atoi(string(argv[i]).substr(2).c_str());
-               break;
-            case 'd':
-               if (string(argv[i]).size()<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               sOutputScores = string(&(argv[i][2]));
-               break;
-            case 'r':
-               bNoFWAndCD = true;
-               break;
-            case 'c':
-               if (string(argv[i]).size()<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               sCharCatFile = string(&(argv[i][2]));
-               break;
-            case 'w':
-               if (string(argv[i]).size()<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               sLexiconDict = string(&(argv[i][2]));
-               break;
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
-      }
+   int nBest;
+   if (!fromString(nBest, configurations.getConfiguration("n"))) {
+      cout << "The N best specification must be an integer." << endl;
+      return 1;
    }
-   // go on processing item
+   string sOutputScores = configurations.getConfiguration("d");
+   string sCharCatFile = configurations.getConfiguration("c");
+   string sLexiconDict = configurations.getConfiguration("w");
+   bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
+
+   // main
    process(argv[1], argv[2], argv[3], nBest, sOutputScores, bNoFWAndCD, sCharCatFile, sLexiconDict);
    // return normal
    return 0;

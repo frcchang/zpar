@@ -278,43 +278,6 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CSentenceRaw* sen
    return retval;
 }
 
-/*---------------------------------------------------------------
- *
- * loadScores - load scores from the file specified at constructor
- *              currently this uses database, but it can be modified
- *         
- * Affects: m_bScoreModified, clearing it. 
- *
- *--------------------------------------------------------------*/
-
-void CFeatureHandle::loadScores() {
-   cout << "Loading model ..."; cout.flush();
-   ifstream is(m_sFeatureDB.c_str());
-   iterate_weight(is>>,;);
-   is.close();
-   m_bScoreModified = false;
-   cout << " done." << endl ;
-}
-
-/*---------------------------------------------------------------
- *
- * saveScores - save scores back to database
- *
- * This method is called by the destructor is m_bScoreModified
- * is true.
- *
- *--------------------------------------------------------------*/
-
-void CFeatureHandle::saveScores() {
-   cout << "Saving model ..."; cout.flush();
-   ofstream os(m_sFeatureDB.c_str());
-   assert(os.is_open());
-   iterate_weight(os<<,;);
-   os.close();
-   m_bScoreModified = false;
-   cout << " done." << endl ;
-}
-
 #ifdef NO_NEG_FEATURE
 
 /*---------------------------------------------------------------
@@ -459,17 +422,6 @@ void updateScoreVector(CSegmentor *segmentor, const CSentenceRaw* sentence, unsi
    assert(char_index==correct->getWordEnd(word_index));
 }
 
-/*--------------------------------------------------------------
- *
- * computeAverageFeatureWeights - compute average feature weights
- *
- *-------------------------------------------------------------*/
-
-void CFeatureHandle::computeAverageFeatureWeights(int round) {
-   cout << "adding total feature vector ... "; cout.flush();
-   iterate_weight(,.computeAverage(round););
-   cout << "Done" << endl;
-}
 
 
 /*===============================================================
@@ -747,24 +699,4 @@ void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vRetu
    TRACE("Done, the best score: " << pGenerator->m_nScore);
    TRACE("total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
 }
-
-//===================================================================
-//
-// Unsupported methods
-//
-//===================================================================
-
-void CFeatureHandle::loadScoreFor(string sFeatureDB, int which) {
-   throw("Not supported!"); 
-}
-
-void CFeatureHandle::saveScoreFor(string sFeatureDB, int which) {
-   throw("Not supported!"); 
-}
-
-void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CSentenceRaw* output, int index, int round) { 
-   throw("updateLocalFeatureVector not supported");
-}
-
-
 

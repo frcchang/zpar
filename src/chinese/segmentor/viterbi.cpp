@@ -196,56 +196,6 @@ void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CSenten
    }
 }
 
-/*---------------------------------------------------------------
- *
- * loadScores - load scores from the file specified at constructor
- *              currently this uses database, but it can be modified
- *         
- * Affects: m_bScoreModified, clearing it. 
- *
- *--------------------------------------------------------------*/
-
-void CFeatureHandle::loadScores() {
-   cout << "Loading model..."; cout.flush();
-   ifstream is(m_sFeatureDB.c_str());
-   iterate_templates(is>>,;);
-   is.close();
-   m_bScoreModified = false;
-   cout << " done." << endl ;
-}
-
-/*---------------------------------------------------------------
- *
- * saveScores - save scores back to database
- *
- * This method is called by the destructor is m_bScoreModified
- * is true.
- *
- *--------------------------------------------------------------*/
-
-void CFeatureHandle::saveScores() {
-   cout << "Saving model..."; cout.flush();
-   ofstream os(m_sFeatureDB.c_str());
-   assert(os.is_open());
-   iterate_templates(os<<,;);
-   os.close();
-   m_bScoreModified = false;
-   cout << " done." << endl ;
-}
-
-/*--------------------------------------------------------------
- *
- * computeAverageFeatureWeights - compute average feature weights
- *
- *-------------------------------------------------------------*/
-
-void CFeatureHandle::computeAverageFeatureWeights(int round) {
-   cout << "Computing averaged feature scores...";
-   iterate_templates(,.computeAverage(round););
-   cout << " Done" << endl;
-}
-
-
 /*===============================================================
  *
  * CSegmentor - the segmentor for Chinese 
@@ -337,19 +287,4 @@ void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vRetu
    TRACE("Done, the best score: " << pGenerator->m_nScore);
    TRACE("total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
 }
-
-//===================================================================
-//
-// unsupported method
-//
-//======================================================================
-
-void CFeatureHandle::loadScoreFor(string sFeatureDB, int which) {
-   throw("Not supported");
-}
-
-void CFeatureHandle::saveScoreFor(string sFeatureDB, int which) {
-   throw("Not supported");
-}
-
 
