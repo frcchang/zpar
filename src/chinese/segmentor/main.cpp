@@ -84,6 +84,8 @@ int main(int argc, char* argv[]) {
       cout << configurations.message() << endl;
       return 1;
    }
+   configurations.loadConfigurations(options.opts);
+
    // check options
    int nBest;
    if (!fromString(nBest, configurations.getConfiguration("n"))) {
