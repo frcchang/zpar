@@ -71,7 +71,6 @@ public:
          } 
          else THROW("CSegmentor feature: m_CharCat already loaded.");
       }
-      cout << *m_CharCat << endl;
       // use lexicon?
       getline(is, line);
       istringstream(line) >> m_bLexicon;
