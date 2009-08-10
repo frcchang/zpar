@@ -61,7 +61,7 @@ public:
       delete m_weights;
    }
    CDepParser( CDepParser &depparser) : CDepParserBase(depparser) { 
-      throw("Not supported!");
+      THROW("CDepParser: copy constructor Not supported!");
    }
 
 public:

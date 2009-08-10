@@ -40,7 +40,7 @@ public:
       // do nothing
    }
    CConParserBase( CConParserBase &conparser) { 
-      throw("CConParser does not support copy constructor!"); 
+      THROW("CConParser does not support copy constructor!"); 
    }
 
 public:

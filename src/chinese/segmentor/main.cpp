@@ -23,11 +23,11 @@ using namespace chinese ;
  *
  *==============================================================*/
 
-void process(const string &sInputFile, const string &sOutputFile, const string &sFeatureFile, const int &nBest, const string &sOutputScores, const bool &bNoFWAndCD, const string &sCharCatFile, const string &sLexiconDict) {
+void process(const string &sInputFile, const string &sOutputFile, const string &sFeatureFile, const int &nBest, const string &sOutputScores, const bool &bNoFWAndCD, const string &sLexiconDict) {
    cout<<"Segmenting started"<<endl;
    int time_start = clock();
    CSegmentor *segmentor ;
-   segmentor = new CSegmentor(sFeatureFile, false, sCharCatFile, sLexiconDict);
+   segmentor = new CSegmentor(sFeatureFile, false, "", sLexiconDict);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
    CSentenceRaw *input_sent = new CSentenceRaw;
@@ -71,35 +71,40 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   COptions options(argc, argv);
-   CConfigurations configurations;
-   configurations.defineConfiguration("n", "N", "N best list output", "1");
-   configurations.defineConfiguration("d", "Path", "save scores to Path", "");
-   configurations.defineConfiguration("c", "Path", "provide character type info in Path", "");
-   configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
-   configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
-   // check arguments
-   if (options.args.size() != 4) {
-      cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
-      cout << configurations.message() << endl;
+   try {
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("n", "N", "N best list output", "1");
+      configurations.defineConfiguration("d", "Path", "save scores to Path", "");
+      configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
+      configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
+      // check arguments
+      if (options.args.size() != 4) {
+         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
+         cout << configurations.message() << endl;
+         return 1;
+      }
+      configurations.loadConfigurations(options.opts);
+   
+      // check options
+      int nBest;
+      if (!fromString(nBest, configurations.getConfiguration("n"))) {
+         cout << "The N best specification must be an integer." << endl;
+         return 1;
+      }
+      string sOutputScores = configurations.getConfiguration("d");
+      string sLexiconDict = configurations.getConfiguration("w");
+      bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
+
+      // main
+      process(argv[1], argv[2], argv[3], nBest, sOutputScores, bNoFWAndCD, sLexiconDict);
+
+      // return normal
+      return 0;
+   }
+   catch(const string &e) {
+      cerr << "Error: " << e << " Stop." << endl;
       return 1;
    }
-   configurations.loadConfigurations(options.opts);
-
-   // check options
-   int nBest;
-   if (!fromString(nBest, configurations.getConfiguration("n"))) {
-      cout << "The N best specification must be an integer." << endl;
-      return 1;
-   }
-   string sOutputScores = configurations.getConfiguration("d");
-   string sCharCatFile = configurations.getConfiguration("c");
-   string sLexiconDict = configurations.getConfiguration("w");
-   bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
-
-   // main
-   process(argv[1], argv[2], argv[3], nBest, sOutputScores, bNoFWAndCD, sCharCatFile, sLexiconDict);
-   // return normal
-   return 0;
 }
 

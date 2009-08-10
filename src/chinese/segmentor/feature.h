@@ -9,9 +9,9 @@
 
 class CFeatureHandle {
 public:
-      bool m_bCharCat; // use char cat information?
       bool m_bLexicon; // use lexicon?
       bool m_bRule; // use rules segmentation?
+      CWordDictionary *m_CharCat;
 private:
    //
    // PRIVATE MEMBER VARIABLES
@@ -25,8 +25,11 @@ public:
    //
    // CONSTRUCTOR AND DESTRUCTOR METHODS
    // 
-   CFeatureHandle(CSegmentor* pSegmentor, string sFileName, bool bTrain=false) : m_parent(pSegmentor), m_zeroScore() { m_sFeatureDB = sFileName; m_bTrain = bTrain; loadScores(); } 
-   ~CFeatureHandle() { if (m_bScoreModified) saveScores(); }
+   CFeatureHandle(CSegmentor* pSegmentor, string sFileName, bool bTrain=false) : m_parent(pSegmentor), m_sFeatureDB(sFileName), m_bTrain(bTrain), m_CharCat(0), m_zeroScore() { loadScores(); } 
+   ~CFeatureHandle() { 
+      if (m_bScoreModified) saveScores(); 
+      if (m_CharCat) { delete m_CharCat; }
+   }
 public:
    //
    // PUBLIC INTERFACES
@@ -51,10 +54,33 @@ public:
 
    // load the weight vectors from the database
    void loadScores() {
-      cout << "Loading model ... "; cout.flush();
+      // initialize
+      string line;
+      cout << "Loading model ... "; 
       ifstream is(m_sFeatureDB.c_str());
-      is >> m_bCharCat >> m_bLexicon >> m_bRule;
+      if (!is.is_open()) { cout << "empty."<<endl; return; }
+      // use char cat information?
+      bool bCharCat; 
+      getline(is, line);
+      istringstream(line) >> bCharCat;
+      if (bCharCat) {
+         cout << "loading charcat ... "; 
+         if (m_CharCat==0) {
+            m_CharCat = new CWordDictionary(2719);
+            is >> static_cast<CWordDictionary&>(*m_CharCat); //is
+         } 
+         else THROW("CSegmentor feature: m_CharCat already loaded.");
+      }
+      cout << *m_CharCat << endl;
+      // use lexicon?
+      getline(is, line);
+      istringstream(line) >> m_bLexicon;
+      // use rules?
+      getline(is, line);
+      istringstream(line) >> m_bRule;
+      // load features by iterating templates defined by implementation
       iterate_templates(is>>,;);
+      // finalize
       is.close();
       m_bScoreModified = false;
       cout << "done." << endl ;
@@ -65,7 +91,9 @@ public:
       cout << "Saving model ... "; cout.flush();
       ofstream os(m_sFeatureDB.c_str());
       assert(os.is_open());
-      os << m_bCharCat << endl << m_bLexicon << endl << m_bRule << endl;
+      os << (m_CharCat?1:0) << endl;
+      if (m_CharCat) os << static_cast<CWordDictionary &>(*m_CharCat);
+      os << m_bLexicon << endl << m_bRule << endl;
       iterate_templates(os<<,;);
       os.close();
       m_bScoreModified = false;
@@ -76,6 +104,7 @@ public:
    inline bool isWordKnown(const CWord &word) { return m_weights.m_mapSeenWords.element(word); }
    CWeight &getWeights() { return m_weights; }
    bool m_bTrain;
+
 private:
    //
    // PRIVATE METHODS
