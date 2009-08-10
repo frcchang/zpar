@@ -309,7 +309,7 @@ public:
          PopRoot();
          return;
       default:
-         throw "unknown action";
+         THROW("unknown action: " << ac << '.');
       }
    }
 

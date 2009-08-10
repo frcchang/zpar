@@ -52,30 +52,40 @@ namespace segmentor {
 class CSegmentor : public segmentor::CSegmentorImpl {
 
 private:
-   segmentor::CFeatureHandle *m_Feature;
    CWord *m_lWordCache;
-   CWordDictionary *m_CharCat;
    CLexiconSet *m_WordLst;
    CCharCatDictionary *m_CharCatForRules; // use rules to segment foreign words?
    bool m_bTrain;
+   segmentor::CFeatureHandle *m_Feature;
 
 //-------------------------------------------------------------
 // Constructor destructor
 public:
-   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="") : segmentor::CSegmentorImpl(), m_bTrain(bTrain), m_CharCat(0), m_WordLst(0), m_CharCatForRules(0) { 
+   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="") : segmentor::CSegmentorImpl(), m_bTrain(bTrain), m_WordLst(0), m_CharCatForRules(0) { 
       m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain); 
       m_lWordCache = new CWord[segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_WORD_SIZE];
       if (!bTrain) {
-         if (m_Feature->m_bCharCat && sCharCatFile.empty())
-            THROW("model requires character category knowledge but this file is not specified");
+         if (!sCharCatFile.empty())
+            THROW("CSegmentor::CSegmentor received sCharCat file in decoding mode, which is unexpected.");
          if (m_Feature->m_bLexicon && sLexiconFile.empty())
-            THROW("model requires lexicon knowledge but this file is not specified");
+            THROW("model requires lexicon knowledge but this file is not specified.");
       }
-      if (!sCharCatFile.empty()) loadCharCat(sCharCatFile);
+      else {
+         // first time training
+         if (FileExists(sFeatureDBPath)==false) {
+            // define items for new db
+            m_Feature->m_bLexicon = !sLexiconFile.empty();
+            if (!sCharCatFile.empty()) loadCharCat(sCharCatFile);
+         }
+         else { // model already exists
+            if (!sCharCatFile.empty())
+               THROW("CSegmentor::CSegmentor received sCharCat file, but model exists (with charcat)");
+         }
+      }
       if (!sLexiconFile.empty()) loadLexiconDict(sLexiconFile);
    }
-   virtual ~CSegmentor() { delete m_Feature; delete [] m_lWordCache; clearKnowledge(); }
-   CSegmentor(CSegmentor& segmentor) { throw("CSegmentor does not support copy constructor!"); }
+   virtual ~CSegmentor() { delete m_Feature; delete [] m_lWordCache;}
+   CSegmentor(CSegmentor& segmentor) { THROW("CSegmentor does not support copy constructor!"); }
 
 //-------------------------------------------------------------
 // Main interface
@@ -107,18 +117,27 @@ public:
 // Knowledge related 
 public:
    void loadCharCat(const string &sFile) {
-      if (m_CharCat==0) {
-         m_CharCat = new CWordDictionary(2719);
-         m_CharCat->load(sFile);
+      if (m_Feature->m_CharCat==0) {
+         ifstream is(sFile.c_str());
+         if (!is.is_open())
+            THROW("the file " << sFile << " is unavailable.");
+         m_Feature->m_CharCat = new CWordDictionary(2719);
+         is >> static_cast<CWordDictionary&>(*m_Feature->m_CharCat);
+         is.close();
+         return;
       }
+      THROW("CSegmentor: loadCharCat called multiple times.");
    }
    void loadLexiconDict(const string &sFile) {
-      if (m_WordLst==0)
+      if (m_WordLst==0) {
          m_WordLst = new CLexiconSet;
-      ifstream is(sFile.c_str());
-      assert(is.is_open());
-      is >> (*m_WordLst);
-      is.close();
+         ifstream is(sFile.c_str());
+         assert(is.is_open());
+         is >> (*m_WordLst);
+         is.close();
+         return;
+      }
+      THROW("CSegmentor: loadLexiconDict called twice.");
    }
    void useRules(bool bUseRules) {
       if ( bUseRules && m_CharCatForRules==0 ) {
@@ -129,11 +148,6 @@ public:
          m_CharCatForRules = 0;
       }
    }
-   void clearKnowledge() {
-      if (m_CharCat) { delete m_CharCat; m_CharCat = 0; }
-      if (m_WordLst) { delete m_WordLst; m_WordLst = 0; }
-      if (m_CharCatForRules) { delete m_CharCatForRules; m_CharCatForRules = 0; }
-   }
 
    bool wordInLexicon(const CWord &word) {
       if (m_WordLst==0)
@@ -141,10 +155,10 @@ public:
       return m_WordLst->find(word, 0); // non-zero value means member
    }
    bool hasCharTypeKnowledge() {
-      return m_CharCat != 0;
+      return m_Feature->m_CharCat != 0;
    }
    unsigned charType(const CWord &ch) {
-      return m_CharCat->lookup(ch);
+      return m_Feature->m_CharCat->lookup(ch);
    }
 
 //-------------------------------------------------------------
@@ -155,7 +169,7 @@ public:
          static string temp; 
          static unsigned int i; 
          temp.clear();
-         for ( i = start; i < start+length ; i++ ) 
+         for ( i = start; i < start+length ; ++i ) 
             temp += sentence->at(i) ; 
          m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].setString(temp);
       }
@@ -167,14 +181,14 @@ public:
          static string temp; 
          static unsigned int i; 
          temp.clear();
-         for ( i = start; i < start+length ; i++ ) 
+         for ( i = start; i < start+length ; ++i ) 
             temp += sentence->at(i) ; 
          m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ] = (temp);
       }
       return m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ];
    }
    void clearWordCache() {
-      for (int i=0; i<segmentor::MAX_SENTENCE_SIZE; i++)
+      for (int i=0; i<segmentor::MAX_SENTENCE_SIZE; ++i)
          for (int j=0; j<segmentor::MAX_WORD_SIZE; j++) 
             m_lWordCache[i*segmentor::MAX_WORD_SIZE+j].clear();
    }

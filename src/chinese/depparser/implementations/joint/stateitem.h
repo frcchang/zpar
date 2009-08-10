@@ -253,7 +253,7 @@ public:
             return m_lHeads[retval];
          }
       } 
-      throw("The code should not have reached here");
+      THROW("depparser::CStateItem findPreviousLinkPoint: the code should not have reached here");
    }
 
    int findFirstHead() const {

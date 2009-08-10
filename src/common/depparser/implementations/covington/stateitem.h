@@ -21,7 +21,7 @@ public:
    // constructors and destructor
    CStateItem() { clear(); }
    virtual ~CStateItem() { }
-   CStateItem(CStateItem& item) { throw("CStateItem does not support copy constructor!"); }
+   CStateItem(CStateItem& item) { THROW("depparser::CStateItem does not support copy constructor!"); }
    // assignment operator
    void operator = ( const CStateItem &item ) {
       m_nNextWord = item.m_nNextWord;
@@ -117,7 +117,7 @@ public:
             return m_lHeads[retval];
          }
       } 
-      throw("The code should not have reached here");
+      THROW("depparser::CStateItem findPreviousLinkPoint: the code should not have reached here");
    }
 
    int findFirstHead() const {

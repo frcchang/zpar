@@ -1,8 +1,20 @@
+/****************************************************************
+ *                                                              *
+ * file_utils.h - the file utilities                            *
+ *                                                              *
+ * Author: Yue Zhang                                            *
+ *                                                              *
+ * Computing Laboratory, Oxford. 2006.10                        *
+ *                                                              *
+ ****************************************************************/
 
+#ifndef _FILE_UTILITIES_H
+#define _FILE_UTILITIES_H 
 
 #include <sys/stat.h>
 
-bool FileExists(string strFilename) {
+inline
+bool FileExists(const string &strFilename) {
   struct stat stFileInfo;
   bool blnReturn;
   int intStat;
@@ -25,3 +37,5 @@ bool FileExists(string strFilename) {
   
   return(blnReturn);
 }
+
+#endif

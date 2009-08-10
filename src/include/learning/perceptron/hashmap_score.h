@@ -101,7 +101,7 @@ istream & operator >> (istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
    if (!is) return is ;
    string s ;
    getline(is, s) ;
-   assert( s==score_map.name );
+   if ( s!=score_map.name ) THROW("the expected score map " << score_map.name << " is not matched.");
    is >> static_cast< CHashMap< K, CScore<SCORE_TYPE> > &>(score_map) ;
    return is ;
 }

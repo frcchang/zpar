@@ -347,7 +347,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CSentenceParsed &parsed) {
          poproot( &temp );
          break;
       default:
-         throw("action wrong");
+         THROW("action unexpected: " << action << ".");
       }
    }
    return temp.score();

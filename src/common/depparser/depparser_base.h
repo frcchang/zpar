@@ -40,7 +40,7 @@ public:
       // do nothing
    }
    CDepParserBase( CDepParserBase &depparser) { 
-      throw("CDepParser does not support copy constructor!"); 
+      THROW("CDepParser does not support copy constructor!"); 
    }
 
 public:

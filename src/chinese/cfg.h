@@ -101,8 +101,7 @@ public:
       }
       // unknown constituent
       if (bNoneDefault && !bFound) {
-         ostringstream os; os << "unknown constituent: " << s << '.';
-         throw(os.str());
+         THROW("unknown constituent: " << s << '.');
       }
    }
 

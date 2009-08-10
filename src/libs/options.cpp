@@ -64,8 +64,8 @@ string CConfigurations::loadConfigurations(const vector< pair< string, string > 
       bFound = false;
       for (int j=0; j<configurations.size(); ++j) {
          if (configurations[j].name == options[i].first) {
-            if (configurations[i].argument.empty()) {
-               if (!options[i].second.empty()) THROW("configuration "<<configurations[i].name<<" does not take any arguments, but "<<options[i].second<<" given");
+            if (configurations[j].argument.empty()) {
+               if (!options[i].second.empty()) THROW("configuration "<<configurations[j].name<<" does not take any arguments, but "<<options[i].second<<" given.");
                configurations[j].value = "true";
             }
             else

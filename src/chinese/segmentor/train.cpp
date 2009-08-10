@@ -147,48 +147,55 @@ void train(const string &sOutputFile, const string &sFeatureFile, const bool &bA
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   COptions options(argc, argv);
-   CConfigurations configurations;
-   configurations.defineConfiguration("a", "", "agressive learning: make sure one example is segmented correctly before moving on to the next example", "");
-   configurations.defineConfiguration("s", "", "implementation specific training by the segmentor, instead of the standard perceptron training", "");
-   configurations.defineConfiguration("c", "Path", "provide character type info in Path", "");
-   configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
-   configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
-   if (options.args.size() != 4) {
-      cout << "Usage: " << argv[0] << " training_data model_file iterations" << endl;
-      cout << configurations.message() << endl;
-      return 1;
-   }
-   unsigned training_rounds;
-   if (!fromString(training_rounds, options.args[3])) {
-      cout << "The number of training iterations must be an integer." << endl;
-      return 1;
-   }
+   try {
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("a", "", "agressive learning: make sure one example is segmented correctly before moving on to the next example", "");
+      configurations.defineConfiguration("s", "", "implementation specific training by the segmentor, instead of the standard perceptron training", "");
+      configurations.defineConfiguration("c", "Path", "provide character type info in Path", "");
+      configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
+      configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
+      if (options.args.size() != 4) {
+         cout << "Usage: " << argv[0] << " training_data model_file iterations" << endl;
+         cout << configurations.message() << endl;
+         return 1;
+      }
+      unsigned training_rounds;
+      if (!fromString(training_rounds, options.args[3])) {
+         cout << "The number of training iterations must be an integer." << endl;
+         return 1;
+      }
 
-   configurations.loadConfigurations(options.opts);
+      configurations.loadConfigurations(options.opts);
 
-   bool bAggressive = configurations.getConfiguration("a").empty() ? false : true;
-   bool bAutomatic = configurations.getConfiguration("s").empty() ? false : true;
-   bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
-   string sCharCatFile = configurations.getConfiguration("c");
-   string sLexiconDict = configurations.getConfiguration("w");
+      bool bAggressive = configurations.getConfiguration("a").empty() ? false : true;
+      bool bAutomatic = configurations.getConfiguration("s").empty() ? false : true;
+      bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
+      string sCharCatFile = configurations.getConfiguration("c");
+      string sLexiconDict = configurations.getConfiguration("w");
 
-   if (bAutomatic && (bAggressive||bNoFWAndCD))
-      cout << "Warning: all other configurations will be ignored since automatic training is chosen." << endl;
+      if (bAutomatic && (bAggressive||bNoFWAndCD))
+         cout << "Warning: all other configurations will be ignored since automatic training is chosen." << endl;
 
-   cout << "Training started ..." << endl;
-   int time_start = clock();
+      cout << "Training started ..." << endl;
+      int time_start = clock();
 
 #ifdef NO_NEG_FEATURE
-   extract_features(options.args[1], options.args[2]);
+      extract_features(options.args[1], options.args[2]);
 #endif
 
-   for (int i=0; i<training_rounds; ++i)
-      if (bAutomatic)
-         auto_train(options.args[1], options.args[2], bNoFWAndCD, sCharCatFile, sLexiconDict);
-      else
-         train(options.args[1], options.args[2], bAggressive, bNoFWAndCD, sCharCatFile, sLexiconDict);
-   cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
-   return 0;
+      for (int i=0; i<training_rounds; ++i) {
+         if (bAutomatic)
+            auto_train(options.args[1], options.args[2], bNoFWAndCD, sCharCatFile, sLexiconDict);
+         else
+            train(options.args[1], options.args[2], bAggressive, bNoFWAndCD, sCharCatFile, sLexiconDict);
+      }
+      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+      return 0;
+   }
+   catch(const string &e) {
+      cerr << "Error: " << e << " Stop." << endl;
+      exit(1);
+   }
 }
 

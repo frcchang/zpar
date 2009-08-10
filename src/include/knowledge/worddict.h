@@ -37,39 +37,36 @@ public:
       return find(word, 0);
    }
 
-public:
-
-   // load tag dictionary from a file
-   void load(const string &sFileName) {
-      ifstream ifs ;
-      string s ;
-      unsigned int i ;
-
-      ifs.open( sFileName.c_str() ) ;
-      assert( ifs.is_open() ) ;
-      while( !ifs.eof() ) {
-         ifs >> s >> i ;
-         (*this)[s] = i ;
-      }
-      ifs.close() ;
-   }
-
-   // save tag dictionary to a file
-   void save(const string &sFileName) {
-
-      ofstream ofs ;
-      iterator it;
-
-      ofs.open( sFileName.c_str() ) ;
-      assert( ofs.is_open() ) ;
-      it = begin() ;
-      while (it != end()) {
-         ofs << it.first().str() << "\t" << it.second() << endl ;
-         ++it ; 
-      }
-      ofs.close() ;
-
-   }
 };
+
+//==============================================================*/
+
+inline
+istream & operator >> (istream &is, CWordDictionary &dict) {
+   if (!is) return is;
+   string s ;
+   unsigned int i ;
+   string ln ; 
+   getline(is, ln);
+   while (is && !(ln.empty())) {
+      istringstream iss(ln) ; 
+      iss >> s >> i ;
+      dict[s] = i ;
+      getline(is, ln);
+   }
+   return is ;
+}
+
+inline
+ostream & operator << (ostream &os, CWordDictionary &dic) {
+   CWordDictionary::iterator it;
+   it = dic.begin() ;
+   while (it != dic.end()) {
+      os << it.first().str() << "\t" << it.second() << endl ;
+      ++it ; 
+   }
+   os << endl;
+   return os ;
+}
 
 #endif
