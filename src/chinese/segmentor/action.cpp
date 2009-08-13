@@ -521,7 +521,7 @@ void trace_candidate(CStateItem *pCandidate, const CSentenceRaw &sentence) {
  *
  *--------------------------------------------------------------*/
 
-bool work(CSegmentor *segmentor, const CSentenceRaw &sentence, CPrune &rules, CStateItem *pCorrect, int nBest, int round) {
+bool work(CSegmentor *segmentor, const CSentenceRaw &sentence, CRule &rules, CStateItem *pCorrect, int nBest, int round) {
    CStateItem *pGenerator, *pCandidate;
    int nScore;
    int j, k;                                    // temporary index
@@ -695,8 +695,8 @@ void CSegmentor::train(const CSentenceRaw* sentence_input, const CSentenceRaw* c
 #endif
    TRACE("Starting training using a sentence...");
    static CSentenceRaw sentence;
-   static CPrune rules;                         // 0 - no rules; 1 - append; 2 - separate
-   segmentationRules(sentence_input, m_CharCatForRules, &sentence, &rules);
+   static CRule rules(m_Feature->m_bRule);
+   rules.segment(sentence_input, &sentence);
    const unsigned int length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);

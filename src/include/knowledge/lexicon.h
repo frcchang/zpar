@@ -21,13 +21,29 @@ public:
 };
 
 inline
-istream & operator >> (istream &i, CLexiconSet &dict) {
+istream & operator >> (istream &is, CLexiconSet &dict) {
+   if (!is) return is;
    string s ;
-   while (i) {
-      i >> s; assert(s!="");
+   string ln;
+   getline(is, ln);
+   while (is && !(ln.empty())) {
+      istringstream iss(ln);
+      iss >> s; 
       dict.add(CWord(s));
+      getline(is, ln);
    }
-   return i;
+   return is;
+}
+
+inline
+ostream & operator << (ostream &os, CLexiconSet &dict) {
+   CLexiconSet::iterator it = dict.begin();
+   while (it != dict.end()) {
+      os << it.first().str() << endl;
+      ++it;
+   }
+   os << endl;
+   return os;
 }
 
 #endif

@@ -9,9 +9,9 @@
 
 class CFeatureHandle {
 public:
-      bool m_bLexicon; // use lexicon?
-      bool m_bRule; // use rules segmentation?
-      CWordDictionary *m_CharCat;
+   bool m_bRule; // use rules segmentation?
+   CWordDictionary *m_CharCat;
+   CLexiconSet *m_WordLst;
 private:
    //
    // PRIVATE MEMBER VARIABLES
@@ -25,10 +25,11 @@ public:
    //
    // CONSTRUCTOR AND DESTRUCTOR METHODS
    // 
-   CFeatureHandle(CSegmentor* pSegmentor, string sFileName, bool bTrain=false) : m_parent(pSegmentor), m_sFeatureDB(sFileName), m_bTrain(bTrain), m_CharCat(0), m_zeroScore() { loadScores(); } 
+   CFeatureHandle(CSegmentor* pSegmentor, string sFileName, bool bTrain=false) : m_parent(pSegmentor), m_sFeatureDB(sFileName), m_bTrain(bTrain), m_CharCat(0), m_WordLst(0), m_zeroScore() { loadScores(); } 
    ~CFeatureHandle() { 
       if (m_bScoreModified) saveScores(); 
       if (m_CharCat) { delete m_CharCat; }
+      if (m_WordLst) { delete m_WordLst; }
    }
 public:
    //
@@ -49,14 +50,14 @@ public:
    void computeAverageFeatureWeights(int round=0) {
       cout << "Computing averaged feature scores ... ";
       iterate_templates(,.computeAverage(round););
-      cout << " done" << endl;
+      cout << "done" << endl;
    }
 
    // load the weight vectors from the database
    void loadScores() {
       // initialize
       string line;
-      cout << "Loading model ... "; 
+      cout << "Loading model ... "; cout.flush();
       ifstream is(m_sFeatureDB.c_str());
       if (!is.is_open()) { cout << "empty."<<endl; return; }
       // use char cat information?
@@ -64,7 +65,7 @@ public:
       getline(is, line);
       istringstream(line) >> bCharCat;
       if (bCharCat) {
-         cout << "loading charcat ... "; 
+         cout << "loading charcat ... "; cout.flush();
          if (m_CharCat==0) {
             m_CharCat = new CWordDictionary(2719);
             is >> static_cast<CWordDictionary&>(*m_CharCat); //is
@@ -72,8 +73,17 @@ public:
          else THROW("CSegmentor feature: m_CharCat already loaded.");
       }
       // use lexicon?
+      bool bLexicon;
       getline(is, line);
-      istringstream(line) >> m_bLexicon;
+      istringstream(line) >> bLexicon;
+      if (bLexicon) {
+         cout << "loading lexicon ... "; cout.flush();
+         if (m_WordLst==0) {
+            m_WordLst = new CLexiconSet;
+            is >> (*m_WordLst); //is
+         } 
+         else THROW("CSegmentor feature: m_WordLst already loaded.");
+      }
       // use rules?
       getline(is, line);
       istringstream(line) >> m_bRule;
@@ -87,13 +97,21 @@ public:
 
    // save the weight vectors into the database
    void saveScores() {
+      // initialization
       cout << "Saving model ... "; cout.flush();
       ofstream os(m_sFeatureDB.c_str());
       assert(os.is_open());
+      // save charcat
       os << (m_CharCat?1:0) << endl;
       if (m_CharCat) os << static_cast<CWordDictionary &>(*m_CharCat);
-      os << m_bLexicon << endl << m_bRule << endl;
+      // save lexicon
+      os << (m_WordLst?1:0) << endl; 
+      if (m_WordLst) os << (*m_WordLst);
+      // save rule
+      os << m_bRule << endl;
+      // save features
       iterate_templates(os<<,;);
+      // finalization
       os.close();
       m_bScoreModified = false;
       cout << "done." << endl ;

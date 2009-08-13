@@ -11,7 +11,9 @@
 
 namespace chinese {
 namespace segmentor {
-#include "prune.h"
+// the rule set
+// define rules according to basic.h, then replace include
+#include "rules/basic.h"
 #include "segmentor_impl.h" // defines implementation - SCORE_TYPE etc
 
 }

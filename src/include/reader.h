@@ -50,7 +50,7 @@ class CSentenceReader {
          }
       };
       // this method makes a new instance of CSentenceRaw
-      bool readRawSentence(CSentenceRaw *retval, bool bSkipEmptyLines=false, bool bIgnoreSpace=true);
+      bool readRawSentence(CSentenceRaw *retval, bool bSkipEmptyLines=false, bool bIgnoreSpace=false);
       bool readSegmentedSentence(CSentenceRaw *retval, bool bSkipEmptyLines=false);
       bool readTaggedSentence(CSentenceTagged *retval, bool bSkipEmptyLines=false, const char separator='_');
 };
