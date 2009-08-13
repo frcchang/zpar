@@ -53,36 +53,35 @@ class CSegmentor : public segmentor::CSegmentorImpl {
 
 private:
    CWord *m_lWordCache;
-   CLexiconSet *m_WordLst;
-   CCharCatDictionary *m_CharCatForRules; // use rules to segment foreign words?
    bool m_bTrain;
    segmentor::CFeatureHandle *m_Feature;
 
 //-------------------------------------------------------------
 // Constructor destructor
 public:
-   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="") : segmentor::CSegmentorImpl(), m_bTrain(bTrain), m_WordLst(0), m_CharCatForRules(0) { 
+   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="") : segmentor::CSegmentorImpl(), m_bTrain(bTrain) { 
       m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain); 
       m_lWordCache = new CWord[segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_WORD_SIZE];
       if (!bTrain) {
          if (!sCharCatFile.empty())
             THROW("CSegmentor::CSegmentor received sCharCat file in decoding mode, which is unexpected.");
-         if (m_Feature->m_bLexicon && sLexiconFile.empty())
-            THROW("model requires lexicon knowledge but this file is not specified.");
+         if (!sLexiconFile.empty())
+            THROW("CSegmentor::CSegmentor received sLexicon file in decoding mode, which is unexpected.");
       }
       else {
          // first time training
          if (FileExists(sFeatureDBPath)==false) {
             // define items for new db
-            m_Feature->m_bLexicon = !sLexiconFile.empty();
             if (!sCharCatFile.empty()) loadCharCat(sCharCatFile);
+            if (!sLexiconFile.empty()) loadLexiconDict(sLexiconFile);
          }
          else { // model already exists
             if (!sCharCatFile.empty())
                THROW("CSegmentor::CSegmentor received sCharCat file, but model exists (with charcat)");
+            if (!sLexiconFile.empty())
+               THROW("CSegmentor::CSegmentor received sLexicon file, but it is useful only during first-time training, where model does not exist");
          }
       }
-      if (!sLexiconFile.empty()) loadLexiconDict(sLexiconFile);
    }
    virtual ~CSegmentor() { delete m_Feature; delete [] m_lWordCache;}
    CSegmentor(CSegmentor& segmentor) { THROW("CSegmentor does not support copy constructor!"); }
@@ -129,30 +128,21 @@ public:
       THROW("CSegmentor: loadCharCat called multiple times.");
    }
    void loadLexiconDict(const string &sFile) {
-      if (m_WordLst==0) {
-         m_WordLst = new CLexiconSet;
+      if (m_Feature->m_WordLst==0) {
+         m_Feature->m_WordLst = new CLexiconSet;
          ifstream is(sFile.c_str());
-         assert(is.is_open());
-         is >> (*m_WordLst);
+         if (!is.is_open()) THROW("the file " << sFile << " is unavailable.");
+         is >> (*m_Feature->m_WordLst);
          is.close();
          return;
       }
       THROW("CSegmentor: loadLexiconDict called twice.");
    }
-   void useRules(bool bUseRules) {
-      if ( bUseRules && m_CharCatForRules==0 ) {
-         m_CharCatForRules = new CCharCatDictionary;
-      }
-      if ( !bUseRules && m_CharCatForRules ) {
-         delete m_CharCatForRules;
-         m_CharCatForRules = 0;
-      }
-   }
 
    bool wordInLexicon(const CWord &word) {
-      if (m_WordLst==0)
+      if (m_Feature->m_WordLst==0)
          return false;
-      return m_WordLst->find(word, 0); // non-zero value means member
+      return m_Feature->m_WordLst->find(word, 0); // non-zero value means member
    }
    bool hasCharTypeKnowledge() {
       return m_Feature->m_CharCat != 0;

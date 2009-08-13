@@ -230,10 +230,8 @@ void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vRetu
    static unsigned int doneLastWord[MAX_SENTENCE_SIZE];
 
    static CSentenceRaw sentence;
-   static CPrune rules;                         // 0 - no rules; 1 - append; 2 - separate
-   segmentationRules(sentence_input, m_CharCatForRules, &sentence, &rules);
-   //sentence.clear(); rules.reset();
-   //for (index=0; index<sentence_input->size();index++) sentence.push_back( sentence_input->at( index ) ); 
+   static CRule rules(m_Feature->m_bRule);
+   rules.segment(sentence_input, &sentence);
    const unsigned int length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);

@@ -228,8 +228,8 @@ void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vRetu
    unsigned int best_start=0;
 
    static CSentenceRaw sentence;
-   static CPrune rules;                         // 0 - no rules; 1 - append; 2 - separate
-   segmentationRules(sentence_input, m_CharCatForRules, &sentence, &rules);
+   static CRule rules(m_Feature->m_bRule); 
+   rules.segment(sentence_input, &sentence);
    const unsigned int length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);

@@ -23,11 +23,11 @@ using namespace chinese ;
  *
  *==============================================================*/
 
-void process(const string &sInputFile, const string &sOutputFile, const string &sFeatureFile, const int &nBest, const string &sOutputScores, const bool &bNoFWAndCD, const string &sLexiconDict) {
+void process(const string &sInputFile, const string &sOutputFile, const string &sFeatureFile, const int &nBest, const string &sOutputScores) {
    cout<<"Segmenting started"<<endl;
    int time_start = clock();
    CSegmentor *segmentor ;
-   segmentor = new CSegmentor(sFeatureFile, false, "", sLexiconDict);
+   segmentor = new CSegmentor(sFeatureFile);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
    CSentenceRaw *input_sent = new CSentenceRaw;
@@ -41,7 +41,7 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
       fileScores.open(sOutputScores.c_str());
    }
    
-   while( input_reader.readRawSentence(input_sent, false, bNoFWAndCD) ) {
+   while( input_reader.readRawSentence(input_sent, false) ) {
       TRACE("Sentence " << nCount);
       ++nCount;
       segmentor->segment(input_sent, output_sent, scores, nBest);
@@ -76,8 +76,6 @@ int main(int argc, char* argv[]) {
       CConfigurations configurations;
       configurations.defineConfiguration("n", "N", "N best list output", "1");
       configurations.defineConfiguration("d", "Path", "save scores to Path", "");
-      configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
-      configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
       // check arguments
       if (options.args.size() != 4) {
          cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
@@ -93,11 +91,9 @@ int main(int argc, char* argv[]) {
          return 1;
       }
       string sOutputScores = configurations.getConfiguration("d");
-      string sLexiconDict = configurations.getConfiguration("w");
-      bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
 
       // main
-      process(argv[1], argv[2], argv[3], nBest, sOutputScores, bNoFWAndCD, sLexiconDict);
+      process(argv[1], argv[2], argv[3], nBest, sOutputScores);
 
       // return normal
       return 0;
