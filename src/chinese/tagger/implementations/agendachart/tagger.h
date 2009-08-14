@@ -39,7 +39,10 @@ public:
    virtual void tag(const CSentenceRaw *sentence, CSentenceTagged *retval, double *out_scores=NULL, int nBest=1, const CBitArray *prunes=NULL);
 
    void loadKnowledge(const string &sKnowledgePath) {
-      m_Knowledge.load( sKnowledgePath );
+      ifstream ifs(sKnowledgePath.c_str());
+      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
+      ifs >> m_Knowledge; 
+      ifs.close();
       m_bKnowledgeLoaded = true;
    }
 

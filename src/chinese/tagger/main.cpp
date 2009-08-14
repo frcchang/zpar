@@ -134,52 +134,41 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " input_file output_file feature_file [-kPATH] [-nN] [-s]\n\n\
-Options:\n\
--k use knowledge form the given path\n\
--n n best list\n\
--s output scores (to the file output_file.scores) \n\
-";
+      const string hint = " input_file output_file feature_file [-kPATH] [-nN] [-s]\n\n\
+   Options:\n\
+   -k use knowledge form the given path\n\
+   -n n best list\n\
+   -s output scores (to the file output_file.scores) \n\
+   ";
+   
+   try {
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("k", "Path", "use knowledge from Path", "");
+      configurations.defineConfiguration("n", "N", "N best list output", "1");
+      configurations.defineConfiguration("s", "", "output scores", "");
 
-   if (argc < 4) {
-      cout << "\nUsage: " << argv[0] << hint << endl;
-      return 1;
-   }
-
-   int nBest = 1;
-   bool bKnowledge = false;
-   bool bScores = false;
-#ifdef SEGMENTED
-   bool bSegmented = true;
-#else
-   bool bSegmented = false;
-#endif
-
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') {
-            cout << "\nUsage: " << argv[0] << hint << endl ;
-            return 1;
-         }
-         switch (argv[i][1]) {
-            case 'n':
-               nBest = atoi(string(argv[i]).substr(2).c_str());
-               break;
-            case 's':
-               bScores = true;
-               break;
-            case 'k':
-               bKnowledge = true;
-               sKnowledgePath = string(argv[i]).substr(2);
-               break;
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
+      if (options.args.size() != 4) {
+         cout << "\nUsage: " << argv[0] << " input_file output_file feature_file " << endl;
+         cout << configurations.message() << endl;
+         return 1;
       }
-   }
-
-   process(argv[1], argv[2], argv[3], nBest, bSegmented, bKnowledge, bScores);
-   return 0;
+      configurations.loadConfigurations(options.opts);
+   
+      unsigned nBest;
+      if (!fromString(nBest, configurations.getConfiguration("n"))) {
+         cerr<<"Error: the number of N best is not integer." << endl; return 1;
+      }  
+      bool bKnowledge = configurations.getConfiguration("k").empty() ? false : true;
+      bool bScores = configurations.getConfiguration("s").empty() ? false : true;
+#ifdef SEGMENTED
+      bool bSegmented = true;
+#else
+      bool bSegmented = false;
+#endif
+   
+      process(options.args[1], options.args[2], options.args[3], nBest, bSegmented, bKnowledge, bScores);
+      return 0;
+   } catch(const string&e) {cerr<<"Error: "<<e<<endl;return 1;}
 }
 
