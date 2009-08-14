@@ -31,12 +31,12 @@ $(OBJECT_DIR)/chinese.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_TAGGER)/implemen
 # the tagger executable
 $(DIST_TAGGER)/tagger: $(SRC_TAGGER)/main.cpp $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECTS)
 	$(CXX) $(TAGGER_TRAIN_FLAGS) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/main.cpp -o $(OBJECT_TAGGER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/tagger $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/main.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/tagger $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/main.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 # the trainer for tagger
 $(DIST_TAGGER)/train: $(SRC_TAGGER)/train.cpp $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECTS)
 	$(CXX) $(TAGGER_TEST_FLAGS) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/train.cpp -o $(OBJECT_TAGGER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/train $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_TAGGER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/train $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_TAGGER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 #==============================
 

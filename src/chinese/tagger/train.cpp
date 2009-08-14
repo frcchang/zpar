@@ -173,56 +173,47 @@ void train(const string &sOutputFile, const string &sFeatureFile, const int &nBe
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " training_input_file feature_file number_of_iterations [-j] [-kPATH] [-nN] [-u]\n\n\
-Options:\n\
--j separate numbers and letters when preparing input data from training examples\n\
--k use knowledge by the given path\n\
--n n best list train\n\
--u early update\n\
-";
-   if (argc < 4) {
-      cout << "\nUsage: " << argv[0] << hint << endl ;
-      return 1;
-   } 
-   int nBest = 1;
-   bool bEarlyUpdate = false;
-   bool bSegmented = false;
-   bool bDontJoinFWCD = false;
-   string sKnowledgePath = "";
+   try {
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("j", "", "separate numbers and letters when preparing input data from training examples", "");
+      configurations.defineConfiguration("k", "Path", "use knowledge from the given path", "");
+      configurations.defineConfiguration("n", "N", "N best list train", "1");
+      configurations.defineConfiguration("u", "", "early update", "");
+
+      if (options.args.size() != 4) {
+         cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
+         cout << configurations.message() << endl;
+         return 1;
+      } 
+      configurations.loadConfigurations(options.opts);
+
+      int nBest;
+      if (!fromString(nBest, configurations.getConfiguration("n"))) {
+         cerr<<"Error: the number of N best is not integer." << endl; return 1;
+      }  
+      bool bEarlyUpdate = configurations.getConfiguration("u").empty() ? false : true;
+      bool bDontJoinFWCD = configurations.getConfiguration("j").empty() ? false : true;
+      string sKnowledgePath = configurations.getConfiguration("k");
+      bool bSegmented = false;
 #ifdef SEGMENTED
-   bSegmented = true; // compile option
+      bSegmented = true; // compile option
 #endif
-   int training_rounds = atoi(argv[3]);
-   if (training_rounds < 0)
-      training_rounds = TRAINING_ROUND;
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-         switch (argv[i][1]) {
-            case 'j':
-               bDontJoinFWCD = true;
-               break;
-            case 'k':
-               if (strlen(argv[i])<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               sKnowledgePath = string(argv[i]).substr(2);
-               break;
-            case 'n':
-               nBest = atoi(string(argv[i]).substr(2).c_str());
-               break;
-            case 'u':
-               bEarlyUpdate = true;
-               break;
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
+
+      unsigned training_rounds;
+      if (!fromString(training_rounds, options.args[3])) {
+         cerr << "Error: the number of training iterations must be an integer." << endl;
+         return 1;
       }
+      cout << "Training started." << endl;
+      int time_start = clock();
+      for (int i=0; i<training_rounds; ++i)
+         train(argv[1], argv[2], nBest, bEarlyUpdate, bSegmented, sKnowledgePath, bDontJoinFWCD);
+      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+      return 0;
+   } catch (const string &e) {
+      cerr << "Error: " << e << endl;
+      return 1;
    }
-   cout << "Training started" << endl;
-   int time_start = clock();
-   for (int i=0; i<training_rounds; ++i)
-      train(argv[1], argv[2], nBest, bEarlyUpdate, bSegmented, sKnowledgePath, bDontJoinFWCD);
-   cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
-   return 0;
 }
 
