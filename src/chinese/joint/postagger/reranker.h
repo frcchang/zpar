@@ -32,20 +32,16 @@ protected:
    int m_nTrainingRound;
    int m_nTrainingErrors;
    int m_nTrainingErrort;
+   bool m_bRankIncludeSeg;
 
 public:
-   CReranker(const string &sFeatureDB, const int &nBest, const bool &bTrain) {
+   CReranker(const string &sFeatureDB, const int &nBest, const bool &bTrain, const bool ranking_segmentor=false) : m_nBest(nBest), m_bTrain(bTrain), m_nTrainingRound(0), m_nTrainingErrors(0), m_nTrainingErrort(0), m_bRankIncludeSeg(false) {
       m_segmentor = new CSegmentor(sFeatureDB+".segmentor", bTrain);
       m_tagger = new CTagger(sFeatureDB+".tagger", bTrain);
-      m_nBest = nBest; 
       m_scores_seg = new double[nBest];
       m_scores_tag = new double[nBest];
       m_scratch_seg = new CSentenceRaw[nBest];
       m_scratch_tag = new CSentenceTagged[nBest];
-      m_bTrain = bTrain;  
-      m_nTrainingRound = 0;
-      m_nTrainingErrors = 0;
-      m_nTrainingErrort = 0;
    }
    virtual ~CReranker() {
       delete m_segmentor; delete[] m_scores_seg;

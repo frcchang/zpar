@@ -47,12 +47,14 @@ int CReranker::findBest(const CSentenceRaw &raw) {
    int best_index=0;
    double best_score;
    static CBitArray wds(MAX_SENTENCE_SIZE);
+   double ranking_score;
    m_segmentor->segment(&raw, m_scratch_seg, m_scores_seg, m_nBest);
    for (int i=0; i<m_nBest; i++) {
       recordSegmentation(&raw, m_scratch_seg+i, wds);
       m_tagger->tag(&raw, m_scratch_tag+i, m_scores_tag+i, 1, &wds); 
       if (m_scratch_tag[i].empty()) continue;
-      if (i==0 || m_scores_tag[i]+m_scores_seg[i]>best_score) {best_score=m_scores_tag[i]+m_scores_seg[i]; best_index=i;}
+      if (i!=0) ranking_score = m_bRankIncludeSeg ? m_scores_seg[i] + m_scores_tag[i] : m_scores_tag[i];
+      if (i==0 || ranking_score>best_score) {best_score=ranking_score; best_index=i;}
    }
    return best_index;
 }
