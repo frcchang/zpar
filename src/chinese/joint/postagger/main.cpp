@@ -13,6 +13,7 @@
 
 #include "reader.h"
 #include "writer.h"
+#include "options.h"
 
 #include "reranker.h"
 
@@ -26,10 +27,10 @@ using namespace chinese;
  * 
  *---------------------------------------------------------------*/
 
-void process(string sInputFile, string sOutputFile, string sFeatureDb, int nBest) {
+void process(string sInputFile, string sOutputFile, string sFeatureDb, int nBest, bool bRankingIncludeSeg) {
    TRACE("Tagging started");
    int time_start = clock();
-   CReranker reranker(sFeatureDb, nBest, false);
+   CReranker reranker(sFeatureDb, nBest, false, bRankingIncludeSeg);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
    CSentenceRaw input_sent;
@@ -54,33 +55,28 @@ void process(string sInputFile, string sOutputFile, string sFeatureDb, int nBest
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " input_file output_file feature_file [-nN]\n\n\
-Options:\n\
--n N best segmentation output; default 10\n\
-";
-   if (argc < 4) {
-      cout << "Usage: " << argv[0] << hint << endl;
-      return 1;
-   }
-
-   int nBest = 10;
-
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-         switch (argv[i][1]) {
-            case 'n':
-               if (strlen(argv[i])<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               nBest = atoi(string(argv[i]+2).c_str());
-               break;
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
+   try {
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("n", "N", "N best list rerank", "10");
+      configurations.defineConfiguration("s", "", "Use segmentor scores in ranking", "");
+      // check arguments
+      if (options.args.size() != 4) {
+         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
+         cout << configurations.message() << endl;
+         return 1;
       }
+      configurations.loadConfigurations(options.opts);
+   
+      int nBest;
+      if (!fromString(nBest, configurations.getConfiguration("n"))) {
+         cerr<<"Error: N must be integer."<<endl; return 1;
+      }
+      bool bRankingIncludeSeg = !configurations.getConfiguration("s").empty() ? true : false;
+   
+      process(argv[1], argv[2], argv[3], nBest, bRankingIncludeSeg);
+      return 0;
+   } catch (const string &e) { cerr<<"Error: "<<e<<endl; return 1;
    }
-
-   process(argv[1], argv[2], argv[3], nBest);
-   return 0;
 }
 

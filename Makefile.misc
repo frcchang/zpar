@@ -1,29 +1,29 @@
-# The joint segmentor or tagger decoder
+# The joint segmentor or postagger decoder
 SRC_JOINT = $(SRC_CHINESE)/joint
 DIST_JOINT = $(DIST_DIR)/joint
 OBJECT_JOINT = $(OBJECT_DIR)/joint
 $(OBJECT_JOINT):
-	mkdir $(OBJECT_JOINT)
+	mkdir -p $(OBJECT_JOINT)
 $(DIST_JOINT):
-	mkdir $(DIST_JOINT)
+	mkdir -p $(DIST_JOINT)
 
-$(OBJECT_JOINT)/tagger: $(OBJECT_JOINT)
-	mkdir $(OBJECT_JOINT)/tagger
-$(DIST_JOINT)/tagger: $(DIST_JOINT)
-	mkdir $(DIST_JOINT)/tagger
-joint.tagger: $(OBJECT_DIR) $(DIST_DIR) $(DIST_JOINT)/tagger $(OBJECT_JOINT)/tagger $(DIST_JOINT)/tagger/tagger $(DIST_JOINT)/tagger/train
-	@echo The joint segmentor tagger is successfully compiled into $(DIST_JOINT)/tagger 
+$(OBJECT_JOINT)/postagger: $(OBJECT_JOINT)
+	mkdir -p $(OBJECT_JOINT)/postagger
+$(DIST_JOINT)/postagger: $(DIST_JOINT)
+	mkdir -p $(DIST_JOINT)/postagger
+joint.postagger: $(OBJECT_DIR) $(DIST_DIR) $(DIST_JOINT)/postagger $(OBJECT_JOINT)/postagger $(DIST_JOINT)/postagger/postagger $(DIST_JOINT)/postagger/train
+	@echo The joint segmentor postagger is successfully compiled into $(DIST_JOINT)/postagger 
 
-$(OBJECT_JOINT)/postagger.o: $(SRC_JOINT)/tagger/reranker.h $(SRC_JOINT)/tagger/reranker.cpp
-	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_JOINT)/tagger/reranker.cpp -o $(OBJECT_JOINT)/postagger.o
+$(OBJECT_JOINT)/postagger.o: $(SRC_JOINT)/postagger/reranker.h $(SRC_JOINT)/postagger/reranker.cpp
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_JOINT)/postagger/reranker.cpp -o $(OBJECT_JOINT)/postagger.o
 
-$(DIST_JOINT)/tagger/tagger: $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(SRC_JOINT)/tagger/main.cpp 
-	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_JOINT)/tagger/main.cpp -o $(OBJECT_JOINT)/tagger/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_JOINT)/tagger/tagger $(OBJECT_JOINT)/tagger/main.o $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+$(DIST_JOINT)/postagger/postagger: $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(SRC_JOINT)/postagger/main.cpp 
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_JOINT)/postagger/main.cpp -o $(OBJECT_JOINT)/postagger/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_JOINT)/postagger/postagger $(OBJECT_JOINT)/postagger/main.o $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
-$(DIST_JOINT)/tagger/train: $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(SRC_JOINT)/tagger/train.cpp 
-	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_JOINT)/tagger/train.cpp -o $(OBJECT_JOINT)/tagger/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_JOINT)/tagger/train $(OBJECT_JOINT)/tagger/train.o $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+$(DIST_JOINT)/postagger/train: $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(SRC_JOINT)/postagger/train.cpp 
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_JOINT)/postagger/train.cpp -o $(OBJECT_JOINT)/postagger/train.o
+	$(LD) $(LDFLAGS) -o $(DIST_JOINT)/postagger/train $(OBJECT_JOINT)/postagger/train.o $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segmentor.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 #----------------------------------------------------------------
 #

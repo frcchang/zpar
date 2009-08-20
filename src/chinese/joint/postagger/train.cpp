@@ -54,37 +54,31 @@ void train(string sInputFile, string sFeatureDB, int nBest, bool bSeparateTrain)
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " training_data feature_file numer_of_iterations [-nN] [-s]\n\n\
-Options:\n\
--n N best segmentor output; default 10.\n\
--s train the segmentor and tagger separately.\n\
-";
-   if (argc < 4) {
-      cout << "Usage: " << argv[0] << hint << endl;
+   try {
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("n", "N", "N best list rerank", "10");
+      configurations.defineConfiguration("s", "", "train segmentor and postagger independently", "");
+      // check arguments
+      if (options.args.size() != 4) {
+         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
+         cout << configurations.message() << endl;
+         return 1;
+      }
+      configurations.loadConfigurations(options.opts);
+   
+      int nBest;
+      if (!fromString(nBest, configurations.getConfiguration("n"))) {
+         cerr<<"Error: N must be integer."<<endl; return 1;
+      }
+      bool bSeparateTrain = configurations.getConfiguration("s").empty() ? false: true;
+   
+      for (int i=0; i<atoi(argv[3]); i++)
+         train(argv[1], argv[2], nBest, bSeparateTrain);
+      return 0;
+   } catch (const string &e) {
+      cerr << e << endl;
       return 1;
    }
-   int nBest = 10;
-   bool bSeparateTrain = false;
-
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-         switch (argv[i][1]) {
-            case 'n':
-               if (strlen(argv[i])<3) { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-               nBest = atoi(string(argv[i]+2).c_str());
-               break;
-            case 's':
-               bSeparateTrain = true;
-               break;
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
-      }
-   }
-   for (int i=0; i<atoi(argv[3]); i++)
-      train(argv[1], argv[2], nBest, bSeparateTrain);
-   return 0;
 }
 
