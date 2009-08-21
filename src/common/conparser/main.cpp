@@ -88,43 +88,32 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " input_file output_file feature_file [-s] [-nN]\n\
-Arguments:\n\
--n N-best output\n\n\
--s output scores to the file output_file.scores";
-
-   if (argc < 4) {
-      cout << "\nUsage: " << argv[0] << hint << endl;
-      return 1;
-   }
-
-   int nBest = 1;
-   bool bScores = false;
-
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-         switch (argv[i][1]) {
-            case 'n':
-               nBest = atoi(string(argv[i]).substr(2).c_str());
-               break;
-            case 's':
-               bScores = true;
-               break;
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
-      }
-   }
-
    try {
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("n", "N", "N best list output", "1");
+      configurations.defineConfiguration("s", "", "output scores to output_file.scores", "");
+      // check arguments
+      if (options.args.size() != 4) {
+         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
+         cout << configurations.message() << endl;
+         return 1;
+      }
+      configurations.loadConfigurations(options.opts);
+   
+      unsigned nBest = 1;
+      if (!fromString(nBest, configurations.getConfiguration("n"))) {
+         cout << "The N best specification must be an integer." << endl;
+         return 1;
+      }
+      bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       process(argv[1], argv[2], argv[3], nBest, bScores);
-   }
-   catch(string e) {
-      cerr << "Exception: " << e << " Stop." << endl;
+   } 
+   catch (const string &e) {
+      cerr << "Error: " << e << endl;
       exit(1);
    }
+
    return 0;
 }
 
