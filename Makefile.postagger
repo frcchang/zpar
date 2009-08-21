@@ -21,11 +21,11 @@ chinese.postagger: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_TAGGER) $(DIST_TAGGER) $(D
 	@echo The Chinese word tagger system is compiled successfully into $(DIST_TAGGER).
 
 # the weight module
-$(OBJECT_TAGGER)/weight.o: $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp ./Makefile
+$(OBJECT_TAGGER)/weight.o: $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/impl_include.h ./Makefile
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp -o $(OBJECT_TAGGER)/weight.o
 
 # the tagger module
-$(OBJECT_DIR)/chinese.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp ./Makefile
+$(OBJECT_DIR)/chinese.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp $(SRC_TAGGER)/tagger_base.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/impl_include.h ./Makefile
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp -o $(OBJECT_DIR)/chinese.postagger.o
 
 # the tagger executable

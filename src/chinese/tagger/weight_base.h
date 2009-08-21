@@ -31,7 +31,7 @@ protected:
 public:
 
    CWeightBase(const string &sFeatureDB, bool bTrain) : m_sFeatureDB(sFeatureDB) , m_bTrain(bTrain) { }
-   CWeightBase(const CWeightBase &weightbase) { cerr<<"CWeightBase cannot be copied by constructor"; assert(0==1); }
+   CWeightBase(const CWeightBase &weightbase) { THROW("CWeightBase cannot be copied by constructor"); }
    virtual ~CWeightBase() { }
 
 };

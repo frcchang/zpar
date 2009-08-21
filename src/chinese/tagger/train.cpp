@@ -59,8 +59,8 @@ void recordSegmentation(const CSentenceRaw *raw, const CSentenceTagged* tagged, 
  *
  *==============================================================*/
 
-void train(const string &sOutputFile, const string &sFeatureFile, const int &nBest, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bDontJoinFWCD) {
-   CTagger decoder(sFeatureFile, true);
+void train(const string &sOutputFile, const string &sFeatureFile, const unsigned &nBest, const unsigned &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bDontJoinFWCD) {
+   CTagger decoder(sFeatureFile, true, nMaxSentSize);
    if (!sKnowledgePath.empty()) decoder.loadKnowledge(sKnowledgePath);
    CSentenceReader output_reader(sOutputFile);
 #ifdef DEBUG
@@ -178,6 +178,7 @@ int main(int argc, char* argv[]) {
       CConfigurations configurations;
       configurations.defineConfiguration("j", "", "separate numbers and letters when preparing input data from training examples", "");
       configurations.defineConfiguration("k", "Path", "use knowledge from the given path", "");
+      configurations.defineConfiguration("m", "M", "maximum sentence size", "512");
       configurations.defineConfiguration("n", "N", "N best list train", "1");
       configurations.defineConfiguration("u", "", "early update", "");
 
@@ -188,7 +189,10 @@ int main(int argc, char* argv[]) {
       } 
       configurations.loadConfigurations(options.opts);
 
-      int nBest;
+      unsigned nBest, nMaxSentSize;
+      if (!fromString(nMaxSentSize, configurations.getConfiguration("m"))) {
+         cerr<<"Error: the max size of sentence is not integer." << endl; return 1;
+      }
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
          cerr<<"Error: the number of N best is not integer." << endl; return 1;
       }  
@@ -208,7 +212,7 @@ int main(int argc, char* argv[]) {
       cout << "Training started." << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i)
-         train(argv[1], argv[2], nBest, bEarlyUpdate, bSegmented, sKnowledgePath, bDontJoinFWCD);
+         train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, sKnowledgePath, bDontJoinFWCD);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
       return 0;
    } catch (const string &e) {

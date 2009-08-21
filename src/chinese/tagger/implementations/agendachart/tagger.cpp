@@ -16,9 +16,6 @@ using namespace chinese;
 using namespace chinese::tagger;
 
 // this is used to mark whether a word is correct
-static CBitArray g_outputmatch(MAX_SENTENCE_SIZE);
-static CBitArray g_correctmatch(MAX_SENTENCE_SIZE);
-
 static CWord g_emptyWord("");
 
 /*===============================================================
@@ -376,22 +373,24 @@ void CTagger::tag( const CSentenceRaw * sentence_input , CSentenceTagged * vRetu
    unsigned tag, last_tag ; 
 
    static CSentenceRaw sentence;
-   static CSegmentationPrune rules(MAX_SENTENCE_SIZE); // 0 - no rules; 1 - append; 2 - separate
+   static CSegmentationPrune rules(m_nMaxSentSize); // 0 - no rules; 1 - append; 2 - separate
    rules.load(*sentence_input, sentence);
    const int length = sentence.size() ;
 
-   assert(length<MAX_SENTENCE_SIZE);
+   if (length>=m_nMaxSentSize) 
+      THROW("the length of the sentence is bigger than the maximum sentence size "<<m_nMaxSentSize<<"; try changing the option");
+
    assert(vReturn!=NULL); 
 
    TRACE("Initialising the tagging process...");
    m_WordCache.clear() ; 
    m_Chart.clear() ;
    // put an empty sentence to the beginning 
-   candidate_item = m_Chart[ 0 ]->newItem() ;
-   candidate_item->clear() ; 
-   m_Chart[ 0 ]->insertNewItem(  ) ;
-//   tempState.clear() ;
-//   m_Chart[ 0 ]->insertItem( &tempState ) ;
+//   candidate_item = m_Chart[ 0 ]->newItem() ;
+//   candidate_item->clear() ; 
+//   m_Chart[ 0 ]->insertNewItem(  ) ;
+   tempState.clear() ;
+   m_Chart[ 0 ]->insertItem( &tempState ) ;
 //   assert(prunes==NULL);
 
    TRACE("Tagging started"); 
@@ -428,7 +427,7 @@ void CTagger::tag( const CSentenceRaw * sentence_input , CSentenceTagged * vRetu
             // start the search process
             // ------------------------
             // with pruning
-            if (  ( prunes==NULL || prunes->isset( ( start_index+1 ) * MAX_SENTENCE_SIZE + index ) ) && // not pruned
+            if (  ( prunes==NULL || prunes->isset( ( start_index+1 ) * m_nMaxSentSize + index ) ) && // not pruned
                   (  (  m_weights->m_mapWordFrequency.find( m_WordCache.find( start_index+1 , index , &sentence ) , 0 ) < 
                         m_weights->m_nMaxWordFrequency/5000+5 && 
                         PENN_TAG_CLOSED[ tag ] == false  ) ||
@@ -456,10 +455,10 @@ void CTagger::tag( const CSentenceRaw * sentence_input , CSentenceTagged * vRetu
                if (nBest==1) {
                   for ( temp_index=0; temp_index<PENN_TAG_COUNT; temp_index++ ) { //@@@
                      if ( best_bigram[ temp_index ].size() != 0 ) {        //@@@
-                        candidate_item = m_Chart[ index+1 ]->newItem();       //@@@
-                        candidate_item->copy( &(best_bigram[temp_index]) );   //@@@
-                        m_Chart[ index+1 ]->insertNewItem(  );                  //@@@
-//                        m_Chart[ index+1 ]->insertItem( &(best_bigram[temp_index]) );                  //@@@
+//                        candidate_item = m_Chart[ index+1 ]->newItem();       //@@@
+//                        candidate_item->copy( &(best_bigram[temp_index]) );   //@@@
+//                        m_Chart[ index+1 ]->insertNewItem(  );                  //@@@
+                        m_Chart[ index+1 ]->insertItem( &(best_bigram[temp_index]) );                  //@@@
                      }                                                        //@@@
                   }
                }                                                           //@@@
