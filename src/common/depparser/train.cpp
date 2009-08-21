@@ -58,38 +58,32 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile) {
 
 int main(int argc, char* argv[]) {
 
-   const string hint = " training_input_file feature_file number_of_iterations \n\
-";
-
-   if (argc < 4) {
-      cout << "\nUsage: " << argv[0] << hint << endl;
-      return 1;
-   }
-
-   if (argc>4) {
-      for (int i=4; i<argc; i++) {
-         if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
-         switch (argv[i][1]) {
-            default:
-               cout << "\nUsage: " << argv[0] << hint << endl ;
-               return 1;
-         }
+   try {
+      COptions options(argc, argv);
+      if (options.args.size() != 4) {
+         cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
+         return 1;
+      } 
+      const string hint = " training_input_file feature_file number_of_iterations \n\
+   ";
+   
+      int training_rounds;
+      if (!fromString(training_rounds, options.args[3])) {
+         cerr << "Error: the number of training iterations must be an integer." << endl;
+         return 1;
       }
-   }
-
-   int training_rounds = atoi(argv[3]);
-   if (training_rounds < 1) {
-      cout << "\nThe number of training iterations is incorrect. " << endl;
+   
+      cout << "Training started" << endl;
+      int time_start = clock();
+      for (int i=0; i<training_rounds; ++i) 
+         auto_train(argv[1], argv[2]);
+      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   
+      return 0;
+   } catch (const string &e) {
+      cerr << "Error: " << e << endl;
       return 1;
    }
-
-   cout << "Training started" << endl;
-   int time_start = clock();
-   for (int i=0; i<training_rounds; ++i) 
-      auto_train(argv[1], argv[2]);
-   cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
-
-   return 0;
 
 }
 
