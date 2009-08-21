@@ -49,14 +49,14 @@ protected:
    tagger::CWeight *m_weights;
    int m_nNumberOfCurrentTrainingExample;
    bool m_bTrain;
+   const unsigned m_nMaxSentSize;
 
 public:
-   CTaggerBase(string sFeatureDBPath, bool bTrain=false) : m_bTrain(bTrain) { 
+   CTaggerBase(string sFeatureDBPath, bool bTrain, unsigned nMaxSentenceSize) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) { 
       m_weights = new tagger::CWeight(sFeatureDBPath, bTrain); 
-      m_nNumberOfCurrentTrainingExample = 0;
    }
    virtual ~CTaggerBase() { }
-   CTaggerBase(CTaggerBase& tagger) { cerr<<"CTagger does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CTaggerBase(CTaggerBase& tagger) : m_nMaxSentSize(0)  { THROW("CTagger does not support copy constructor!"); }
 
 public:
    virtual void loadKnowledge(const string &sKnowledgePath) = 0 ; // load knowledge should be implemented by sub class

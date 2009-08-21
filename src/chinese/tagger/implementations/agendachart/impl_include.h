@@ -20,7 +20,7 @@ typedef double SCORE_TYPE ;
 
 const int AGENDA_SIZE = 16;
 
-const int MAX_SENTENCE_SIZE = 256; // restrict size of sentences 
+const int MAX_SENTENCE_SIZE = 512; // restrict size of sentences 
 
 const int LENGTH_MAX_BITS = 4;
 const int LENGTH_MAX = 1<<LENGTH_MAX_BITS;

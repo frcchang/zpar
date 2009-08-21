@@ -56,10 +56,10 @@ void recordSegmentation(const CSentenceRaw *raw, const CSentenceRaw* segmented, 
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, const int nBest, const bool bSegmented, bool bKnowledge, bool bScores) {
+void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, const unsigned nBest, const unsigned nMaxSentSize, const bool bSegmented, bool bKnowledge, bool bScores) {
    cout << "Tagging started" << endl;
    int time_start = clock();
-   CTagger tagger(sFeatureFile, false);
+   CTagger tagger(sFeatureFile, false, nMaxSentSize);
    if (bKnowledge) tagger.loadKnowledge(sKnowledgePath);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
@@ -134,17 +134,11 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-      const string hint = " input_file output_file feature_file [-kPATH] [-nN] [-s]\n\n\
-   Options:\n\
-   -k use knowledge form the given path\n\
-   -n n best list\n\
-   -s output scores (to the file output_file.scores) \n\
-   ";
-   
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("k", "Path", "use knowledge from Path", "");
+      configurations.defineConfiguration("m", "M", "maximum sentence size", "512");
       configurations.defineConfiguration("n", "N", "N best list output", "1");
       configurations.defineConfiguration("s", "", "output scores", "");
 
@@ -155,7 +149,10 @@ int main(int argc, char* argv[]) {
       }
       configurations.loadConfigurations(options.opts);
    
-      unsigned nBest;
+      unsigned nBest, nMaxSentSize;
+      if (!fromString(nMaxSentSize, configurations.getConfiguration("m"))) {
+         cerr<<"Error: the size of largest sentence is not integer." << endl; return 1;
+      }  
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
          cerr<<"Error: the number of N best is not integer." << endl; return 1;
       }  
@@ -167,7 +164,7 @@ int main(int argc, char* argv[]) {
       bool bSegmented = false;
 #endif
    
-      process(options.args[1], options.args[2], options.args[3], nBest, bSegmented, bKnowledge, bScores);
+      process(options.args[1], options.args[2], options.args[3], nBest, nMaxSentSize, bSegmented, bKnowledge, bScores);
       return 0;
    } catch(const string&e) {cerr<<"Error: "<<e<<endl;return 1;}
 }

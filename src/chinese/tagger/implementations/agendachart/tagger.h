@@ -29,7 +29,7 @@ protected:
    int m_nScoreIndex;
 
 public:
-   CTagger(string sFeatureDBPath, bool bTrain=false) : m_Chart(tagger::AGENDA_SIZE) , m_WordCache(tagger::MAX_SENTENCE_SIZE) , CTaggerBase(sFeatureDBPath, bTrain) , m_bKnowledgeLoaded(false) { 
+   CTagger(string sFeatureDBPath, bool bTrain=false, unsigned nMaxSentSize=tagger::MAX_SENTENCE_SIZE) : m_Chart(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize) , m_WordCache(nMaxSentSize) , m_bKnowledgeLoaded(false) { 
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
    virtual ~CTagger() { }
@@ -39,11 +39,13 @@ public:
    virtual void tag(const CSentenceRaw *sentence, CSentenceTagged *retval, double *out_scores=NULL, int nBest=1, const CBitArray *prunes=NULL);
 
    void loadKnowledge(const string &sKnowledgePath) {
+      cout << "Loading knowledge ... ";
       ifstream ifs(sKnowledgePath.c_str());
       if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
       ifs >> m_Knowledge; 
       ifs.close();
       m_bKnowledgeLoaded = true;
+      cout << "done." << endl;
    }
 
    enum SCORE_UPDATE {eSubtract=0, eAdd};

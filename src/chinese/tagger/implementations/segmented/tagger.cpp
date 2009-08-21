@@ -287,7 +287,8 @@ void CTagger::tag( const CSentenceRaw * sentence , CSentenceTagged * vReturn , S
    static SCORE_TYPE current_score;
    static unsigned long int possible_tags; // possible tags for a word
 
-   assert(length<MAX_SENTENCE_SIZE);
+   if (length>=m_nMaxSentSize) 
+      THROW("the length of the sentence is bigger than the maximum sentence size "<<m_nMaxSentSize<<"; try changing the option");
    assert(vReturn!=NULL); 
    assert(word_ends!=NULL);
 
