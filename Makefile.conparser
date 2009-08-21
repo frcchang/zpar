@@ -33,12 +33,12 @@ $(OBJECT_DIR)/chinese.conparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_CONPARSE
 # the main executable
 $(DIST_CONPARSER)/conparser: $(SRC_CHINESE_CONPARSER)/main.cpp $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_CONPARSER)/constituent.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/main.cpp -o $(OBJECT_CONPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_CONPARSER)/conparser $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_CONPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_CONPARSER)/constituent.o
+	$(LD) $(LDFLAGS) -o $(DIST_CONPARSER)/conparser $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_CONPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_CONPARSER)/constituent.o 
 
 # the trainer for conparser
 $(DIST_CONPARSER)/train: $(SRC_CHINESE_CONPARSER)/train.cpp $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECTS) $(OBJECT_CONPARSER)/constituent.o
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/train.cpp -o $(OBJECT_CONPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_CONPARSER)/train $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_CONPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_CONPARSER)/constituent.o
+	$(LD) $(LDFLAGS) -o $(DIST_CONPARSER)/train $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_CONPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_CONPARSER)/constituent.o
 
 #===============================
 

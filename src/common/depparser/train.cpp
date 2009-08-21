@@ -64,8 +64,6 @@ int main(int argc, char* argv[]) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
          return 1;
       } 
-      const string hint = " training_input_file feature_file number_of_iterations \n\
-   ";
    
       int training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
