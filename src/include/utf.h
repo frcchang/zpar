@@ -41,13 +41,11 @@ unsigned int getUTF8StringLength(const string &s) {
          ++retval;
       }
       else {
-         REPORT("not encoded in utf-8"); 
-         assert(s[idx]&0x80==0 || s[idx]&0xC0==0 || s[idx]&0xE0==0);
+         THROW("string '" << s << "' not encoded in unicode utf-8"); 
       }
    }
    if (idx != s.length()) {
-      REPORT("not encoded in utf-8"); 
-      assert(idx==s.length());
+      THROW("string '" << s << "' not encoded in unicode utf-8"); 
    }
    return retval;
 }
@@ -84,13 +82,11 @@ inline int getCharactersFromUTF8String(const string &s, CSentence *sentence) {
          idx += 3;
       }
       else {
-         REPORT("not encoded in utf-8"); 
-         assert(s[idx]&0x80==0 || s[idx]&0xC0==0 || s[idx]&0xE0==0);
+         THROW("string '" << s << "' not encoded in unicode utf-8"); 
       }
    }
    if (idx != s.length()) {
-      REPORT("not encoded in utf-8"); 
-      assert(idx==s.length());
+      THROW("string '" << s << "' not encoded in unicode utf-8"); 
    }
 
    return len;
@@ -118,8 +114,7 @@ inline string getFirstCharFromUTF8String(const string &s) {
       return s.substr(0, 3);
    }
    else {
-      REPORT("not encoded in utf-8"); 
-      assert(s[0]&0x80==0 || s[0]&0xC0==0 || s[0]&0xE0==0);
+      THROW("string '" << s << "' not encoded in unicode utf-8"); 
    }
 }
 
@@ -149,15 +144,33 @@ inline string getLastCharFromUTF8String(const string &s) {
          idx += 3;
       }
       else {
-         REPORT("not encoded in utf-8"); 
-         assert(s[idx]&0x80==0 || s[idx]&0xC0==0 || s[idx]&0xE0==0);
+         THROW("string '" << s << "' not encoded in unicode utf-8"); 
       }
    }
    if (idx != s.length()) {
-      REPORT("not encoded in utf-8"); 
-      assert(idx==s.length());
+      THROW("string '" << s << "' not encoded in unicode utf-8"); 
    }
    return retval;
+}
+
+/*----------------------------------------------------------------
+ *
+ * isOneUTF8Character - whether a string is one utf8 character
+ *
+ *----------------------------------------------------------------*/
+
+inline bool isOneUTF8Character(const string &s) {
+   if (s=="") return false; // is no utf character
+   if (s.size()>3) return false; // is more than one utf character
+   if ((s[0]&0x80)==0) {
+      return s.size() == 1;
+   }
+   else if ((s[0]&0xE0)==0xC0) {
+      return s.size() == 2;
+   }
+   else if ((s[0]&0xF0)==0xE0) {
+      return s.size() == 3;
+   }
 }
 
 

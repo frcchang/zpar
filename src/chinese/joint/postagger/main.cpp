@@ -33,8 +33,8 @@ void process(string sInputFile, string sOutputFile, string sFeatureDb, int nBest
    CReranker reranker(sFeatureDb, nBest, false, bRankingIncludeSeg);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
-   CSentenceRaw input_sent;
-   CSentenceTagged output_sent; 
+   CStringVector input_sent;
+   CTwoStringVector output_sent; 
 
    int nCount=0;
    

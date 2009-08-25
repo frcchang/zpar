@@ -67,7 +67,7 @@ public:
    }
 
 public:
-   void parse( const CSentenceTagged &sentence , CSentenceParsed *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
 
    void finishtraining() {
@@ -81,7 +81,7 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const bool bTrain, const CSentenceTagged &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
 
    // get the global score for a parsed sentence or section
    inline depparser::SCORE_TYPE getOrUpdateArcScore( const int &head_index, const int &dep_index, const int &sibling_index, depparser::SCORE_TYPE amount=0, int round=0 );

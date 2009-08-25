@@ -39,7 +39,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CDepParser::getOrUpdateLocalScore( const CSentenceRaw *sentence, const CStateItem *item, int index, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CDepParser::getOrUpdateLocalScore( const CStringVector *sentence, const CStateItem *item, int index, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned int last_start , last_length ;
    static unsigned int start , end , length , word_length ; // word length is the un-normalised version
@@ -218,7 +218,7 @@ SCORE_TYPE CDepParser::getOrUpdateLocalScore( const CSentenceRaw *sentence, cons
  *
  *---------------------------------------------------------------*/
 
-SCORE_TYPE CDepParser::getOrUpdateArcScore( const CSentenceRaw *sentence, const CStateItem *item, const int &head_index , const int &dep_index, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CDepParser::getOrUpdateArcScore( const CStringVector *sentence, const CStateItem *item, const int &head_index , const int &dep_index, SCORE_TYPE amount, int round ) {
 
    static SCORE_TYPE retval ; 
 
@@ -256,7 +256,7 @@ SCORE_TYPE CDepParser::getOrUpdateArcScore( const CSentenceRaw *sentence, const 
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::updateScoreForState( const CSentenceRaw *sent , const CStateItem *output , bool bComplete , const SCORE_TYPE &amount ) {
+inline void CDepParser::updateScoreForState( const CStringVector *sent , const CStateItem *output , bool bComplete , const SCORE_TYPE &amount ) {
    static CStateItem item;
    static int index, prev;
    static int end_index;
@@ -297,7 +297,7 @@ inline void CDepParser::updateScoreForState( const CSentenceRaw *sent , const CS
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::updateScoresForStates( const CSentenceRaw *raw, const CStateItem *output, const CStateItem *correct, bool bComplete ) {
+void CDepParser::updateScoresForStates( const CStringVector *raw, const CStateItem *output, const CStateItem *correct, bool bComplete ) {
    assert( output->charactersize() == correct->charactersize() );
 
    static int i, j;
@@ -332,7 +332,7 @@ void CDepParser::updateInfo( const CDependencyTree* sent ) {
       const CWord &word = sent->at(i).word ;
       unsigned tag = CTag( sent->at(i).tag ).code() ;
 
-      CSentenceRaw chars;
+      CStringVector chars;
       chars.clear(); 
       getCharactersFromUTF8String(sent->at(i).word, &chars);
 
@@ -355,7 +355,7 @@ void CDepParser::updateInfo( const CDependencyTree* sent ) {
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::addLink( const CSentenceRaw *sentence, CStateItem *item, const int head_index, const int dep_index){
+void CDepParser::addLink( const CStringVector *sentence, CStateItem *item, const int head_index, const int dep_index){
    item->addLink(head_index, dep_index);
    item->score += getOrUpdateArcScore( sentence, item, head_index, dep_index );
 }
@@ -366,7 +366,7 @@ void CDepParser::addLink( const CSentenceRaw *sentence, CStateItem *item, const 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::enumerateCandidates( const CSentenceRaw *sentence, const CStateItem *item, const int agenda_index, const unsigned tag ) {
+void CDepParser::enumerateCandidates( const CStringVector *sentence, const CStateItem *item, const int agenda_index, const unsigned tag ) {
 
    static int index, prev;
    static int first_head;
@@ -415,7 +415,7 @@ void CDepParser::enumerateCandidates( const CSentenceRaw *sentence, const CState
  *--------------------------------------------------------------*/
 
 void CDepParser::train( const CDependencyTree &correct , int round ) {
-   static CSentenceRaw input;
+   static CStringVector input;
 
    assert(IsProjectiveDependencyTree(correct));
    UnparseAndDesegmentSentence( &correct, &input );
@@ -430,11 +430,11 @@ void CDepParser::train( const CDependencyTree &correct , int round ) {
  *
  * parse - segment tag and parse sentence
  *
- * Returns: makes a new instance of CSentenceTagged 
+ * Returns: makes a new instance of CTwoStringVector 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::parse( const CSentenceRaw &sentence_input , CDependencyTree &vReturn ) {
+void CDepParser::parse( const CStringVector &sentence_input , CDependencyTree &vReturn ) {
    work( &sentence_input, &vReturn, 0 );
 }
 
@@ -442,11 +442,11 @@ void CDepParser::parse( const CSentenceRaw &sentence_input , CDependencyTree &vR
  *
  * work - the working func for both train and parse
  *
- * Returns: makes a new instance of CSentenceTagged 
+ * Returns: makes a new instance of CTwoStringVector 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::work( const CSentenceRaw *sentence_input , CDependencyTree *vReturn , const CDependencyTree *correct ) {
+void CDepParser::work( const CStringVector *sentence_input , CDependencyTree *vReturn , const CDependencyTree *correct ) {
 
    clock_t total_start_time = clock();;
    int index , start_index , generator_index , temp_index, word_length;
@@ -454,7 +454,7 @@ void CDepParser::work( const CSentenceRaw *sentence_input , CDependencyTree *vRe
    CStateItem tempState , maxState , correctState;
    unsigned tag, last_tag ; 
 
-   static CSentenceRaw sentence;
+   static CStringVector sentence;
    static CSegmentationPrune rules(MAX_SENTENCE_SIZE); 
    rules.load(*sentence_input, sentence);
    const int length = sentence.size() ;

@@ -14,6 +14,7 @@
 #define READER_H
 
 #include "definitions.h"
+#include "file_utils.h"
 #include "linguistics/sentence_string.h"
 
 /*===============================================================
@@ -39,8 +40,10 @@ class CSentenceReader {
       CSentenceReader(const string &sFileName="") { 
          if (sFileName.empty()) 
             m_iStream = &cin; 
-         else 
+         else {
+            if (!FileExists(sFileName)) THROW("File " << sFileName << " not found.");
             m_iStream=new ifstream(sFileName.c_str());
+         }
          m_nLine = 0;
       };
       virtual ~CSentenceReader() {
@@ -49,10 +52,10 @@ class CSentenceReader {
             delete m_iStream;
          }
       };
-      // this method makes a new instance of CSentenceRaw
-      bool readRawSentence(CSentenceRaw *retval, bool bSkipEmptyLines=false, bool bIgnoreSpace=false);
-      bool readSegmentedSentence(CSentenceRaw *retval, bool bSkipEmptyLines=false);
-      bool readTaggedSentence(CSentenceTagged *retval, bool bSkipEmptyLines=false, const char separator='_');
+      bool readRawCharacter(string *retval);
+      bool readRawSentence(CStringVector *retval, bool bSkipEmptyLines=false, bool bIgnoreSpace=false);
+      bool readSegmentedSentence(CStringVector *retval, bool bSkipEmptyLines=false);
+      bool readTaggedSentence(CTwoStringVector *retval, bool bSkipEmptyLines=false, const char separator='_');
 };
 
 #endif

@@ -68,7 +68,7 @@ public:
    }
 
 public:
-   void parse( const CSentenceTagged &sentence , CSentenceParsed *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
 
    void finishtraining() {
@@ -80,7 +80,7 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const CSentenceTagged &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
 
    inline void addLink( depparser::CStateItem *item , const int &head , const int &dep ) ;
    inline void finishWord( depparser::CStateItem *item ) ;

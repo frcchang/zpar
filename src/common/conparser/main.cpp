@@ -34,7 +34,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    ofstream *os_scores=0;
    conparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
-   CSentenceTagged input_sent;
+   CTwoStringVector input_sent;
    CSentenceParsed *output_sent; 
 
    int nCount=0;

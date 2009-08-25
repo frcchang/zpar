@@ -83,12 +83,12 @@ public:
    }
 
 public:
-   void train(const CSentenceRaw *sentence, const CSentenceTagged *correct, int round);
-   void tag(CSentenceRaw *sentence, CSentenceTagged *retval, int nBest=1, double *out_scores=NULL);
+   void train(const CStringVector *sentence, const CTwoStringVector *correct, int round);
+   void tag(CStringVector *sentence, CTwoStringVector *retval, int nBest=1, double *out_scores=NULL);
 
 protected:
-  inline tagger::SCORE_TYPE getGlobalScore(CSentenceRaw* sentence, tagger::CStateItem* item);
-  inline tagger::SCORE_TYPE getLocalScore(CSentenceRaw* sentence, tagger::CStateItem* item, unsigned int index);
+  inline tagger::SCORE_TYPE getGlobalScore(CStringVector* sentence, tagger::CStateItem* item);
+  inline tagger::SCORE_TYPE getLocalScore(CStringVector* sentence, tagger::CStateItem* item, unsigned int index);
 
   void loadScores();
   void saveScores();
@@ -96,14 +96,14 @@ protected:
 public:
   enum SCORE_UPDATE {eAdd=0, eSubtract};
   // update the built-in weight vector for this feature object specifically
-  void updateScoreVector(CSentenceTagged* tagged, CSentenceTagged* correct, int round=0);
+  void updateScoreVector(CTwoStringVector* tagged, CTwoStringVector* correct, int round=0);
   // compute the total or average feature vector after update
   void finishTraining(int round=0);
 
 protected:
 
    // add local features to a global feature vector (first param)
-   void updateLocalFeatureVector(SCORE_UPDATE method, CSentenceTagged* tagged, int index, int round=0);
+   void updateLocalFeatureVector(SCORE_UPDATE method, CTwoStringVector* tagged, int index, int round=0);
 };
 }; // namespace english
 

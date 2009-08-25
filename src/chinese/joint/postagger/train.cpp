@@ -29,7 +29,7 @@ void train(string sInputFile, string sFeatureDB, int nBest, bool bSeparateTrain)
    int time_start = clock();
    CReranker reranker(sFeatureDB, nBest, true);
    CSentenceReader input_reader(sInputFile);
-   CSentenceTagged correct_sent; 
+   CTwoStringVector correct_sent; 
 
    int nCount=0;
    int nErrorCount=0;

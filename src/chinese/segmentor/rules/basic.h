@@ -36,7 +36,7 @@ public:
     * parameters: sentence - output sentence without spaces
     *                     
     *----------------------------------------------------------------*/
-   void segment(const CSentenceRaw *sentence_raw, CSentenceRaw *sentence) {
+   void segment(const CStringVector *sentence_raw, CStringVector *sentence) {
    
       // clear output
       sentence->clear();

@@ -35,8 +35,8 @@ public:
    virtual ~CTagger() { }
    
 public:
-   virtual void train(const CSentenceRaw *sentence, const CSentenceTagged *correct, int round);
-   virtual void tag(const CSentenceRaw *sentence, CSentenceTagged *retval, double *out_scores=NULL, int nBest=1, const CBitArray *prunes=NULL);
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, int round);
+   virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, int nBest=1, const CBitArray *prunes=NULL);
 
    void loadKnowledge(const string &sKnowledgePath) {
       cout << "Loading knowledge ... ";
@@ -50,11 +50,11 @@ public:
 
    enum SCORE_UPDATE {eSubtract=0, eAdd};
 
-   tagger::SCORE_TYPE getGlobalScore(const CSentenceTagged* tagged);
+   tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged);
 
-   void updateScores(const CSentenceTagged* tagged, const CSentenceTagged* correct, int round);
+   void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round);
 
-   tagger::SCORE_TYPE getOrUpdateLocalScore(const CSentenceRaw *tagged, const tagger::CStateItem *item, int index, tagger::SCORE_TYPE amount=0, int round=0);
+   tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CStateItem *item, int index, tagger::SCORE_TYPE amount=0, int round=0);
 
    void finishTraining(int nTotalNumberOfTrainingExamples) { 
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);

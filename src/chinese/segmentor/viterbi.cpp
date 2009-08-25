@@ -29,7 +29,7 @@ CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-int CFeatureHandle::getGlobalScore(const CSentenceRaw* sentence, const CStateItem* item){
+int CFeatureHandle::getGlobalScore(const CStringVector* sentence, const CStateItem* item){
    int nReturn = 0;
    for (int i=0; i<item->m_nLength; i++)
       nReturn += getLocalScore(sentence, item, i);
@@ -47,7 +47,7 @@ int CFeatureHandle::getGlobalScore(const CSentenceRaw* sentence, const CStateIte
  *
  *--------------------------------------------------------------*/
 
-int CFeatureHandle::getLocalScore(const CSentenceRaw* sentence, const CStateItem* item, int index){
+int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateItem* item, int index){
    static int nReturn; 
    static int score_index;
    static int tmp_i, tmp_j;
@@ -124,7 +124,7 @@ int CFeatureHandle::getLocalScore(const CSentenceRaw* sentence, const CStateItem
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateScoreVector(const CSentenceRaw* output, const CSentenceRaw* correct, int round) {
+void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStringVector* correct, int round) {
    if ( *output == *correct ) return;
    for (int i=0; i<output->size(); ++i)
       updateLocalFeatureVector(eSubtract, output, i, round);
@@ -143,13 +143,13 @@ void CFeatureHandle::updateScoreVector(const CSentenceRaw* output, const CSenten
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CSentenceRaw* output, int index, int round) { 
+void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* output, int index, int round) { 
    // about words              
    CWord word = output->at(index);
    CWord last_word = index>0 ? output->at(index-1) : g_emptyWord;
    CTwoWords two_word;
    two_word.allocate(word.str(), last_word.str());
-   CSentenceRaw chars;
+   CStringVector chars;
    chars.clear(); getCharactersFromUTF8String(word.str(), &chars);
    // about length
    int length = getUTF8StringLength(word.str()); if (length > LENGTH_MAX-1) length = LENGTH_MAX-1;
@@ -209,7 +209,7 @@ void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CSenten
  *
  *--------------------------------------------------------------*/
 
-void CSegmentor::train(const CSentenceRaw* sentence, const CSentenceRaw* correct, int & round) {
+void CSegmentor::train(const CStringVector* sentence, const CStringVector* correct, int & round) {
    assert(1==0); // train by the configurable training algorithm
 }
 
@@ -219,7 +219,7 @@ void CSegmentor::train(const CSentenceRaw* sentence, const CSentenceRaw* correct
  *
  *--------------------------------------------------------------*/
 
-void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vReturn, double *out_scores, int nBest) {
+void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vReturn, double *out_scores, int nBest) {
    clock_t total_start_time = clock();;
    CStateItem *pGenerator, *pCandidate;
    CStateItem temp_item;
@@ -227,7 +227,7 @@ void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vRetu
    unsigned int last_start;
    unsigned int best_start=0;
 
-   static CSentenceRaw sentence;
+   static CStringVector sentence;
    static CRule rules(m_Feature->m_bRule); 
    rules.segment(sentence_input, &sentence);
    const unsigned int length = sentence.size();

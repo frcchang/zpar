@@ -32,7 +32,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    CSentenceReader input_reader(sInputFile);
    ofstream os(sOutputFile.c_str());
    assert(os.is_open());
-   CSentenceRaw input_sent;
+   CStringVector input_sent;
    CDependencyTree output_sent; 
 
    int nCount=0;

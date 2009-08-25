@@ -30,7 +30,7 @@ using namespace chinese::tagger;
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CFeatureHandle::getGlobalScore(const CSentenceRaw* sentence, const CStateItem* item){
+SCORE_TYPE CFeatureHandle::getGlobalScore(const CStringVector* sentence, const CStateItem* item){
    assert(1==0); return 0;
 }
 
@@ -41,7 +41,7 @@ SCORE_TYPE CFeatureHandle::getGlobalScore(const CSentenceRaw* sentence, const CS
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CFeatureHandle::getLocalScore(const CSentenceRaw* sentence, const CStateItem* item, int index){
+SCORE_TYPE CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateItem* item, int index){
    assert(1==0); return 0;
 }
 
@@ -79,7 +79,7 @@ void CFeatureHandle::saveScores() {
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateScoreVector(CSentenceRaw* output, CSentenceRaw* correct, int round) {
+void CFeatureHandle::updateScoreVector(CStringVector* output, CStringVector* correct, int round) {
    assert( 1 == 0 ) ;
 }
 
@@ -95,7 +95,7 @@ void CFeatureHandle::updateScoreVector(CSentenceRaw* output, CSentenceRaw* corre
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, CSentenceRaw* output, int index, int round) { 
+void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, CStringVector* output, int index, int round) { 
    assert( 1 == 0 ) ;
 }
 
@@ -908,7 +908,7 @@ void CFeatureHandle::computeAverageFeatureWeights(int round) {
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE getUnigramScore( CTagger * tagger , const CSentenceRaw * sentence , int start , int length ) {
+SCORE_TYPE getUnigramScore( CTagger * tagger , const CStringVector * sentence , int start , int length ) {
 
    CWeight & weights = tagger->getFeatureHandle()->getWeights() ; 
    static SCORE_TYPE nReturn ; 
@@ -993,7 +993,7 @@ SCORE_TYPE getUnigramScore( CTagger * tagger , const CSentenceRaw * sentence , i
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE getBigramScore( CTagger * Tagger , const CSentenceRaw * sentence , int last_start , int last_length , int start , int length ) {
+SCORE_TYPE getBigramScore( CTagger * Tagger , const CStringVector * sentence , int last_start , int last_length , int start , int length ) {
    static SCORE_TYPE nReturn ; 
    const static CScore zeroScore ;
    CWeight & weights = Tagger->getFeatureHandle()->getWeights() ; 
@@ -1020,7 +1020,7 @@ SCORE_TYPE getBigramScore( CTagger * Tagger , const CSentenceRaw * sentence , in
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE updateUnigramScore( CTagger * Tagger , const CSentenceRaw * sentence , int start , int length , CFeatureHandle:: SCORE_UPDATE method , int round ) {
+SCORE_TYPE updateUnigramScore( CTagger * Tagger , const CStringVector * sentence , int start , int length , CFeatureHandle:: SCORE_UPDATE method , int round ) {
 
    CWeight & weights = Tagger->getFeatureHandle()->getWeights() ; 
    static SCORE_TYPE amount ; 
@@ -1115,7 +1115,7 @@ SCORE_TYPE updateUnigramScore( CTagger * Tagger , const CSentenceRaw * sentence 
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE updateBigramScore( CTagger * tagger , const CSentenceRaw * sentence , int last_start , int last_length , int start , int length , CFeatureHandle :: SCORE_UPDATE method , int round ) {
+SCORE_TYPE updateBigramScore( CTagger * tagger , const CStringVector * sentence , int last_start , int last_length , int start , int length , CFeatureHandle :: SCORE_UPDATE method , int round ) {
 
    static SCORE_TYPE amount ; 
    amount = ( method == CFeatureHandle :: eAdd ) ? 1 : -1 ;
@@ -1159,7 +1159,7 @@ const static SCORE_TYPE absolute_min_score = -1000000;
  *
  *--------------------------------------------------------------*/
 
-bool train_loop( CTagger * tagger , const CSentenceRaw * sentence , const CStateItem * correct_item , CStateItem * segmented_item, int & round ) {
+bool train_loop( CTagger * tagger , const CStringVector * sentence , const CStateItem * correct_item , CStateItem * segmented_item, int & round ) {
    const int length = sentence->size() ;
 
    int i , j , k ; // iterators 
@@ -1245,7 +1245,7 @@ bool train_loop( CTagger * tagger , const CSentenceRaw * sentence , const CState
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CSentenceRaw * sentence, const CSentenceRaw * correct, int & round ) {
+void CTagger::train( const CStringVector * sentence, const CStringVector * correct, int & round ) {
    TRACE("start trainging a sentence...");
    clock_t total_start_time = clock() ;
    // get the correct output
@@ -1287,7 +1287,7 @@ void CTagger::train( const CSentenceRaw * sentence, const CSentenceRaw * correct
  *
  *--------------------------------------------------------------*/
 
-void CTagger::tag(const CSentenceRaw* sentence, CSentenceRaw *vReturn, double *out_scores, int nBest) {
+void CTagger::tag(const CStringVector* sentence, CStringVector *vReturn, double *out_scores, int nBest) {
    clock_t total_start_time = clock();;
    const int length = sentence->size();
    int i, j, k, len;                            // temporary index

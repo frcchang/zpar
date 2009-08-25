@@ -45,7 +45,7 @@ public:
 
 public:
 
-   virtual void parse( const CSentenceRaw &sentence , CDependencyTree &retval ) = 0 ;
+   virtual void parse( const CStringVector &sentence , CDependencyTree &retval ) = 0 ;
    virtual void train( const CDependencyTree &correct , int round ) = 0 ;
 
    virtual void finishtraining() = 0 ;  

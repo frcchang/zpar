@@ -30,12 +30,12 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       tagger.loadTagDictionary(sKnowledgeBase);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
-   CSentenceRaw *input_sent = new CSentenceRaw;
-   CSentenceTagged *output_sent; 
+   CStringVector *input_sent = new CStringVector;
+   CTwoStringVector *output_sent; 
 
    int nCount=0;
    
-   output_sent = new CSentenceTagged[nBest];
+   output_sent = new CTwoStringVector[nBest];
 
    while( input_reader.readSegmentedSentence(input_sent) ) {
       TRACE("Sentence " << nCount);

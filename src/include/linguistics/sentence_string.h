@@ -22,9 +22,9 @@
  *
  *==============================================================*/
 
-typedef vector< string > CSentenceRaw ;
+typedef vector< string > CStringVector ;
 
-typedef vector< pair< string , string > > CSentenceTagged ;
+typedef vector< pair< string , string > > CTwoStringVector ;
 
 /*===============================================================
  *
@@ -39,7 +39,7 @@ typedef vector< pair< string , string > > CSentenceTagged ;
  *---------------------------------------------------------------*/
 
 inline
-bool wordsEqual(CSentenceTagged *snt1, CSentenceTagged *snt2) {
+bool wordsEqual(CTwoStringVector *snt1, CTwoStringVector *snt2) {
    if (snt1->size() != snt2->size()) return false;
    for (unsigned int i=0; i<snt1->size(); ++i)
       if (snt1->at(i).first != snt2->at(i).first) return false;
@@ -55,12 +55,12 @@ bool wordsEqual(CSentenceTagged *snt1, CSentenceTagged *snt2) {
  *--------------------------------------------------------------*/
 
 inline 
-void DesegmentSentence(const CSentenceRaw *sent, CSentenceRaw *retval) {
+void DesegmentSentence(const CStringVector *sent, CStringVector *retval) {
    assert(retval != 0);
    retval->clear();
    if (sent == 0)
       return;
-   CSentenceRaw::const_iterator it;
+   CStringVector::const_iterator it;
    for (it=sent->begin(); it!=sent->end(); ++it)
       getCharactersFromUTF8String(*it, retval);
 }
@@ -76,12 +76,12 @@ void DesegmentSentence(const CSentenceRaw *sent, CSentenceRaw *retval) {
  *--------------------------------------------------------------*/
 
 inline
-void UntagSentence(const CSentenceTagged *tagged, CSentenceRaw *retval) {
+void UntagSentence(const CTwoStringVector *tagged, CStringVector *retval) {
    assert(retval != 0);
    retval->clear();
    if (tagged == 0)
       return;
-   CSentenceTagged::const_iterator it;
+   CTwoStringVector::const_iterator it;
    for (it=tagged->begin(); it!=tagged->end(); ++it)
       retval->push_back(it->first);
 }
@@ -97,13 +97,13 @@ void UntagSentence(const CSentenceTagged *tagged, CSentenceRaw *retval) {
  *--------------------------------------------------------------*/
 
 inline
-void UntagAndDesegmentSentence(const CSentenceTagged *tagged, CSentenceRaw *retval) {
+void UntagAndDesegmentSentence(const CTwoStringVector *tagged, CStringVector *retval) {
    assert(retval != 0);
    retval->clear();
    if (tagged == 0)
       return;
    string temp;
-   CSentenceTagged::const_iterator it;
+   CTwoStringVector::const_iterator it;
    for (it = tagged->begin(); it != tagged->end(); ++it) {
       getCharactersFromUTF8String(it->first, retval);
    }
@@ -119,13 +119,13 @@ void UntagAndDesegmentSentence(const CSentenceTagged *tagged, CSentenceRaw *retv
 
 template<class CCharCatDict>
 inline 
-void DesegmentSentence(const CSentenceRaw *sent, CSentenceRaw *retval, CCharCatDict &char_categories) {
+void DesegmentSentence(const CStringVector *sent, CStringVector *retval, CCharCatDict &char_categories) {
    assert(retval != 0);
    retval->clear();
    if (sent == 0)
       return;
    string temp;
-   CSentenceRaw::const_iterator it;
+   CStringVector::const_iterator it;
    for (it=sent->begin(); it!=sent->end(); ++it) {
       if ( retval->size() > 0 ) {
          temp = getFirstCharFromUTF8String( *it ) ; 
@@ -150,13 +150,13 @@ void DesegmentSentence(const CSentenceRaw *sent, CSentenceRaw *retval, CCharCatD
 
 template<class CCharCatDict>
 inline
-void UntagAndDesegmentSentence(const CSentenceTagged *tagged, CSentenceRaw *retval, const CCharCatDict &dict) {
+void UntagAndDesegmentSentence(const CTwoStringVector *tagged, CStringVector *retval, const CCharCatDict &dict) {
    assert(retval != 0);
    retval->clear();
    if (tagged == 0)
       return;
    string temp;
-   CSentenceTagged::const_iterator it;
+   CTwoStringVector::const_iterator it;
    for (it = tagged->begin(); it != tagged->end(); ++it) {
       // special process!! if the two words are numbers or foreign words, 
       // we need to separate them manually by adding a space

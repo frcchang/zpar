@@ -36,7 +36,7 @@ static CCharCatDictionary g_CharCat ;
  * 
  *---------------------------------------------------------------*/
 
-void recordSegmentation(const CSentenceRaw *raw, const CSentenceTagged* tagged, CBitArray &retval) {
+void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged, CBitArray &retval) {
    vector<int> indice;
    indice.clear(); 
    for (int i=0; i<raw->size(); ++i) {
@@ -67,9 +67,9 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
    CSentenceWriter output_writer("");
    CSentenceWriter tagged_writer("");
 #endif
-   CSentenceRaw *input_sent = new CSentenceRaw;
-   CSentenceTagged *tagged_sent = new CSentenceTagged[nBest];
-   CSentenceTagged *output_sent = new CSentenceTagged; 
+   CStringVector *input_sent = new CStringVector;
+   CTwoStringVector *tagged_sent = new CTwoStringVector[nBest];
+   CTwoStringVector *output_sent = new CTwoStringVector; 
 
    int nCount=0;
    int nErrorCount=0;

@@ -20,7 +20,7 @@ using namespace chinese;
  * 
  *---------------------------------------------------------------*/
 
-void recordSegmentation(const CSentenceRaw* raw, const CSentenceRaw* segmented, CBitArray &retval) {
+void recordSegmentation(const CStringVector* raw, const CStringVector* segmented, CBitArray &retval) {
    vector<int> indice;
    for (int i=0; i<raw->size(); ++i) {
       for (int j=0; j<raw->at(i).size(); ++j)
@@ -43,7 +43,7 @@ void recordSegmentation(const CSentenceRaw* raw, const CSentenceRaw* segmented, 
  * 
  *---------------------------------------------------------------*/
 
-int CReranker::findBest(const CSentenceRaw &raw) {
+int CReranker::findBest(const CStringVector &raw) {
    int best_index=0;
    double best_score;
    static CBitArray wds(MAX_SENTENCE_SIZE);
@@ -65,7 +65,7 @@ int CReranker::findBest(const CSentenceRaw &raw) {
  * 
  *---------------------------------------------------------------*/
 
-void CReranker::decode(const CSentenceRaw &raw, CSentenceTagged &tagged) {
+void CReranker::decode(const CStringVector &raw, CTwoStringVector &tagged) {
    assert(!m_bTrain);
    int best_index = findBest(raw);
    tagged = m_scratch_tag[best_index];
@@ -77,10 +77,10 @@ void CReranker::decode(const CSentenceRaw &raw, CSentenceTagged &tagged) {
  * 
  *---------------------------------------------------------------*/
 
-void CReranker::train(const CSentenceTagged &correct) {
+void CReranker::train(const CTwoStringVector &correct) {
    assert(m_bTrain);
    ++m_nTrainingRound;
-   CSentenceRaw raw; CSentenceRaw segmented;
+   CStringVector raw; CStringVector segmented;
    UntagAndDesegmentSentence(&correct, &raw); UntagSentence(&correct, &segmented);
    CSentenceWriter writer("");
    int best_index = findBest(raw);
@@ -106,10 +106,10 @@ void CReranker::train(const CSentenceTagged &correct) {
  * 
  *---------------------------------------------------------------*/
 
-void CReranker::train_separate(const CSentenceTagged &correct) {
+void CReranker::train_separate(const CTwoStringVector &correct) {
    assert(m_bTrain);
    ++m_nTrainingRound;
-   CSentenceRaw raw; CSentenceRaw segmented;
+   CStringVector raw; CStringVector segmented;
    static CBitArray wds(MAX_SENTENCE_SIZE);
    UntagAndDesegmentSentence(&correct, &raw); 
    UntagSentence(&correct, &segmented);

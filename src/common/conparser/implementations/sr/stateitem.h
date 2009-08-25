@@ -346,7 +346,7 @@ public:
       return unary_reduce == -1; 
    }
 
-   void GenerateTree(const CSentenceTagged &tagged, CSentenceParsed &out) const {
+   void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &out) const {
       // parsing done?
       assert(IsComplete());
       assert(tagged.size()==sent->size());
@@ -364,7 +364,7 @@ public:
 
    //===============================================================================
 
-   void trace(const CSentenceTagged *s=0) const {
+   void trace(const CTwoStringVector *s=0) const {
       CStateItem st; 
       st.sent = sent;
       unsigned action;

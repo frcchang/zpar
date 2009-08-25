@@ -34,9 +34,9 @@ void train(string sOutputFile, string sFeatureFile, int nBest, const string &sKn
    CSentenceWriter output_writer("");
    CSentenceWriter tagged_writer("");
 #endif
-   CSentenceRaw *input_sent = new CSentenceRaw;
-   CSentenceTagged *tagged_sent = new CSentenceTagged[nBest];
-   CSentenceTagged *output_sent = new CSentenceTagged; 
+   CStringVector *input_sent = new CStringVector;
+   CTwoStringVector *tagged_sent = new CTwoStringVector[nBest];
+   CTwoStringVector *output_sent = new CTwoStringVector; 
 
    int nCount=0;
    int nErrorCount=0;

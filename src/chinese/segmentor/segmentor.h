@@ -89,20 +89,20 @@ public:
 //-------------------------------------------------------------
 // Main interface
 public:
-   void train(const CSentenceRaw* sentence, const CSentenceRaw *correct, int &round);
-   void segment(const CSentenceRaw* sentence, CSentenceRaw *retval, double *out_scores=NULL, int nBest=1);
+   void train(const CStringVector* sentence, const CStringVector *correct, int &round);
+   void segment(const CStringVector* sentence, CStringVector *retval, double *out_scores=NULL, int nBest=1);
 
    bool isTraining() const { return m_bTrain; }
 
 #ifdef NO_NEG_FEATURE
 
-   void extractPosFeatures( const CSentenceRaw *sent ) {
+   void extractPosFeatures( const CStringVector *sent ) {
       this->m_Feature->extractPosFeatures(sent);
    }
 
 #endif
 
-   void updateScores(const CSentenceRaw* output, const CSentenceRaw* correct, int round) {
+   void updateScores(const CStringVector* output, const CStringVector* correct, int round) {
       m_Feature->updateScoreVector(output, correct, round);
    }
    void finishTraining(int round) {
@@ -154,7 +154,7 @@ public:
 //-------------------------------------------------------------
 // Word cache
 public:
-   const CWord& findWordFromCache(const int &start, const int &length, const CSentenceRaw* sentence) {
+   const CWord& findWordFromCache(const int &start, const int &length, const CStringVector* sentence) {
       if (m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].empty()) { // empty string
          static string temp; 
          static unsigned int i; 
@@ -165,7 +165,7 @@ public:
       }
       return m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ];
    }
-   const CWord& replaceWordToCache(const int &start, const int &length, const CSentenceRaw* sentence) {
+   const CWord& replaceWordToCache(const int &start, const int &length, const CStringVector* sentence) {
       if (m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].empty()||
           m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].unknown()) { // empty string
          static string temp; 

@@ -29,7 +29,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CFeatureHandle::getGlobalScore(const CSentenceRaw* sentence, const CStateItem* item){
+SCORE_TYPE CFeatureHandle::getGlobalScore(const CStringVector* sentence, const CStateItem* item){
    cerr << "Not implemented" << endl;
    assert(0==1);
 }
@@ -45,7 +45,7 @@ SCORE_TYPE CFeatureHandle::getGlobalScore(const CSentenceRaw* sentence, const CS
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CFeatureHandle::getLocalScore(const CSentenceRaw* sentence, const CStateItem* item, int index){
+SCORE_TYPE CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateItem* item, int index){
    cerr << "Not implemented" << endl;
    assert(0==1);
 }
@@ -59,7 +59,7 @@ SCORE_TYPE CFeatureHandle::getLocalScore(const CSentenceRaw* sentence, const CSt
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CSentenceRaw* sentence, const CStateItem* item, int index, bool bWordStart, SCORE_TYPE amount=0, int round=0){
+SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* item, int index, bool bWordStart, SCORE_TYPE amount=0, int round=0){
 
    static SCORE_TYPE nReturn; 
    // about score
@@ -222,7 +222,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CSentenceRaw* s
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CSentenceRaw* sentence, const CStateItem* item, int index, bool bWordStart, SCORE_TYPE amount=0, int round=0){
+SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* item, int index, bool bWordStart, SCORE_TYPE amount=0, int round=0){
 
    static SCORE_TYPE retval;
    // about score
@@ -287,10 +287,10 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CSentenceRaw* sen
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::extractPosFeatures(const CSentenceRaw *sent) {
+void CFeatureHandle::extractPosFeatures(const CStringVector *sent) {
 
    CStateItem temp;
-   CSentenceRaw chars; 
+   CStringVector chars; 
 
    int i, j;
 
@@ -330,14 +330,14 @@ void CFeatureHandle::extractPosFeatures(const CSentenceRaw *sent) {
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateScoreVector(const CSentenceRaw* output, const CSentenceRaw* correct, int round) {
+void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStringVector* correct, int round) {
 
    if ( *output == *correct ) return;
 
    m_parent->clearWordCache();
 
    CStateItem temp;
-   CSentenceRaw chars; 
+   CStringVector chars; 
    for (int i=0; i<output->size(); ++i)
       getCharactersFromUTF8String(output->at(i), &chars);
 
@@ -380,7 +380,7 @@ void CFeatureHandle::updateScoreVector(const CSentenceRaw* output, const CSenten
  *
  *--------------------------------------------------------------*/
 
-void updateScoreVector(CSegmentor *segmentor, const CSentenceRaw* sentence, unsigned int index, CStateItem* output, CStateItem* correct, int round) {
+void updateScoreVector(CSegmentor *segmentor, const CStringVector* sentence, unsigned int index, CStateItem* output, CStateItem* correct, int round) {
    static CStateItem temp;
    static int char_index;
    static int word_index;
@@ -436,7 +436,7 @@ void updateScoreVector(CSegmentor *segmentor, const CSentenceRaw* sentence, unsi
  *
  *--------------------------------------------------------------*/
 
-void trace_candidate(CStateItem *pCandidate, const CSentenceRaw &sentence) {
+void trace_candidate(CStateItem *pCandidate, const CStringVector &sentence) {
    for ( int j=0; j<pCandidate->m_nLength; j++ ) {
       string temp = "";
       for ( int l = pCandidate->getWordStart(j); l <= pCandidate->getWordEnd(j); ++l ) {
@@ -455,7 +455,7 @@ void trace_candidate(CStateItem *pCandidate, const CSentenceRaw &sentence) {
  *
  *--------------------------------------------------------------*/
 
-bool work(CSegmentor *segmentor, const CSentenceRaw &sentence, CRule &rules, CStateItem *pCorrect, int nBest, int round) {
+bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CStateItem *pCorrect, int nBest, int round) {
    CStateItem *pGenerator, *pCandidate;
    int nScore;
    int j, k;                                    // temporary index
@@ -605,12 +605,12 @@ bool work(CSegmentor *segmentor, const CSentenceRaw &sentence, CRule &rules, CSt
  *
  *--------------------------------------------------------------*/
 
-void CSegmentor::train(const CSentenceRaw* sentence_input, const CSentenceRaw* correct, int & round) {
+void CSegmentor::train(const CStringVector* sentence_input, const CStringVector* correct, int & round) {
 #ifdef DEBUG
    clock_t total_start_time = clock();;
 #endif
    TRACE("Starting training using a sentence...");
-   static CSentenceRaw sentence;
+   static CStringVector sentence;
    static CRule rules(m_Feature->m_bRule);
    rules.segment(sentence_input, &sentence);
    const unsigned int length = sentence.size();
@@ -648,7 +648,7 @@ void CSegmentor::train(const CSentenceRaw* sentence_input, const CSentenceRaw* c
  *
  *--------------------------------------------------------------*/
 
-void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vReturn, double *out_scores, int nBest) {
+void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vReturn, double *out_scores, int nBest) {
 #ifdef DEBUG
    clock_t total_start_time = clock();;
 #endif
@@ -657,7 +657,7 @@ void CSegmentor::segment(const CSentenceRaw* sentence_input, CSentenceRaw *vRetu
    CStateItem *pGenerator;
 
    // turn the spaces in the input sentence into rules that separate corresponding characters
-   static CSentenceRaw sentence;
+   static CStringVector sentence;
    static CRule rules(m_Feature->m_bRule); 
    rules.segment(sentence_input, &sentence); 
    const unsigned int length = sentence.size();

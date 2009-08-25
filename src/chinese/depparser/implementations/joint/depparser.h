@@ -73,7 +73,7 @@ public:
    }
 
 public:
-   void parse( const CSentenceRaw &sentence , CDependencyTree &retval ) ;
+   void parse( const CStringVector &sentence , CDependencyTree &retval ) ;
    void train( const CDependencyTree &correct , int round ) ;
 
    void finishtraining() {
@@ -91,17 +91,17 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void addLink( const CSentenceRaw *sentence, depparser::CStateItem *item, const int head, const int dep ) ;
-   void enumerateCandidates( const CSentenceRaw *sentence, const depparser::CStateItem *item, const int agenda_index, const unsigned tag );
-   void work( const CSentenceRaw *sentence , CDependencyTree *retval, const CDependencyTree *correct ) ; 
+   void addLink( const CStringVector *sentence, depparser::CStateItem *item, const int head, const int dep ) ;
+   void enumerateCandidates( const CStringVector *sentence, const depparser::CStateItem *item, const int agenda_index, const unsigned tag );
+   void work( const CStringVector *sentence , CDependencyTree *retval, const CDependencyTree *correct ) ; 
 
-   depparser::SCORE_TYPE getOrUpdateLocalScore(const CSentenceRaw *s, const depparser::CStateItem *item, int index, depparser::SCORE_TYPE amount=0, int round=0);
-   depparser::SCORE_TYPE getOrUpdateArcScore( const CSentenceRaw *sentence, const depparser::CStateItem *item, const int &head_index, const int &dep_index, depparser::SCORE_TYPE amount=0, int round=0 );
+   depparser::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *s, const depparser::CStateItem *item, int index, depparser::SCORE_TYPE amount=0, int round=0);
+   depparser::SCORE_TYPE getOrUpdateArcScore( const CStringVector *sentence, const depparser::CStateItem *item, const int &head_index, const int &dep_index, depparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
-   void updateScoresForStates( const CSentenceRaw *raw , const depparser::CStateItem *output , const depparser::CStateItem *correct , bool bComplete ) ;
+   void updateScoresForStates( const CStringVector *raw , const depparser::CStateItem *output , const depparser::CStateItem *correct , bool bComplete ) ;
    void updateInfo( const CDependencyTree *sent ) ;
-   inline void updateScoreForState( const CSentenceRaw *sent , const depparser::CStateItem *output , bool bComplete , const depparser::SCORE_TYPE &amount ) ;
+   inline void updateScoreForState( const CStringVector *sent , const depparser::CStateItem *output , bool bComplete , const depparser::SCORE_TYPE &amount ) ;
 
 };
 
