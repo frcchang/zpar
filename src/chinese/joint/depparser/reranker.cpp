@@ -25,7 +25,7 @@ using namespace chinese;
  * 
  *---------------------------------------------------------------*/
 
-void RecordSegmentation(const CSentenceRaw *raw, const CSentenceParsed* parsed, int *retval) {
+void RecordSegmentation(const CStringVector *raw, const CSentenceParsed* parsed, int *retval) {
    vector<int> indice;
    indice.clear(); 
    for (int i=0; i<raw->size(); ++i) {
@@ -49,7 +49,7 @@ void RecordSegmentation(const CSentenceRaw *raw, const CSentenceParsed* parsed, 
 
 void getFScore(const CSentenceParsed &output, const CSentenceParsed &correct, double &fSeg, double &fTag, double &fPar, double &fParUnlabeled, double &fParIncPunc) {
 
-   static CSentenceRaw raw;
+   static CStringVector raw;
 
    int nCandidateWords = 0;
    int nReferenceWords = 0;
@@ -194,7 +194,7 @@ double CReranker::getOrUpdatePriorScores(double *prior_scores, int amount) {
 int CReranker::findBest(const CSentenceParsed *nbest, int nBest, double *prior_scores) {
    int best_index=-1;
    double score, best_score;
-   static CSentenceTagged tagged;
+   static CTwoStringVector tagged;
    for (int i=0; i<nBest; i++) {
       if (nbest[i].empty()) {
          if (best_index==-1) 
@@ -258,7 +258,7 @@ void CReranker::train(const CSentenceParsed *nbest, const CSentenceParsed *corre
       }
    }
 
-   CSentenceTagged tagged, best_tagged;
+   CTwoStringVector tagged, best_tagged;
    UnparseSentence(nbest+best_idx, &best_tagged);
 
    // find the reranking output 

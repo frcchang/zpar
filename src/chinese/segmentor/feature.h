@@ -38,14 +38,14 @@ public:
    // two score updating methods
    enum SCORE_UPDATE {eAdd=0, eSubtract};
    // get the global score for a segmented sentence or section
-   SCORE_TYPE getGlobalScore(const CSentenceRaw* sentence, const CStateItem* item);
-   SCORE_TYPE getLocalScore(const CSentenceRaw* sentence, const CStateItem* item, int index);
+   SCORE_TYPE getGlobalScore(const CStringVector* sentence, const CStateItem* item);
+   SCORE_TYPE getLocalScore(const CStringVector* sentence, const CStateItem* item, int index);
 #ifdef NO_NEG_FEATURE
    // collect the set of features from data
-   void extractPosFeatures(const CSentenceRaw *sent);
+   void extractPosFeatures(const CStringVector *sent);
 #endif
    // update the built-in weight vector for this feature object specifically
-   void updateScoreVector(const CSentenceRaw* output, const CSentenceRaw* correct, int round=0);
+   void updateScoreVector(const CStringVector* output, const CStringVector* correct, int round=0);
    // compute the total or average feature vector after update
    void computeAverageFeatureWeights(int round=0) {
       cout << "Computing averaged feature scores ... ";
@@ -127,7 +127,7 @@ private:
    // PRIVATE METHODS
    //
    // add local features to a global feature vector (first param)
-   void updateLocalFeatureVector(SCORE_UPDATE method, const CSentenceRaw* output, int index, int round=0);
+   void updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* output, int index, int round=0);
 };
 
 #endif

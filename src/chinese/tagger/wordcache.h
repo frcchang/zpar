@@ -42,7 +42,7 @@ public:
 public:
 
    // find a word from the cache
-   const CWord& find(const int &start, const int &end, const CSentenceRaw* sentence) {
+   const CWord& find(const int &start, const int &end, const CStringVector* sentence) {
       static string temp;
       if (m_lWordCache[start*m_nMaxSentenceSize+end].empty()) { // empty string
          temp.clear();
@@ -54,7 +54,7 @@ public:
    }
 
    // find a word from the cache, if it is unknown then add into dictionary (tokenized word)
-   const CWord& replace(const int &start, const int &end, const CSentenceRaw* sentence) {
+   const CWord& replace(const int &start, const int &end, const CStringVector* sentence) {
       static string temp;
       if (m_lWordCache[start*m_nMaxSentenceSize+end].empty() ||
           m_lWordCache[start*m_nMaxSentenceSize+end].unknown()) { // empty string

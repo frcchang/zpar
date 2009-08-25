@@ -463,7 +463,7 @@ public:
       }
    }
 
-   void GenerateTree( const CSentenceTagged &input, CSentenceParsed &output ) const {
+   void GenerateTree( const CTwoStringVector &input, CSentenceParsed &output ) const {
       output.clear();
       for ( int i=0; i<size(); i++ ) 
 #ifdef LABELED

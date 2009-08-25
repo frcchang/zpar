@@ -65,7 +65,7 @@ public:
    }
 
 public:
-   void parse( const CSentenceTagged &sentence , CSentenceParsed *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
 
    void finishtraining() {

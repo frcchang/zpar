@@ -33,7 +33,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getLocalScore( const CSentenceRaw * sentence, CStateItem * item , int index ) {
+SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * item , int index ) {
 
    static SCORE_TYPE nReturn ; 
    static unsigned int last_start , last_length ;
@@ -123,7 +123,7 @@ SCORE_TYPE CTagger::getLocalScore( const CSentenceRaw * sentence, CStateItem * i
  *
  *--------------------------------------------------------------*/
 
-void CTagger::updateScores(const CSentenceTagged* tagged, const CSentenceTagged* correct, int round) {
+void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) {
 
    static int i , j ;
 
@@ -142,7 +142,7 @@ void CTagger::updateScores(const CSentenceTagged* tagged, const CSentenceTagged*
       for (i=0; i<correct->size(); i++) {
          CWord word = correct->at(i).first;
          CTag tag(correct->at(i).second);
-         CSentenceRaw chars;
+         CStringVector chars;
          chars.clear(); getCharactersFromUTF8String(correct->at(i).first, &chars);
          m_weights->m_mapWordFrequency[word]++;
          m_weights->m_mapTagDictionary.add(word, tag);
@@ -162,12 +162,12 @@ void CTagger::updateScores(const CSentenceTagged* tagged, const CSentenceTagged*
  *
  *--------------------------------------------------------------*/
 
-void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CSentenceTagged * sentence , int index , int round ) { 
+void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoStringVector * sentence , int index , int round ) { 
    // about words              
    CWord word = sentence->at( index ).first ;
    CWord last_word = index > 0 ? sentence->at( index - 1 ).first : g_emptyWord ;
    CWord next_word = index < sentence->size() - 1 ? sentence->at( index + 1 ).first : g_emptyWord ;
-   CSentenceRaw chars , last_chars ;
+   CStringVector chars , last_chars ;
    chars.clear() ; getCharactersFromUTF8String( sentence->at(index).first , &chars ) ;
    last_chars.clear() ; if ( index > 0 ) getCharactersFromUTF8String( sentence->at( index - 1 ).first , &last_chars ) ;
    // about length
@@ -245,7 +245,7 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CSentenceT
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CSentenceRaw * sentence , const CSentenceTagged * correct , int round ) {
+void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , int round ) {
    cerr << "Not implemented" << endl;
    assert( 0 == 1 );
 }
@@ -256,7 +256,7 @@ void CTagger::train( const CSentenceRaw * sentence , const CSentenceTagged * cor
  *
  *--------------------------------------------------------------*/
 
-void generate(const CStateItem *stateItem, CSentenceRaw *sentence, CSentenceTagged *vReturn) {
+void generate(const CStateItem *stateItem, CStringVector *sentence, CTwoStringVector *vReturn) {
    string s;
    for (int j=0; j<stateItem->size(); j++) { 
       s.clear();
@@ -270,11 +270,11 @@ void generate(const CStateItem *stateItem, CSentenceRaw *sentence, CSentenceTagg
  *
  * tag - assign POS tags to a sentence
  *
- * Returns: makes a new instance of CSentenceTagged 
+ * Returns: makes a new instance of CTwoStringVector 
  *
  *--------------------------------------------------------------*/
 
-void CTagger::tag( const CSentenceRaw * sentence , CSentenceTagged * vReturn , SCORE_TYPE * out_scores , int nBest , const CBitArray * word_ends ) {
+void CTagger::tag( const CStringVector * sentence , CTwoStringVector * vReturn , SCORE_TYPE * out_scores , int nBest , const CBitArray * word_ends ) {
    clock_t total_start_time = clock();;
    const int length = sentence->size() ;
 

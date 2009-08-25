@@ -42,7 +42,7 @@ public:
    virtual ~CSuperTagReader() {}
 
 public:
-   bool readSuperTaggedSentence(CSentenceTagged *sent, vector<CSuperTag> *supertags) {
+   bool readSuperTaggedSentence(CTwoStringVector *sent, vector<CSuperTag> *supertags) {
       // clear output
       sent->clear();
       supertags->clear();
@@ -77,7 +77,7 @@ public:
    virtual ~CSuperTagWriter() {}
 
 public:
-   void writeSentence(CSentenceTagged *tagged, vector<CSuperTag> *supertags) {
+   void writeSentence(CTwoStringVector *tagged, vector<CSuperTag> *supertags) {
       assert(tagged->size()==supertags->size());
       for (int i=0; i<supertags->size(); i++) {
          *m_oStream << tagged->at(i).first << "\t" << tagged->at(i).second << "\t";

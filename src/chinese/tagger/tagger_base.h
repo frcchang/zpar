@@ -60,12 +60,12 @@ public:
 
 public:
    virtual void loadKnowledge(const string &sKnowledgePath) = 0 ; // load knowledge should be implemented by sub class
-   virtual void train(const CSentenceRaw *sentence, const CSentenceTagged *correct, int round) = 0;
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, int round) = 0;
    // The input sentence to tag() must be a raw sentence of characters
    // For the tagger that processes segmented input sent, we must set word_ends
-   virtual void tag(const CSentenceRaw *sentence, CSentenceTagged *retval, double *out_scores=NULL, int nBest=1, const CBitArray *word_ends=NULL) = 0;
+   virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, int nBest=1, const CBitArray *word_ends=NULL) = 0;
    virtual void finishTraining(int nTotalNumberOfTrainingExamples) = 0 ;
-   virtual void updateScores(const CSentenceTagged* tagged, const CSentenceTagged* correct, int round) = 0;
+   virtual void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) = 0;
 };
 
 }; // namespace chinese

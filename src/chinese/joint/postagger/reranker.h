@@ -25,8 +25,8 @@ protected:
    CTagger *m_tagger;
    double *m_scores_seg;
    double *m_scores_tag;
-   CSentenceRaw *m_scratch_seg;
-   CSentenceTagged *m_scratch_tag;
+   CStringVector *m_scratch_seg;
+   CTwoStringVector *m_scratch_tag;
    int m_nBest;
    bool m_bTrain;
    int m_nTrainingRound;
@@ -40,8 +40,8 @@ public:
       m_tagger = new CTagger(sFeatureDB+".tagger", bTrain);
       m_scores_seg = new double[nBest];
       m_scores_tag = new double[nBest];
-      m_scratch_seg = new CSentenceRaw[nBest];
-      m_scratch_tag = new CSentenceTagged[nBest];
+      m_scratch_seg = new CStringVector[nBest];
+      m_scratch_tag = new CTwoStringVector[nBest];
    }
    virtual ~CReranker() {
       delete m_segmentor; delete[] m_scores_seg;
@@ -51,12 +51,12 @@ public:
    }
 
 protected:
-   int findBest(const CSentenceRaw &raw);
+   int findBest(const CStringVector &raw);
 
 public:
-   void decode(const CSentenceRaw &raw, CSentenceTagged &tagged) ;
-   void train(const CSentenceTagged &correct) ;
-   void train_separate(const CSentenceTagged &correct) ;
+   void decode(const CStringVector &raw, CTwoStringVector &tagged) ;
+   void train(const CTwoStringVector &correct) ;
+   void train_separate(const CTwoStringVector &correct) ;
    void finishTraining();
 
 };

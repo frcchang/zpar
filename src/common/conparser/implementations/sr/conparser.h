@@ -71,7 +71,7 @@ public:
    }
 
 public:
-   void parse( const CSentenceTagged &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
 
    void finishtraining() {
@@ -90,7 +90,7 @@ private:
    inline void reduce_unary(conparser::CStateItem &item);
    inline void terminate(conparser::CStateItem &item);
 
-   void work( const bool bTrain, const CSentenceTagged &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
 
    // get the global score for a parsed sentence or section
    inline conparser::SCORE_TYPE getOrUpdateLinkScore( const unsigned &head, const unsigned &mod, conparser::SCORE_TYPE amount=0, int round=0 );

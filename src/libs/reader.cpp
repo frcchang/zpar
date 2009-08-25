@@ -18,6 +18,29 @@
 
 /*---------------------------------------------------------------
  *
+ * readRawCharacter - read a raw character in utf
+ *
+ *---------------------------------------------------------------*/
+
+bool CSentenceReader::readRawCharacter(string *retval) {
+   char cTemp;
+   string sWord;                                // string for next word
+   bool bReadSomething = false;                 // did we read anything?
+   while (m_iStream->get(cTemp)) {              // still have something there
+      bReadSomething = true;
+      if (cTemp == '\r')
+         continue;
+      sWord += cTemp;
+      if (isOneUTF8Character(sWord)) {
+         *retval = sWord;
+         break;
+      }
+   }
+   return bReadSomething;
+}
+
+/*---------------------------------------------------------------
+ *
  * readRawSentence - read a raw sentence
  *
  * The input file should contain tokenised sentences each in a line, 
@@ -32,7 +55,7 @@
  *
  *--------------------------------------------------------------*/
 
-bool CSentenceReader::readRawSentence(CSentenceRaw *vReturn, bool bSkipEmptyLines, bool bIgnoreSpace) {
+bool CSentenceReader::readRawSentence(CStringVector *vReturn, bool bSkipEmptyLines, bool bIgnoreSpace) {
    assert(vReturn != NULL);
    vReturn->clear();
    char cTemp;
@@ -83,7 +106,7 @@ bool CSentenceReader::readRawSentence(CSentenceRaw *vReturn, bool bSkipEmptyLine
  *
  *--------------------------------------------------------------*/
 
-bool CSentenceReader::readSegmentedSentence(CSentenceRaw *vReturn, bool bSkipEmptyLines) {
+bool CSentenceReader::readSegmentedSentence(CStringVector *vReturn, bool bSkipEmptyLines) {
    assert(vReturn != NULL);
    vReturn->clear();
    char cTemp;
@@ -132,7 +155,7 @@ bool CSentenceReader::readSegmentedSentence(CSentenceRaw *vReturn, bool bSkipEmp
  *
  *--------------------------------------------------------------*/
 
-bool CSentenceReader::readTaggedSentence(CSentenceTagged *vReturn, bool bSkipEmptyLines, const char separator) {
+bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEmptyLines, const char separator) {
    assert(vReturn != NULL);
    vReturn->clear();
    char cTemp;

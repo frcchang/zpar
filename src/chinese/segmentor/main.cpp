@@ -30,8 +30,8 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
    segmentor = new CSegmentor(sFeatureFile);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
-   CSentenceRaw *input_sent = new CSentenceRaw;
-   CSentenceRaw *output_sent = new CSentenceRaw[nBest]; 
+   CStringVector *input_sent = new CStringVector;
+   CStringVector *output_sent = new CStringVector[nBest]; 
    double *scores = NULL;
    ofstream fileScores;
 

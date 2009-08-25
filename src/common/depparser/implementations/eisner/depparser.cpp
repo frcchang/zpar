@@ -221,7 +221,7 @@ void CDepParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
  *
  *---------------------------------------------------------------*/
 
-void generate(const CSpan &span, const CSentenceTagged &sentence, CDepParser *depparser, CSentenceParsed &retval) {
+void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *depparser, CSentenceParsed &retval) {
    assert ( span.getLeftBoundary() == 0 && span.getRightBoundary() == sentence.size() ) ;
    retval.clear() ; 
    bool bFoundHead = false;
@@ -244,7 +244,7 @@ void generate(const CSpan &span, const CSentenceTagged &sentence, CDepParser *de
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::parse( const CSentenceTagged &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
 
    clock_t total_start_time = clock();
    const int length = sentence.size() ; // length of the sentence
@@ -429,7 +429,7 @@ void CDepParser::parse( const CSentenceTagged &sentence , CSentenceParsed *retva
 
 void CDepParser::train( const CSentenceParsed &correct , int round ) {
 
-   static CSentenceTagged sentence ;
+   static CTwoStringVector sentence ;
    static CSentenceParsed output ; 
 
    assert( IsProjectiveDependencyTree(correct) ) ;

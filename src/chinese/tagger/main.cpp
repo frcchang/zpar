@@ -33,7 +33,7 @@ static string sKnowledgePath;
  * 
  *---------------------------------------------------------------*/
 
-void recordSegmentation(const CSentenceRaw *raw, const CSentenceRaw* segmented, CBitArray &retval) {
+void recordSegmentation(const CStringVector *raw, const CStringVector* segmented, CBitArray &retval) {
    vector<int> indice;
    indice.clear(); 
    for (int i=0; i<raw->size(); ++i) {
@@ -64,13 +64,13 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter output_writer(sOutputFile);
    ofstream *score_writer;
-   CSentenceRaw *input_sent = new CSentenceRaw;
-   CSentenceTagged *output_sent; 
+   CStringVector *input_sent = new CStringVector;
+   CTwoStringVector *output_sent; 
    tagger::SCORE_TYPE *output_scores;
 
    int nCount=0;
    
-   output_sent = new CSentenceTagged[nBest];
+   output_sent = new CTwoStringVector[nBest];
    if (bScores) {
       output_scores = new tagger::SCORE_TYPE[nBest];
       score_writer = new ofstream(string(sOutputFile+".scores").c_str());
@@ -79,8 +79,8 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       output_scores = NULL;
 
    CBitArray prunes(MAX_SENTENCE_SIZE);
-   CSentenceRaw *unsegmented_sent;
-   if (bSegmented) unsegmented_sent = new CSentenceRaw;
+   CStringVector *unsegmented_sent;
+   if (bSegmented) unsegmented_sent = new CStringVector;
 
    bool bReadSuccessful; 
    if (bSegmented)

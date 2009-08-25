@@ -313,7 +313,7 @@ public:
 
 public:
 
-   void GenerateTree( const CSentenceRaw &input, CDependencyTree &output ) const {
+   void GenerateTree( const CStringVector &input, CDependencyTree &output ) const {
       static string st;
       static int k;
       output.clear();

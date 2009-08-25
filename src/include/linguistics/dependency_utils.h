@@ -73,7 +73,7 @@ bool IsProjectiveDependencyTree(const CLabeledOrUnlabeledDependencyTree &tree) {
 
 template <class CLabeledOrUnlabeledDependencyTree>
 inline
-void UnparseSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CSentenceRaw *retval) {
+void UnparseSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CStringVector *retval) {
    assert(retval != NULL);
    retval->clear();
    if (parsed == NULL)
@@ -91,7 +91,7 @@ void UnparseSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CSentenceR
 
 template <class CLabeledOrUnlabeledDependencyTree>
 inline
-void UnparseSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CSentenceTagged *retval) {
+void UnparseSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CTwoStringVector *retval) {
    assert(retval != NULL);
    retval->clear();
    if (parsed == NULL)
@@ -109,7 +109,7 @@ void UnparseSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CSentenceT
 
 template <class CLabeledOrUnlabeledDependencyTree>
 inline
-void UnparseAndDesegmentSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CSentenceRaw *retval) {
+void UnparseAndDesegmentSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CStringVector *retval) {
    assert(retval != NULL);
    retval->clear();
    if (parsed == NULL)

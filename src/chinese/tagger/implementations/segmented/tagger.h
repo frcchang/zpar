@@ -35,18 +35,18 @@ public:
    virtual ~CTagger() { if (m_mapCharCat) delete m_mapCharCat ; }
    
 public:
-   virtual void train(const CSentenceRaw *sentence, const CSentenceTagged *correct, int round);
-   virtual void tag(const CSentenceRaw *sentence, CSentenceTagged *retval, double *out_scores=NULL, int nBest=1, const CBitArray *prunes=NULL);
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, int round);
+   virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, int nBest=1, const CBitArray *prunes=NULL);
 
    void loadKnowledge(const string &sKnowledgePath) {
    }
 
    enum SCORE_UPDATE {eSubtract=0, eAdd};
 
-   tagger::SCORE_TYPE getLocalScore(const CSentenceRaw*, tagger::CStateItem*, int);
+   tagger::SCORE_TYPE getLocalScore(const CStringVector*, tagger::CStateItem*, int);
 
-   void updateScores(const CSentenceTagged* tagged, const CSentenceTagged* correct, int round);
-   void updateLocalFeatureVector(SCORE_UPDATE method, const CSentenceTagged* output, int index, int round);
+   void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round);
+   void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* output, int index, int round);
 
    void finishTraining(int nTotalNumberOfTrainingExamples) { 
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);

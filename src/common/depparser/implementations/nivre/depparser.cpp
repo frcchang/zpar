@@ -657,7 +657,7 @@ inline void CDepParser::poproot( CStateItem *item ) {
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::work( const bool bTrain , const CSentenceTagged &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
 
 #ifdef DEBUG
    clock_t total_start_time = clock();
@@ -816,7 +816,7 @@ void CDepParser::work( const bool bTrain , const CSentenceTagged &sentence , CSe
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::parse( const CSentenceTagged &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
 
    static CSentenceParsed empty ;
 
@@ -832,7 +832,7 @@ void CDepParser::parse( const CSentenceTagged &sentence , CSentenceParsed *retva
 
 void CDepParser::train( const CSentenceParsed &correct , int round ) {
 
-   static CSentenceTagged sentence ;
+   static CTwoStringVector sentence ;
    static CSentenceParsed output ; 
 
    assert( IsProjectiveDependencyTree(correct) ) ;

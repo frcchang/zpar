@@ -36,7 +36,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateLocalScore( const CSentenceRaw *sentence, const CStateItem *item, int index, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const CStateItem *item, int index, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned int last_start , last_length ;
    static unsigned int start , end , length , word_length ; // word length is the un-normalised version
@@ -219,7 +219,7 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CSentenceRaw *sentence, const C
  *
  *--------------------------------------------------------------*/
 
-inline void buildStateItem(const CSentenceRaw *raw, const CSentenceTagged *tagged, CStateItem *item) {
+inline void buildStateItem(const CStringVector *raw, const CTwoStringVector *tagged, CStateItem *item) {
    static int i, ri, rawlen, taggedlen;
    item->clear();
    // add each output word
@@ -243,12 +243,12 @@ inline void buildStateItem(const CSentenceRaw *raw, const CSentenceTagged *tagge
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getGlobalScore(const CSentenceTagged* tagged) {
+SCORE_TYPE CTagger::getGlobalScore(const CTwoStringVector* tagged) {
 
    static int i;
 
    static CStateItem item ;
-   static CSentenceRaw raw;
+   static CStringVector raw;
 
    static SCORE_TYPE rv; rv=0;
 
@@ -272,11 +272,11 @@ SCORE_TYPE CTagger::getGlobalScore(const CSentenceTagged* tagged) {
  *
  *--------------------------------------------------------------*/
 
-void CTagger::updateScores(const CSentenceTagged* tagged, const CSentenceTagged* correct, int round) {
+void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) {
 
    static int i , j ;
    static CStateItem item ;
-   static CSentenceRaw raw;
+   static CStringVector raw;
 
    if ( *tagged != *correct ) {
       
@@ -306,7 +306,7 @@ void CTagger::updateScores(const CSentenceTagged* tagged, const CSentenceTagged*
          const CWord &word = correct->at(i).first ;
          unsigned tag = CTag( correct->at(i).second ).code() ;
 
-         CSentenceRaw chars;
+         CStringVector chars;
          chars.clear(); 
          getCharactersFromUTF8String(correct->at(i).first, &chars);
 
@@ -331,7 +331,7 @@ void CTagger::updateScores(const CSentenceTagged* tagged, const CSentenceTagged*
  *
  *--------------------------------------------------------------*/
 
-void generate(const CStateItem *stateItem, CSentenceRaw *sentence, CTagger *tagger, CSentenceTagged *vReturn) {
+void generate(const CStateItem *stateItem, CStringVector *sentence, CTagger *tagger, CTwoStringVector *vReturn) {
    string s;
    for (int j=0; j<stateItem->size(); j++) { 
       s.clear();
@@ -351,7 +351,7 @@ void generate(const CStateItem *stateItem, CSentenceRaw *sentence, CTagger *tagg
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CSentenceRaw * sentence , const CSentenceTagged * correct , int round ) {
+void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , int round ) {
    cerr << "Not implemented" << endl;
    assert( 0 == 1 );
 }
@@ -360,11 +360,11 @@ void CTagger::train( const CSentenceRaw * sentence , const CSentenceTagged * cor
  *
  * tag - assign POS tags to a sentence
  *
- * Returns: makes a new instance of CSentenceTagged 
+ * Returns: makes a new instance of CTwoStringVector 
  *
  *--------------------------------------------------------------*/
 
-void CTagger::tag( const CSentenceRaw * sentence_input , CSentenceTagged * vReturn , SCORE_TYPE * out_scores , int nBest , const CBitArray * prunes ) {
+void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vReturn , SCORE_TYPE * out_scores , int nBest , const CBitArray * prunes ) {
    clock_t total_start_time = clock();;
    int index , start_index , generator_index , temp_index, word_length;
    const CStateItem * generator_item ; 
@@ -372,7 +372,7 @@ void CTagger::tag( const CSentenceRaw * sentence_input , CSentenceTagged * vRetu
    static CStateItem best_bigram[ PENN_TAG_COUNT ] ;
    unsigned tag, last_tag ; 
 
-   static CSentenceRaw sentence;
+   static CStringVector sentence;
    static CSegmentationPrune rules(m_nMaxSentSize); // 0 - no rules; 1 - append; 2 - separate
    rules.load(*sentence_input, sentence);
    const int length = sentence.size() ;

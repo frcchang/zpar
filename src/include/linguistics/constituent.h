@@ -84,7 +84,7 @@ class CCFGTree {
 
 public:
    vector<CCFGTreeNode> nodes;
-   CSentenceTagged words;
+   CTwoStringVector words;
    int root;
 
 public:
@@ -132,7 +132,7 @@ inline ostream & operator << (ostream &os, const CCFGTree &tree) {
 
 //==============================================================
 
-inline void UnparseSentence(const CCFGTree *parsed, CSentenceTagged *tagged) {
+inline void UnparseSentence(const CCFGTree *parsed, CTwoStringVector *tagged) {
    (*tagged) = parsed->words;
 }
 

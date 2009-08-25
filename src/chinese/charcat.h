@@ -38,6 +38,8 @@ static const CWord CH_PERIOD = CWord("。");
 static const CWord CH_DUN = CWord("、");
 static const CWord CH_SEMICOLON = CWord("；");
 static const CWord CH_COLON = CWord("：");
+static const CWord CH_EXCLAMATION = CWord("！");
+static const CWord CH_QUESTION = CWord("？");
 
 static const CWord starting_brackets[] = {
    CWord("（"), CWord("“"), CWord("《")
@@ -51,25 +53,36 @@ static const CWord separating_punctuations[] = {
    CH_COMMA, CH_PERIOD, CH_DUN, CH_SEMICOLON
 };
 
+static const CWord sentence_separators[] = {
+   CH_PERIOD, CH_EXCLAMATION, CH_QUESTION
+};
+
 inline int getStartingBracket(const CWord &word) {
-   for (int i=0; i<3; i++)
+   for (int i=0; i<sizeof(starting_brackets)/sizeof(CWord); i++)
       if (word==starting_brackets[i])
          return i;
    return -1;
 }
 
 inline int getEndingBracket(const CWord &word) {
-   for (int i=0; i<3; i++)
+   for (int i=0; i<sizeof(ending_brackets)/sizeof(CWord); i++)
       if (word==ending_brackets[i])
          return i;
    return -1;
 }
 
 inline int getSeparatingPunctuation(const CWord &word) {
-   for (int i=0; i<4; i++)
+   for (int i=0; i<sizeof(separating_punctuations)/sizeof(CWord); i++)
       if (word==separating_punctuations[i])
          return i;
    return -1;
+}
+
+inline bool isSentenceSeparator(const CWord &word) {
+   for (unsigned i=0; i<sizeof(sentence_separators)/sizeof(CWord); i++)
+      if (word==sentence_separators[i])
+         return true;
+   return false;
 }
 
 /*===============================================================

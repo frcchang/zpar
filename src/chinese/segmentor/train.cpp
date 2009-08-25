@@ -34,7 +34,7 @@ void extract_features(const string &sTextFile, const string &sFeatureFile) {
    cout << "Extracting features...";
    CSegmentor *segmentor;
    segmentor = new CSegmentor(sFeatureFile, true);
-   CSentenceRaw *ref_sent = new CSentenceRaw; 
+   CStringVector *ref_sent = new CStringVector; 
    CSentenceReader ref_reader(sTextFile);
    
    while( ref_reader.readSegmentedSentence(ref_sent) ) {
@@ -58,8 +58,8 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
    CSegmentor *segmentor;
    segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict);
    CSentenceReader ref_reader(sOutputFile);
-   CSentenceRaw *input_sent = new CSentenceRaw;
-   CSentenceRaw *ref_sent = new CSentenceRaw; 
+   CStringVector *input_sent = new CStringVector;
+   CStringVector *ref_sent = new CStringVector; 
    CCharCatDictionary char_information;
 
    int nCount=0;
@@ -95,9 +95,9 @@ void train(const string &sOutputFile, const string &sFeatureFile, const bool &bA
    CSentenceWriter ref_writer("");
    CSentenceWriter output_writer("");
 #endif
-   CSentenceRaw *input_sent = new CSentenceRaw;
-   CSentenceRaw *ref_sent = new CSentenceRaw; 
-   CSentenceRaw *output_sent = new CSentenceRaw;
+   CStringVector *input_sent = new CStringVector;
+   CStringVector *ref_sent = new CStringVector; 
+   CStringVector *output_sent = new CStringVector;
    CCharCatDictionary char_information;
 
    int nCount=0;

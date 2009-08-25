@@ -29,7 +29,7 @@ public:
 
 public:
    // this method will produce a new sentence that does not contain spa
-   void load( const CSentenceRaw &sentence_input, CSentenceRaw &sentence) {
+   void load( const CStringVector &sentence_input, CStringVector &sentence) {
       sentence.clear();
       reset();
 
