@@ -1,0 +1,21 @@
+
+
+SRC_DOC2SNT = $(SRC_CHINESE)/doc2snt
+DIST_DOC2SNT = $(DIST_DIR)/doc2snt
+OBJECT_DOC2SNT = $(OBJECT_DIR)/doc2snt
+$(DIST_DOC2SNT):
+	mkdir -p $(DIST_DOC2SNT)
+$(OBJECT_DOC2SNT):
+	mkdir $(OBJECT_DOC2SNT)
+doc2snt: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DOC2SNT) $(DIST_DOC2SNT) $(DIST_DOC2SNT)/doc2snt 
+	@echo The Chinese word doc2snt system is compiled successfully into $(DIST_DOC2SNT).
+
+# the doc2snt function object, processed differently
+$(OBJECT_DIR)/doc2snt.o:$(SRC_DOC2SNT)/doc2snt.h $(SRC_DOC2SNT)/include.h $(SRC_DOC2SNT)/doc2snt.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -c $(SRC_DOC2SNT)/doc2snt.cpp -o $(OBJECT_DIR)/doc2snt.o
+
+# the doc2snt executable
+$(DIST_DOC2SNT)/doc2snt: $(SRC_DOC2SNT)/main.cpp $(OBJECT_DIR)/doc2snt.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -c $(SRC_DOC2SNT)/main.cpp -o $(OBJECT_DOC2SNT)/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_DOC2SNT)/doc2snt $(OBJECT_DIR)/doc2snt.o $(OBJECT_DOC2SNT)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
+
