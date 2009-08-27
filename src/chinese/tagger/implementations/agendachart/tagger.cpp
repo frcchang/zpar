@@ -100,8 +100,8 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
 
    // about the tags 
    const unsigned &tag = item->getTag( index ) ;
-   const unsigned &last_tag = index>0 ? item->getTag( index-1 ) : PENN_TAG_BEGIN ;
-   const unsigned &second_last_tag = index>1 ? item->getTag(index-2) : PENN_TAG_BEGIN ;
+   const unsigned &last_tag = index>0 ? item->getTag( index-1 ) : CTag::SENTENCE_BEGIN ;
+   const unsigned &second_last_tag = index>1 ? item->getTag(index-2) : CTag::SENTENCE_BEGIN ;
 
    static CTaggedWord<CTag> wt1, wt2;
    static CTwoTaggedWords wt12;
@@ -369,7 +369,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    int index , start_index , generator_index , temp_index, word_length;
    const CStateItem * generator_item ; 
    CStateItem *candidate_item , tempState , maxState ;
-   static CStateItem best_bigram[ PENN_TAG_COUNT ] ;
+   static CStateItem best_bigram[ CTag::COUNT ] ;
    unsigned tag, last_tag ; 
 
    static CStringVector sentence;
@@ -409,7 +409,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
       // enumerating the possible tags
       // =============================
       // the tag 0 is the NONE tag, and tag 1 is the BEGIN tag
-      for ( tag = PENN_TAG_FIRST ; tag < PENN_TAG_COUNT ; ++ tag ) {
+      for ( tag = CTag::FIRST ; tag <= CTag::LAST ; ++ tag ) {
 
          start_index = index-1 ; // the end index of last word
          word_length = 1 ; // current word length
@@ -435,7 +435,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   ) // wordtag match
                ) {
                if (nBest==1) {
-                  for ( temp_index = 0 ; temp_index < PENN_TAG_COUNT ; temp_index ++ ) //@@@
+                  for ( temp_index = 0 ; temp_index < CTag::COUNT ; temp_index ++ ) //@@@
                      best_bigram[ temp_index ].clear() ;                               //@@@
                }
                for ( generator_index = 0 ; generator_index < m_Chart[ start_index+1 ]->size() ; ++ generator_index ) {
@@ -444,7 +444,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   tempState.append( index , tag ) ;
                   tempState.score += getOrUpdateLocalScore( &sentence , &tempState , tempState.size()-1 ) ;
                   if (nBest==1) {
-                     last_tag = generator_item->size() == 0 ? PENN_TAG_BEGIN : generator_item->getTag( generator_item->size() - 1 );
+                     last_tag = generator_item->size() == 0 ? CTag::SENTENCE_BEGIN : generator_item->getTag( generator_item->size() - 1 );
                      if ( best_bigram[last_tag].size() == 0 || tempState > best_bigram[last_tag] ) //@@@
                         best_bigram[last_tag].copy(&tempState);                                       //@@@
                   }
@@ -453,7 +453,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   }
                }
                if (nBest==1) {
-                  for ( temp_index=0; temp_index<PENN_TAG_COUNT; temp_index++ ) { //@@@
+                  for ( temp_index=0; temp_index<CTag::COUNT; temp_index++ ) { //@@@
                      if ( best_bigram[ temp_index ].size() != 0 ) {        //@@@
 //                        candidate_item = m_Chart[ index+1 ]->newItem();       //@@@
 //                        candidate_item->copy( &(best_bigram[temp_index]) );   //@@@

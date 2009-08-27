@@ -21,11 +21,12 @@ namespace tagger {
 typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 typedef CScoreMap< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
+typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
+typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
+typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 typedef CHashMap< CWord, int > CWordToIntMap;
 typedef CHashMap< pair<CWord, int>, int > CWordIntToIntMap;
-typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
-typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 
 /*===============================================================
  *
@@ -37,14 +38,14 @@ class CWeight : public CWeightBase {
 
 public: 
 
-   int m_maxLengthByTag[PENN_TAG_COUNT+1];
-   int getMaxWordLength() const {return m_maxLengthByTag[PENN_TAG_COUNT];}
-   void setMaxLengthByTag(int tag, int length) {
+   unsigned m_maxLengthByTag[CTag::COUNT+1];
+   unsigned getMaxWordLength() const {return m_maxLengthByTag[CTag::COUNT];}
+   void setMaxLengthByTag(unsigned tag, unsigned length) {
       if (length<=m_maxLengthByTag[tag])
          return;
       m_maxLengthByTag[tag]=length;
-      if (length>m_maxLengthByTag[PENN_TAG_COUNT])
-         m_maxLengthByTag[PENN_TAG_COUNT]=length;
+      if (length>m_maxLengthByTag[CTag::COUNT])
+         m_maxLengthByTag[CTag::COUNT]=length;
    }
 
    // feature templates about words
@@ -130,11 +131,11 @@ public:
                                                     m_mapSeparateCharCat("SeparateCharCat", 16381) , 
                                                     m_mapConsecutiveCharCat("ConsecutiveCharCat", 16381) ,
 
-                                                    m_mapTagDictionary(PENN_TAG_COUNT),
-                                                    m_mapCharTagDictionary(PENN_TAG_COUNT) 
+                                                    m_mapTagDictionary(CTag::COUNT),
+                                                    m_mapCharTagDictionary(CTag::COUNT) 
 
    { 
-      for (int i=0; i<=PENN_TAG_COUNT; ++i) m_maxLengthByTag[i] = 1; 
+      for (int i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
       loadScores();
    }

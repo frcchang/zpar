@@ -25,7 +25,7 @@ $(OBJECT_TAGGER)/weight.o: $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp -o $(OBJECT_TAGGER)/weight.o
 
 # the tagger module
-$(OBJECT_DIR)/chinese.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp $(SRC_TAGGER)/tagger_base.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/impl_include.h ./Makefile
+$(OBJECT_DIR)/chinese.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE)/tags.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp $(SRC_TAGGER)/tagger_base.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/impl_include.h ./Makefile
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/tagger.cpp -o $(OBJECT_DIR)/chinese.postagger.o
 
 # the tagger executable
