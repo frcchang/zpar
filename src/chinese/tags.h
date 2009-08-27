@@ -11,136 +11,33 @@
 #ifndef _CHINESE_TAGS_H
 #define _CHINESE_TAGS_H 1
 
-#include <string>
+//#include <string>
+#include "pos/penn.h"
 
 namespace chinese {
 
-// the penn tag set
-// Modify the following three constants together, keeping consistency!
-const string PENN_TAG_STRINGS[] = {
-   "-NONE-",
-   "-BEGIN-",
-   "-END-",
-   "NN", "VV", 
-   "NR", "AD", 
-   "P", "CD", "M", "JJ", 
-   "DEC", "DEG", 
-   "NT", "CC", "VA", "LC",  
-   "PN", "DT", "VC", "AS", "VE", 
-   "OD", 
-   "ETC", "MSP", "CS", "BA", 
-   "DEV", "SB", "SP", "LB", 
-   "FW", "DER", "PU", 
-};
-
-
-enum PENN_TAG_CONSTANTS {
-   PENN_TAG_NONE=0, 
-   PENN_TAG_BEGIN,
-   PENN_TAG_END,
-   PENN_TAG_NN, PENN_TAG_VV, 
-   PENN_TAG_NR, PENN_TAG_AD, 
-   PENN_TAG_P, PENN_TAG_CD, PENN_TAG_M, PENN_TAG_JJ,
-   PENN_TAG_DEC, PENN_TAG_DEG, 
-   PENN_TAG_NT, PENN_TAG_CC, PENN_TAG_VA, PENN_TAG_LC, 
-   PENN_TAG_PN, PENN_TAG_DT, PENN_TAG_VC, PENN_TAG_AS, PENN_TAG_VE, 
-   PENN_TAG_OD, 
-   PENN_TAG_ETC, PENN_TAG_MSP, PENN_TAG_CS, PENN_TAG_BA,
-   PENN_TAG_DEV, PENN_TAG_SB, PENN_TAG_SP, PENN_TAG_LB,
-   PENN_TAG_FW, PENN_TAG_DER, PENN_TAG_PU, 
-   PENN_TAG_COUNT
-};
-
-const int PENN_TAG_FIRST = 3;
-const int PENN_TAG_COUNT_BITS = 6; // 32 < bits < 64, takes 6 bits
-
-const bool PENN_TAG_CLOSED[] = {
-   false,
-   false,
-   false,
-   false, false, 
-   false, false, 
-   true, false, false, false,  
-   true, true, 
-   false, true, false, true, 
-   true, true, true, true, true, 
-   false, 
-   true, true, true, true, 
-   true, true, true, true, 
-   false, true, true, 
-};
-
-//===============================================================
-
-class CTag {
-public:
-   const static char SEPARATOR = '_';
-
-protected:
-   unsigned int m_code;
-
-public:
-   CTag() { m_code=PENN_TAG_COUNT; }
-   CTag(PENN_TAG_CONSTANTS t) { 
-      m_code=t; 
-   }
-   CTag(int t) { 
-      m_code=t; 
-   }
-   CTag(const string &s) { load(s); }
-   virtual ~CTag() {}
-
-public:
-   unsigned int code() const { return m_code; }
-   string str() const { 
-      assert(m_code<(1<<PENN_TAG_COUNT_BITS)) ; 
-      if (m_code>=PENN_TAG_COUNT) {
-         stringstream ss; 
-         ss << "EXTRA(";
-         ss << m_code;
-         ss << ")";
-         return ss.str();
-      }
-      return PENN_TAG_STRINGS[m_code]; 
-   }
-   void load(const string &s) {
-      m_code = PENN_TAG_NONE ;
-      for (int i=1; i<PENN_TAG_COUNT; i++)
-         if (PENN_TAG_STRINGS[i] == s)
-            m_code = i;
-   }
-
-public:
-   bool operator == (const CTag &t1) const { return m_code == t1.m_code; }
-   bool operator < (const CTag &t1) const { return m_code < t1.m_code; }
-   bool operator > (const CTag &t1) const { return m_code > t1.m_code; }
-   bool operator <= (const CTag &t1) const { return m_code <= t1.m_code; }
-   bool operator >= (const CTag &t1) const { return m_code >= t1.m_code; }
-};
-
-//===============================================================
-
 inline unsigned int encodeTags(const unsigned &tag1, const unsigned &tag2) {
-   assert((tag2>>PENN_TAG_COUNT_BITS)==0);
-   return (tag1<<PENN_TAG_COUNT_BITS) | tag2;
+   assert((tag2>>CTag::SIZE)==0);
+   return (tag1<<CTag::SIZE) | tag2;
 }
 inline unsigned int encodeTags(const unsigned &tag1, const unsigned &tag2, const unsigned &tag3) {
-   return (tag1<<PENN_TAG_COUNT_BITS*2) | (tag2<<PENN_TAG_COUNT_BITS) | tag3 ;
+   return (tag1<<CTag::SIZE*2) | (tag2<<CTag::SIZE) | tag3 ;
 }
 inline unsigned int encodeTags(const unsigned &tag1, const unsigned &tag2, const unsigned &tag3, const unsigned &tag4) {
-   return (tag1<<PENN_TAG_COUNT_BITS*3) | (tag2<<PENN_TAG_COUNT_BITS*2) |
-          (tag3<<PENN_TAG_COUNT_BITS) | tag4 ;
+   return (tag1<<CTag::SIZE*3) | (tag2<<CTag::SIZE*2) |
+          (tag3<<CTag::SIZE) | tag4 ;
 }
 
 inline unsigned int encodeTags(const CTag &tag1, const CTag &tag2) {
-   return (tag1.code()<<PENN_TAG_COUNT_BITS) | tag2.code();
+   return (tag1.code()<<CTag::SIZE) | tag2.code();
 }
 inline unsigned int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3) {
-   return (tag1.code()<<PENN_TAG_COUNT_BITS*2) | (tag2.code()<<PENN_TAG_COUNT_BITS) | tag3.code() ;
+   return (tag1.code()<<CTag::SIZE*2) | (tag2.code()<<CTag::SIZE) | tag3.code() ;
 }
 inline unsigned int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3, const CTag &tag4) {
-   return (tag1.code()<<PENN_TAG_COUNT_BITS*3) | (tag2.code()<<PENN_TAG_COUNT_BITS*2) |
-          (tag3.code()<<PENN_TAG_COUNT_BITS) | tag4.code() ;
+   assert( CTag::SIZE*4<sizeof(unsigned)*8 ); 
+   return (tag1.code()<<CTag::SIZE*3) | (tag2.code()<<CTag::SIZE*2) |
+          (tag3.code()<<CTag::SIZE) | tag4.code() ;
 }
 
 }; // namespace chinese

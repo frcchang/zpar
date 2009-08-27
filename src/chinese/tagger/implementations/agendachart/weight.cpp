@@ -85,7 +85,7 @@ void CWeight::loadScores() {
    getline(is, st);
    assert(st=="Maximum wordlen by tag");
    string ts;
-   for (int i=0; i<PENN_TAG_COUNT; i++) {
+   for (int i=0; i<CTag::COUNT; i++) {
       istringstream iss;
       getline(is, st);
       iss.str(st);
@@ -98,7 +98,7 @@ void CWeight::loadScores() {
       istringstream iss;
       getline(is, st);
       iss.str(st);
-      iss >> ts >> m_maxLengthByTag[PENN_TAG_COUNT];
+      iss >> ts >> m_maxLengthByTag[CTag::COUNT];
       assert(ts=="All");
    }
 
@@ -125,9 +125,9 @@ void CWeight::saveScores() {
    os << "Maximum frequency" << endl;
    os << m_nMaxWordFrequency << endl;
    os << endl << "Maximum wordlen by tag" << endl;
-   for (int i=0; i<PENN_TAG_COUNT; i++)
+   for (int i=0; i<CTag::COUNT; i++)
       os << CTag(i).str() << "\t" << m_maxLengthByTag[i] << endl;
-   os << "All\t" << m_maxLengthByTag[PENN_TAG_COUNT] << endl;
+   os << "All\t" << m_maxLengthByTag[CTag::COUNT] << endl;
    cout << " done." << endl;
 }
 
