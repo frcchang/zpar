@@ -21,13 +21,13 @@ void CSentenceWriter::writeLine() {
 };
 
 void CSentenceWriter::writeSentence(const CStringVector* sentence, const string separator) {
-   for (int i=0; i<sentence->size(); i++)
+   for (int i=0; i<sentence->size(); ++i)
       (*m_oStream) << sentence->at(i) << separator;
    (*m_oStream) << endl;
 };
 
 void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char separator) {
-   for (int i=0; i<sentence->size(); i++) {
+   for (int i=0; i<sentence->size(); ++i) {
       if (i>0)
          m_oStream->put(' ');
       for (int j=0; j<sentence->at(i).first.length(); j++)

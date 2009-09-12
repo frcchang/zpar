@@ -197,17 +197,17 @@ SCORE_TYPE getAppendScore(CSegmentor *segmentor, const CStringVector* sentence, 
    // about the chars
    static int char_info; // start, middle, end or standalone
    char_info = encodeCharSegmentation(bWordStart, false);
-   const unsigned int end = item->getWordEnd(index);
+   const unsigned long int end = item->getWordEnd(index);
    assert( end<sentence->size()-1 );
 
    retval = 0;
    // ===================================================================================
    // character scores 
-   for (tmp_i = max(0, static_cast<int>(end)-0); tmp_i < min(static_cast<unsigned>(sentence->size()), end+1); ++tmp_i) 
+   for (tmp_i = max(0, static_cast<int>(end)-0); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+1); ++tmp_i) 
       retval += weight.m_mapCharUnigram.getScore( make_pair( segmentor->findWordFromCache(tmp_i,1,sentence),
                                                              encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score);
 
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned>(sentence->size())-1, end+1); ++tmp_i) 
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) 
       retval += weight.m_mapCharBigram.getScore( make_pair( segmentor->findWordFromCache(tmp_i,2,sentence),
                                                             encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score);
 
@@ -287,12 +287,12 @@ void updateFullWordScore(CSegmentor *segmentor, const CStringVector* sentence, c
    static int tmp_i;
    for (int current=start; current<=end; current++) {
       char_info = encodeCharSegmentation(current==start, current==end);
-      for (tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()), current+2); tmp_i++) 
+      for (tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()), current+2); tmp_++i) 
          weight.m_mapCharUnigram.updateScore( make_pair( segmentor->replaceWordToCache(tmp_i,1,sentence),
                                                          encodeCharInfoAndPosition(char_info, tmp_i-current) ), 
                                               amount, round);
    
-      for (tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()-1), current+1); tmp_i++) 
+      for (tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()-1), current+1); tmp_++i) 
          weight.m_mapCharBigram.updateScore( make_pair( segmentor->replaceWordToCache(tmp_i,2,sentence),
                                                         encodeCharInfoAndPosition(char_info, tmp_i-current) ),
                                              amount, round);
@@ -362,8 +362,8 @@ void updateFullWordScore(CSegmentor *segmentor, const CStringVector* sentence, c
 
 void updatePartialWordScore(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* item, int index, SCORE_TYPE amount, int round){
    int char_info;
-   const unsigned int start = item->getWordStart(index);
-   const unsigned int end = item->getWordEnd(index);
+   const unsigned long int start = item->getWordStart(index);
+   const unsigned long int end = item->getWordEnd(index);
    assert( end<sentence->size()-1 );
    // abbreviation weight
    CWeight &weight = segmentor->getWeights();
@@ -372,12 +372,12 @@ void updatePartialWordScore(CSegmentor *segmentor, const CStringVector* sentence
    int tmp_i ;
    for (int current=start; current<=end; current++) {
       char_info = encodeCharSegmentation(current==start, false);
-      for (int tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()), current+2); tmp_i++) 
+      for (int tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()), current+2); tmp_++i) 
          weight.m_mapCharUnigram.updateScore( make_pair( segmentor->replaceWordToCache(tmp_i,1,sentence),
                                                          encodeCharInfoAndPosition(char_info, tmp_i-current) ),
                                               amount, round);
    
-      for (int tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()-1), current+1); tmp_i++) 
+      for (int tmp_i = max(0, current-1); tmp_i < min(static_cast<int>(sentence->size()-1), current+1); tmp_++i) 
          weight.m_mapCharBigram.updateScore( make_pair( segmentor->replaceWordToCache(tmp_i,2,sentence),
                                                         encodeCharInfoAndPosition(char_info, tmp_i-current) ), 
                                              amount, round);
@@ -528,12 +528,12 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
    int m, n;                                    // temporary nums
    int index, temp_index;                       // the index of the current char
    int add_score, subtract_score;               // the score to be subtracted (previous item)
-   static unsigned int doneWordRnd[MAX_SENTENCE_SIZE];  // mask whether candidate with the last word has been cached
-   static unsigned int doneWordLink[MAX_SENTENCE_SIZE]; // link to the corresponding cache state item from word_length + 1
+   static unsigned long int doneWordRnd[MAX_SENTENCE_SIZE];  // mask whether candidate with the last word has been cached
+   static unsigned long int doneWordLink[MAX_SENTENCE_SIZE]; // link to the corresponding cache state item from word_length + 1
    static CStateItem doneWordItems[BEAM_SIZE];          // the allocated cache state items stores the candidates
    static int doneItemPointer; 
    static CStateItem temp_it, candidate;
-   unsigned int word_length;
+   unsigned long int word_length;
    bool bCompatible; 
    const int length = sentence.size();
 
@@ -697,7 +697,7 @@ void CSegmentor::train(const CStringVector* sentence_input, const CStringVector*
    static CStringVector sentence;
    static CRule rules(m_Feature->m_bRule);
    rules.segment(sentence_input, &sentence);
-   const unsigned int length = sentence.size();
+   const unsigned long int length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);
 
@@ -744,7 +744,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    static CStringVector sentence;
    static CPrune rules;                         // 0 - no rules; 1 - append; 2 - separate
    segmentationRules(sentence_input, m_CharCatForRules, &sentence, &rules); 
-   const unsigned int length = sentence.size();
+   const unsigned long int length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);
    assert(vReturn!=NULL);

@@ -56,7 +56,7 @@ void process(string sInputFile, string sOutputFile, string sFeatureDB) {
    while( input_file ) {
       cout << "Sentence " << ++nCount << endl;
       int index=0;
-      for (int i=0; i<nTagAll; i++) {
+      for (int i=0; i<nTagAll; ++i) {
          for (int j=0; j<nParseAll; j++) {
             input_file >> tmp_sent;
             tagging_prior_file >> tmp_score[0];

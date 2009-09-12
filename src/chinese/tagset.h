@@ -11,7 +11,7 @@
 #ifndef _TAGSET_H
 #define _TAGSET_H
 
-#include "hash.h"
+namespace chinese {
 
 /*===============================================================
  *
@@ -19,28 +19,27 @@
  *
  *==============================================================*/
 
-template<unsigned size>
+template<unsigned long size>
 class CTagSet {
 
 protected:
    unsigned long m_nHash;
 
 public:
-   CTagSet() : { clear(); }
+   CTagSet() : m_nHash(0) { }
+   CTagSet(const unsigned long hash) : m_nHash(hash) { assert(hash>>(CTag::SIZE*size)==0); }
    virtual ~CTagSet() {}
-
-public:
 
 private:
    void operator += (const CTag &i) { 
-      m_nHash = (m_nHash<<CTag::SIZE) | i;
+      m_nHash = (m_nHash<<CTag::SIZE) | i.code();
    }
-   unsigned getTag(const unsigned &tc) const {
+   unsigned long getTag(const unsigned long &tc) const {
       return tc & ((1<<(CTag::SIZE-1))-1);
    }
 
 public:
-   virtual unsigned long int hash() const { return m_nHash; }
+   virtual const unsigned long &hash() const { return m_nHash; }
    virtual bool operator == (const CTagSet &set) const { 
       return m_nHash == set.m_nHash; 
    }
@@ -56,8 +55,8 @@ public:
    const string str() const { 
       string retval = "";
       unsigned long hs = m_nHash;
-      unsigned tc;
-      for (unsigned i=0; i<size; ++i) {
+      unsigned long tc;
+      for (unsigned long i=0; i<size; ++i) {
          if (retval.empty()==false) retval = " " + retval;
          tc = hs & ((1 << CTag::SIZE) -1);
          retval = CTag(tc).str() + retval;
@@ -70,7 +69,7 @@ public:
       istringstream iss(s);
       static string t;
       iss >> t;
-      for (unsigned i=0; i<size; ++i) {
+      for (unsigned long i=0; i<size; ++i) {
          assert(iss.good());
          *this += CTag(t).code();
          iss >> t;
@@ -79,10 +78,17 @@ public:
    bool clear() { m_nHash = 0; }
 };
 
+};
+
 //===============================================================
 
-template<unsigned size>
-inline istream & operator >> (istream &is, CTagSet<size> &c) {
+template<unsigned long size>
+inline const unsigned long &hash(const chinese::CTagSet<size> &set) {return set.hash();}
+
+//===============================================================
+
+template<unsigned long size>
+inline istream & operator >> (istream &is, chinese::CTagSet<size> &c) {
 
    string s;
    string t;
@@ -102,8 +108,8 @@ inline istream & operator >> (istream &is, CTagSet<size> &c) {
    return is;
 }
 
-template<unsigned size>
-inline ostream & operator << (ostream &os, const CTagSet<size> &c) {
+template<unsigned long size>
+inline ostream & operator << (ostream &os, const chinese::CTagSet<size> &c) {
 
    os << "[ ";
    os << c.str();
@@ -111,9 +117,6 @@ inline ostream & operator << (ostream &os, const CTagSet<size> &c) {
 
    return os;
 }
-
-template<unsigned size>
-inline unsigned long int hash(const CTagSet<size> &set) {return set.hash();}
 
 #endif
 

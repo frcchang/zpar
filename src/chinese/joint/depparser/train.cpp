@@ -62,7 +62,7 @@ void train(string sInputFile, string sReferenceFile, string sFeatureDB) {
    while( !(correct.empty()) ) {
       cout << "Sentence " << ++nCount << endl;
       int index=0;
-      for (int i=0; i<nTagAll; i++) {
+      for (int i=0; i<nTagAll; ++i) {
          for (int j=0; j<nParseAll; j++) {
             input_file >> tmp_sent;
             tagging_score_file >> tmp_priors[0];
@@ -111,7 +111,7 @@ outputs, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
       return 1;
    }
 
-   for (int i=0; i<atoi(argv[4]); i++)
+   for (int i=0; i<atoi(argv[4]); ++i)
       train(argv[1], argv[2], argv[3]);
    return 0;
 }

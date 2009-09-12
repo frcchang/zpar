@@ -14,7 +14,7 @@
 #include "hash.h"
 #include "linguistics/word.h"
 
-class CLexiconSet : public CHashMap<CWord, unsigned> {
+class CLexiconSet : public CHashMap<CWord, unsigned long> {
 public:
    void add(const CWord &word) { (*this)[word]=1; }
    bool contains(const CWord &word) { return static_cast<bool>(find(word, 0)); }

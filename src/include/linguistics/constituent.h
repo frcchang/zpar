@@ -32,7 +32,7 @@ public:
    bool head_left; // double children
    bool temp;
    // fields for constituents
-   unsigned constituent;
+   unsigned long constituent;
    int left_child;
    int right_child;
    // fields for tokens

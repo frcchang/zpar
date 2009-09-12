@@ -73,7 +73,7 @@ Arguments:\n\
    bool bKnowledge = false;
 
    if (argc>4) {
-      for (int i=4; i<argc; i++) {
+      for (int i=4; i<argc; ++i) {
          if (argv[i][0]!='-') { cout << "\nUsage: " << argv[0] << hint << endl ; return 1; }
          switch (argv[i][1]) {
             case 'k':

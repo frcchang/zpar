@@ -23,9 +23,9 @@ class CStateItem {
 
 protected:
    // words and tags
-   unsigned *m_lWords; 
-   unsigned *m_lTags;
-   unsigned m_nLength; // the length of the sentence means the number of words it contains
+   unsigned long *m_lWords; 
+   CTag *m_lTags;
+   unsigned long m_nLength; // the length of the sentence means the number of words it contains
 
    // action
    enum ACTION_TYPE { eNoAction=0, eAppend, eSeparate };
@@ -40,9 +40,19 @@ public:
 
    // constructor and destructor
 
-   CStateItem() { m_lWords = new unsigned [MAX_SENTENCE_SIZE]; m_lTags = new unsigned[MAX_SENTENCE_SIZE]; clear(); }
-   ~CStateItem() { delete[] m_lWords; delete[] m_lTags; }
-   CStateItem(CStateItem& item) { cerr<<"CStateItem does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CStateItem() { 
+      m_lWords = new unsigned long [MAX_SENTENCE_SIZE]; 
+      m_lTags = new CTag[MAX_SENTENCE_SIZE]; 
+      clear(); 
+   }
+   ~CStateItem() { 
+      delete[] m_lWords; 
+      delete[] m_lTags; 
+   }
+      
+   CStateItem(CStateItem& item) { 
+      THROW("CStateItem does not support copy constructor!"); 
+   }
 
 public:
 
@@ -54,7 +64,7 @@ public:
 
    bool operator == (const CStateItem &item) {
       if ( m_nLength != item.m_nLength ) return false;
-      for ( int i=0; i<m_nLength; i++ ) {
+      for ( int i=0; i<m_nLength; ++i ) {
          if ( m_lWords[i] != item.m_lWords[i] ) return false;
          if ( m_lTags[i] != item.m_lTags[i] ) return false;
       }
@@ -68,7 +78,7 @@ public:
    void copy(const CStateItem *from) {
       m_nLength = from->m_nLength;
       score = from->score;
-      for (int i=0; i<m_nLength; i++) {
+      for (int i=0; i<m_nLength; ++i) {
          m_lWords[i] = from->m_lWords[i];
          m_lTags[i] = from->m_lTags[i];
       }
@@ -85,43 +95,43 @@ public:
 
    // information about segmentation
 
-   inline const unsigned getWordStart(const unsigned &i) const { return i>0?m_lWords[i-1]+1:0; }
+   inline const unsigned long getWordStart(const unsigned long &i) const { return i>0?m_lWords[i-1]+1:0; }
 
-   inline const unsigned getWordEnd(const unsigned &i) const { return m_lWords[i]; }
+   inline const unsigned long getWordEnd(const unsigned long &i) const { return m_lWords[i]; }
 
-   inline const unsigned getWordLength(const unsigned &i) const { return i>0?m_lWords[i]-m_lWords[i-1]:m_lWords[0]+1;}
+   inline const unsigned long getWordLength(const unsigned long &i) const { return i>0?m_lWords[i]-m_lWords[i-1]:m_lWords[0]+1;}
 
-   inline const unsigned size() const { return m_nLength; }
+   inline const unsigned long size() const { return m_nLength; }
 
    // the traditional interface
 
-   void append(const unsigned &char_index, const unsigned &tag) {
+   void append(const unsigned long &char_index, const unsigned long &tag) {
       m_lWords[m_nLength] = char_index;
       m_lTags[m_nLength] = tag;
       ++m_nLength ;
    }
 
-   void append(const unsigned &char_index) {
+   void append(const unsigned long &char_index) {
       m_lWords[m_nLength] = char_index;
-      m_lTags[m_nLength] = PENN_TAG_NONE;
+      m_lTags[m_nLength] = CTag::NONE;
       ++m_nLength ;
    }
 
-   inline void replace(const unsigned &char_index, const unsigned &tag) {
+   inline void replace(const unsigned long &char_index, const unsigned long &tag) {
       m_lWords[m_nLength-1] = char_index;
       m_lTags[m_nLength-1] = tag;
    }
 
-   inline void replace(const unsigned &char_index) {
+   inline void replace(const unsigned long &char_index) {
       m_lWords[m_nLength-1] = char_index;
-      m_lTags[m_nLength-1] = PENN_TAG_NONE;
+      m_lTags[m_nLength-1] = CTag::NONE;
    }
 
-   inline void setTag(const unsigned &index, const unsigned &tag) {
+   inline void setTag(const unsigned long &index, const unsigned long &tag) {
       m_lTags[index] = tag;
    }
 
-   inline unsigned getTag(const unsigned &index) const {
+   inline const CTag &getTag(const unsigned long &index) const {
       return m_lTags[index];
    }
 
@@ -129,12 +139,14 @@ public:
 
    // action based - appending / separating ? 
 
-   unsigned getLastTag() {
-      if ( m_nLength == 0 ) return PENN_TAG_BEGIN ;
-      if ( m_lTags[m_nLength-1] == PENN_TAG_NONE ) {
+   const CTag &getLastTag() const {
+      const static CTag begin(CTag::SENTENCE_BEGIN);
+      const static CTag none(CTag::NONE);
+      if ( m_nLength == 0 ) return begin ;
+      if ( m_lTags[m_nLength-1] == none ) {
          assert( m_nAction == eAppend ) ; 
-         if ( m_nLength == 1 ) return PENN_TAG_BEGIN ; 
-         assert( m_lTags[m_nLength-2] != PENN_TAG_NONE ) ;
+         if ( m_nLength == 1 ) return begin ; 
+         assert( m_lTags[m_nLength-2] != none ) ;
          return m_lTags[m_nLength-2] ;
       }
       return m_lTags[m_nLength-1];
@@ -164,7 +176,7 @@ public:
       if (item->m_nLength==0) return true;
       assert( item->m_nLength <= m_nLength );
       const int &length = item->m_nLength;
-      for (int i=0; i<length-1; i++) {
+      for (int i=0; i<length-1; ++i) {
          if (m_lWords[i] != item->m_lWords[i]) return false;
          if (m_lTags[i] != item->m_lTags[i]) return false;
       }

@@ -49,7 +49,7 @@ int CReranker::findBest(const CStringVector &raw) {
    static CBitArray wds(MAX_SENTENCE_SIZE);
    double ranking_score;
    m_segmentor->segment(&raw, m_scratch_seg, m_scores_seg, m_nBest);
-   for (int i=0; i<m_nBest; i++) {
+   for (int i=0; i<m_nBest; ++i) {
       recordSegmentation(&raw, m_scratch_seg+i, wds);
       m_tagger->tag(&raw, m_scratch_tag+i, m_scores_tag+i, 1, &wds); 
       if (m_scratch_tag[i].empty()) continue;

@@ -17,16 +17,16 @@
 
 //=============================================================
 
-inline unsigned encodeTorC(const unsigned &tagorconstituent, const bool &tag) {
+inline unsigned long encodeTorC(const unsigned long &tagorconstituent, const bool &tag) {
    assert((tagorconstituent&(1<<(PENN_CON_TAG_COUNT_BITS-1)))==0);
    return tagorconstituent | (tag?(1<<(PENN_CON_TAG_COUNT_BITS-1)):0);
 }
-inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned &toc2) {
+inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long &toc2) {
    assert((toc2>>PENN_CON_TAG_COUNT_BITS)==0);
    return (toc1<<PENN_CON_TAG_COUNT_BITS) | toc2;
 }
 
-inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned &toc2, const unsigned &toc3) {
+inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long &toc2, const unsigned long &toc3) {
    assert((toc2>>PENN_CON_TAG_COUNT_BITS)==0);
    assert((toc3>>PENN_CON_TAG_COUNT_BITS)==0);
    return (toc1<<(PENN_CON_TAG_COUNT_BITS*2)) | (toc2<<PENN_CON_TAG_COUNT_BITS) | toc3;
@@ -48,17 +48,17 @@ public:
    virtual ~CCFGSet() {}
 
 public:
-   void operator += (const unsigned &i) { 
+   void operator += (const unsigned long &i) { 
       assert(i>>PENN_CON_TAG_COUNT_BITS==0);
       assert(m_nHash>>(PENN_CON_TAG_COUNT_BITS*(CFGSET_SIZE-1))==0);
       m_nHash = (m_nHash<<PENN_CON_TAG_COUNT_BITS)|i;
    }
 
 private:
-   bool isTag(const unsigned &tc) const {
+   bool isTag(const unsigned long &tc) const {
       return tc & (1<<(PENN_CON_TAG_COUNT_BITS-1));
    }
-   unsigned getTag(const unsigned &tc) const {
+   unsigned long getTag(const unsigned long &tc) const {
       return tc & ((1<<(PENN_CON_TAG_COUNT_BITS-1))-1);
    }
 
@@ -71,7 +71,7 @@ public:
    const string str() const { 
       string retval = "";
       unsigned long hs = m_nHash;
-      unsigned tc;
+      unsigned long tc;
       while (hs) {
          if (retval.empty()==false) retval = " " + retval;
          tc = hs & ((1 << PENN_CON_TAG_COUNT_BITS) -1);

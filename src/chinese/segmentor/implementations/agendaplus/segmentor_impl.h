@@ -44,7 +44,7 @@ public:
    typedef CScoreMapType< CTwoWords, SCORE_TYPE > CTwoWordsMap;
    typedef CScoreMapType< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
    typedef CScoreMapType< pair<CTwoWords, int>, SCORE_TYPE > CTwoWordsIntMap;
-   typedef CScoreMapType< unsigned int, SCORE_TYPE > CIntMap;
+   typedef CScoreMapType< unsigned long int, SCORE_TYPE > CIntMap;
 
    // char based features
    CWordIntMap m_mapCharUnigram;

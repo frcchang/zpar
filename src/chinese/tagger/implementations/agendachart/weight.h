@@ -23,7 +23,10 @@ typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 typedef CScoreMap< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
 typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
 typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
-typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
+typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
+typedef CScoreMap< pair<unsigned long, CTag>, SCORE_TYPE > CIntTagMap;
+typedef CScoreMap< CTagSet<2>, SCORE_TYPE > CTagSet2Map;
+typedef CScoreMap< CTagSet<3>, SCORE_TYPE > CTagSet3Map;
 typedef CHashMap< CWord, int > CWordToIntMap;
 typedef CHashMap< pair<CWord, int>, int > CWordIntToIntMap;
 typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
@@ -38,9 +41,9 @@ class CWeight : public CWeightBase {
 
 public: 
 
-   unsigned m_maxLengthByTag[CTag::COUNT+1];
-   unsigned getMaxWordLength() const {return m_maxLengthByTag[CTag::COUNT];}
-   void setMaxLengthByTag(unsigned tag, unsigned length) {
+   unsigned long m_maxLengthByTag[CTag::COUNT+1];
+   unsigned long getMaxWordLength() const {return m_maxLengthByTag[CTag::COUNT];}
+   void setMaxLengthByTag(unsigned long tag, unsigned long length) {
       if (length<=m_maxLengthByTag[tag])
          return;
       m_maxLengthByTag[tag]=length;
@@ -65,27 +68,27 @@ public:
    CWordIntMap m_mapLastLengthByWord;
    
    // feature templates tag
-   CWordIntMap m_mapCurrentTag;
-   CIntMap m_mapLastTagByTag;
-   CIntMap m_mapLastTwoTagsByTag;
-   CWordIntMap m_mapTagByLastWord;
-   CWordIntMap m_mapLastTagByWord;
-   CWordIntMap m_mapTagByFirstChar;
-   CWordIntMap m_mapTagByLastChar;
-   CWordIntMap m_mapTagByChar;
-   CWordIntMap m_mapTagOfOneCharWord;
-   CWordIntMap m_mapRepeatedCharByTag;
-   CWordIntMap m_mapTagByWordAndPrevChar;
-   CWordIntMap m_mapTagByWordAndNextChar;
+   CWordTagMap m_mapCurrentTag;
+   CTagSet2Map m_mapLastTagByTag;
+   CTagSet3Map m_mapLastTwoTagsByTag;
+   CWordTagMap m_mapTagByLastWord;
+   CWordTagMap m_mapLastTagByWord;
+   CWordTagMap m_mapTagByFirstChar;
+   CWordTagMap m_mapTagByLastChar;
+   CWordTagMap m_mapTagByChar;
+   CWordTagMap m_mapTagOfOneCharWord;
+   CWordTagMap m_mapRepeatedCharByTag;
+   CWordTagMap m_mapTagByWordAndPrevChar;
+   CWordTagMap m_mapTagByWordAndNextChar;
    CTwoTaggedWordsMap m_mapTaggedCharByFirstChar;
    CTwoTaggedWordsMap m_mapTaggedCharByLastChar;
 
-   CIntPairMap m_mapTagByFirstCharCat;
-   CIntPairMap m_mapTagByLastCharCat;
-
    // feature templates knowledge
-   CIntPairMap m_mapSeparateCharCat;
-   CIntPairMap m_mapConsecutiveCharCat;
+   CIntTagMap m_mapTagByFirstCharCat;
+   CIntTagMap m_mapTagByLastCharCat;
+
+   CIntTagMap m_mapSeparateCharCat;
+   CIntTagMap m_mapConsecutiveCharCat;
 
    // statistical information
    CWordToIntMap m_mapWordFrequency;

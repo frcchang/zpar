@@ -58,28 +58,28 @@ static const CWord sentence_separators[] = {
 };
 
 inline int getStartingBracket(const CWord &word) {
-   for (int i=0; i<sizeof(starting_brackets)/sizeof(CWord); i++)
+   for (int i=0; i<sizeof(starting_brackets)/sizeof(CWord); ++i)
       if (word==starting_brackets[i])
          return i;
    return -1;
 }
 
 inline int getEndingBracket(const CWord &word) {
-   for (int i=0; i<sizeof(ending_brackets)/sizeof(CWord); i++)
+   for (int i=0; i<sizeof(ending_brackets)/sizeof(CWord); ++i)
       if (word==ending_brackets[i])
          return i;
    return -1;
 }
 
 inline int getSeparatingPunctuation(const CWord &word) {
-   for (int i=0; i<sizeof(separating_punctuations)/sizeof(CWord); i++)
+   for (int i=0; i<sizeof(separating_punctuations)/sizeof(CWord); ++i)
       if (word==separating_punctuations[i])
          return i;
    return -1;
 }
 
 inline bool isSentenceSeparator(const CWord &word) {
-   for (unsigned i=0; i<sizeof(sentence_separators)/sizeof(CWord); i++)
+   for (unsigned long i=0; i<sizeof(sentence_separators)/sizeof(CWord); ++i)
       if (word==sentence_separators[i])
          return true;
    return false;
@@ -107,7 +107,7 @@ public:
    enum CHAR_TYPE { eUnknown=0, eFW, eCD } ;
 
    bool isFWorCD( const string &s ) const {
-      unsigned int type = find( s, 0 );
+      unsigned long int type = find( s, 0 );
       return type==eFW || type==eCD;
    }
 

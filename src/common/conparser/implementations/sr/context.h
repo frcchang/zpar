@@ -26,49 +26,49 @@ public:
    int s0ld, s0rd;
    int s1ld, s1rd;
 
-   unsigned s0c, s1c, s2c, s3c;
-   unsigned s0t, s1t, s2t, s3t;
-   unsigned n0t, n1t, n2t, n3t;
-   unsigned s0lc, s0rc, s0uc;
-   unsigned s1lc, s1rc, s1uc;
-   unsigned s0ldt, s0rdt;
-   unsigned s1ldt, s1rdt;
+   unsigned long s0c, s1c, s2c, s3c;
+   unsigned long s0t, s1t, s2t, s3t;
+   unsigned long n0t, n1t, n2t, n3t;
+   unsigned long s0lc, s0rc, s0uc;
+   unsigned long s1lc, s1rc, s1uc;
+   unsigned long s0ldt, s0rdt;
+   unsigned long s1ldt, s1rdt;
    const CWord *s0w, *s1w, *s2w, *s3w;
    const CWord *n0w, *n1w, *n2w, *n3w;
    const CWord *s0lw, *s0rw, *s0uw, *s1lw, *s1rw, *s1uw;
    const CWord *s0ldw, *s0rdw, *s1ldw, *s1rdw;
 
-   unsigned stacksize;
+   unsigned long stacksize;
 
 
 
-   unsigned s0cs1c, s1cn0t, s0cn0t, n0tn1t;
+   unsigned long s0cs1c, s1cn0t, s0cn0t, n0tn1t;
    CTwoWords s0ws1w, s0wn0w, n0wn1w, s1wn0w;
 
-   vector<unsigned> s0_unbinarized;
-   vector<unsigned> s1_unbinarized;
-   vector<unsigned> s0_unbinarized_cs;
-   vector<unsigned> s1_unbinarized_cs;
+   vector<unsigned long> s0_unbinarized;
+   vector<unsigned long> s1_unbinarized;
+   vector<unsigned long> s0_unbinarized_cs;
+   vector<unsigned long> s1_unbinarized_cs;
    int s0_head_node; // the head node among all unexpanded nodes from s0
    int s1_head_node; // the head node among all unexpanded nodes from s1
    int s0_head_index;
    int s1_head_index;
 
-   unsigned open_bracket_match_type;
-   unsigned s0c_bracket, s1c_bracket, n0t_bracket, s0cs1c_bracket, s0cn0t_bracket;
+   unsigned long open_bracket_match_type;
+   unsigned long s0c_bracket, s1c_bracket, n0t_bracket, s0cs1c_bracket, s0cn0t_bracket;
 
-   unsigned s0ln, s0rn, s1ln, s1rn;
-   unsigned s0m, s1m, s2m, n0m;
+   unsigned long s0ln, s0rn, s1ln, s1rn;
+   unsigned long s0m, s1m, s2m, n0m;
    bool n0norv;
 
-   vector<unsigned> s0cs1c_separator; // one particular separator punctuation
-   vector<unsigned> s0c_separator;
-   vector<unsigned> s1c_separator;
-   unsigned s0cs1c_sepcount; // the count of separator pus between them
-   unsigned s0c_sepcount; // unigram backup
-   unsigned s1c_sepcount;
+   vector<unsigned long> s0cs1c_separator; // one particular separator punctuation
+   vector<unsigned long> s0c_separator;
+   vector<unsigned long> s1c_separator;
+   unsigned long s0cs1c_sepcount; // the count of separator pus between them
+   unsigned long s0c_sepcount; // unigram backup
+   unsigned long s1c_sepcount;
 
-   unsigned s0s1_dist, s0cs1_dist, s0s1c_dist, s0cs1c_dist;
+   unsigned long s0s1_dist, s0cs1_dist, s0s1c_dist, s0cs1c_dist;
 protected:
    // protected because they're transient
    const CStateNode *s0node, *s1node, *s2node, *s3node;
@@ -76,8 +76,8 @@ public:
    CContext() {}
    ~CContext() {}
 public:
-   unsigned unbinarize(const vector<CStateNode> &nodes, const unsigned &curr, vector<unsigned> &rval) {
-      unsigned head;
+   unsigned long unbinarize(const vector<CStateNode> &nodes, const unsigned long &curr, vector<unsigned long> &rval) {
+      unsigned long head;
       head = curr;
       if (nodes[curr].temp) {
          assert(nodes[curr].is_constituent&&!nodes[curr].single_child);
@@ -97,7 +97,7 @@ public:
       }
       return head;
    }
-   void countleftdependents(const vector<CStateNode> &nodes, const unsigned &i, int &last, unsigned &count) {
+   void countleftdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
       if (!nodes[i].is_constituent) {
          last = -1;
          count = 0;
@@ -118,7 +118,7 @@ public:
          }
       }
    }
-   void countrightdependents(const vector<CStateNode> &nodes, const unsigned &i, int &last, unsigned &count) {
+   void countrightdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
       if (!nodes[i].is_constituent) {
          last = -1;
          count = 0;
@@ -139,11 +139,11 @@ public:
          }
       }
    }
-   void load(const CStateItem *item, const vector<CTaggedWord<CTag> > &wrds, const vector<unsigned> &wordlen, const bool &modify) {
+   void load(const CStateItem *item, const vector<CTaggedWord<CTag> > &wrds, const vector<unsigned long> &wordlen, const bool &modify) {
       static CStateNode emptyItem;
       stacksize = item->stack.size();
       if (stacksize==0) return; // must shift; no feature updates, no comparisons for different actions
-      static unsigned tmp;
+      static unsigned long tmp;
       static int i, j;
       s0 = item->stack.back();
       s1 = stacksize<2 ? -1 : item->stack[stacksize-2];
@@ -277,15 +277,15 @@ public:
 
       // comma, full stop, dun hao, semi colon;
       static int last_separator;
-      static unsigned sepcount;
-      static unsigned s0_sepset, s1_sepset, s0s1_sepset;
+      static unsigned long sepcount;
+      static unsigned long s0_sepset, s1_sepset, s0s1_sepset;
       s0cs1c_separator.clear();
       s0c_separator.clear();
       s1c_separator.clear();
       s0_sepset=0; s1_sepset=0; s0s1_sepset=0;
       sepcount = 0;
       if (s1!=-1) {
-         for (i=s1_head_index+1; i<s0_head_index; i++) {
+         for (i=s1_head_index+1; i<s0_head_index; ++i) {
             last_separator = getSeparatingPunctuation(wrds[item->nodes[i].lexical_head]);
             if (last_separator!=-1) {
                if ((s0s1_sepset&(1<<last_separator))==0) {

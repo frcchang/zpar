@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
       }
       bool bSeparateTrain = configurations.getConfiguration("s").empty() ? false: true;
    
-      for (int i=0; i<atoi(argv[3]); i++)
+      for (int i=0; i<atoi(argv[3]); ++i)
          train(argv[1], argv[2], nBest, bSeparateTrain);
       return 0;
    } catch (const string &e) {

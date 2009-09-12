@@ -59,7 +59,7 @@ void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged
  *
  *==============================================================*/
 
-void train(const string &sOutputFile, const string &sFeatureFile, const unsigned &nBest, const unsigned &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bDontJoinFWCD) {
+void train(const string &sOutputFile, const string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bDontJoinFWCD) {
    CTagger decoder(sFeatureFile, true, nMaxSentSize);
    if (!sKnowledgePath.empty()) decoder.loadKnowledge(sKnowledgePath);
    CSentenceReader output_reader(sOutputFile);
@@ -115,7 +115,7 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
             output_writer.writeSentence(output_sent);
 #endif
             TRACE("------");
-            for (int i=0; i<nBest; i++) if (*(tagged_sent+i)!=*output_sent)
+            for (int i=0; i<nBest; ++i) if (*(tagged_sent+i)!=*output_sent)
             {
 #ifdef DEBUG
                tagged_writer.writeSentence(tagged_sent+i);
@@ -149,7 +149,7 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
             TRACE("------");  
             ++nErrorCount;
          }
-         for (int i=0; i<nBest; i++) 
+         for (int i=0; i<nBest; ++i) 
          {
 #ifdef DEBUG
             if (*(tagged_sent+i)!=*output_sent) tagged_writer.writeSentence(tagged_sent+i);
@@ -189,7 +189,7 @@ int main(int argc, char* argv[]) {
       } 
       configurations.loadConfigurations(options.opts);
 
-      unsigned nBest, nMaxSentSize;
+      unsigned long nBest, nMaxSentSize;
       if (!fromString(nMaxSentSize, configurations.getConfiguration("m"))) {
          cerr<<"Error: the max size of sentence is not integer." << endl; return 1;
       }
@@ -204,7 +204,7 @@ int main(int argc, char* argv[]) {
       bSegmented = true; // compile option
 #endif
 
-      unsigned training_rounds;
+      unsigned long training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
          cerr << "Error: the number of training iterations must be an integer." << endl;
          return 1;

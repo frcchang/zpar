@@ -87,9 +87,9 @@ private:
    inline depparser::SCORE_TYPE getOrUpdateArcScore( const int &head_index, const int &dep_index, const int &sibling_index, depparser::SCORE_TYPE amount=0, int round=0 );
    inline depparser::SCORE_TYPE getOrUpdateTwoArcScore(const int &head_index, const int &dep_index, const int &parent_index, depparser::SCORE_TYPE amount=0, int round=0);
    inline depparser::SCORE_TYPE getOrUpdateArityScore(const int &word_index, const int &arity, const int &arity_direction, depparser::SCORE_TYPE amount=0, int round=0);
-   inline depparser::SCORE_TYPE getOrUpdateStackScore( const depparser::CStateItem *item, const unsigned &action, depparser::SCORE_TYPE amount=0, int round=0 );
+   inline depparser::SCORE_TYPE getOrUpdateStackScore( const depparser::CStateItem *item, const unsigned long &action, depparser::SCORE_TYPE amount=0, int round=0 );
 #ifdef LABELED
-   inline depparser::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned &label, depparser::SCORE_TYPE amount=0, int round=0 );
+   inline depparser::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned long &label, depparser::SCORE_TYPE amount=0, int round=0 );
 #endif
 
    // update the built-in weight vector for this feature object specifically
@@ -102,8 +102,8 @@ private:
    inline void reduce( depparser::CStateItem *item ) ;
    inline void shift( depparser::CStateItem *item ) ;
 #ifdef LABELED
-   inline void arcleft( depparser::CStateItem *item, const unsigned &label ) ;
-   inline void arcright( depparser::CStateItem *item, const unsigned &label ) ;
+   inline void arcleft( depparser::CStateItem *item, const unsigned long &label ) ;
+   inline void arcright( depparser::CStateItem *item, const unsigned long &label ) ;
 #else
    inline void arcleft( depparser::CStateItem *item ) ;
    inline void arcright( depparser::CStateItem *item ) ;

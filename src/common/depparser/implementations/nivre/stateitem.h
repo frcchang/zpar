@@ -38,16 +38,16 @@ class CStateItem {
 public:
    enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT };
 #ifdef LABELED
-   static unsigned encodeAction(const STACK_ACTION &action, const unsigned &label) {
+   static unsigned long encodeAction(const STACK_ACTION &action, const unsigned long &label) {
       return (action<<PENN_DEP_COUNT_BITS) | label;
    }
-   static unsigned removeLabelFromEncodedAction(const unsigned &action ) {
+   static unsigned long removeLabelFromEncodedAction(const unsigned long &action ) {
       return action^(action&((1<<PENN_DEP_COUNT_BITS)-1));
    }
-   static unsigned getAction(const unsigned &action) {
+   static unsigned long getAction(const unsigned long &action) {
       return action>>PENN_DEP_COUNT_BITS;
    }
-   static unsigned getLabel(const unsigned &action) {
+   static unsigned long getLabel(const unsigned long &action) {
       return action&((1<<PENN_DEP_COUNT_BITS)-1);
    }
 #endif
@@ -63,9 +63,9 @@ protected:
    int m_lDepNumR[MAX_SENTENCE_SIZE];       // the number of right dependencies
    int m_lSibling[MAX_SENTENCE_SIZE];       // the sibling towards head
 #ifdef LABELED
-   unsigned m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
+   unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
 #endif
-   unsigned m_nLastAction;                  // the last stack action
+   unsigned long m_nLastAction;                  // the last stack action
    int m_nLocalHeads;                       // the local heads for the moment, or the sub trees
    SCORE_TYPE m_nLinkScore;                 // score of item
    SCORE_TYPE m_nStackScore;                // score of stack - predicting how potentially this is the correct one
@@ -85,12 +85,12 @@ public:
       int i;
       if ( m_nNextWord != item.m_nNextWord )
          return false;
-      for ( i=0; i<m_nNextWord; i++ ) {
+      for ( i=0; i<m_nNextWord; ++i ) {
          if ( m_lHeads[i] != item.m_lHeads[i] )
             return false;
       }
 #ifdef LABELED
-      for ( i=0; i<m_nNextWord; i++ ) 
+      for ( i=0; i<m_nNextWord; ++i ) 
          if ( m_lLabels[i] != item.m_lLabels[i] )
             return false;
 #endif
@@ -129,13 +129,13 @@ public:
 #endif
 }
 
-   inline int head( const unsigned &index ) const { assert(index<=m_nNextWord); return m_lHeads[index]; }
-   inline int leftdep( const unsigned &index ) const { assert(index<=m_nNextWord); return m_lDepsL[index]; }
-   inline int rightdep( const unsigned &index ) const { assert(index<=m_nNextWord); return m_lDepsR[index]; }
-   inline int sibling( const unsigned &index ) const { assert(index<=m_nNextWord); return m_lSibling[index]; }
+   inline int head( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lHeads[index]; }
+   inline int leftdep( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lDepsL[index]; }
+   inline int rightdep( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lDepsR[index]; }
+   inline int sibling( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lSibling[index]; }
    inline int size( ) const { return m_nNextWord ; }
 #ifdef LABELED
-   inline int label( const unsigned &index ) const { assert(index<=m_nNextWord); return m_lLabels[index]; }
+   inline int label( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lLabels[index]; }
 #endif
 
    inline int leftarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumL[index]; }
@@ -159,7 +159,7 @@ public:
       m_nLastAction = item.m_nLastAction;
       m_nLinkScore = item.m_nLinkScore;
       m_nStackScore = item.m_nStackScore; 
-      for ( int i=0; i<=m_nNextWord; i++ ){ // only copy active word (including m_nNext)
+      for ( int i=0; i<=m_nNextWord; ++i ){ // only copy active word (including m_nNext)
          m_lHeads[i] = item.m_lHeads[i];  
          m_lDepsL[i] = item.m_lDepsL[i]; 
          m_lDepsR[i] = item.m_lDepsR[i];
@@ -177,7 +177,7 @@ public:
 public:
    // the arc left action links the current stack top to the next word with popping
 #ifdef LABELED
-   void ArcLeft(unsigned lab) {
+   void ArcLeft(unsigned long lab) {
 #else
    void ArcLeft() { 
 #endif
@@ -203,7 +203,7 @@ public:
 
    // the arc right action links the next word to the current stack top with pushing
 #ifdef LABELED
-   void ArcRight(unsigned lab) {
+   void ArcRight(unsigned long lab) {
 #else
    void ArcRight() { 
 #endif
@@ -277,7 +277,7 @@ public:
    }
 
    // the move action is a simple call to do action according to the action code
-   void Move ( const unsigned &ac ) {
+   void Move ( const unsigned long &ac ) {
 #ifdef LABELED
       switch (getAction(ac)) {
 #else
@@ -384,12 +384,12 @@ public:
       assert( m_Stack.size() == 0 );
    }
 
-   unsigned FollowMove( const CStateItem *item ) {
+   unsigned long FollowMove( const CStateItem *item ) {
       static int top;
       // if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
       if ( m_nNextWord == item->m_nNextWord ) {
-//for (int i=0; i<m_Stack.size(); i++) cout << m_Stack[i] << " "; cout << endl;
-//for (int i=0; i<item->m_Stack.size(); i++) cout << item->m_Stack[i] << " "; cout << endl;
+//for (int i=0; i<m_Stack.size(); ++i) cout << m_Stack[i] << " "; cout << endl;
+//for (int i=0; i<item->m_Stack.size(); ++i) cout << item->m_Stack[i] << " "; cout << endl;
          assert( m_Stack.size() > item->m_Stack.size() );
          top = m_Stack.back();
          if ( item->m_lHeads[top] == m_nNextWord ) 
@@ -465,7 +465,7 @@ public:
 
    void GenerateTree( const CTwoStringVector &input, CSentenceParsed &output ) const {
       output.clear();
-      for ( int i=0; i<size(); i++ ) 
+      for ( int i=0; i<size(); ++i ) 
 #ifdef LABELED
          output.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
 #else

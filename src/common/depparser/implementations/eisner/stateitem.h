@@ -181,7 +181,7 @@ public:
       m_bActive = span.m_bActive;
       m_nLeftArity = span.m_nLeftArity;
       m_nRightArity = span.m_nRightArity;
-      for ( int i=0; i<MAX_SENTENCE_SIZE; i++ )
+      for ( int i=0; i<MAX_SENTENCE_SIZE; ++i )
          m_lLinks[i] = span.m_lLinks[i];
       m_nScore = span.m_nScore;
    }

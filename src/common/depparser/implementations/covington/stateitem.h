@@ -26,7 +26,7 @@ public:
    void operator = ( const CStateItem &item ) {
       m_nNextWord = item.m_nNextWord;
       m_nLinkScore = item.m_nLinkScore;
-      for ( int i=0; i<=m_nNextWord; i++ ){ // only copy active word (including m_nNext)
+      for ( int i=0; i<=m_nNextWord; ++i ){ // only copy active word (including m_nNext)
          m_lHeads[i] = item.m_lHeads[i];  
          m_lDepsL[i] = item.m_lDepsL[i]; 
          m_lDepsR[i] = item.m_lDepsR[i];
@@ -36,10 +36,10 @@ public:
 
 public:
    // propty
-   inline int head( const unsigned int &index ) const { assert(index<=m_nNextWord); return m_lHeads[index]; }
+   inline int head( const unsigned long int &index ) const { assert(index<=m_nNextWord); return m_lHeads[index]; }
    inline int leftmostdep( const int &index ) const { assert(index<=m_nNextWord); return m_lDepsL[index]; }
    inline int rightmostdep( const int &index ) const { assert(index<=m_nNextWord); return m_lDepsR[index]; }
-   inline int sibling( const unsigned int &index ) const { assert(index<=m_nNextWord); return m_lSibling[index]; }
+   inline int sibling( const unsigned long int &index ) const { assert(index<=m_nNextWord); return m_lSibling[index]; }
    inline int size( ) const { return m_nNextWord ; }
 
    inline int leftarity( const int &index ) const { 
@@ -169,11 +169,11 @@ public:
       static int i;
       if ( m_nNextWord != item.m_nNextWord )
          return false;
-      for ( i=0; i<m_nNextWord; i++ ) {
+      for ( i=0; i<m_nNextWord; ++i ) {
          if ( m_lHeads[i] != item.m_lHeads[i] )
             return false;
       }
-//      for ( i=0; i<m_nNextWord; i++ ) {
+//      for ( i=0; i<m_nNextWord; ++i ) {
 //         assert( m_lDepsL[i] == item.m_lDepsL[i] );
 //         assert( m_lDepsR[i] == item.m_lDepsR[i] );
 //         assert( m_lSibling[i] == item.m_lSibling[i] );
@@ -188,7 +188,7 @@ public:
 
    void GenerateTree( const CTwoStringVector &input, CSentenceParsed &output ) const {
       output.clear();
-      for ( int i=0; i<size(); i++ ) 
+      for ( int i=0; i<size(); ++i ) 
          output.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] ) ) ;
    }
 
@@ -196,7 +196,7 @@ public:
 
 inline ostream & operator << (ostream &os, const CStateItem &item) {
    os << "index\thead\tlmd\trmd\tla\tra" << endl;
-   for (int i=0; i<item.size(); i++) {
+   for (int i=0; i<item.size(); ++i) {
       os << i << "\t" << item.head(i) << "\t" << item.leftmostdep(i) << "\t" << item.rightmostdep(i) << "\t" << item.leftarity(i) << "\t" << item.rightarity(i) << endl;
    }
    os << endl;

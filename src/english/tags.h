@@ -19,7 +19,7 @@ namespace english {
  *
  * definitions about tags 
  *
- * CTag is defined as unsigned integer, which is easier to store.
+ * CTag is defined as unsigned long integer, which is easier to store.
  * The value of CTag is defined by the index in PENN_TAG_STRINGS + 1.
  *  
  *==============================================================*/
@@ -78,7 +78,7 @@ public:
    const static char SEPARATOR = '/' ;
 
 protected:
-   unsigned int m_code;
+   unsigned long int m_code;
 
 public:
    CTag() { m_code=PENN_TAG_COUNT; }
@@ -92,11 +92,11 @@ public:
    virtual ~CTag() {}
 
 public:
-   unsigned int code() const { return m_code; }
+   unsigned long int code() const { return m_code; }
    string str() const { assert(m_code<PENN_TAG_COUNT) ; return PENN_TAG_STRINGS[m_code]; }
    void load(const string &s) {
       m_code = PENN_TAG_NONE ;
-      for (int i=1; i<PENN_TAG_COUNT; i++)
+      for (int i=1; i<PENN_TAG_COUNT; ++i)
          if (PENN_TAG_STRINGS[i] == s)
             m_code = i;
    }
@@ -111,15 +111,15 @@ public:
 
 //===============================================================
 
-inline unsigned int encodeTags(const CTag &tag1, const CTag &tag2) {
+inline unsigned long int encodeTags(const CTag &tag1, const CTag &tag2) {
    return (tag1.code()<<PENN_TAG_COUNT_BITS)+tag2.code();
 }
 
-inline unsigned int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3) {
+inline unsigned long int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3) {
    return (tag1.code()<<PENN_TAG_COUNT_BITS*2)+(tag2.code()<<PENN_TAG_COUNT_BITS)+tag3.code() ;
 }
 
-inline unsigned int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3, const CTag &tag4) {
+inline unsigned long int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3, const CTag &tag4) {
    return (tag1.code()<<PENN_TAG_COUNT_BITS*3)+(tag2.code()<<PENN_TAG_COUNT_BITS*2)+
           (tag3.code()<<PENN_TAG_COUNT_BITS)+tag4.code() ;
 }

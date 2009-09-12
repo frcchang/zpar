@@ -195,7 +195,7 @@ int CReranker::findBest(const CSentenceParsed *nbest, int nBest, double *prior_s
    int best_index=-1;
    double score, best_score;
    static CTwoStringVector tagged;
-   for (int i=0; i<nBest; i++) {
+   for (int i=0; i<nBest; ++i) {
       if (nbest[i].empty()) {
          if (best_index==-1) 
             best_index = i;
@@ -243,7 +243,7 @@ void CReranker::train(const CSentenceParsed *nbest, const CSentenceParsed *corre
    static double bestFPar, bestFParIncPunc, bestFTag, bestFSeg, bestFParUnlabeled;
 
    // find the most correct from nbest
-   for (int i=0; i<nBest; i++) {
+   for (int i=0; i<nBest; ++i) {
       getFScore(nbest[i], *correct, fSeg, fTag, fPar, fParUnlabeled, fParIncPunc);
       if (i!=0&&fPar==bestFPar&&fParIncPunc==bestFParIncPunc&&fParUnlabeled==bestFParUnlabeled&&fTag==bestFTag&&fSeg==bestFSeg) 
          TRACE("equal"<<endl<<nbest[best_idx]<<nbest[i]);

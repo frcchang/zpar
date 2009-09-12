@@ -41,7 +41,7 @@ class CAgendaSimple {
          CNode* pNode;
          pNode = m_lBeam;
          int i;
-         for (i=0; i<nBeamSize; i++) {
+         for (i=0; i<nBeamSize; ++i) {
             m_lBeamPointer[i] = pNode++;
          }
          clear();  
@@ -131,7 +131,7 @@ class CAgendaBeam {
       CNode** m_lBeamPointer[2];
       CNode* m_lBeam[2];
       int m_nBeamSize[2];
-      unsigned char m_nGenerator, m_nGenerated;
+      unsigned m_nGenerator, m_nGenerated;
       int m_nGeneratorIndex;
    public:
       // constructor and destructor method
@@ -142,11 +142,11 @@ class CAgendaBeam {
          CNode* pNode;
          pNode = m_lBeam[0];
          int i;
-         for (i=0; i<nBeamSize; i++) {
+         for (i=0; i<nBeamSize; ++i) {
             m_lBeamPointer[0][i] = pNode++;
          }
          pNode = m_lBeam[1];
-         for (i=0; i<nBeamSize; i++) {
+         for (i=0; i<nBeamSize; ++i) {
             m_lBeamPointer[1][i] = pNode++;
          }
          clear();  
@@ -225,7 +225,7 @@ class CAgendaBeamDoubleIndice {
       CNode** m_lMaxPointer[2];
       CNode* m_lBeam[2];
       int m_nBeamSize[2];
-      unsigned char m_nGenerator, m_nGenerated;
+      unsigned m_nGenerator, m_nGenerated;
       int m_nGeneratorIndex;
    public:
       // constructor and destructor method
@@ -237,12 +237,12 @@ class CAgendaBeamDoubleIndice {
          CNode* pNode;
          pNode = m_lBeam[0];
          int i;
-         for (i=0; i<nBeamSize; i++) {
+         for (i=0; i<nBeamSize; ++i) {
             m_lBeamPointer[0][i] = pNode++;
             m_lMaxPointer[0][i] = 0;
          }
          pNode = m_lBeam[1];
-         for (i=0; i<nBeamSize; i++) {
+         for (i=0; i<nBeamSize; ++i) {
             m_lBeamPointer[1][i] = pNode++;
             m_lMaxPointer[1][i] = 0;
          }
@@ -292,7 +292,7 @@ class CAgendaBeam1 {
    private:
       const int m_nMaxSize;
       vector<CNode> m_lBeam[2];
-      unsigned char m_nGenerator, m_nGenerated;
+      unsigned m_nGenerator, m_nGenerated;
       typename vector<CNode>::iterator m_it, m_itemp;
    public:
       // constructor and destructor method

@@ -92,7 +92,7 @@ private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
    void addLink( const CStringVector *sentence, depparser::CStateItem *item, const int head, const int dep ) ;
-   void enumerateCandidates( const CStringVector *sentence, const depparser::CStateItem *item, const int agenda_index, const unsigned tag );
+   void enumerateCandidates( const CStringVector *sentence, const depparser::CStateItem *item, const int agenda_index, const unsigned long tag );
    void work( const CStringVector *sentence , CDependencyTree *retval, const CDependencyTree *correct ) ; 
 
    depparser::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *s, const depparser::CStateItem *item, int index, depparser::SCORE_TYPE amount=0, int round=0);

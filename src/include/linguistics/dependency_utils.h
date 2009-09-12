@@ -32,7 +32,7 @@ bool IsValidDependencyTree(const CLabeledOrUnlabeledDependencyTree &tree) {
    int nHead = 0;
    int nLoop = 0;
    int j;
-   for ( int i=0; i<tree.size(); i++ ) {
+   for ( int i=0; i<tree.size(); ++i ) {
       if ( tree.at(i).head == DEPENDENCY_LINK_NO_HEAD ) nHead++ ;
       j = i;
       while ( nLoop & (1<<j) == 0 ) {
@@ -56,7 +56,7 @@ template <class CLabeledOrUnlabeledDependencyTree>
 inline
 bool IsProjectiveDependencyTree(const CLabeledOrUnlabeledDependencyTree &tree) {
    if (!IsValidDependencyTree(tree)) return false;
-   for ( int i=0; i<tree.size(); i++ ) {
+   for ( int i=0; i<tree.size(); ++i ) {
       int mini = min(i, tree.at(i).head);
       int maxi = max(i, tree.at(i).head);
       for ( int j=mini+1; j<maxi; j++ ) 

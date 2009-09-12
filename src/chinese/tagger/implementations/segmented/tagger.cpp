@@ -36,8 +36,8 @@ static CWord g_emptyWord("");
 SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * item , int index ) {
 
    static SCORE_TYPE nReturn ; 
-   static unsigned int last_start , last_length ;
-   static unsigned int start , end , length ; 
+   static unsigned long int last_start , last_length ;
+   static unsigned long int start , end , length ; 
 
    // about the words
    start = item->getWordStart( index ) ;
@@ -66,9 +66,9 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
    CTwoWords two_word;
 
    // about the tags 
-   const unsigned &tag = item->getTag(index);
-   const unsigned &last_tag = index>0 ? item->getTag(index-1) : PENN_TAG_BEGIN;
-   const unsigned last_two_tag = index>1 ? joinTwoTags(item->getTag(index-2), last_tag) : joinTwoTags(PENN_TAG_BEGIN, last_tag);
+   const unsigned long &tag = item->getTag(index);
+   const unsigned long &last_tag = index>0 ? item->getTag(index-1) : PENN_TAG_BEGIN;
+   const unsigned long last_two_tag = index>1 ? joinTwoTags(item->getTag(index-2), last_tag) : joinTwoTags(PENN_TAG_BEGIN, last_tag);
    static CTaggedWord<CTag> wt1, wt2;
    static CTwoTaggedWords wt12;
 
@@ -139,7 +139,7 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
       // Updates that are common for all example
       //
       m_nNumberOfCurrentTrainingExample = round;
-      for (i=0; i<correct->size(); i++) {
+      for (i=0; i<correct->size(); ++i) {
          CWord word = correct->at(i).first;
          CTag tag(correct->at(i).second);
          CStringVector chars;
@@ -193,9 +193,9 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
    CTwoWords two_word ; 
 
    // about tags
-   unsigned tag = CTag( sentence->at(index).second ).code() ; 
-   unsigned last_tag = index > 0 ? CTag( sentence->at( index-1 ).second).code() : PENN_TAG_BEGIN ;
-   unsigned last_two_tag = index > 1 ? joinTwoTags( CTag( sentence->at( index-2 ).second ).code() , last_tag ) : joinTwoTags( PENN_TAG_BEGIN , last_tag ) ;
+   unsigned long tag = CTag( sentence->at(index).second ).code() ; 
+   unsigned long last_tag = index > 0 ? CTag( sentence->at( index-1 ).second).code() : PENN_TAG_BEGIN ;
+   unsigned long last_two_tag = index > 1 ? joinTwoTags( CTag( sentence->at( index-2 ).second ).code() , last_tag ) : joinTwoTags( PENN_TAG_BEGIN , last_tag ) ;
    CTaggedWord<CTag> wt1, wt2;
    CTwoTaggedWords wt12;
    

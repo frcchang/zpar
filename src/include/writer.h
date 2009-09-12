@@ -40,7 +40,7 @@ class CSentenceWriter : public CWriter {
    public:
       CSentenceWriter(string sFileName="") : CWriter(sFileName) {};
       void writeLine();
-      void writeSentence(const CStringVector * sentence, const string separator="");
+      void writeSentence(const CStringVector * sentence, const string separator=" ");
       void writeSentence(const CTwoStringVector * sentence, const char separator='_');
 };
 

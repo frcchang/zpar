@@ -28,7 +28,7 @@ protected:
    int m_nScoreIndex;
 
 public:
-   CTagger(string sFeatureDBPath, bool bTrain=false, unsigned nMaxSentSize=tagger::MAX_SENTENCE_SIZE) : m_Agenda(tagger::AGENDA_SIZE) , m_WordCache(nMaxSentSize) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize) { 
+   CTagger(string sFeatureDBPath, bool bTrain=false, unsigned long nMaxSentSize=tagger::MAX_SENTENCE_SIZE) : m_Agenda(tagger::AGENDA_SIZE) , m_WordCache(nMaxSentSize) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize) { 
       m_mapCharCat = NULL;
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }

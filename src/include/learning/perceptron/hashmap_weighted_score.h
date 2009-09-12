@@ -77,7 +77,7 @@ public:
       CScoreMap<K, SCORE_TYPE>::updateScore(key, m_weight.score()>0?amount:-amount, round);
    }
 
-   void computeAverage(unsigned int round) {
+   void computeAverage(unsigned long int round) {
       m_weight.updateAverage(round);
       CScoreMap<K, SCORE_TYPE>::computeAverage(round);
    }

@@ -60,7 +60,7 @@ void train(string sOutputFile, string sFeatureFile, int nBest, const string &sKn
          TRACE("------");  
          ++nErrorCount;
       }
-      for (int i=0; i<nBest; i++) 
+      for (int i=0; i<nBest; ++i) 
       {
 #ifdef DEBUG
          if (*(tagged_sent+i)!=*output_sent) tagged_writer.writeSentence(tagged_sent+i, '/');
@@ -105,7 +105,7 @@ Options:\n\
    if (training_rounds < 0)
       training_rounds = TRAINING_ROUND;
    if (argc>4) {
-      for (int i=4; i<argc; i++) {
+      for (int i=4; i<argc; ++i) {
          if ( argv[i][0]!='-' || strlen(argv[i])==1 ) {
             cout << "\nUsage: " << argv[0] << hint << endl ;
             return 1;

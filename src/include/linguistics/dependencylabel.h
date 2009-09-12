@@ -48,8 +48,8 @@ enum PENN_DEP_LABELS {
    PENN_DEP_COUNT 
 };
 
-const unsigned PENN_DEP_START = 1;
-const unsigned PENN_DEP_COUNT_BITS = 4;
+const unsigned long PENN_DEP_START = 1;
+const unsigned long PENN_DEP_COUNT_BITS = 4;
 
 /*==============================================================
  *
@@ -61,11 +61,11 @@ class CDependencyLabel {
 
 protected:
 
-   unsigned m_code;
+   unsigned long m_code;
 
 public:
 
-   CDependencyLabel(const unsigned &code) { m_code = code; }
+   CDependencyLabel(const unsigned long &code) { m_code = code; }
    CDependencyLabel(const string &str) { load(str); }
    virtual ~CDependencyLabel() {}
 
@@ -73,7 +73,7 @@ public:
 
    void load(const string &str) { 
       m_code = PENN_DEP_NONE;
-      for (int i=PENN_DEP_START; i<PENN_DEP_COUNT; i++) {
+      for (int i=PENN_DEP_START; i<PENN_DEP_COUNT; ++i) {
          if (PENN_DEP_STRINGS[i]==str) {
             m_code = i;
             return;
@@ -85,7 +85,7 @@ public:
       return PENN_DEP_STRINGS[ m_code ]; 
    }
 
-   const unsigned &code() const {
+   const unsigned long &code() const {
       return m_code;
    }
 

@@ -89,7 +89,7 @@ bool CSentenceReader::readRawSentence(CStringVector *vReturn, bool bSkipEmptyLin
    if (!sWord.empty()) {                        // we have found another word
       getCharactersFromUTF8String(sWord, vReturn); 
       sWord = "";
-      TRACE((unsigned int)(cTemp))
+      TRACE((unsigned long int)(cTemp))
    }
    return bReadSomething;
 };

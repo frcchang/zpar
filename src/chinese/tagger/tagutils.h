@@ -13,15 +13,15 @@
 #define _TAG_UTILS_H
 
 inline
-unsigned joinTwoTags(const CTag& tag1, const CTag& tag2) {
+unsigned long joinTwoTags(const CTag& tag1, const CTag& tag2) {
    return (tag1.code() << PENN_TAG_COUNT_BITS) + tag2.code();
 };
 
 inline
-unsigned stringToTags(const string& s) {
+unsigned long stringToTags(const string& s) {
    string sTemp="";
-   unsigned nRetval = 0;
-   for (int i=0; i<s.size(); i++) {
+   unsigned long nRetval = 0;
+   for (int i=0; i<s.size(); ++i) {
       if (s[i]==' ') {
          if (!sTemp.empty()) {
             nRetval <<= PENN_TAG_COUNT_BITS;
@@ -41,20 +41,20 @@ unsigned stringToTags(const string& s) {
 }
 
 inline
-string tagsToString(const unsigned& tags, int len=2) {
+string tagsToString(const unsigned long& tags, int len=2) {
    string sRetval;
-   unsigned temp = tags;
+   unsigned long temp = tags;
    while (len-->0) {
       if (!sRetval.empty())
          sRetval = ' ' + sRetval;
-      sRetval = CTag(temp&(static_cast<unsigned>((1<<PENN_TAG_COUNT_BITS)-1))).str() + sRetval;
+      sRetval = CTag(temp&(static_cast<unsigned long>((1<<PENN_TAG_COUNT_BITS)-1))).str() + sRetval;
       temp = temp >> PENN_TAG_COUNT_BITS;
    }
    return sRetval;
 }
 
 inline
-bool anyNoneTag(const unsigned &tags, int len=2) {
+bool anyNoneTag(const unsigned long &tags, int len=2) {
    int mask = (1<<PENN_TAG_COUNT_BITS)-1;
    while (len-->0) {
       if ((tags&mask)==PENN_TAG_NONE)

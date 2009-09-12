@@ -27,7 +27,7 @@ class CWord {
 protected:
    unsigned long int m_nHash;
    string m_sString;
-   void operator += (const string &s) { for(int i=0; i<s.length(); i++) (*this) += s[i]; }
+   void operator += (const string &s) { for(int i=0; i<s.length(); ++i) (*this) += s[i]; }
    void operator += (const char &s) { m_sString += s; m_nHash = m_nHash * 37 + (static_cast<unsigned char>(s)&127); }
 
 public:

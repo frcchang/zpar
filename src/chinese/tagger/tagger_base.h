@@ -49,10 +49,10 @@ protected:
    tagger::CWeight *m_weights;
    int m_nNumberOfCurrentTrainingExample;
    bool m_bTrain;
-   const unsigned m_nMaxSentSize;
+   const unsigned long m_nMaxSentSize;
 
 public:
-   CTaggerBase(string sFeatureDBPath, bool bTrain, unsigned nMaxSentenceSize) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) { 
+   CTaggerBase(string sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) { 
       m_weights = new tagger::CWeight(sFeatureDBPath, bTrain); 
    }
    virtual ~CTaggerBase() { }

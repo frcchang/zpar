@@ -11,7 +11,7 @@
 #include "options.h"
 
 COptions::COptions(int argc, char* args[], const string& char_options, const vector<string>& str_options) {
-   for ( unsigned i=0; i<argc; ++i ) {
+   for ( unsigned long i=0; i<argc; ++i ) {
       string arg( args[i] );
       string name;
       string value;

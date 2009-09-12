@@ -54,7 +54,7 @@ public:
       }
    }
 
-   void computeAverage(unsigned int round) {
+   void computeAverage(unsigned long int round) {
       typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
       while (it != this->end()) {
          it.second().updateAverage(round) ;

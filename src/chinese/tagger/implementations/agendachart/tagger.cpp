@@ -38,8 +38,8 @@ static CWord g_emptyWord("");
 
 SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const CStateItem *item, int index, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn ; 
-   static unsigned int last_start , last_length ;
-   static unsigned int start , end , length , word_length ; // word length is the un-normalised version
+   static unsigned long last_start , last_length ;
+   static unsigned long start , end , length , word_length ; // word length is the un-normalised version
    // about the words
    start = item->getWordStart( index ) ;
    end = item->getWordEnd( index ) ;
@@ -99,15 +99,15 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
    }
 
    // about the tags 
-   const unsigned &tag = item->getTag( index ) ;
-   const unsigned &last_tag = index>0 ? item->getTag( index-1 ) : CTag::SENTENCE_BEGIN ;
-   const unsigned &second_last_tag = index>1 ? item->getTag(index-2) : CTag::SENTENCE_BEGIN ;
+   const CTag &tag = item->getTag( index ) ;
+   const CTag &last_tag = index>0 ? item->getTag( index-1 ) : CTag(CTag::SENTENCE_BEGIN) ;
+   const CTag &second_last_tag = index>1 ? item->getTag(index-2) : CTag(CTag::SENTENCE_BEGIN) ;
 
    static CTaggedWord<CTag> wt1, wt2;
    static CTwoTaggedWords wt12;
 
-   unsigned long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long>(1)<<tag) ;
-   unsigned long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long>(1)<<tag) ;
+   unsigned long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
+   unsigned long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
 
    static int j ; 
 
@@ -124,7 +124,7 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
       nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char, length) , m_nScoreIndex , amount , round ) ;
       nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char, length) , m_nScoreIndex , amount , round ) ;
 
-      for (j=0; j<word_length-1; j++)
+      for (j=0; j<word_length-1; ++j)
          nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( 
                                     amount==0 ? m_WordCache.find(start+j, start+j+1, sentence) 
                                               : m_WordCache.replace(start+j, start+j+1, sentence) , 
@@ -144,8 +144,8 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
    }
   
    nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( make_pair(word, tag) , m_nScoreIndex , amount , round ) ; 
-   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( encodeTags( tag, last_tag ), m_nScoreIndex , amount , round ) ;
-   nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( encodeTags( tag, last_tag, second_last_tag ), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( CTagSet<2>(encodeTags( tag, last_tag )), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( CTagSet<3>(encodeTags( tag, last_tag, second_last_tag )), m_nScoreIndex , amount , round ) ;
    if ( start > 0 ) {
       if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(last_word, tag) , m_nScoreIndex , amount , round ) ;
       if ( length <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getOrUpdateScore( make_pair(word, last_tag) , m_nScoreIndex , amount , round ) ;
@@ -229,7 +229,7 @@ inline void buildStateItem(const CStringVector *raw, const CTwoStringVector *tag
       taggedlen += tagged->at(i).first.size();
       while ( rawlen < taggedlen ) {
          rawlen += raw->at(ri).size();
-         ri ++;
+         ++ri;
       }
       item->append(ri-1, CTag(tagged->at(i).second).code());
    }
@@ -257,7 +257,7 @@ SCORE_TYPE CTagger::getGlobalScore(const CTwoStringVector* tagged) {
       getCharactersFromUTF8String(tagged->at(i).first, &raw);
 
    buildStateItem( &raw, tagged, &item );
-   for (i=0; i<tagged->size(); i++)
+   for (i=0; i<tagged->size(); ++i)
       rv += getOrUpdateLocalScore(&raw, &item, i);
 
    return rv;
@@ -286,12 +286,12 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
          getCharactersFromUTF8String(tagged->at(i).first, &raw);
 
       buildStateItem( &raw, tagged, &item );
-      for (i=0; i<tagged->size(); i++)
+      for (i=0; i<tagged->size(); ++i)
          getOrUpdateLocalScore(&raw, &item, i, -1, round);
 
 
       buildStateItem( &raw, correct, &item );
-      for (i=0; i<correct->size(); i++)
+      for (i=0; i<correct->size(); ++i)
          getOrUpdateLocalScore(&raw, &item, i, 1, round);
 
    }
@@ -301,10 +301,10 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
       m_nNumberOfCurrentTrainingExample = round ;
 
       // Updates that are common for all example
-      for ( i=0; i<correct->size(); i++ ) {
+      for ( i=0; i<correct->size(); ++i ) {
 
          const CWord &word = correct->at(i).first ;
-         unsigned tag = CTag( correct->at(i).second ).code() ;
+         unsigned long tag = CTag( correct->at(i).second ).code() ;
 
          CStringVector chars;
          chars.clear(); 
@@ -314,7 +314,7 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
          if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency) m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
 
          m_weights->m_mapTagDictionary.add(word, tag);
-         for ( j = 0 ; j < chars.size() ; j++ ) m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
+         for ( j = 0 ; j < chars.size() ; ++j ) m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
 
          if ( !m_bKnowledgeLoaded ||
              (!m_Knowledge.isFWorCD(chars[0])&&!m_Knowledge.isFWorCD(chars[chars.size()-1])))
@@ -333,9 +333,9 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
 
 void generate(const CStateItem *stateItem, CStringVector *sentence, CTagger *tagger, CTwoStringVector *vReturn) {
    string s;
-   for (int j=0; j<stateItem->size(); j++) { 
+   for (int j=0; j<stateItem->size(); ++j) { 
       s.clear();
-      for (int k=stateItem->getWordStart(j); k<stateItem->getWordEnd(j)+1; k++) {
+      for (int k=stateItem->getWordStart(j); k<stateItem->getWordEnd(j)+1; ++k) {
          assert(sentence->at(k)!=" "); //[--SPACE--]
          s += sentence->at(k);
       }
@@ -370,7 +370,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    const CStateItem * generator_item ; 
    CStateItem *candidate_item , tempState , maxState ;
    static CStateItem best_bigram[ CTag::COUNT ] ;
-   unsigned tag, last_tag ; 
+   unsigned long tag, last_tag ; 
 
    static CStringVector sentence;
    static CSegmentationPrune rules(m_nMaxSentSize); // 0 - no rules; 1 - append; 2 - separate
@@ -444,7 +444,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   tempState.append( index , tag ) ;
                   tempState.score += getOrUpdateLocalScore( &sentence , &tempState , tempState.size()-1 ) ;
                   if (nBest==1) {
-                     last_tag = generator_item->size() == 0 ? CTag::SENTENCE_BEGIN : generator_item->getTag( generator_item->size() - 1 );
+                     last_tag = generator_item->size() == 0 ? CTag::SENTENCE_BEGIN : generator_item->getTag( generator_item->size() - 1 ).code();
                      if ( best_bigram[last_tag].size() == 0 || tempState > best_bigram[last_tag] ) //@@@
                         best_bigram[last_tag].copy(&tempState);                                       //@@@
                   }

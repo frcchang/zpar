@@ -30,9 +30,9 @@ class CStateItem {
 
 protected:
    // words and tags
-   unsigned *m_lWords;                      // words storing word end char index
-   unsigned *m_lTags;                       // tags for each word in corresponding index
-   unsigned m_nLength;                      // the number of words it contains
+   unsigned long *m_lWords;                      // words storing word end char index
+   unsigned long *m_lTags;                       // tags for each word in corresponding index
+   unsigned long m_nLength;                      // the number of words it contains
 
    // dependency links, the stack and action information
    int *m_lHeads;                           // the lexical head for each word
@@ -52,8 +52,8 @@ public:
    // constructor and destructor
 
    CStateItem() { 
-      m_lWords   = new unsigned[MAX_SENTENCE_SIZE]; 
-      m_lTags    = new unsigned[MAX_SENTENCE_SIZE]; 
+      m_lWords   = new unsigned long[MAX_SENTENCE_SIZE]; 
+      m_lTags    = new unsigned long[MAX_SENTENCE_SIZE]; 
       m_lHeads   = new int[MAX_SENTENCE_SIZE]; 
       m_lDepsL   = new int[MAX_SENTENCE_SIZE]; 
       m_lDepsR   = new int[MAX_SENTENCE_SIZE]; 
@@ -89,12 +89,12 @@ public:
    bool operator == (const CStateItem &item) const {
       // compare words and tags but no dep first
       if ( m_nLength != item.m_nLength ) return false;
-      for ( int i=0; i<m_nLength; i++ ) {
+      for ( int i=0; i<m_nLength; ++i ) {
          if ( m_lWords[i] != item.m_lWords[i] ) return false;
          if ( m_lTags[i] != item.m_lTags[i] ) return false;
       }
       // compare dep
-      for ( int i=0; i<m_nLength; i++ ) {
+      for ( int i=0; i<m_nLength; ++i ) {
          if ( m_lHeads[i] != item.m_lHeads[i] )
             return false;
       }
@@ -110,12 +110,12 @@ public:
       m_nLength = from->m_nLength;
       score = from->score;
       // copy words and tag information from item
-      for (int i=0; i<m_nLength; i++) {
+      for (int i=0; i<m_nLength; ++i) {
          m_lWords[i] = from->m_lWords[i];
          m_lTags[i] = from->m_lTags[i];
       }
       // copy dependency link and parsing stack
-      for ( int i=0; i<m_nLength; i++ ){ // only copy active word (including m_nNext)
+      for ( int i=0; i<m_nLength; ++i ){ // only copy active word (including m_nNext)
          m_lHeads[i] = from->m_lHeads[i];  
          m_lDepsL[i] = from->m_lDepsL[i]; 
          m_lDepsR[i] = from->m_lDepsR[i];
@@ -139,17 +139,17 @@ public:
 
    // information about segmentation
 
-   inline unsigned size() const { return m_nLength; }
+   inline unsigned long size() const { return m_nLength; }
    inline unsigned charactersize() const { return m_nLength==0 ? 0 : m_lWords[m_nLength-1]+1; }
 
-   inline unsigned getWordStart(const unsigned &i) const { return i>0?m_lWords[i-1]+1:0; }
-   inline unsigned getWordEnd(const unsigned &i) const { return m_lWords[i]; }
-   inline unsigned getWordLength(const unsigned &i) const { return i>0?m_lWords[i]-m_lWords[i-1]:m_lWords[0]+1;}
+   inline unsigned long getWordStart(const unsigned long &i) const { return i>0?m_lWords[i-1]+1:0; }
+   inline unsigned long getWordEnd(const unsigned long &i) const { return m_lWords[i]; }
+   inline unsigned long getWordLength(const unsigned long &i) const { return i>0?m_lWords[i]-m_lWords[i-1]:m_lWords[0]+1;}
 
-   inline int head( const unsigned int &index ) const { assert(index<m_nLength); return m_lHeads[index]; }
+   inline int head( const unsigned long int &index ) const { assert(index<m_nLength); return m_lHeads[index]; }
    inline int leftmostdep( const int &index ) const { assert(index<m_nLength); return m_lDepsL[index]; }
    inline int rightmostdep( const int &index ) const { assert(index<m_nLength); return m_lDepsR[index]; }
-   inline int sibling( const unsigned int &index ) const { assert(index<m_nLength); return m_lSibling[index]; }
+   inline int sibling( const unsigned long int &index ) const { assert(index<m_nLength); return m_lSibling[index]; }
 
    inline int leftarity( const int &index ) const { 
       assert(index<m_nLength); 
@@ -182,7 +182,7 @@ public:
 
    // the segmentation and tagging actions 
 
-   void append(const unsigned &char_index, const unsigned &tag=PENN_TAG_NONE) {
+   void append(const unsigned long &char_index, const unsigned long &tag=PENN_TAG_NONE) {
       // append word and tag
       m_lWords[m_nLength] = char_index;
       m_lTags[m_nLength] = tag;
@@ -195,16 +195,16 @@ public:
       m_nLength ++ ;
    }
 
-   inline void replace(const unsigned &char_index, const unsigned &tag=PENN_TAG_NONE) {
+   inline void replace(const unsigned long &char_index, const unsigned long &tag=PENN_TAG_NONE) {
       m_lWords[m_nLength-1] = char_index;
       m_lTags[m_nLength-1] = tag;
    }
 
-   inline void setTag(const unsigned &index, const unsigned &tag) {
+   inline void setTag(const unsigned long &index, const unsigned long &tag) {
       m_lTags[index] = tag;
    }
 
-   inline unsigned getTag(const unsigned &index) const {
+   inline unsigned long getTag(const unsigned long &index) const {
       return m_lTags[index];
    }
 
@@ -318,7 +318,7 @@ public:
       static int k;
       output.clear();
       k=0;
-      for ( int i=0; i<size(); i++ ) {
+      for ( int i=0; i<size(); ++i ) {
          st.clear();
          while (k<=m_lWords[i]) {
             st += input.at(k);
