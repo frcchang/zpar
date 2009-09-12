@@ -1180,7 +1180,7 @@ bool train_loop( CTagger * tagger , const CStringVector * sentence , const CStat
 
    // initially no tags assigned - find the best item from unigram scores;
    most_confident_score = absolute_min_score ;
-   for ( i=0 ; i < segmented_item->m_nLength ; i ++ ) {
+   for ( i=0 ; i < segmented_item->m_nLength ; ++i ) {
       partial_score = getUnigramScore( tagger , sentence , segmented_item ) ;
       candidates[ i ] = partial_score ;
       if ( partial_score > most_confident_score ) {
@@ -1207,7 +1207,7 @@ bool train_loop( CTagger * tagger , const CStringVector * sentence , const CStat
       // exclude possible candidates from overlapping with the current one
       length_left-- ;                     
 
-      for ( i = 0 ; i < segmented_item.m_nLength ; i ++ )
+      for ( i = 0 ; i < segmented_item.m_nLength ; ++i )
          candidates[ i ] = absolute_min_score ; 
 
       // update scores
@@ -1227,7 +1227,7 @@ bool train_loop( CTagger * tagger , const CStringVector * sentence , const CStat
 
       // find the best again
       max_partial_score = absolute_min_score ;
-      for ( i = 0 ; i < length * max_word_length ; i++ ) {
+      for ( i = 0 ; i < length * max_word_length ; ++i ) {
          if ( candidates[ i ] > max_partial_score ) {
             max_partial_score = candidates[ i ] ;
             max_partial_start = i / max_word_length ;
@@ -1252,8 +1252,8 @@ void CTagger::train( const CStringVector * sentence, const CStringVector * corre
    static vector<int> indice ;
    static vector<int> startindex ;
    static vector<int> endindex ;
-   static unsigned int i , j ;
-   static unsigned int word_start , word_end ;
+   static unsigned long int i , j ;
+   static unsigned long int word_start , word_end ;
    static int start ;
 
    indice.clear() ;
@@ -1313,9 +1313,9 @@ void CTagger::tag(const CStringVector* sentence, CStringVector *vReturn, double 
    max_word_length = m_Feature->getWeights().m_maxLength;
    max_partial_score = absolute_min_score;
    length_left = length;
-   for (i=0; i<length; i++)
+   for (i=0; i<length; ++i)
       chars[i]=0;
-   for ( i = 0 ; i < length ; i ++ )
+   for ( i = 0 ; i < length ; ++i )
       for ( len = 1 ; len < max_word_length + 1 ; len ++ ) {
          if ( len > length - i ) {
             candidates[ i * max_word_length + ( len - 1 ) ] = absolute_min_score;
@@ -1340,11 +1340,11 @@ void CTagger::tag(const CStringVector* sentence, CStringVector *vReturn, double 
    while (length_left>0) {
 
       // record 
-      for ( i = max_partial_start ; i < max_partial_start + max_partial_length ; i++ )
+      for ( i = max_partial_start ; i < max_partial_start + max_partial_length ; ++i )
          chars[i] = current_index;
 
       // exclude possible candidates from overlapping with the current one
-      for ( i = max( 0, max_partial_start - max_word_length + 1) ; i < max_partial_start + max_partial_length; i ++ )
+      for ( i = max( 0, max_partial_start - max_word_length + 1) ; i < max_partial_start + max_partial_length; ++i )
          for ( len = max( 1, max_partial_start - i + 1 ) ; len < min( max_word_length , length - i ) + 1 ; len ++ )
             candidates[ i * max_word_length + ( len - 1 ) ] = absolute_min_score ; 
 
@@ -1367,7 +1367,7 @@ void CTagger::tag(const CStringVector* sentence, CStringVector *vReturn, double 
 
       // find the best again
       max_partial_score = absolute_min_score;
-      for ( i = 0 ; i < length * max_word_length ; i ++ )
+      for ( i = 0 ; i < length * max_word_length ; ++i )
          if ( candidates[ i ] > max_partial_score ) {
             max_partial_score = candidates[ i ] ;
             max_partial_start = i / max_word_length ;

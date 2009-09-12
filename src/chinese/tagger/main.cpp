@@ -56,7 +56,7 @@ void recordSegmentation(const CStringVector *raw, const CStringVector* segmented
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, const unsigned nBest, const unsigned nMaxSentSize, const bool bSegmented, bool bKnowledge, bool bScores) {
+void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, const unsigned long nBest, const unsigned long nMaxSentSize, const bool bSegmented, bool bKnowledge, bool bScores) {
    cout << "Tagging started" << endl;
    int time_start = clock();
    CTagger tagger(sFeatureFile, false, nMaxSentSize);
@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
       }
       configurations.loadConfigurations(options.opts);
    
-      unsigned nBest, nMaxSentSize;
+      unsigned long nBest, nMaxSentSize;
       if (!fromString(nMaxSentSize, configurations.getConfiguration("m"))) {
          cerr<<"Error: the size of largest sentence is not integer." << endl; return 1;
       }  

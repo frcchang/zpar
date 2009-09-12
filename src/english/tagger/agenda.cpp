@@ -26,7 +26,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
 
 SCORE_TYPE CTagger::getGlobalScore(CStringVector* sentence, CStateItem* item){
    SCORE_TYPE nReturn = 0;
-   for (int i=0; i<item->m_nLength; i++)
+   for (int i=0; i<item->m_nLength; ++i)
       nReturn += getLocalScore(sentence, item, i);
    return nReturn;
 }
@@ -43,16 +43,16 @@ SCORE_TYPE CTagger::getGlobalScore(CStringVector* sentence, CStateItem* item){
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getLocalScore( CStringVector * sentence, CStateItem * item , unsigned int index ) {
+SCORE_TYPE CTagger::getLocalScore( CStringVector * sentence, CStateItem * item , unsigned long int index ) {
    const CWord &word = m_Cache[index]; 
    const CWord &prev_word = index>0 ? m_Cache[index-1] : g_emptyWord; 
    const CWord &second_prev_word = index>1 ? m_Cache[index-2] : g_emptyWord;
    const CWord &next_word = index<m_Cache.size()-1 ? m_Cache[index+1] : g_emptyWord;
    const CWord &second_next_word = index<m_Cache.size()-2 ? m_Cache[index+2] : g_emptyWord;
-   unsigned tag = item->getTag(index);
-   unsigned prev_tag = index>0 ? item->getTag(index-1) : PENN_TAG_BEGIN;
-   unsigned second_prev_tag = index>1 ? item->getTag(index-2) : PENN_TAG_BEGIN;
-   unsigned prev_two_tag = joinTwoTags( second_prev_tag, prev_tag );
+   unsigned long tag = item->getTag(index);
+   unsigned long prev_tag = index>0 ? item->getTag(index-1) : PENN_TAG_BEGIN;
+   unsigned long second_prev_tag = index>1 ? item->getTag(index-2) : PENN_TAG_BEGIN;
+   unsigned long prev_two_tag = joinTwoTags( second_prev_tag, prev_tag );
 
    static int i;
    static int word_size;
@@ -77,7 +77,7 @@ SCORE_TYPE CTagger::getLocalScore( CStringVector * sentence, CStateItem * item ,
    bContainNumber = false;
    bContainCapitalLetter = false;
    word_size = sentence->at(index).size();
-   for ( i=0; i<word_size; i++ ) {
+   for ( i=0; i<word_size; ++i ) {
       letter = sentence->at(index)[i];
       if ( letter == '-' ) bContainHyphen = true;
       if ( letter >= '0' && letter <= '9' ) bContainNumber = true;
@@ -162,10 +162,10 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , CTwoStringVector
    const CWord &second_prev_word = index>1 ? m_Cache[index-2] : g_emptyWord;
    const CWord &next_word = index<m_Cache.size()-1 ? m_Cache[index+1] : g_emptyWord;
    const CWord &second_next_word = index<m_Cache.size()-2 ? m_Cache[index+2] : g_emptyWord;
-   unsigned tag = CTag(sentence->at(index).second).code();
-   unsigned prev_tag = index>0 ? CTag(sentence->at(index-1).second).code() : PENN_TAG_BEGIN;
-   unsigned second_prev_tag = index>1 ? CTag(sentence->at(index-2).second).code() : PENN_TAG_BEGIN;
-   unsigned prev_two_tag = joinTwoTags( second_prev_tag, prev_tag );
+   unsigned long tag = CTag(sentence->at(index).second).code();
+   unsigned long prev_tag = index>0 ? CTag(sentence->at(index-1).second).code() : PENN_TAG_BEGIN;
+   unsigned long second_prev_tag = index>1 ? CTag(sentence->at(index-2).second).code() : PENN_TAG_BEGIN;
+   unsigned long prev_two_tag = joinTwoTags( second_prev_tag, prev_tag );
 
    static int i;
    static int word_size;
@@ -190,7 +190,7 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , CTwoStringVector
    bContainNumber = false;
    bContainCapitalLetter = false;
    word_size = sentence->at(index).first.size();
-   for ( i=0; i<word_size; i++ ) {
+   for ( i=0; i<word_size; ++i ) {
       letter = sentence->at(index).first[i];
       if ( letter == '-' ) bContainHyphen = true;
       if ( letter >= '0' && letter <= '9' ) bContainNumber = true;

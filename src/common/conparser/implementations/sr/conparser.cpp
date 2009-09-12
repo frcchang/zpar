@@ -30,18 +30,18 @@ using namespace TARGET_LANGUAGE::conparser;
  *
  *---------------------------------------------------------------*/
 
-SCORE_TYPE CConParser::getOrUpdateLinkScore( const unsigned &head, const unsigned &mod, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CConParser::getOrUpdateLinkScore( const unsigned long &head, const unsigned long &mod, SCORE_TYPE amount, int round ) {
 
    static SCORE_TYPE nReturn;
    nReturn = 0;
 return 0;
-   unsigned direction = encodeLinkDirection(head, mod);
-   unsigned dist = encodeLinkSize(head, mod);
+   unsigned long direction = encodeLinkDirection(head, mod);
+   unsigned long dist = encodeLinkSize(head, mod);
    static CCFGSet cf;
 
-   const unsigned ht = encodeTorC(encodeT(m_lCache[head]), true);
+   const unsigned long ht = encodeTorC(encodeT(m_lCache[head]), true);
    const CWord &hw = m_lCache[head];
-   const unsigned mt = encodeTorC(encodeT(m_lCache[mod]), true);
+   const unsigned long mt = encodeTorC(encodeT(m_lCache[mod]), true);
    const CWord &mw = m_lCache[mod];
 
    cf.clear(); cf+=ht; cf+=mt; cf+=0; cf+=0;
@@ -75,21 +75,21 @@ return 0;
  *
  *---------------------------------------------------------------*/
 
-SCORE_TYPE CConParser::getOrUpdateSiblingLinkScore( const unsigned &head, const unsigned &mod, const unsigned &sibling, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CConParser::getOrUpdateSiblingLinkScore( const unsigned long &head, const unsigned long &mod, const unsigned long &sibling, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn;
    nReturn = 0;
 return 0;
-   unsigned direction = encodeLinkDirection(mod, sibling);
-   unsigned dist = encodeLinkDirectionAndSize(mod, sibling);
+   unsigned long direction = encodeLinkDirection(mod, sibling);
+   unsigned long dist = encodeLinkDirectionAndSize(mod, sibling);
 
-   const unsigned ht = encodeT(m_lCache[head]);
+   const unsigned long ht = encodeT(m_lCache[head]);
    const CWord &hw = m_lCache[head];
-   const unsigned mt = encodeT(m_lCache[mod]);
+   const unsigned long mt = encodeT(m_lCache[mod]);
    const CWord &mw = m_lCache[mod];
-   const unsigned st = encodeT(m_lCache[sibling]);
+   const unsigned long st = encodeT(m_lCache[sibling]);
    const CWord &sw = m_lCache[sibling];
 
-   unsigned k = encodeTags(ht, mt, st);
+   unsigned long k = encodeTags(ht, mt, st);
    nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k, m_nScoreIndex, amount, round);
    nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k | (direction<<(PENN_TAG_COUNT_BITS*3)), m_nScoreIndex, amount, round);
    nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k | (dist<<(PENN_TAG_COUNT_BITS*3)), m_nScoreIndex, amount, round);
@@ -113,12 +113,12 @@ return 0;
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CConParser::getOrUpdateArityScore( const unsigned &head, const unsigned &arityleft, const unsigned &arityright, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CConParser::getOrUpdateArityScore( const unsigned long &head, const unsigned long &arityleft, const unsigned long &arityright, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn;
    nReturn = 0;return nReturn;
 
    const CWord &w = m_lCache[head];
-   const unsigned t = encodeT(m_lCache[head]);
+   const unsigned long t = encodeT(m_lCache[head]);
 
    nReturn += cast_weights->m_mapHwArityL.getOrUpdateScore(make_pair(w, arityleft), m_nScoreIndex, amount, round);
    nReturn += cast_weights->m_mapHtArityL.getOrUpdateScore(make_pair(t, arityleft), m_nScoreIndex, amount, round);
@@ -134,12 +134,12 @@ SCORE_TYPE CConParser::getOrUpdateArityScore( const unsigned &head, const unsign
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CConParser::getOrUpdateHeadScore( const unsigned &parent, const unsigned &child, const unsigned &head, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CConParser::getOrUpdateHeadScore( const unsigned long &parent, const unsigned long &child, const unsigned long &head, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn;
    nReturn = 0;
 return 0;
    const CWord &w = m_lCache[head];
-   const unsigned &t = encodeT(m_lCache[head]);
+   const unsigned long &t = encodeT(m_lCache[head]);
    static CCFGSet cs; cs.clear();
    cs += parent; cs += child;
 
@@ -158,7 +158,7 @@ return 0;
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CConParser::getOrUpdateHeadModifierScore( const unsigned &parent, const unsigned &child, const unsigned &child1, const unsigned &head, const unsigned &mod, const bool &left, const bool &neighbour, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CConParser::getOrUpdateHeadModifierScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const unsigned long &head, const unsigned long &mod, const bool &left, const bool &neighbour, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn;
    nReturn = 0;
 return 0;
@@ -171,7 +171,7 @@ return 0;
       hwmw.allocate(hw, mw);
    else
       hwmw.refer(&hw, &mw);
-   static unsigned pos;
+   static unsigned long pos;
 
    static CCFGSet cs; 
 
@@ -204,7 +204,7 @@ return 0;
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CConParser::getOrUpdateBigramScore( const unsigned &parent, const unsigned &child, const unsigned &child1, const bool &left, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CConParser::getOrUpdateBigramScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const bool &left, SCORE_TYPE amount, int round ) {
 
    static SCORE_TYPE nReturn;
    nReturn = 0;
@@ -241,8 +241,8 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
 
    assert( ctxt->s0_unbinarized.size() == ctxt->s0_unbinarized_cs.size() );
    assert( ctxt->s1_unbinarized.size() == ctxt->s1_unbinarized_cs.size() );
-   const unsigned &s0_size = ctxt->s0_unbinarized.size();
-   const unsigned &s1_size = ctxt->s1_unbinarized.size();
+   const unsigned long &s0_size = ctxt->s0_unbinarized.size();
+   const unsigned long &s1_size = ctxt->s1_unbinarized.size();
 
    if (!nd.single_child) {
       assert( (!nd.head_left||s0_size==1) && (nd.head_left||s1_size==1) );
@@ -253,10 +253,10 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    }
 
    const CWord &w = m_lCache[nd.lexical_head]; // lexical head
-   const unsigned t = encodeT(m_lCache[nd.lexical_head]); // head tag
+   const unsigned long t = encodeT(m_lCache[nd.lexical_head]); // head tag
 
-   static unsigned n; // number of constituents in the rule
-   static unsigned hd; // head node
+   static unsigned long n; // number of constituents in the rule
+   static unsigned long hd; // head node
    hd = nd.single_child?ctxt->s0_head_node:nd.head_left?ctxt->s1_head_node:ctxt->s0_head_node;
    n = nd.single_child?s0_size:s1_size+s0_size;
 
@@ -275,12 +275,12 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    //   ct = cf;
    //   j = 0;
    //   if (!nd.single_child) {
-   //      for (i=0; i<s1_size; i++) {
+   //      for (i=0; i<s1_size; ++i) {
    //         ct += ctxt->s1_unbinarized_cs[i];
             //if(nd.norv)j = encodeRhythms(j, encodeRhythm(item->nodes[s1_unbinarized[i], m_lWordLen));
    //      }
    //   }
-   //   for (i=0; i<s0_size; i++) {
+   //   for (i=0; i<s0_size; ++i) {
    //      ct += ctxt->s0_unbinarized_cs[i];
          //if(nd.norv)j = encodeRhythms(j, encodeRhythm(item->nodes[s0_unbinarized[i], m_lWordLen));
    //   }
@@ -297,7 +297,7 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
  *
  *---------------------------------------------------------------*/
 
-inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, const unsigned &action, SCORE_TYPE amount , int round ) {
+inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, const unsigned long &action, SCORE_TYPE amount , int round ) {
 
    const CContext *ctxt = item->context;
    if (ctxt->stacksize==0) return 0;
@@ -532,20 +532,20 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    }
 
    if (ctxt->s1!=-1) {
-      static unsigned i;
-      for (i=0; i<ctxt->s0c_separator.size(); i++) {
+      static unsigned long i;
+      for (i=0; i<ctxt->s0c_separator.size(); ++i) {
          nReturn += cast_weights->m_mapS0cSeparator.getOrUpdateScore(encodeAction(action, ctxt->s0c_separator[i]), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapS0wcSeparator.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, ctxt->s0c_separator[i])), m_nScoreIndex, amount, round);
       }
       nReturn += cast_weights->m_mapS0cSepCount.getOrUpdateScore(encodeAction(action, ctxt->s0c_sepcount), m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0wcSepCount.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, ctxt->s0c_sepcount)), m_nScoreIndex, amount, round);
-      for (i=0; i<ctxt->s1c_separator.size(); i++) {
+      for (i=0; i<ctxt->s1c_separator.size(); ++i) {
          nReturn += cast_weights->m_mapS1cSeparator.getOrUpdateScore(encodeAction(action, ctxt->s1c_separator[i]), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapS1wcSeparator.getOrUpdateScore(make_pair(*(ctxt->s1w), encodeAction(action, ctxt->s1c_separator[i])), m_nScoreIndex, amount, round);
       }
       nReturn += cast_weights->m_mapS1cSepCount.getOrUpdateScore(encodeAction(action, ctxt->s1c_sepcount), m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS1wcSepCount.getOrUpdateScore(make_pair(*(ctxt->s1w), encodeAction(action, ctxt->s1c_sepcount)), m_nScoreIndex, amount, round);
-      for (i=0; i<ctxt->s0cs1c_separator.size(); i++)
+      for (i=0; i<ctxt->s0cs1c_separator.size(); ++i)
          nReturn += cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(encodeAction(action, ctxt->s0cs1c_separator[i]), m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(encodeAction(action, ctxt->s0cs1c_sepcount), m_nScoreIndex, amount, round);
    }
@@ -709,14 +709,14 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
 void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDATE update ) {
 
    static CStateItem st;
-   static unsigned action;
+   static unsigned long action;
    st.clear();
    st.sent = &m_lCache;
    static CContext context;
    st.context = &context;
-   static unsigned constituent;
+   static unsigned long constituent;
    static bool single_child, head_left, temporary;
-   static unsigned stacksize;
+   static unsigned long stacksize;
 
    const SCORE_TYPE amount = (update==eAdd ? 1 : -1);
 
@@ -877,18 +877,18 @@ void CConParser::shift(CStateItem &st) {
  *--------------------------------------------------------------*/
 
 void CConParser::reduce(CStateItem &st) {
-   static unsigned constituent;
-   static unsigned i, j;
+   static unsigned long constituent;
+   static unsigned long i, j;
    //static CStateItem st;
    //st = *item;
    static SCORE_TYPE original_score;
    static int unary_reduce;
    original_score = st.score;
    unary_reduce = st.unary_reduce;
-   const unsigned &stacksize = st.stack.size();
+   const unsigned long &stacksize = st.stack.size();
    const bool prev_temp = stacksize>2 ? st.nodes[st.stack[stacksize-3]].temp:false;
    for (constituent=PENN_CON_FIRST; constituent<PENN_CON_COUNT; constituent++) {
-      for (i=0; i<=1; i++) {
+      for (i=0; i<=1; ++i) {
          for (j=0; j<=1; j++) {
             const bool &head_left = static_cast<bool>(i);
             const bool &temporary = static_cast<bool>(j);
@@ -990,7 +990,7 @@ void CConParser::reduce_unary(CStateItem &st) {
    original_score = st.score;
    unary_reduce = st.unary_reduce;
    static CCFGSet cf;
-   for (unsigned constituent=PENN_CON_FIRST; constituent<PENN_CON_COUNT; ++constituent){
+   for (unsigned long constituent=PENN_CON_FIRST; constituent<PENN_CON_COUNT; ++constituent){
       const CStateNode &child = st.nodes[st.stack.back()];
       const CWord &hw = m_lCache[child.lexical_head];
       assert(st.context->s0==st.stack.back());
@@ -1054,7 +1054,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    static CStateItem oCandidate ;
    static bool bCorrect ;  // used in learning for early update
    static CStateItem correctState ;
-   static unsigned stack_size;
+   static unsigned long stack_size;
    static int x;
    const static CStateItem *pBestGen;
    static CContext context;
@@ -1168,7 +1168,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    if (scores) scores[0] = pBestGen->score;
 /*
    m_Agenda->sortGenerators();
-   for (int i=0; i<nBest; i++) {
+   for (int i=0; i<nBest; ++i) {
       retval[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score();
       pGenerator = m_Agenda->generator(i) ; 

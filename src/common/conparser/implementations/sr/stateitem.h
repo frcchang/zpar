@@ -7,28 +7,28 @@
  *
  *==============================================================*/
 
-inline unsigned getConstituent(const unsigned &action) {
+inline unsigned long getConstituent(const unsigned long &action) {
    return action & ((1<<PENN_CON_COUNT_BITS)-1);
 }
 
-inline bool singleChild(const unsigned &action) {
+inline bool singleChild(const unsigned long &action) {
    return action & (1<<(PENN_CON_COUNT_BITS+1));
 }
 
-inline bool headLeft(const unsigned &action) {
+inline bool headLeft(const unsigned long &action) {
    return action & (1<<PENN_CON_COUNT_BITS);
 }
 
-inline bool isTemporary(const unsigned &action) {
+inline bool isTemporary(const unsigned long &action) {
    return action & (1<<(PENN_CON_COUNT_BITS+2));
 }
 
-inline unsigned long encodeAction(const unsigned &action, const unsigned long &num) {
+inline unsigned long encodeAction(const unsigned long &action, const unsigned long &num) {
    assert(action>>(PENN_CON_COUNT_BITS+4)==0);
    return action | ( num << (PENN_CON_COUNT_BITS+4) ); // action takes 4 extra bits plus consti (REDUCE, SINGLE_C, HEAD_L, TEMP)
 }
 
-inline unsigned encodeReduce(const unsigned &constituent, bool single_child, bool head_left, bool temporary) {
+inline unsigned long encodeReduce(const unsigned long &constituent, bool single_child, bool head_left, bool temporary) {
    assert(!single_child || (!head_left&&!temporary));
    return (1<<(PENN_CON_COUNT_BITS+3)) | 
           ((temporary?1:0) << (PENN_CON_COUNT_BITS+2)) | 
@@ -37,19 +37,19 @@ inline unsigned encodeReduce(const unsigned &constituent, bool single_child, boo
           constituent ;
 }
 
-inline unsigned encodeShift() {
+inline unsigned long encodeShift() {
    return 0;
 }
 
-inline unsigned encodeReduceRoot() {
+inline unsigned long encodeReduceRoot() {
    return encodeReduce(PENN_CON_NONE, false, false, false);
 }
 
-inline bool isShift(const unsigned &action) { return action == 0; }
-inline bool isReduce(const unsigned &action) { return action & (1<<(PENN_CON_COUNT_BITS+3)); }
-inline bool isReduceRoot(const unsigned &action) { return action == 1<<(PENN_CON_COUNT_BITS+3); }
+inline bool isShift(const unsigned long &action) { return action == 0; }
+inline bool isReduce(const unsigned long &action) { return action & (1<<(PENN_CON_COUNT_BITS+3)); }
+inline bool isReduceRoot(const unsigned long &action) { return action == 1<<(PENN_CON_COUNT_BITS+3); }
 
-inline string printAction(const unsigned &action) {
+inline string printAction(const unsigned long &action) {
    if (isShift(action)) return "SHIFT";
    assert(isReduce(action));
    string retval = "REDUCE";
@@ -150,7 +150,7 @@ public:
       stack.push_back(t);
       assert(!IsTerminated());
    }
-   void reduce(const unsigned &constituent, const bool &single_child, const bool &head_left, const bool &temporary) {
+   void reduce(const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) {
       //TRACE("reduce");
       assert(!IsTerminated());
       int c = newNode();         // the new node
@@ -264,7 +264,7 @@ public:
    // This method applies to both full parse [CCFGTree] and partial parse [CStateItem]
    // The first case for standard move and the second for follow move in updating scores.
    //
-   template<class CPartialParseTree> unsigned NextMove(const CPartialParseTree &snt) const {
+   template<class CPartialParseTree> unsigned long NextMove(const CPartialParseTree &snt) const {
       int s = stack.back();
       const CCFGTreeNode &nd = snt.nodes[s];
       const CCFGTreeNode &hd = snt.nodes[nd.parent];
@@ -291,7 +291,7 @@ public:
       return encodeReduce(hd.constituent, single_child, head_left, temporary);
    }
 
-   unsigned FollowMove(const CStateItem &st) const {
+   unsigned long FollowMove(const CStateItem &st) const {
       // don't follow move when the states euqal
       assert(*this!=st);
 
@@ -314,7 +314,7 @@ public:
       }
    }
 
-   unsigned StandardMove(const CCFGTree &tr) const {
+   unsigned long StandardMove(const CCFGTree &tr) const {
       assert(!IsTerminated());
       assert(tr.words.size() == sent->size());
       // stack empty?shift
@@ -328,7 +328,7 @@ public:
       return NextMove(tr);
    }
 
-   void Move(const unsigned &action) {
+   void Move(const unsigned long &action) {
       if (isShift(action))
          shift();
       else if (isReduceRoot(action))
@@ -353,9 +353,9 @@ public:
       // generate nodes for out
       out.clear();
       int i,j;
-      for (i=0; i<tagged.size(); i++) 
+      for (i=0; i<tagged.size(); ++i) 
          out.newWord(tagged[i].first, tagged[i].second);
-      for (i=0; i<nodes.size(); i++) {
+      for (i=0; i<nodes.size(); ++i) {
          j = out.newNode();
          out.nodes[j] = static_cast<CCFGTreeNode>(nodes[j]);
       }
@@ -367,8 +367,8 @@ public:
    void trace(const CTwoStringVector *s=0) const {
       CStateItem st; 
       st.sent = sent;
-      unsigned action;
-      //TRACE("Nodes"); for (unsigned i=0; i<nodes.size(); ++i) TRACE(nodes[i].str());
+      unsigned long action;
+      //TRACE("Nodes"); for (unsigned long i=0; i<nodes.size(); ++i) TRACE(nodes[i].str());
       //TRACE("Stack: " << toString(stack));
       TRACE("State item score == " << score);
       while (st!=*this) {

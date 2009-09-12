@@ -36,7 +36,7 @@ inline int getLinkDirectionEncode(const int &head_index, const int &dep_index) {
    return head_index>dep_index ? LINK_DIRECTION_HEAD_RIGHT : LINK_DIRECTION_HEAD_LEFT ;
 }
 #ifdef LABELED
-inline int getLabelAndDirectionOrDistanceEncode(const unsigned &label, const int &dod) {
+inline int getLabelAndDirectionOrDistanceEncode(const unsigned long &label, const int &dod) {
    return (dod<<PENN_DEP_COUNT)+label;
 }
 #endif

@@ -30,15 +30,15 @@ template <typename CNode>
 class CAgendaChart {
    private:
       vector< CAgendaSimple<CNode>* > m_vNodes;
-      unsigned int m_nSize;
-      const unsigned int m_nAgendaSize;
+      unsigned long int m_nSize;
+      const unsigned long int m_nAgendaSize;
    public:
       // constructor and destructor method
       CAgendaChart(int nAgendaSize) : m_nAgendaSize(nAgendaSize) { clear(); }
-      ~CAgendaChart() { for(unsigned int i=0; i<m_vNodes.size(); ++i) delete m_vNodes[i]; }
+      ~CAgendaChart() { for(unsigned long int i=0; i<m_vNodes.size(); ++i) delete m_vNodes[i]; }
       // public methods for manipulation
       void clear() { m_nSize = 0; }
-      CAgendaSimple<CNode>* operator [] (unsigned int index) { 
+      CAgendaSimple<CNode>* operator [] (unsigned long int index) { 
          if (index==m_nSize) { 
             if (index==m_vNodes.size()) m_vNodes.push_back(new CAgendaSimple<CNode>(m_nAgendaSize)); 
             m_vNodes[m_nSize]->clear(); 

@@ -11,11 +11,7 @@
 #include "options.h"
 
 int main(int argc, char**argv){
-   COptions options(argc, argv);
-   for (int i=0; i<options.args.size();++i)
-      cout << options.args[i] << endl;
-   for (int i=0; i<options.opts.size(); ++i)
-      cout << options.opts[i].first << " " << options.opts[i].second << endl;
+   cout << sizeof(int) << endl;
    return 0;
 };
 

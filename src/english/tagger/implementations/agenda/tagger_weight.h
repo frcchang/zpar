@@ -40,9 +40,9 @@ namespace tagger {
 //
 typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
-typedef CScoreMap< unsigned int, SCORE_TYPE > CIntMap;
-typedef CScoreMap< pair<unsigned int, unsigned int>, SCORE_TYPE > CTwoIntMap;
-typedef CScoreMap< pair<CWord, unsigned int>, SCORE_TYPE > CWordIntMap;
+typedef CScoreMap< unsigned long int, SCORE_TYPE > CIntMap;
+typedef CScoreMap< pair<unsigned long int, unsigned long int>, SCORE_TYPE > CTwoIntMap;
+typedef CScoreMap< pair<CWord, unsigned long int>, SCORE_TYPE > CWordIntMap;
 
 //typedef CHashMap< CWord, int > CWordIntMap;
 

@@ -41,7 +41,7 @@ typedef vector< pair< string , string > > CTwoStringVector ;
 inline
 bool wordsEqual(CTwoStringVector *snt1, CTwoStringVector *snt2) {
    if (snt1->size() != snt2->size()) return false;
-   for (unsigned int i=0; i<snt1->size(); ++i)
+   for (unsigned long int i=0; i<snt1->size(); ++i)
       if (snt1->at(i).first != snt2->at(i).first) return false;
    return true;
 }

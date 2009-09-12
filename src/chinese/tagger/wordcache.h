@@ -46,7 +46,7 @@ public:
       static string temp;
       if (m_lWordCache[start*m_nMaxSentenceSize+end].empty()) { // empty string
          temp.clear();
-         for (int i=start; i<=end; i++) // append the corresponding characters
+         for (int i=start; i<=end; ++i) // append the corresponding characters
             temp += sentence->at(i);
          m_lWordCache[start*m_nMaxSentenceSize+end].setString(temp);
       }
@@ -59,7 +59,7 @@ public:
       if (m_lWordCache[start*m_nMaxSentenceSize+end].empty() ||
           m_lWordCache[start*m_nMaxSentenceSize+end].unknown()) { // empty string
          temp.clear();
-         for (int i=start; i<=end; i++) // append the corresponding characters
+         for (int i=start; i<=end; ++i) // append the corresponding characters
             temp += sentence->at(i);
          m_lWordCache[start*m_nMaxSentenceSize+end] = (temp);
       }
@@ -68,7 +68,7 @@ public:
 
    // clear the word cache
    void clear() {
-      for (int i=0; i<m_nMaxSentenceSize; i++)
+      for (int i=0; i<m_nMaxSentenceSize; ++i)
          for (int j=0; j<m_nMaxSentenceSize; j++)
             m_lWordCache[i*m_nMaxSentenceSize+j].clear();
    }

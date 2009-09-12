@@ -24,9 +24,9 @@
  *--------------------------------------------------------------*/
 
 inline
-unsigned int getUTF8StringLength(const string &s) {
-   unsigned int retval=0;
-   unsigned int idx=0;
+unsigned long int getUTF8StringLength(const string &s) {
+   unsigned long int retval=0;
+   unsigned long int idx=0;
    while (idx<s.length()) {
       if ((s[idx]&0x80)==0) {
          ++idx;
@@ -63,8 +63,8 @@ template<class CSentence>
 inline int getCharactersFromUTF8String(const string &s, CSentence *sentence) {
    if (sentence==NULL)
       return 0;
-   unsigned int idx=0;
-   unsigned int len=0;
+   unsigned long int idx=0;
+   unsigned long int len=0;
    while (idx<s.length()) {
       if ((s[idx]&0x80)==0) {
          sentence->push_back(s.substr(idx, 1));
@@ -128,7 +128,7 @@ inline string getFirstCharFromUTF8String(const string &s) {
 inline string getLastCharFromUTF8String(const string &s) {
    if (s=="")
       return "";
-   unsigned int idx=0;
+   unsigned long int idx=0;
    string retval;
    while (idx<s.length()) {
       if ((s[idx]&0x80)==0) {

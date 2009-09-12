@@ -79,7 +79,7 @@ public:
 public:
    void writeSentence(CTwoStringVector *tagged, vector<CSuperTag> *supertags) {
       assert(tagged->size()==supertags->size());
-      for (int i=0; i<supertags->size(); i++) {
+      for (int i=0; i<supertags->size(); ++i) {
          *m_oStream << tagged->at(i).first << "\t" << tagged->at(i).second << "\t";
          *m_oStream << supertags->at(i);
          *m_oStream << endl;

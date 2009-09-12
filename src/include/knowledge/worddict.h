@@ -1,6 +1,6 @@
 /****************************************************************
  *                                                              *
- * worddict.h - the dictionary from word to unsigned int.       *
+ * worddict.h - the dictionary from word to unsigned long int.       *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -13,9 +13,9 @@
 
 #include "hash.h"
 
-static const unsigned int DICT_SIZE = 16381 ;
+static const unsigned long int DICT_SIZE = 16381 ;
 
-typedef unsigned int CWordCat;
+typedef unsigned long int CWordCat;
 
 /*===============================================================
  *
@@ -27,7 +27,7 @@ class CWordDictionary : public CHashMap<CWord, CWordCat> {
 
 public:
 
-   CWordDictionary(unsigned size = DICT_SIZE) : CHashMap<CWord, CWordCat>(size) { }
+   CWordDictionary(unsigned long size = DICT_SIZE) : CHashMap<CWord, CWordCat>(size) { }
    virtual ~CWordDictionary() { }
 
 public:
@@ -45,7 +45,7 @@ inline
 istream & operator >> (istream &is, CWordDictionary &dict) {
    if (!is) return is;
    string s ;
-   unsigned int i ;
+   unsigned long int i ;
    string ln ; 
    getline(is, ln);
    while (is && !(ln.empty())) {

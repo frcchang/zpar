@@ -130,7 +130,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CSentenceParsed & parsed) {
    for ( int index=0; index<parsed.size(); index++ ) 
       m_lCache.push_back( CTaggedWord<CTag>(parsed[index].word , CTag(parsed[index].tag)) );
 
-   for ( int i=0; i<parsed.size(); i++ ) {
+   for ( int i=0; i<parsed.size(); ++i ) {
       if ( parsed[i].head != DEPENDENCY_LINK_NO_HEAD )
          retval += getCrossLinkScore( parsed[i].head, i );
    }
@@ -155,7 +155,7 @@ void CDepParser::updateScoreVector(const CSentenceParsed & parsed , const CSente
 
    assert( m_bTrain );
 
-   for ( int i=0; i<correct.size(); i++ ) {
+   for ( int i=0; i<correct.size(); ++i ) {
       if ( parsed[i].head != correct[i].head ) {
          if ( correct[i].head != DEPENDENCY_LINK_NO_HEAD ) 
             updateCrossLinkScore( correct[i].head, i, correct, eAdd, round ); 
@@ -201,14 +201,14 @@ void CDepParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
    for ( int index=0; index<correct.size(); index++ ) 
       m_lCache.push_back( CTaggedWord<CTag>(correct[index].word , CTag(correct[index].tag)) );
    m_lCache.push_back( CTaggedWord<CTag>( "", PENN_TAG_END ) ); // EOS is appended to the tail of sentence
-   for ( int i=0; i<correct.size(); i++) 
+   for ( int i=0; i<correct.size(); ++i) 
       if (correct[i].head != DEPENDENCY_LINK_NO_HEAD) updateCrossLinkScore( correct[i].head, i, correct, eAdd, round ); 
 
    m_lCache.clear();
    for ( int index=0; index<parsed.size(); index++ )
       m_lCache.push_back( CTaggedWord<CTag>(parsed[index].word, CTag(parsed[index].tag)) );
    m_lCache.push_back( CTaggedWord<CTag>( "", PENN_TAG_END));
-   for ( int i=0; i<parsed.size(); i++)
+   for ( int i=0; i<parsed.size(); ++i)
       if (parsed[i].head != DEPENDENCY_LINK_NO_HEAD ) updateCrossLinkScore( parsed[i].head, i, parsed, eSubtract, round );
 
     m_nTotalErrors++;
@@ -225,7 +225,7 @@ void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *d
    assert ( span.getLeftBoundary() == 0 && span.getRightBoundary() == sentence.size() ) ;
    retval.clear() ; 
    bool bFoundHead = false;
-   for ( int i=0; i<sentence.size(); i++ ) {
+   for ( int i=0; i<sentence.size(); ++i ) {
       int head = span.getLink(i); 
       if (head==sentence.size()) {
          head = DEPENDENCY_LINK_NO_HEAD;

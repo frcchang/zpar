@@ -31,7 +31,7 @@ CWord g_emptyWord("");
 
 int CFeatureHandle::getGlobalScore(const CStringVector* sentence, const CStateItem* item){
    int nReturn = 0;
-   for (int i=0; i<item->m_nLength; i++)
+   for (int i=0; i<item->m_nLength; ++i)
       nReturn += getLocalScore(sentence, item, i);
    return nReturn;
 }
@@ -223,14 +223,14 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    clock_t total_start_time = clock();;
    CStateItem *pGenerator, *pCandidate;
    CStateItem temp_item;
-   unsigned int word_start, word_end;                          // the index of the current char
-   unsigned int last_start;
-   unsigned int best_start=0;
+   unsigned long int word_start, word_end;                          // the index of the current char
+   unsigned long int last_start;
+   unsigned long int best_start=0;
 
    static CStringVector sentence;
    static CRule rules(m_Feature->m_bRule); 
    rules.segment(sentence_input, &sentence);
-   const unsigned int length = sentence.size();
+   const unsigned long int length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);
    assert(vReturn!=NULL);

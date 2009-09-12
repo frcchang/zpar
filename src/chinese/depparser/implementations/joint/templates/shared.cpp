@@ -57,10 +57,10 @@
    static unsigned long seen_tags;
    static int between_tags, between_tag;
    // note that it is safe to use head_index+1 < item->size() as the condition for PENN_TAG_END 
-   const unsigned &head_tag_l = ( head_index > 0 ) ? item->getTag( head_index-1 ) : PENN_TAG_BEGIN ;
-   const unsigned &head_tag_r = ( head_index+1 < item->size() ) ? item->getTag( head_index+1 ) : PENN_TAG_END ;
-   const unsigned &dep_tag_l = ( dep_index > 0 ) ? item->getTag( dep_index-1 ) : PENN_TAG_BEGIN ;
-   const unsigned &dep_tag_r = ( dep_index+1 < item->size() ) ? item->getTag( dep_index+1 ) : PENN_TAG_END ;
+   const unsigned long &head_tag_l = ( head_index > 0 ) ? item->getTag( head_index-1 ) : PENN_TAG_BEGIN ;
+   const unsigned long &head_tag_r = ( head_index+1 < item->size() ) ? item->getTag( head_index+1 ) : PENN_TAG_END ;
+   const unsigned long &dep_tag_l = ( dep_index > 0 ) ? item->getTag( dep_index-1 ) : PENN_TAG_BEGIN ;
+   const unsigned long &dep_tag_r = ( dep_index+1 < item->size() ) ? item->getTag( dep_index+1 ) : PENN_TAG_END ;
    static bool nc_ll, nc_lr, nc_rl, nc_rr, nc_l_, nc_r_, nc__l, nc__r ;
    nc_ll = (link_distance_encode<-1||link_distance_encode>1) ;
    nc_lr = (link_distance_encode<0||link_distance_encode>2) ;

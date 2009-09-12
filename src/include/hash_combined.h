@@ -30,7 +30,7 @@ public:
    class iterator {
 
    private:
-      unsigned int m_nBucket;
+      unsigned long int m_nBucket;
       CHashMap<K, V> *m_parent;
       typename map<K, V>::iterator m_it;
 
@@ -146,7 +146,7 @@ public:
 public:
 
 #ifdef DEBUG 
-   void trace() { for (int i=0; i<m_nTableSize; i++) cout<<m_mapBuckets[i].size()<<' ';}
+   void trace() { for (int i=0; i<m_nTableSize; ++i) cout<<m_mapBuckets[i].size()<<' ';}
 #endif
 
 };

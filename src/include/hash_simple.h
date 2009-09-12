@@ -77,7 +77,7 @@ public:
    class iterator {
 
    private:
-      unsigned int m_nBucket;
+      unsigned long int m_nBucket;
       CHashMap<K, V> *m_parent;
       CEntry *m_entry;
 
@@ -127,7 +127,7 @@ public:
    const iterator m_end;
    CHashMap(unsigned long TABLE_SIZE=DEFAULT_SIZE) : m_nTableSize(TABLE_SIZE) , m_end(this, TABLE_SIZE-1, 0) { 
       m_buckets = new CEntry*[TABLE_SIZE] ;
-      for (int i=0; i<TABLE_SIZE; i++) 
+      for (int i=0; i<TABLE_SIZE; ++i) 
          m_buckets[i]=0;
    }
    CHashMap(const CHashMap<K, V>& wordmap) { 
@@ -135,7 +135,7 @@ public:
       assert(1==0);
    }
    virtual ~CHashMap() { 
-      for (int i=0; i<m_nTableSize; i++) if (m_buckets[i])delete m_buckets[i]; 
+      for (int i=0; i<m_nTableSize; ++i) if (m_buckets[i])delete m_buckets[i]; 
       delete [] m_buckets;
    }
    V &operator[] (const K &key) { 
@@ -160,7 +160,7 @@ public:
 
 public:
 #ifdef DEBUG 
-   void trace() { for (int i=0; i<m_nTableSize; i++) cout<<m_buckets[i].size()<<' ';}
+   void trace() { for (int i=0; i<m_nTableSize; ++i) cout<<m_buckets[i].size()<<' ';}
 #endif
 
    friend istream & operator >> <> (istream &is, CHashMap &table) ;

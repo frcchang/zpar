@@ -34,7 +34,7 @@ typedef CScoreMap<CCFGSet, SCORE_TYPE> CCFGRuleMap;
 typedef CScoreMap<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
 typedef CScoreMap<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
 typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGRuleIntMap;
-typedef CHashMap<pair<CWord, unsigned>, bool> CHeadDictionary;
+typedef CHashMap<pair<CWord, unsigned long>, bool> CHeadDictionary;
 
 /*===============================================================
  *

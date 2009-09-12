@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
          cout << configurations.message() << endl;
          return 1;
       }
-      unsigned training_rounds;
+      unsigned long training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
          cout << "The number of training iterations must be an integer." << endl;
          return 1;

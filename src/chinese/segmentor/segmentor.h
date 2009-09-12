@@ -157,7 +157,7 @@ public:
    const CWord& findWordFromCache(const int &start, const int &length, const CStringVector* sentence) {
       if (m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].empty()) { // empty string
          static string temp; 
-         static unsigned int i; 
+         static unsigned long int i; 
          temp.clear();
          for ( i = start; i < start+length ; ++i ) 
             temp += sentence->at(i) ; 
@@ -169,7 +169,7 @@ public:
       if (m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].empty()||
           m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].unknown()) { // empty string
          static string temp; 
-         static unsigned int i; 
+         static unsigned long int i; 
          temp.clear();
          for ( i = start; i < start+length ; ++i ) 
             temp += sentence->at(i) ; 

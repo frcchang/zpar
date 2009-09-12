@@ -41,7 +41,7 @@ inline void clearArray(T *x, const int X, const int Y) {
 template<typename T>
 inline
 void printArray(T *array, const int &size) {
-   for (int i=0; i<size; i++)
+   for (int i=0; i<size; ++i)
       cout<<array[i]<<"\t";
    cout<<endl;
 }
@@ -80,7 +80,7 @@ inline
 string toString(const vector<VE> &v) {
    ostringstream os;
    os << "[ ";
-   for( unsigned i=0; i<v.size(); ++i ) {
+   for( unsigned long i=0; i<v.size(); ++i ) {
       os << v[i] << " ";
    }
    os << "]";

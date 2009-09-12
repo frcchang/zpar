@@ -120,7 +120,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const int &word_index , con
 
    pair<CTaggedWord<CTag>, int> taggedword_arity = 
       make_pair( static_cast<const CTaggedWord<CTag>&>(m_lCache[word_index]) , arity_combined );
-   pair<unsigned int, int> tag_arity = 
+   pair<unsigned long int, int> tag_arity = 
       make_pair( m_lCache[word_index].tag.code() , arity_combined );
 
    static SCORE_TYPE retval;
@@ -142,20 +142,20 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const int &word_index , con
  *
  *---------------------------------------------------------------*/
 
-inline SCORE_TYPE CDepParser::getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned &label, SCORE_TYPE amount, int round) {
+inline SCORE_TYPE CDepParser::getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned long &label, SCORE_TYPE amount, int round) {
    const CTaggedWord<CTag> &head_word_tag = m_lCache[head_index];
    const CTaggedWord<CTag> &dep_word_tag = m_lCache[dep_index];
    const CWord &head_word = static_cast<const CWord&>(head_word_tag);
    const CWord &dep_word = static_cast<const CWord&>(dep_word_tag);
-   const unsigned &head_tag = head_word_tag.tag.code();
-   const unsigned &dep_tag = dep_word_tag.tag.code();
+   const unsigned long &head_tag = head_word_tag.tag.code();
+   const unsigned long &dep_tag = dep_word_tag.tag.code();
 
-   const unsigned &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag.code() : PENN_TAG_BEGIN ;
-   const unsigned &head_tag_r = ( head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag.code() : PENN_TAG_END ;
-   const unsigned &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag.code() : PENN_TAG_BEGIN ;
-   const unsigned &dep_tag_r = ( dep_index+1 < m_lCache.size() ) ? m_lCache[ dep_index+1 ].tag.code() : PENN_TAG_END ;
+   const unsigned long &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag.code() : PENN_TAG_BEGIN ;
+   const unsigned long &head_tag_r = ( head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag.code() : PENN_TAG_END ;
+   const unsigned long &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag.code() : PENN_TAG_BEGIN ;
+   const unsigned long &dep_tag_r = ( dep_index+1 < m_lCache.size() ) ? m_lCache[ dep_index+1 ].tag.code() : PENN_TAG_END ;
 
-   static unsigned head_tag_lm, head_tag_mr, head_tag_lmr, dep_tag_lm, dep_tag_mr, dep_tag_lmr;
+   static unsigned long head_tag_lm, head_tag_mr, head_tag_lmr, dep_tag_lm, dep_tag_mr, dep_tag_lmr;
 
    head_tag_lm = encodeTags(head_tag_l, head_tag, PENN_TAG_NONE);
    head_tag_mr = encodeTags(PENN_TAG_NONE, head_tag, head_tag_r);
@@ -186,7 +186,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateArcLabelScore( const int &head_index, c
  *
  *---------------------------------------------------------------*/
 
-inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, const unsigned &action, SCORE_TYPE amount , int round ) {
+inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, const unsigned long &action, SCORE_TYPE amount , int round ) {
 
    const int &st_index = item->stackempty() ? -1 : item->stacktop(); // stack top
    const int &sth_index = st_index == -1 ? -1 : item->head(st_index); // stack top head
@@ -314,7 +314,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CSentenceParsed &parsed) {
       item.StandardMoveStep(parsed); }
    item.StandardFinish();
    // now follow item to make temp and update its scores
-   static unsigned action;
+   static unsigned long action;
    temp.clear();
    while ( temp != item ) {
       action = temp.FollowMove( &item );
@@ -362,11 +362,11 @@ SCORE_TYPE CDepParser::getGlobalScore(const CSentenceParsed &parsed) {
 
 inline int find_information( const CStateItem *item, int *stack ) {
    // initialise the arrays
-   for ( int i=0; i<item->size(); i++ ) {
+   for ( int i=0; i<item->size(); ++i ) {
       stack[i] = CStateItem::OFF_STACK;
    }
    // stack information
-   for ( int i=0; i<item->stacksize(); i++ ) {
+   for ( int i=0; i<item->stacksize(); ++i ) {
       if (item->head(item->stackitem(i))==DEPENDENCY_LINK_NO_HEAD)
          stack[item->stackitem(i)] = CStateItem::ON_STACK_SHIFT;
       else
@@ -434,7 +434,7 @@ inline void CDepParser::updateScoreForState( const CStateItem *output , const SC
 
    find_information( output, output_stackstatus ) ;
    // update scores for the outputs parsetree
-   for ( int i=0; i<output->size(); i++ ) {
+   for ( int i=0; i<output->size(); ++i ) {
       if ( output->head(i) != DEPENDENCY_LINK_NO_HEAD ) {
          // link score
          getOrUpdateArcScore( output->head(i), i, output->sibling(i), amount, m_nTrainingRound ) ;
@@ -466,7 +466,7 @@ inline void CDepParser::updateScoreForState( const CStateItem *output , const SC
    }
 
    static CStateItem item;
-   static unsigned action;
+   static unsigned long action;
    item.clear();
    while ( item != *output ) {
       action = item.FollowMove( output );
@@ -535,7 +535,7 @@ inline void CDepParser::reduce( CStateItem *item ) {
  *--------------------------------------------------------------*/
 
 #ifdef LABELED
-inline void CDepParser::arcleft( CStateItem *item, const unsigned &label ) {
+inline void CDepParser::arcleft( CStateItem *item, const unsigned long &label ) {
 #else
 inline void CDepParser::arcleft( CStateItem *item ) {
 #endif
@@ -583,7 +583,7 @@ inline void CDepParser::arcleft( CStateItem *item ) {
  *--------------------------------------------------------------*/
 
 #ifdef LABELED
-inline void CDepParser::arcright( CStateItem *item, const unsigned &label ) {
+inline void CDepParser::arcright( CStateItem *item, const unsigned long &label ) {
 #else
 inline void CDepParser::arcright( CStateItem *item ) {
 #endif
@@ -685,7 +685,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    if (bTrain) correctState.clear();
 
 #ifdef LABELED
-   unsigned label;
+   unsigned long label;
 #endif
 
    TRACE("Decoding started"); 
@@ -795,7 +795,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
    TRACE("Outputing sentence");
    m_Agenda->sortGenerators();
-   for (int i=0; i<nBest; i++) {
+   for (int i=0; i<nBest; ++i) {
       retval[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score();
       pGenerator = m_Agenda->generator(i) ; 

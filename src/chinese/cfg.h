@@ -74,7 +74,7 @@ const int PENN_CON_TAG_COUNT_BITS = 7; // MAX(PENN_CON_COUNT_BITS, PENN_TAG_COUN
 
 class CConstituent {
 protected:
-   unsigned int m_code;
+   unsigned long int m_code;
 
 public:
    CConstituent() { m_code=PENN_CON_NONE; }
@@ -88,12 +88,12 @@ public:
    virtual ~CConstituent() {}
 
 public:
-   unsigned int code() const { return m_code; }
+   unsigned long int code() const { return m_code; }
    string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
    void load(const string &s, bool bNoneDefault) {
       m_code = PENN_CON_NONE ;
       bool bFound = false;
-      for (int i=0; i<PENN_CON_COUNT; i++) {
+      for (int i=0; i<PENN_CON_COUNT; ++i) {
          if (PENN_CON_STRINGS[i] == s) {
             m_code = i;
             bFound = true;
@@ -115,24 +115,24 @@ public:
 
 //===============================================================
 
-inline unsigned int encodeConstituents(const unsigned &con1, const unsigned &con2) {
+inline unsigned long int encodeConstituents(const unsigned long &con1, const unsigned long &con2) {
    return (con1<<PENN_CON_COUNT_BITS) | con2;
 }
-inline unsigned int encodeConstituents(const unsigned &con1, const unsigned &con2, const unsigned &con3) {
+inline unsigned long int encodeConstituents(const unsigned long &con1, const unsigned long &con2, const unsigned long &con3) {
    return (con1<<PENN_CON_COUNT_BITS*2) | (con2<<PENN_CON_COUNT_BITS) | con3 ;
 }
-inline unsigned int encodeConstituents(const unsigned &con1, const unsigned &con2, const unsigned &con3, const unsigned &con4) {
+inline unsigned long int encodeConstituents(const unsigned long &con1, const unsigned long &con2, const unsigned long &con3, const unsigned long &con4) {
    return (con1<<PENN_CON_COUNT_BITS*3) | (con2<<PENN_CON_COUNT_BITS*2) |
           (con3<<PENN_CON_COUNT_BITS) | con4 ;
 }
 
-inline unsigned int encodeConstituents(const CConstituent &con1, const CConstituent &con2) {
+inline unsigned long int encodeConstituents(const CConstituent &con1, const CConstituent &con2) {
    return (con1.code()<<PENN_CON_COUNT_BITS) | con2.code();
 }
-inline unsigned int encodeConstituents(const CConstituent &con1, const CConstituent &con2, const CConstituent &con3) {
+inline unsigned long int encodeConstituents(const CConstituent &con1, const CConstituent &con2, const CConstituent &con3) {
    return (con1.code()<<PENN_CON_COUNT_BITS*2) | (con2.code()<<PENN_CON_COUNT_BITS) | con3.code() ;
 }
-inline unsigned int encodeConstituents(const CConstituent &con1, const CConstituent &con2, const CConstituent &con3, const CConstituent &con4) {
+inline unsigned long int encodeConstituents(const CConstituent &con1, const CConstituent &con2, const CConstituent &con3, const CConstituent &con4) {
    return (con1.code()<<PENN_CON_COUNT_BITS*3) | (con2.code()<<PENN_CON_COUNT_BITS*2) |
           (con3.code()<<PENN_CON_COUNT_BITS) | con4.code() ;
 }

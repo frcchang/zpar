@@ -47,10 +47,10 @@ public:
    }
 
 public:
-   void segment(unsigned int index, bool separate) { m_chars[index] = ( separate ? eSeparate : eAppend ) ; }
-   bool canSeparate(unsigned int index) { return m_chars[index] == eNoAction || m_chars[index] == eSeparate; }
-   bool canAppend(unsigned int index) { return m_chars[index] == eNoAction || m_chars[index] == eAppend; }
-   void reset() { for (int i=0; i<m_nMaxSentenceSize; i++) m_chars[i] = 0; }
+   void segment(unsigned long int index, bool separate) { m_chars[index] = ( separate ? eSeparate : eAppend ) ; }
+   bool canSeparate(unsigned long int index) { return m_chars[index] == eNoAction || m_chars[index] == eSeparate; }
+   bool canAppend(unsigned long int index) { return m_chars[index] == eNoAction || m_chars[index] == eAppend; }
+   void reset() { for (int i=0; i<m_nMaxSentenceSize; ++i) m_chars[i] = 0; }
 };
 
 #endif

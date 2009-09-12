@@ -88,7 +88,7 @@ public:
 
 protected:
   inline tagger::SCORE_TYPE getGlobalScore(CStringVector* sentence, tagger::CStateItem* item);
-  inline tagger::SCORE_TYPE getLocalScore(CStringVector* sentence, tagger::CStateItem* item, unsigned int index);
+  inline tagger::SCORE_TYPE getLocalScore(CStringVector* sentence, tagger::CStateItem* item, unsigned long int index);
 
   void loadScores();
   void saveScores();

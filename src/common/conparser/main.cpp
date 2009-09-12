@@ -58,7 +58,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       parser.parse( input_sent , output_sent , nBest , scores ) ;
       
       // Ouptut sent
-      for (int i=0; i<nBest; i++) {
+      for (int i=0; i<nBest; ++i) {
          os << output_sent[i] ;
          if (bScores) *os_scores << scores[i] << endl;
       }
@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
       }
       configurations.loadConfigurations(options.opts);
    
-      unsigned nBest = 1;
+      unsigned long nBest = 1;
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
          cout << "The N best specification must be an integer." << endl;
          return 1;

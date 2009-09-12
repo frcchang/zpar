@@ -90,8 +90,8 @@
    static int dep_rmd_index;
    dep_lmd_index = item->leftmostdep( dep_index );
    dep_rmd_index = item->rightmostdep( dep_index );
-   static unsigned dep_lmd_tag;
-   static unsigned dep_rmd_tag;
+   static unsigned long dep_lmd_tag;
+   static unsigned long dep_rmd_tag;
    dep_lmd_tag = (dep_lmd_index == DEPENDENCY_LINK_NO_HEAD) ? PENN_TAG_NONE : m_lCache[dep_lmd_index].tag.code();
    dep_rmd_tag = (dep_rmd_index == DEPENDENCY_LINK_NO_HEAD) ? PENN_TAG_NONE : m_lCache[dep_rmd_index].tag.code();
 

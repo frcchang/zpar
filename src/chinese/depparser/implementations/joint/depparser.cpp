@@ -41,8 +41,8 @@ static CWord g_emptyWord("");
 
 SCORE_TYPE CDepParser::getOrUpdateLocalScore( const CStringVector *sentence, const CStateItem *item, int index, SCORE_TYPE amount, int round ) {
    static SCORE_TYPE nReturn ; 
-   static unsigned int last_start , last_length ;
-   static unsigned int start , end , length , word_length ; // word length is the un-normalised version
+   static unsigned long int last_start , last_length ;
+   static unsigned long int start , end , length , word_length ; // word length is the un-normalised version
    // about the words
    start = item->getWordStart( index ) ;
    end = item->getWordEnd( index ) ;
@@ -102,9 +102,9 @@ SCORE_TYPE CDepParser::getOrUpdateLocalScore( const CStringVector *sentence, con
    }
 
    // about the tags 
-   const unsigned &tag = item->getTag( index ) ;
-   const unsigned &last_tag = index>0 ? item->getTag( index-1 ) : PENN_TAG_BEGIN ;
-   const unsigned &second_last_tag = index>1 ? item->getTag(index-2) : PENN_TAG_BEGIN ;
+   const unsigned long &tag = item->getTag( index ) ;
+   const unsigned long &last_tag = index>0 ? item->getTag( index-1 ) : PENN_TAG_BEGIN ;
+   const unsigned long &second_last_tag = index>1 ? item->getTag(index-2) : PENN_TAG_BEGIN ;
 
    static CTaggedWord<CTag> wt1, wt2;
    static CTwoTaggedWords wt12;
@@ -305,9 +305,9 @@ void CDepParser::updateScoresForStates( const CStringVector *raw, const CStateIt
    static CDependencyTree tree;
    output->GenerateTree(*raw, tree); TRACE(tree); 
 
-   for (i=0; i<correct->size(); i++)
+   for (i=0; i<correct->size(); ++i)
       getOrUpdateLocalScore(raw, correct, i, 1, m_nTrainingRound);
-   for (i=0; i<output->size(); i++)
+   for (i=0; i<output->size(); ++i)
       getOrUpdateLocalScore(raw, output, i, -1, m_nTrainingRound);
 
    updateScoreForState( raw, correct, bComplete, 1 ) ;
@@ -327,10 +327,10 @@ void CDepParser::updateInfo( const CDependencyTree* sent ) {
    static int i , j ;
 
    // Updates that are common for all example
-   for ( i=0; i<sent->size(); i++ ) {
+   for ( i=0; i<sent->size(); ++i ) {
 
       const CWord &word = sent->at(i).word ;
-      unsigned tag = CTag( sent->at(i).tag ).code() ;
+      unsigned long tag = CTag( sent->at(i).tag ).code() ;
 
       CStringVector chars;
       chars.clear(); 
@@ -366,7 +366,7 @@ void CDepParser::addLink( const CStringVector *sentence, CStateItem *item, const
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::enumerateCandidates( const CStringVector *sentence, const CStateItem *item, const int agenda_index, const unsigned tag ) {
+void CDepParser::enumerateCandidates( const CStringVector *sentence, const CStateItem *item, const int agenda_index, const unsigned long tag ) {
 
    static int index, prev;
    static int first_head;
@@ -452,7 +452,7 @@ void CDepParser::work( const CStringVector *sentence_input , CDependencyTree *vR
    int index , start_index , generator_index , temp_index, word_length;
    const CStateItem * generator_item ; 
    CStateItem tempState , maxState , correctState;
-   unsigned tag, last_tag ; 
+   unsigned long tag, last_tag ; 
 
    static CStringVector sentence;
    static CSegmentationPrune rules(MAX_SENTENCE_SIZE); 

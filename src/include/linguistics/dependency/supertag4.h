@@ -16,18 +16,18 @@
 class CSuperTag {
 
 protected:
-   unsigned m_code;
+   unsigned long m_code;
 
 public:
-   const static unsigned m_size=4 ;
-   const static unsigned m_mlh=(1<<3) ; // mask for left head
-   const static unsigned m_mrh=(1<<2) ; 
-   const static unsigned m_mld=(1<<1) ;
-   const static unsigned m_mrd=1 ;
-   const static unsigned limit=1<<m_size;
+   const static unsigned long m_size=4 ;
+   const static unsigned long m_mlh=(1<<3) ; // mask for left head
+   const static unsigned long m_mrh=(1<<2) ; 
+   const static unsigned long m_mld=(1<<1) ;
+   const static unsigned long m_mrd=1 ;
+   const static unsigned long limit=1<<m_size;
 
-   const static unsigned begin=0xc;
-   const static unsigned end=0xd;
+   const static unsigned long begin=0xc;
+   const static unsigned long end=0xd;
 
 public:
    CSuperTag(int code=0) { assert(valid(code)); m_code = code; }
@@ -35,7 +35,7 @@ public:
    virtual ~CSuperTag() {}
 
 public:
-   unsigned int code() const { return m_code; }
+   unsigned long int code() const { return m_code; }
    string str() const { 
       string retval; 
       for (int i=m_size-1; i>=0; i--) 
@@ -45,7 +45,7 @@ public:
    void load(const string &s) {
       assert(s.size()==4);
       m_code = 0 ;
-      for (int i=0; i<m_size; i++) {
+      for (int i=0; i<m_size; ++i) {
          assert( s[i]=='0' || s[i]=='1' );
          if (s[i]=='1') m_code |= (1<<(m_size-i-1));
       }
@@ -53,17 +53,17 @@ public:
    }
 
 public:
-   //static unsigned begin() { return bg; }
-   //static unsigned end() { return ed; }
-   static unsigned first() { return 0; }
-   static unsigned next(const unsigned &i, const bool &bIncludeBE=false) { 
-      static unsigned retval;
+   //static unsigned long begin() { return bg; }
+   //static unsigned long end() { return ed; }
+   static unsigned long first() { return 0; }
+   static unsigned long next(const unsigned long &i, const bool &bIncludeBE=false) { 
+      static unsigned long retval;
       retval = i+1;
       while (!valid(retval,bIncludeBE)&&inrange(retval))
          retval++;
       return retval;
    }
-   static bool valid(const unsigned &i, const bool &bIncludeBE=false) {
+   static bool valid(const unsigned long &i, const bool &bIncludeBE=false) {
       if ( i >= (1<<m_size) ) return false;
       if ( (i&m_mlh) && (i&m_mrh) ) {
          if (bIncludeBE&&(i==begin||i==end))
@@ -73,7 +73,7 @@ public:
       }
       return true;
    }
-   static bool inrange(const unsigned &i) { return i<limit; }
+   static bool inrange(const unsigned long &i) { return i<limit; }
 
 public:
    bool inrange() const { return inrange(m_code); }
@@ -113,9 +113,9 @@ inline void getSuperTagsFromDependencyTree( const CDependencyTree &deptree, vect
    int head;
    int i;
    supertags.clear();
-   for (i=0; i<deptree.size(); i++)
+   for (i=0; i<deptree.size(); ++i)
       supertags.push_back( CSuperTag(0) ) ;
-   for (i=0; i<deptree.size(); i++) {
+   for (i=0; i<deptree.size(); ++i) {
       head = deptree[i].head ;
       assert( head != i );
       if ( head != -1 ) {

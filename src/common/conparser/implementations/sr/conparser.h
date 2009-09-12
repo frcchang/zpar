@@ -44,7 +44,7 @@ private:
 
    CAgendaBeam<conparser::CStateItem> *m_Agenda;
    vector< CTaggedWord<CTag> > m_lCache;
-   vector<unsigned> m_lWordLen;
+   vector<unsigned long> m_lWordLen;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -93,15 +93,15 @@ private:
    void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
 
    // get the global score for a parsed sentence or section
-   inline conparser::SCORE_TYPE getOrUpdateLinkScore( const unsigned &head, const unsigned &mod, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateSiblingLinkScore( const unsigned &head, const unsigned &mod, const unsigned &sibling, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateArityScore( const unsigned &head, const unsigned &arityleft, const unsigned &arityright, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateHeadScore( const unsigned &parent, const unsigned &child, const unsigned &head, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateHeadModifierScore( const unsigned &parent, const unsigned &child, const unsigned &child1, const unsigned &head, const unsigned &mod, const bool &left, const bool &neighbour, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateBigramScore( const unsigned &parent, const unsigned &child, const unsigned &child1, const bool &left, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateTrigramScore( const unsigned &parent, const unsigned &child, const unsigned &child1, const unsigned &childo, const bool &left, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateLinkScore( const unsigned long &head, const unsigned long &mod, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateSiblingLinkScore( const unsigned long &head, const unsigned long &mod, const unsigned long &sibling, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateArityScore( const unsigned long &head, const unsigned long &arityleft, const unsigned long &arityright, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateHeadScore( const unsigned long &parent, const unsigned long &child, const unsigned long &head, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateHeadModifierScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const unsigned long &head, const unsigned long &mod, const bool &left, const bool &neighbour, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateBigramScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const bool &left, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateTrigramScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const unsigned long &childo, const bool &left, conparser::SCORE_TYPE amount=0, int round=0 );
    inline conparser::SCORE_TYPE getOrUpdateGraphScore( const conparser::CStateItem *item, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateStackScore( const conparser::CStateItem *item, const unsigned &action, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateStackScore( const conparser::CStateItem *item, const unsigned long &action, conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
    void updateScoresForStates( const conparser::CStateItem *output , const conparser::CStateItem *correct ) ;

@@ -25,11 +25,11 @@ class CTagDict {
 protected:
 
    CHashMap<CWord, unsigned long> m_mapItems;
-   unsigned m_nTotalNumberOfTags;
+   unsigned long m_nTotalNumberOfTags;
 
 public:
 
-   CTagDict(unsigned nTotalNumberOfTags) { 
+   CTagDict(unsigned long nTotalNumberOfTags) { 
       m_nTotalNumberOfTags = nTotalNumberOfTags ;
       assert( nTotalNumberOfTags < sizeof(unsigned long) * 8 ); 
    }
@@ -57,7 +57,7 @@ public:
    // load tag dictionary from a stream
    void load(istream &is) {
       string s, word, tag ;
-      unsigned int i ;
+      unsigned long int i ;
       getline(is, s);
       while( is && !(s.empty()) ) {
          istringstream iss(s);
@@ -88,7 +88,7 @@ public:
       it = m_mapItems.begin() ;
       while (it != m_mapItems.end()) {
          j = it.second();
-         for (i = 0; i < m_nTotalNumberOfTags; i++) {
+         for (i = 0; i < m_nTotalNumberOfTags; ++i) {
             if ( j & (static_cast<unsigned long int>(1)<<i) ) 
                os << it.first().str() << "\t" << CTag(i).str() << endl ;
          }

@@ -51,8 +51,8 @@ enum PENN_TAG_CONSTANTS {
    PENN_TAG_COUNT
 };
 
-const unsigned PENN_TAG_FIRST = 3;
-const unsigned PENN_TAG_COUNT_BITS = 6; // 32 < bits < 64, takes 6 bits
+const unsigned long PENN_TAG_FIRST = 3;
+const unsigned long PENN_TAG_COUNT_BITS = 6; // 32 < bits < 64, takes 6 bits
 
 const bool PENN_TAG_CLOSED[] = {
    false,
@@ -75,16 +75,16 @@ const bool PENN_TAG_CLOSED[] = {
 class CTag {
 public:
    const static char SEPARATOR = '_';
-   const static unsigned SENTENCE_BEGIN = PENN_TAG_BEGIN;
-   const static unsigned SENTENCE_END = PENN_TAG_END;
-   const static unsigned COUNT = PENN_TAG_COUNT;
-   const static unsigned NONE = PENN_TAG_NONE;
-   const static unsigned SIZE = PENN_TAG_COUNT_BITS;
-   const static unsigned FIRST = PENN_TAG_FIRST;
-   const static unsigned LAST = PENN_TAG_COUNT-1;
+   enum {SENTENCE_BEGIN = PENN_TAG_BEGIN};
+   enum {SENTENCE_END = PENN_TAG_END};
+   enum {COUNT = PENN_TAG_COUNT};
+   enum {NONE = PENN_TAG_NONE};
+   enum {SIZE = PENN_TAG_COUNT_BITS};
+   enum {FIRST = PENN_TAG_FIRST};
+   enum {LAST = PENN_TAG_COUNT-1};
 
 protected:
-   unsigned int m_code;
+   unsigned long m_code;
 
 public:
    CTag() { m_code=PENN_TAG_COUNT; }
@@ -98,7 +98,7 @@ public:
    virtual ~CTag() {}
 
 public:
-   unsigned int code() const { return m_code; }
+   const unsigned long &code() const { return m_code; }
    string str() const { 
       assert(m_code<(1<<PENN_TAG_COUNT_BITS)) ; 
       if (m_code>=PENN_TAG_COUNT) {
@@ -112,13 +112,14 @@ public:
    }
    void load(const string &s) {
       m_code = PENN_TAG_NONE ;
-      for (int i=1; i<PENN_TAG_COUNT; i++)
+      for (int i=1; i<PENN_TAG_COUNT; ++i)
          if (PENN_TAG_STRINGS[i] == s)
             m_code = i;
    }
 
 public:
    bool operator == (const CTag &t1) const { return m_code == t1.m_code; }
+   bool operator != (const CTag &t1) const { return m_code != t1.m_code; }
    bool operator < (const CTag &t1) const { return m_code < t1.m_code; }
    bool operator > (const CTag &t1) const { return m_code > t1.m_code; }
    bool operator <= (const CTag &t1) const { return m_code <= t1.m_code; }

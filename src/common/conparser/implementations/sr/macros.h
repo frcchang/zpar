@@ -12,9 +12,9 @@ const int AGENDA_SIZE = 16 ;
 const int MAX_SENTENCE_SIZE = 256 ; 
 const int MAX_SENTENCE_SIZE_BITS = 8 ; 
 
-inline unsigned encodeT(const CTaggedWord<CTag> &wd) {
+inline unsigned long encodeT(const CTaggedWord<CTag> &wd) {
    assert(PENN_TAG_COUNT+7<(1<<PENN_TAG_COUNT_BITS));
-   const unsigned t = wd.tag.code();
+   const unsigned long t = wd.tag.code();
 return t;
    if (t==PENN_TAG_PU) {
       const CWord &w = wd;
@@ -36,12 +36,12 @@ return t;
    return t;
 }
 
-inline unsigned encodeC(const CStateNode &node, const vector<CTaggedWord<CTag> > &cache ) {
+inline unsigned long encodeC(const CStateNode &node, const vector<CTaggedWord<CTag> > &cache ) {
    assert((node.constituent&(1<<PENN_CON_COUNT_BITS))==0);
    return node.is_constituent ? encodeTorC(node.constituent, false) | (node.temp?(1<<PENN_CON_COUNT_BITS):0) : encodeTorC(encodeT(cache[node.lexical_head]), true);
 }
 
-inline unsigned normalize3(const unsigned &x) {
+inline unsigned long normalize3(const unsigned long &x) {
    assert(x!=0); return x>2 ? 2 : x==2 ? 1 : 0;
 }
 
@@ -53,14 +53,14 @@ inline unsigned long normalize510(const unsigned long &x) {
    return x>10 ? 6 : x>5 ? 5 : x;
 }
 
-inline unsigned encodeRhythm(const CStateNode &node, const vector<unsigned> &wordlen) {
+inline unsigned long encodeRhythm(const CStateNode &node, const vector<unsigned long> &wordlen) {
    // single word consitituent : 1wordlen; 
    // multiple word constituent : 0wordnum;
    assert(node.lexical_start!=-1&&node.lexical_end!=-1&&node.lexical_head!=-1);
    return (node.lexical_start==node.lexical_end ? wordlen[node.lexical_head]|(1<<2) : normalize3(node.lexical_end-node.lexical_start));
 }
 
-inline unsigned encodeRhythms(const unsigned &r1, const unsigned &r2) {
+inline unsigned long encodeRhythms(const unsigned long &r1, const unsigned long &r2) {
    assert(r2>>3==0);
    return (r1<<3)|r2;
 }
@@ -68,19 +68,19 @@ inline unsigned encodeRhythms(const unsigned &r1, const unsigned &r2) {
 // unary moves 
 const int UNARY_MOVES = 3;
 
-const unsigned HEAD_LEFT = 1;
-const unsigned HEAD_RIGHT = 2;
-inline unsigned encodeLinkDirection(const unsigned &head, const unsigned &mod) {
+const unsigned long HEAD_LEFT = 1;
+const unsigned long HEAD_RIGHT = 2;
+inline unsigned long encodeLinkDirection(const unsigned long &head, const unsigned long &mod) {
    assert(mod!=head);
    return mod>head ? HEAD_LEFT : HEAD_RIGHT;
 }
 
-inline unsigned encodeLinkSize(const unsigned &head, const unsigned &mod) {
+inline unsigned long encodeLinkSize(const unsigned long &head, const unsigned long &mod) {
    assert(mod!=head);
    return mod>head ? normalize510(mod-head) : normalize510(head-mod);
 }
 
-inline unsigned encodeLinkDirectionAndSize(const unsigned &head, const unsigned &mod) {
+inline unsigned long encodeLinkDirectionAndSize(const unsigned long &head, const unsigned long &mod) {
    assert(mod!=head);
    assert((normalize510(mod>head?mod-head:head-mod)>>3)==0);
    if (mod>head)

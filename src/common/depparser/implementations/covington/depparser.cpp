@@ -95,7 +95,7 @@ SCORE_TYPE CDepParser::getOrUpdateArcScore( const CStateItem *item, const int &h
 inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const CStateItem *item, const int &word_index, const int &arity_direction, SCORE_TYPE amount, int round ) {
 
    static int arity;
-//   static map<unsigned, unsigned> arity_by_tag;
+//   static map<unsigned long, unsigned long> arity_by_tag;
    // compute arity
    static int dep;
    arity = 0;
@@ -113,7 +113,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const CStateItem *item, con
       arity = -arity-1; // -1 to avoid collision with arity=0 left
 
    pair<CTaggedWord<CTag>, int> taggedword_arity = make_pair( m_lCache[word_index] , arity );
-   pair<unsigned int, int> tag_arity = make_pair( m_lCache[word_index].tag.code() , arity );
+   pair<unsigned long int, int> tag_arity = make_pair( m_lCache[word_index].tag.code() , arity );
 
    // compute score
    static SCORE_TYPE retval;
@@ -122,7 +122,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const CStateItem *item, con
    retval += cast_weights->m_mapHeadWordTagArity.getOrUpdateScore( taggedword_arity , m_nScoreIndex , amount , round ) ;
    retval += cast_weights->m_mapHeadTagArity.getOrUpdateScore( tag_arity , m_nScoreIndex , amount , round ) ;
 /*
-   static map<unsigned, unsigned>::iterator it;
+   static map<unsigned long, unsigned long>::iterator it;
    static int sub_arity;
    for ( it = arity_by_tag.begin(); it != arity_by_tag.end(); it++ ) {
       sub_arity = (arity_direction==ARITY_DIRECTION_LEFT ? it->second : -(it->second)-1) ;
@@ -456,7 +456,7 @@ void CDepParser::work( const CTwoStringVector &sentence , CSentenceParsed *retva
 
    TRACE("Outputing sentence");
    m_Agenda->sortGenerators();
-   for (int i=0; i<nBest; i++) {
+   for (int i=0; i<nBest; ++i) {
       retval[i].clear();
       if (scores) scores[i] = 0;
       pGenerator = m_Agenda->generator(i) ; 
