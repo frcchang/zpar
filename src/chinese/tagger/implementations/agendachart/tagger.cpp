@@ -162,7 +162,7 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
       nReturn += m_weights->m_mapTagByFirstCharCat.getOrUpdateScore( make_pair(first_char_cat, tag) , m_nScoreIndex , amount , round ) ; 
       nReturn += m_weights->m_mapTagByLastCharCat.getOrUpdateScore( make_pair(last_char_cat, tag) , m_nScoreIndex , amount , round ) ;
 
-      for ( j = 0 ; j < word_length ; j ++ ) {
+      for ( j = 0 ; j < word_length ; ++j ) {
 
          if ( j > 0 && j < word_length-1 )
             nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( 
@@ -435,7 +435,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   ) // wordtag match
                ) {
                if (nBest==1) {
-                  for ( temp_index = 0 ; temp_index < CTag::COUNT ; temp_index ++ ) //@@@
+                  for ( temp_index = 0 ; temp_index < CTag::COUNT ; ++ temp_index ) //@@@
                      best_bigram[ temp_index ].clear() ;                               //@@@
                }
                for ( generator_index = 0 ; generator_index < m_Chart[ start_index+1 ]->size() ; ++ generator_index ) {
@@ -453,7 +453,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   }
                }
                if (nBest==1) {
-                  for ( temp_index=0; temp_index<CTag::COUNT; temp_index++ ) { //@@@
+                  for ( temp_index=0; temp_index<CTag::COUNT; ++temp_index ) { //@@@
                      if ( best_bigram[ temp_index ].size() != 0 ) {        //@@@
 //                        candidate_item = m_Chart[ index+1 ]->newItem();       //@@@
 //                        candidate_item->copy( &(best_bigram[temp_index]) );   //@@@
