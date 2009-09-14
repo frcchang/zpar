@@ -339,7 +339,7 @@ void generate(const CStateItem *stateItem, CStringVector *sentence, CTagger *tag
          assert(sentence->at(k)!=" "); //[--SPACE--]
          s += sentence->at(k);
       }
-      vReturn->push_back(make_pair(s, CTag(stateItem->getTag(j)).str()));
+      vReturn->push_back(make_pair(s, stateItem->getTag(j).str()));
    }
 }
 
