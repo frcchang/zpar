@@ -142,8 +142,8 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("n", "N", "N best list output", "1");
       configurations.defineConfiguration("s", "", "output scores", "");
 
-      if (options.args.size() != 4) {
-         cout << "\nUsage: " << argv[0] << " input_file output_file feature_file " << endl;
+      if (options.args.size() < 2 || options.args.size() > 4) {
+         cout << "\nUsage: " << argv[0] << "feature_file [input_file] [output_file]" << endl;
          cout << configurations.message() << endl;
          return 1;
       }
@@ -164,7 +164,9 @@ int main(int argc, char* argv[]) {
       bool bSegmented = false;
 #endif
    
-      process(options.args[1], options.args[2], options.args[3], nBest, nMaxSentSize, bSegmented, bKnowledge, bScores);
+      string sInputFile = options.args.size() > 2 ? options.args[2] : "";
+      string sToFile = options.args.size() > 3 ? options.args[3] : "";
+      process(sInputFile, sToFile, options.args[1], nBest, nMaxSentSize, bSegmented, bKnowledge, bScores);
       return 0;
    } catch(const string&e) {cerr<<"Error: "<<e<<endl;return 1;}
 }
