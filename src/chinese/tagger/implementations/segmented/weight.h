@@ -23,8 +23,12 @@ typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 typedef CHashMap< CWord, int > CWordIntMap;
 typedef CScoreMap< int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< pair<CWord, int>, SCORE_TYPE > CWordIntPairMap;
+typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagPairMap;
 typedef CScoreMap< pair<int, int>, SCORE_TYPE > CIntPairMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
+typedef CScoreMap< CTagSet<2>, SCORE_TYPE > CTagSet2Map;
+typedef CScoreMap< CTagSet<3>, SCORE_TYPE > CTagSet3Map;
+typedef CScoreMap< pair<long int, CTag>, SCORE_TYPE > CIntTagPairMap;
 
 /*===============================================================
  *
@@ -39,30 +43,30 @@ public:
    //
    // FEATURE TEMPLATES FOR TAG
    //
-   CIntPairMap m_mapLastTagByTag;
-   CIntPairMap m_mapLastTwoTagsByTag;
+   CTagSet2Map m_mapLastTagByTag;
+   CTagSet3Map m_mapLastTwoTagsByTag;
 
-   CWordIntPairMap m_mapCurrentTag;
-   CWordIntPairMap m_mapTagByLastWord;
-   CWordIntPairMap m_mapLastTagByWord;
-   CWordIntPairMap m_mapTagByFirstChar;
-   CWordIntPairMap m_mapTagByLastChar;
-   CWordIntPairMap m_mapTagByPrevChar;
-   CWordIntPairMap m_mapTagByNextChar;
-   CWordIntPairMap m_mapTagByPrevTwoChar;
-   CWordIntPairMap m_mapTagByNextTwoChar;
-   CWordIntPairMap m_mapTagOfOneCharWord;
-   CWordIntPairMap m_mapTagByChar;
-   CWordIntPairMap m_mapRepeatedCharByTag;
-   CWordIntPairMap m_mapTagByWordAndPrevChar;
-   CWordIntPairMap m_mapTagByWordAndNextChar;
+   CWordTagPairMap m_mapCurrentTag;
+   CWordTagPairMap m_mapTagByLastWord;
+   CWordTagPairMap m_mapLastTagByWord;
+   CWordTagPairMap m_mapTagByFirstChar;
+   CWordTagPairMap m_mapTagByLastChar;
+   CWordTagPairMap m_mapTagByPrevChar;
+   CWordTagPairMap m_mapTagByNextChar;
+   CWordTagPairMap m_mapTagByPrevTwoChar;
+   CWordTagPairMap m_mapTagByNextTwoChar;
+   CWordTagPairMap m_mapTagOfOneCharWord;
+   CWordTagPairMap m_mapTagByChar;
+   CWordTagPairMap m_mapRepeatedCharByTag;
+   CWordTagPairMap m_mapTagByWordAndPrevChar;
+   CWordTagPairMap m_mapTagByWordAndNextChar;
    CWordIntPairMap m_mapTagBySeparateChars;
 
    CTwoTaggedWordsMap m_mapTaggedCharByFirstChar;
    CTwoTaggedWordsMap m_mapTaggedCharByLastChar;
 
-   CIntPairMap m_mapTagByFirstCharCat;
-   CIntPairMap m_mapTagByLastCharCat;
+   CIntTagPairMap m_mapTagByFirstCharCat;
+   CIntTagPairMap m_mapTagByLastCharCat;
 
    CWordIntMap m_mapWordFrequency;
    CTagDict<CTag> m_mapTagDictionary;
