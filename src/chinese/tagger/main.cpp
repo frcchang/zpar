@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("s", "", "output scores", "");
 
       if (options.args.size() < 2 || options.args.size() > 4) {
-         cout << "\nUsage: " << argv[0] << "feature_file [input_file] [output_file]" << endl;
+         cout << "\nUsage: " << argv[0] << " feature_file [input_file [output_file]]" << endl;
          cout << configurations.message() << endl;
          return 1;
       }

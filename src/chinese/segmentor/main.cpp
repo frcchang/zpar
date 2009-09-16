@@ -77,8 +77,8 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("n", "N", "N best list output", "1");
       configurations.defineConfiguration("d", "Path", "save scores to Path", "");
       // check arguments
-      if (options.args.size() != 4) {
-         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
+      if (options.args.size() < 2 || options.args.size() > 4) {
+         cout << "Usage: " << argv[0] << " model_file [input_file [output_file]]" << endl;
          cout << configurations.message() << endl;
          return 1;
       }
@@ -93,7 +93,9 @@ int main(int argc, char* argv[]) {
       string sOutputScores = configurations.getConfiguration("d");
 
       // main
-      process(argv[1], argv[2], argv[3], nBest, sOutputScores);
+      string sInputFile = options.args.size() > 2 ? options.args[2] : "";
+      string sOutputFile = options.args.size() > 3 ? options.args[3] : "";
+      process(sInputFile, sOutputFile, options.args[1], nBest, sOutputScores);
 
       // return normal
       return 0;
