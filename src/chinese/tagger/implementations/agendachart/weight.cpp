@@ -55,7 +55,7 @@ using namespace chinese::tagger;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
-   cout << "Loading scores...";
+   cout << "Loading scores ..."; cout.flush();
    string st;
    ifstream is(m_sFeatureDB.c_str());
    istringstream iss;
@@ -112,7 +112,7 @@ void CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
-   cout << "Saving scores...";
+   cout << "Saving scores ..."; cout.flush();
    ofstream os(m_sFeatureDB.c_str());
    assert(os.is_open());
    iterate_templates(os<<,;);
@@ -138,9 +138,9 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(int round) {
-   cout << "Comuting averaged feature vector... ";
+   cout << "Comuting averaged feature vector ..."; cout.flush();
    iterate_templates(,.computeAverage(round););
-   cout << "done." << endl;
+   cout << " done." << endl;
 }
 
 
