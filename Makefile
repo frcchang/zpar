@@ -101,11 +101,21 @@ OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o  $(OBJECT_DIR)/options.o
 $(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+all: zpar
+
 # the directories
 $(OBJECT_DIR):
 	mkdir $(OBJECT_DIR)
 $(DIST_DIR):
 	mkdir $(DIST_DIR)
+
+#----------------------------------------------------------------
+#
+# zpar general
+#
+#----------------------------------------------------------------
+
+include Makefile.zpar
 
 #----------------------------------------------------------------
 #
