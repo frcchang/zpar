@@ -40,13 +40,20 @@ static const CWord CH_SEMICOLON = CWord("；");
 static const CWord CH_COLON = CWord("：");
 static const CWord CH_EXCLAMATION = CWord("！");
 static const CWord CH_QUESTION = CWord("？");
+static const CWord CH_LRB = CWord("（");
+static const CWord CH_LQ = CWord("“");
+static const CWord CH_LBK = CWord("《");
+static const CWord CH_RRB = CWord("）");
+static const CWord CH_RQ = CWord("”");
+static const CWord CH_RBK = CWord("》");
+//
 
 static const CWord starting_brackets[] = {
-   CWord("（"), CWord("“"), CWord("《")
+   CH_LRB, CH_LQ, CH_LBK
 };
 
 static const CWord ending_brackets[] = {
-   CWord("）"), CWord("”"), CWord("》")
+   CH_RRB, CH_RQ, CH_RBK
 };
 
 static const CWord separating_punctuations[] = {
@@ -65,14 +72,14 @@ inline int getStartingBracket(const CWord &word) {
 }
 
 inline int getEndingBracket(const CWord &word) {
-   for (int i=0; i<sizeof(ending_brackets)/sizeof(CWord); ++i)
+   for (unsigned i=0; i<sizeof(ending_brackets)/sizeof(CWord); ++i)
       if (word==ending_brackets[i])
          return i;
    return -1;
 }
 
 inline int getSeparatingPunctuation(const CWord &word) {
-   for (int i=0; i<sizeof(separating_punctuations)/sizeof(CWord); ++i)
+   for (unsigned i=0; i<sizeof(separating_punctuations)/sizeof(CWord); ++i)
       if (word==separating_punctuations[i])
          return i;
    return -1;
@@ -83,6 +90,27 @@ inline bool isSentenceSeparator(const CWord &word) {
       if (word==sentence_separators[i])
          return true;
    return false;
+}
+
+inline bool canEndSentence(const CWord &word) {
+   return isSentenceSeparator(word) || (getEndingBracket(word) != -1);
+}
+
+inline bool isPunctuation(const CWord &word) {
+   return word == CH_COMMA ||
+          word == CH_PERIOD ||
+          word == CH_DUN ||
+          word == CH_SEMICOLON ||
+          word == CH_COLON ||
+          word == CH_EXCLAMATION ||
+          word == CH_QUESTION ||
+          word == CH_LRB ||
+          word == CH_LQ ||
+          word == CH_LBK ||
+          word == CH_RRB ||
+          word == CH_RQ ||
+          word == CH_RBK 
+          ;
 }
 
 /*===============================================================

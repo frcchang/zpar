@@ -20,10 +20,10 @@ void CSentenceWriter::writeLine() {
    (*m_oStream) << endl;
 };
 
-void CSentenceWriter::writeSentence(const CStringVector* sentence, const string separator) {
+void CSentenceWriter::writeSentence(const CStringVector* sentence, const string &separator, const bool newline) {
    for (int i=0; i<sentence->size(); ++i)
       (*m_oStream) << sentence->at(i) << separator;
-   (*m_oStream) << endl;
+   if (newline) (*m_oStream) << endl;
 };
 
 void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char separator) {

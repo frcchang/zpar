@@ -19,7 +19,6 @@ using namespace chinese;
 //
 // The following definitions must be consistent with the combined segmentor and tagger
 //
-#define N 64
 #define MAX_SENTENCE_SIZE 512
 
 static string sKnowledgePath;
