@@ -41,7 +41,7 @@ public:
       return m_end == m_flag;
    }
    unsigned long size() const {
-      return m_end > m_flag+1 ? m_end-m_flag-1 : m_end+m_size-m_flag-1;
+      return m_end >= m_flag+1 ? m_end-m_flag-1 : m_end+m_size-m_flag-1;
    }
    const K &at(const unsigned long &i) const {
       assert(i<m_size-1); // m_size = required_size + 1

@@ -26,7 +26,7 @@ void CSentenceWriter::writeSentence(const CStringVector* sentence, const string 
    if (newline) (*m_oStream) << endl;
 };
 
-void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char separator) {
+void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char separator, const bool newline) {
    for (int i=0; i<sentence->size(); ++i) {
       if (i>0)
          m_oStream->put(' ');
@@ -36,6 +36,6 @@ void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char
       for (int j=0; j<sentence->at(i).second.length(); j++)
          m_oStream->put(sentence->at(i).second[j]);
    }
-   (*m_oStream) << endl;
+   if (newline) (*m_oStream) << endl;
 };
 
