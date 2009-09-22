@@ -25,7 +25,7 @@ public:
    //
    // CONSTRUCTOR AND DESTRUCTOR METHODS
    // 
-   CFeatureHandle(CSegmentor* pSegmentor, string sFileName, bool bTrain=false) : m_parent(pSegmentor), m_sFeatureDB(sFileName), m_bTrain(bTrain), m_CharCat(0), m_WordLst(0), m_zeroScore() { loadScores(); } 
+   CFeatureHandle(CSegmentor* pSegmentor, string sFileName, bool bTrain, bool bRules) : m_parent(pSegmentor), m_sFeatureDB(sFileName), m_bTrain(bTrain), m_CharCat(0), m_WordLst(0), m_zeroScore(), m_bRule(bRules) { loadScores(); } 
    ~CFeatureHandle() { 
       if (m_bScoreModified) saveScores(); 
       if (m_CharCat) { delete m_CharCat; }

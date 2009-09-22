@@ -68,22 +68,38 @@ void CWeight::loadScores() {
 
    // load tag dictionary
    getline(is, st);
-   assert(st=="Tag dictionary");
+   if (st=="Segmentation rules") {
+      m_bSegmentationRules = true;
+   }
+   else {
+      ASSERT(st=="Segmentation rules=0", "Segmentation rules using switch not found from model.");
+      m_bSegmentationRules = false;
+   }
+   getline(is, st);
+   if (st=="Knowledge") {
+      ASSERT(m_Knowledge==0, "Model loading knowledge but it already exists.")
+      is >> (*m_Knowledge);
+   }
+   else {
+      ASSERT(st=="Knowledge=0", "Knowledge not found from model.");
+   }
+   getline(is, st);
+   ASSERT(st=="Tag dictionary", "Tag dictionary not found from model.");
    is >> m_mapTagDictionary;
    getline(is, st);
-   assert(st=="Char tag dictionary");
+   ASSERT(st=="Char tag dictionary", "Char tag dictionary not found from model.");
    is >> m_mapCharTagDictionary;
    getline(is, st);
-   assert(st=="Word frequency");
+   ASSERT(st=="Word frequency", "Word frequency not found from model.");
    is >> m_mapWordFrequency;
    getline(is, st);
-   assert(st=="Maximum frequency");
+   ASSERT(st=="Maximum frequency", "Maximum frequency not found from model.");
    getline(is, st);
    iss.str(st);
    iss >> m_nMaxWordFrequency;
    getline(is, st);
    getline(is, st);
-   assert(st=="Maximum wordlen by tag");
+   ASSERT(st=="Maximum wordlen by tag", "Maximum word length by tag not found from model.");
    string ts;
    for (int i=0; i<CTag::COUNT; ++i) {
       istringstream iss;
@@ -92,14 +108,14 @@ void CWeight::loadScores() {
       int j;
       iss >> ts >> j;
       m_maxLengthByTag[i] = j;
-      assert(CTag(ts).code()==i);
+      ASSERT(CTag(ts).code()==i, "Maximum word size record loading failed.");
    }
    {
       istringstream iss;
       getline(is, st);
       iss.str(st);
       iss >> ts >> m_maxLengthByTag[CTag::COUNT];
-      assert(ts=="All");
+      ASSERT(ts=="All", "Maximum word size record failed loading.");
    }
 
    cout << " done." << endl;
@@ -113,9 +129,23 @@ void CWeight::loadScores() {
 
 void CWeight::saveScores() {
    cout << "Saving scores ..."; cout.flush();
+
    ofstream os(m_sFeatureDB.c_str());
-   assert(os.is_open());
+   ASSERT(os.is_open(), "Can't open "<<m_sFeatureDB<<" for saving model.");
    iterate_templates(os<<,;);
+
+   if (m_bSegmentationRules) os << "Segmentation rules" << endl;
+   else os << "Segmentation rules=0" << endl;
+
+   if (m_Knowledge==0) {
+      os << "Knowledge=0" << endl;
+   }
+   else {
+      os << "Knowledge" << endl;
+      os << (*m_Knowledge);
+   }
+
+   os << "Tag dictionary" << endl;
    os << "Tag dictionary" << endl;
    os << m_mapTagDictionary;
    os << "Char tag dictionary" << endl;
@@ -137,7 +167,7 @@ void CWeight::saveScores() {
  *
  *-------------------------------------------------------------*/
 
-void CWeight::computeAverageFeatureWeights(int round) {
+void CWeight::computeAverageFeatureWeights(unsigned long round) {
    cout << "Comuting averaged feature vector ..."; cout.flush();
    iterate_templates(,.computeAverage(round););
    cout << " done." << endl;

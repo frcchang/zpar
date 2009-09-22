@@ -36,7 +36,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const CStateItem *item, int index, SCORE_TYPE amount, int round ) {
+SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const CStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned long last_start , last_length ;
    static unsigned long start , end , length , word_length ; // word length is the un-normalised version
@@ -272,7 +272,7 @@ SCORE_TYPE CTagger::getGlobalScore(const CTwoStringVector* tagged) {
  *
  *--------------------------------------------------------------*/
 
-void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) {
+void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round) {
 
    static int i , j ;
    static CStateItem item ;
@@ -316,8 +316,8 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
          m_weights->m_mapTagDictionary.add(word, tag);
          for ( j = 0 ; j < chars.size() ; ++j ) m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
 
-         if ( !m_bKnowledgeLoaded ||
-             (!m_Knowledge.isFWorCD(chars[0])&&!m_Knowledge.isFWorCD(chars[chars.size()-1])))
+         if ( !m_weights->m_Knowledge ||
+             (!m_weights->m_Knowledge->isFWorCD(chars[0])&&!m_weights->m_Knowledge->isFWorCD(chars[chars.size()-1])))
          m_weights->setMaxLengthByTag( tag , chars.size() ) ;
       }
 
@@ -351,7 +351,7 @@ void generate(const CStateItem *stateItem, CStringVector *sentence, CTagger *tag
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , int round ) {
+void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , unsigned long round ) {
    cerr << "Not implemented" << endl;
    assert( 0 == 1 );
 }
@@ -364,7 +364,7 @@ void CTagger::train( const CStringVector * sentence , const CTwoStringVector * c
  *
  *--------------------------------------------------------------*/
 
-void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vReturn , SCORE_TYPE * out_scores , int nBest , const CBitArray * prunes ) {
+void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vReturn , SCORE_TYPE * out_scores , unsigned long nBest , const CBitArray * prunes ) {
    clock_t total_start_time = clock();;
    int index , start_index , generator_index , temp_index, word_length;
    const CStateItem * generator_item ; 
@@ -373,8 +373,8 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    unsigned long tag, last_tag ; 
 
    static CStringVector sentence;
-   static CSegmentationPrune rules(m_nMaxSentSize); // 0 - no rules; 1 - append; 2 - separate
-   rules.load(*sentence_input, sentence);
+   static CRule rules(m_weights->m_bSegmentationRules); 
+   rules.segment(sentence_input, &sentence);
    const int length = sentence.size() ;
 
    if (length>=m_nMaxSentSize) 

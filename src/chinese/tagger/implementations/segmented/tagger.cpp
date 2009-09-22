@@ -33,7 +33,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * item , int index ) {
+SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * item , unsigned long index ) {
 
    static SCORE_TYPE nReturn ; 
    static unsigned long int last_start , last_length ;
@@ -125,7 +125,7 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
  *
  *--------------------------------------------------------------*/
 
-void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) {
+void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round) {
 
    static int i , j ;
 
@@ -164,7 +164,7 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
  *
  *--------------------------------------------------------------*/
 
-void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoStringVector * sentence , int index , int round ) { 
+void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoStringVector * sentence , unsigned long index , unsigned long round ) { 
    // about words              
    CWord word = sentence->at( index ).first ;
    CWord last_word = index > 0 ? sentence->at( index - 1 ).first : g_emptyWord ;
@@ -249,7 +249,7 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , int round ) {
+void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , unsigned long round ) {
    cerr << "Not implemented" << endl;
    assert( 0 == 1 );
 }
@@ -278,7 +278,7 @@ void generate(const CStateItem *stateItem, CStringVector *sentence, CTwoStringVe
  *
  *--------------------------------------------------------------*/
 
-void CTagger::tag( const CStringVector * sentence , CTwoStringVector * vReturn , SCORE_TYPE * out_scores , int nBest , const CBitArray * word_ends ) {
+void CTagger::tag( const CStringVector * sentence , CTwoStringVector * vReturn , SCORE_TYPE * out_scores , unsigned long nBest , const CBitArray * word_ends ) {
    clock_t total_start_time = clock();;
    const int length = sentence->size() ;
 

@@ -60,8 +60,7 @@ void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged
  *==============================================================*/
 
 void train(const string &sOutputFile, const string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bDontJoinFWCD) {
-   CTagger decoder(sFeatureFile, true, nMaxSentSize);
-   if (!sKnowledgePath.empty()) decoder.loadKnowledge(sKnowledgePath);
+   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, !bDontJoinFWCD);
    CSentenceReader output_reader(sOutputFile);
 #ifdef DEBUG
    CSentenceWriter output_writer("");
@@ -176,18 +175,21 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("j", "", "separate numbers and letters when preparing input data from training examples", "");
       configurations.defineConfiguration("k", "Path", "use knowledge from the given path", "");
       configurations.defineConfiguration("m", "M", "maximum sentence size", "512");
       configurations.defineConfiguration("n", "N", "N best list train", "1");
       configurations.defineConfiguration("u", "", "early update", "");
+      configurations.defineConfiguration("r", "", "use rules to segment numbers and letters", "");
 
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
          cout << configurations.message() << endl;
          return 1;
       } 
-      configurations.loadConfigurations(options.opts);
+      string warning = configurations.loadConfigurations(options.opts);
+      if (!warning.empty()) {
+         cout << "Warning: " << warning << endl;
+      }
 
       unsigned long nBest, nMaxSentSize;
       if (!fromString(nMaxSentSize, configurations.getConfiguration("m"))) {
@@ -197,7 +199,7 @@ int main(int argc, char* argv[]) {
          cerr<<"Error: the number of N best is not integer." << endl; return 1;
       }  
       bool bEarlyUpdate = configurations.getConfiguration("u").empty() ? false : true;
-      bool bDontJoinFWCD = configurations.getConfiguration("j").empty() ? false : true;
+      bool bDontJoinFWCD = configurations.getConfiguration("r").empty() ? false : true;
       string sKnowledgePath = configurations.getConfiguration("k");
       bool bSegmented = false;
 #ifdef SEGMENTED
@@ -210,8 +212,8 @@ int main(int argc, char* argv[]) {
          return 1;
       }
       cout << "Training started." << endl;
-      int time_start = clock();
-      for (int i=0; i<training_rounds; ++i)
+      unsigned time_start = clock();
+      for (unsigned i=0; i<training_rounds; ++i)
          train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, sKnowledgePath, bDontJoinFWCD);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
       return 0;
