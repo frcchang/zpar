@@ -75,30 +75,32 @@ public:
 
 public:
 
-   CWeight(const string &sFeatureDB, bool bTrain) : CWeightBase(sFeatureDB, bTrain) , 
-                                                    m_mapLastTagByTag("LastTagByTag", 1627) ,
-                                                    m_mapLastTwoTagsByTag("LastTwoTagsByTag", 16381) ,
-                                                    m_mapCurrentTag("CurrentTag", 65537) ,
-                                                    m_mapTagByLastWord("TagByLastWord", 65537) ,
-                                                    m_mapLastTagByWord("LastTagByWord", 65537) ,
-                                                    m_mapTagByFirstChar("TagByFirstChar", 65537) ,
-                                                    m_mapTagByLastChar("TagByLastChar", 65537) ,
-                                                    m_mapTagByPrevChar("TagByPrevChar", 65537) , 
-                                                    m_mapTagByNextChar("TagByNextChar", 65537) ,
-                                                    m_mapTagByPrevTwoChar("TagByPrevTwoChar", 65537) , 
-                                                    m_mapTagByNextTwoChar("TagByNextTwoChar", 65537) ,
-                                                    m_mapTagOfOneCharWord("TagOfOneCharWord", 65537) ,
-                                                    m_mapTagByChar("TagByChar", 65537) ,
-                                                    m_mapRepeatedCharByTag("RepeatedCharByTag", 65537) ,
-                                                    m_mapTagByWordAndPrevChar("TagByWordAndPrevChar", 65537) ,
-                                                    m_mapTagByWordAndNextChar("TagByWordAndNextChar", 65537) ,
-                                                    m_mapTagBySeparateChars("TagBySeparateChars", 65537) ,
-                                                    m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", 65537) ,
-                                                    m_mapTaggedCharByLastChar("TaggedCharByLastChar", 65537) ,
-                                                    m_mapTagByFirstCharCat("TagByFirstCharCat", 65531) ,
-                                                    m_mapTagByLastCharCat("TagByLastCharCat", 65531) , 
-                                                    m_mapTagDictionary(PENN_TAG_COUNT) ,
-                                                    m_mapCharTagDictionary(PENN_TAG_COUNT)
+   // note that bSegmentationRules is ignored because segmented
+   CWeight(const string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
+            CWeightBase(sFeatureDB, bTrain) , 
+            m_mapLastTagByTag("LastTagByTag", 1627) ,
+            m_mapLastTwoTagsByTag("LastTwoTagsByTag", 16381) ,
+            m_mapCurrentTag("CurrentTag", 65537) ,
+            m_mapTagByLastWord("TagByLastWord", 65537) ,
+            m_mapLastTagByWord("LastTagByWord", 65537) ,
+            m_mapTagByFirstChar("TagByFirstChar", 65537) ,
+            m_mapTagByLastChar("TagByLastChar", 65537) ,
+            m_mapTagByPrevChar("TagByPrevChar", 65537) , 
+            m_mapTagByNextChar("TagByNextChar", 65537) ,
+            m_mapTagByPrevTwoChar("TagByPrevTwoChar", 65537) , 
+            m_mapTagByNextTwoChar("TagByNextTwoChar", 65537) ,
+            m_mapTagOfOneCharWord("TagOfOneCharWord", 65537) ,
+            m_mapTagByChar("TagByChar", 65537) ,
+            m_mapRepeatedCharByTag("RepeatedCharByTag", 65537) ,
+            m_mapTagByWordAndPrevChar("TagByWordAndPrevChar", 65537) ,
+            m_mapTagByWordAndNextChar("TagByWordAndNextChar", 65537) ,
+            m_mapTagBySeparateChars("TagBySeparateChars", 65537) ,
+            m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", 65537) ,
+            m_mapTaggedCharByLastChar("TaggedCharByLastChar", 65537) ,
+            m_mapTagByFirstCharCat("TagByFirstCharCat", 65531) ,
+            m_mapTagByLastCharCat("TagByLastCharCat", 65531) , 
+            m_mapTagDictionary(PENN_TAG_COUNT) ,
+            m_mapCharTagDictionary(PENN_TAG_COUNT)
    { 
       m_nMaxWordFrequency=0; loadScores();
    }
@@ -107,7 +109,7 @@ public:
   
    void loadScores();
    void saveScores();
-   void computeAverageFeatureWeights(int round);
+   void computeAverageFeatureWeights(const unsigned long round);
 
 };
 

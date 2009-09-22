@@ -59,9 +59,12 @@ private:
 //-------------------------------------------------------------
 // Constructor destructor
 public:
-   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="") : segmentor::CSegmentorImpl(), m_bTrain(bTrain) { 
-      m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain); 
+   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="", bool bRule=false) : segmentor::CSegmentorImpl(), m_bTrain(bTrain) { 
+      // load features
+      m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain, bRule); 
+      // initialize word cache
       m_lWordCache = new CWord[segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_WORD_SIZE];
+      // load knowledge
       if (!bTrain) {
          if (!sCharCatFile.empty())
             THROW("CSegmentor::CSegmentor received sCharCat file in decoding mode, which is unexpected.");

@@ -42,6 +42,9 @@ using namespace std;
 // throw
 #define THROW(x) { ostringstream __tmp_os; __tmp_os << x; throw(__tmp_os.str()); }
 
+// assert
+#define ASSERT(x,y) { if (!(x)) THROW(y); }
+
 // error report tool
 #define REPORT(x) { cerr << endl << "In " << __FILE__ << ", line " << __LINE__ << ": " << endl << x << endl; cerr.flush(); }
 

@@ -19,15 +19,6 @@
  *
  *==============================================================*/
 
-namespace chinese {
-
-namespace tagger {
-
-#include "segmentationprune.h"
-
-}; // namespace tagger
-}; // namespace chinese
-
 #include "weight.h"
 
 namespace chinese {
@@ -52,20 +43,42 @@ protected:
    const unsigned long m_nMaxSentSize;
 
 public:
-   CTaggerBase(string sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) { 
-      m_weights = new tagger::CWeight(sFeatureDBPath, bTrain); 
+   CTaggerBase(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize, const string &sKnowledgePath, bool bSegmentationRules) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) { 
+      // load features
+      m_weights = new tagger::CWeight(sFeatureDBPath, bTrain, bSegmentationRules); 
+      // load knowledge
+      if (!bTrain) {
+         // when decoding
+         if (!sKnowledgePath.empty())
+            THROW("CTaggerBase::CTaggerBase received sKnowledgePath file in decoding mode, which is unexpected.");
+      }
+      else {
+         // first time training
+         if (FileExists(sFeatureDBPath)==false) {
+            // define items for new db
+            if (!sKnowledgePath.empty()) loadKnowledge(sKnowledgePath);
+         }
+         else { // model already exists
+            if (!sKnowledgePath.empty())
+               THROW("CTaggerBase::CTaggerBase received sKnowledgePath file, but model exists (with knowledge)");
+         }
+      }
    }
-   virtual ~CTaggerBase() { }
+   virtual ~CTaggerBase() { delete m_weights; }
    CTaggerBase(CTaggerBase& tagger) : m_nMaxSentSize(0)  { THROW("CTagger does not support copy constructor!"); }
 
+protected:
+   virtual void loadKnowledge(const string &sKnowledgePath) {
+      THROW("CTaggerBase: the tagger class didn't override loadKnowledge."); // load knowledge should be implemented by sub class
+   }
+
 public:
-   virtual void loadKnowledge(const string &sKnowledgePath) = 0 ; // load knowledge should be implemented by sub class
-   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, int round) = 0;
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, unsigned long round) = 0;
    // The input sentence to tag() must be a raw sentence of characters
    // For the tagger that processes segmented input sent, we must set word_ends
-   virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, int nBest=1, const CBitArray *word_ends=NULL) = 0;
-   virtual void finishTraining(int nTotalNumberOfTrainingExamples) = 0 ;
-   virtual void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) = 0;
+   virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *word_ends=NULL) = 0;
+   virtual void finishTraining(unsigned long nTotalNumberOfTrainingExamples) = 0 ;
+   virtual void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round) = 0;
 };
 
 }; // namespace chinese

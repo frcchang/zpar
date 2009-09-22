@@ -82,7 +82,10 @@ int main(int argc, char* argv[]) {
          cout << configurations.message() << endl;
          return 1;
       }
-      configurations.loadConfigurations(options.opts);
+      string warning = configurations.loadConfigurations(options.opts);
+      if (!warning.empty()) {
+         cout << "Warning: " << warning << endl;
+      }
    
       // check options
       int nBest;

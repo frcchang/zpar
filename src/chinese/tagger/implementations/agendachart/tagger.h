@@ -24,39 +24,38 @@ class CTagger : public CTaggerBase {
 protected:
    CAgendaChart<tagger::CStateItem> m_Chart;
    CWordCache m_WordCache;
-   CCharCatDictionary m_Knowledge;
-   bool m_bKnowledgeLoaded;
    int m_nScoreIndex;
 
 public:
-   CTagger(string sFeatureDBPath, bool bTrain=false, unsigned long nMaxSentSize=tagger::MAX_SENTENCE_SIZE) : m_Chart(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize) , m_WordCache(nMaxSentSize) , m_bKnowledgeLoaded(false) { 
+   CTagger(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const string &sKnowledgePath, bool bSegmentationRules) : m_Chart(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
-   virtual ~CTagger() { }
+   virtual ~CTagger() {}
    
-public:
-   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, int round);
-   virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, int nBest=1, const CBitArray *prunes=NULL);
-
+protected:
    void loadKnowledge(const string &sKnowledgePath) {
       cout << "Loading knowledge ... ";
+      m_weights->newKnowledge();
       ifstream ifs(sKnowledgePath.c_str());
       if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
-      ifs >> m_Knowledge; 
+      ifs >> (*m_weights->m_Knowledge); 
       ifs.close();
-      m_bKnowledgeLoaded = true;
       cout << "done." << endl;
    }
 
+public:
    enum SCORE_UPDATE {eSubtract=0, eAdd};
+
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, unsigned long round);
+   virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
 
    tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged);
 
-   void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round);
+   void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round);
 
-   tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CStateItem *item, int index, tagger::SCORE_TYPE amount=0, int round=0);
+   tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
-   void finishTraining(int nTotalNumberOfTrainingExamples) { 
+   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);
       m_weights->saveScores(); 
    }

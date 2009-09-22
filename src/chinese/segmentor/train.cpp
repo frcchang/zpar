@@ -56,7 +56,7 @@ void extract_features(const string &sTextFile, const string &sFeatureFile) {
 
 void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool &bNoFWAndCD, const string &sCharCatFile, const string &sLexiconDict) {
    CSegmentor *segmentor;
-   segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict);
+   segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict, !bNoFWAndCD);
    CSentenceReader ref_reader(sOutputFile);
    CStringVector *input_sent = new CStringVector;
    CStringVector *ref_sent = new CStringVector; 
@@ -89,7 +89,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
 
 void train(const string &sOutputFile, const string &sFeatureFile, const bool &bAggressive, const bool &bNoFWAndCD, const string &sCharCatFile, const string &sLexiconDict) {
    CSegmentor *segmentor ; 
-   segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict);
+   segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict, !bNoFWAndCD);
    CSentenceReader ref_reader(sOutputFile);
 #ifdef DEBUG
    CSentenceWriter ref_writer("");
@@ -166,7 +166,10 @@ int main(int argc, char* argv[]) {
          return 1;
       }
 
-      configurations.loadConfigurations(options.opts);
+      string warning = configurations.loadConfigurations(options.opts);
+      if (!warning.empty()) {
+         cout << "Warning: " << warning << endl;
+      }
 
       bool bAggressive = configurations.getConfiguration("a").empty() ? false : true;
       bool bAutomatic = configurations.getConfiguration("s").empty() ? false : true;

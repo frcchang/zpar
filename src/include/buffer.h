@@ -40,6 +40,9 @@ public:
    bool full() const {
       return m_end == m_flag;
    }
+   bool empty() const {
+      return size()==0;
+   }
    unsigned long size() const {
       return m_end >= m_flag+1 ? m_end-m_flag-1 : m_end+m_size-m_flag-1;
    }
