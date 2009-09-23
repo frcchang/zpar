@@ -13,9 +13,9 @@
 
 #include "hash.h"
 
-static const unsigned long int DICT_SIZE = 16381 ;
+static const unsigned long DICT_SIZE = 16381 ;
 
-typedef unsigned long int CWordCat;
+typedef unsigned long CWordCat;
 
 /*===============================================================
  *

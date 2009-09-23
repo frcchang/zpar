@@ -122,16 +122,14 @@ inline bool isPunctuation(const CWord &word) {
 class CCharCatDictionary : public CWordDictionary {
 
 public:
-
    CCharCatDictionary() : CWordDictionary(199) { 
-      for (int i=0; i<104; ++i)
+      for (unsigned i=0; i<sizeof(letters)/sizeof(string); ++i) 
          (*this)[CWord(letters[i])] = eFW ;
-      for (int i=0; i<20; ++i) 
+      for (unsigned i=0; i<sizeof(numbers)/sizeof(string); ++i) 
          (*this)[CWord(numbers[i])] = eCD ;
    }
 
 public:
-
    enum CHAR_TYPE { eUnknown=0, eFW, eCD } ;
 
    bool isFWorCD( const string &s ) const {

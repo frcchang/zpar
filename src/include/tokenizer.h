@@ -13,7 +13,7 @@
 
 #include "hash.h"
 
-static const int TOKENIZER_SIZE = 65537 ;
+static const unsigned TOKENIZER_SIZE = 65537 ;
 
 /*===============================================================
  *
@@ -24,17 +24,15 @@ static const int TOKENIZER_SIZE = 65537 ;
 template <typename K>
 class CTokenizer {
    protected:
-      CHashMap<K, unsigned long int> m_mapTokens;
+      CHashMap<K, unsigned long> m_mapTokens;
       vector<K> m_vecKeys;
-      unsigned long int m_nWaterMark;
-      unsigned long int m_nStartingToken;
+      unsigned long m_nWaterMark;
+      unsigned long m_nStartingToken;
    public:
-      CTokenizer(int nTokenStartsFrom=0) : m_nStartingToken(nTokenStartsFrom), 
-                                           m_nWaterMark(nTokenStartsFrom), 
-                                           m_mapTokens(TOKENIZER_SIZE) { }
-      virtual ~CTokenizer() { }
-      unsigned long int lookup(const K &key) {
-         unsigned long int retval; 
+      CTokenizer(unsigned nTokenStartsFrom=0) : m_nStartingToken(nTokenStartsFrom), m_nWaterMark(nTokenStartsFrom), m_mapTokens(TOKENIZER_SIZE) {}
+      virtual ~CTokenizer() {}
+      unsigned long lookup(const K &key) {
+         unsigned long retval; 
          bool bNew = m_mapTokens.findorinsert(key, m_nWaterMark, retval); 
          if (bNew) { 
             ++m_nWaterMark; 
@@ -42,8 +40,8 @@ class CTokenizer {
             m_vecKeys.push_back(key);
          } return retval;
       }
-      unsigned long int find(const K &key, unsigned long int val) {return m_mapTokens.find(key, val);}
-      const K &key(unsigned long int token) {assert( token < m_vecKeys.size()+m_nStartingToken ); return m_vecKeys[token-m_nStartingToken];}
+      unsigned long find(const K &key, const unsigned long &val) const {return m_mapTokens.find(key, val);}
+      const K &key(const unsigned long &token) const {assert( token < m_vecKeys.size()+m_nStartingToken ); return m_vecKeys[token-m_nStartingToken];}
 };
 
 #endif

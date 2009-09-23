@@ -15,7 +15,7 @@ segmentor: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_SEGMENTOR) $(DIST_SEGMENTOR) $(DIS
 # SEGMENTOR_IMPL is used in two places:
 # I. it is used when for implementation file of segmentor - agenda.cpp or chart.cpp
 # II. it is used to include impl.h from implementations/agenda or chart subdir
-$(OBJECT_DIR)/segmentor.o:$(SRC_INCLUDES)/learning/perceptron/hashmap_score.h $(SRC_INCLUDES)/knowledge/worddict.h $(SRC_INCLUDES)/hash.h $(SRC_SEGMENTOR)/segmentor.h $(SRC_SEGMENTOR)/feature.h $(SRC_SEGMENTOR)/base_include.h $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp ./Makefile
+$(OBJECT_DIR)/segmentor.o: $(SRC_INCLUDES)/linguistics/word_tokenized.h $(SRC_INCLUDES)/learning/perceptron/hashmap_score.h $(SRC_INCLUDES)/knowledge/worddict.h $(SRC_INCLUDES)/hash.h $(SRC_SEGMENTOR)/segmentor.h $(SRC_SEGMENTOR)/feature.h $(SRC_SEGMENTOR)/base_include.h $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp ./Makefile
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp -o $(OBJECT_DIR)/segmentor.o
 
 # the segmentor executable

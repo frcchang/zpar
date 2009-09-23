@@ -24,7 +24,7 @@ class CTagger : public CTaggerBase {
 protected:
    CAgendaChart<tagger::CStateItem> m_Chart;
    CWordCache m_WordCache;
-   int m_nScoreIndex;
+   unsigned m_nScoreIndex;
 
 public:
    CTagger(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const string &sKnowledgePath, bool bSegmentationRules) : m_Chart(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {

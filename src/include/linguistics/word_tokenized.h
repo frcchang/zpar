@@ -34,8 +34,8 @@ class CStringTokenizer : public CTokenizer<string> {
       virtual ~CStringTokenizer() {}
 };
 
-const unsigned long int g_tokenForUnknownString = 0;
-const unsigned long int g_tokenForEmptyString = 1;
+const unsigned long g_tokenForUnknownString = 0;
+const unsigned long g_tokenForEmptyString = 1;
 
 /*===============================================================
  *
@@ -46,7 +46,7 @@ const unsigned long int g_tokenForEmptyString = 1;
 class CWord {
 
 protected:
-   long int m_nHash;
+   unsigned long m_nHash;
 
 protected:
    // static method assigns tokenizer as global dictionary of words
@@ -54,20 +54,20 @@ protected:
 
 public:
    CWord() { clear(); }
-   CWord(const string &s) { static CStringTokenizer &tokenizer = getTokenizer(); m_nHash = tokenizer.lookup(s); }
+   CWord(const string &s) { m_nHash=getTokenizer().lookup(s); }
    CWord(const CWord &w) { m_nHash=w.m_nHash; }
    CWord(const CWord *w) { m_nHash=w->m_nHash; }
    virtual ~CWord() {}
 
 public:
-   virtual unsigned long int hash() const { return m_nHash; }
-   virtual bool operator == (const CWord &w) const { return m_nHash == w.m_nHash; }
-   virtual bool operator != (const CWord &w) const { return m_nHash != w.m_nHash; }
-   virtual bool operator < (const CWord &w) const { return m_nHash < w.m_nHash; }
-   virtual void operator = (const string &s) { static CStringTokenizer &tokenizer = getTokenizer(); m_nHash = tokenizer.lookup(s); }
-   void setString(const string &s) { static CStringTokenizer &tokenizer = getTokenizer(); m_nHash = tokenizer.find(s, g_tokenForUnknownString); }
+   unsigned long hash() const { return m_nHash; }
+   bool operator == (const CWord &w) const { return m_nHash == w.m_nHash; }
+   bool operator != (const CWord &w) const { return m_nHash != w.m_nHash; }
+   bool operator < (const CWord &w) const { return m_nHash < w.m_nHash; }
+   void operator = (const string &s) { m_nHash = getTokenizer().lookup(s); }
+   void setString(const string &s) { m_nHash = getTokenizer().find(s, g_tokenForUnknownString); }
    // do not use str() for unknown words!!
-   inline const string &str() const { static CStringTokenizer &tokenizer = getTokenizer(); return tokenizer.key(m_nHash); }
+   const string &str() const { return getTokenizer().key(m_nHash); }
    bool empty() { return m_nHash==g_tokenForEmptyString; }
    bool unknown() { return m_nHash==g_tokenForUnknownString; }
    void clear() { m_nHash=g_tokenForEmptyString; }
@@ -77,7 +77,7 @@ public:
 
 #include "word_common.h"
 
-inline unsigned long int hash(const CWord &w) {return w.hash();}
+inline unsigned long hash(const CWord &w) {return w.hash();}
 
 #endif
 
