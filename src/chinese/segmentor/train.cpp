@@ -112,13 +112,17 @@ void train(const string &sOutputFile, const string &sFeatureFile, const bool &bA
       TRACE("Sentence " << nCount);
       ++nCount;
       segmentor->segment( input_sent, output_sent );
+#ifdef DEBUG
+      if ( *output_sent != *ref_sent ) {
+         cout << "correct" << endl;
+         ref_writer.writeSentence(ref_sent);
+         cout << "output" << endl;
+         output_writer.writeSentence(output_sent);
+      }
+#endif
       segmentor->updateScores( output_sent, ref_sent, nCount );
       if ( *output_sent != *ref_sent ) {
          ++nErrorCount;
-#ifdef DEBUG
-         ref_writer.writeSentence(ref_sent);
-         output_writer.writeSentence(output_sent);
-#endif
          if (bAggressive) {
             while (true) {
                segmentor->segment(input_sent, output_sent);
@@ -192,6 +196,10 @@ int main(int argc, char* argv[]) {
             auto_train(options.args[1], options.args[2], bNoFWAndCD, sCharCatFile, sLexiconDict);
          else
             train(options.args[1], options.args[2], bAggressive, bNoFWAndCD, sCharCatFile, sLexiconDict);
+         if (i==0) { // from the next iteration these will be loaded from the db
+            sCharCatFile = "";
+            sLexiconDict = "";
+         }
       }
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
       return 0;

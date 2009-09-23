@@ -11,7 +11,7 @@
 #ifndef _HASH_H
 #define _HASH_H
 
-static const unsigned long int DEFAULT_SIZE = 65537;
+static const unsigned long DEFAULT_SIZE = 65537;
 
 template <typename K, typename V>
 class CHashMap {
@@ -30,13 +30,13 @@ public:
    class iterator {
 
    private:
-      unsigned long int m_nBucket;
+      unsigned long m_nBucket;
       CHashMap<K, V> *m_parent;
       typename map<K, V>::iterator m_it;
 
    public:
       iterator() {}
-      iterator(CHashMap<K, V> *parent, int bucket, const typename map<K, V>::iterator &it) {
+      iterator(CHashMap<K, V> *parent, const unsigned long &bucket, const typename map<K, V>::iterator &it) {
          m_parent = parent; 
          m_nBucket = bucket; 
          m_it=it; 
@@ -91,7 +91,7 @@ protected:
    //===============================================================
 
 public:
-   CHashMap(unsigned long int TABLE_SIZE = DEFAULT_SIZE) : m_nTableSize(TABLE_SIZE) { 
+   CHashMap(unsigned long TABLE_SIZE = DEFAULT_SIZE) : m_nTableSize(TABLE_SIZE) { 
       m_mapBuckets = new map<K, V>[TABLE_SIZE]; 
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0) { 
@@ -146,7 +146,7 @@ public:
 public:
 
 #ifdef DEBUG 
-   void trace() { for (int i=0; i<m_nTableSize; ++i) cout<<m_mapBuckets[i].size()<<' ';}
+   void trace() { for (unsigned i=0; i<m_nTableSize; ++i) cout<<m_mapBuckets[i].size()<<' ';}
 #endif
 
 };

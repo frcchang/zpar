@@ -145,13 +145,13 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
 
    // ===================================================================================
    // character scores 
-   for (tmp_i = max(0, static_cast<int>(end)-0); tmp_i < min(static_cast<int>(sentence->size()), end+1); ++tmp_i) 
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) 
       nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( ( amount==0 ? segmentor->findWordFromCache(tmp_i,1,sentence)
                                                                                   : segmentor->replaceWordToCache(tmp_i,1,sentence) ),
                                                    encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, 
                                                    amount, round);
 
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) 
+   for (tmp_i = max(0, static_cast<int>(end)-2); tmp_i < min(static_cast<int>(sentence->size())-1, end+2); ++tmp_i) 
       nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( ( amount==0 ? segmentor->findWordFromCache(tmp_i,2,sentence)
                                                                                  : segmentor->replaceWordToCache(tmp_i,2,sentence) ),
                                                   encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, 
@@ -242,13 +242,13 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    retval = 0;
    // ===================================================================================
    // character scores 
-   for (tmp_i = max(0, static_cast<int>(end)-0); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+1); ++tmp_i) 
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) 
       retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( ( amount==0 ? segmentor->findWordFromCache(tmp_i,1,sentence)
                                                                                  : segmentor->replaceWordToCache(tmp_i,1,sentence) ),
                                                           encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, 
                                                           amount, round);
 
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) 
+   for (tmp_i = max(0, static_cast<int>(end)-2); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+2); ++tmp_i) 
       retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( ( amount==0 ? segmentor->findWordFromCache(tmp_i,2,sentence)
                                                                                 : segmentor->replaceWordToCache(tmp_i,2,sentence) ),
                                                          encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, 
@@ -308,7 +308,7 @@ void CFeatureHandle::extractPosFeatures(const CStringVector *sent) {
       temp.append(j);
       while (j<end+getUTF8StringLength(sent->at(i))) {
          getOrUpdateAppendScore(m_parent, &chars, &temp, i, j==end+1, 1, -1);
-         j++;
+         ++j;
          temp.replace(j);
       }
       getOrUpdateSeparateScore(m_parent, &chars, &temp, i, j==end+1, 1, -1);
@@ -332,8 +332,9 @@ void CFeatureHandle::extractPosFeatures(const CStringVector *sent) {
 
 void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStringVector* correct, int round) {
 
-   if ( *output == *correct ) return;
+   TRACE("Updating feature vector...");
 
+   if ( *output == *correct ) return;
    m_parent->clearWordCache();
 
    CStateItem temp;
@@ -370,6 +371,7 @@ void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStrin
    }
    //
    m_bScoreModified = true;
+   TRACE("done");
 }
 
 /*---------------------------------------------------------------
@@ -419,6 +421,7 @@ void updateScoreVector(CSegmentor *segmentor, const CStringVector* sentence, uns
       }
       getOrUpdateSeparateScore(segmentor, sentence, &temp, word_index, char_index==correct->getWordStart(word_index), 1, round);
    }
+cout << char_index << " " << correct->getWordEnd(word_index) << endl;
    assert(char_index==correct->getWordEnd(word_index));
 }
 
@@ -437,7 +440,7 @@ void updateScoreVector(CSegmentor *segmentor, const CStringVector* sentence, uns
  *--------------------------------------------------------------*/
 
 void trace_candidate(CStateItem *pCandidate, const CStringVector &sentence) {
-   for ( int j=0; j<pCandidate->m_nLength; j++ ) {
+   for ( int j=0; j<pCandidate->m_nLength; ++j ) {
       string temp = "";
       for ( int l = pCandidate->getWordStart(j); l <= pCandidate->getWordEnd(j); ++l ) {
          assert(sentence.at(l)!=" "); // [SPACE]
@@ -457,17 +460,14 @@ void trace_candidate(CStateItem *pCandidate, const CStringVector &sentence) {
 
 bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CStateItem *pCorrect, int nBest, int round) {
    CStateItem *pGenerator, *pCandidate;
-   int nScore;
    int j, k;                                    // temporary index
-   int m, n;                                    // temporary nums
    int index, temp_index;                       // the index of the current char
-   int add_score, subtract_score;               // the score to be subtracted (previous item)
    static unsigned long int doneWordRnd[MAX_SENTENCE_SIZE];  // mask whether candidate with the last word has been cached
    static unsigned long int doneWordLink[MAX_SENTENCE_SIZE]; // link to the corresponding cache state item from word_length + 1
    static CStateItem doneWordItems[BEAM_SIZE];          // the allocated cache state items stores the candidates
    static int doneItemPointer; 
    static CStateItem temp_it, candidate;
-   unsigned long int word_length;
+   unsigned long word_length;
    bool bCompatible; 
    const int length = sentence.size();
 
@@ -496,12 +496,12 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
       for (j=0; j<segmentor->m_Agenda->generatorSize(); ++j) {
 
          // 1. generate new items according to each previous item. 
-         if ( rules.canSeparate( index ) &&
+         if ( /*rules.canSeparate( index ) && */
               pGenerator->canSeparate() 
             ) {  
 
             // push a candidate with the current char as the start of a word
-            if ( index < sentence.size()-1 ) {
+            if ( index < sentence.size()-1 && rules.canAppend(index+1) ) {
                pCandidate->copy(pGenerator);
                pCandidate->append(index);
                pCandidate->m_nScore += getOrUpdateAppendScore(segmentor, &sentence, pCandidate, pCandidate->m_nLength-1, true);
@@ -510,31 +510,33 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
             }
 
             // now explore candidate with the current char being standalone
-            temp_it.copy(pGenerator);
-            temp_it.append(index);
-            temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1, true);
-            temp_it.setWordEnd(true);
+            if ( index == sentence.size()-1 || rules.canSeparate(index+1) ) {
+               temp_it.copy(pGenerator);
+               temp_it.append(index);
+               temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1, true);
+               temp_it.setWordEnd(true);
 
-            // maybe we need to cache the current word for single best
-            if ( nBest == 1 ) {
-               if ( doneWordRnd[0] < index+1 ) {
-                  doneWordLink[0] = doneItemPointer;             // doneWordLink[i] caches the last word with length i+1
-                  doneWordItems[doneItemPointer].copy(&temp_it); // copy item to cache.
-                  ++doneItemPointer;
-                  doneWordRnd[0] = index+1;
+               // maybe we need to cache the current word for single best
+               if ( nBest == 1 ) {
+                  if ( doneWordRnd[0] < index+1 ) {
+                     doneWordLink[0] = doneItemPointer;             // doneWordLink[i] caches the last word with length i+1
+                     doneWordItems[doneItemPointer].copy(&temp_it); // copy item to cache.
+                     ++doneItemPointer;
+                     doneWordRnd[0] = index+1;
+                  }
+                  else if ( temp_it > doneWordItems[doneWordLink[0]] )
+                     doneWordItems[doneWordLink[0]].copy(&temp_it);
                }
-               else if ( temp_it > doneWordItems[doneWordLink[0]] )
-                  doneWordItems[doneWordLink[0]].copy(&temp_it);
-            }
-            else {
-               segmentor->m_Agenda->pushCandidate(&temp_it); // $$$
+               else {
+                  segmentor->m_Agenda->pushCandidate(&temp_it); // $$$
+               }
             }
          }
          // 2. generate by replacing items
-         if ( index > 0 && rules.canAppend(index) && pGenerator->canAppend() ) {
+         if ( index > 0 /*&& rules.canAppend(index)*/ && pGenerator->canAppend() ) {
 
             // push a candidate with the current char as the middle of a word
-            if ( index < sentence.size()-1 ) {
+            if ( index < sentence.size()-1 && rules.canAppend(index+1) ) {
                pCandidate->copy(pGenerator);
                pCandidate->replace(index) ;
                pCandidate->m_nScore += getOrUpdateAppendScore(segmentor, &sentence, pCandidate, pCandidate->m_nLength-1, false);
@@ -542,26 +544,28 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
                segmentor->m_Agenda->pushCandidate(pCandidate); // $$$
             }
 
-            // now explore candidate with the current char the end of a word
-            word_length = pGenerator->getWordLength( pGenerator->m_nLength-1 );
-            temp_it.copy(pGenerator);
-            temp_it.replace(index);
-            temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1, false);
-            temp_it.setWordEnd(true);
+            if ( index==sentence.size()-1 || rules.canSeparate(index+1) ) {
+               // now explore candidate with the current char the end of a word
+               word_length = pGenerator->getWordLength( pGenerator->m_nLength-1 );
+               temp_it.copy(pGenerator);
+               temp_it.replace(index);
+               temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1, false);
+               temp_it.setWordEnd(true);
 
-            // maybe we need to cache the current word for single best
-            if ( nBest == 1) {
-               if ( doneWordRnd[word_length] < index+1 ) {
-                  doneWordLink[word_length] = doneItemPointer;   // doneWordLink[i] caches the last word with length i+1
-                  doneWordItems[doneItemPointer].copy(&temp_it); // copy item to cache.
-                  ++doneItemPointer;
-                  doneWordRnd[word_length] = index+1;
+               // maybe we need to cache the current word for single best
+               if ( nBest == 1) {
+                  if ( doneWordRnd[word_length] < index+1 ) {
+                     doneWordLink[word_length] = doneItemPointer;   // doneWordLink[i] caches the last word with length i+1
+                     doneWordItems[doneItemPointer].copy(&temp_it); // copy item to cache.
+                     ++doneItemPointer;
+                     doneWordRnd[word_length] = index+1;
+                  }
+                  else if ( temp_it > doneWordItems[doneWordLink[word_length]] )
+                     doneWordItems[doneWordLink[word_length]].copy(&temp_it);
                }
-               else if ( temp_it > doneWordItems[doneWordLink[word_length]] )
-                  doneWordItems[doneWordLink[word_length]].copy(&temp_it);
-            }
-            else {
-               segmentor->m_Agenda->pushCandidate(&temp_it); // $$$
+               else {
+                  segmentor->m_Agenda->pushCandidate(&temp_it); // $$$
+               }
             }
          }
          pGenerator = segmentor->m_Agenda->generatorNext();  // next generator
@@ -660,7 +664,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    static CStringVector sentence;
    static CRule rules(m_Feature->m_bRule); 
    rules.segment(sentence_input, &sentence); 
-   const unsigned long int length = sentence.size();
+   const unsigned long length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);
    assert(vReturn!=NULL);
@@ -684,7 +688,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
       // assign retval
       if ( k < m_Agenda->generatorSize() ) {
          pGenerator = m_Agenda->generator(k) ;
-         for ( j=0; j<pGenerator->m_nLength; j++ ) {
+         for ( j=0; j<pGenerator->m_nLength; ++j ) {
             string temp = "";
             for ( l = pGenerator->getWordStart(j); l <= pGenerator->getWordEnd(j); ++l ) {
                assert(sentence.at(l)!=" "); // [SPACE]

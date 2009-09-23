@@ -118,8 +118,8 @@ inline int encodeCharSegmentation(const bool &b, const bool &e) {
 }
 
 inline int encodeCharInfoAndPosition(const int &char_info, const int &pos) {
-   assert( pos >= -1 && pos <= 1 ); // pos+1 00 01 10
-   return (char_info<<2) | (pos+1);
+   assert( pos >= -3 && pos <= 3 ); // pos+3 0->6
+   return (char_info<<3) | (pos+3);
 }
 
 inline int encodeCharInfoAndType(const int &char_info, const int &charcat1, const int &charcat2, const int &charcat3) {
