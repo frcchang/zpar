@@ -65,6 +65,7 @@ void CWeight::loadScores() {
    }
    // load feature weights
    iterate_templates(is>>,;);
+   iterate_templates(,.trace(););
 
    // load tag dictionary
    getline(is, st);

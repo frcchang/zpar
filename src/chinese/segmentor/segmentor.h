@@ -169,6 +169,7 @@ public:
       return m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ];
    }
    const CWord& replaceWordToCache(const int &start, const int &length, const CStringVector* sentence) {
+      assert(start+length<=sentence->size());
       if (m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].empty()||
           m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].unknown()) { // empty string
          static string temp; 
