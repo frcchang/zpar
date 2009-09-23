@@ -15,13 +15,13 @@ public:
    virtual ~CRuleBase() { }
 
 public:
-   void setSeparate(unsigned long int index, bool separate) { 
+   void setSeparate(unsigned long index, bool separate) { 
       m_chars[index] = ( separate ? eSeparate : eAppend ) ; 
    }
-   bool canSeparate(unsigned long int index) {
+   bool canSeparate(unsigned long index) {
       return m_chars[index] == eNoAction || m_chars[index] == eSeparate;
    }
-   bool canAppend(unsigned long int index) { 
+   bool canAppend(unsigned long index) { 
       return m_chars[index] == eNoAction || m_chars[index] == eAppend; 
    }
    bool mustSeparate(unsigned long index) {
@@ -31,6 +31,6 @@ public:
       return m_chars[index] == eAppend;
    }
 
-   void reset() { for (int i=0; i<MAX_SENTENCE_SIZE; ++i) m_chars[i] = 0; }
+   void reset() { for (unsigned i=0; i<MAX_SENTENCE_SIZE; ++i) m_chars[i] = 0; }
 };
 

@@ -222,17 +222,15 @@ void CSegmentor::train(const CStringVector* sentence, const CStringVector* corre
 void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vReturn, double *out_scores, int nBest) {
    clock_t total_start_time = clock();;
    CStateItem *pGenerator, *pCandidate;
-   int nScore;
-   unsigned long int index;                          // the index of the current char
-   int j, k;                                    // temporary index
-   int m, n;                                    // temporary nums
-   int add_score, subtract_score;               // the score to be subtracted (previous item)
-   static unsigned long int doneLastWord[MAX_SENTENCE_SIZE];
+   unsigned index;                              // the index of the current char
+   unsigned j, k;                               // temporary index
+   int subtract_score;                          // the score to be subtracted (previous item)
+   static unsigned doneLastWord[MAX_SENTENCE_SIZE];
 
    static CStringVector sentence;
    static CRule rules(m_Feature->m_bRule);
    rules.segment(sentence_input, &sentence);
-   const unsigned long int length = sentence.size();
+   const unsigned length = sentence.size();
 
    assert(length<MAX_SENTENCE_SIZE);
    assert(vReturn!=NULL);
@@ -296,7 +294,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
          pGenerator = m_Agenda->generator(k);
          for (j=0; j<pGenerator->m_nLength; j++) {
             string temp = "";
-            for (int l = pGenerator->getWordStart(j); l <= pGenerator->getWordEnd(j); ++l) {
+            for (unsigned l = pGenerator->getWordStart(j); l <= pGenerator->getWordEnd(j); ++l) {
                assert(sentence.at(l)!=" "); // [SPACE]
                temp += sentence.at(l);
             }

@@ -38,7 +38,7 @@ class CTaggerBase {
 
 protected:
    tagger::CWeight *m_weights;
-   int m_nNumberOfCurrentTrainingExample;
+   unsigned m_nNumberOfCurrentTrainingExample;
    bool m_bTrain;
    const unsigned long m_nMaxSentSize;
 

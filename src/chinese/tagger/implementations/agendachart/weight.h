@@ -40,11 +40,10 @@ typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
 class CWeight : public CWeightBase {
 
 public: 
-   unsigned long m_nMaxWordFrequency;
    unsigned long m_maxLengthByTag[CTag::COUNT+1];
    CCharCatDictionary *m_Knowledge;
    bool m_bSegmentationRules;
-
+   unsigned long m_nMaxWordFrequency;
 
 public:
    unsigned long getMaxWordLength() const {return m_maxLengthByTag[CTag::COUNT];}

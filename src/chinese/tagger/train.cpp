@@ -12,20 +12,15 @@
 #include "tagger.h"
 #include "reader.h"
 #include "writer.h"
-#include "charcat.h"
 
 #include <cstring>
 
 using namespace chinese;
 
-const int TRAINING_ROUND = 1;
 //
 // The following definitions must be consistent with the combined segmentor and tagger
 //
-#define N 64
 #define MAX_SENTENCE_SIZE 512
-
-static CCharCatDictionary g_CharCat ;
 
 /*----------------------------------------------------------------
  *
@@ -37,17 +32,17 @@ static CCharCatDictionary g_CharCat ;
  *---------------------------------------------------------------*/
 
 void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged, CBitArray &retval) {
-   vector<int> indice;
+   vector<unsigned> indice;
    indice.clear(); 
-   for (int i=0; i<raw->size(); ++i) {
-      for (int j=0; j<raw->at(i).size(); ++j)
+   for (unsigned i=0; i<raw->size(); ++i) {
+      for (unsigned j=0; j<raw->at(i).size(); ++j)
          indice.push_back(i);
    }
    retval.clear();
-   int start=0;
-   for (int i=0; i<tagged->size(); ++i) {
-      int word_start = indice[start];
-      int word_end = indice[start+tagged->at(i).first.size()-1];
+   unsigned start=0;
+   for (unsigned i=0; i<tagged->size(); ++i) {
+      unsigned word_start = indice[start];
+      unsigned word_end = indice[start+tagged->at(i).first.size()-1];
       start += tagged->at(i).first.size();
       retval.set(word_end);
    }
@@ -59,8 +54,10 @@ void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged
  *
  *==============================================================*/
 
-void train(const string &sOutputFile, const string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bDontJoinFWCD) {
-   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, !bDontJoinFWCD);
+void train(const string &sOutputFile, const string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bFWCDRule) {
+   static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
+
+   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, bFWCDRule);
    CSentenceReader output_reader(sOutputFile);
 #ifdef DEBUG
    CSentenceWriter output_writer("");
@@ -70,9 +67,9 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
    CTwoStringVector *tagged_sent = new CTwoStringVector[nBest];
    CTwoStringVector *output_sent = new CTwoStringVector; 
 
-   int nCount=0;
-   int nErrorCount=0;
-   int nEarlyUpdateRepeat=0;
+   unsigned nCount=0;
+   unsigned nErrorCount=0;
+   unsigned nEarlyUpdateRepeat=0;
 
    CBitArray word_ends(MAX_SENTENCE_SIZE);
 
@@ -80,8 +77,8 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
    // Read the next sentence
    //
    while( output_reader.readTaggedSentence(output_sent) ) {
-      if (bDontJoinFWCD)
-         UntagAndDesegmentSentence(output_sent, input_sent, g_CharCat);
+      if (bFWCDRule)
+         UntagAndDesegmentSentence(output_sent, input_sent, charcat);
       else
          UntagAndDesegmentSentence(output_sent, input_sent);
       TRACE("Sentence " << nCount);
@@ -114,7 +111,7 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
             output_writer.writeSentence(output_sent);
 #endif
             TRACE("------");
-            for (int i=0; i<nBest; ++i) if (*(tagged_sent+i)!=*output_sent)
+            for (unsigned i=0; i<nBest; ++i) if (*(tagged_sent+i)!=*output_sent)
             {
 #ifdef DEBUG
                tagged_writer.writeSentence(tagged_sent+i);
@@ -148,7 +145,7 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
             TRACE("------");  
             ++nErrorCount;
          }
-         for (int i=0; i<nBest; ++i) 
+         for (unsigned i=0; i<nBest; ++i) 
          {
 #ifdef DEBUG
             if (*(tagged_sent+i)!=*output_sent) tagged_writer.writeSentence(tagged_sent+i);
@@ -179,7 +176,7 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("m", "M", "maximum sentence size", "512");
       configurations.defineConfiguration("n", "N", "N best list train", "1");
       configurations.defineConfiguration("u", "", "early update", "");
-      configurations.defineConfiguration("r", "", "use rules to segment numbers and letters", "");
+      configurations.defineConfiguration("r", "", "do not use rules to segment numbers and letters", "");
 
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
@@ -199,14 +196,14 @@ int main(int argc, char* argv[]) {
          cerr<<"Error: the number of N best is not integer." << endl; return 1;
       }  
       bool bEarlyUpdate = configurations.getConfiguration("u").empty() ? false : true;
-      bool bDontJoinFWCD = configurations.getConfiguration("r").empty() ? false : true;
+      bool bFWCDRule = configurations.getConfiguration("r").empty() ? true : false;
       string sKnowledgePath = configurations.getConfiguration("k");
       bool bSegmented = false;
 #ifdef SEGMENTED
       bSegmented = true; // compile option
 #endif
 
-      unsigned long training_rounds;
+      unsigned training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
          cerr << "Error: the number of training iterations must be an integer." << endl;
          return 1;
@@ -214,7 +211,7 @@ int main(int argc, char* argv[]) {
       cout << "Training started." << endl;
       unsigned time_start = clock();
       for (unsigned i=0; i<training_rounds; ++i)
-         train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, sKnowledgePath, bDontJoinFWCD);
+         train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, sKnowledgePath, bFWCDRule);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
       return 0;
    } catch (const string &e) {
