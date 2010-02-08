@@ -35,7 +35,7 @@ public:
    unsigned long constituent;
    int left_child;
    int right_child;
-   // fields for tokens
+   // fields for tokens and constituents
    int token;
 
 public:

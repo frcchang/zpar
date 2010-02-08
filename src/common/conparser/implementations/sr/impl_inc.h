@@ -8,6 +8,7 @@
 #include "agenda.h"
 #include "pair_stream.h"
 #include "charcat.h"
+#include "knowledge/tagdict.h"
 
 #include "learning/perceptron/score.h"
 #include "learning/perceptron/hashmap_score.h"

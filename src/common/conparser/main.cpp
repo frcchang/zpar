@@ -28,7 +28,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
 
    int time_start = clock();
 
-   CConParser parser(sFeatureFile, false) ;
+   CConParser parser(sFeatureFile, false, false) ;
    CSentenceReader input_reader(sInputFile);
    ofstream os(sOutputFile.c_str());
    ofstream *os_scores=0;

@@ -54,7 +54,7 @@ ENGLISH_TAGGER_IMPL = agenda
 
 # currently support eisner, covington, nivre, combined implementations 
 ENGLISH_DEPPARSER_IMPL = nivre
-ENGLISH_DEPPARSER_LABELED = false
+ENGLISH_DEPPARSER_LABELED = true
 # currently support sr implementations 
 ENGLISH_CONPARSER_IMPL = sr
 #================================================================
@@ -108,6 +108,10 @@ $(OBJECT_DIR):
 	mkdir $(OBJECT_DIR)
 $(DIST_DIR):
 	mkdir $(DIST_DIR)
+
+SRC_TAGGER = $(SRC_CHINESE)/tagger
+DIST_TAGGER = $(DIST_DIR)/chinese.postagger
+OBJECT_TAGGER = $(OBJECT_DIR)/chinese.postagger
 
 #----------------------------------------------------------------
 #

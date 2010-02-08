@@ -74,21 +74,25 @@ const int PENN_CON_TAG_COUNT_BITS = 7; // MAX(PENN_CON_COUNT_BITS, PENN_TAG_COUN
 
 class CConstituent {
 protected:
-   unsigned long int m_code;
+   unsigned long m_code;
 
 public:
+   enum {COUNT = PENN_CON_COUNT};
    CConstituent() { m_code=PENN_CON_NONE; }
    CConstituent(PENN_CON_CONSTANTS t) { 
       m_code=t; 
    }
-   CConstituent(int t) { 
+   CConstituent(const unsigned long &t) { 
+      m_code=t; 
+   }
+   CConstituent(const unsigned &t) { 
       m_code=t; 
    }
    CConstituent(const string &s, bool bNotNone=false) { load(s, bNotNone); }
    virtual ~CConstituent() {}
 
 public:
-   unsigned long int code() const { return m_code; }
+   unsigned long code() const { return m_code; }
    string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
    void load(const string &s, bool bNoneDefault) {
       m_code = PENN_CON_NONE ;
@@ -115,7 +119,7 @@ public:
 
 //===============================================================
 
-inline unsigned long int encodeConstituents(const unsigned long &con1, const unsigned long &con2) {
+inline unsigned long encodeConstituents(const unsigned long &con1, const unsigned long &con2) {
    return (con1<<PENN_CON_COUNT_BITS) | con2;
 }
 inline unsigned long int encodeConstituents(const unsigned long &con1, const unsigned long &con2, const unsigned long &con3) {

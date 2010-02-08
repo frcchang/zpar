@@ -713,7 +713,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          }
          // for the state items that still need more words
          else {  
-            if ( !pGenerator->afterreduce() ) {
+            if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
                if ( pGenerator->size() < length-1 || pGenerator->stackempty() ) { // keep only one global root
                   //pCandidate = m_Agenda->candidateItem() ;
                   pCandidate = *pGenerator ;

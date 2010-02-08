@@ -438,6 +438,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 //      nReturn += cast_weights->m_mapS0Uc.getOrUpdateScore(encodeAction(action, ctxt->s0uc), m_nScoreIndex, amount, round);
    }
 
+
    // S1L
    if (ctxt->s1l!=-1) {         
       nReturn += cast_weights->m_mapS1Lw.getOrUpdateScore(make_pair(*(ctxt->s1lw), encodeAction(action, ctxt->s1lc)), m_nScoreIndex, amount, round);
@@ -457,28 +458,28 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    }
 
    // S0LD
-//   if (ctxt->s0ld!=-1) {
-//      nReturn += cast_weights->m_mapS0LDw.getOrUpdateScore(make_pair(*(ctxt->s0ldw), action), m_nScoreIndex, amount, round);
+   if (ctxt->s0ld!=-1) {
+      nReturn += cast_weights->m_mapS0LDw.getOrUpdateScore(make_pair(*(ctxt->s0ldw), encodeAction(action, ctxt->s0ldt)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0LDt.getOrUpdateScore(encodeAction(action, ctxt->s0ldt), m_nScoreIndex, amount, round);
-//   }
+   }
 
    // S0RD
-//   if (ctxt->s0rd!=-1) {
-//      nReturn += cast_weights->m_mapS0RDw.getOrUpdateScore(make_pair(*(ctxt->s0rdw), action), m_nScoreIndex, amount, round);
+   if (ctxt->s0rd!=-1) {
+      nReturn += cast_weights->m_mapS0RDw.getOrUpdateScore(make_pair(*(ctxt->s0rdw), encodeAction(action, ctxt->s0rdt)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0RDt.getOrUpdateScore(encodeAction(action, ctxt->s0rdt), m_nScoreIndex, amount, round);
-//   }
+   }
 
    // S1LD
-//   if (ctxt->s1ld!=-1) {         
-//      nReturn += cast_weights->m_mapS1LDw.getOrUpdateScore(make_pair(*(ctxt->s1ldw), action), m_nScoreIndex, amount, round);
+   if (ctxt->s1ld!=-1) {         
+      nReturn += cast_weights->m_mapS1LDw.getOrUpdateScore(make_pair(*(ctxt->s1ldw), encodeAction(action, ctxt->s1ldt)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS1LDt.getOrUpdateScore(encodeAction(action, ctxt->s1ldt), m_nScoreIndex, amount, round);
-//   }
+   }
 
    // S1RD
-//   if (ctxt->s1rd!=-1) {         
-//      nReturn += cast_weights->m_mapS1RDw.getOrUpdateScore(make_pair(*(ctxt->s1rdw), action), m_nScoreIndex, amount, round);
+   if (ctxt->s1rd!=-1) {         
+      nReturn += cast_weights->m_mapS1RDw.getOrUpdateScore(make_pair(*(ctxt->s1rdw), encodeAction(action, ctxt->s1rdt)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS1RDt.getOrUpdateScore(encodeAction(action, ctxt->s1rdt), m_nScoreIndex, amount, round);
-//   }
+   }
 
    // S0 S1
    if (ctxt->s1!=-1) {
@@ -510,10 +511,10 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // N0 N1
    if (ctxt->n1!=-1) {
-//      nReturn += cast_weights->m_mapN0wN1w.getOrUpdateScore(make_pair(ctxt->n0wn1w, n0tn1t_action), m_nScoreIndex, amount, round);
-//      nReturn += cast_weights->m_mapN0tN1w.getOrUpdateScore(make_pair(*(ctxt->n1w), n0tn1t_action), m_nScoreIndex, amount, round);
-//      nReturn += cast_weights->m_mapN0wN1t.getOrUpdateScore(make_pair(*(ctxt->n0w), n0tn1t_action), m_nScoreIndex, amount, round);
-//      nReturn += cast_weights->m_mapN0tN1t.getOrUpdateScore(n0tn1t_action, m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN0wN1w.getOrUpdateScore(make_pair(ctxt->n0wn1w, n0tn1t_action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN0tN1w.getOrUpdateScore(make_pair(*(ctxt->n1w), n0tn1t_action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN0wN1t.getOrUpdateScore(make_pair(*(ctxt->n0w), n0tn1t_action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN0tN1t.getOrUpdateScore(n0tn1t_action, m_nScoreIndex, amount, round);
    }
    
    if (ctxt->open_bracket_match_type!=0) {
@@ -889,7 +890,7 @@ void CConParser::reduce(CStateItem &st) {
    const bool prev_temp = stacksize>2 ? st.nodes[st.stack[stacksize-3]].temp:false;
    for (constituent=PENN_CON_FIRST; constituent<PENN_CON_COUNT; constituent++) {
       for (i=0; i<=1; ++i) {
-         for (j=0; j<=1; j++) {
+         for (j=0; j<=1; ++j) {
             const bool &head_left = static_cast<bool>(i);
             const bool &temporary = static_cast<bool>(j);
             const CStateNode &right = st.nodes[st.stack.back()];
@@ -904,7 +905,8 @@ void CConParser::reduce(CStateItem &st) {
                  ( !(prev_temp) || (!temporary||head_left) ) &&
                  ( !left.temp || (head_left&&constituent==left.constituent) ) &&
                  ( !right.temp || (!head_left&&constituent==right.constituent) ) &&
-                 ( !temporary || PENN_CON_TEMP[constituent] ) && 1
+                 ( !temporary || PENN_CON_TEMP[constituent] ) &&
+                 (cast_weights->m_mapWordFrequency.find(head_wd,0)<cast_weights->m_nMaxWordFrequency/5000+5||cast_weights->m_mapConDictionary.lookup(head_wd,constituent))
                  //( cast_weights->m_mapHeadDictionary.find( make_pair(head_wd, constituent), false) )
                ) {
                st.score += getOrUpdateStackScore(&st, encodeReduce(constituent, false, head_left, temporary));
@@ -995,6 +997,7 @@ void CConParser::reduce_unary(CStateItem &st) {
       const CWord &hw = m_lCache[child.lexical_head];
       assert(st.context->s0==st.stack.back());
       if (constituent != child.constituent
+          && (cast_weights->m_mapWordFrequency.find(hw,0)<cast_weights->m_nMaxWordFrequency/5000+5||cast_weights->m_mapConDictionary.lookup(hw,constituent))
           //&& cast_weights->m_mapHeadDictionary.find(make_pair(hw, constituent), false)
          ) { 
          st.score += getOrUpdateStackScore(&st, encodeReduce(constituent, true, false, false));
@@ -1215,6 +1218,59 @@ void CConParser::train( const CSentenceParsed &correct , int round ) {
    m_nTrainingRound = round ;
 //   work( true , sentence , &output , correct , 1 , 0 ) ; 
    work( true , sentence , 0 , correct , 1 , 0 ) ; 
+
+   if ( m_bUpdateTagDict ) {
+      for (unsigned i=0; i<correct.words.size(); ++i) {
+         const CWord& word = correct.words[i].first ;
+         cast_weights->m_mapWordFrequency[word]++;
+         if (cast_weights->m_mapWordFrequency[word]>cast_weights->m_nMaxWordFrequency) 
+            cast_weights->m_nMaxWordFrequency = cast_weights->m_mapWordFrequency[word];
+      }
+      for (unsigned i=0; i<correct.nodes.size(); ++i) {
+         if (correct.nodes[i].is_constituent) {
+            cast_weights->m_mapConDictionary.add(
+                                       correct.words.at(correct.nodes[i].token).first, 
+                                       correct.nodes[i].constituent);
+            if (correct.nodes[i].constituent==PENN_CON_VP ||
+                correct.nodes[i].constituent==PENN_CON_VCD ||
+                correct.nodes[i].constituent==PENN_CON_VCP ||
+                correct.nodes[i].constituent==PENN_CON_VNV ||
+                correct.nodes[i].constituent==PENN_CON_VPT ||
+                correct.nodes[i].constituent==PENN_CON_VRD ||
+                correct.nodes[i].constituent==PENN_CON_VSB
+               ) {
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_VP);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_IP);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_FRAG);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_UCP);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_VCD);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_VCP);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_VNV);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_VPT);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_VRD);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_VSB);
+            }
+            if (correct.nodes[i].constituent==PENN_CON_NP) {
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_IP);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_UCP);
+               cast_weights->m_mapConDictionary.add(
+                                          correct.words.at(correct.nodes[i].token).first, PENN_CON_FRAG);
+            }
+         }
+      }
+   }
 
 //   cerr << output;
 

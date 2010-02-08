@@ -111,10 +111,13 @@ public:
       return PENN_TAG_STRINGS[m_code]; 
    }
    void load(const string &s) {
-      m_code = PENN_TAG_NONE ;
-      for (int i=1; i<PENN_TAG_COUNT; ++i)
-         if (PENN_TAG_STRINGS[i] == s)
+      //m_code = PENN_TAG_NONE ;
+      for (int i=0; i<PENN_TAG_COUNT; ++i)
+         if (PENN_TAG_STRINGS[i] == s) {
             m_code = i;
+            return;
+         }
+      THROW("Unknown tag" << s);
    }
 
 public:

@@ -52,7 +52,7 @@ private:
 
 public:
    // constructor and destructor
-   CConParser( const string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain) { 
+   CConParser( const string &sFeatureDBPath , bool bTrain , bool bUpdateTagDict ) : CConParserBase(sFeatureDBPath, bTrain, bUpdateTagDict) { 
       m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       m_weights = new conparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 

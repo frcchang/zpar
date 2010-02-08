@@ -48,6 +48,8 @@ inline unsigned long encodeReduceRoot() {
 inline bool isShift(const unsigned long &action) { return action == 0; }
 inline bool isReduce(const unsigned long &action) { return action & (1<<(PENN_CON_COUNT_BITS+3)); }
 inline bool isReduceRoot(const unsigned long &action) { return action == 1<<(PENN_CON_COUNT_BITS+3); }
+inline bool isReduceUnary(const unsigned long &action) { return isReduce(action) && (action & (1<<(PENN_CON_COUNT_BITS+1))); }
+inline bool isReduceBinary(const unsigned long &action) { return isReduce(action) && !(action & (1<<(PENN_CON_COUNT_BITS+1)))&&!isReduceRoot(action); }
 
 inline string printAction(const unsigned long &action) {
    if (isShift(action)) return "SHIFT";
