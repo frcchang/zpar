@@ -239,6 +239,21 @@ void CWeight::loadScores() {
    assert(s=="Head dictionary");
    file >> m_mapHeadDictionary;
 
+   getline(file, s);
+   ASSERT(s=="Word frequency", "Word frequency not found from model.");
+   file >> m_mapWordFrequency;
+
+   static istringstream iss;
+   getline(file, s);
+   ASSERT(s=="Maximum frequency", "Maximum frequency not found from model.");
+   getline(file, s);
+   iss.str(s);
+   iss >> m_nMaxWordFrequency;
+
+   getline(file, s);
+   ASSERT(s=="Constituent dictionary", "Constituent dictionary not found from model.");
+   file >> m_mapConDictionary;
+
    file.close() ;
    cout<<" done"<<endl;
 }
@@ -261,6 +276,12 @@ void CWeight::saveScores() {
 
    file << "Head dictionary" << endl; 
    file << m_mapHeadDictionary;
+   file << "Word frequency" << endl; 
+   file << m_mapWordFrequency;
+   file << "Maximum frequency" << endl; 
+   file << m_nMaxWordFrequency << endl;
+   file << "Constituent dictionary" << endl; 
+   file << m_mapConDictionary;
 
    file.close();
    cout<<"done"<<endl;

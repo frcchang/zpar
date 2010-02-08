@@ -35,6 +35,7 @@ typedef CScoreMap<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
 typedef CScoreMap<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
 typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGRuleIntMap;
 typedef CHashMap<pair<CWord, unsigned long>, bool> CHeadDictionary;
+typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
 /*===============================================================
  *
@@ -295,10 +296,17 @@ public:
 
    // Rule dictionary
    CHeadDictionary m_mapHeadDictionary;
+   unsigned long m_nMaxWordFrequency;
+   CWordToIntMap m_mapWordFrequency;
+   CTagDict<CConstituent> m_mapConDictionary;
 
 public:
 
    CWeight(const string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
+
+                                               m_nMaxWordFrequency(0) ,
+
+                                               m_mapConDictionary(CConstituent::COUNT) ,
 
                                                m_mapHw("HeadWord", 122651),
                                                m_mapHt("HeadTag", 122651),

@@ -10,9 +10,6 @@ else
 endif
 
 
-SRC_TAGGER = $(SRC_CHINESE)/tagger
-DIST_TAGGER = $(DIST_DIR)/chinese.postagger
-OBJECT_TAGGER = $(OBJECT_DIR)/chinese.postagger
 $(DIST_TAGGER):
 	mkdir $(DIST_TAGGER)
 $(OBJECT_TAGGER):

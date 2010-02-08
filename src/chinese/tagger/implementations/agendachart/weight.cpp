@@ -72,7 +72,7 @@ void CWeight::loadScores() {
       m_bSegmentationRules = true;
    }
    else {
-      ASSERT(st=="Segmentation rules=0", "Segmentation rules using switch not found from model.");
+      ASSERT(st=="Segmentation rules=0", "Segmentation rules on/off switch not found from model.");
       m_bSegmentationRules = false;
    }
    getline(is, st);
@@ -145,7 +145,6 @@ void CWeight::saveScores() {
       os << (*m_Knowledge);
    }
 
-   os << "Tag dictionary" << endl;
    os << "Tag dictionary" << endl;
    os << m_mapTagDictionary;
    os << "Char tag dictionary" << endl;

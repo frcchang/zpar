@@ -40,7 +40,8 @@ int CCFGTree::readNode(istream &is) {
          nodes[node].left_child = left;
          nodes[node].right_child = right;
          nodes[node].constituent = CConstituent(name, true).code();
-         nodes[node].token = -1;
+         nodes[node].token = s[0]=='l' ? nodes.at(left).token : nodes.at(right).token;
+         assert(nodes[node].token!=-1);
          nodes[node].temp = temporary;
          is >> s;
          assert(s==")");
@@ -54,7 +55,7 @@ int CCFGTree::readNode(istream &is) {
          nodes[node].left_child = left;
          nodes[node].constituent = CConstituent(name, true).code();
          nodes[node].right_child = -1;
-         nodes[node].token = -1;
+         nodes[node].token = nodes.at(left).token;
          nodes[node].head_left = false;
          nodes[node].temp = temporary;
          assert(temporary==false); // single node can't be binarized temp
