@@ -38,4 +38,4 @@ void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char
    }
    if (newline) (*m_oStream) << endl;
 };
-
+ 

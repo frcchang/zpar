@@ -23,11 +23,11 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, bool bUpdateTagDict) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile) {
 
    cout << "Training iteration is started ... " << endl ; cout.flush();
 
-   CConParser parser(sFeatureFile, true, bUpdateTagDict);
+   CConParser parser(sFeatureFile, true);
 
    ifstream is(sOutputFile.c_str());
    assert(is.is_open());
@@ -62,7 +62,6 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("d", "", "do not update the tag dictionary; this is recommended when doing training using a corpus that has been used to train the model already", "");
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
          return 1;
@@ -77,13 +76,11 @@ int main(int argc, char* argv[]) {
       if (!warning.empty()) {
          cout << "Warning: " << warning << endl;
       }
-      bool bUpdateTagDict = configurations.getConfiguration("d").empty() ? true : false;
    
       cout << "Training started." << endl;
       int time_start = clock();
-      auto_train(argv[1], argv[2], bUpdateTagDict);
-      for (int i=1; i<training_rounds; ++i) {
-         auto_train(argv[1], argv[2], false); // set update tag dict false now
+      for (int i=0; i<training_rounds; ++i) {
+         auto_train(argv[1], argv[2]); // set update tag dict false now
       }
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    
