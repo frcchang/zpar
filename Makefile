@@ -113,6 +113,11 @@ SRC_TAGGER = $(SRC_CHINESE)/tagger
 DIST_TAGGER = $(DIST_DIR)/chinese.postagger
 OBJECT_TAGGER = $(OBJECT_DIR)/chinese.postagger
 
+SRC_COMMON_CONPARSER = $(SRC_COMMON)/conparser
+SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
+DIST_CONPARSER = $(DIST_DIR)/chinese.conparser
+OBJECT_CONPARSER = $(OBJECT_DIR)/chinese.conparser
+
 #----------------------------------------------------------------
 #
 # zpar general
