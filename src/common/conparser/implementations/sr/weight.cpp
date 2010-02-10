@@ -224,7 +224,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
-   cout<<"Loading scores...";
+   cout<<"Loading scores..."; cout.flush();
    ifstream file ; 
    file.open(m_sRecordPath.c_str()) ;
 
@@ -247,7 +247,7 @@ void CWeight::loadScores() {
    iss >> m_nMaxWordFrequency;
 
    file.close() ;
-   cout<<" done"<<endl;
+   cout<<" done."<<endl;
 }
 
 /*---------------------------------------------------------------
@@ -260,7 +260,7 @@ void CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
-   cout<<"saving scores.";
+   cout<<"Saving scores..."; cout.flush();
    ofstream file ;
    file.open(m_sRecordPath.c_str()) ;
 
@@ -272,7 +272,7 @@ void CWeight::saveScores() {
    file << m_nMaxWordFrequency << endl;
 
    file.close();
-   cout<<"done"<<endl;
+   cout<<" done."<<endl;
 }
 
 /*--------------------------------------------------------------
@@ -282,10 +282,10 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(int round) {
-   cout<<"adding total feature vector.";
+   cout<<"Adding total feature vector..."; cout.flush();
    
    iterate_templates(,.computeAverage(round);) ;
    
-   cout<<"done"<<endl;
+   cout<<"done."<<endl;
 }
 
