@@ -109,10 +109,22 @@ $(OBJECT_DIR):
 $(DIST_DIR):
 	mkdir $(DIST_DIR)
 
+#  tagger
 SRC_TAGGER = $(SRC_CHINESE)/tagger
 DIST_TAGGER = $(DIST_DIR)/chinese.postagger
 OBJECT_TAGGER = $(OBJECT_DIR)/chinese.postagger
 
+#  depparser
+SRC_COMMON_DEPPARSER = $(SRC_COMMON)/depparser
+ifeq ($(CHINESE_DEPPARSER_IMPL), joint)
+	SRC_CHINESE_DEPPARSER = $(SRC_CHINESE)/depparser
+else
+	SRC_CHINESE_DEPPARSER = $(SRC_COMMON_DEPPARSER)
+endif
+DIST_DEPPARSER = $(DIST_DIR)/chinese.depparser
+OBJECT_DEPPARSER = $(OBJECT_DIR)/chinese.depparser
+
+#  conparser
 SRC_COMMON_CONPARSER = $(SRC_COMMON)/conparser
 SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
 DIST_CONPARSER = $(DIST_DIR)/chinese.conparser

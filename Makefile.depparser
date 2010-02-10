@@ -1,12 +1,4 @@
 
-SRC_COMMON_DEPPARSER = $(SRC_COMMON)/depparser
-
-ifeq ($(CHINESE_DEPPARSER_IMPL), joint)
-	SRC_CHINESE_DEPPARSER = $(SRC_CHINESE)/depparser
-else
-	SRC_CHINESE_DEPPARSER = $(SRC_COMMON_DEPPARSER)
-endif
-
 ifeq ($(CHINESE_DEPPARSER_LABELED), true)
 	CHINESE_DEPPARSER_D = -DLABELED
 endif
@@ -27,8 +19,6 @@ endif
 
 #====================================================
 
-DIST_DEPPARSER = $(DIST_DIR)/chinese.depparser
-OBJECT_DEPPARSER = $(OBJECT_DIR)/chinese.depparser
 $(DIST_DEPPARSER):
 	mkdir $(DIST_DEPPARSER)
 $(OBJECT_DEPPARSER):

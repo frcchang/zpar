@@ -22,7 +22,7 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, int nBest, const bool bScores) {
+void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, int nBest, const bool bScores, const bool bBinary) {
 
    cout << "Parsing started" << endl;
 
@@ -59,7 +59,10 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
-         os << output_sent[i] ;
+         if (bBinary)
+            os << output_sent[i] ;
+         else
+            os << output_sent[i].str_unbinarized() << endl;
          if (bScores) *os_scores << scores[i] << endl;
       }
 
@@ -91,6 +94,7 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
+      configurations.defineConfiguration("b", "", "output binarized parse trees", "");
       configurations.defineConfiguration("n", "N", "N best list output", "1");
       configurations.defineConfiguration("s", "", "output scores to output_file.scores", "");
       // check arguments
@@ -107,7 +111,8 @@ int main(int argc, char* argv[]) {
          return 1;
       }
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
-      process(argv[1], argv[2], argv[3], nBest, bScores);
+      bool bBinary = configurations.getConfiguration("b").empty() ? false : true;
+      process(argv[1], argv[2], argv[3], nBest, bScores, bBinary);
    } 
    catch (const string &e) {
       cerr << "Error: " << e << endl;
