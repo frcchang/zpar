@@ -110,7 +110,32 @@ string CCFGTree::writeNode(int node) const {
          cont = words[nd.token].first;
       }
       return "( " + name + " " + type + " " + cont + " )";
+}
+
+string CCFGTree::writeNodeUnbin(int node) const {
+   const CCFGTreeNode &nd = nodes[node] ;
+   string name;
+   string cont;
+   if (nd.is_constituent) {
+      if (nd.temp) {
+         return writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
+      }
+      else {
+         name = CConstituent(nd.constituent).str();
+         if (nd.single_child) 
+            cont = writeNodeUnbin(nd.left_child);
+         else {
+            cont = writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
+         }
+         return "(" + name + " " + cont + ")";
+      }
    }
+   else {
+      name = words[nd.token].second;
+      cont = words[nd.token].first;
+      return "(" + name + " " + cont + ")";
+   }
+}
 
 bool CCFGTree::nodesEqual(const CCFGTree &tree, int i, int tree_i) const {
       // compare nodes recursively between this and tree two cfgt

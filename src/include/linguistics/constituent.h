@@ -99,9 +99,13 @@ public:
    void clear() {nodes.clear(); words.clear();}
    int readNode(istream &is);
    string writeNode(int node) const;
+   string writeNodeUnbin(int node) const;
    bool nodesEqual(const CCFGTree &tree, int i, int tree_i) const ;
    string str() const {
       return writeNode(root);
+   }
+   string str_unbinarized() const {
+      return writeNodeUnbin(root);
    }
    bool operator == (const CCFGTree &tree) const {
       return nodesEqual(tree, root, tree.root);
