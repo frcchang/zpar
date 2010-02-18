@@ -1,3 +1,4 @@
+#include "agendachart.h"
 #include "linguistics/word_tokenized.h"
 #include "learning/perceptron/hashmap_score.h"
 #include "pair_stream.h"

@@ -79,7 +79,6 @@ public:
  *
  *==============================================================*/
 
-#include "agendachart.h"
 class CSegmentorImpl {
    protected:
       CAgendaChart<CStateItem> m_Chart;
