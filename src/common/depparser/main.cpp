@@ -35,7 +35,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    depparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
    CTwoStringVector input_sent;
-   CSentenceParsed *output_sent; 
+   CDependencyParse *output_sent; 
 
    int nCount=0;
    bool bReadSuccessful;
@@ -45,7 +45,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       os_scores = new ofstream(string(sOutputFile+".scores").c_str());
    }
 
-   output_sent = new CSentenceParsed[nBest];
+   output_sent = new CDependencyParse[nBest];
  
    // Read the next example
    bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, CTag::SEPARATOR);

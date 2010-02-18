@@ -9,7 +9,7 @@
 #ifndef _DEPPARSER_WEIGHTS_BASE_H
 #define _DEPPARSER_WEIGHTS_BASE_H
 
-#include "base_include.h"
+#include "depparser_base_include.h"
 
 namespace TARGET_LANGUAGE {
 namespace depparser {

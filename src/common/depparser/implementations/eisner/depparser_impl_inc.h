@@ -9,7 +9,7 @@
 #include "pair_stream.h"
 #include "linguistics/taggedword.h"
 
-typedef CDependencyTree CSentenceParsed;
+typedef CDependencyTree CDependencyParse;
 
 namespace TARGET_LANGUAGE { 
 

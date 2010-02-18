@@ -32,7 +32,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile) {
    ifstream is(sOutputFile.c_str());
    assert(is.is_open());
 
-   CSentenceParsed ref_sent; 
+   CDependencyParse ref_sent; 
 
    int nCount=0;
    

@@ -307,11 +307,11 @@ void CDepParser::finishSentence( CStateItem *candidate ) {
  *
  * work - the working process shared by training and parsing
  *
- * Returns: makes a new instance of CSentenceParsed 
+ * Returns: makes a new instance of CDependencyParse 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::work( const CTwoStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::work( const CTwoStringVector &sentence , CDependencyParse *retval , const CDependencyParse &correct , int nBest , SCORE_TYPE *scores ) {
 
 #ifdef DEBUG
    clock_t total_start_time = clock();
@@ -476,13 +476,13 @@ void CDepParser::work( const CTwoStringVector &sentence , CSentenceParsed *retva
  *
  * parse - do dependency parsing to a sentence
  *
- * Returns: makes a new instance of CSentenceParsed 
+ * Returns: makes a new instance of CDependencyParse 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest , SCORE_TYPE *scores ) {
 
-   static CSentenceParsed empty ;
+   static CDependencyParse empty ;
 
    work(sentence, retval, empty, nBest, scores ) ;
 
@@ -494,10 +494,10 @@ void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retv
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::train( const CSentenceParsed &correct , int round ) {
+void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CSentenceParsed output ; 
+   static CDependencyParse output ; 
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;

@@ -14,9 +14,9 @@
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag> > CTwoTaggedWords; 
 
 #ifdef LABELED
-   typedef CLabeledDependencyTree CSentenceParsed;
+   typedef CLabeledDependencyTree CDependencyParse;
 #else
-   typedef CDependencyTree CSentenceParsed;
+   typedef CDependencyTree CDependencyParse;
 #endif
 
 namespace TARGET_LANGUAGE { 

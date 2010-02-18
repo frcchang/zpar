@@ -23,7 +23,7 @@ namespace TARGET_LANGUAGE {
 
 namespace depparser {
 
-#include "stateitem.h"
+#include "state.h"
 
 }; // namespace depparser
 };
@@ -65,8 +65,8 @@ public:
    }
 
 public:
-   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) ;
-   void train( const CSentenceParsed &correct , int round ) ;
+   void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) ;
+   void train( const CDependencyParse &correct , int round ) ;
 
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
@@ -74,8 +74,8 @@ public:
       cout << "Total number of training errors are: " << m_nTotalErrors << endl;
    }
 
-   depparser::SCORE_TYPE getGlobalScore(const CSentenceParsed &parsed);
-   void updateScores(const CSentenceParsed &parse, const CSentenceParsed &correct, int round=0);
+   depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
+   void updateScores(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
 
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
@@ -85,8 +85,8 @@ private:
    inline depparser::SCORE_TYPE getCrossLinkScore(const int head, const int dep);
 
    // update the built-in weight vector for this feature object specifically
-   void updateScoreVector(const CSentenceParsed &parse, const CSentenceParsed &correct, int round=0);
-   void updateCrossLinkScore(int left_index, int right_index, const CSentenceParsed &tree, SCORE_UPDATE method, int round=0);
+   void updateScoreVector(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
+   void updateCrossLinkScore(int left_index, int right_index, const CDependencyParse &tree, SCORE_UPDATE method, int round=0);
 
 };
 

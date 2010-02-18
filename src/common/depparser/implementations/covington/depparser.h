@@ -23,7 +23,7 @@ namespace TARGET_LANGUAGE {
 
 namespace depparser {
 
-#include "stateitem.h"
+#include "state.h"
 
 }; // namespace depparser
 };
@@ -68,8 +68,8 @@ public:
    }
 
 public:
-   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
-   void train( const CSentenceParsed &correct , int round ) ;
+   void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
+   void train( const CDependencyParse &correct , int round ) ;
 
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
@@ -80,7 +80,7 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
 
    inline void addLink( depparser::CStateItem *item , const int &head , const int &dep ) ;
    inline void finishWord( depparser::CStateItem *item ) ;

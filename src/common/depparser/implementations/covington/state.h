@@ -139,7 +139,7 @@ public:
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
    }
 
-   void StandardMove( const CSentenceParsed &tree ) {
+   void StandardMove( const CDependencyParse &tree ) {
 #ifdef DEBUG
       static bool bLinked;
       bLinked=false;
@@ -186,7 +186,7 @@ public:
 
 public:
 
-   void GenerateTree( const CTwoStringVector &input, CSentenceParsed &output ) const {
+   void GenerateTree( const CTwoStringVector &input, CDependencyParse &output ) const {
       output.clear();
       for ( int i=0; i<size(); ++i ) 
          output.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] ) ) ;

@@ -5,4 +5,4 @@
 #include "linguistics/dependency/supertag.h"
 #include "options.h"
 
-#include "impl_inc.h"
+#include "depparser_impl_inc.h"
