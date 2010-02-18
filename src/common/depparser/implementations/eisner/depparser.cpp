@@ -86,7 +86,7 @@ SCORE_TYPE CDepParser::getCrossLinkScore( int head_index, int dep_index ) {
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::updateCrossLinkScore( int head_index, int dep_index, const CSentenceParsed &tree, SCORE_UPDATE method, int round ) {
+void CDepParser::updateCrossLinkScore( int head_index, int dep_index, const CDependencyParse &tree, SCORE_UPDATE method, int round ) {
 
    CSpan::SPAN_TYPE sptype = head_index < dep_index ? CSpan::LF : CSpan::RF ;
 
@@ -122,7 +122,7 @@ void CDepParser::updateCrossLinkScore( int head_index, int dep_index, const CSen
  *
  *---------------------------------------------------------------*/
 
-SCORE_TYPE CDepParser::getGlobalScore(const CSentenceParsed & parsed) {
+SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse & parsed) {
 
    SCORE_TYPE retval=0;
 
@@ -148,7 +148,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CSentenceParsed & parsed) {
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::updateScoreVector(const CSentenceParsed & parsed , const CSentenceParsed & correct , int round ) {
+void CDepParser::updateScoreVector(const CDependencyParse & parsed , const CDependencyParse & correct , int round ) {
    
    static bool bCorrect;
    bCorrect = true;
@@ -187,7 +187,7 @@ void CDepParser::updateScoreVector(const CSentenceParsed & parsed , const CSente
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::updateScores(const CSentenceParsed & parsed , const CSentenceParsed & correct , int round ) {
+void CDepParser::updateScores(const CDependencyParse & parsed , const CDependencyParse & correct , int round ) {
    
    assert( m_bTrain );
 
@@ -221,7 +221,7 @@ void CDepParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
  *
  *---------------------------------------------------------------*/
 
-void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *depparser, CSentenceParsed &retval) {
+void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *depparser, CDependencyParse &retval) {
    assert ( span.getLeftBoundary() == 0 && span.getRightBoundary() == sentence.size() ) ;
    retval.clear() ; 
    bool bFoundHead = false;
@@ -240,11 +240,11 @@ void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *d
  *
  * parse - do dependency parsing to a sentence
  *
- * Returns: makes a new instance of CSentenceParsed 
+ * Returns: makes a new instance of CDependencyParse 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest , SCORE_TYPE *scores ) {
 
    clock_t total_start_time = clock();
    const int length = sentence.size() ; // length of the sentence
@@ -427,10 +427,10 @@ void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retv
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::train( const CSentenceParsed &correct , int round ) {
+void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CSentenceParsed output ; 
+   static CDependencyParse output ; 
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;

@@ -117,7 +117,7 @@ public:
             m_code = i;
             return;
          }
-      THROW("Unknown tag" << s);
+      THROW("Unknown tag (PENN Treebank): " << s);
    }
 
 public:

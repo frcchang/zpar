@@ -13,7 +13,7 @@
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag> > CTwoTaggedWords; 
 
-typedef CDependencyTree CSentenceParsed;
+typedef CDependencyTree CDependencyParse;
 
 namespace chinese {
 

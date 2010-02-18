@@ -43,7 +43,7 @@ CHINESE_TAGGER_IMPL = agendachart
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = nivre
+CHINESE_DEPPARSER_IMPL = covington
 CHINESE_DEPPARSER_LABELED = false
 
 # currently support sr implementations 

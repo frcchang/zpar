@@ -31,7 +31,7 @@ $(OBJECT_DEPPARSER)/weight.o: $(SRC_CHINESE_DEPPARSER)/weight_base.h $(SRC_CHINE
 	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/weight.cpp -o $(OBJECT_DEPPARSER)/weight.o
 
 # the depparser object
-$(OBJECT_DIR)/chinese.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_DEPPARSER)/depparser_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/stateitem.h ./Makefile
+$(OBJECT_DIR)/chinese.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_DEPPARSER)/depparser_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/state.h ./Makefile
 	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/chinese.depparser.o
 
 # the main executable
@@ -61,7 +61,7 @@ $(OBJECT_ENGLISH_DEPPARSER)/weight.o: $(SRC_COMMON_DEPPARSER)/weight_base.h $(SR
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.cpp -o $(OBJECT_ENGLISH_DEPPARSER)/weight.o
 
 # the depparser object
-$(OBJECT_DIR)/english.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPPARSER)/depparser_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/stateitem.h ./Makefile
+$(OBJECT_DIR)/english.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPPARSER)/depparser_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/state.h ./Makefile
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/english.depparser.o
 
 # the main executable

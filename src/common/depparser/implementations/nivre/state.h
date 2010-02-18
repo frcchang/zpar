@@ -318,7 +318,7 @@ public:
 public:
 
    // returns true is the next word advances -- by shift or arcright. 
-   bool StandardMoveStep( const CSentenceParsed &tree ) {
+   bool StandardMoveStep( const CDependencyParse &tree ) {
       static int top;
       // when the next word is tree.size() it means that the sentence is done already
       if ( m_nNextWord == tree.size() ) {
@@ -463,7 +463,7 @@ public:
       }
    }
 
-   void GenerateTree( const CTwoStringVector &input, CSentenceParsed &output ) const {
+   void GenerateTree( const CTwoStringVector &input, CDependencyParse &output ) const {
       output.clear();
       for ( int i=0; i<size(); ++i ) 
 #ifdef LABELED

@@ -23,7 +23,7 @@ namespace TARGET_LANGUAGE {
 
 namespace depparser {
 
-#include "stateitem.h"
+#include "state.h"
 
 }; // namespace depparser
 };
@@ -67,21 +67,21 @@ public:
    }
 
 public:
-   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
-   void train( const CSentenceParsed &correct , int round ) ;
+   void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
+   void train( const CDependencyParse &correct , int round ) ;
 
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
       cout << "Total number of training errors are: " << m_nTotalErrors << endl;
    }
-   depparser::SCORE_TYPE getGlobalScore(const CSentenceParsed &parsed);
-   void updateScores(const CSentenceParsed &parse, const CSentenceParsed &correct, int round=0);
+   depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
+   void updateScores(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
 
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
 
    // get the global score for a parsed sentence or section
    inline depparser::SCORE_TYPE getOrUpdateArcScore( const int &head_index, const int &dep_index, const int &sibling_index, depparser::SCORE_TYPE amount=0, int round=0 );

@@ -11,7 +11,7 @@
 #ifndef _DEPPARSER_BASE_H
 #define _DEPPARSER_BASE_H
 
-#include "base_include.h"
+#include "depparser_base_include.h"
 
 #include "weight_base.h"
 
@@ -45,8 +45,8 @@ public:
 
 public:
 
-   virtual void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) = 0 ;
-   virtual void train( const CSentenceParsed &correct , int round ) = 0 ;
+   virtual void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) = 0 ;
+   virtual void train( const CDependencyParse &correct , int round ) = 0 ;
 
    virtual void finishtraining() = 0 ;  
 

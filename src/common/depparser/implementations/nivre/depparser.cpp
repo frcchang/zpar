@@ -302,7 +302,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
  *
  *---------------------------------------------------------------*/
 
-SCORE_TYPE CDepParser::getGlobalScore(const CSentenceParsed &parsed) {
+SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
    static CStateItem item, temp;
    // read cache
    m_lCache.clear();
@@ -386,7 +386,7 @@ inline int find_information( const CStateItem *item, int *stack ) {
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::updateScores(const CSentenceParsed & parsed , const CSentenceParsed & correct , int round ) {
+void CDepParser::updateScores(const CDependencyParse & parsed , const CDependencyParse & correct , int round ) {
    
    assert( m_bTrain );
 
@@ -653,11 +653,11 @@ inline void CDepParser::poproot( CStateItem *item ) {
  *
  * work - the working process shared by training and parsing
  *
- * Returns: makes a new instance of CSentenceParsed 
+ * Returns: makes a new instance of CDependencyParse 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CDependencyParse *retval , const CDependencyParse &correct , int nBest , SCORE_TYPE *scores ) {
 
 #ifdef DEBUG
    clock_t total_start_time = clock();
@@ -812,13 +812,13 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
  *
  * parse - do dependency parsing to a sentence
  *
- * Returns: makes a new instance of CSentenceParsed 
+ * Returns: makes a new instance of CDependencyParse 
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest , SCORE_TYPE *scores ) {
 
-   static CSentenceParsed empty ;
+   static CDependencyParse empty ;
 
    work(false, sentence, retval, empty, nBest, scores ) ;
 
@@ -830,10 +830,10 @@ void CDepParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retv
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::train( const CSentenceParsed &correct , int round ) {
+void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CSentenceParsed output ; 
+   static CDependencyParse output ; 
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;
