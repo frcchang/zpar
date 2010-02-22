@@ -369,7 +369,8 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    int index , start_index , generator_index , temp_index, word_length;
    const CStateItem * generator_item ; 
    CStateItem *candidate_item , tempState , maxState ;
-   static CStateItem best_bigram[ CTag::COUNT ] ;
+   static CStateItem best_bigram[ AGENDA_SIZE ] ; // candidates generated in one round
+   unsigned best_bigram_count = 0; // and the count
    unsigned long tag, last_tag ; 
 
    static CStringVector sentence;
@@ -434,34 +435,38 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                      m_weights->m_mapTagDictionary.lookup( m_WordCache.find( start_index+1 , index , &sentence ), tag ) 
                   ) // wordtag match
                ) {
-               if (nBest==1) {
-                  for ( temp_index = 0 ; temp_index < CTag::COUNT ; ++ temp_index ) //@@@
-                     best_bigram[ temp_index ].clear() ;                               //@@@
-               }
+               if (nBest==1) best_bigram_count=0;
                for ( generator_index = 0 ; generator_index < m_Chart[ start_index+1 ]->size() ; ++ generator_index ) {
                   generator_item = m_Chart[ start_index+1 ]->item( generator_index ) ;
                   tempState.copy( generator_item ) ;
                   tempState.append( index , tag ) ;
                   tempState.score += getOrUpdateLocalScore( &sentence , &tempState , tempState.size()-1 ) ;
                   if (nBest==1) {
-                     last_tag = generator_item->size() == 0 ? CTag::SENTENCE_BEGIN : generator_item->getTag( generator_item->size() - 1 ).code();
-                     if ( best_bigram[last_tag].size() == 0 || tempState > best_bigram[last_tag] ) //@@@
-                        best_bigram[last_tag].copy(&tempState);                                       //@@@
+                     bool bSubstituted = false;
+                     for (temp_index=0; temp_index<best_bigram_count; ++temp_index) {
+                        if ( best_bigram[temp_index].size()>1 &&
+                             best_bigram[temp_index].getTag(best_bigram[temp_index].size()-2) == tempState.getTag(tempState.size()-2) &&
+                             best_bigram[temp_index].getWordStart(best_bigram[temp_index].size()-2) == tempState.getWordStart(tempState.size()-2) 
+                            ) {
+                            if (best_bigram[temp_index].score < tempState.score) {
+                               best_bigram[temp_index].copy(&tempState);
+                            }
+                            bSubstituted = true;
+                            break;
+                        }
+                     }
+                     if (!bSubstituted)
+                        best_bigram[best_bigram_count++].copy(&tempState);
                   }
                   else {
                      m_Chart[ index+1 ]->insertItem( &tempState );
                   }
                }
                if (nBest==1) {
-                  for ( temp_index=0; temp_index<CTag::COUNT; ++temp_index ) { //@@@
-                     if ( best_bigram[ temp_index ].size() != 0 ) {        //@@@
-//                        candidate_item = m_Chart[ index+1 ]->newItem();       //@@@
-//                        candidate_item->copy( &(best_bigram[temp_index]) );   //@@@
-//                        m_Chart[ index+1 ]->insertNewItem(  );                  //@@@
-                        m_Chart[ index+1 ]->insertItem( &(best_bigram[temp_index]) );                  //@@@
-                     }                                                        //@@@
+                  for ( temp_index=0; temp_index<best_bigram_count; ++temp_index ) { 
+                     m_Chart[ index+1 ]->insertItem( &(best_bigram[temp_index]) );
                   }
-               }                                                           //@@@
+               }
             }//if
 
             // control the first character of the candidate
