@@ -41,36 +41,36 @@ inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long 
 class CCFGSet {
 
 protected:
-   unsigned long int m_nHash;
+   unsigned long long m_nHash;
 
 public:
    CCFGSet() { clear(); }
    virtual ~CCFGSet() {}
 
 public:
-   void operator += (const unsigned long &i) { 
+   void operator += (const unsigned long long &i) { 
       assert(i>>PENN_CON_TAG_COUNT_BITS==0);
       assert(m_nHash>>(PENN_CON_TAG_COUNT_BITS*(CFGSET_SIZE-1))==0);
       m_nHash = (m_nHash<<PENN_CON_TAG_COUNT_BITS)|i;
    }
 
 private:
-   bool isTag(const unsigned long &tc) const {
+   bool isTag(const unsigned long long &tc) const {
       return tc & (1<<(PENN_CON_TAG_COUNT_BITS-1));
    }
-   unsigned long getTag(const unsigned long &tc) const {
+   unsigned long getTag(const unsigned long long &tc) const {
       return tc & ((1<<(PENN_CON_TAG_COUNT_BITS-1))-1);
    }
 
 public:
-   virtual unsigned long int hash() const { return m_nHash; }
+   virtual unsigned long long hash() const { return m_nHash; }
    virtual bool operator == (const CCFGSet &set) const { return m_nHash == set.m_nHash; }
    virtual bool operator != (const CCFGSet &set) const { return m_nHash != set.m_nHash; }
    virtual bool operator < (const CCFGSet &set) const { return m_nHash < set.m_nHash; }
    void operator = (const CCFGSet &set) { m_nHash = set.m_nHash; }
    const string str() const { 
       string retval = "";
-      unsigned long hs = m_nHash;
+      unsigned long long hs = m_nHash;
       unsigned long tc;
       while (hs) {
          if (retval.empty()==false) retval = " " + retval;
@@ -131,7 +131,7 @@ inline ostream & operator << (ostream &os, const CCFGSet &c) {
    return os;
 }
 
-inline unsigned long int hash(const CCFGSet &set) {return set.hash();}
+inline unsigned long long hash(const CCFGSet &set) {return set.hash();}
 
 #endif
 

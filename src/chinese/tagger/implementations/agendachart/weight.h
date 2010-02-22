@@ -25,6 +25,7 @@ typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
 typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 typedef CScoreMap< pair<unsigned long, CTag>, SCORE_TYPE > CIntTagMap;
+typedef CScoreMap< pair<unsigned long long, CTag>, SCORE_TYPE > CLongTagMap;
 typedef CScoreMap< CTagSet<2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<3>, SCORE_TYPE > CTagSet3Map;
 typedef CHashMap< CWord, int > CWordToIntMap;
@@ -88,11 +89,8 @@ public:
    CTwoTaggedWordsMap m_mapTaggedCharByLastChar;
 
    // feature templates knowledge
-   CIntTagMap m_mapTagByFirstCharCat;
-   CIntTagMap m_mapTagByLastCharCat;
-
-   CIntTagMap m_mapSeparateCharCat;
-   CIntTagMap m_mapConsecutiveCharCat;
+   CLongTagMap m_mapTagByFirstCharCat;
+   CLongTagMap m_mapTagByLastCharCat;
 
    // statistical information
    CWordToIntMap m_mapWordFrequency;
@@ -138,9 +136,6 @@ public:
             m_mapTaggedCharByLastChar("TaggedCharByLastChar", 65537) ,
             m_mapTagByFirstCharCat("TagByFirstCharCat", 65537) ,
             m_mapTagByLastCharCat("TagByLastCharCat", 65537) , 
-
-            m_mapSeparateCharCat("SeparateCharCat", 16381) , 
-            m_mapConsecutiveCharCat("ConsecutiveCharCat", 16381) ,
 
             m_mapTagDictionary(CTag::COUNT),
             m_mapCharTagDictionary(CTag::COUNT) 

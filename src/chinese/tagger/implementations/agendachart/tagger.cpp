@@ -106,8 +106,8 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
    static CTaggedWord<CTag> wt1, wt2;
    static CTwoTaggedWords wt12;
 
-   unsigned long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
-   unsigned long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
+   unsigned long long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long long>(1)<<tag.code()) ;
+   unsigned long long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long long>(1)<<tag.code()) ;
 
    static int j ; 
 
