@@ -29,7 +29,7 @@
 # agenda: the single agenda method - reproduce paper
 # agendaplus: try to improve upon the decoding algorithm of agenda
 # viterbi: dynamic programming
-SEGMENTOR_IMPL = agendachart
+SEGMENTOR_IMPL = agenda
 
 # Chinese postagger implementations
 #
@@ -38,7 +38,7 @@ SEGMENTOR_IMPL = agendachart
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = agendachart
+CHINESE_TAGGER_IMPL = agenda
 
 # Chinese dependency parser
 #
@@ -63,8 +63,8 @@ ENGLISH_CONPARSER_IMPL = sr
 #
 #================================================================
 
-DEBUG = -DDEBUG
-#DEBUG = -DNDEBUG
+#DEBUG = -DDEBUG
+DEBUG = -DNDEBUG
 
 #================================================================
 #

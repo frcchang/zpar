@@ -60,7 +60,7 @@ public:
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
       assert(PENN_CON_COUNT_BITS == PENN_TAG_COUNT_BITS-1); // for encoding token tags
       assert(PENN_CON_TAG_COUNT_BITS * 3 + PENN_CON_COUNT_BITS+4<=32); // the largest encoded feature
-      assert(CFGSET_SIZE*PENN_CON_TAG_COUNT_BITS<sizeof(unsigned long)*8); // the cfg set can hold it
+      assert(CFGSET_SIZE*PENN_CON_TAG_COUNT_BITS<sizeof(unsigned long long)*8); // the cfg set can hold it
    }
    ~CConParser() {
       delete m_Agenda;
