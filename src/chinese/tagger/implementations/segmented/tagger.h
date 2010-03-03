@@ -38,7 +38,7 @@ protected:
    }
 
 public:
-   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, unsigned long round);
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
 
    enum SCORE_UPDATE {eSubtract=0, eAdd};

@@ -351,7 +351,7 @@ void generate(const CStateItem *stateItem, CStringVector *sentence, CTagger *tag
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , unsigned long round ) {
+void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
    cerr << "Not implemented" << endl;
    assert( 0 == 1 );
 }

@@ -249,7 +249,7 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , unsigned long round ) {
+void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
    cerr << "Not implemented" << endl;
    assert( 0 == 1 );
 }
