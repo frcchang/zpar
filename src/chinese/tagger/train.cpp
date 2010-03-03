@@ -50,6 +50,48 @@ void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged
 
 /*===============================================================
  *
+ * auto_train
+ *
+ *==============================================================*/
+
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const string &sKnowledgePath, const bool &bFWCDRule) {
+   static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
+
+   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, bFWCDRule);
+   CSentenceReader output_reader(sOutputFile);
+   CStringVector *input_sent = new CStringVector;
+   CTwoStringVector *output_sent = new CTwoStringVector; 
+
+   unsigned nCount=0;
+   unsigned nErrorCount=0;
+   unsigned nEarlyUpdateRepeat=0;
+
+   CBitArray word_ends(MAX_SENTENCE_SIZE);
+
+   //
+   // Read the next sentence
+   //
+   while( output_reader.readTaggedSentence(output_sent) ) {
+      if (bFWCDRule)
+         UntagAndDesegmentSentence(output_sent, input_sent, charcat);
+      else
+         UntagAndDesegmentSentence(output_sent, input_sent);
+      TRACE("Sentence " << nCount);
+      ++nCount;
+      //
+      // Find the decoder output
+      //
+      decoder.train(input_sent, output_sent);
+   }
+   delete input_sent;
+   delete output_sent;
+   cout << "Completing the training process." << endl;
+   decoder.finishTraining(nCount);
+   cout << "Done. Total errors: " << nErrorCount << endl;
+}
+
+/*===============================================================
+ *
  * train
  *
  *==============================================================*/

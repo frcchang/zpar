@@ -56,7 +56,7 @@ public:
    // load the weight vectors from the database
    void loadScores() {
       // initialize
-      int time_start = clock();
+      clock_t time_start = clock();
       string line;
       cout << "Loading model ... "; cout.flush();
       ifstream is(m_sFeatureDB.c_str());
