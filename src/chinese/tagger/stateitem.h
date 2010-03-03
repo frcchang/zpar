@@ -62,7 +62,7 @@ public:
 
    inline bool operator > (const CStateItem &item) const { return this->score > item.score ? true : false; /*this->score == item.score && this->m_nLength > item.m_nLength; */}
 
-   bool operator == (const CStateItem &item) {
+   bool operator == (const CStateItem &item) const {
       if ( m_nLength != item.m_nLength ) return false;
       for ( int i=0; i<m_nLength; ++i ) {
          if ( m_lWords[i] != item.m_lWords[i] ) return false;
@@ -71,7 +71,7 @@ public:
       return true;
    }
 
-   bool operator != (const CStateItem &item) {
+   bool operator != (const CStateItem &item) const {
       return !((*this)==item);
    }
 

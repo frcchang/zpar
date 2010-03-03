@@ -41,9 +41,10 @@ protected:
    unsigned m_nNumberOfCurrentTrainingExample;
    bool m_bTrain;
    const unsigned long m_nMaxSentSize;
+   unsigned m_nTrainingRound;
 
 public:
-   CTaggerBase(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize, const string &sKnowledgePath, bool bSegmentationRules) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) { 
+   CTaggerBase(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize, const string &sKnowledgePath, bool bSegmentationRules) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) , m_nTrainingRound(0) { 
       // load features
       m_weights = new tagger::CWeight(sFeatureDBPath, bTrain, bSegmentationRules); 
       // load knowledge
@@ -73,7 +74,7 @@ protected:
    }
 
 public:
-   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, unsigned long round) = 0;
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct) = 0;
    // The input sentence to tag() must be a raw sentence of characters
    // For the tagger that processes segmented input sent, we must set word_ends
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *word_ends=NULL) = 0;

@@ -253,11 +253,11 @@ int main(int argc, char* argv[]) {
       cout << "Training started." << endl;
       unsigned time_start = clock();
       // the first iteration: load knowledge
-      train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, sKnowledgePath, bFWCDRule);
+      auto_train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, sKnowledgePath, bFWCDRule);
       // from the next iteration knowledge will be loaded from the model
       // and therefore sKnowledgePath is set to "". Thus separate 'for'
       for (unsigned i=1; i<training_rounds; ++i)
-         train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, "", bFWCDRule);
+         auto_train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, "", bFWCDRule);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
       return 0;
    } catch (const string &e) {

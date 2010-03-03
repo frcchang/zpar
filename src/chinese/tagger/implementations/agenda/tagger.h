@@ -17,8 +17,31 @@ namespace tagger {
 
 class CSubStateItem : public CStateItem {
 
-public:
+protected:
    SCORE_TYPE sub_score; // score of the last word
+
+public:
+   void follow(const CSubStateItem &gold) {
+      assert(size()<=gold.size());
+      if (size() < gold.size()) {
+         const unsigned &last_character = getWordEnd(size()-1);
+         const unsigned &gold_last = gold.getWordEnd(size()-1);
+         assert(last_character<=gold_last);
+         if (last_character<gold_last) {
+            replace(last_character+1, CTag::NONE);
+            return;
+         }
+         else {
+            append(last_character+1, CTag::NONE);
+            setTag(size()-1, gold.getTag(size()-1).code());
+            return;
+         }
+      }
+      else { // size() == gold.size()
+         setTag(size()-1, gold.getTag(size()-1).code());
+         return;
+      }
+   }
 
 };
 
@@ -59,7 +82,7 @@ protected:
 public:
    enum SCORE_UPDATE {eSubtract=0, eAdd};
 
-   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct, unsigned long round);
+   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
 
    tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged);

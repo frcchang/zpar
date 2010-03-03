@@ -351,9 +351,9 @@ void generate(const CSubStateItem *stateItem, CStringVector *sentence, CTagger *
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , unsigned long round ) {
-   cerr << "Not implemented" << endl;
-   assert( 0 == 1 );
+void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
+   ++m_nTrainingRound ;
+   tag( sentence, NULL, NULL, 1, NULL );
 }
 
 /*---------------------------------------------------------------
@@ -381,11 +381,10 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    rules.segment(sentence_input, &sentence);
    const unsigned length=sentence.size();
 
-   static CStateItem goldState;
+   static CSubStateItem goldState;
    goldState.clear();
 
    TRACE("Initialising the tagging process...");
-   vReturn->clear();
    m_WordCache.clear(); 
    tempState.clear();
    m_Agenda.clear();
@@ -543,12 +542,13 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
          TRACE("Training error at the last word");
          for (temp_index=0; temp_index<pGenerator->size(); ++temp_index)
             getOrUpdateLocalScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
-         for (temp_index=0; temp_index<goldState; ++temp_index)
+         for (temp_index=0; temp_index<goldState.size(); ++temp_index)
             getOrUpdateLocalScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
-         return;
       }
+      return;
    }
    TRACE("Outputing sentence");
+   vReturn->clear();
    if (nBest == 1) {
       generate( m_Agenda.bestGenerator() , &sentence , this , vReturn ) ; 
       if (out_scores) out_scores[ 0 ] = m_Agenda.bestGenerator( )->score ;
