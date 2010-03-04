@@ -24,6 +24,10 @@ public:
    void follow(const CSubStateItem &gold) {
       assert(size()<=gold.size());
       if (size() < gold.size()) {
+         if (size() == 0) {
+            append(0, CTag::NONE);
+            return;
+         }
          const unsigned &last_character = getWordEnd(size()-1);
          const unsigned &gold_last = gold.getWordEnd(size()-1);
          assert(last_character<=gold_last);
@@ -33,7 +37,7 @@ public:
          }
          else {
             append(last_character+1, CTag::NONE);
-            setTag(size()-1, gold.getTag(size()-1).code());
+            setTag(size()-2, gold.getTag(size()-2).code());
             return;
          }
       }
