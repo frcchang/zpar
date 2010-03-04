@@ -353,6 +353,27 @@ void generate(const CSubStateItem *stateItem, CStringVector *sentence, CTagger *
 
 void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
    ++m_nTrainingRound ;
+   buildStateItem( sentence, correct, &m_goldState);
+   // Updates that are common for all example
+   for ( unsigned i=0; i<correct->size(); ++i ) {
+
+      const CWord &word = correct->at(i).first ;
+      unsigned long tag = CTag( correct->at(i).second ).code() ;
+
+      CStringVector chars;
+      chars.clear(); 
+      getCharactersFromUTF8String(correct->at(i).first, &chars);
+
+      m_weights->m_mapWordFrequency[word]++;
+      if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency) m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
+
+      m_weights->m_mapTagDictionary.add(word, tag);
+      for ( unsigned j = 0 ; j < chars.size() ; ++j ) m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
+
+      if ( !m_weights->m_Knowledge ||
+          (!m_weights->m_Knowledge->isFWorCD(chars[0])&&!m_weights->m_Knowledge->isFWorCD(chars[chars.size()-1])))
+      m_weights->setMaxLengthByTag( tag , chars.size() ) ;
+   }
    tag( sentence, NULL, NULL, 1, NULL );
 }
 
@@ -417,7 +438,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
       if ( m_bTrain ) {
          pGenerator = m_Agenda.bestGenerator();
          if ( *pGenerator != goldState ) {
-            TRACE("Training error before last word");
+            TRACE("Training error before last word" << index);
             for (temp_index=0; temp_index<pGenerator->size()-1; ++temp_index)
                getOrUpdateLocalScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
             for (temp_index=0; temp_index<goldState.size()-1; ++temp_index)
