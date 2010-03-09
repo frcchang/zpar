@@ -54,6 +54,7 @@ using namespace chinese::tagger;
 
 void CWeight::loadScores() {
    cout << "Loading scores ..."; cout.flush();
+   clock_t time_start = clock();
    string st;
    ifstream is(m_sFeatureDB.c_str());
    istringstream iss;
@@ -116,7 +117,7 @@ void CWeight::loadScores() {
       ASSERT(ts=="All", "Maximum word size record failed loading.");
    }
 
-   cout << " done." << endl;
+   cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
 }
 
 /*---------------------------------------------------------------

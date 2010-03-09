@@ -54,7 +54,7 @@ void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged
  *
  *==============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const bool &bEarlyUpdate, const string &sKnowledgePath, const bool &bFWCDRule) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const string &sKnowledgePath, const bool &bFWCDRule) {
    static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
 
    CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, bFWCDRule);
@@ -261,11 +261,11 @@ int main(int argc, char* argv[]) {
       }
       else {
          // the first iteration: load knowledge
-         auto_train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, sKnowledgePath, bFWCDRule);
+         auto_train(argv[1], argv[2], nBest, nMaxSentSize, sKnowledgePath, bFWCDRule);
          // from the next iteration knowledge will be loaded from the model
          // and therefore sKnowledgePath is set to "". Thus separate 'for'
          for (unsigned i=1; i<training_rounds; ++i)
-            auto_train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, "", bFWCDRule);
+            auto_train(argv[1], argv[2], nBest, nMaxSentSize, "", bFWCDRule);
       }
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
       return 0;

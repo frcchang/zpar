@@ -355,8 +355,8 @@ bool CTagger::train( const CStringVector * sentence , const CTwoStringVector * c
    static CTwoStringVector output; 
    ++m_nTrainingRound;
    tag( sentence, &output, NULL, 1, NULL );
+   updateScores(&output, correct, m_nTrainingRound);
    if (output != *correct) {
-      updateScores(&output, correct, m_nTrainingRound);
       return true;
    }
    return false;
