@@ -93,7 +93,12 @@ public:
 
    void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round);
 
-   tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0) {
+      getOrUpdateFullScore(tagged, item, index, amount, round);
+      getOrUpdatePartScore(tagged, item, index, amount, round);
+   }
+   tagger::SCORE_TYPE getOrUpdateFullScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdatePartScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
    void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);
