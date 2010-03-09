@@ -64,6 +64,7 @@ protected:
    CWordCache m_WordCache;
    tagger::CSubStateItem m_goldState;
    unsigned m_nScoreIndex;
+   bool m_bTrainingError;
 
 public:
    CTagger(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
@@ -86,7 +87,7 @@ protected:
 public:
    enum SCORE_UPDATE {eSubtract=0, eAdd};
 
-   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct);
+   virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
 
    tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged);
