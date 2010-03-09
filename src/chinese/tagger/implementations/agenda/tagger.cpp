@@ -452,7 +452,7 @@ void generate(const CSubStateItem *stateItem, CStringVector *sentence, CTagger *
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
+bool CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
    ++m_nTrainingRound ;
    buildStateItem( sentence, correct, &m_goldState);
    // Updates that are common for all example
@@ -476,6 +476,7 @@ void CTagger::train( const CStringVector * sentence , const CTwoStringVector * c
       m_weights->setMaxLengthByTag( tag , chars.size() ) ;
    }
    tag( sentence, NULL, NULL, 1, NULL );
+   return m_bTrainingError;
 }
 
 /*---------------------------------------------------------------
@@ -551,6 +552,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                getOrUpdatePartScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
             }
             getOrUpdatePartScore(&sentence, &goldState, goldState.size()-1, 1, m_nTrainingRound);
+            m_bTrainingError = true;
             return;
          }
       }
@@ -678,7 +680,9 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
             getOrUpdateFullScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
             getOrUpdatePartScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
          }
+         m_bTrainingError = true;
       }
+      m_bTrainingError = false;
       return;
    }
    TRACE("Outputing sentence");

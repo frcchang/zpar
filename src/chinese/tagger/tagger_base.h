@@ -74,7 +74,7 @@ protected:
    }
 
 public:
-   virtual void train(const CStringVector *sentence, const CTwoStringVector *correct) = 0;
+   virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct) = 0;
    // The input sentence to tag() must be a raw sentence of characters
    // For the tagger that processes segmented input sent, we must set word_ends
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *word_ends=NULL) = 0;

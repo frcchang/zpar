@@ -38,7 +38,7 @@ SEGMENTOR_IMPL = viterbi
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = agenda
+CHINESE_TAGGER_IMPL = agendachart
 
 # Chinese dependency parser
 #
@@ -63,8 +63,8 @@ ENGLISH_CONPARSER_IMPL = sr
 #
 #================================================================
 
-#DEBUG = -DDEBUG
-DEBUG = -DNDEBUG
+DEBUG = -DDEBUG
+#DEBUG = -DNDEBUG
 
 #================================================================
 #

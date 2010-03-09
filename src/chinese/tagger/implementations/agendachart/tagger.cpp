@@ -351,9 +351,15 @@ void generate(const CStateItem *stateItem, CStringVector *sentence, CTagger *tag
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
-   cerr << "Not implemented" << endl;
-   assert( 0 == 1 );
+bool CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
+   static CTwoStringVector output; 
+   ++m_nTrainingRound;
+   tag( sentence, &output, NULL, 1, NULL );
+   if (output != *correct) {
+      updateScores(&output, correct, m_nTrainingRound);
+      return true;
+   }
+   return false;
 }
 
 /*---------------------------------------------------------------
