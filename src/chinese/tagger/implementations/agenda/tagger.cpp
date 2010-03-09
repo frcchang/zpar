@@ -26,7 +26,7 @@ static CWord g_emptyWord("");
 
 /*---------------------------------------------------------------
  *
- * getOrUpdateLocalScore - get or update the local score for a word in sentence
+ * getOrUpdateFullScore - get or update the local score for a word in sentence
  *
  * When bigram is needed from the beginning of sentence, the
  * -BEGIN- tag and the empty word are used. 
@@ -36,7 +36,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
+SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned long last_start , last_length ;
    static unsigned long start , end , length , word_length ; // word length is the un-normalised version
@@ -131,10 +131,10 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
                                m_nScoreIndex, amount, round ) ; 
    }
    if ( start > 0 ) {
-      nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
+//      nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
 
       nReturn += m_weights->m_mapCurrentWordLastChar.getOrUpdateScore( currentword_lastchar , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
+//      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
 
       nReturn += m_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore( firstchars_twoword , m_nScoreIndex , amount , round ) ;
       nReturn += m_weights->m_mapLastWordByLastChar.getOrUpdateScore( lastchars_twoword , m_nScoreIndex , amount , round ) ;
@@ -150,7 +150,7 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
       if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(last_word, tag) , m_nScoreIndex , amount , round ) ;
       if ( length <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getOrUpdateScore( make_pair(word, last_tag) , m_nScoreIndex , amount , round ) ;
       if ( length <= 2 ) nReturn += m_weights->m_mapTagByWordAndPrevChar.getOrUpdateScore( make_pair(currentword_lastchar, tag) , m_nScoreIndex , amount , round ) ;
-      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex , amount , round ) ;
+//      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex , amount , round ) ;
    }
    if ( length == 1 ) {
       if ( start > 0 && end < sentence->size()-1 )
@@ -206,6 +206,107 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
       }
    }
 
+   return nReturn;
+}
+
+/*---------------------------------------------------------------
+ *
+ * getOrUpdatePartScore - get or update the local score for a word in sentence
+ *
+ * When bigram is needed from the beginning of sentence, the
+ * -BEGIN- tag and the empty word are used. 
+ *
+ * This implies that empty words should not be used in other 
+ * situations. 
+ *
+ *--------------------------------------------------------------*/
+
+SCORE_TYPE CTagger::getOrUpdatePartScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
+   static SCORE_TYPE nReturn ; 
+   static unsigned long last_start , last_length ;
+   static unsigned long start , end , length , word_length ; // word length is the un-normalised version
+   // about the words
+   start = item->getWordStart( index ) ;
+   end = item->getWordEnd( index ) ;
+   length = item->getWordLength( index ) ; 
+
+   last_start = index > 0 ? item->getWordStart( index-1 ) : 0 ;
+   last_length = index > 0 ? item->getWordLength( index-1 ) : 0 ;
+   word_length = length ;  // use word_length instead of item->getWordLength() because the length can include " ".
+
+   const CWord &word = amount==0 ? m_WordCache.find( start , end , sentence )
+                                 : m_WordCache.replace( start , end , sentence ) ; 
+
+   const CWord &last_word =  index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start-1 , sentence )
+                                                     : m_WordCache.replace( last_start , start-1 , sentence ) )
+                                       : g_emptyWord ; 
+
+   // about the length
+   if( length > LENGTH_MAX-1 ) length = LENGTH_MAX-1 ;
+   if( last_length > LENGTH_MAX-1 ) last_length = LENGTH_MAX-1 ;
+
+   // about the chars
+   const CWord &first_char = amount==0 ? m_WordCache.find( start , start , sentence )
+                                      : m_WordCache.replace( start , start , sentence ) ;
+   const CWord &last_char = amount==0 ? m_WordCache.find( end , end , sentence )
+                                     : m_WordCache.replace( end , end , sentence ) ;
+   const CWord &first_char_last_word = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , last_start , sentence )
+                                                               : m_WordCache.replace( last_start , last_start , sentence ) )
+                                                 : g_emptyWord ;
+   const CWord &last_char_last_word = index > 0 ? ( amount==0 ? m_WordCache.find( start-1 , start-1 , sentence) 
+                                                              : m_WordCache.replace( start-1 , start-1 , sentence) )
+                                                : g_emptyWord ;
+   const CWord &two_char = index > 0 ? ( amount == 0 ? m_WordCache.find( start-1 , start, sentence) 
+                                                     : m_WordCache.replace( start-1 , start, sentence) )
+                                     : g_emptyWord ;
+   const CWord &lastword_firstchar = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start , sentence ) 
+                                                             : m_WordCache.replace( last_start , start , sentence ) )
+                                               : g_emptyWord ; 
+   const CWord &currentword_lastchar = index > 0 ? ( amount==0 ? m_WordCache.find( start-1 , end , sentence) 
+                                                               : m_WordCache.replace( start-1 , end , sentence) )
+                                                 : g_emptyWord ;
+   const CWord &three_char = ( length == 1 && start > 0 && end < sentence->size()-1 )                   ? 
+                                      ( amount==0 ? m_WordCache.find( start-1 , end+1 , sentence ) 
+                                                  : m_WordCache.replace( start-1 , end+1 , sentence ) ) : g_emptyWord ;
+
+   static CTwoWords two_word , first_and_last_char , firstchars_twoword , lastchars_twoword ;
+   if (amount==0) {
+      two_word.refer( &word , &last_word ) ;
+      first_and_last_char.refer( &first_char , &last_char ) ;
+      firstchars_twoword.refer( &first_char_last_word , &first_char ) ;
+      lastchars_twoword.refer( &last_char_last_word , &last_char ) ;
+   }
+   else {
+      two_word.allocate( word, last_word ) ;
+      first_and_last_char.allocate( first_char, last_char ) ;
+      firstchars_twoword.allocate( first_char_last_word, first_char ) ;
+      lastchars_twoword.allocate( last_char_last_word, last_char ) ;
+   }
+
+   // about the tags 
+   const CTag &tag = item->getTag( index ) ;
+   const CTag &last_tag = index>0 ? item->getTag( index-1 ) : CTag(CTag::SENTENCE_BEGIN) ;
+   const CTag &second_last_tag = index>1 ? item->getTag(index-2) : CTag(CTag::SENTENCE_BEGIN) ;
+
+   static CTaggedWord<CTag> wt1, wt2;
+   static CTwoTaggedWords wt12;
+
+   unsigned long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
+   unsigned long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
+
+   static int j ; 
+
+   // adding scores with features
+   nReturn = 0;
+
+   if ( start > 0 ) {
+      nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
+
+      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
+
+      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex , amount , round ) ;
+   }
+  
    return nReturn;
 }
 
@@ -431,6 +532,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
          if ( index == 0 ) {
             tempState.copy(pGenerator);
             tempState.append(index, CTag::NONE);
+            tempState.score += getOrUpdatePartScore(&sentence, &tempState, tempState.size()-1);
             m_Agenda.pushCandidate(&tempState);;
          }
          pGenerator = m_Agenda.generatorNext();  // next generator
@@ -439,10 +541,16 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
          pGenerator = m_Agenda.bestGenerator();
          if ( *pGenerator != goldState ) {
             TRACE("Training error before last word" << index);
-            for (temp_index=0; temp_index<pGenerator->size()-1; ++temp_index)
-               getOrUpdateLocalScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
-            for (temp_index=0; temp_index<goldState.size()-1; ++temp_index)
-               getOrUpdateLocalScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
+            for (temp_index=0; temp_index<pGenerator->size()-1; ++temp_index) {
+               getOrUpdateFullScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
+               getOrUpdatePartScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
+            }
+            getOrUpdatePartScore(&sentence, pGenerator, pGenerator->size()-1, -1, m_nTrainingRound);
+            for (temp_index=0; temp_index<goldState.size()-1; ++temp_index) {
+               getOrUpdateFullScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
+               getOrUpdatePartScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
+            }
+            getOrUpdatePartScore(&sentence, &goldState, goldState.size()-1, 1, m_nTrainingRound);
             return;
          }
       }
@@ -468,7 +576,8 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                tempState.copy(pGenerator);
                tempState.append(index, CTag::NONE);
                tempState.setTag(tempState.size()-2, tag);
-               tempState.score += getOrUpdateLocalScore(&sentence, &tempState, tempState.size()-2);
+               tempState.score += getOrUpdateFullScore(&sentence, &tempState, tempState.size()-2);
+               tempState.score += getOrUpdatePartScore(&sentence, &tempState, tempState.size()-1);
                if (nBest==1) {
                   bool bDuplicate = false;
                   for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
@@ -521,7 +630,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
             ) {  
             tempState.copy(pGenerator);
             tempState.setTag(tempState.size()-1, tag);
-            tempState.score += getOrUpdateLocalScore(&sentence, &tempState, tempState.size()-1);
+            tempState.score += getOrUpdateFullScore(&sentence, &tempState, tempState.size()-1);
             if (nBest==1) {
                bool bDuplicate = false;
                for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
@@ -561,10 +670,14 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
       pGenerator = m_Agenda.bestGenerator();
       if ( *pGenerator != goldState ) {
          TRACE("Training error at the last word");
-         for (temp_index=0; temp_index<pGenerator->size(); ++temp_index)
-            getOrUpdateLocalScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
-         for (temp_index=0; temp_index<goldState.size(); ++temp_index)
-            getOrUpdateLocalScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
+         for (temp_index=0; temp_index<pGenerator->size(); ++temp_index) {
+            getOrUpdateFullScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
+            getOrUpdatePartScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
+         }
+         for (temp_index=0; temp_index<goldState.size(); ++temp_index) {
+            getOrUpdateFullScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
+            getOrUpdatePartScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
+         }
       }
       return;
    }
