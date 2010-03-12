@@ -106,8 +106,8 @@ SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const C
    static CTaggedWord<CTag> wt1, wt2;
    static CTwoTaggedWords wt12;
 
-   unsigned long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
-   unsigned long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
+   unsigned long long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long long>(1)<<tag.code()) ;
+   unsigned long long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long long>(1)<<tag.code()) ;
 
    static int j ; 
 
@@ -224,32 +224,23 @@ SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const C
 SCORE_TYPE CTagger::getOrUpdatePartScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned long last_start , last_length ;
-   static unsigned long start , end , length , word_length ; // word length is the un-normalised version
+   static unsigned long start ; // word length is the un-normalised version
    // about the words
    start = item->getWordStart( index ) ;
-   end = item->getWordEnd( index ) ;
-   length = item->getWordLength( index ) ; 
 
    last_start = index > 0 ? item->getWordStart( index-1 ) : 0 ;
    last_length = index > 0 ? item->getWordLength( index-1 ) : 0 ;
-   word_length = length ;  // use word_length instead of item->getWordLength() because the length can include " ".
-
-   const CWord &word = amount==0 ? m_WordCache.find( start , end , sentence )
-                                 : m_WordCache.replace( start , end , sentence ) ; 
 
    const CWord &last_word =  index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start-1 , sentence )
                                                      : m_WordCache.replace( last_start , start-1 , sentence ) )
                                        : g_emptyWord ; 
 
    // about the length
-   if( length > LENGTH_MAX-1 ) length = LENGTH_MAX-1 ;
    if( last_length > LENGTH_MAX-1 ) last_length = LENGTH_MAX-1 ;
 
    // about the chars
    const CWord &first_char = amount==0 ? m_WordCache.find( start , start , sentence )
                                       : m_WordCache.replace( start , start , sentence ) ;
-   const CWord &last_char = amount==0 ? m_WordCache.find( end , end , sentence )
-                                     : m_WordCache.replace( end , end , sentence ) ;
    const CWord &first_char_last_word = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , last_start , sentence )
                                                                : m_WordCache.replace( last_start , last_start , sentence ) )
                                                  : g_emptyWord ;
@@ -262,37 +253,21 @@ SCORE_TYPE CTagger::getOrUpdatePartScore( const CStringVector *sentence, const C
    const CWord &lastword_firstchar = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start , sentence ) 
                                                              : m_WordCache.replace( last_start , start , sentence ) )
                                                : g_emptyWord ; 
-   const CWord &currentword_lastchar = index > 0 ? ( amount==0 ? m_WordCache.find( start-1 , end , sentence) 
-                                                               : m_WordCache.replace( start-1 , end , sentence) )
-                                                 : g_emptyWord ;
-   const CWord &three_char = ( length == 1 && start > 0 && end < sentence->size()-1 )                   ? 
-                                      ( amount==0 ? m_WordCache.find( start-1 , end+1 , sentence ) 
-                                                  : m_WordCache.replace( start-1 , end+1 , sentence ) ) : g_emptyWord ;
 
-   static CTwoWords two_word , first_and_last_char , firstchars_twoword , lastchars_twoword ;
+   static CTwoWords firstchars_twoword ;
    if (amount==0) {
-      two_word.refer( &word , &last_word ) ;
-      first_and_last_char.refer( &first_char , &last_char ) ;
       firstchars_twoword.refer( &first_char_last_word , &first_char ) ;
-      lastchars_twoword.refer( &last_char_last_word , &last_char ) ;
    }
    else {
-      two_word.allocate( word, last_word ) ;
-      first_and_last_char.allocate( first_char, last_char ) ;
       firstchars_twoword.allocate( first_char_last_word, first_char ) ;
-      lastchars_twoword.allocate( last_char_last_word, last_char ) ;
    }
 
    // about the tags 
-   const CTag &tag = item->getTag( index ) ;
    const CTag &last_tag = index>0 ? item->getTag( index-1 ) : CTag(CTag::SENTENCE_BEGIN) ;
    const CTag &second_last_tag = index>1 ? item->getTag(index-2) : CTag(CTag::SENTENCE_BEGIN) ;
 
    static CTaggedWord<CTag> wt1, wt2;
    static CTwoTaggedWords wt12;
-
-   unsigned long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
-   unsigned long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long>(1)<<tag.code()) ;
 
    static int j ; 
 

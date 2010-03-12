@@ -24,7 +24,7 @@ typedef CScoreMap< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
 typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
 typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
-typedef CScoreMap< pair<unsigned long, CTag>, SCORE_TYPE > CIntTagMap;
+typedef CScoreMap< pair<unsigned long long, CTag>, SCORE_TYPE > CIntTagMap;
 typedef CScoreMap< CTagSet<2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<3>, SCORE_TYPE > CTagSet3Map;
 typedef CHashMap< CWord, int > CWordToIntMap;
