@@ -29,7 +29,7 @@
 # agenda: the single agenda method - reproduce paper
 # agendaplus: try to improve upon the decoding algorithm of agenda
 # viterbi: dynamic programming
-SEGMENTOR_IMPL = viterbi
+SEGMENTOR_IMPL = agenda
 
 # Chinese postagger implementations
 #
@@ -38,7 +38,7 @@ SEGMENTOR_IMPL = viterbi
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = agenda
+CHINESE_TAGGER_IMPL = segmented
 
 # Chinese dependency parser
 #
@@ -113,6 +113,18 @@ $(DIST_DIR):
 SRC_TAGGER = $(SRC_CHINESE)/tagger
 DIST_TAGGER = $(DIST_DIR)/chinese.postagger
 OBJECT_TAGGER = $(OBJECT_DIR)/chinese.postagger
+$(DIST_TAGGER):
+	mkdir $(DIST_TAGGER)
+$(OBJECT_TAGGER):
+	mkdir $(OBJECT_TAGGER)
+
+SRC_ENGLISH_TAGGER = $(SRC_ENGLISH)/tagger
+DIST_ENGLISH_TAGGER = $(DIST_DIR)/english.postagger
+OBJECT_ENGLISH_TAGGER = $(OBJECT_DIR)/english.postagger
+$(DIST_ENGLISH_TAGGER):
+	mkdir $(DIST_ENGLISH_TAGGER)
+$(OBJECT_ENGLISH_TAGGER):
+	mkdir $(OBJECT_ENGLISH_TAGGER)
 
 #  depparser
 SRC_COMMON_DEPPARSER = $(SRC_COMMON)/depparser
@@ -123,6 +135,8 @@ else
 endif
 DIST_DEPPARSER = $(DIST_DIR)/chinese.depparser
 OBJECT_DEPPARSER = $(OBJECT_DIR)/chinese.depparser
+DIST_ENGLISH_DEPPARSER = $(DIST_DIR)/english.depparser
+OBJECT_ENGLISH_DEPPARSER = $(OBJECT_DIR)/english.depparser
 
 #  conparser
 SRC_COMMON_CONPARSER = $(SRC_COMMON)/conparser

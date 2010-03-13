@@ -44,7 +44,7 @@ using namespace chinese::tagger;
 
 void CWeight::loadScores() {
    cout << "Loading scores...";
-   clock_t start_time = clock();
+   clock_t time_start = clock();
    string st;
    ifstream is(m_sFeatureDB.c_str());
    istringstream iss;

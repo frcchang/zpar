@@ -323,7 +323,7 @@ void CTagger::tag( const CStringVector * sentence , CTwoStringVector * vReturn ,
 
       for ( j=0; j<m_Agenda.generatorSize(); ++j ) {
          last_tag = word_index>0 ? pGenerator->getTag(word_index-1).code() : CTag::SENTENCE_BEGIN ;
-         pGenerator->append( end_index);
+         pGenerator->append( end_index, CTag::NONE );
 
          bool bDone = false;
          for ( tag=CTag::FIRST; tag<CTag::COUNT; ++tag ) {

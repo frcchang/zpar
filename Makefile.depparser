@@ -47,8 +47,6 @@ $(DIST_DEPPARSER)/train: $(SRC_CHINESE_DEPPARSER)/train.cpp $(OBJECT_DIR)/chines
 #====================================================
 
 
-DIST_ENGLISH_DEPPARSER = $(DIST_DIR)/english.depparser
-OBJECT_ENGLISH_DEPPARSER = $(OBJECT_DIR)/english.depparser
 $(DIST_ENGLISH_DEPPARSER):
 	mkdir $(DIST_ENGLISH_DEPPARSER)
 $(OBJECT_ENGLISH_DEPPARSER):
@@ -57,7 +55,7 @@ english.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_ENGLISH_DEPPARSER) $(DIST_
 	@echo The English dependency parser system is compiled successfully into $(DIST_ENGLISH_DEPPARSER).
 
 # the weight module
-$(OBJECT_ENGLISH_DEPPARSER)/weight.o: $(SRC_COMMON_DEPPARSER)/weight_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.cpp ./Makefile
+$(OBJECT_ENGLISH_DEPPARSER)/weight.o: $(OBJECT_ENGLISH_DEPPARSER) $(SRC_COMMON_DEPPARSER)/weight_base.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.h $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.cpp ./Makefile
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPPARSER) -I$(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL) -c $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/weight.cpp -o $(OBJECT_ENGLISH_DEPPARSER)/weight.o
 
 # the depparser object
