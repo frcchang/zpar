@@ -195,6 +195,7 @@ public:
    CIntMap m_mapN0tN1t;
 
    // Bracket
+#ifdef _CHINESE_CFG_H
    CIntMap m_mapBracketS0c;
    CWordIntMap m_mapBracketS0w;
    CWordIntMap m_mapBracketS0wS1c;
@@ -215,6 +216,7 @@ public:
    CWordIntMap m_mapS1wcSepCount;
    CIntMap m_mapS0cS1cSeparator;
    CIntMap m_mapS0cS1cSepCount;
+#endif
 
    // Distance
    CWordIntMap m_mapS0wS1Dist;
@@ -426,6 +428,7 @@ public:
                                                m_mapN0wN1t("Next0WordNext1Tag"),
                                                m_mapN0tN1t("Next0TagNext1WordTag"),
 
+#ifdef _CHINESE_CFG_H
                                                m_mapBracketS0c("BracketStack0Constituent"), 
                                                m_mapBracketS0w("BracketStack0Word"),
                                                m_mapBracketS0wS1c("BracketStack0WordStack1Constituent"),
@@ -445,6 +448,7 @@ public:
                                                m_mapS1wcSepCount("Stack1WordConstituentSeparatorCount"),
                                                m_mapS0cS1cSeparator("Stack0ConstituentStack1ConstituentSeparator"),
                                                m_mapS0cS1cSepCount("Stack0ConstituentStack1ConstituentSeparatorCount"),
+#endif
 
                                                m_mapS0wS1Dist("Stack0WordStack1Distance"),
                                                m_mapS0cS1Dist("Stack0ConstituentStack1Distance"),

@@ -321,11 +321,13 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    static unsigned long s0cs1cn0t_action;
    static unsigned long s0cn0tn1t_action;
 
+#ifdef _CHINESE_CFG_H
    static unsigned long s0c_bracket_action;
    static unsigned long s1c_bracket_action;
    static unsigned long n0t_bracket_action;
    static unsigned long s0cs1c_bracket_action;
    static unsigned long s0cn0t_bracket_action;
+#endif
 
    static unsigned long s0cs1c_distaction;
 
@@ -348,11 +350,13 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    s0cs1cn0t_action=encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->n0t));
    s0cn0tn1t_action=encodeAction(action, encodeTorCs(ctxt->s0cn0t, ctxt->n1t));
 
+#ifdef _CHINESE_CFG_H
    s0c_bracket_action = encodeAction(action, ctxt->s0c_bracket);
    s1c_bracket_action = encodeAction(action, ctxt->s1c_bracket);
    n0t_bracket_action = encodeAction(action, ctxt->n0t_bracket);
    s0cs1c_bracket_action = encodeAction(action, ctxt->s0cs1c_bracket);
    s0cn0t_bracket_action = encodeAction(action, ctxt->s0cn0t_bracket);
+#endif
 
    s0cs1c_distaction = encodeAction(action, ctxt->s0cs1c_dist);
 
@@ -517,6 +521,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 //      nReturn += cast_weights->m_mapN0tN1t.getOrUpdateScore(n0tn1t_action, m_nScoreIndex, amount, round);
    }
    
+#ifdef _CHINESE_CFG_H
    if (ctxt->open_bracket_match_type!=0) {
       nReturn += cast_weights->m_mapBracketS0c.getOrUpdateScore(s0c_bracket_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapBracketS0w.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, ctxt->open_bracket_match_type)), m_nScoreIndex, amount, round);
@@ -550,6 +555,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
          nReturn += cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(encodeAction(action, ctxt->s0cs1c_separator[i]), m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(encodeAction(action, ctxt->s0cs1c_sepcount), m_nScoreIndex, amount, round);
    }
+#endif
 
    if (ctxt->s1!=-1){
 //      nReturn += cast_weights->m_mapS0wS1Dist.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, ctxt->s0s1_dist)), m_nScoreIndex, amount, round);

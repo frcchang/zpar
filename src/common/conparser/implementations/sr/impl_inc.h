@@ -7,7 +7,9 @@
 #include "linguistics/taggedword.h"
 #include "agenda.h"
 #include "pair_stream.h"
+#ifdef _CHINESE_CFG_H
 #include "charcat.h"
+#endif
 #include "knowledge/tagdict.h"
 
 #include "learning/perceptron/score.h"

@@ -16,6 +16,31 @@ using namespace TARGET_LANGUAGE::conparser;
 
 const CScore<SCORE_TYPE> g_zeroScore;
 
+#ifdef _CHINESE_CFG_H
+#define _BRACKET_AND_SEPARATOR_FEATURES(left,right) \
+   left(m_mapBracketS0c)right\
+   left(m_mapBracketS0w)right\
+   left(m_mapBracketS0wS1c)right\
+   left(m_mapBracketS0cS1w)right\
+   left(m_mapBracketS0cS1c)right\
+   left(m_mapBracketS0cN0w)right\
+   left(m_mapBracketS0wN0t)right\
+   left(m_mapBracketS0cN0t)right\
+\
+   left(m_mapS0cSeparator)right\
+   left(m_mapS0wcSeparator)right\
+   left(m_mapS0cSepCount)right\
+   left(m_mapS0wcSepCount)right\
+   left(m_mapS1cSeparator)right\
+   left(m_mapS1wcSeparator)right\
+   left(m_mapS1cSepCount)right\
+   left(m_mapS1wcSepCount)right\
+   left(m_mapS0cS1cSeparator)right\
+   left(m_mapS0cS1cSepCount)right
+#else
+#define _BRACKET_AND_SEPARATOR_FEATURES(left,right)
+#endif
+
 #define iterate_templates(left, right) \
    left(m_mapHw)right\
    left(m_mapHt)right\
@@ -126,25 +151,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapN0wN1t)right\
    left(m_mapN0tN1t)right\
 \
-   left(m_mapBracketS0c)right\
-   left(m_mapBracketS0w)right\
-   left(m_mapBracketS0wS1c)right\
-   left(m_mapBracketS0cS1w)right\
-   left(m_mapBracketS0cS1c)right\
-   left(m_mapBracketS0cN0w)right\
-   left(m_mapBracketS0wN0t)right\
-   left(m_mapBracketS0cN0t)right\
-\
-   left(m_mapS0cSeparator)right\
-   left(m_mapS0wcSeparator)right\
-   left(m_mapS0cSepCount)right\
-   left(m_mapS0wcSepCount)right\
-   left(m_mapS1cSeparator)right\
-   left(m_mapS1wcSeparator)right\
-   left(m_mapS1cSepCount)right\
-   left(m_mapS1wcSepCount)right\
-   left(m_mapS0cS1cSeparator)right\
-   left(m_mapS0cS1cSepCount)right\
+   _BRACKET_AND_SEPARATOR_FEATURES(left,right)\
 \
    left(m_mapS0wS1Dist)right\
    left(m_mapS0cS1Dist)right\

@@ -77,9 +77,8 @@ public:
    int lexical_head;
    int lexical_start;
    int lexical_end;
-   bool norv; // pure noun or verb
 public:
-   CStateNode() : CCFGTreeNode() { lexical_head=-1; lexical_start=-1; lexical_end = -1; norv = false; }
+   CStateNode() : CCFGTreeNode() { lexical_head=-1; lexical_start=-1; lexical_end = -1; }
    virtual ~CStateNode() {}
 public:
    bool operator == (const CStateNode &nd) const {
@@ -143,8 +142,6 @@ public:
       nodes[t].temp = false;
       nodes[t].constituent = PENN_CON_NONE;
       nodes[t].token = current_word;
-      nodes[t].norv = (sent->at(current_word).tag == PENN_TAG_NN || 
-                        sent->at(current_word).tag == PENN_TAG_VV);
       nodes[t].lexical_start = current_word;
       nodes[t].lexical_end = current_word;
       nodes[t].lexical_head = current_word ++;
@@ -162,7 +159,6 @@ public:
       nodes[c].single_child = single_child;
       nodes[c].head_left = head_left;
       nodes[c].temp = temporary;//
-      const bool norv = (constituent == PENN_CON_NP || constituent == PENN_CON_VP);
       if (single_child) {
          assert(head_left == false);
          assert(temporary == false);
@@ -174,7 +170,6 @@ public:
          nodes[c].lexical_start = nodes[l].lexical_start;
          nodes[c].lexical_end = nodes[l].lexical_end;
          nodes[c].lexical_head = nodes[l].lexical_head;
-         nodes[c].norv = (nodes[l].norv && norv);
          stack.push_back(c);
          unary_reduce ++ ;
       }
@@ -194,7 +189,6 @@ public:
             nodes[c].lexical_head = nodes[l].lexical_head;
          else
             nodes[c].lexical_head = nodes[r].lexical_head;
-         nodes[c].norv = (nodes[l].norv && nodes[r].norv && norv);
          stack.push_back(c);
          unary_reduce = 0;
       }

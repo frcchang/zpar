@@ -63,12 +63,12 @@ enum PENN_TAG_CONSTANTS {
 
 const int PENN_TAG_COUNT_BITS = 6;
 
-const unsigned long PENN_TAG_MUST_SEE = (static_cast<unsigned long>(1)<<PENN_TAG_SYM) | \
-                                        (static_cast<unsigned long>(1)<<PENN_TAG_FW) | \
-                                        (static_cast<unsigned long>(1)<<PENN_TAG_CD) | \
-                                        (static_cast<unsigned long>(1)<<PENN_TAG_LS) | \
-                                        (static_cast<unsigned long>(1)<<PENN_TAG_NOUN_PROPER) | \
-                                        (static_cast<unsigned long>(1)<<PENN_TAG_NOUN_PROPER_PLURAL) ;
+const unsigned long long PENN_TAG_MUST_SEE = (static_cast<unsigned long long>(1)<<PENN_TAG_SYM) | \
+                                        (static_cast<unsigned long long>(1)<<PENN_TAG_FW) | \
+                                        (static_cast<unsigned long long>(1)<<PENN_TAG_CD) | \
+                                        (static_cast<unsigned long long>(1)<<PENN_TAG_LS) | \
+                                        (static_cast<unsigned long long>(1)<<PENN_TAG_NOUN_PROPER) | \
+                                        (static_cast<unsigned long long>(1)<<PENN_TAG_NOUN_PROPER_PLURAL) ;
 
 //===============================================================
 
@@ -78,7 +78,7 @@ public:
    const static char SEPARATOR = '/' ;
 
 protected:
-   unsigned long int m_code;
+   unsigned long m_code;
 
 public:
    CTag() { m_code=PENN_TAG_COUNT; }
@@ -92,7 +92,7 @@ public:
    virtual ~CTag() {}
 
 public:
-   unsigned long int code() const { return m_code; }
+   unsigned long code() const { return m_code; }
    string str() const { assert(m_code<PENN_TAG_COUNT) ; return PENN_TAG_STRINGS[m_code]; }
    void load(const string &s) {
       m_code = PENN_TAG_NONE ;
@@ -111,15 +111,15 @@ public:
 
 //===============================================================
 
-inline unsigned long int encodeTags(const CTag &tag1, const CTag &tag2) {
+inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2) {
    return (tag1.code()<<PENN_TAG_COUNT_BITS)+tag2.code();
 }
 
-inline unsigned long int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3) {
+inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3) {
    return (tag1.code()<<PENN_TAG_COUNT_BITS*2)+(tag2.code()<<PENN_TAG_COUNT_BITS)+tag3.code() ;
 }
 
-inline unsigned long int encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3, const CTag &tag4) {
+inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3, const CTag &tag4) {
    return (tag1.code()<<PENN_TAG_COUNT_BITS*3)+(tag2.code()<<PENN_TAG_COUNT_BITS*2)+
           (tag3.code()<<PENN_TAG_COUNT_BITS)+tag4.code() ;
 }
