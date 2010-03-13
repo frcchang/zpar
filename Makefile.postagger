@@ -9,16 +9,11 @@ else
 	endif
 endif
 
-
-$(DIST_TAGGER):
-	mkdir $(DIST_TAGGER)
-$(OBJECT_TAGGER):
-	mkdir $(OBJECT_TAGGER)
 chinese.postagger: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_TAGGER) $(DIST_TAGGER) $(DIST_TAGGER)/tagger $(DIST_TAGGER)/train
 	@echo The Chinese word tagger system is compiled successfully into $(DIST_TAGGER).
 
 # the weight module
-$(OBJECT_TAGGER)/weight.o: $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/impl_include.h $(SRC_CHINESE)/tags.h ./Makefile
+$(OBJECT_TAGGER)/weight.o: $(OBJECT_TAGGER) $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.h $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/impl_include.h $(SRC_CHINESE)/tags.h ./Makefile
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/weight.cpp -o $(OBJECT_TAGGER)/weight.o
 
 # the tagger module
@@ -37,18 +32,11 @@ $(DIST_TAGGER)/train: $(SRC_TAGGER)/train.cpp $(OBJECT_TAGGER)/weight.o $(OBJECT
 
 #==============================
 
-SRC_ENGLISH_TAGGER = $(SRC_ENGLISH)/tagger
-DIST_ENGLISH_TAGGER = $(DIST_DIR)/english.postagger
-OBJECT_ENGLISH_TAGGER = $(OBJECT_DIR)/english.postagger
-$(DIST_ENGLISH_TAGGER):
-	mkdir $(DIST_ENGLISH_TAGGER)
-$(OBJECT_ENGLISH_TAGGER):
-	mkdir $(OBJECT_ENGLISH_TAGGER)
 english.postagger: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_ENGLISH_TAGGER) $(DIST_ENGLISH_TAGGER) $(DIST_ENGLISH_TAGGER)/tagger $(DIST_ENGLISH_TAGGER)/train
 	@echo The English part-of-speech tagging system is compiled successfully into $(DIST_ENGLISH_TAGGER).
 
 # the weight module
-$(OBJECT_ENGLISH_TAGGER)/weight.o: $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.h $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
+$(OBJECT_ENGLISH_TAGGER)/weight.o: $(OBJECT_ENGLISH_TAGGER) $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.h $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
 	$(CXX) $(CXXFLAGS) -I$(SRC_ENGLISH) -I$(SRC_ENGLISH_TAGGER) -c $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/tagger_weight.cpp -o $(OBJECT_ENGLISH_TAGGER)/weight.o
 
 # the tagging object

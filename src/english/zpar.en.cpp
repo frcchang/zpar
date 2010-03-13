@@ -129,7 +129,7 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *tagged_sent = new CTwoStringVector; 
-   CDependencyTree *output_sent = new CDependencyTree; 
+   CDependencyParse *output_sent = new CDependencyParse; 
 
    unsigned nCount=0;
    
@@ -143,7 +143,7 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
          input_sent->pop_back();
       }
       tagger.tag(input_sent, tagged_sent, 1, NULL);
-      depparser.parse(*tagged_sent, output_sent, 1);
+      depparser.parse(*tagged_sent, output_sent, 1, NULL);
       // Ouptut sent
       (*outs) << *output_sent << endl;
    }

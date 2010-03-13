@@ -12,6 +12,7 @@
 #include "tagger.h"
 #include "reader.h"
 #include "writer.h"
+#include "charcat.h"
 
 #include <cstring>
 
