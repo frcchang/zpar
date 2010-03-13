@@ -55,11 +55,8 @@ public:
    int s1_head_index;
 
    unsigned long open_bracket_match_type;
+#ifdef _CHINESE_CFG_H
    unsigned long s0c_bracket, s1c_bracket, n0t_bracket, s0cs1c_bracket, s0cn0t_bracket;
-
-   unsigned long s0ln, s0rn, s1ln, s1rn;
-   unsigned long s0m, s1m, s2m, n0m;
-   bool n0norv;
 
    vector<unsigned long> s0cs1c_separator; // one particular separator punctuation
    vector<unsigned long> s0c_separator;
@@ -67,6 +64,11 @@ public:
    unsigned long s0cs1c_sepcount; // the count of separator pus between them
    unsigned long s0c_sepcount; // unigram backup
    unsigned long s1c_sepcount;
+#endif
+
+   unsigned long s0ln, s0rn, s1ln, s1rn;
+   unsigned long s0m, s1m, s2m, n0m;
+   bool n0norv;
 
    unsigned long s0s1_dist, s0cs1_dist, s0s1c_dist, s0cs1c_dist;
 protected:
@@ -249,6 +251,7 @@ public:
       }
       assert(s1==-1||s1_head_index!=-1);
 
+#ifdef _CHINESE_CFG_H
       // bracket
       static int last_stack_starting_bracket;
       last_stack_starting_bracket = -1;
@@ -307,6 +310,7 @@ public:
       s0cs1c_sepcount=encodeTorCs(s0cs1c,sepcount);
       s0c_sepcount=encodeTorCs(s0c,sepcount);
       s1c_sepcount=encodeTorCs(s1c,sepcount);
+#endif
 
       // S{0/1}{LD/RD}
       countleftdependents(item->nodes, s0, s0ld, s0ln);
@@ -329,13 +333,6 @@ public:
       s1ldw = s1ld == -1 ? 0 : &(wrds[item->nodes[s1ld].lexical_head]);
       s1rdt = s1rd==-1 ? 0 : encodeT(wrds[item->nodes[s1rd].lexical_head]);
       s1rdw = s1rd == -1 ? 0 : &(wrds[item->nodes[s1rd].lexical_head]);
-
-      // Rhythm
-      if (s0node->norv) s0m = encodeRhythm(*s0node, wordlen);
-      if (s1!=-1&&s1node->norv) s1m = encodeRhythm(*s1node, wordlen);
-      if (s2!=-1&&s2node->norv) s2m = encodeRhythm(*s2node, wordlen);
-      n0norv = (n0!=-1&&(n0t==PENN_TAG_NN||n0t==PENN_TAG_VV));
-      if (n0norv) n0m = wordlen[n0]; else n0m = 0;
 
       if (s1!=-1) {
 //         s0s1_dist = encodeLinkSize(s0node->lexical_head, s1node->lexical_head);

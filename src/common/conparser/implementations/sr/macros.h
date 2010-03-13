@@ -16,23 +16,23 @@ inline unsigned long encodeT(const CTaggedWord<CTag> &wd) {
    assert(PENN_TAG_COUNT+7<(1<<PENN_TAG_COUNT_BITS));
    const unsigned long t = wd.tag.code();
 return t;
-   if (t==PENN_TAG_PU) {
-      const CWord &w = wd;
-      if (w==CH_COMMA)
-         return PENN_TAG_COUNT;
-      if (w==CH_PERIOD)
-         return PENN_TAG_COUNT+1;
-      if (w==CH_DUN)
-         return PENN_TAG_COUNT+2;
-      if (w==CH_SEMICOLON)
-         return PENN_TAG_COUNT+3;
-      if (w==CH_COLON)
-         return PENN_TAG_COUNT+4;
-      if (getStartingBracket(w)!=-1)
-         return PENN_TAG_COUNT+5;
-      if (getEndingBracket(w)!=-1)
-         return PENN_TAG_COUNT+6;
-   }
+//   if (t==PENN_TAG_PU) {
+//      const CWord &w = wd;
+//      if (w==CH_COMMA)
+//         return PENN_TAG_COUNT;
+//      if (w==CH_PERIOD)
+//         return PENN_TAG_COUNT+1;
+//      if (w==CH_DUN)
+//         return PENN_TAG_COUNT+2;
+//      if (w==CH_SEMICOLON)
+//         return PENN_TAG_COUNT+3;
+//      if (w==CH_COLON)
+//         return PENN_TAG_COUNT+4;
+//      if (getStartingBracket(w)!=-1)
+//         return PENN_TAG_COUNT+5;
+//      if (getEndingBracket(w)!=-1)
+//         return PENN_TAG_COUNT+6;
+//   }
    return t;
 }
 

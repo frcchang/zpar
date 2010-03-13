@@ -127,8 +127,11 @@ OBJECT_DEPPARSER = $(OBJECT_DIR)/chinese.depparser
 #  conparser
 SRC_COMMON_CONPARSER = $(SRC_COMMON)/conparser
 SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
+SRC_ENGLISH_CONPARSER = $(SRC_COMMON_CONPARSER)
 DIST_CONPARSER = $(DIST_DIR)/chinese.conparser
 OBJECT_CONPARSER = $(OBJECT_DIR)/chinese.conparser
+DIST_ENGLISH_CONPARSER = $(DIST_DIR)/english.conparser
+OBJECT_ENGLISH_CONPARSER = $(OBJECT_DIR)/english.conparser
 
 #----------------------------------------------------------------
 #
@@ -137,6 +140,7 @@ OBJECT_CONPARSER = $(OBJECT_DIR)/chinese.conparser
 #----------------------------------------------------------------
 
 include Makefile.zpar
+include Makefile.zpar.en
 
 #----------------------------------------------------------------
 #
