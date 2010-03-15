@@ -2,7 +2,7 @@
  *                                                              *
  * tagger_weight.cpp - the weight definition method             *
  *                                                              *
- * Part of the part-of-speech tagger of English                 *
+ * Part of the part-of-speech tagger of common                  *
  *                                                              *
  * Yue Zhang                                                    *
  * 2007.10                                                      *
@@ -11,8 +11,8 @@
 
 #include "tagger_weight.h"
 
-using namespace english;
-using namespace english::tagger;
+using namespace TARGET_LANGUAGE;
+using namespace TARGET_LANGUAGE::tagger;
 
 /*--------------------------------------------------------------
  *

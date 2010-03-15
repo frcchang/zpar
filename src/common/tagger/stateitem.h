@@ -1,6 +1,6 @@
 
-#ifndef ENGLISH_TAGGER_STATEITEM_H
-#define ENGLISH_TAGGER_STATEITEM_H 1
+#ifndef _COMMON_TAGGER_STATEITEM_H
+#define _COMMON_TAGGER_STATEITEM_H 1
 
 /*===============================================================
  *
@@ -12,11 +12,11 @@
 
 struct CStateItem {
    // words and tags
-   unsigned long int *m_lTags;
-   unsigned long int m_nLength;                      // the length of the sentence means the number of words it contains
+   CTag *m_lTags;
+   unsigned long m_nLength;                      // the length of the sentence means the number of words it contains
    // item score
    SCORE_TYPE m_nScore;
-   CStateItem() { m_lTags = new unsigned long[MAX_SENTENCE_SIZE]; clear(); }
+   CStateItem() { m_lTags = new CTag[MAX_SENTENCE_SIZE]; clear(); }
    ~CStateItem() { delete[] m_lTags; }
    CStateItem(CStateItem& item) { cerr<<"CStateItem does not support copy constructor!"; cerr.flush(); assert(1==0); }
    inline bool operator < (const CStateItem &item) const { return this->m_nScore < item.m_nScore; }
@@ -35,7 +35,7 @@ struct CStateItem {
    void setTag(const unsigned long &index, const unsigned long &tag) {
       m_lTags[index] = tag;
    }
-   const unsigned long &getTag(const unsigned long &index) const {
+   const CTag &getTag(const unsigned long &index) const {
       return m_lTags[index];
    }
    inline void clear() { m_nScore = 0; m_nLength = 0; }

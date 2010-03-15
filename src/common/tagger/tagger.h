@@ -8,8 +8,8 @@
  *                                                              *
  ****************************************************************/
 
-#ifndef _ENGLISH_TAGGER_H
-#define _ENGLISH_TAGGER_H
+#ifndef _COMMON_TAGGER_H
+#define _COMMON_TAGGER_H
 
 #include "tagger_include.h"
 
@@ -19,7 +19,7 @@
  *
  *==============================================================*/
 
-namespace english {
+namespace TARGET_LANGUAGE {
 
 class CTagger;
 
@@ -33,7 +33,7 @@ namespace tagger {
 
 #include "knowledge/tagdict.h" 
 
-namespace english {
+namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
@@ -66,14 +66,14 @@ private:
    vector<CWord> m_Cache;      // word cache for decoding
 
 public:
-   CTagger(const string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(PENN_TAG_COUNT) { 
+   CTagger(const string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(CTag::COUNT) { 
       m_weights = new tagger::CWeight(m_sFeatureDB, bTrain); 
       loadScores();
       if (m_bTrain) m_nTrainingRound = 0;
       if (m_bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
    ~CTagger() { delete m_weights; }
-   CTagger(CTagger& tagger) : m_TagDict(PENN_TAG_COUNT) { cerr<<"CTagger does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CTagger(CTagger& tagger) : m_TagDict(CTag::COUNT) { cerr<<"CTagger does not support copy constructor!"; cerr.flush(); assert(1==0); }
 
 public:
    void loadTagDictionary(const string &sTagDictPath, bool bUpdateKnowledgeBase=false) {
@@ -105,7 +105,7 @@ protected:
    // add local features to a global feature vector (first param)
    void updateLocalFeatureVector(SCORE_UPDATE method, CTwoStringVector* tagged, int index, int round=0);
 };
-}; // namespace english
+}; // namespace TARGET_LANGUAGE
 
 #endif
 
