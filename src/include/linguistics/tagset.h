@@ -83,6 +83,42 @@ inline const unsigned long &hash(const CTagSet<CTag, size> &set) {return set.has
 
 //===============================================================
 
+template<typename CTag>
+inline unsigned long encodeTags(const unsigned long &tag1, const unsigned long &tag2) {
+   assert((tag2>>CTag::SIZE)==0);
+   return (tag1<<CTag::SIZE) | tag2;
+}
+
+template<typename CTag>
+inline unsigned long encodeTags(const unsigned long &tag1, const unsigned long &tag2, const unsigned long &tag3) {
+   return (tag1<<CTag::SIZE*2) | (tag2<<CTag::SIZE) | tag3 ;
+}
+
+template<typename CTag>
+inline unsigned long encodeTags(const unsigned long &tag1, const unsigned long &tag2, const unsigned long &tag3, const unsigned long &tag4) {
+   return (tag1<<CTag::SIZE*3) | (tag2<<CTag::SIZE*2) |
+          (tag3<<CTag::SIZE) | tag4 ;
+}
+
+template<typename CTag>
+inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2) {
+   return (tag1.code()<<CTag::SIZE) | tag2.code();
+}
+
+template<typename CTag>
+inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3) {
+   return (tag1.code()<<CTag::SIZE*2) | (tag2.code()<<CTag::SIZE) | tag3.code() ;
+}
+
+template<typename CTag>
+inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3, const CTag &tag4) {
+   assert( CTag::SIZE*4<sizeof(unsigned long)*8 ); 
+   return (tag1.code()<<CTag::SIZE*3) | (tag2.code()<<CTag::SIZE*2) |
+          (tag3.code()<<CTag::SIZE) | tag4.code() ;
+}
+
+//===============================================================
+
 template<typename CTag, unsigned long size>
 inline istream & operator >> (istream &is, CTagSet<CTag, size> &c) {
 
