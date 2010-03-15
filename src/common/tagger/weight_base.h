@@ -7,10 +7,10 @@
  *
  ***************************************************************/
 
-#ifndef _ENGLISH_TAGGER_WEIGHT_BASE_H
-#define _ENGLISH_TAGGER_WEIGHT_BASE_H
+#ifndef _COMMON_TAGGER_WEIGHT_BASE_H
+#define _COMMON_TAGGER_WEIGHT_BASE_H
 
-namespace english {
+namespace TARGET_LANGUAGE {
 
 namespace tagger {
 
@@ -35,6 +35,6 @@ public:
 };
 
 } // namespace tagger
-} // namespace english
+} // namespace TARGET_LANGUAGE
 
 #endif

@@ -1,19 +1,19 @@
 /***************************************************************
  *
- * The weights for the English POS tagging model
+ * The weights for the General POS tagging model
  *
  * Yue Zhang, 2007.10
  *
  ***************************************************************/
 
-#ifndef ENGLISH_TAGGER_WEIGHTS_H
-#define ENGLISH_TAGGER_WEIGHTS_H 1
+#ifndef _COMMON_TAGGER_WEIGHTS_H
+#define _COMMON_TAGGER_WEIGHTS_H 1
 
 #include "tagger_include.h"
 
 #include "weight_base.h"
 
-namespace english {
+namespace TARGET_LANGUAGE {
 namespace tagger {
 
 #include "tagger_impl.h"
@@ -40,11 +40,13 @@ namespace tagger {
 //
 typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
-typedef CScoreMap< unsigned long int, SCORE_TYPE > CIntMap;
-typedef CScoreMap< pair<unsigned long int, unsigned long int>, SCORE_TYPE > CTwoIntMap;
-typedef CScoreMap< pair<CWord, unsigned long int>, SCORE_TYPE > CWordIntMap;
-
-//typedef CHashMap< CWord, int > CWordIntMap;
+//typedef CScoreMap< unsigned long, SCORE_TYPE > CIntMap;
+//typedef CScoreMap< pair<unsigned long, unsigned long>, SCORE_TYPE > CTwoIntMap;
+//typedef CScoreMap< pair<CWord, unsigned long>, SCORE_TYPE > CWordIntMap;
+typedef CScoreMap< CTagSet<CTag, 2>, SCORE_TYPE > CTagSet2Map;
+typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
+typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
+typedef CScoreMap< CTag, SCORE_TYPE > CTagMap;
 
 /*===============================================================
  *
@@ -55,20 +57,20 @@ typedef CScoreMap< pair<CWord, unsigned long int>, SCORE_TYPE > CWordIntMap;
 struct CWeight : public CWeightBase {
 
    // FEATURE TEMPLATES 
-   CTwoIntMap m_mapLastTagByTag;
-   CTwoIntMap m_mapLastTwoTagsByTag;
+   CTagSet2Map m_mapLastTagByTag;
+   CTagSet3Map m_mapLastTwoTagsByTag;
 
-   CWordIntMap m_mapCurrentTag;
-   CWordIntMap m_mapTagByPrevWord;
-   CWordIntMap m_mapTagByNextWord;
-   CWordIntMap m_mapTagBySecondPrevWord;
-   CWordIntMap m_mapTagBySecondNextWord;
+   CWordTagMap m_mapCurrentTag;
+   CWordTagMap m_mapTagByPrevWord;
+   CWordTagMap m_mapTagByNextWord;
+   CWordTagMap m_mapTagBySecondPrevWord;
+   CWordTagMap m_mapTagBySecondNextWord;
 
-   CIntMap m_mapContainHyphen;
-   CIntMap m_mapContainNumber;
-   CIntMap m_mapContainCapitalLetter;
-   CWordIntMap m_mapTagByPrefix;
-   CWordIntMap m_mapTagBySuffix;
+   CTagMap m_mapContainHyphen;
+   CTagMap m_mapContainNumber;
+   CTagMap m_mapContainCapitalLetter;
+   CWordTagMap m_mapTagByPrefix;
+   CWordTagMap m_mapTagBySuffix;
 
    // CONSTRUCTOR 
    CWeight(const string &sFeatureDB, bool bTrain) : CWeightBase(sFeatureDB, bTrain) , 

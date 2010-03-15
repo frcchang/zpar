@@ -1,6 +1,6 @@
 /****************************************************************
  *                                                              *
- * train.cpp - the training of the English tagger.              *
+ * train.cpp - the training of the common tagger.               *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -15,7 +15,7 @@
 
 #include <cstring>
 
-using namespace english;
+using namespace TARGET_LANGUAGE;
 
 const int TRAINING_ROUND = 1;
 

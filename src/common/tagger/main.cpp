@@ -1,6 +1,6 @@
 /****************************************************************
  *                                                              *
- * main.cpp - main app of the English tagger.                   *
+ * main.cpp - main app of the common tagger.                    *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -14,7 +14,7 @@
 #include "writer.h"
 #include "stdlib.h"
 
-using namespace english;
+using namespace TARGET_LANGUAGE;
 
 /*===============================================================
  *
