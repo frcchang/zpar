@@ -304,7 +304,7 @@ void CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int n
    static CStateItem best_bigram[PENN_TAG_COUNT][PENN_TAG_COUNT];
    static int done_bigram[PENN_TAG_COUNT][PENN_TAG_COUNT];
    static SCORE_TYPE current_score;
-   static unsigned long int possible_tags; // possible tags for a word
+   static unsigned long long possible_tags; // possible tags for a word
 
    assert(length<MAX_SENTENCE_SIZE);
    assert(vReturn!=NULL); 
@@ -350,7 +350,7 @@ void CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int n
 
          bool bDone = false;
          for ( tag=2; tag<PENN_TAG_COUNT; ++tag ) {
-            if ( possible_tags & (static_cast<unsigned long int>(1)<<tag) ) {
+            if ( possible_tags & (static_cast<unsigned long long>(1)<<tag) ) {
                bDone = true;
                pGenerator->setTag( index, tag );
                current_score = pGenerator->score() + getLocalScore(sentence, pGenerator, index); 
