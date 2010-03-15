@@ -4,7 +4,7 @@
 #include "file_utils.h"
 #include "bitarray.h"
 #include "options.h"
-#include "tagset.h"
+#include "linguistics/tagset.h"
 
 namespace chinese {
 #include "tagutils.h"

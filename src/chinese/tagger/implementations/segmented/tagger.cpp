@@ -69,9 +69,9 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
    const CTag tag = item->getTag(index);
    const CTag last_tag = index>0 ? item->getTag(index-1) : CTag::SENTENCE_BEGIN;
    const CTag second_last_tag = index>1 ? item->getTag(index-2) : CTag::SENTENCE_BEGIN;
-   const CTagSet<2> tag_bigram(encodeTags(tag, last_tag));
-   const CTagSet<3> tag_trigram(encodeTags(tag, last_tag, second_last_tag));
-   static CTaggedWord<CTag> wt1, wt2;
+   const CTagSet<CTag, 2> tag_bigram(encodeTags(tag, last_tag));
+   const CTagSet<CTag, 3> tag_trigram(encodeTags(tag, last_tag, second_last_tag));
+   static CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    static CTwoTaggedWords wt12;
 
    long int first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (1<<tag.code()) ;
@@ -198,9 +198,9 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
    const CTag tag( sentence->at(index).second ) ; 
    const CTag last_tag = index > 0 ? CTag( sentence->at( index-1 ).second) : CTag::SENTENCE_BEGIN ;
    const CTag second_last_tag = index > 1 ? CTag( sentence->at( index-2 ).second) : CTag::SENTENCE_BEGIN ;
-   const CTagSet<2> tag_bigram(encodeTags(tag.code(), last_tag.code()));
-   const CTagSet<3> tag_trigram(encodeTags(tag.code(), last_tag.code(), second_last_tag.code()));
-   CTaggedWord<CTag> wt1, wt2;
+   const CTagSet<CTag, 2> tag_bigram(encodeTags(tag.code(), last_tag.code()));
+   const CTagSet<CTag, 3> tag_trigram(encodeTags(tag.code(), last_tag.code(), second_last_tag.code()));
+   CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    CTwoTaggedWords wt12;
    
    // about the char categories 

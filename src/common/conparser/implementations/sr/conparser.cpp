@@ -1068,7 +1068,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    m_lCache.clear();
    m_lWordLen.clear();
    for ( x=0; x<length; x++ ) {
-      m_lCache.push_back( CTaggedWord<CTag>(sentence[x].first , sentence[x].second) );
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[x].first , sentence[x].second) );
       m_lWordLen.push_back( normalize3(getUTF8StringLength(sentence[x].first)) );
    }
    // initialise agenda

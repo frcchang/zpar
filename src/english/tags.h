@@ -74,9 +74,6 @@ const unsigned long long PENN_TAG_MUST_SEE = (static_cast<unsigned long long>(1)
 
 class CTag {
 
-public:
-   const static char SEPARATOR = '/' ;
-
 protected:
    unsigned long m_code;
 
@@ -110,6 +107,8 @@ public:
 };
 
 //===============================================================
+
+const char TAG_SEPARATOR = '/';
 
 inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2) {
    return (tag1.code()<<PENN_TAG_COUNT_BITS)+tag2.code();

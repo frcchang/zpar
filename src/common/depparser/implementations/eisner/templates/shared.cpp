@@ -1,6 +1,6 @@
 
-   const CTaggedWord<CTag> &head = m_lCache[head_index];
-   const CTaggedWord<CTag> &dep = m_lCache[dep_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &head = m_lCache[head_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &dep = m_lCache[dep_index];
 
    const int left_index = head_index < dep_index ? head_index : dep_index ;
    const int right_index = head_index < dep_index ? dep_index : head_index ;
@@ -30,12 +30,12 @@
    const CWord &dep_word = static_cast<const CWord&>(dep);
    const CTag &head_tag = head.tag;
    const CTag &dep_tag = dep.tag;
-   const CTaggedWord<CTag> &head_word_tag = static_cast<const CTaggedWord<CTag> &>(head);
-   const CTaggedWord<CTag> head_word_nil(head_word, PENN_TAG_NONE);
-   const CTaggedWord<CTag> head_nil_tag(g_emptyWord, head_tag);
-   const CTaggedWord<CTag> &dep_word_tag = static_cast<const CTaggedWord<CTag> &>(dep);
-   const CTaggedWord<CTag> dep_word_nil(dep_word, PENN_TAG_NONE);
-   const CTaggedWord<CTag> dep_nil_tag(g_emptyWord, dep_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = static_cast<const CTaggedWord<CTag, TAG_SEPARATOR> &>(head);
+   const CTaggedWord<CTag, TAG_SEPARATOR> head_word_nil(head_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> head_nil_tag(g_emptyWord, head_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = static_cast<const CTaggedWord<CTag, TAG_SEPARATOR> &>(dep);
+   const CTaggedWord<CTag, TAG_SEPARATOR> dep_word_nil(dep_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> dep_nil_tag(g_emptyWord, dep_tag);
    const CTag &left_tag = m_lCache[left_index].tag;
    const CTag &right_tag = m_lCache[right_index].tag;
 

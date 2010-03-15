@@ -43,7 +43,7 @@ class CConParser : public CConParserBase {
 private:
 
    CAgendaBeam<conparser::CStateItem> *m_Agenda;
-   vector< CTaggedWord<CTag> > m_lCache;
+   vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    vector<unsigned long> m_lWordLen;
    int m_nTrainingRound;
    int m_nTotalErrors;

@@ -42,7 +42,7 @@ class CDepParser : public CDepParserBase {
 
 private:
 
-   vector< CTaggedWord<CTag> > m_lCache;
+   vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;

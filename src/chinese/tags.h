@@ -16,6 +16,8 @@
 
 namespace chinese {
 
+const char TAG_SEPARATOR = '_';
+
 inline unsigned long encodeTags(const unsigned long &tag1, const unsigned long &tag2) {
    assert((tag2>>CTag::SIZE)==0);
    return (tag1<<CTag::SIZE) | tag2;

@@ -1,6 +1,6 @@
 /****************************************************************
  *                                                              *
- * tfgset.h - the definitions for Chinese tag set.              *
+ * tagset.h - the definitions for general tag set.              *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -11,15 +11,13 @@
 #ifndef _TAGSET_H
 #define _TAGSET_H
 
-namespace chinese {
-
 /*===============================================================
  *
  * definitions 
  *
  *==============================================================*/
 
-template<unsigned long size>
+template<typename CTag, unsigned long size>
 class CTagSet {
 
 protected:
@@ -78,17 +76,15 @@ public:
    bool clear() { m_nHash = 0; }
 };
 
-};
+//===============================================================
+
+template<typename CTag, unsigned long size>
+inline const unsigned long &hash(const CTagSet<CTag, size> &set) {return set.hash();}
 
 //===============================================================
 
-template<unsigned long size>
-inline const unsigned long &hash(const chinese::CTagSet<size> &set) {return set.hash();}
-
-//===============================================================
-
-template<unsigned long size>
-inline istream & operator >> (istream &is, chinese::CTagSet<size> &c) {
+template<typename CTag, unsigned long size>
+inline istream & operator >> (istream &is, CTagSet<CTag, size> &c) {
 
    string s;
    string t;
@@ -108,8 +104,8 @@ inline istream & operator >> (istream &is, chinese::CTagSet<size> &c) {
    return is;
 }
 
-template<unsigned long size>
-inline ostream & operator << (ostream &os, const chinese::CTagSet<size> &c) {
+template<typename CTag, unsigned long size>
+inline ostream & operator << (ostream &os, const CTagSet<CTag, size> &c) {
 
    os << "[ ";
    os << c.str();

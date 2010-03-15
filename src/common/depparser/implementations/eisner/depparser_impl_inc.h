@@ -13,7 +13,7 @@ typedef CDependencyTree CDependencyParse;
 
 namespace TARGET_LANGUAGE { 
 
-typedef CBigram< CTaggedWord<CTag> > CTwoTaggedWords ;
+typedef CBigram< CTaggedWord<CTag, TAG_SEPARATOR> > CTwoTaggedWords ;
 
 namespace depparser{
 

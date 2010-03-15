@@ -24,14 +24,17 @@
  *==============================================================*/
 
 // the word class, which includes hash
-template <typename CTag>
+template <typename CTag, char sTagSep>
 class CTaggedWord : virtual public CWord {
+
+public:
+   const static char sSeparator = sTagSep;
 
 public:
    CTag tag;
 
 public:
-   CTaggedWord() : CWord() { }
+   CTaggedWord(): CWord() { }
    CTaggedWord(const string &s, const CTag t) : CWord(s) { tag=t; }
    CTaggedWord(const CWord &w, const CTag t) : CWord(w) { tag=t; }
    CTaggedWord(const CTaggedWord &w) : CWord(static_cast<CWord>(w)) { tag = w.tag; }
@@ -67,27 +70,27 @@ public:
    
 //===============================================================
 
-template <typename CTag>
-inline unsigned long int hash( const CTaggedWord<CTag> &tw ) { return hash(static_cast<CWord>(tw))*37+hash(tw.tag); }
+template <typename CTag, char sTagSep>
+inline unsigned long int hash( const CTaggedWord<CTag, sTagSep> &tw ) { return hash(static_cast<CWord>(tw))*37+hash(tw.tag); }
 
 //===============================================================
 
-template <typename CTag>
-istream & operator >> (istream &is, CTaggedWord<CTag> &tw) {
+template <typename CTag, char sTagSep>
+istream & operator >> (istream &is, CTaggedWord<CTag, sTagSep> &tw) {
    string s;
    is >> s;
    int middle;
-   middle = s.rfind(CTag::SEPARATOR, s.size()-1);
+   middle = s.rfind(sTagSep, s.size()-1);
    assert(middle>=0);
    assert(middle<s.size()-1);
    tw.load(CWord(s.substr(0,middle)), CTag(s.substr(middle+1)));
    return is ;
 }
 
-template <typename CTag>
-ostream & operator << (ostream &os, const CTaggedWord<CTag> &tw) {
+template <typename CTag, char sTagSep>
+ostream & operator << (ostream &os, const CTaggedWord<CTag, sTagSep> &tw) {
    os << tw.str() ;
-   os << CTag::SEPARATOR ;
+   os << sTagSep ;
    os << tw.tag ; 
    return os ;
 }

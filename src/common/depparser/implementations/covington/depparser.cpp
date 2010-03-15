@@ -15,7 +15,7 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
 
 const CWord g_emptyWord("");
-const CTaggedWord<CTag> g_emptyTaggedWord("", PENN_TAG_NONE);
+const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", PENN_TAG_NONE);
 const CTag g_noneTag = PENN_TAG_NONE;
 const CScore<SCORE_TYPE> g_zeroScore;
 
@@ -112,7 +112,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const CStateItem *item, con
    if ( arity_direction == ARITY_DIRECTION_RIGHT ) 
       arity = -arity-1; // -1 to avoid collision with arity=0 left
 
-   pair<CTaggedWord<CTag>, int> taggedword_arity = make_pair( m_lCache[word_index] , arity );
+   pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity = make_pair( m_lCache[word_index] , arity );
    pair<unsigned long int, int> tag_arity = make_pair( m_lCache[word_index].tag.code() , arity );
 
    // compute score
@@ -333,7 +333,7 @@ void CDepParser::work( const CTwoStringVector &sentence , CDependencyParse *retv
    // initialise word cache
    m_lCache.clear();
    for ( index=0; index<length; index++ )
-      m_lCache.push_back( CTaggedWord<CTag>(sentence[index].first , sentence[index].second) );
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
    // initialise agenda
    m_Agenda->clear();
    pCandidate = m_Agenda->candidateItem();      // make the first item

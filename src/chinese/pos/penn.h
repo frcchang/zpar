@@ -74,7 +74,6 @@ const bool PENN_TAG_CLOSED[] = {
 
 class CTag {
 public:
-   const static char SEPARATOR = '_';
    enum {SENTENCE_BEGIN = PENN_TAG_BEGIN};
    enum {SENTENCE_END = PENN_TAG_END};
    enum {COUNT = PENN_TAG_COUNT};

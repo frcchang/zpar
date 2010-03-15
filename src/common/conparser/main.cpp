@@ -48,7 +48,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    output_sent = new CSentenceParsed[nBest];
  
    // Read the next example
-   bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, CTag::SEPARATOR);
+   bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
    while( bReadSuccessful ) {
 
       cout << "Sentence " << nCount << "...";
@@ -69,7 +69,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       cout << "done. " << endl; 
       
       // Read the next example
-      bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, CTag::SEPARATOR);
+      bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
    }
 
    delete [] output_sent ;

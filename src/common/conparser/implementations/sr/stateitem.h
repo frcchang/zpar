@@ -114,7 +114,7 @@ public:
    int current_word;
    int unary_reduce; // unary_reduce stores two things: non-negative value is the number of unary_reduces consecutively, -1 means that the state item is finished.
    const CContext *context;
-   const vector< CTaggedWord<CTag> > *sent;
+   const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
    
 public:
    CStateItem() {clear();}

@@ -3,16 +3,16 @@
    static int temp_index;
 
    /*----------------------word unigram----------------------*/
-   const CTaggedWord<CTag> &head_word_tag = m_lCache[head_index];
-   const CTaggedWord<CTag> &dep_word_tag = m_lCache[dep_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = m_lCache[head_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = m_lCache[dep_index];
    const CWord &head_word = static_cast<const CWord&>(head_word_tag);
    const CWord &dep_word = static_cast<const CWord&>(dep_word_tag);
    const CTag &head_tag = head_word_tag.tag;
    const CTag &dep_tag = dep_word_tag.tag;
-   const CTaggedWord<CTag> head_word_nil(head_word, PENN_TAG_NONE);
-   const CTaggedWord<CTag> head_nil_tag(g_emptyWord, head_tag);
-   const CTaggedWord<CTag> dep_word_nil(dep_word, PENN_TAG_NONE);
-   const CTaggedWord<CTag> dep_nil_tag(g_emptyWord, dep_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> head_word_nil(head_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> head_nil_tag(g_emptyWord, head_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> dep_word_nil(dep_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> dep_nil_tag(g_emptyWord, dep_tag);
 
    static int left_index; 
    static int right_index; 
@@ -61,12 +61,12 @@
 
    /*----------------------sibling----------------------*/
 
-   const CTaggedWord<CTag> &sibling = sibling_index==DEPENDENCY_LINK_NO_HEAD ? g_emptyTaggedWord : m_lCache[sibling_index] ;
+   const CTaggedWord<CTag, TAG_SEPARATOR> &sibling = sibling_index==DEPENDENCY_LINK_NO_HEAD ? g_emptyTaggedWord : m_lCache[sibling_index] ;
    const CWord &sibling_word = static_cast<const CWord&>(sibling);
    const CTag &sibling_tag = sibling.tag;
 
-   const CTaggedWord<CTag> sibling_word_tag(sibling_word, dep_tag);
-   const CTaggedWord<CTag> sibling_tag_word(dep_word, sibling_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> sibling_word_tag(sibling_word, dep_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> sibling_tag_word(dep_word, sibling_tag);
 
    static CTwoWords sibling_words ;
 
