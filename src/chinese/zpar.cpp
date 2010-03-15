@@ -76,7 +76,7 @@ void tag(const string sInputFile, const string sOutputFile, const string sFeatur
  *==============================================================*/
 
 void parse(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
-   cout << "Parsing started" << endl;
+   cout << "Initializing ZPar..." << endl;
    int time_start = clock();
    ostream *outs; if (sOutputFile=="") outs=&cout; else outs = new ofstream(sOutputFile.c_str()); 
    string sTaggerFeatureFile = sFeaturePath + "/tagger";
@@ -85,13 +85,16 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/conparser");
+   cout << "[The segmentation and tagging model] "; cout.flush();
    CTagger tagger(sTaggerFeatureFile, false, MAX_SENTENCE_SIZE, "", false);
+   cout << "[The parsing model] "; cout.flush();
    CConParser conparser(sParserFeatureFile, false);
    CDoc2Snt doc2snt(sInputFile, MAX_SENTENCE_SIZE);
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *tagged_sent = new CTwoStringVector; 
    chinese::CCFGTree *output_sent = new chinese::CCFGTree; 
+   cout << "ZPar initialized." << endl; cout.flush();
 
    unsigned nCount=0;
    
@@ -125,7 +128,7 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
  *==============================================================*/
 
 void depparse(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
-   cout << "Parsing started" << endl;
+   cout << "Initializing ZPar..." << endl;
    int time_start = clock();
    ostream *outs; if (sOutputFile=="") outs=&cout; else outs = new ofstream(sOutputFile.c_str()); 
    string sTaggerFeatureFile = sFeaturePath + "/tagger";
@@ -134,13 +137,16 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/depparser");
+   cout << "[The segmentation and tagging model] "; cout.flush();
    CTagger tagger(sTaggerFeatureFile, false, MAX_SENTENCE_SIZE, "", false);
+   cout << "[The parsing model] "; cout.flush();
    CDepParser depparser(sParserFeatureFile, false);
    CDoc2Snt doc2snt(sInputFile, MAX_SENTENCE_SIZE);
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *tagged_sent = new CTwoStringVector; 
    CDependencyTree *output_sent = new CDependencyTree; 
+   cout << "ZPar initialized." << endl; cout.flush();
 
    unsigned nCount=0;
    
