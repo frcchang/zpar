@@ -231,6 +231,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
+   clock_t time_start = clock();
    cout<<"Loading scores..."; cout.flush();
    ifstream file ; 
    file.open(m_sRecordPath.c_str()) ;
@@ -254,7 +255,7 @@ void CWeight::loadScores() {
    iss >> m_nMaxWordFrequency;
 
    file.close() ;
-   cout<<" done."<<endl;
+   cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
 }
 
 /*---------------------------------------------------------------
@@ -289,7 +290,7 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(int round) {
-   cout<<"Adding total feature vector..."; cout.flush();
+   cout<<"Computing averaged (total) feature vector..."; cout.flush();
    
    iterate_templates(,.computeAverage(round);) ;
    
