@@ -128,7 +128,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse & parsed) {
 
    m_lCache.clear();
    for ( int index=0; index<parsed.size(); index++ ) 
-      m_lCache.push_back( CTaggedWord<CTag>(parsed[index].word , CTag(parsed[index].tag)) );
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word , CTag(parsed[index].tag)) );
 
    for ( int i=0; i<parsed.size(); ++i ) {
       if ( parsed[i].head != DEPENDENCY_LINK_NO_HEAD )
@@ -199,15 +199,15 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
    m_lCache.clear();
    for ( int index=0; index<correct.size(); index++ ) 
-      m_lCache.push_back( CTaggedWord<CTag>(correct[index].word , CTag(correct[index].tag)) );
-   m_lCache.push_back( CTaggedWord<CTag>( "", PENN_TAG_END ) ); // EOS is appended to the tail of sentence
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(correct[index].word , CTag(correct[index].tag)) );
+   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", PENN_TAG_END ) ); // EOS is appended to the tail of sentence
    for ( int i=0; i<correct.size(); ++i) 
       if (correct[i].head != DEPENDENCY_LINK_NO_HEAD) updateCrossLinkScore( correct[i].head, i, correct, eAdd, round ); 
 
    m_lCache.clear();
    for ( int index=0; index<parsed.size(); index++ )
-      m_lCache.push_back( CTaggedWord<CTag>(parsed[index].word, CTag(parsed[index].tag)) );
-   m_lCache.push_back( CTaggedWord<CTag>( "", PENN_TAG_END));
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word, CTag(parsed[index].tag)) );
+   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", PENN_TAG_END));
    for ( int i=0; i<parsed.size(); ++i)
       if (parsed[i].head != DEPENDENCY_LINK_NO_HEAD ) updateCrossLinkScore( parsed[i].head, i, parsed, eSubtract, round );
 
@@ -273,8 +273,8 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
    // put the sentence into a cache
    m_lCache.clear();
    for ( int index=0; index<length; index++ )
-      m_lCache.push_back( CTaggedWord<CTag>(sentence[index].first , sentence[index].second) );
-   m_lCache.push_back( CTaggedWord<CTag>( "", PENN_TAG_END ) ); // EOS is appended to the tail of sentence
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
+   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", PENN_TAG_END ) ); // EOS is appended to the tail of sentence
 
    TRACE("Decoding started"); 
 

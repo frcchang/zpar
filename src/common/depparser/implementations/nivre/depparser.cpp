@@ -15,7 +15,7 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
 
 const CWord g_emptyWord("");
-const CTaggedWord<CTag> g_emptyTaggedWord("", PENN_TAG_NONE);
+const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", PENN_TAG_NONE);
 const CTag g_noneTag = PENN_TAG_NONE;
 const CScore<SCORE_TYPE> g_zeroScore;
 
@@ -118,8 +118,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const int &word_index , con
    static int arity_combined ;
    arity_combined = arity_direction == ARITY_DIRECTION_LEFT ? arity : -arity-1 ; // -1 for arity=0 right
 
-   pair<CTaggedWord<CTag>, int> taggedword_arity = 
-      make_pair( static_cast<const CTaggedWord<CTag>&>(m_lCache[word_index]) , arity_combined );
+   pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity = 
+      make_pair( static_cast<const CTaggedWord<CTag, TAG_SEPARATOR>&>(m_lCache[word_index]) , arity_combined );
    pair<unsigned long int, int> tag_arity = 
       make_pair( m_lCache[word_index].tag.code() , arity_combined );
 
@@ -143,8 +143,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const int &word_index , con
  *---------------------------------------------------------------*/
 
 inline SCORE_TYPE CDepParser::getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned long &label, SCORE_TYPE amount, int round) {
-   const CTaggedWord<CTag> &head_word_tag = m_lCache[head_index];
-   const CTaggedWord<CTag> &dep_word_tag = m_lCache[dep_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = m_lCache[head_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = m_lCache[dep_index];
    const CWord &head_word = static_cast<const CWord&>(head_word_tag);
    const CWord &dep_word = static_cast<const CWord&>(dep_word_tag);
    const unsigned long &head_tag = head_word_tag.tag.code();
@@ -202,10 +202,10 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
    n2_index = n0_index+2<m_lCache.size() ? n0_index+2 : -1 ;
    n3_index = n0_index+3<m_lCache.size() ? n0_index+3 : -1 ;
 
-   const CTaggedWord<CTag> &st_word_tag = st_index==-1 ? g_emptyTaggedWord : m_lCache[st_index];
-   const CTaggedWord<CTag> &sth_word_tag = sth_index==-1 ? g_emptyTaggedWord : m_lCache[sth_index];
-   const CTaggedWord<CTag> &n0_word_tag = n0_index==-1 ? g_emptyTaggedWord : m_lCache[n0_index];
-   const CTaggedWord<CTag> &n1_word_tag = n1_index==-1 ? g_emptyTaggedWord : m_lCache[n1_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &st_word_tag = st_index==-1 ? g_emptyTaggedWord : m_lCache[st_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &sth_word_tag = sth_index==-1 ? g_emptyTaggedWord : m_lCache[sth_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &n0_word_tag = n0_index==-1 ? g_emptyTaggedWord : m_lCache[n0_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &n1_word_tag = n1_index==-1 ? g_emptyTaggedWord : m_lCache[n1_index];
    const CWord &st_word = static_cast<const CWord&>(st_word_tag);
    const CWord &n0_word = static_cast<const CWord&>(n0_word_tag);
    const CWord &n1_word = static_cast<const CWord&>(n1_word_tag);
@@ -223,10 +223,10 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
    n2_tag = n2_index==-1 ? PENN_TAG_END : m_lCache[n2_index].tag;
    n3_tag = n3_index==-1 ? PENN_TAG_END : m_lCache[n3_index].tag;
 
-   const CTaggedWord<CTag> st_word_nil(st_word, PENN_TAG_NONE);
-   const CTaggedWord<CTag> st_nil_tag(g_emptyWord, st_tag);
-   const CTaggedWord<CTag> n0_word_nil(n0_word, PENN_TAG_NONE);
-   const CTaggedWord<CTag> n0_nil_tag(g_emptyWord, n0_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> st_word_nil(st_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> st_nil_tag(g_emptyWord, st_tag);
+   const CTaggedWord<CTag, TAG_SEPARATOR> n0_word_nil(n0_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> n0_nil_tag(g_emptyWord, n0_tag);
 
    static CTwoTaggedWords st_word_tag_n0_word_tag ;
    static CTwoTaggedWords st_word_tag_n0_word ;
@@ -307,7 +307,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
    // read cache
    m_lCache.clear();
    for ( int index=0; index<parsed.size(); index++ ) 
-      m_lCache.push_back( CTaggedWord<CTag>(parsed[index].word , CTag(parsed[index].tag)) );
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word , CTag(parsed[index].tag)) );
    // make an item from the parsed
    item.clear();
    for (int index=0; index<parsed.size()*2; index++) {
@@ -400,7 +400,7 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
    m_lCache.clear();
    for ( int index=0; index<correct.size(); index++ ) 
-      m_lCache.push_back( CTaggedWord<CTag>(correct[index].word , CTag(correct[index].tag)) );
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(correct[index].word , CTag(correct[index].tag)) );
    state.clear();
    for (int index=0; index<correct.size()*2; index++) {
       state.StandardMoveStep(correct); }
@@ -410,7 +410,7 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
    m_lCache.clear();
    for ( int index=0; index<parsed.size(); index++ )
-      m_lCache.push_back( CTaggedWord<CTag>(parsed[index].word, CTag(parsed[index].tag)) );
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word, CTag(parsed[index].tag)) );
    state.clear();
    for (int index=0; index<parsed.size()*2; index++) {
       state.StandardMoveStep(parsed);
@@ -675,7 +675,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    // initialise word cache
    m_lCache.clear();
    for ( int index=0; index<length; index++ )
-      m_lCache.push_back( CTaggedWord<CTag>(sentence[index].first , sentence[index].second) );
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
    // initialise agenda
    m_Agenda->clear();
 //   pCandidate = m_Agenda->candidateItem();      // make the first item

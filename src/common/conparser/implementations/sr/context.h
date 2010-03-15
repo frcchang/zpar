@@ -141,7 +141,7 @@ public:
          }
       }
    }
-   void load(const CStateItem *item, const vector<CTaggedWord<CTag> > &wrds, const vector<unsigned long> &wordlen, const bool &modify) {
+   void load(const CStateItem *item, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &wrds, const vector<unsigned long> &wordlen, const bool &modify) {
       static CStateNode emptyItem;
       stacksize = item->stack.size();
       if (stacksize==0) return; // must shift; no feature updates, no comparisons for different actions

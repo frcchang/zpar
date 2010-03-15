@@ -11,7 +11,7 @@
 #include "learning/perceptron/score.h"
 #include "learning/perceptron/hashmap_score.h"
 
-typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag> > CTwoTaggedWords; 
+typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
 typedef CDependencyTree CDependencyParse;
 

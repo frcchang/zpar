@@ -19,9 +19,9 @@ namespace depparser {
 // TYPE DEFINITIONS
 //
 typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
-typedef CScoreMap< CTaggedWord<CTag>, SCORE_TYPE > CTaggedWordMap;
+typedef CScoreMap< CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE > CTaggedWordMap;
 typedef CScoreMap< pair<CWord, int>,  SCORE_TYPE > CWordIntMap;
-typedef CScoreMap< pair<CTaggedWord<CTag>, int>,  SCORE_TYPE > CTaggedWordIntMap;
+typedef CScoreMap< pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE > CTaggedWordIntMap;
 typedef CScoreMap< int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< pair<int, int>, SCORE_TYPE > CTwoIntMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
@@ -98,7 +98,7 @@ inline long int hash(const int &i) {return i;}
 inline long int hash(const pair<int, int> &pi) {return pi.first*31+pi.second;}
 inline long int hash(const pair<CWord, int> &pwi) {return pwi.first.hash()+pwi.second*37;}
 inline long int hash(const pair<CTwoWords, int> &ptw) {return ptw.first.hash()+ptw.second*37;}
-inline long int hash(const pair<CTaggedWord<CTag>, int> &pwi) {return pwi.first.hash()+pwi.second*37;}
+inline long int hash(const pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> &pwi) {return pwi.first.hash()+pwi.second*37;}
 inline long int hash(const pair<CTwoTaggedWords, int> &ptwi) {return ptwi.first.hash()+ptwi.second*37;}
 
 };

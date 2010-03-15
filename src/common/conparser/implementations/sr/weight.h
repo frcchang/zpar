@@ -21,9 +21,9 @@ namespace conparser {
 // TYPE DEFINITIONS
 //
 typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
-typedef CScoreMap<CTaggedWord<CTag>, SCORE_TYPE> CTaggedWordMap;
+typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
 typedef CScoreMap<pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
-typedef CScoreMap<pair<CTaggedWord<CTag>, unsigned long>,  SCORE_TYPE> CTaggedWordIntMap;
+typedef CScoreMap<pair<CTaggedWord<CTag, TAG_SEPARATOR>, unsigned long>,  SCORE_TYPE> CTaggedWordIntMap;
 typedef CScoreMap<unsigned long, SCORE_TYPE> CIntMap;
 typedef CScoreMap<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;

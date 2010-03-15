@@ -103,7 +103,7 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
    const CTag &last_tag = index>0 ? item->getTag( index-1 ) : CTag(CTag::SENTENCE_BEGIN) ;
    const CTag &second_last_tag = index>1 ? item->getTag(index-2) : CTag(CTag::SENTENCE_BEGIN) ;
 
-   static CTaggedWord<CTag> wt1, wt2;
+   static CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    static CTwoTaggedWords wt12;
 
    unsigned long long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long long>(1)<<tag.code()) ;
@@ -144,8 +144,8 @@ SCORE_TYPE CTagger::getOrUpdateLocalScore( const CStringVector *sentence, const 
    }
   
    nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( make_pair(word, tag) , m_nScoreIndex , amount , round ) ; 
-   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( CTagSet<2>(encodeTags( tag, last_tag )), m_nScoreIndex , amount , round ) ;
-   nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( CTagSet<3>(encodeTags( tag, last_tag, second_last_tag )), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( CTagSet<CTag, 2>(encodeTags( tag, last_tag )), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( CTagSet<CTag, 3>(encodeTags( tag, last_tag, second_last_tag )), m_nScoreIndex , amount , round ) ;
    if ( start > 0 ) {
       if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(last_word, tag) , m_nScoreIndex , amount , round ) ;
       if ( length <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getOrUpdateScore( make_pair(word, last_tag) , m_nScoreIndex , amount , round ) ;

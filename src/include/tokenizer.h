@@ -42,6 +42,7 @@ class CTokenizer {
       }
       unsigned long find(const K &key, const unsigned long &val) const {return m_mapTokens.find(key, val);}
       const K &key(const unsigned long &token) const {assert( token < m_vecKeys.size()+m_nStartingToken ); return m_vecKeys[token-m_nStartingToken];}
+      const unsigned long &count() const {return m_nWaterMark;}
 };
 
 #endif

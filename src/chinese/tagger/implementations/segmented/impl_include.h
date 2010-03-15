@@ -13,7 +13,7 @@
 
 namespace chinese {
 
-typedef CBigram< CTaggedWord<CTag> > CTwoTaggedWords ; 
+typedef CBigram< CTaggedWord<CTag, TAG_SEPARATOR> > CTwoTaggedWords ; 
 
 namespace tagger {
 

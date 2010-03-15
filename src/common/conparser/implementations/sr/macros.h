@@ -12,7 +12,7 @@ const int AGENDA_SIZE = 16 ;
 const int MAX_SENTENCE_SIZE = 256 ; 
 const int MAX_SENTENCE_SIZE_BITS = 8 ; 
 
-inline unsigned long encodeT(const CTaggedWord<CTag> &wd) {
+inline unsigned long encodeT(const CTaggedWord<CTag, TAG_SEPARATOR> &wd) {
    assert(PENN_TAG_COUNT+7<(1<<PENN_TAG_COUNT_BITS));
    const unsigned long t = wd.tag.code();
 return t;
@@ -36,7 +36,7 @@ return t;
    return t;
 }
 
-inline unsigned long encodeC(const CStateNode &node, const vector<CTaggedWord<CTag> > &cache ) {
+inline unsigned long encodeC(const CStateNode &node, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &cache ) {
    assert((node.constituent&(1<<PENN_CON_COUNT_BITS))==0);
    return node.is_constituent ? encodeTorC(node.constituent, false) | (node.temp?(1<<PENN_CON_COUNT_BITS):0) : encodeTorC(encodeT(cache[node.lexical_head]), true);
 }
