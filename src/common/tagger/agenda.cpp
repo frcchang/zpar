@@ -16,8 +16,6 @@ using namespace TARGET_LANGUAGE::tagger;
 const CWord g_emptyWord("");
 const CScore<SCORE_TYPE> g_zeroScore;
 
-#include "morphology.h"
-
 /*---------------------------------------------------------------
  *
  * getGlobalScore - get the global score for sentence
