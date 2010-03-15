@@ -14,7 +14,7 @@
 #include "knowledge/tagdict.h"
 #include "tags.h"
 
-#define long_1 static_cast<unsigned long int>(1)
+#define long_1 static_cast<unsigned long long>(1)
 
 namespace english {
 
@@ -25,11 +25,11 @@ namespace english {
  *
  *--------------------------------------------------------------*/
 
-unsigned long int getPossibleTagsByMorphology( const CTagDict<CTag> &tagdict , const string &word ) {
+unsigned long long getPossibleTagsByMorphology( const CTagDict<CTag> &tagdict , const string &word ) {
 
    const int length = word.size();
-   unsigned long int retval = 0;
-   unsigned long int stem;
+   unsigned long long retval = 0;
+   unsigned long long stem;
 
    if ( length < 4 ) return 0;
 
@@ -155,9 +155,9 @@ unsigned long int getPossibleTagsByMorphology( const CTagDict<CTag> &tagdict , c
  *
  *--------------------------------------------------------------*/
 
-unsigned long int getPossibleTagsBySuffix( const string &word ) {
+unsigned long long getPossibleTagsBySuffix( const string &word ) {
 
-   unsigned long int retval=0;
+   unsigned long long retval=0;
    const int length=word.size();
 
    if ( length<4 ) return 0;
