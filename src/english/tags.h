@@ -37,5 +37,9 @@ inline ostream & operator << (ostream &os, const english::CTag &tag) {
    return os;
 }
 
+//===============================================================
+
+#include "pos/penn_morph.h"
+
 #endif
 

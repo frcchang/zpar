@@ -94,8 +94,8 @@ public:
 
    // statistical information
    CWordToIntMap m_mapWordFrequency;
-   CTagDict<CTag> m_mapTagDictionary;
-   CTagDict<CTag> m_mapCharTagDictionary;
+   CTagDict<CWord, CTag> m_mapTagDictionary;
+   CTagDict<CWord, CTag> m_mapCharTagDictionary;
 
 public:
    // note that m_bSegmentation rules will be covered by load()

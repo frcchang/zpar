@@ -39,9 +39,9 @@ return 0;
    unsigned long dist = encodeLinkSize(head, mod);
    static CCFGSet cf;
 
-   const unsigned long ht = encodeTorC(encodeT(m_lCache[head]), true);
+   const unsigned long ht = encodeTorC(m_lCache[head].tag.code(), true);
    const CWord &hw = m_lCache[head];
-   const unsigned long mt = encodeTorC(encodeT(m_lCache[mod]), true);
+   const unsigned long mt = encodeTorC(m_lCache[mod].tag.code(), true);
    const CWord &mw = m_lCache[mod];
 
    cf.clear(); cf+=ht; cf+=mt; cf+=0; cf+=0;
@@ -82,11 +82,11 @@ return 0;
    unsigned long direction = encodeLinkDirection(mod, sibling);
    unsigned long dist = encodeLinkDirectionAndSize(mod, sibling);
 
-   const unsigned long ht = encodeT(m_lCache[head]);
+   const CTag &ht = m_lCache[head].tag;
    const CWord &hw = m_lCache[head];
-   const unsigned long mt = encodeT(m_lCache[mod]);
+   const CTag &mt = m_lCache[mod].tag;
    const CWord &mw = m_lCache[mod];
-   const unsigned long st = encodeT(m_lCache[sibling]);
+   const CTag &st = m_lCache[sibling].tag;
    const CWord &sw = m_lCache[sibling];
 
    unsigned long k = encodeTags(ht, mt, st);
@@ -118,12 +118,12 @@ SCORE_TYPE CConParser::getOrUpdateArityScore( const unsigned long &head, const u
    nReturn = 0;return nReturn;
 
    const CWord &w = m_lCache[head];
-   const unsigned long t = encodeT(m_lCache[head]);
+   const CTag &t = m_lCache[head].tag;
 
    nReturn += cast_weights->m_mapHwArityL.getOrUpdateScore(make_pair(w, arityleft), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHtArityL.getOrUpdateScore(make_pair(t, arityleft), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHtArityL.getOrUpdateScore(make_pair(t.code(), arityleft), m_nScoreIndex, amount, round);
    nReturn += cast_weights->m_mapHwArityR.getOrUpdateScore(make_pair(w, arityright), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHtArityR.getOrUpdateScore(make_pair(t, arityright), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHtArityR.getOrUpdateScore(make_pair(t.code(), arityright), m_nScoreIndex, amount, round);
 
    return nReturn;
 }
@@ -139,12 +139,12 @@ SCORE_TYPE CConParser::getOrUpdateHeadScore( const unsigned long &parent, const 
    nReturn = 0;
 return 0;
    const CWord &w = m_lCache[head];
-   const unsigned long &t = encodeT(m_lCache[head]);
+   const CTag &t = m_lCache[head].tag;
    static CCFGSet cs; cs.clear();
    cs += parent; cs += child;
 
    nReturn += cast_weights->m_mapHw.getOrUpdateScore(make_pair(w, parent), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHt.getOrUpdateScore(make_pair(t, parent), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHt.getOrUpdateScore(make_pair(t.code(), parent), m_nScoreIndex, amount, round);
    nReturn += cast_weights->m_mapHc.getOrUpdateScore(cs, m_nScoreIndex, amount, round);
    nReturn += cast_weights->m_mapHwc.getOrUpdateScore(make_pair(w, cs), m_nScoreIndex, amount, round);
    
@@ -253,7 +253,7 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    }
 
    const CWord &w = m_lCache[nd.lexical_head]; // lexical head
-   const unsigned long t = encodeT(m_lCache[nd.lexical_head]); // head tag
+   const CTag &t = m_lCache[nd.lexical_head].tag; // head tag
 
    static unsigned long n; // number of constituents in the rule
    static unsigned long hd; // head node
