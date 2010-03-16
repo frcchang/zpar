@@ -52,7 +52,7 @@ private:
    tagger::CWeight *m_weights; // weight object
 
    string m_sTagDictPath;      // path for tag dict
-   CTagDict<CTag> m_TagDict;   // the dictionary object
+   CTagDict<CWord, CTag> m_TagDict;   // the dictionary object
 
    bool m_bUpdateKnowledgeBase; // update knowledge base when the training example contradicts knowledge base ?
 

@@ -171,19 +171,19 @@ public:
    
       s0c = encodeC(*s0node, wrds); assert(s0==-1||s0c!=0);
       s0w = &(wrds[s0node->lexical_head]);
-      s0t = encodeT(wrds[s0node->lexical_head]);
+      s0t = wrds[s0node->lexical_head].tag.code();
    
       s1c = s1==-1 ? 0 : encodeC(*s1node, wrds); assert(s1==-1||s1c!=0);
       s1w = s1 == -1 ? 0 : &(wrds[s1node->lexical_head]);
-      s1t = s1 == -1 ? 0 : encodeT(wrds[s1node->lexical_head]);
+      s1t = s1 == -1 ? 0 : wrds[s1node->lexical_head].tag.code();
    
       s2c = s2==-1 ? 0 : encodeC(*s2node, wrds); assert(s2==-1||s2c!=0);
       s2w = s2 == -1 ? 0 : &(wrds[s2node->lexical_head]);
-      s2t = s2 == -1 ? 0 : encodeT(wrds[s2node->lexical_head]);
+      s2t = s2 == -1 ? 0 : wrds[s2node->lexical_head].tag.code();
    
       s3c = s3==-1 ? 0 : encodeC(*s3node, wrds); assert(s3==-1||s3c!=0);
       s3w = s3 == -1 ? 0 : &(wrds[s3node->lexical_head]);
-      s3t = s3 == -1 ? 0 : encodeT(wrds[s3node->lexical_head]);
+      s3t = s3 == -1 ? 0 : wrds[s3node->lexical_head].tag.code();
    
       s0lc = s0l==-1 ? 0 : encodeC(item->nodes[s0l], wrds); assert(s0l==-1||s0lc!=0);
       s0lw = s0l==-1 ? 0 : &(wrds[item->nodes[s0l].lexical_head]);
@@ -199,16 +199,16 @@ public:
       s1uc = s1u==-1 ? 0 : encodeC(item->nodes[s1u], wrds); assert(s1u==-1||s1uc);
       s1uw = s1u==-1 ? 0 : &(wrds[item->nodes[s1u].lexical_head]);
 
-      n0t = n0==-1 ? 0 : encodeT(wrds[n0]);
+      n0t = n0==-1 ? 0 : wrds[n0].tag.code();
       n0w = n0 == -1 ? 0 : &(wrds[n0]);
    
-      n1t = n1==-1 ? 0 : encodeT(wrds[n1]);
+      n1t = n1==-1 ? 0 : wrds[n1].tag.code();
       n1w = n1 == -1 ? 0 : &(wrds[n1]);
    
-      n2t = n2==-1 ? 0 : encodeT(wrds[n2]);
+      n2t = n2==-1 ? 0 : wrds[n2].tag.code();
       n2w = n2 == -1 ? 0 : &(wrds[n2]);
  
-      n3t = n3==-1 ? 0 : encodeT(wrds[n3]);
+      n3t = n3==-1 ? 0 : wrds[n3].tag.code();
       n3w = n3 == -1 ? 0 : &(wrds[n3]);
 
       if (modify==false) {
@@ -325,13 +325,13 @@ public:
          countleftdependents(item->nodes, s1, s1ld, s1ln);
          countrightdependents(item->nodes, s1, s1rd, s1rn);
       }
-      s0ldt = s0ld==-1 ? 0 : encodeT(wrds[item->nodes[s0ld].lexical_head]);
+      s0ldt = s0ld==-1 ? 0 : wrds[item->nodes[s0ld].lexical_head].tag.code();
       s0ldw = s0ld == -1 ? 0 : &(wrds[item->nodes[s0ld].lexical_head]);
-      s0rdt = s0rd==-1 ? 0 : encodeT(wrds[item->nodes[s0rd].lexical_head]);
+      s0rdt = s0rd==-1 ? 0 : wrds[item->nodes[s0rd].lexical_head].tag.code();
       s0rdw = s0rd == -1 ? 0 : &(wrds[item->nodes[s0rd].lexical_head]);
-      s1ldt = s1ld==-1 ? 0 : encodeT(wrds[item->nodes[s1ld].lexical_head]);
+      s1ldt = s1ld==-1 ? 0 : wrds[item->nodes[s1ld].lexical_head].tag.code();
       s1ldw = s1ld == -1 ? 0 : &(wrds[item->nodes[s1ld].lexical_head]);
-      s1rdt = s1rd==-1 ? 0 : encodeT(wrds[item->nodes[s1rd].lexical_head]);
+      s1rdt = s1rd==-1 ? 0 : wrds[item->nodes[s1rd].lexical_head].tag.code();
       s1rdw = s1rd == -1 ? 0 : &(wrds[item->nodes[s1rd].lexical_head]);
 
       if (s1!=-1) {

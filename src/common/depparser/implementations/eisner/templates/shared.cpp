@@ -31,19 +31,19 @@
    const CTag &head_tag = head.tag;
    const CTag &dep_tag = dep.tag;
    const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = static_cast<const CTaggedWord<CTag, TAG_SEPARATOR> &>(head);
-   const CTaggedWord<CTag, TAG_SEPARATOR> head_word_nil(head_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> head_word_nil(head_word, CTag::NONE);
    const CTaggedWord<CTag, TAG_SEPARATOR> head_nil_tag(g_emptyWord, head_tag);
    const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = static_cast<const CTaggedWord<CTag, TAG_SEPARATOR> &>(dep);
-   const CTaggedWord<CTag, TAG_SEPARATOR> dep_word_nil(dep_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> dep_word_nil(dep_word, CTag::NONE);
    const CTaggedWord<CTag, TAG_SEPARATOR> dep_nil_tag(g_emptyWord, dep_tag);
    const CTag &left_tag = m_lCache[left_index].tag;
    const CTag &right_tag = m_lCache[right_index].tag;
 
    /*----------------------between and surrounding----------------------*/
-   const CTag &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag : PENN_TAG_BEGIN ;
-   const CTag &head_tag_r = ( head_index < m_lCache.size()-2 ) ? m_lCache[ head_index+1 ].tag : PENN_TAG_END ;
-   const CTag &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag : PENN_TAG_BEGIN ;
-   const CTag &dep_tag_r = ( dep_index < m_lCache.size()-2 ) ? m_lCache[ dep_index+1 ].tag : PENN_TAG_END ;
+   const CTag &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag : CTag::SENTENCE_BEGIN ;
+   const CTag &head_tag_r = ( head_index < m_lCache.size()-2 ) ? m_lCache[ head_index+1 ].tag : CTag::SENTENCE_END ;
+   const CTag &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag : CTag::SENTENCE_BEGIN ;
+   const CTag &dep_tag_r = ( dep_index < m_lCache.size()-2 ) ? m_lCache[ dep_index+1 ].tag : CTag::SENTENCE_END ;
    nc_ll = (link_distance_encode<-1||link_distance_encode>1) ;
    nc_lr = (link_distance_encode<0||link_distance_encode>2) ;
    nc_rl = (link_distance_encode>0||link_distance_encode<-2) ;

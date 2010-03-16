@@ -19,7 +19,7 @@
  *
  *==============================================================*/
 
-template <typename CTag>
+template <typename CWord, typename CTag>
 class CTagDict {
 
 protected:
@@ -83,7 +83,7 @@ public:
 
    // save tag dictionary to a stream
    void save(ostream &os) {
-      CHashMap<CWord, unsigned long long>::iterator it;
+      typename CHashMap<CWord, unsigned long long>::iterator it;
       unsigned long long i, j ; 
       it = m_mapItems.begin() ;
       while (it != m_mapItems.end()) {
@@ -110,14 +110,14 @@ public:
 
 //================================================================
 
-template<typename CTag>
-istream & operator >> (istream &is, CTagDict<CTag> &dict) {
+template<typename CWord, typename CTag>
+istream & operator >> (istream &is, CTagDict<CWord, CTag> &dict) {
    dict.load(is);
    return is;
 }
 
-template<typename CTag>
-ostream & operator << (ostream &os, CTagDict<CTag> &dict) {
+template<typename CWord, typename CTag>
+ostream & operator << (ostream &os, CTagDict<CWord, CTag> &dict) {
    dict.save(os);
    return os;
 }

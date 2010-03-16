@@ -69,8 +69,8 @@ public:
    CIntTagPairMap m_mapTagByLastCharCat;
 
    CWordIntMap m_mapWordFrequency;
-   CTagDict<CTag> m_mapTagDictionary;
-   CTagDict<CTag> m_mapCharTagDictionary;
+   CTagDict<CWord, CTag> m_mapTagDictionary;
+   CTagDict<CWord, CTag> m_mapCharTagDictionary;
    int m_nMaxWordFrequency;
 
 public:
