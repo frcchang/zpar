@@ -21,6 +21,38 @@ const int TRAINING_ROUND = 1;
 
 /*===============================================================
  *
+ * auto_train
+ *
+ *==============================================================*/
+
+void auto_train(string sOutputFile, string sFeatureFile, int nBest, const string &sKnowledgeBase, bool bUpdateKnowledgeBase) {
+   CTagger decoder(sFeatureFile, true);
+   if (sKnowledgeBase.size())
+      decoder.loadTagDictionary(sKnowledgeBase, bUpdateKnowledgeBase);
+   CSentenceReader output_reader(sOutputFile);
+   CTwoStringVector *output_sent = new CTwoStringVector; 
+
+   int nErrorCount=0;
+   int nCount=0;
+
+   //
+   // Read the next sentence
+   //
+   while( output_reader.readTaggedSentence(output_sent, false, TAG_SEPARATOR) ) {
+      TRACE("Sentence " << ++nCount);
+      //
+      // Find the decoder output
+      //
+      if (decoder.train(output_sent)) ++nErrorCount;
+   }
+   delete output_sent;
+   cout << "Completing the training process" << endl;
+   decoder.finishTraining();
+   cout << "Done. Total errors: " << nErrorCount << endl;
+}
+
+/*===============================================================
+ *
  * train
  *
  *==============================================================*/
@@ -44,7 +76,7 @@ void train(string sOutputFile, string sFeatureFile, int nBest, const string &sKn
    //
    // Read the next sentence
    //
-   while( output_reader.readTaggedSentence(output_sent, false, '/') ) {
+   while( output_reader.readTaggedSentence(output_sent, false, TAG_SEPARATOR) ) {
       UntagSentence(output_sent, input_sent);
       TRACE("Sentence " << nCount);
       ++nCount;
@@ -72,7 +104,7 @@ void train(string sOutputFile, string sFeatureFile, int nBest, const string &sKn
    delete output_sent;
    delete [] tagged_sent;
    cout << "Completing the training process" << endl;
-   decoder.finishTraining(nCount);
+   decoder.finishTraining();
    cout << "Done. Total errors: " << nErrorCount << endl;
 }
 
@@ -137,7 +169,7 @@ Options:\n\
    cout << "Training started" << endl;
    int time_start = clock();
    for (int i=0; i<training_rounds; ++i)
-      train(argv[1], argv[2], nBest, sKnowledgeBase, bUpdateKnowledgeBase);
+      auto_train(argv[1], argv[2], nBest, sKnowledgeBase, bUpdateKnowledgeBase);
    cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    return 0;
 }

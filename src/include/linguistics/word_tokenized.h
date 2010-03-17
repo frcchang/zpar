@@ -18,7 +18,7 @@
 #ifndef _WORD_H
 #define _WORD_H
 
-#include "hash.h"
+//#include "hash.h"
 #include "tokenizer.h"
 #include "bigram.h"
 

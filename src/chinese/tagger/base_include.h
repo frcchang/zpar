@@ -7,7 +7,7 @@
 #include "linguistics/tagset.h"
 
 namespace chinese {
-#include "tagutils.h"
+//#include "tagutils.h"
 }
 
 #include "impl_include.h"

@@ -111,7 +111,7 @@ SCORE_TYPE CTagger::getLocalScore( CStringVector * sentence, CStateItem * item ,
  *
  *--------------------------------------------------------------*/
 
-void CTagger::updateScoreVector(CTwoStringVector* tagged, CTwoStringVector* correct, int round) {
+void CTagger::updateScoreVector(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) {
 
    static int i;
    static unsigned long int possible_tags, current_tag;
@@ -121,17 +121,7 @@ void CTagger::updateScoreVector(CTwoStringVector* tagged, CTwoStringVector* corr
          updateLocalFeatureVector(eSubtract, tagged, i, round);
       for (i=0; i<correct->size(); ++i)
          updateLocalFeatureVector(eAdd, correct, i, round);
-      for (i=0; i<correct->size(); ++i) {
-         possible_tags = m_TagDict.lookup(m_Cache[i]);
-         if (possible_tags==0) possible_tags = static_cast<unsigned long>(static_cast<long int>(-1));
-         possible_tags |= getPossibleTagsBySuffix( correct->at(i).first );
-         possible_tags |= PENN_TAG_MUST_SEE ;
-         current_tag = (static_cast<unsigned long>(1)<<CTag(correct->at(i).second).code()) ;
-         if ( ( possible_tags & current_tag ) == 0 ) {
-            cout << "Warning: knowledge contradicts with annotation for the word " << correct->at(i).first << " with tag " << correct->at(i).second << endl;
-            m_TagDict.add(m_Cache[i], CTag(correct->at(i).second).code());
-         }
-      }
+      updateTagDict(correct);
       m_bScoreModified = true;
    }
 
@@ -153,7 +143,7 @@ void CTagger::updateScoreVector(CTwoStringVector* tagged, CTwoStringVector* corr
  *
  *--------------------------------------------------------------*/
 
-void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , CTwoStringVector * sentence , int index , int round ) { 
+void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoStringVector * sentence , int index , int round ) { 
    const CWord &word = m_Cache[index]; 
    const CWord &prev_word = index>0 ? m_Cache[index-1] : g_emptyWord; 
    const CWord &second_prev_word = index>1 ? m_Cache[index-2] : g_emptyWord;
@@ -245,8 +235,8 @@ void CTagger::saveScores() {
  *
  *--------------------------------------------------------------*/
 
-void CTagger::finishTraining(int round) {
-   m_weights->computeAverageFeatureWeights(round);
+void CTagger::finishTraining() {
+   m_weights->computeAverageFeatureWeights(m_nTrainingRound);
    saveScores();
    if ( m_sTagDictPath!="" ) m_TagDict.save(m_sTagDictPath);
 }
@@ -259,15 +249,71 @@ void CTagger::finishTraining(int round) {
 
 /*---------------------------------------------------------------
  *
+ * getPossibleTagsForWord - get possible pos
+ *
+ *--------------------------------------------------------------*/
+
+unsigned long long CTagger::getPossibleTagsForWord( const CWord &word ) {
+   static unsigned long long possible_tags;
+   possible_tags = m_TagDict.lookup(word);
+   if (possible_tags==0) possible_tags = static_cast<unsigned long>(static_cast<long int>(-1));
+#ifdef _ENGLISH_TAGS_H
+   possible_tags |= getPossibleTagsBySuffix( word.str() );
+   possible_tags |= PENN_TAG_MUST_SEE ;
+#endif
+   assert(possible_tags!=0);
+   return possible_tags;
+}
+
+/*---------------------------------------------------------------
+ *
+ * updateTagDict - update tagdict
+ *
+ *--------------------------------------------------------------*/
+
+void CTagger::updateTagDict( const CTwoStringVector * correct ) {
+   static int i;
+   static unsigned long long possible_tags, current_tag;
+
+   for (i=0; i<correct->size(); ++i) {
+      static CWord word; word = correct->at(i).first;
+      possible_tags = getPossibleTagsForWord(word);
+      current_tag = (static_cast<unsigned long long>(1)<<CTag(correct->at(i).second).code()) ;
+      if ( ( possible_tags & current_tag ) == 0 ) {
+         cout << "Warning: knowledge contradicts with annotation for the word " << correct->at(i).first << " with tag " << correct->at(i).second << endl;
+         m_TagDict.add(word, CTag(correct->at(i).second).code());
+      }
+   }
+}
+
+/*---------------------------------------------------------------
+ *
  * train - train the module auto
  *
  * Since we rely on external trainer, this method is empty
  *
  *--------------------------------------------------------------*/
 
-void CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct , int round ) {
-   cerr << "Not implemented" << endl;
-   assert( 0 == 1 );
+bool CTagger::train( const CTwoStringVector * correct ) {
+   static int i;
+   static CTwoStringVector tagged;
+
+   static CStringVector sentence;
+   UntagSentence( correct, &sentence );
+
+   ++m_nTrainingRound;
+
+   updateTagDict(correct);
+   tag( &sentence , &tagged , 1 , NULL );
+   if ( tagged != *correct ) {
+      for (i=0; i<tagged.size(); ++i) 
+         updateLocalFeatureVector(eSubtract, &tagged, i, m_nTrainingRound);
+      for (i=0; i<correct->size(); ++i)
+         updateLocalFeatureVector(eAdd, correct, i, m_nTrainingRound);
+      m_bScoreModified = true;
+      return true;
+   }
+   return false;
 }
 
 /*---------------------------------------------------------------
@@ -297,8 +343,8 @@ void CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int n
    static unsigned tag, last_tag;
    tagger::CStateItem *pGenerator;
    tagger::CStateItem *pCandidate;
-   CStateItem best_bigram[CTag::COUNT][CTag::COUNT];
-   int done_bigram[CTag::COUNT][CTag::COUNT];
+   static CStateItem best_bigram[1<<CTag::SIZE][1<<CTag::SIZE];
+   static int done_bigram[1<<CTag::SIZE][1<<CTag::SIZE];
    static SCORE_TYPE current_score;
    static unsigned long long possible_tags; // possible tags for a word
 
@@ -336,12 +382,7 @@ void CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int n
          last_tag = index>0 ? pGenerator->getTag(index-1).code() : CTag::SENTENCE_BEGIN ;
 
          // lookup dictionary
-         possible_tags = m_TagDict.lookup(m_Cache[index]);
-         if (possible_tags==0) possible_tags = static_cast<unsigned long int>(static_cast<long int>(-1));
-         possible_tags |= getPossibleTagsBySuffix( sentence->at(index) );
-         possible_tags |= PENN_TAG_MUST_SEE ;
-
-         assert(possible_tags!=0);
+         possible_tags = getPossibleTagsForWord(m_Cache[index]);
 
          bool bDone = false;
          for ( tag=CTag::FIRST; tag<CTag::COUNT; ++tag ) {
