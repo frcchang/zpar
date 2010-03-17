@@ -39,16 +39,16 @@ public:
    enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT };
 #ifdef LABELED
    static unsigned long encodeAction(const STACK_ACTION &action, const unsigned long &label) {
-      return (action<<PENN_DEP_COUNT_BITS) | label;
+      return (action<<CDependencyLabel::SIZE) | label;
    }
    static unsigned long removeLabelFromEncodedAction(const unsigned long &action ) {
-      return action^(action&((1<<PENN_DEP_COUNT_BITS)-1));
+      return action^(action&((1<<CDependencyLabel::SIZE)-1));
    }
    static unsigned long getAction(const unsigned long &action) {
-      return action>>PENN_DEP_COUNT_BITS;
+      return action>>CDependencyLabel::SIZE;
    }
    static unsigned long getLabel(const unsigned long &action) {
-      return action&((1<<PENN_DEP_COUNT_BITS)-1);
+      return action&((1<<CDependencyLabel::SIZE)-1);
    }
 #endif
    enum STACK_STATUS { OFF_STACK=0, ON_STACK_SHIFT, ON_STACK_ARCRIGHT } ;
@@ -234,7 +234,7 @@ public:
       m_nLocalHeads++;
       ClearNext();
 #ifdef LABELED
-      m_nLastAction=encodeAction(SHIFT, PENN_DEP_NONE);
+      m_nLastAction=encodeAction(SHIFT, CDependencyLabel::NONE);
 #else
       m_nLastAction=SHIFT;
 #endif
@@ -245,7 +245,7 @@ public:
       assert( m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD ) ;
       m_Stack.pop_back() ;
 #ifdef LABELED
-      m_nLastAction=encodeAction(REDUCE, PENN_DEP_NONE);
+      m_nLastAction=encodeAction(REDUCE, CDependencyLabel::NONE);
 #else
       m_nLastAction=REDUCE;
 #endif
@@ -255,8 +255,8 @@ public:
    void PopRoot() {
       assert( m_Stack.size() == 1 && m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ; // make sure only one root item in stack 
 #ifdef LABELED
-      m_lLabels[m_Stack.back()] = PENN_DEP_ROOT;
-      m_nLastAction = encodeAction(POP_ROOT, PENN_DEP_ROOT);
+      m_lLabels[m_Stack.back()] = CDependencyLabel::ROOT;
+      m_nLastAction = encodeAction(POP_ROOT, CDependencyLabel::ROOT);
 #else
       m_nLastAction = POP_ROOT;
 #endif
@@ -272,7 +272,7 @@ public:
       m_lDepNumR[m_nNextWord] = 0 ;
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
 #ifdef LABELED
-      m_lLabels[m_nNextWord] = PENN_DEP_NONE;
+      m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
 #endif
    }
 
@@ -400,13 +400,13 @@ public:
 #endif
          else if ( item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD ) 
 #ifdef LABELED
-            return encodeAction(REDUCE, PENN_DEP_NONE);
+            return encodeAction(REDUCE, CDependencyLabel::NONE);
 #else
             return REDUCE;
 #endif
          else 
 #ifdef LABELED
-            return encodeAction(POP_ROOT, PENN_DEP_ROOT);
+            return encodeAction(POP_ROOT, CDependencyLabel::ROOT);
 #else
             return POP_ROOT;
 #endif
@@ -426,7 +426,7 @@ public:
             }
             else {
 #ifdef LABELED
-               return encodeAction(REDUCE, PENN_DEP_NONE);
+               return encodeAction(REDUCE, CDependencyLabel::NONE);
 #else
                return REDUCE;
 #endif
@@ -437,7 +437,7 @@ public:
       if ( item->head(m_nNextWord) == DEPENDENCY_LINK_NO_HEAD || // the root or
            item->head(m_nNextWord) > m_nNextWord ) { // head on the right
 #ifdef LABELED
-         return encodeAction(SHIFT, PENN_DEP_NONE);
+         return encodeAction(SHIFT, CDependencyLabel::NONE);
 #else
          return SHIFT;
 #endif
@@ -455,7 +455,7 @@ public:
          }
          else {                                     // must depend on non-immediate h
 #ifdef LABELED
-            return encodeAction(REDUCE, PENN_DEP_NONE);
+            return encodeAction(REDUCE, CDependencyLabel::NONE);
 #else
             return REDUCE;
 #endif

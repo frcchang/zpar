@@ -13,7 +13,7 @@
 
 #include "hash.h"
 
-static const unsigned TOKENIZER_SIZE = 65537 ;
+//static const unsigned TOKENIZER_SIZE = 65537 ;
 
 /*===============================================================
  *
@@ -21,7 +21,7 @@ static const unsigned TOKENIZER_SIZE = 65537 ;
  *
  *==============================================================*/
 
-template <typename K>
+template <typename K, unsigned TOKENIZER_SIZE>
 class CTokenizer {
    protected:
       CHashMap<K, unsigned long> m_mapTokens;

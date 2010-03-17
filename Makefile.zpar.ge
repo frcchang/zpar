@@ -40,8 +40,8 @@ OBJECT_GENERIC_CONPARSER = $(OBJECT_DIR)/generic.conparser
 #===================================================================
 
 # the partofspeech
-$(OBJECT_DIR)/pos.ge.o: $(OBJECT_CONPARSER) $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/generictag.h $(SRC_LIBS)/linguistics/generictag.cpp
-	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/generictag.cpp -o $@
+$(OBJECT_DIR)/pos.ge.o: $(OBJECT_CONPARSER) $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/pos/generic.h $(SRC_LIBS)/linguistics/pos/generic.cpp
+	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/pos/generic.cpp -o $@
 
 # the constituent
 $(OBJECT_GENERIC_CONPARSER)/constituent.o: $(OBJECT_CONPARSER) $(SRC_GENERIC)/cfg.h $(SRC_LIBS)/linguistics/constituent.cpp

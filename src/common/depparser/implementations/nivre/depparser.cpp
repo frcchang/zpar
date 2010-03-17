@@ -520,7 +520,7 @@ inline void CDepParser::reduce( CStateItem *item ) {
    item->linkscore() += getOrUpdateArityScore( word_index, item->rightarity(word_index), ARITY_DIRECTION_RIGHT ) ;
    // update stack score
 #ifdef LABELED
-   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::REDUCE, PENN_DEP_NONE) );
+   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::REDUCE, CDependencyLabel::NONE) );
 #else
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::REDUCE );
 #endif
@@ -565,7 +565,7 @@ inline void CDepParser::arcleft( CStateItem *item ) {
 #ifdef LABELED
    // update stack score
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_LEFT, label) );
-   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_LEFT, PENN_DEP_NONE) );
+   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_LEFT, CDependencyLabel::NONE) );
    // add score before doing arcleft action!
    item->ArcLeft(label) ;
 #else
@@ -608,7 +608,7 @@ inline void CDepParser::arcright( CStateItem *item ) {
 #ifdef LABELED
    // add stack score
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_RIGHT, label) );
-   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_RIGHT, PENN_DEP_NONE) );
+   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_RIGHT, CDependencyLabel::NONE) );
    // add score before doing arcright action!
    item->ArcRight(label) ;
 #else
@@ -629,7 +629,7 @@ inline void CDepParser::shift( CStateItem *item ) {
    const int &next_index = item->size() ;
    item->linkscore() += getOrUpdateArityScore( next_index , item->leftarity(next_index) , ARITY_DIRECTION_LEFT ) ;
 #ifdef LABELED
-   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::SHIFT, PENN_DEP_NONE) );
+   item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::SHIFT, CDependencyLabel::NONE) );
 #else
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::SHIFT );
 #endif
@@ -724,8 +724,8 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
             if ( !pGenerator->stackempty() ) {
                if ( pGenerator->size() < length-1 || pGenerator->numberoflocalheads() == 1 ) { // keep only one global root
 #ifdef LABELED
-                  for (label=PENN_DEP_START; label<PENN_DEP_COUNT; label++) {
-                     if (label != PENN_DEP_ROOT) {
+                  for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
+                     if (label != CDependencyLabel::ROOT) {
                         pCandidate = *pGenerator ;
                         arcright(&pCandidate, label);
                         m_Agenda->pushCandidate(&pCandidate);
@@ -746,8 +746,8 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                }
                else {
 #ifdef LABELED
-                  for (label=PENN_DEP_START; label<PENN_DEP_COUNT; label++) {
-                     if (label != PENN_DEP_ROOT) {
+                  for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
+                     if (label != CDependencyLabel::ROOT) {
                         pCandidate = *pGenerator ;
                         arcleft(&pCandidate, label);
                         m_Agenda->pushCandidate(&pCandidate);
