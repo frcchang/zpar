@@ -16,7 +16,7 @@ using namespace TARGET_LANGUAGE::depparser;
 
 const CWord g_emptyWord("");
 const CScore<SCORE_TYPE> g_zeroScore;
-const CTag g_noneTag = PENN_TAG_NONE;
+const CTag g_noneTag = CTag::NONE;
 
 #define cast_weights static_cast<CWeight*>(m_weights)
 
@@ -200,14 +200,14 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
    m_lCache.clear();
    for ( int index=0; index<correct.size(); index++ ) 
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(correct[index].word , CTag(correct[index].tag)) );
-   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", PENN_TAG_END ) ); // EOS is appended to the tail of sentence
+   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", CTag::SENTENCE_END ) ); // EOS is appended to the tail of sentence
    for ( int i=0; i<correct.size(); ++i) 
       if (correct[i].head != DEPENDENCY_LINK_NO_HEAD) updateCrossLinkScore( correct[i].head, i, correct, eAdd, round ); 
 
    m_lCache.clear();
    for ( int index=0; index<parsed.size(); index++ )
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word, CTag(parsed[index].tag)) );
-   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", PENN_TAG_END));
+   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", CTag::SENTENCE_END));
    for ( int i=0; i<parsed.size(); ++i)
       if (parsed[i].head != DEPENDENCY_LINK_NO_HEAD ) updateCrossLinkScore( parsed[i].head, i, parsed, eSubtract, round );
 
@@ -274,7 +274,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
    m_lCache.clear();
    for ( int index=0; index<length; index++ )
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
-   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", PENN_TAG_END ) ); // EOS is appended to the tail of sentence
+   m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", CTag::SENTENCE_END ) ); // EOS is appended to the tail of sentence
 
    TRACE("Decoding started"); 
 

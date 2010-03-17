@@ -46,7 +46,7 @@
 
 #define getOrUpdateSurroundingScoreTemplate(x) \
    for ( index=left_index+1; index<right_index; index++ ) { \
-      between_tags = both_sides + (m_lCache[index].tag.code()<<PENN_TAG_COUNT_BITS); \
+      between_tags = both_sides + (m_lCache[index].tag.code()<<CTag::SIZE); \
       retval += cast_weights->m_mapBetweenTags.getOrUpdateScore( make_pair(between_tags, x), m_nScoreIndex, amount, round ) ; \
    } \
    if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_l, dep_tag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
@@ -72,7 +72,7 @@
       retval += cast_weights->m_mapSiblingWordTag.getOrUpdateScore( make_pair(sibling_word_tag,x), m_nScoreIndex, amount, round ) ;\
       retval += cast_weights->m_mapSiblingTagWord.getOrUpdateScore( make_pair(sibling_tag_word,x), m_nScoreIndex, amount, round ) ;\
       retval += cast_weights->m_mapSiblingTags.getOrUpdateScore( make_pair(encodeTags(dep_tag,sibling_tag),x), m_nScoreIndex, amount, round ) ;\
-      between_tags = both_sides + (sibling_tag.code()<<PENN_TAG_COUNT_BITS);\
+      between_tags = both_sides + (sibling_tag.code()<<CTag::SIZE);\
       retval += cast_weights->m_mapSiblingAndParentTags.getOrUpdateScore( make_pair(between_tags,x), m_nScoreIndex, amount, round ) ;\
    }   
 

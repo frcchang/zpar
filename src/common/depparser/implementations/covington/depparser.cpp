@@ -15,8 +15,8 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
 
 const CWord g_emptyWord("");
-const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", PENN_TAG_NONE);
-const CTag g_noneTag = PENN_TAG_NONE;
+const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", CTag::NONE);
+const CTag g_noneTag = CTag::NONE;
 const CScore<SCORE_TYPE> g_zeroScore;
 
 #define cast_weights static_cast<CWeight*>(m_weights)
@@ -64,13 +64,13 @@ SCORE_TYPE CDepParser::getOrUpdateArcScore( const CStateItem *item, const int &h
    //-------------------------the expanded two sibling features------------------------
    if (sibling_index != DEPENDENCY_LINK_NO_HEAD) {
 /*
-      between_tags = (dep_tag.code()<<PENN_TAG_COUNT_BITS*2) + 
-                     (sibling_tag.code()<<PENN_TAG_COUNT_BITS) + 
+      between_tags = (dep_tag.code()<<CTag::SIZE*2) + 
+                     (sibling_tag.code()<<CTag::SIZE) + 
                      next_sibling_tag.code() ;
       retval += cast_weights->m_mapTwoSiblingTags.getScore(make_pair(between_tags,sibling_distance_encode), m_nScoreIndex);
       retval += cast_weights->m_mapTwoSiblingTags.getScore(make_pair(between_tags,sibling_direction_encode), m_nScoreIndex);
 
-      between_tags += (head_tag.code()<<PENN_TAG_COUNT_BITS*3) ;
+      between_tags += (head_tag.code()<<CTag::SIZE*3) ;
       retval += cast_weights->m_mapTwoSiblingAndParentTags.getScore(make_pair(between_tags,sibling_distance_encode), m_nScoreIndex);
       retval += cast_weights->m_mapTwoSiblingAndParentTags.getScore(make_pair(between_tags,sibling_direction_encode), m_nScoreIndex);
 */
@@ -78,7 +78,7 @@ SCORE_TYPE CDepParser::getOrUpdateArcScore( const CStateItem *item, const int &h
 
    //--------------------- The two link features ----------------------
 /*
-   between_tags = (head_tag.code()<<PENN_TAG_COUNT_BITS*2)+(dep_tag.code()<<PENN_TAG_COUNT_BITS); 
+   between_tags = (head_tag.code()<<CTag::SIZE*2)+(dep_tag.code()<<CTag::SIZE); 
    retval += cast_weights->m_mapGrandChildTags.getScore( make_pair(between_tags+dep_lmd_tag, (link_direction<<1)+0), m_nScoreIndex );
    if (head_index>dep_index)
       retval += cast_weights->m_mapGrandChildTags.getScore( make_pair(between_tags+dep_rmd_tag, (link_direction<<1)+1), m_nScoreIndex );
@@ -126,7 +126,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const CStateItem *item, con
    static int sub_arity;
    for ( it = arity_by_tag.begin(); it != arity_by_tag.end(); it++ ) {
       sub_arity = (arity_direction==ARITY_DIRECTION_LEFT ? it->second : -(it->second)-1) ;
-      sub_arity <<= PENN_TAG_COUNT_BITS;
+      sub_arity <<= CTag::SIZE;
       retval += cast_weights->m_mapHeadWordTagArityByTag.getOrUpdateScore( make_pair(m_lCache[word_index], sub_arity+it->first) , m_nScoreIndex , amount , round ) ;
       retval += cast_weights->m_mapHeadTagArityByTag.getOrUpdateScore( make_pair(m_lCache[word_index].tag.code(), sub_arity+it->first) , m_nScoreIndex , amount , round ) ;
    }
@@ -147,8 +147,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateTwoArcScore( const int &head_index , co
 
    static int tags;
    static int dir;
-   tags = ( m_lCache[head_index].tag.code()<<(PENN_TAG_COUNT_BITS*2) ) + 
-          ( m_lCache[parent_index].tag.code()<<PENN_TAG_COUNT_BITS ) + 
+   tags = ( m_lCache[head_index].tag.code()<<(CTag::SIZE*2) ) + 
+          ( m_lCache[parent_index].tag.code()<<CTag::SIZE ) + 
           m_lCache[dep_index].tag.code() ;
    dir = (getLinkDirection(parent_index, head_index)<<1) + getLinkDirection(head_index, dep_index) ;
 
