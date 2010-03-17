@@ -377,7 +377,7 @@ void CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int n
       // generate new state itmes for each character
       pGenerator = m_Agenda->generatorStart();
 
-      for ( j=0; j<m_Agenda->generatorSize(); j+=1 ) {
+      for ( j=0; j<m_Agenda->generatorSize(); ++j ) {
 
          last_tag = index>0 ? pGenerator->getTag(index-1).code() : CTag::SENTENCE_BEGIN ;
 

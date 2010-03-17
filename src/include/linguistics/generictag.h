@@ -23,7 +23,11 @@ namespace TARGET_LANGUAGE {
 
 class CTagTokenizer : public CTokenizer<string> {
    public: 
-      CTagTokenizer() : CTokenizer<string>(3/*reserve for NONE BEGIN END*/) {} 
+      CTagTokenizer() : CTokenizer<string>(0/*reserve for NONE BEGIN END*/) {
+         lookup("-NONE-");
+         lookup("-BEGIN-");
+         lookup("-END-");
+      } 
       virtual ~CTagTokenizer() {}
 };
 
@@ -72,7 +76,9 @@ public:
       LAST = COUNT-1;
       assert((1<<SIZE)>COUNT);
    }
-   const string &str() const { return getTokenizer().key(m_code); }
+   const string &str() const { 
+      return getTokenizer().key(m_code); 
+   }
 
    void clear() { m_code=NONE; }
 }; 
