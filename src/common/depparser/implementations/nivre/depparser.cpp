@@ -15,9 +15,9 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
 
 const CWord g_emptyWord("");
-const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", PENN_TAG_NONE);
-const CTag g_noneTag = PENN_TAG_NONE;
-const CScore<SCORE_TYPE> g_zeroScore;
+const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", CTag::NONE);
+const CTag g_noneTag = CTag::NONE;
+//const CScore<SCORE_TYPE> g_zeroScore;
 
 #define cast_weights static_cast<CWeight*>(m_weights)
 
@@ -92,8 +92,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateTwoArcScore( const int &head_index , co
 
    static int tags;
    static int dir;
-   tags = ( m_lCache[head_index].tag.code()<<(PENN_TAG_COUNT_BITS*2) ) + 
-          ( m_lCache[parent_index].tag.code()<<PENN_TAG_COUNT_BITS ) + 
+   tags = ( m_lCache[head_index].tag.code()<<(CTag::SIZE*2) ) + 
+          ( m_lCache[parent_index].tag.code()<<CTag::SIZE ) + 
           m_lCache[dep_index].tag.code() ;
    dir = (getLinkDirection(parent_index, head_index)<<1) + getLinkDirection(head_index, dep_index) ;
 
@@ -150,18 +150,18 @@ inline SCORE_TYPE CDepParser::getOrUpdateArcLabelScore( const int &head_index, c
    const unsigned long &head_tag = head_word_tag.tag.code();
    const unsigned long &dep_tag = dep_word_tag.tag.code();
 
-   const unsigned long &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag.code() : PENN_TAG_BEGIN ;
-   const unsigned long &head_tag_r = ( head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag.code() : PENN_TAG_END ;
-   const unsigned long &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag.code() : PENN_TAG_BEGIN ;
-   const unsigned long &dep_tag_r = ( dep_index+1 < m_lCache.size() ) ? m_lCache[ dep_index+1 ].tag.code() : PENN_TAG_END ;
+   const unsigned long &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag.code() : CTag::SENTENCE_BEGIN ;
+   const unsigned long &head_tag_r = ( head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag.code() : CTag::SENTENCE_END ;
+   const unsigned long &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag.code() : CTag::SENTENCE_BEGIN ;
+   const unsigned long &dep_tag_r = ( dep_index+1 < m_lCache.size() ) ? m_lCache[ dep_index+1 ].tag.code() : CTag::SENTENCE_END ;
 
    static unsigned long head_tag_lm, head_tag_mr, head_tag_lmr, dep_tag_lm, dep_tag_mr, dep_tag_lmr;
 
-   head_tag_lm = encodeTags(head_tag_l, head_tag, PENN_TAG_NONE);
-   head_tag_mr = encodeTags(PENN_TAG_NONE, head_tag, head_tag_r);
+   head_tag_lm = encodeTags(head_tag_l, head_tag, CTag::NONE);
+   head_tag_mr = encodeTags(CTag::NONE, head_tag, head_tag_r);
    head_tag_lm = encodeTags(head_tag_l, head_tag, head_tag_r);
-   dep_tag_lm = encodeTags(dep_tag_l, dep_tag, PENN_TAG_NONE);
-   dep_tag_mr = encodeTags(PENN_TAG_NONE, dep_tag, dep_tag_r);
+   dep_tag_lm = encodeTags(dep_tag_l, dep_tag, CTag::NONE);
+   dep_tag_mr = encodeTags(CTag::NONE, dep_tag, dep_tag_r);
    dep_tag_lm = encodeTags(dep_tag_l, dep_tag, dep_tag_r);
 
 #include "templates/labeled.h"
@@ -215,17 +215,17 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
 
    const CTag &sth_tag = sth_word_tag.tag;
    static CTag stld_tag, strd_tag;
-   stld_tag = stld_index == -1 ? PENN_TAG_END : m_lCache[stld_index].tag;
-   strd_tag = strd_index == -1 ? PENN_TAG_END : m_lCache[strd_index].tag;
+   stld_tag = stld_index == -1 ? CTag::SENTENCE_END : m_lCache[stld_index].tag;
+   strd_tag = strd_index == -1 ? CTag::SENTENCE_END : m_lCache[strd_index].tag;
    static CTag n0ld_tag;
    static CTag n2_tag, n3_tag ;
-   n0ld_tag = n0ld_index==-1 ? PENN_TAG_END : m_lCache[n0ld_index].tag;
-   n2_tag = n2_index==-1 ? PENN_TAG_END : m_lCache[n2_index].tag;
-   n3_tag = n3_index==-1 ? PENN_TAG_END : m_lCache[n3_index].tag;
+   n0ld_tag = n0ld_index==-1 ? CTag::SENTENCE_END : m_lCache[n0ld_index].tag;
+   n2_tag = n2_index==-1 ? CTag::SENTENCE_END : m_lCache[n2_index].tag;
+   n3_tag = n3_index==-1 ? CTag::SENTENCE_END : m_lCache[n3_index].tag;
 
-   const CTaggedWord<CTag, TAG_SEPARATOR> st_word_nil(st_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> st_word_nil(st_word, CTag::NONE);
    const CTaggedWord<CTag, TAG_SEPARATOR> st_nil_tag(g_emptyWord, st_tag);
-   const CTaggedWord<CTag, TAG_SEPARATOR> n0_word_nil(n0_word, PENN_TAG_NONE);
+   const CTaggedWord<CTag, TAG_SEPARATOR> n0_word_nil(n0_word, CTag::NONE);
    const CTaggedWord<CTag, TAG_SEPARATOR> n0_nil_tag(g_emptyWord, n0_tag);
 
    static CTwoTaggedWords st_word_tag_n0_word_tag ;
@@ -283,13 +283,13 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
    if (stld_index!=-1) retval += cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( make_pair(encodeTags(st_tag,stld_tag,n0_tag),action), m_nScoreIndex, amount, round ) ; 
    if (strd_index!=-1) retval += cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( make_pair(encodeTags(st_tag,strd_tag,n0_tag),action), m_nScoreIndex, amount, round ) ; 
 
-   if (n1_index!=-1) retval += cast_weights->m_mapN0wN1t.getOrUpdateScore( make_pair(n0_word,(action<<PENN_TAG_COUNT_BITS)|n1_tag.code()), m_nScoreIndex, amount, round ) ; 
-   if (n2_index!=-1) retval += cast_weights->m_mapN0wN1tN2t.getOrUpdateScore( make_pair(n0_word,(action<<PENN_TAG_COUNT_BITS*2)|encodeTags(n1_tag,n2_tag)), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTtN0wN1t.getOrUpdateScore( make_pair(n0_word,(action<<PENN_TAG_COUNT_BITS*2)|encodeTags(st_tag,n1_tag)), m_nScoreIndex, amount, round ) ; 
-   if (n0ld_index!=-1) retval += cast_weights->m_mapSTtN0wN0LDt.getOrUpdateScore( make_pair(n0_word,(action<<PENN_TAG_COUNT_BITS*2)|encodeTags(st_tag,n0ld_tag)), m_nScoreIndex, amount, round ) ; 
-   if (sth_index!=-1) retval += cast_weights->m_mapSTHtSTtN0w.getOrUpdateScore( make_pair(n0_word,(action<<PENN_TAG_COUNT_BITS*2)|encodeTags(sth_tag,st_tag)), m_nScoreIndex, amount, round ) ; 
-   if (stld_index!=-1) retval += cast_weights->m_mapSTtSTLDtN0w.getOrUpdateScore( make_pair(n0_word,(action<<PENN_TAG_COUNT_BITS*2)|encodeTags(st_tag,stld_tag)), m_nScoreIndex, amount, round ) ; 
-   if (strd_index!=-1) retval += cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( make_pair(n0_word,(action<<PENN_TAG_COUNT_BITS*2)|encodeTags(st_tag,strd_tag)), m_nScoreIndex, amount, round ) ; 
+   if (n1_index!=-1) retval += cast_weights->m_mapN0wN1t.getOrUpdateScore( make_pair(n0_word,(action<<CTag::SIZE)|n1_tag.code()), m_nScoreIndex, amount, round ) ; 
+   if (n2_index!=-1) retval += cast_weights->m_mapN0wN1tN2t.getOrUpdateScore( make_pair(n0_word,(action<<CTag::SIZE*2)|encodeTags(n1_tag,n2_tag)), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTtN0wN1t.getOrUpdateScore( make_pair(n0_word,(action<<CTag::SIZE*2)|encodeTags(st_tag,n1_tag)), m_nScoreIndex, amount, round ) ; 
+   if (n0ld_index!=-1) retval += cast_weights->m_mapSTtN0wN0LDt.getOrUpdateScore( make_pair(n0_word,(action<<CTag::SIZE*2)|encodeTags(st_tag,n0ld_tag)), m_nScoreIndex, amount, round ) ; 
+   if (sth_index!=-1) retval += cast_weights->m_mapSTHtSTtN0w.getOrUpdateScore( make_pair(n0_word,(action<<CTag::SIZE*2)|encodeTags(sth_tag,st_tag)), m_nScoreIndex, amount, round ) ; 
+   if (stld_index!=-1) retval += cast_weights->m_mapSTtSTLDtN0w.getOrUpdateScore( make_pair(n0_word,(action<<CTag::SIZE*2)|encodeTags(st_tag,stld_tag)), m_nScoreIndex, amount, round ) ; 
+   if (strd_index!=-1) retval += cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( make_pair(n0_word,(action<<CTag::SIZE*2)|encodeTags(st_tag,strd_tag)), m_nScoreIndex, amount, round ) ; 
 
    return retval;
 }

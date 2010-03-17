@@ -22,12 +22,12 @@
    retval += cast_weights->m_mapHeadWordTagDepTag.find( make_pair(head_word_tag_dep_tag,x), g_zeroScore ).score(m_nScoreIndex) ; \
    retval += cast_weights->m_mapHeadTagDepWordTag.find( make_pair(head_tag_dep_word_tag,x), g_zeroScore ).score(m_nScoreIndex) ; \
    retval += cast_weights->m_mapHeadWordDepWord.find( make_pair(head_word_dep_word,x), g_zeroScore ).score(m_nScoreIndex) ; \
-   retval += cast_weights->m_mapHeadTagDepTag.find( make_pair((head_tag.code()<<PENN_TAG_COUNT_BITS)+dep_tag.code(),x) , g_zeroScore ).score(m_nScoreIndex) ; 
+   retval += cast_weights->m_mapHeadTagDepTag.find( make_pair((head_tag.code()<<CTag::SIZE)+dep_tag.code(),x) , g_zeroScore ).score(m_nScoreIndex) ; 
 
 #define getSurroundingScoreTemplate(x) \
-   both_sides = (head_tag.code()<<PENN_TAG_COUNT_BITS*2) + 0 + dep_tag.code(); \
+   both_sides = (head_tag.code()<<CTag::SIZE*2) + 0 + dep_tag.code(); \
    for ( index=left_index+1; index<right_index; index++ ) { \
-      between_tags = both_sides + (m_lCache[index].tag.code()<<PENN_TAG_COUNT_BITS); \
+      between_tags = both_sides + (m_lCache[index].tag.code()<<CTag::SIZE); \
       retval += cast_weights->m_mapBetweenTags.find( make_pair(between_tags, x), g_zeroScore ).score(m_nScoreIndex) ; \
    } \
    if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.find( make_pair(encodeTags(head_tag, head_tag_l, dep_tag, dep_tag_l), x), g_zeroScore ).score(m_nScoreIndex) ; \
