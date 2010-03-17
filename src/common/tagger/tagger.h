@@ -83,7 +83,7 @@ public:
    }
 
 public:
-   void train(const CStringVector *sentence, const CTwoStringVector *correct, int round);
+   bool train(const CTwoStringVector *correct);
    void tag(CStringVector *sentence, CTwoStringVector *retval, int nBest=1, double *out_scores=NULL);
 
 protected:
@@ -96,14 +96,16 @@ protected:
 public:
   enum SCORE_UPDATE {eAdd=0, eSubtract};
   // update the built-in weight vector for this feature object specifically
-  void updateScoreVector(CTwoStringVector* tagged, CTwoStringVector* correct, int round=0);
+  void updateScoreVector(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round=0);
   // compute the total or average feature vector after update
-  void finishTraining(int round=0);
+  void finishTraining();
 
+  inline unsigned long long getPossibleTagsForWord(const CWord &word);
+  void updateTagDict(const CTwoStringVector* correct);
 protected:
 
    // add local features to a global feature vector (first param)
-   void updateLocalFeatureVector(SCORE_UPDATE method, CTwoStringVector* tagged, int index, int round=0);
+   void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* tagged, int index, int round=0);
 };
 }; // namespace TARGET_LANGUAGE
 

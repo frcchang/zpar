@@ -1,6 +1,6 @@
 /****************************************************************
  *                                                              *
- * tokenizedword.h - the definitions for tokenized words        *
+ * generictag.h - the definitions for generic tags with str;    *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -8,12 +8,12 @@
  *                                                              *
  ****************************************************************/
 
-#ifndef _WORD_H
-#define _WORD_H
+#ifndef _GENERIC_TAG_H
+#define _GENERIC_TAG_H
 
-#include "hash.h"
 #include "tokenizer.h"
-#include "bigram.h"
+
+namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
@@ -39,9 +39,9 @@ public:
    enum {SENTENCE_BEGIN = 1};
    enum {SENTENCE_END = 2};
    enum {FIRST = 3};
-   static unsigned long COUNT = 3;
-   static unsigned long COUNT_BITS = 2;
-   static unsigned long LAST = 2;
+   enum {SIZE = 8};
+   static unsigned long COUNT;
+   static unsigned long LAST;
 
 protected:
    unsigned long m_code;
@@ -51,39 +51,37 @@ protected:
    CTagTokenizer &getTokenizer() const {static CTagTokenizer tokenizer; return tokenizer;}
 
 public:
-   CWord() { clear(); }
-   CWord(const string &s) { load(s); }
-   CWord(const CTag &t) { m_code=t.m_code; }
-   CWord(const unsigned &u) { assert(getTokenizer().count()>u); m_code=u; }
-   virtual ~CWord() {}
+   CTag() { clear(); }
+   CTag(const string &s) { load(s); }
+   CTag(const CTag &t) { m_code=t.m_code; }
+   CTag(const unsigned &u) { assert(getTokenizer().count()>u); m_code=u; }
+   virtual ~CTag() {}
 
 public:
-   unsigned long code() const { return m_code; }
-   bool operator == (const CWord &w) const { return m_code == w.m_code; }
-   bool operator != (const CWord &w) const { return m_code != w.m_code; }
-   bool operator < (const CWord &w) const { return m_code < w.m_code; }
-   bool operator > (const CWord &w) const { return m_code > w.m_code; }
-   bool operator <= (const CWord &w) const { return m_code <= w.m_code; }
-   bool operator >= (const CWord &w) const { return m_code >= w.m_code; }
+   const unsigned long &code() const { return m_code; }
+   bool operator == (const CTag &w) const { return m_code == w.m_code; }
+   bool operator != (const CTag &w) const { return m_code != w.m_code; }
+   bool operator < (const CTag &w) const { return m_code < w.m_code; }
+   bool operator > (const CTag &w) const { return m_code > w.m_code; }
+   bool operator <= (const CTag &w) const { return m_code <= w.m_code; }
+   bool operator >= (const CTag &w) const { return m_code >= w.m_code; }
 
    void load(const string &s) {
       m_code=getTokenizer().lookup(s); 
-      if (m_code>LAST) { 
-         assert(m_code == LAST+1);
-         ++COUNT; 
-         if ((1<<COUNT_BITS)>COUNT) ++COUNT_BITS;
-         ++LAST;
-         TRACE("Tag updated: count="<<COUNT<<",countbits="<<COUNT_BITS<<",last="<<LAST<<".");
-      } 
+      COUNT = getTokenizer().count();
+      LAST = COUNT-1;
+      assert((1<<SIZE)>COUNT);
    }
    const string &str() const { return getTokenizer().key(m_code); }
 
    void clear() { m_code=NONE; }
 }; 
 
-//===============================================================
+inline const unsigned long &hash(const CTag &tag) {return tag.code(); }
 
-inline unsigned long hash(const CWord &w) {return w.hash();}
+};
+
+inline const unsigned long &hash(const TARGET_LANGUAGE::CTag &tag) {return tag.code(); }
 
 #endif
 

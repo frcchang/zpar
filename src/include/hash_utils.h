@@ -1,6 +1,8 @@
 #ifndef _HASH_FUNCTION_UTIL_H
 #define _HASH_FUNCTION_UTIL_H
 
+#include "definitions.h"
+
 inline unsigned long hash(const unsigned int &i) {return i;}
 inline unsigned long hash(const int &i) {return i>0?i:-i;}
 

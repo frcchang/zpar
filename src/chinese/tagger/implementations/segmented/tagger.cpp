@@ -198,8 +198,8 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
    const CTag tag( sentence->at(index).second ) ; 
    const CTag last_tag = index > 0 ? CTag( sentence->at( index-1 ).second) : CTag::SENTENCE_BEGIN ;
    const CTag second_last_tag = index > 1 ? CTag( sentence->at( index-2 ).second) : CTag::SENTENCE_BEGIN ;
-   const CTagSet<CTag, 2> tag_bigram(encodeTags(tag.code(), last_tag.code()));
-   const CTagSet<CTag, 3> tag_trigram(encodeTags(tag.code(), last_tag.code(), second_last_tag.code()));
+   const CTagSet<CTag, 2> tag_bigram(encodeTags(tag, last_tag));
+   const CTagSet<CTag, 3> tag_trigram(encodeTags(tag, last_tag, second_last_tag));
    CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    CTwoTaggedWords wt12;
    

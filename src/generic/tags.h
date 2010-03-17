@@ -4,24 +4,20 @@
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
- * Computing Laboratory, Oxford. 2006.10                        *
+ * Computing Laboratory, Oxford. 2010.04                        *
  *                                                              *
  ****************************************************************/
 
 #ifndef _GENERIC_TAGS_H
 #define _GENERIC_TAGS_H 1
 
-namespace generic {
-
 #include "linguistics/generictag.h"
+
+namespace generic {
 
 const char TAG_SEPARATOR = '/';
 
 }; // namespace generic
-
-//===============================================================
-
-inline const unsigned long &hash(const generic::CTag &tag) { return tag.code();}
 
 //===============================================================
 
