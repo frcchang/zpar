@@ -21,9 +21,9 @@ namespace TARGET_LANGUAGE {
  *
  *==============================================================*/
 
-class CTagTokenizer : public CTokenizer<string> {
+class CTagTokenizer : public CTokenizer<string, 251> {
    public: 
-      CTagTokenizer() : CTokenizer<string>(0/*reserve for NONE BEGIN END*/) {
+      CTagTokenizer() : CTokenizer<string, 251>(0/*reserve for NONE BEGIN END*/) {
          lookup("-NONE-");
          lookup("-BEGIN-");
          lookup("-END-");

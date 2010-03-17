@@ -28,9 +28,9 @@
  *
  *==============================================================*/
 
-class CStringTokenizer : public CTokenizer<string> {
+class CStringTokenizer : public CTokenizer<string, 65537> {
    public: 
-      CStringTokenizer() : CTokenizer<string>(1/*reserve for the other unknown */) {lookup("");} 
+      CStringTokenizer() : CTokenizer<string, 65537>(1/*reserve for the other unknown */) {lookup("");} 
       virtual ~CStringTokenizer() {}
 };
 

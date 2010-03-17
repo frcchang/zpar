@@ -42,7 +42,7 @@
 
    /*----------------------between and surrounding----------------------*/
    static int both_sides; // cache the sum of two tags
-   both_sides = (head_tag.code()<<PENN_TAG_COUNT_BITS*2) + 0 + dep_tag.code(); 
+   both_sides = (head_tag.code()<<CTag::SIZE*2) + 0 + dep_tag.code(); 
    static unsigned long seen_tags;
    static int between_tags, between_tag;
    const CTag &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag : CTag::SENTENCE_BEGIN ;

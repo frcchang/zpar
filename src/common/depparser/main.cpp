@@ -29,7 +29,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    int time_start = clock();
 
    CDepParser parser(sFeatureFile, false) ;
-   CSuperTagReader input_reader(sInputFile);
+   CSentenceReader input_reader(sInputFile);
    ofstream os(sOutputFile.c_str());
    ofstream *os_scores=0;
    depparser::SCORE_TYPE *scores=0;

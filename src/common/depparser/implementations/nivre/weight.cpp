@@ -14,7 +14,7 @@
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
 
-const CScore<SCORE_TYPE> g_zeroScore;
+//const CScore<SCORE_TYPE> g_zeroScore;
 
 /*
    left(m_mapHeadWord)right \

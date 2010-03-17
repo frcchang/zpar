@@ -43,7 +43,7 @@ CHINESE_TAGGER_IMPL = agenda
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = nivre
+CHINESE_DEPPARSER_IMPL = combined
 CHINESE_DEPPARSER_LABELED = false
 
 # currently support sr implementations 
@@ -128,11 +128,12 @@ $(OBJECT_ENGLISH_TAGGER):
 
 #  depparser
 SRC_COMMON_DEPPARSER = $(SRC_COMMON)/depparser
-ifeq ($(CHINESE_DEPPARSER_IMPL), joint)
-	SRC_CHINESE_DEPPARSER = $(SRC_CHINESE)/depparser
-else
-	SRC_CHINESE_DEPPARSER = $(SRC_COMMON_DEPPARSER)
-endif
+#ifeq ($(CHINESE_DEPPARSER_IMPL), joint)
+#	SRC_CHINESE_DEPPARSER = $(SRC_CHINESE)/depparser
+#else
+#	SRC_CHINESE_DEPPARSER = $(SRC_COMMON_DEPPARSER)
+#endif
+SRC_CHINESE_DEPPARSER = $(SRC_COMMON_DEPPARSER)
 DIST_DEPPARSER = $(DIST_DIR)/chinese.depparser
 OBJECT_DEPPARSER = $(OBJECT_DIR)/chinese.depparser
 DIST_ENGLISH_DEPPARSER = $(DIST_DIR)/english.depparser
