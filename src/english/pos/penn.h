@@ -99,6 +99,7 @@ public:
 
 public:
    unsigned long code() const { return m_code; }
+   unsigned long hash() const { return m_code; }
    string str() const { assert(m_code<PENN_TAG_COUNT) ; return PENN_TAG_STRINGS[m_code]; }
    void load(const string &s) {
       m_code = PENN_TAG_NONE ;

@@ -1,9 +1,11 @@
 #ifndef _DEPPARSER_IMPL_INCLUDE_H
 #define _DEPPARSER_IMPL_INCLUDE_H
 
+#include "tags.h"
 #include "bigram.h"
 #include "linguistics/word_tokenized.h"
-#include "tags.h"
+#include "tuple3.h"
+#include "tuple4.h"
 #include "linguistics/taggedword.h"
 #include "agenda.h"
 #include "pair_stream.h"
