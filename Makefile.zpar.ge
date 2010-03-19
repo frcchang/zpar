@@ -2,7 +2,7 @@
 # currently support only agenda
 GENERIC_TAGGER_IMPL = agenda
 
-# currently support eisner, covington, nivre, combined implementations 
+# currently support nivre, combined implementations (other implementations are not generalized)
 GENERIC_DEPPARSER_IMPL = combined
 GENERIC_DEPPARSER_LABELED = false
 # currently support sr implementations 
@@ -76,7 +76,7 @@ $(DIST_GENERIC_DEPPARSER):
 	mkdir $(DIST_GENERIC_DEPPARSER)
 $(OBJECT_GENERIC_DEPPARSER):
 	mkdir $(OBJECT_GENERIC_DEPPARSER)
-generic.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_GENERIC_DEPPARSER) $(DIST_GENERIC_DEPPARSER) $(DIST_GENERIC_DEPPARSER)/depparser $(DIST_GENERIC_DEPPARSER)/train $(DIST_GENERIC_DEPPARSER)/unit_test
+generic.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_GENERIC_DEPPARSER) $(DIST_GENERIC_DEPPARSER) $(DIST_GENERIC_DEPPARSER)/depparser $(DIST_GENERIC_DEPPARSER)/train
 	@echo The generic dependency parser system is compiled successfully into $(DIST_GENERIC_DEPPARSER).
 
 # the weight module
@@ -84,18 +84,18 @@ $(OBJECT_GENERIC_DEPPARSER)/weight.o: $(OBJECT_GENERIC_DEPPARSER) $(SRC_GENERIC_
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/weight.cpp -o $(OBJECT_GENERIC_DEPPARSER)/weight.o
 
 # the depparser object
-$(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
+$(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/templates/getorupdate.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/generic.depparser.o
 
 # the main executable
-$(DIST_GENERIC_DEPPARSER)/depparser: $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
+$(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/pos.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/main.cpp -o $(OBJECT_GENERIC_DEPPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 # the trainer for depparser
 $(DIST_GENERIC_DEPPARSER)/train: $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/train.cpp -o $(OBJECT_GENERIC_DEPPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 #===================================================================
 
@@ -105,7 +105,7 @@ $(DIST_GENERIC_CONPARSER):
 	mkdir $(DIST_GENERIC_CONPARSER)
 $(OBJECT_GENERIC_CONPARSER):
 	mkdir $(OBJECT_GENERIC_CONPARSER)
-generic.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_GENERIC_CONPARSER) $(DIST_GENERIC_CONPARSER) $(DIST_GENERIC_CONPARSER)/conparser $(DIST_GENERIC_CONPARSER)/train 
+generic.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_GENERIC_CONPARSER) $(DIST_GENERIC_CONPARSER) $(DIST_GENERIC_CONPARSER)/conparser $(DIST_GENERIC_CONPARSER)/train 
 	@echo The generic constituent parser system is compiled successfully into $(DIST_GENERIC_CONPARSER).
 
 # the weight module
@@ -119,12 +119,12 @@ $(OBJECT_DIR)/generic.conparser.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER
 # the main executable
 $(DIST_GENERIC_CONPARSER)/conparser: $(SRC_GENERIC_CONPARSER)/main.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/main.cpp -o $(OBJECT_GENERIC_CONPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/conparser $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_GENERIC_CONPARSER)/constituent.o 
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/conparser $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o
 
 # the trainer for conparser
 $(DIST_GENERIC_CONPARSER)/train: $(SRC_GENERIC_CONPARSER)/train.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECTS) $(OBJECT_GENERIC_CONPARSER)/constituent.o
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/train.cpp -o $(OBJECT_GENERIC_CONPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_GENERIC_CONPARSER)/constituent.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o
 
 #===================================================================
 

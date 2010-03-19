@@ -32,8 +32,8 @@
    retval += cast_weights->m_mapDepWordTag.getOrUpdateScore( make_pair(dep_word_tag, x), m_nScoreIndex, amount, round) ;\
    retval += cast_weights->m_mapHeadWord.getOrUpdateScore( make_pair(head_word, x), m_nScoreIndex, amount, round) ;\
    retval += cast_weights->m_mapDepWord.getOrUpdateScore( make_pair(dep_word, x), m_nScoreIndex, amount, round ) ;\
-   retval += cast_weights->m_mapHeadTag.getOrUpdateScore( make_pair(head_tag.code(), x), m_nScoreIndex, amount, round ) ;\
-   retval += cast_weights->m_mapDepTag.getOrUpdateScore( make_pair(dep_tag.code(), x), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapHeadTag.getOrUpdateScore( make_pair(head_tag, x), m_nScoreIndex, amount, round ) ;\
+   retval += cast_weights->m_mapDepTag.getOrUpdateScore( make_pair(dep_tag, x), m_nScoreIndex, amount, round ) ;
 
 #define getOrUpdateBigramScoreTemplate(x) \
    retval += cast_weights->m_mapHeadWordTagDepWordTag.getOrUpdateScore( make_pair(head_word_tag_dep_word_tag,x), m_nScoreIndex, amount, round ); \
@@ -42,7 +42,7 @@
    retval += cast_weights->m_mapHeadWordTagDepTag.getOrUpdateScore( make_pair(head_word_tag_dep_tag,x), m_nScoreIndex, amount, round ) ; \
    retval += cast_weights->m_mapHeadTagDepWordTag.getOrUpdateScore( make_pair(head_tag_dep_word_tag,x), m_nScoreIndex, amount, round ) ; \
    retval += cast_weights->m_mapHeadWordDepWord.getOrUpdateScore( make_pair(head_word_dep_word,x), m_nScoreIndex, amount, round ) ; \
-   retval += cast_weights->m_mapHeadTagDepTag.getOrUpdateScore( make_pair(encodeTags(head_tag,dep_tag),x), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapHeadTagDepTag.getOrUpdateScore( make_pair(CTagSet<CTag,2>(encodeTags(head_tag,dep_tag)),x), m_nScoreIndex, amount, round ) ; 
 
 #define getOrUpdateSurroundingScoreTemplate(x) \
    seen_tags=0;\
@@ -50,34 +50,34 @@
       between_tag = m_lCache[index].tag.code(); \
       if((seen_tags&(1<<between_tag))==0){\
          between_tags = both_sides + (between_tag<<CTag::SIZE); \
-         retval += cast_weights->m_mapBetweenTags.getOrUpdateScore( make_pair(between_tags, x), m_nScoreIndex, amount, round ) ; \
+         retval += cast_weights->m_mapBetweenTags.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(between_tags), x), m_nScoreIndex, amount, round ) ; \
          seen_tags|=(1<<between_tag)\
       ;}\
    } \
-   if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_l, dep_tag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_lr) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_l, dep_tag, dep_tag_r), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_rl) retval += cast_weights->m_mapSurroundingTagsRL.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_r, dep_tag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_rr) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_r, dep_tag, dep_tag_r), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(encodeTags(g_noneTag, head_tag_l, dep_tag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_lr) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(encodeTags(g_noneTag, head_tag_l, dep_tag, dep_tag_r), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_rl) retval += cast_weights->m_mapSurroundingTagsRL.getOrUpdateScore( make_pair(encodeTags(g_noneTag, head_tag_r, dep_tag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_rr) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(encodeTags(g_noneTag, head_tag_r, dep_tag, dep_tag_r), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_l, g_noneTag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_lr) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_l, g_noneTag, dep_tag_r), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_rl) retval += cast_weights->m_mapSurroundingTagsRL.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_r, g_noneTag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_rr) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_r, g_noneTag, dep_tag_r), x), m_nScoreIndex, amount, round ) ; \
-   if (nc__l) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(encodeTags(head_tag, g_noneTag, dep_tag, dep_tag_l), x), m_nScoreIndex, amount, round ) ; \
-   if (nc__r) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(encodeTags(head_tag, g_noneTag, dep_tag, dep_tag_r), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_l_) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_l, dep_tag, g_noneTag), x), m_nScoreIndex, amount, round ) ; \
-   if (nc_r_) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(encodeTags(head_tag, head_tag_r, dep_tag, g_noneTag), x), m_nScoreIndex, amount, round ) ; 
+   if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_l, dep_tag, dep_tag_l)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_lr) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_l, dep_tag, dep_tag_r)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_rl) retval += cast_weights->m_mapSurroundingTagsRL.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_r, dep_tag, dep_tag_l)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_rr) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_r, dep_tag, dep_tag_r)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(g_noneTag, head_tag_l, dep_tag, dep_tag_l)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_lr) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(g_noneTag, head_tag_l, dep_tag, dep_tag_r)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_rl) retval += cast_weights->m_mapSurroundingTagsRL.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(g_noneTag, head_tag_r, dep_tag, dep_tag_l)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_rr) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(g_noneTag, head_tag_r, dep_tag, dep_tag_r)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_ll) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_l, g_noneTag, dep_tag_l)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_lr) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_l, g_noneTag, dep_tag_r)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_rl) retval += cast_weights->m_mapSurroundingTagsRL.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_r, g_noneTag, dep_tag_l)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_rr) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_r, g_noneTag, dep_tag_r)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc__l) retval += cast_weights->m_mapSurroundingTagsLL.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, g_noneTag, dep_tag, dep_tag_l)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc__r) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, g_noneTag, dep_tag, dep_tag_r)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_l_) retval += cast_weights->m_mapSurroundingTagsLR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_l, dep_tag, g_noneTag)), x), m_nScoreIndex, amount, round ) ; \
+   if (nc_r_) retval += cast_weights->m_mapSurroundingTagsRR.getOrUpdateScore( make_pair(CTagSet<CTag, 4>(encodeTags(head_tag, head_tag_r, dep_tag, g_noneTag)), x), m_nScoreIndex, amount, round ) ; 
 
 #define getOrUpdateSiblingScoreTemplate(x) \
    if ( sibling_index != DEPENDENCY_LINK_NO_HEAD ) { \
       retval += cast_weights->m_mapSiblingWords.getOrUpdateScore( make_pair(sibling_words,x), m_nScoreIndex, amount, round ) ;\
       retval += cast_weights->m_mapSiblingWordTag.getOrUpdateScore( make_pair(sibling_word_tag,x), m_nScoreIndex, amount, round ) ;\
       retval += cast_weights->m_mapSiblingTagWord.getOrUpdateScore( make_pair(sibling_tag_word,x), m_nScoreIndex, amount, round ) ;\
-      retval += cast_weights->m_mapSiblingTags.getOrUpdateScore( make_pair(encodeTags(dep_tag,sibling_tag),x), m_nScoreIndex, amount, round ) ;\
+      retval += cast_weights->m_mapSiblingTags.getOrUpdateScore( make_pair(CTagSet<CTag, 2>(encodeTags(dep_tag,sibling_tag)),x), m_nScoreIndex, amount, round ) ;\
       between_tags = both_sides + (sibling_tag.code()<<CTag::SIZE);\
-      retval += cast_weights->m_mapSiblingAndParentTags.getOrUpdateScore( make_pair(between_tags,x), m_nScoreIndex, amount, round ) ;\
+      retval += cast_weights->m_mapSiblingAndParentTags.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(between_tags),x), m_nScoreIndex, amount, round ) ;\
    }   
 

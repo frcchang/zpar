@@ -63,6 +63,7 @@ public:
 
 public:
    const unsigned long &code() const { return m_code; }
+   const unsigned long &hash() const { return m_code; }
    bool operator == (const CTag &w) const { return m_code == w.m_code; }
    bool operator != (const CTag &w) const { return m_code != w.m_code; }
    bool operator < (const CTag &w) const { return m_code < w.m_code; }
@@ -82,8 +83,6 @@ public:
 
    void clear() { m_code=NONE; }
 }; 
-
-inline const unsigned long &hash(const CTag &tag) {return tag.code(); }
 
 };
 

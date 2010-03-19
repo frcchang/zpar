@@ -23,6 +23,12 @@ namespace depparser {
 typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
 typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
 typedef CScoreMap<pair<CWord, int>,  SCORE_TYPE> CWordIntMap;
+typedef CScoreMap<pair<CTag, int>,  SCORE_TYPE> CTagIntMap;
+typedef CScoreMap<pair<CTagSet<CTag, 2>, int>,  SCORE_TYPE> CTagSet2IntMap;
+typedef CScoreMap<pair<CTagSet<CTag, 3>, int>,  SCORE_TYPE> CTagSet3IntMap;
+typedef CScoreMap<pair<CTagSet<CTag, 4>, int>,  SCORE_TYPE> CTagSet4IntMap;
+typedef CScoreMap<CTuple3<CWord, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
+typedef CScoreMap<CTuple4<CWord, CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagTagIntMap;
 typedef CScoreMap<pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE> CTaggedWordIntMap;
 typedef CScoreMap<int, SCORE_TYPE> CIntMap;
 typedef CScoreMap<pair<int, int>, SCORE_TYPE> CTwoIntMap;
@@ -44,8 +50,8 @@ public:
    // feature templates from mcdonald
    CWordIntMap m_mapHeadWord;
    CWordIntMap m_mapDepWord;
-   CTwoIntMap m_mapHeadTag;
-   CTwoIntMap m_mapDepTag;
+   CTagIntMap m_mapHeadTag;
+   CTagIntMap m_mapDepTag;
    CTaggedWordIntMap m_mapHeadWordTag;
    CTaggedWordIntMap m_mapDepWordTag;
 
@@ -55,37 +61,37 @@ public:
    CTwoTaggedWordsIntMap m_mapHeadTagDepWordTag;
    CTwoTaggedWordsIntMap m_mapHeadWordTagDepTag;
    CTwoWordsIntMap m_mapHeadWordDepWord;
-   CTwoIntMap m_mapHeadTagDepTag;
+   CTagSet2IntMap m_mapHeadTagDepTag;
 
-   CTwoIntMap m_mapBetweenTags;
-   CTwoIntMap m_mapSurroundingTagsLL;
-   CTwoIntMap m_mapSurroundingTagsLR;
-   CTwoIntMap m_mapSurroundingTagsRL;
-   CTwoIntMap m_mapSurroundingTagsRR;
+   CTagSet3IntMap m_mapBetweenTags;
+   CTagSet4IntMap m_mapSurroundingTagsLL;
+   CTagSet4IntMap m_mapSurroundingTagsLR;
+   CTagSet4IntMap m_mapSurroundingTagsRL;
+   CTagSet4IntMap m_mapSurroundingTagsRR;
 
    // second order feature templates from mcdonald
    CTwoWordsIntMap m_mapSiblingWords;
    CTaggedWordIntMap m_mapSiblingWordTag;
    CTaggedWordIntMap m_mapSiblingTagWord;
-   CTwoIntMap m_mapSiblingTags;
-   CTwoIntMap m_mapSiblingAndParentTags;
+   CTagSet2IntMap m_mapSiblingTags;
+   CTagSet3IntMap m_mapSiblingAndParentTags;
 
    // new features
-   CTwoIntMap m_mapGrandChildTags; 
+   CTagSet3IntMap m_mapGrandChildTags; 
    CTaggedWordIntMap m_mapHeadWordTagArity;
-   CTwoIntMap m_mapHeadTagArity;
-   CTwoIntMap m_mapTwoSiblingTags;
-   CTwoIntMap m_mapTwoSiblingAndParentTags;
+   CTagIntMap m_mapHeadTagArity;
+   CTagSet3IntMap m_mapTwoSiblingTags;
+   CTagSet4IntMap m_mapTwoSiblingAndParentTags;
 
    // feature templates from mcdonald
    CWordIntMap m_mapSTw;
-   CTwoIntMap m_mapSTt;
+   CTagIntMap m_mapSTt;
    CTaggedWordIntMap m_mapSTwt;
    CWordIntMap m_mapN0w;
-   CTwoIntMap m_mapN0t;
+   CTagIntMap m_mapN0t;
    CTaggedWordIntMap m_mapN0wt;
    CWordIntMap m_mapN1w;
-   CTwoIntMap m_mapN1t;
+   CTagIntMap m_mapN1t;
    CTaggedWordIntMap m_mapN1wt;
 
    CTwoTaggedWordsIntMap m_mapSTwtN0wt;
@@ -94,23 +100,23 @@ public:
    CTwoTaggedWordsIntMap m_mapSTtN0wt;
    CTwoTaggedWordsIntMap m_mapSTwtN0t;
    CTwoWordsIntMap m_mapSTwN0w;
-   CTwoIntMap m_mapSTtN0t;
+   CTagSet2IntMap m_mapSTtN0t;
 
-   CTwoIntMap m_mapN0tN1t;
-   CTwoIntMap m_mapN0tN1tN2t;
-   CTwoIntMap m_mapSTtN0tN1t;
-   CTwoIntMap m_mapSTtN0tN0LDt;
-   CTwoIntMap m_mapSTHtSTtN0t;
-   CTwoIntMap m_mapSTtSTLDtN0t;
-   CTwoIntMap m_mapSTtSTRDtN0t;
+   CTagSet2IntMap m_mapN0tN1t;
+   CTagSet3IntMap m_mapN0tN1tN2t;
+   CTagSet3IntMap m_mapSTtN0tN1t;
+   CTagSet3IntMap m_mapSTtN0tN0LDt;
+   CTagSet3IntMap m_mapSTHtSTtN0t;
+   CTagSet3IntMap m_mapSTtSTLDtN0t;
+   CTagSet3IntMap m_mapSTtSTRDtN0t;
 
-   CWordIntMap m_mapN0wN1t;
-   CWordIntMap m_mapN0wN1tN2t;
-   CWordIntMap m_mapSTtN0wN1t;
-   CWordIntMap m_mapSTtN0wN0LDt;
-   CWordIntMap m_mapSTHtSTtN0w;
-   CWordIntMap m_mapSTtSTLDtN0w;
-   CWordIntMap m_mapSTtSTRDtN0w;
+   CWordTagIntMap m_mapN0wN1t;
+   CWordTagTagIntMap m_mapN0wN1tN2t;
+   CWordTagTagIntMap m_mapSTtN0wN1t;
+   CWordTagTagIntMap m_mapSTtN0wN0LDt;
+   CWordTagTagIntMap m_mapSTHtSTtN0w;
+   CWordTagTagIntMap m_mapSTtSTLDtN0w;
+   CWordTagTagIntMap m_mapSTtSTRDtN0w;
 
 #ifdef LABELED
    CIntMap m_mapLabel;

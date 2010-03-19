@@ -98,6 +98,7 @@ public:
 
 public:
    const unsigned long &code() const { return m_code; }
+   const unsigned long &hash() const { return m_code; }
    string str() const { 
       assert(m_code<(1<<PENN_TAG_COUNT_BITS)) ; 
       if (m_code>=PENN_TAG_COUNT) {
