@@ -91,18 +91,18 @@ return 0;
 
    unsigned long k = encodeTags(ht, mt, st);
    nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k, m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k | (direction<<(PENN_TAG_COUNT_BITS*3)), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k | (dist<<(PENN_TAG_COUNT_BITS*3)), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k | (direction<<(CTag::SIZE*3)), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k | (dist<<(CTag::SIZE*3)), m_nScoreIndex, amount, round);
 
    k = encodeTags(ht, mt);
    nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k|(direction<<(PENN_TAG_COUNT_BITS*2))), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k|(dist<<(PENN_TAG_COUNT_BITS*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k|(direction<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k|(dist<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
 
    k = encodeTags(ht, st);
    nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k|(direction<<(PENN_TAG_COUNT_BITS*2))), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k|(dist<<(PENN_TAG_COUNT_BITS*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k|(direction<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k|(dist<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
 
    return nReturn;
 }
