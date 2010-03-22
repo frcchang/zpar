@@ -162,7 +162,7 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
       tagger.tag(input_sent, tagged_sent, NULL, 1);
       depparser.parse(*tagged_sent, output_sent);
       // Ouptut sent
-      (*outs) << *output_sent << endl;
+      (*outs) << *output_sent;
       input_sent->clear();
    }
    delete input_sent;
