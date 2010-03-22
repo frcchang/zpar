@@ -890,7 +890,7 @@ void CConParser::reduce(CStateItem &st) {
    unary_reduce = st.unary_reduce;
    const unsigned long &stacksize = st.stack.size();
    const bool prev_temp = stacksize>2 ? st.nodes[st.stack[stacksize-3]].temp:false;
-   for (constituent=PENN_CON_FIRST; constituent<PENN_CON_COUNT; constituent++) {
+   for (constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; constituent++) {
       for (i=0; i<=1; ++i) {
          for (j=0; j<=1; ++j) {
             const bool &head_left = static_cast<bool>(i);
@@ -907,7 +907,7 @@ void CConParser::reduce(CStateItem &st) {
                  ( !(prev_temp) || (!temporary||head_left) ) &&
                  ( !left.temp || (head_left&&constituent==left.constituent) ) &&
                  ( !right.temp || (!head_left&&constituent==right.constituent) ) &&
-                 ( !temporary || PENN_CON_TEMP[constituent] ) 
+                 ( !temporary || CConstituent::canBeTemporary(constituent) ) 
                ) {
                st.score += getOrUpdateStackScore(&st, encodeReduce(constituent, false, head_left, temporary));
                st.reduce(constituent, false, head_left, temporary);
@@ -992,7 +992,7 @@ void CConParser::reduce_unary(CStateItem &st) {
    original_score = st.score;
    unary_reduce = st.unary_reduce;
    static CCFGSet cf;
-   for (unsigned long constituent=PENN_CON_FIRST; constituent<PENN_CON_COUNT; ++constituent){
+   for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent){
       const CStateNode &child = st.nodes[st.stack.back()];
       const CWord &hw = m_lCache[child.lexical_head];
       assert(st.context->s0==st.stack.back());

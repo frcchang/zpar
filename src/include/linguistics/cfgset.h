@@ -1,6 +1,6 @@
 /****************************************************************
  *                                                              *
- * cfgset.h - the definitions for English cfg constituent-set.  *
+ * cfgset.h - the definitions for Chinese cfg constituent-set.  *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -15,21 +15,24 @@
 
 #include "hash.h"
 
+const unsigned long PACKED_CON_OR_TAG_SIZE = std::max(static_cast<unsigned long>(CConstituent::SIZE), static_cast<unsigned long>(CTag::SIZE)) + 1;
+// the first bit being one for pos
+
 //=============================================================
 
 inline unsigned long encodeTorC(const unsigned long &tagorconstituent, const bool &tag) {
-   assert((tagorconstituent&(1<<(PENN_CON_TAG_COUNT_BITS-1)))==0);
-   return tagorconstituent | (tag?(1<<(PENN_CON_TAG_COUNT_BITS-1)):0);
+   assert((tagorconstituent&(1<<(PACKED_CON_OR_TAG_SIZE-1)))==0);
+   return tagorconstituent | (tag?(1<<(PACKED_CON_OR_TAG_SIZE-1)):0);
 }
 inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long &toc2) {
-   assert((toc2>>PENN_CON_TAG_COUNT_BITS)==0);
-   return (toc1<<PENN_CON_TAG_COUNT_BITS) | toc2;
+   assert((toc2>>PACKED_CON_OR_TAG_SIZE)==0);
+   return (toc1<<PACKED_CON_OR_TAG_SIZE) | toc2;
 }
 
 inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long &toc2, const unsigned long &toc3) {
-   assert((toc2>>PENN_CON_TAG_COUNT_BITS)==0);
-   assert((toc3>>PENN_CON_TAG_COUNT_BITS)==0);
-   return (toc1<<(PENN_CON_TAG_COUNT_BITS*2)) | (toc2<<PENN_CON_TAG_COUNT_BITS) | toc3;
+   assert((toc2>>PACKED_CON_OR_TAG_SIZE)==0);
+   assert((toc3>>PACKED_CON_OR_TAG_SIZE)==0);
+   return (toc1<<(PACKED_CON_OR_TAG_SIZE*2)) | (toc2<<PACKED_CON_OR_TAG_SIZE) | toc3;
 }
 
 /*===============================================================
@@ -49,17 +52,17 @@ public:
 
 public:
    void operator += (const unsigned long long &i) { 
-      assert(i>>PENN_CON_TAG_COUNT_BITS==0);
-      assert(m_nHash>>(PENN_CON_TAG_COUNT_BITS*(CFGSET_SIZE-1))==0);
-      m_nHash = (m_nHash<<PENN_CON_TAG_COUNT_BITS)|i;
+      assert(i>>PACKED_CON_OR_TAG_SIZE==0);
+      assert(m_nHash>>(PACKED_CON_OR_TAG_SIZE*(CFGSET_SIZE-1))==0);
+      m_nHash = (m_nHash<<PACKED_CON_OR_TAG_SIZE)|i;
    }
 
 private:
    bool isTag(const unsigned long long &tc) const {
-      return tc & (1<<(PENN_CON_TAG_COUNT_BITS-1));
+      return tc & (1<<(PACKED_CON_OR_TAG_SIZE-1));
    }
    unsigned long getTag(const unsigned long long &tc) const {
-      return tc & ((1<<(PENN_CON_TAG_COUNT_BITS-1))-1);
+      return tc & ((1<<(PACKED_CON_OR_TAG_SIZE-1))-1);
    }
 
 public:
@@ -74,12 +77,12 @@ public:
       unsigned long tc;
       while (hs) {
          if (retval.empty()==false) retval = " " + retval;
-         tc = hs & ((1 << PENN_CON_TAG_COUNT_BITS) -1);
+         tc = hs & ((1 << PACKED_CON_OR_TAG_SIZE) -1);
          if (isTag(tc))
             retval = "."+CTag(getTag(tc)).str()+retval;
          else
             retval = CConstituent(tc).str() + retval;
-         hs >>= PENN_CON_TAG_COUNT_BITS;
+         hs >>= PACKED_CON_OR_TAG_SIZE;
       }
       return retval; 
    }
@@ -90,7 +93,7 @@ public:
       iss >> t;
       while (iss.good()) {
          if (t[0]=='.') 
-            *this += CTag(t.substr(1)).code()|(1<<(PENN_CON_TAG_COUNT_BITS-1));
+            *this += CTag(t.substr(1)).code()|(1<<(PACKED_CON_OR_TAG_SIZE-1));
          else
             *this += CConstituent(t).code();
          iss >> t;

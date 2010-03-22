@@ -20,7 +20,7 @@ typedef TARGET_LANGUAGE::CCFGTree CSentenceParsed;
 
 namespace TARGET_LANGUAGE { 
 
-#include "cfgset.h"
+#include "linguistics/cfgset.h"
 
 namespace conparser { 
 

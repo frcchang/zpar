@@ -37,8 +37,8 @@ const int MAX_SENTENCE_SIZE_BITS = 8 ;
 //}
 
 inline unsigned long encodeC(const CStateNode &node, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &cache ) {
-   assert((node.constituent&(1<<PENN_CON_COUNT_BITS))==0);
-   return node.is_constituent ? encodeTorC(node.constituent, false) | (node.temp?(1<<PENN_CON_COUNT_BITS):0) : encodeTorC(cache[node.lexical_head].tag.code(), true);
+   assert((node.constituent&(1<<CConstituent::SIZE))==0);
+   return node.is_constituent ? encodeTorC(node.constituent, false) | (node.temp?(1<<CConstituent::SIZE):0) : encodeTorC(cache[node.lexical_head].tag.code(), true);
 }
 
 inline unsigned long normalize3(const unsigned long &x) {
