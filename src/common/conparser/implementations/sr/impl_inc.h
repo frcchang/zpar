@@ -3,7 +3,6 @@
 
 #include "bigram.h"
 #include "linguistics/word_tokenized.h"
-#include "tags.h"
 #include "linguistics/taggedword.h"
 #include "agenda.h"
 #include "pair_stream.h"

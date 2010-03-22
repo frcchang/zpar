@@ -30,6 +30,7 @@
 #include <fstream>
 #include <sstream>
 #include <exception>
+#include <algorithm>
 
 using namespace std;
 
