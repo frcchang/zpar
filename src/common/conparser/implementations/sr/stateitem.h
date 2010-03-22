@@ -8,32 +8,32 @@
  *==============================================================*/
 
 inline unsigned long getConstituent(const unsigned long &action) {
-   return action & ((1<<PENN_CON_COUNT_BITS)-1);
+   return action & ((1<<CConstituent::SIZE)-1);
 }
 
 inline bool singleChild(const unsigned long &action) {
-   return action & (1<<(PENN_CON_COUNT_BITS+1));
+   return action & (1<<(CConstituent::SIZE+1));
 }
 
 inline bool headLeft(const unsigned long &action) {
-   return action & (1<<PENN_CON_COUNT_BITS);
+   return action & (1<<CConstituent::SIZE);
 }
 
 inline bool isTemporary(const unsigned long &action) {
-   return action & (1<<(PENN_CON_COUNT_BITS+2));
+   return action & (1<<(CConstituent::SIZE+2));
 }
 
 inline unsigned long encodeAction(const unsigned long &action, const unsigned long &num) {
-   assert(action>>(PENN_CON_COUNT_BITS+4)==0);
-   return action | ( num << (PENN_CON_COUNT_BITS+4) ); // action takes 4 extra bits plus consti (REDUCE, SINGLE_C, HEAD_L, TEMP)
+   assert(action>>(CConstituent::SIZE+4)==0);
+   return action | ( num << (CConstituent::SIZE+4) ); // action takes 4 extra bits plus consti (REDUCE, SINGLE_C, HEAD_L, TEMP)
 }
 
 inline unsigned long encodeReduce(const unsigned long &constituent, bool single_child, bool head_left, bool temporary) {
    assert(!single_child || (!head_left&&!temporary));
-   return (1<<(PENN_CON_COUNT_BITS+3)) | 
-          ((temporary?1:0) << (PENN_CON_COUNT_BITS+2)) | 
-          ((single_child?1:0) << (PENN_CON_COUNT_BITS+1)) | 
-          ((head_left?1:0) << PENN_CON_COUNT_BITS) | 
+   return (1<<(CConstituent::SIZE+3)) | 
+          ((temporary?1:0) << (CConstituent::SIZE+2)) | 
+          ((single_child?1:0) << (CConstituent::SIZE+1)) | 
+          ((head_left?1:0) << CConstituent::SIZE) | 
           constituent ;
 }
 
@@ -42,14 +42,14 @@ inline unsigned long encodeShift() {
 }
 
 inline unsigned long encodeReduceRoot() {
-   return encodeReduce(PENN_CON_NONE, false, false, false);
+   return encodeReduce(CConstituent::NONE, false, false, false);
 }
 
 inline bool isShift(const unsigned long &action) { return action == 0; }
-inline bool isReduce(const unsigned long &action) { return action & (1<<(PENN_CON_COUNT_BITS+3)); }
-inline bool isReduceRoot(const unsigned long &action) { return action == 1<<(PENN_CON_COUNT_BITS+3); }
-inline bool isReduceUnary(const unsigned long &action) { return isReduce(action) && (action & (1<<(PENN_CON_COUNT_BITS+1))); }
-inline bool isReduceBinary(const unsigned long &action) { return isReduce(action) && !(action & (1<<(PENN_CON_COUNT_BITS+1)))&&!isReduceRoot(action); }
+inline bool isReduce(const unsigned long &action) { return action & (1<<(CConstituent::SIZE+3)); }
+inline bool isReduceRoot(const unsigned long &action) { return action == 1<<(CConstituent::SIZE+3); }
+inline bool isReduceUnary(const unsigned long &action) { return isReduce(action) && (action & (1<<(CConstituent::SIZE+1))); }
+inline bool isReduceBinary(const unsigned long &action) { return isReduce(action) && !(action & (1<<(CConstituent::SIZE+1)))&&!isReduceRoot(action); }
 
 inline string printAction(const unsigned long &action) {
    if (isShift(action)) return "SHIFT";
@@ -140,7 +140,7 @@ public:
       nodes[t].single_child = false;
       nodes[t].head_left = false;
       nodes[t].temp = false;
-      nodes[t].constituent = PENN_CON_NONE;
+      nodes[t].constituent = CConstituent::NONE;
       nodes[t].token = current_word;
       nodes[t].lexical_start = current_word;
       nodes[t].lexical_end = current_word;
@@ -264,7 +264,7 @@ public:
       int s = stack.back();
       const CCFGTreeNode &nd = snt.nodes[s];
       const CCFGTreeNode &hd = snt.nodes[nd.parent];
-      assert(hd.constituent!=PENN_CON_NONE); // so that reduce and reduce_root are not same
+      assert(hd.constituent!=CConstituent::NONE); // so that reduce and reduce_root are not same
       bool single_child;
       bool head_left;
       bool temporary;

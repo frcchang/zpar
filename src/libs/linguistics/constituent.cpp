@@ -39,7 +39,7 @@ int CCFGTree::readNode(istream &is) {
          else nodes[node].head_left = false;
          nodes[node].left_child = left;
          nodes[node].right_child = right;
-         nodes[node].constituent = CConstituent(name, true).code();
+         nodes[node].constituent = CConstituent(name).code();
          nodes[node].token = s[0]=='l' ? nodes.at(left).token : nodes.at(right).token;
          assert(nodes[node].token!=-1);
          nodes[node].temp = temporary;
@@ -53,7 +53,7 @@ int CCFGTree::readNode(istream &is) {
          nodes[node].is_constituent = true;
          nodes[node].single_child = true;
          nodes[node].left_child = left;
-         nodes[node].constituent = CConstituent(name, true).code();
+         nodes[node].constituent = CConstituent(name).code();
          nodes[node].right_child = -1;
          nodes[node].token = nodes.at(left).token;
          nodes[node].head_left = false;

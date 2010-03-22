@@ -95,13 +95,14 @@ public:
    CConstituent(const unsigned &t) { 
       m_code=t; 
    }
-   CConstituent(const string &s, bool bNotNone=false) { load(s, bNotNone); }
+   CConstituent(const string &s) { load(s); }
    virtual ~CConstituent() {}
 
 public:
-   unsigned long code() const { return m_code; }
+   const unsigned long &code() const { return m_code; }
+   const unsigned long &hash() const { return m_code; }
    string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
-   void load(const string &s, bool bNoneDefault) {
+   void load(const string &s) {
       m_code = PENN_CON_NONE ;
       bool bFound = false;
       for (int i=0; i<PENN_CON_COUNT; ++i) {
@@ -111,10 +112,13 @@ public:
          }
       }
       // unknown constituent
-      if (bNoneDefault && !bFound) {
+      if (!bFound) {
          THROW("unknown constituent: " << s << '.');
       }
    }
+   inline bool canBeTemporary() const { return PENN_CON_TEMP[m_code]; }
+   // convenience optimization function 
+   inline static bool canBeTemporary(const unsigned long &code) { return PENN_CON_TEMP[code]; }
 
 public:
    bool operator == (const CConstituent &t1) const { return m_code == t1.m_code; }

@@ -16,10 +16,6 @@
 
 namespace english {
 
-const unsigned long PENN_CON_TAG_COUNT_BITS = max(static_cast<unsigned long>(CConstituent::SIZE), static_cast<unsigned long>(CTag::SIZE)) + 1;
-
-//===============================================================
-
 inline unsigned long encodeConstituents(const unsigned long &con1, const unsigned long &con2) {
    return (con1<<CConstituent::SIZE) | con2;
 }
@@ -46,14 +42,14 @@ inline unsigned long int encodeConstituents(const CConstituent &con1, const CCon
 
 //===============================================================
 
-inline unsigned long hash(const english::CConstituent &con) { return con.code();}
+//inline unsigned long hash(const english::CConstituent &con) { return con.code();}
 
 //===============================================================
 
 inline istream & operator >> (istream &is, english::CConstituent &con) {
    string s;
    is >> s;
-   con.load(s, false);
+   con.load(s);
    return is;
 }
 
