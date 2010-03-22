@@ -22,7 +22,7 @@ const char TAG_SEPARATOR = '_';
 
 //===============================================================
 
-inline const unsigned long &hash(const chinese::CTag &tag) { return tag.code();}
+//inline const unsigned long &hash(const chinese::CTag &tag) { return tag.code();}
 
 //===============================================================
 

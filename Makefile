@@ -47,7 +47,7 @@ CHINESE_DEPPARSER_IMPL = combined
 CHINESE_DEPPARSER_LABELED = false
 
 # currently support sr implementations 
-CHINESE_CONPARSER_IMPL = sr
+CHINESE_CONPARSER_IMPL = srnew
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = agenda

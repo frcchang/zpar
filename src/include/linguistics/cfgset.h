@@ -47,8 +47,9 @@ protected:
    unsigned long long m_nHash;
 
 public:
-   CCFGSet() { clear(); }
-   virtual ~CCFGSet() {}
+   CCFGSet() : m_nHash(0) { }
+   CCFGSet(const unsigned long long &hash) : m_nHash(hash) { }
+//   virtual ~CCFGSet() {}
 
 public:
    void operator += (const unsigned long long &i) { 
@@ -87,7 +88,7 @@ public:
       return retval; 
    }
    void load(const string &s) {
-      clear();
+      m_nHash = 0;
       istringstream iss(s);
       static string t;
       iss >> t;

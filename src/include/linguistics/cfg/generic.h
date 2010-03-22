@@ -54,7 +54,7 @@ protected:
 public:
    CConstituent() : m_code(NONE) { }
    CConstituent(const CConstituent &t) { m_code=t.m_code; }
-   CConstituent(const unsigned &u) { assert(getTokenizer().count()>u); m_code=u; }
+   CConstituent(const unsigned long &u) { assert(getTokenizer().count()>u); m_code=u; }
    CConstituent(const string &s) { load(s); }
    virtual ~CConstituent() {}
 
