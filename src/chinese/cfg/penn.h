@@ -84,9 +84,6 @@ public:
    CConstituent(const unsigned long &t) { 
       m_code=t; 
    }
-   CConstituent(const unsigned &t) { 
-      m_code=t; 
-   }
    CConstituent(const string &s) { load(s); }
    virtual ~CConstituent() {}
 
