@@ -72,6 +72,7 @@ public:
    virtual bool operator != (const CCFGSet &set) const { return m_nHash != set.m_nHash; }
    virtual bool operator < (const CCFGSet &set) const { return m_nHash < set.m_nHash; }
    void operator = (const CCFGSet &set) { m_nHash = set.m_nHash; }
+   void operator = (const unsigned long long &uint) { m_nHash = uint; }
    const string str() const { 
       string retval = "";
       unsigned long long hs = m_nHash;

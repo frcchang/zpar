@@ -139,8 +139,8 @@ SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const C
       nReturn += m_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore( firstchars_twoword , m_nScoreIndex , amount , round ) ;
       nReturn += m_weights->m_mapLastWordByLastChar.getOrUpdateScore( lastchars_twoword , m_nScoreIndex , amount , round ) ;
 
-      nReturn += m_weights->m_mapLengthByLastWord.getOrUpdateScore( make_pair(last_word, length) , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLastLengthByWord.getOrUpdateScore( make_pair(word, last_length), m_nScoreIndex , amount , round ) ;
+//      nReturn += m_weights->m_mapLengthByLastWord.getOrUpdateScore( make_pair(last_word, length) , m_nScoreIndex , amount , round ) ;
+//      nReturn += m_weights->m_mapLastLengthByWord.getOrUpdateScore( make_pair(word, last_length), m_nScoreIndex , amount , round ) ;
    }
   
    nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( make_pair(word, tag) , m_nScoreIndex , amount , round ) ; 

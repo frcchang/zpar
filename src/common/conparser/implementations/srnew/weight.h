@@ -28,14 +28,18 @@ typedef CScoreMap<unsigned long, SCORE_TYPE> CIntMap;
 typedef CScoreMap<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
 typedef CScoreMap<pair<CTwoWords, unsigned long>, SCORE_TYPE> CTwoWordsIntMap;
+typedef CScoreMap<CTuple3<CTwoWords, CCFGSet, unsigned long>, SCORE_TYPE> CTwoWordsCFGSetIntMap;
 typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
 typedef CScoreMap<pair<CTwoTaggedWords, unsigned long>, SCORE_TYPE> CTwoTaggedWordsIntMap;
-typedef CScoreMap<CCFGSet, SCORE_TYPE> CCFGRuleMap;
+typedef CScoreMap<CCFGSet, SCORE_TYPE> CCFGSetMap;
+typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
+typedef CScoreMap<CTuple3<CWord, CCFGSet, unsigned long>, SCORE_TYPE> CWordCFGSetIntMap;
 typedef CScoreMap<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
 typedef CScoreMap<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
-typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGRuleIntMap;
+typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
 typedef CScoreMap<CTuple3<CWord, CConstituent, unsigned long>, SCORE_TYPE> CWordConstituentIntMap;
 typedef CScoreMap<CTuple3<CTag, CConstituent, unsigned long>, SCORE_TYPE> CTagConstituentIntMap;
+typedef CScoreMap<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
@@ -52,25 +56,25 @@ public:
    // Gr
    CWordIntMap m_mapHw;
    CTwoIntMap m_mapHt;
-   CCFGRuleMap m_mapHc;
+   CCFGSetMap m_mapHc;
    CWordCFGRuleMap m_mapHwc;
 
-   CCFGRuleMap m_mapHcMc;
+   CCFGSetMap m_mapHcMc;
    CWordCFGRuleMap m_mapHwMc;
    CWordCFGRuleMap m_mapHcMw;
    CTwoWordsCFGRuleMap m_mapHwMw;
 
-   CCFGRuleMap m_mapBigramsL;
-   CCFGRuleMap m_mapBigramsR;
+   CCFGSetMap m_mapBigramsL;
+   CCFGSetMap m_mapBigramsR;
    CWordCFGRuleMap m_mapBigramsLexA;
    CWordCFGRuleMap m_mapBigramsLexB;
 
-   CCFGRuleMap m_mapRules;
-   CCFGRuleIntMap m_mapRulesWithSizes;
+   CCFGSetMap m_mapRules;
+   CCFGSetIntMap m_mapRulesWithSizes;
 
    CIntMap m_mapBracket;
 
-   CCFGRuleMap m_mapHtMt;
+   CCFGSetMap m_mapHtMt;
    CWordCFGRuleMap m_mapHtMw;
    CWordCFGRuleMap m_mapHwMt;
 
@@ -170,26 +174,26 @@ public:
    CIntMap m_mapS1RDt;
 
    // S0 S1
-   CTwoWordsIntMap m_mapS0wS1w; // the original 
-   CWordIntMap m_mapS0wS1c;
-   CWordIntMap m_mapS0cS1w;
+   CTwoWordsCFGSetIntMap m_mapS0wS1w; // the original 
+   CWordCFGSetIntMap m_mapS0wS1c;
+   CWordCFGSetIntMap m_mapS0cS1w;
+   CCFGSetIntMap m_mapS0cS1c;
    CTwoIntMap m_mapS0tS1c;
    CTwoIntMap m_mapS0cS1t;
-   CIntMap m_mapS0cS1c;
    CTwoIntMap m_mapS0cmS1cm;
 
    // S0 N0
-   CTwoWordsIntMap m_mapS0wN0w;
-   CWordIntMap m_mapS0cN0w;
-   CWordIntMap m_mapS0wN0t;
-   CIntMap m_mapS0cN0t;
+   CTwoWordsCFGSetIntMap m_mapS0wN0w;
+   CWordCFGSetIntMap m_mapS0cN0w;
+   CWordCFGSetIntMap m_mapS0wN0t;
+   CCFGSetIntMap m_mapS0cN0t;
    CTwoIntMap m_mapS0cmN0tm;
 
    // S1 N0
-   CTwoWordsIntMap m_mapS1wN0w;
-   CWordIntMap m_mapS1cN0w;
-   CWordIntMap m_mapS1wN0t;
-   CIntMap m_mapS1cN0t;
+   CTwoWordsCFGSetIntMap m_mapS1wN0w;
+   CWordCFGSetIntMap m_mapS1cN0w;
+   CWordCFGSetIntMap m_mapS1wN0t;
+   CCFGSetIntMap m_mapS1cN0t;
 
    // N0 N1
    CTwoWordsIntMap m_mapN0wN1w;
@@ -410,9 +414,9 @@ public:
                                                m_mapS0wS1w("Stack0WordStack1Word"),
                                                m_mapS0wS1c("Stack0WordStack1Constituent"),
                                                m_mapS0cS1w("Stack0ConstituentStack1Word"),
+                                               m_mapS0cS1c("Stack0ConstituentStack1Constituent"),
                                                m_mapS0tS1c("Stack0TagStack1Constituent"),
                                                m_mapS0cS1t("Stack0ConstituentStack1Tag"),
-                                               m_mapS0cS1c("Stack0ConstituentStack1Constituent"),
                                                m_mapS0cmS1cm("Stack0ConstituentRhythmStack1ConstituentRhythm"),
                                             
                                                m_mapS0wN0w("Stack0WordNext0Word", 122651),

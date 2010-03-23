@@ -130,9 +130,9 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS0wS1w)right\
    left(m_mapS0wS1c)right\
    left(m_mapS0cS1w)right\
+   left(m_mapS0cS1c)right\
    left(m_mapS0tS1c)right\
    left(m_mapS0cS1t)right\
-   left(m_mapS0cS1c)right\
    left(m_mapS0cmS1cm)right\
 \
    left(m_mapS0wN0w)right\
