@@ -50,8 +50,8 @@ public:
    unsigned long stacksize;
 
 
-
-   unsigned long s0cs1c, s1cn0t, s0cn0t, n0tn1t;
+   CCFGSet s0cs1c, s0cn0t, s1cn0t;
+   unsigned long n0tn1t;
    CTwoWords s0ws1w, s0wn0w, n0wn1w, s1wn0w;
 
    vector<unsigned long> s0_unbinarized;
@@ -316,7 +316,7 @@ public:
             if (last_separator!=-1) {
                if ((s0s1_sepset&(1<<last_separator))==0) {
                   s0s1_sepset|=(1<<last_separator);
-                  s0cs1c_separator.push_back(encodeTorCs(s0cs1c, last_separator));
+                  s0cs1c_separator.push_back(encodeTorCs(s0c.code(), s1c.code(), last_separator));
                }
                if ((s0_sepset&(1<<last_separator))==0) {
                   s0_sepset |= (1<<last_separator);
@@ -330,7 +330,7 @@ public:
             }
          }
       }
-      s0cs1c_sepcount=encodeTorCs(s0cs1c,sepcount);
+      s0cs1c_sepcount=encodeTorCs(s0c.code(), s1c.code(),sepcount);
       s0c_sepcount=encodeTorCs(s0c.code(),sepcount);
       s1c_sepcount=encodeTorCs(s1c.code(),sepcount);
 #endif
@@ -361,7 +361,7 @@ public:
 //         s0s1_dist = encodeLinkSize(s0node->lexical_head, s1node->lexical_head);
 //         s0cs1_dist = encodeTorCs(s0c, s0s1_dist);
 //         s0s1c_dist = encodeTorCs(s1c, s0s1_dist);
-         s0cs1c_dist = encodeTorCs(s0cs1c, s0s1_dist);
+         s0cs1c_dist = encodeTorCs(s0c.code(), s1c.code(), s0s1_dist);
       }
 
       return;
