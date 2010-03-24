@@ -43,6 +43,16 @@ inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long 
 
 class CCFGSet {
 
+public:
+   static inline unsigned long encodeT(const CTag &t) {
+      assert((t.code()&(1<<(PACKED_CON_OR_TAG_SIZE-1)))==0);
+      return t.code() | (1<<(PACKED_CON_OR_TAG_SIZE-1));
+   }
+   static inline unsigned long encodeC(const CConstituent &c) {
+      assert((c.code()&(1<<(PACKED_CON_OR_TAG_SIZE-1)))==0);
+      return c.code();
+   }
+
 protected:
    unsigned long long m_nHash;
 
@@ -56,6 +66,12 @@ public:
       assert(i>>PACKED_CON_OR_TAG_SIZE==0);
       assert(m_nHash>>(PACKED_CON_OR_TAG_SIZE*(CFGSET_SIZE-1))==0);
       m_nHash = (m_nHash<<PACKED_CON_OR_TAG_SIZE)|i;
+   }
+   void add(const CTag &t) {
+      (*this) += encodeT(t);
+   }
+   void add(const CConstituent &c) {
+      (*this) += encodeC(c);
    }
 
 private:
@@ -100,6 +116,18 @@ public:
             *this += CConstituent(t).code();
          iss >> t;
       }
+   }
+   void load(const CTag& tag1, const CTag& tag2) {
+      m_nHash = encodeTorCs(encodeT(tag1), encodeT(tag2));
+   }
+   void load(const CTag& tag1, const CConstituent& con2) {
+      m_nHash = encodeTorCs(encodeT(tag1), encodeC(con2));
+   }
+   void load(const CConstituent& con1, const CTag& tag2) {
+      m_nHash = encodeTorCs(encodeC(con1), encodeT(tag2));
+   }
+   void load(const CConstituent& con1, const CConstituent& con2) {
+      m_nHash = encodeTorCs(encodeC(con1), encodeC(con2));
    }
    bool empty() { return m_nHash==0 ; }
    bool clear() { m_nHash = 0; }
