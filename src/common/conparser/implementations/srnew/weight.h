@@ -28,6 +28,7 @@ typedef CScoreMap<unsigned long, SCORE_TYPE> CIntMap;
 typedef CScoreMap<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
 typedef CScoreMap<pair<CTwoWords, unsigned long>, SCORE_TYPE> CTwoWordsIntMap;
+typedef CScoreMap<CTuple3<CTwoWords, CTag, unsigned long>, SCORE_TYPE> CTwoWordsTagIntMap;
 typedef CScoreMap<CTuple3<CTwoWords, CCFGSet, unsigned long>, SCORE_TYPE> CTwoWordsCFGSetIntMap;
 typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
 typedef CScoreMap<pair<CTwoTaggedWords, unsigned long>, SCORE_TYPE> CTwoTaggedWordsIntMap;
@@ -174,13 +175,17 @@ public:
    CIntMap m_mapS1RDt;
 
    // S0 S1
-   CTwoWordsCFGSetIntMap m_mapS0wS1w; // the original 
+   CTwoWordsCFGSetIntMap m_mapS0wcS1wc; // the original 
    CWordCFGSetIntMap m_mapS0wS1c;
    CWordCFGSetIntMap m_mapS0cS1w;
    CCFGSetIntMap m_mapS0cS1c;
-   CTwoIntMap m_mapS0tS1c;
-   CTwoIntMap m_mapS0cS1t;
-   CTwoIntMap m_mapS0cmS1cm;
+   CTwoTaggedWordsIntMap m_mapS0wtS1wt;
+   CTwoWordsTagIntMap m_mapS0wtS1w;
+   CTwoWordsTagIntMap m_mapS0wS1wt;
+   CTwoWordsIntMap m_mapS0wS1w;
+   CWordCFGSetIntMap m_mapS0wtS1t;
+   CWordCFGSetIntMap m_mapS0tS1wt;
+   CCFGSetIntMap m_mapS0tS1t;
 
    // S0 N0
    CTwoWordsCFGSetIntMap m_mapS0wN0w;
@@ -236,23 +241,23 @@ public:
    CIntMap m_mapS0cS1cDist;
 
    // S0 S1N0
-   CWordIntMap m_mapS0wS1cN0t;
-   CWordIntMap m_mapS0cS1wN0t;
-   CWordIntMap m_mapS0cS1cN0w;
-   CIntMap m_mapS0cS1cN0t;
+   CWordCFGSetIntMap m_mapS0wS1cN0t;
+   CWordCFGSetIntMap m_mapS0cS1wN0t;
+   CWordCFGSetIntMap m_mapS0cS1cN0w;
+   CCFGSetIntMap m_mapS0cS1cN0t;
    CTwoIntMap m_mapS0cmS1cmN0tm;
 
    // S0 N0N1
-   CWordIntMap m_mapS0wN0tN1t;
-   CWordIntMap m_mapS0cN0wN1t;
-   CWordIntMap m_mapS0cN0tN1w;
-   CIntMap m_mapS0cN0tN1t;
+   CWordCFGSetIntMap m_mapS0wN0tN1t;
+   CWordCFGSetIntMap m_mapS0cN0wN1t;
+   CWordCFGSetIntMap m_mapS0cN0tN1w;
+   CCFGSetIntMap m_mapS0cN0tN1t;
 
    // S0 S1S2
-   CWordIntMap m_mapS0wS1cS2c;
-   CWordIntMap m_mapS0cS1wS2c;
-   CWordIntMap m_mapS0cS1cS2w;
-   CIntMap m_mapS0cS1cS2c;
+   CWordCFGSetIntMap m_mapS0wS1cS2c;
+   CWordCFGSetIntMap m_mapS0cS1wS2c;
+   CWordCFGSetIntMap m_mapS0cS1cS2w;
+   CCFGSetIntMap m_mapS0cS1cS2c;
    CTwoIntMap m_mapS0cmS1cmS2cm;
 
    // tag bigram
@@ -411,13 +416,17 @@ public:
                                                m_mapS1RDw("Stack1RightDepWord"),
                                                m_mapS1RDt("Stack1RightDepTag"), 
 
-                                               m_mapS0wS1w("Stack0WordStack1Word"),
+                                               m_mapS0wcS1wc("Stack0WordStack1Word"),
                                                m_mapS0wS1c("Stack0WordStack1Constituent"),
                                                m_mapS0cS1w("Stack0ConstituentStack1Word"),
                                                m_mapS0cS1c("Stack0ConstituentStack1Constituent"),
-                                               m_mapS0tS1c("Stack0TagStack1Constituent"),
-                                               m_mapS0cS1t("Stack0ConstituentStack1Tag"),
-                                               m_mapS0cmS1cm("Stack0ConstituentRhythmStack1ConstituentRhythm"),
+                                               m_mapS0wtS1wt("Stack0WordTagStack1WordTag"),
+                                               m_mapS0wtS1w("Stack0WordTagStack1Word"),
+                                               m_mapS0wS1wt("Stack0WordStack1WordTag"),
+                                               m_mapS0wS1w("Stack0WordStack1Word"),
+                                               m_mapS0wtS1t("Stack0WordTagStack1Tag"),
+                                               m_mapS0tS1wt("Stack0TagStack1WordTag"),
+                                               m_mapS0tS1t("Stack0TagStack1Tag"),
                                             
                                                m_mapS0wN0w("Stack0WordNext0Word", 122651),
                                                m_mapS0wN0t("Stack0WordNext0Tag", 122651),

@@ -44,15 +44,15 @@ public:
 
    unsigned long s0ldt, s0rdt;
    unsigned long s1ldt, s1rdt;
-   const CTaggedWord<CTag, TAG_SEPARATOR> *n0wt, *n1wt, *n2wt, *n3wt;
+   const CTaggedWord<CTag, TAG_SEPARATOR> *s0wt, *s1wt, *n0wt, *n1wt, *n2wt, *n3wt;
    const CWord *s0ldw, *s0rdw, *s1ldw, *s1rdw;
 
    unsigned long stacksize;
 
 
-   CCFGSet s0cs1c, s0cn0t, s1cn0t;
-   unsigned long n0tn1t;
+   CCFGSet s0cs1c, s0ts1t, s0cn0t, s1cn0t, n0tn1t, s0cs1cn0t, s0cn0tn1t, s0cs1cs2c;
    CTwoWords s0ws1w, s0wn0w, n0wn1w, s1wn0w;
+   CTwoTaggedWords s0wts1wt;
 
    vector<unsigned long> s0_unbinarized;
    vector<unsigned long> s1_unbinarized;
@@ -178,59 +178,57 @@ public:
       s1r = s1==-1 ? -1 : ( s1node->is_constituent ? (s1node->single_child ? -1 : s1node->right_child) : -1 );
       s1u = s1==-1 ? -1 : ( s1node->is_constituent ? (s1node->single_child ? s1node->left_child : -1) : -1 );
    
-//      s0c = encodeC(*s0node, wrds); assert(s0==-1||s0c!=0);
-      s0c = s0node->is_constituent ? CConstituent(s0node->constituent) : g_noneConstituent;
-      s0w = &(wrds[s0node->lexical_head]);
-      s0t = wrds[s0node->lexical_head].tag;
+      s0c.load(s0node->is_constituent ? s0node->constituent : CConstituent::NONE);
+      s0wt = &(wrds[s0node->lexical_head]);
+      s0w = s0wt;
+      s0t = s0wt->tag;
    
-//      s1c = s1==-1 ? 0 : encodeC(*s1node, wrds); assert(s1==-1||s1c!=0);
-      s1c = s1==-1 ? g_noneConstituent : s1node->is_constituent ? CConstituent(s1node->constituent) : g_noneConstituent;
-      s1w = s1 == -1 ? 0 : &(wrds[s1node->lexical_head]);
-      s1t = s1 == -1 ? 0 : wrds[s1node->lexical_head].tag;
+      s1c.load(s1==-1 ? CConstituent::NONE : s1node->is_constituent ? s1node->constituent : CConstituent::NONE);
+      s1wt = s1 == -1 ? 0 : &(wrds[s1node->lexical_head]);
+      s1w = s1wt;
+      s1t = s1 == -1 ? g_noneTag : s1wt->tag;
    
-//      s2c = s2==-1 ? 0 : encodeC(*s2node, wrds); assert(s2==-1||s2c!=0);
-      s2c = s2==-1 ? g_noneConstituent : s2node->is_constituent ? CConstituent(s2node->constituent) : g_noneConstituent;
+      s2c.load(s2==-1 ? CConstituent::NONE : s2node->is_constituent ? s2node->constituent : CConstituent::NONE);
       s2w = s2 == -1 ? 0 : &(wrds[s2node->lexical_head]);
       s2t = s2 == -1 ? 0 : wrds[s2node->lexical_head].tag;
    
-//      s3c = s3==-1 ? 0 : encodeC(*s3node, wrds); assert(s3==-1||s3c!=0);
-      s3c = s3==-1 ? g_noneConstituent : s3node->is_constituent ? CConstituent(s3node->constituent) : g_noneConstituent;
+      s3c.load(s3==-1 ? CConstituent::NONE : s3node->is_constituent ? s3node->constituent : CConstituent::NONE);
       s3w = s3 == -1 ? 0 : &(wrds[s3node->lexical_head]);
       s3t = s3 == -1 ? 0 : wrds[s3node->lexical_head].tag;
    
-      s0lc = s0l==-1 ? g_noneConstituent : item->nodes[s0l].is_constituent ? CConstituent(item->nodes[s0l].constituent) : g_noneConstituent;
+      s0lc.load(s0l==-1 ? CConstituent::NONE : item->nodes[s0l].is_constituent ? item->nodes[s0l].constituent : CConstituent::NONE);
       s0lw = s0l==-1 ? 0 : &(wrds[item->nodes[s0l].lexical_head]);
       s0lt = s0l==-1 ? g_noneTag : wrds[item->nodes[s0l].lexical_head].tag;
-      s0rc = s0r==-1 ? g_noneConstituent : item->nodes[s0r].is_constituent ? CConstituent(item->nodes[s0r].constituent) : g_noneConstituent;
+      s0rc.load(s0r==-1 ? CConstituent::NONE : item->nodes[s0r].is_constituent ? item->nodes[s0r].constituent : CConstituent::NONE);
       s0rw = s0r==-1 ? 0 : &(wrds[item->nodes[s0r].lexical_head]);
       s0rt = s0r==-1 ? 0 : wrds[item->nodes[s0r].lexical_head].tag;
-      s0uc = s0u==-1 ? g_noneConstituent : item->nodes[s0u].is_constituent ? CConstituent(item->nodes[s0u].constituent) : g_noneConstituent;
+      s0uc.load(s0u==-1 ? CConstituent::NONE : item->nodes[s0u].is_constituent ? item->nodes[s0u].constituent : CConstituent::NONE);
       s0uw = s0u==-1 ? 0 : &(wrds[item->nodes[s0u].lexical_head]);
       s0ut = s0u==-1 ? 0 : wrds[item->nodes[s0u].lexical_head].tag;
    
-      s1lc = s1l==-1 ? g_noneConstituent : item->nodes[s1l].is_constituent ? CConstituent(item->nodes[s1l].constituent) : g_noneConstituent;
+      s1lc.load(s1l==-1 ? CConstituent::NONE : item->nodes[s1l].is_constituent ? item->nodes[s1l].constituent : CConstituent::NONE);
       s1lw = s1l==-1 ? 0 : &(wrds[item->nodes[s1l].lexical_head]);
       s1lt = s1l==-1 ? 0 : wrds[item->nodes[s1l].lexical_head].tag;
-      s1rc = s1r==-1 ? g_noneConstituent : item->nodes[s1r].is_constituent ? CConstituent(item->nodes[s1r].constituent) : g_noneConstituent;
+      s1rc.load(s1r==-1 ? CConstituent::NONE : item->nodes[s1r].is_constituent ? item->nodes[s1r].constituent : CConstituent::NONE);
       s1rw = s1r==-1 ? 0 : &(wrds[item->nodes[s1r].lexical_head]);
       s1rt = s1r==-1 ? 0 : wrds[item->nodes[s1r].lexical_head].tag;
-      s1uc = s1u==-1 ? g_noneConstituent : item->nodes[s1u].is_constituent ? CConstituent(item->nodes[s1u].constituent) : g_noneConstituent;
+      s1uc.load(s1u==-1 ? CConstituent::NONE : item->nodes[s1u].is_constituent ? item->nodes[s1u].constituent : CConstituent::NONE);
       s1uw = s1u==-1 ? 0 : &(wrds[item->nodes[s1u].lexical_head]);
       s1ut = s1u==-1 ? 0 : wrds[item->nodes[s1u].lexical_head].tag;
 
-      n0t = n0==-1 ? 0 : wrds[n0].tag.code();
+      n0t = n0==-1 ? g_noneTag : wrds[n0].tag;
       n0w = n0 == -1 ? 0 : &(wrds[n0]);
       n0wt = n0 == -1 ? 0 : &(wrds[n0]);
    
-      n1t = n1==-1 ? 0 : wrds[n1].tag.code();
+      n1t = n1==-1 ? g_noneTag : wrds[n1].tag;
       n1w = n1 == -1 ? 0 : &(wrds[n1]);
       n1wt = n1 == -1 ? 0 : &(wrds[n1]);
    
-      n2t = n2==-1 ? 0 : wrds[n2].tag.code();
+      n2t = n2==-1 ? g_noneTag : wrds[n2].tag;
       n2w = n2 == -1 ? 0 : &(wrds[n2]);
       n2wt = n2 == -1 ? 0 : &(wrds[n2]);
  
-      n3t = n3==-1 ? 0 : wrds[n3].tag.code();
+      n3t = n3==-1 ? g_noneTag : wrds[n3].tag;
       n3w = n3 == -1 ? 0 : &(wrds[n3]);
       n3wt = n3 == -1 ? 0 : &(wrds[n3]);
 
@@ -239,17 +237,23 @@ public:
          if (n0!=-1) s0wn0w.refer(s0w, n0w); 
          if (n1!=-1) n0wn1w.refer(n0w, n1w);
          if (s1!=-1&&n0!=-1) s1wn0w.refer(s1w, n0w);
+         if (s1!=-1) s0wts1wt.refer(s0wt, s1wt); 
       }
       else {
          if (s1!=-1) s0ws1w.allocate(*s0w, *s1w);
          if (n0!=-1) s0wn0w.allocate(*s0w, *n0w);
          if (n1!=-1) n0wn1w.allocate(*n0w, *n1w);
          if (s1!=-1&&n0!=-1) s1wn0w.allocate(*s1w, *n0w);
+         if (s1!=-1) s0wts1wt.allocate(*s0wt, *s1wt);
       }
-      s0cs1c = encodeTorCs(s0c.code(), s1c.code());
-      s0cn0t = encodeTorCs(s0c.code(), n0t.code());
-      n0tn1t = encodeTorCs(n0t.code(), n1t.code());
-      s1cn0t = encodeTorCs(s1c.code(), n0t.code());
+      s0cs1c.load(s0c, s1c);
+      s0ts1t.load(s0t, s1t);
+      s0cn0t.load(s0c, n0t);
+      n0tn1t.load(n0t, n1t);
+      s1cn0t.load(s1c, n0t);
+      s0cs1cn0t = s0cs1c; s0cs1cn0t.add(n0t);
+      s0cs1cs2c = s0cs1c; s0cs1cs2c.add(s2c);
+      s0cn0tn1t = s0cn0t; s0cn0tn1t.add(n1t);
 
       // unexpand s0 and s1
       s0_unbinarized.clear();
@@ -297,9 +301,9 @@ public:
       }
       s0c_bracket = encodeTorCs(open_bracket_match_type, s0c.code());   
       s1c_bracket = encodeTorCs(open_bracket_match_type, s1c.code());
-      n0t_bracket = encodeTorCs(open_bracket_match_type, n0t.code());
+      n0t_bracket = encodeTorCs(open_bracket_match_type, encodeTorC(n0t.code(), true));
       s0cs1c_bracket = encodeTorCs(open_bracket_match_type, s0c.code(), s1c.code());
-      s0cn0t_bracket = encodeTorCs(open_bracket_match_type, s0c.code(), n0t.code());
+      s0cn0t_bracket = encodeTorCs(open_bracket_match_type, s0c.code(), encodeTorC(n0t.code(), true));
 
       // comma, full stop, dun hao, semi colon;
       static int last_separator;

@@ -121,8 +121,8 @@ SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const C
    else {
       nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_and_last_char , m_nScoreIndex , amount , round ) ;
 
-      nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char, length) , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char, length) , m_nScoreIndex , amount , round ) ;
+//      nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char, length) , m_nScoreIndex , amount , round ) ;
+//      nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char, length) , m_nScoreIndex , amount , round ) ;
 
       for (j=0; j<word_length-1; ++j)
          nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( 

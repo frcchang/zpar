@@ -105,6 +105,7 @@ public:
          THROW("unknown constituent: " << s << '.');
       }
    }
+   void load(const unsigned long &code) {m_code=code;}
    inline bool canBeTemporary() const { return PENN_CON_TEMP[m_code]; }
    // convenience optimization function 
    inline static bool canBeTemporary(const unsigned long &code) { return PENN_CON_TEMP[code]; }

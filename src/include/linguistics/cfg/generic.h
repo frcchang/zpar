@@ -74,6 +74,7 @@ public:
       LAST = COUNT-1;
       assert((1<<SIZE)>COUNT);
    }
+   void load(const unsigned long &code) {m_code=code;}
    const string &str() const { 
       return getTokenizer().key(m_code); 
    }
