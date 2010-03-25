@@ -73,6 +73,7 @@ public:
          iss >> t;
       }
    }
+   void load(const unsigned long &i) { m_nHash = i; }
    bool clear() { m_nHash = 0; }
 };
 
