@@ -83,6 +83,22 @@ protected:
       ifs.close();
       cout << "done." << endl;
    }
+   inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
+      return ( m_weights->m_mapWordFrequency.find( word, 0 ) < 
+                  m_weights->m_nMaxWordFrequency/5000+5 && 
+               PENN_TAG_CLOSED[ tag ] == false  ) ||
+             m_weights->m_mapTagDictionary.lookup( word, tag );
+   }
+   inline bool canStartWord(const CStringVector &sentence, const unsigned long &tag, const unsigned long &index) {
+      if (PENN_TAG_CLOSED[ tag ]) {
+         static int tmp_i;
+         for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
+            if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index+i, sentence ), tag ) == 0 ) 
+               return false;
+         }
+      }
+      return true;
+   }
 
 public:
    enum SCORE_UPDATE {eSubtract=0, eAdd};
@@ -90,21 +106,33 @@ public:
    virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
 
-   tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged);
-
-   void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round);
-
-   tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0) {
-      getOrUpdateFullScore(tagged, item, index, amount, round);
-      getOrUpdatePartScore(tagged, item, index, amount, round);
-   }
-   tagger::SCORE_TYPE getOrUpdateFullScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
-   tagger::SCORE_TYPE getOrUpdatePartScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
-
    void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);
       m_weights->saveScores(); 
    }
+
+public:
+   tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged) {
+      THROW("This method is not supported in this implementation.");
+   }
+   void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round) {
+      THROW("This method is not supported in this implementation.");
+   }
+   tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0) {
+      THROW("This method is not supported in this implementation.");
+   }
+
+   inline void updateScoreForState(const CStringVector *sentence, const tagger::CSubStateItem *item, const tagger::SCORE_TYPE &amount) {
+      static unsigned tmp_i, tmp_j;
+      for (tmp_i=-1; tmp_i<item->size(); ++tmp_i) {
+         getOrUpdateSeparateScore(sentence, item, tmp_i, amount, m_nTrainingRound);
+         for (tmp_j=item->getWordStart(tmp_i)+1; tmp_j<item->getWordEnd(tmp_i)+1; ++tmp_j)
+            getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, amount, m_nTrainingRound);
+      }
+   }
+   tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+
 };
 
 } // namespace chinese

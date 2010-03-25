@@ -111,21 +111,14 @@ public:
       ++m_nLength ;
    }
 
-//   void append(const unsigned long &char_index) {
-//      m_lWords[m_nLength] = char_index;
-//      m_lTags[m_nLength] = CTag::NONE;
-//      ++m_nLength ;
-//   }
-
    inline void replace(const unsigned long &char_index, const unsigned long &tag) {
       m_lWords[m_nLength-1] = char_index;
       m_lTags[m_nLength-1] = tag;
    }
 
-//   inline void replace(const unsigned long &char_index) {
-//      m_lWords[m_nLength-1] = char_index;
-//      m_lTags[m_nLength-1] = CTag::NONE;
-//   }
+   inline void replaceIndex(const unsigned long &char_index) {
+      m_lWords[m_nLength-1] = char_index;
+   }
 
    inline void setTag(const unsigned long &index, const unsigned long &tag) {
       m_lTags[index] = tag;

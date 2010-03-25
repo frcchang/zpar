@@ -98,6 +98,10 @@ public:
    CWordToIntMap m_mapWordFrequency;
    CTagDict<CWord, CTag> m_mapTagDictionary;
    CTagDict<CWord, CTag> m_mapCharTagDictionary;
+   CTagDict<CWord, CTag> m_mapCanStart;
+
+   CWordMap m_mapThreeCharsA;
+   CWordMap m_mapThreeCharsB;
 
 public:
    // note that m_bSegmentation rules will be covered by load()
@@ -143,8 +147,11 @@ public:
             m_mapConsecutiveCharCat("ConsecutiveCharCat", 16381) ,
 
             m_mapTagDictionary(CTag::COUNT),
-            m_mapCharTagDictionary(CTag::COUNT) 
+            m_mapCharTagDictionary(CTag::COUNT), 
+            m_mapCanStart(CTag::COUNT), 
 
+            m_mapThreeCharsA("ThreeChars_A", 65537) , 
+            m_mapThreeCharsB("ThreeChars_B", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
