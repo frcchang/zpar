@@ -18,7 +18,7 @@ using namespace chinese::tagger;
 static CWord g_emptyWord("");
 static CTag g_beginTag(CTag::SENTENCE_BEGIN);
 
-#define find_or_replace_word_cache(tmp_start, tmp_end) ( amount == 0 ? m_Cache.find(tmp_start, tmp_end, sentence) : m_Cache.replace(tmp_start, tmp_end, sentence) )
+#define find_or_replace_word_cache(tmp_start, tmp_end) ( amount ? m_WordCache.replace(tmp_start, tmp_end, sentence) : m_WordCache.find(tmp_start, tmp_end, sentence) )
 
 /*===============================================================
  *
@@ -42,6 +42,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    static SCORE_TYPE nReturn ; 
    static unsigned long start_0; 
    static unsigned long start_1, end_1, length_1; 
+   static unsigned long start_2, end_2, length_2; 
 
    // about the words
    start_0 = item->getWordStart( index ) ;
@@ -85,7 +86,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       word_2_word_1.allocate( word_1, word_2 ) ;
       first_char_1_last_char_1.allocate( first_char_1, last_char_1 ) ;
       first_char_0_first_char_1.allocate( first_char_0, first_char_1 ) ;
-      last_char_1_last_char_2.allocate( last_char_1, last_char2 ) ;
+      last_char_1_last_char_2.allocate( last_char_1, last_char_2 ) ;
    }
 
    // about the tags 
@@ -101,73 +102,65 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
 
    static int j ; 
 
-   // adding scores with features
+   // adding scores with features for last word
    if (index>0) {
       nReturn = m_weights->m_mapSeenWords.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ; 
       if (index>1) nReturn += m_weights->m_mapLastWordByWord.getOrUpdateScore( word_2_word_1 , m_nScoreIndex , amount , round ) ;
+
+      if ( length_1 == 1 ) {
+         nReturn += m_weights->m_mapOneCharWord.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ;
+      }
+      else {
+         nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_char_1_last_char_1 , m_nScoreIndex , amount , round ) ;
+
+         nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char_1, length_1) , m_nScoreIndex , amount , round ) ;
+         nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char_1, length_1) , m_nScoreIndex , amount , round ) ;
+      }
+
+      if (index>1) {
+         nReturn += m_weights->m_mapCurrentWordLastChar.getOrUpdateScore( word_1_last_char_2 , m_nScoreIndex , amount , round ) ;
+         nReturn += m_weights->m_mapLastWordByLastChar.getOrUpdateScore( last_char_1_last_char_2 , m_nScoreIndex , amount , round ) ;
+
+         nReturn += m_weights->m_mapLengthByLastWord.getOrUpdateScore( make_pair(word_2, length_1) , m_nScoreIndex , amount , round ) ;
+         nReturn += m_weights->m_mapLastLengthByWord.getOrUpdateScore( make_pair(word_1, length_2), m_nScoreIndex , amount , round ) ;
+      }
+
+      nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( make_pair(word_1, tag_1) , m_nScoreIndex , amount , round ) ; 
+
+      if ( length_1 <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getOrUpdateScore( make_pair(word_1, tag_2) , m_nScoreIndex , amount , round ) ;
+
+      if (index>1) {
+         if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByWordAndPrevChar.getOrUpdateScore( make_pair(word_1_last_char_2, tag_1) , m_nScoreIndex , amount , round ) ;
+         if ( length_1 == 1 ) nReturn += m_weights->m_mapTagOfOneCharWord.getOrUpdateScore( make_pair(three_char, tag_1) , m_nScoreIndex , amount , round ) ;
+      }
+
+      nReturn += m_weights->m_mapTagByLastChar.getOrUpdateScore( make_pair(last_char_1, tag_1) , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapTagByLastCharCat.getOrUpdateScore( make_pair(last_char_cat_1, tag_1) , m_nScoreIndex , amount , round ) ;
+
+      for (j=0; j<length_1; ++j) {
+         wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
+         wt2.load(last_char_1);
+         if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+         nReturn += m_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(wt12, m_nScoreIndex, amount, round) ;
+      }
    }
 
-   if ( length == 1 ) {
-      nReturn += m_weights->m_mapOneCharWord.getOrUpdateScore( word , m_nScoreIndex , amount , round ) ;
-   }
-   else {
-      nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_char_1_last_char_1 , m_nScoreIndex , amount , round ) ;
-
-      nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char, length) , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char, length) , m_nScoreIndex , amount , round ) ;
-   }
-
+   // all about the current word
    if ( index>0 ) {
       nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
 
-      nReturn += m_weights->m_mapCurrentWordLastChar.getOrUpdateScore( currentword_lastchar , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( word_1_first_char_0 , m_nScoreIndex , amount , round ) ;
 
       nReturn += m_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore( first_char_0_first_char_1 , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLastWordByLastChar.getOrUpdateScore( last_char_1_last_char_2 , m_nScoreIndex , amount , round ) ;
 
-      nReturn += m_weights->m_mapLengthByLastWord.getOrUpdateScore( make_pair(last_word, length) , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLastLengthByWord.getOrUpdateScore( make_pair(word, last_length), m_nScoreIndex , amount , round ) ;
+      if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(word_1, tag_0) , m_nScoreIndex , amount , round ) ;
+      if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(word_1_first_char_0, tag_1) , m_nScoreIndex , amount , round ) ;
    }
   
-   nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( make_pair(word_1, tag_1) , m_nScoreIndex , amount , round ) ; 
-   if ( start > 0 ) {
-      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(last_word, tag) , m_nScoreIndex , amount , round ) ;
-      if ( length <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getOrUpdateScore( make_pair(word, last_tag) , m_nScoreIndex , amount , round ) ;
-      if ( length <= 2 ) nReturn += m_weights->m_mapTagByWordAndPrevChar.getOrUpdateScore( make_pair(currentword_lastchar, tag) , m_nScoreIndex , amount , round ) ;
-      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex , amount , round ) ;
-   }
-   if ( length == 1 ) {
-      if ( start > 0 && end < sentence->size()-1 )
-         nReturn += m_weights->m_mapTagOfOneCharWord.getOrUpdateScore( make_pair(three_char, tag) , m_nScoreIndex , amount , round ) ;
-   }
-   else {
-      nReturn += m_weights->m_mapTagByFirstChar.getOrUpdateScore( make_pair(first_char, tag) , m_nScoreIndex , amount , round ) ; 
-      nReturn += m_weights->m_mapTagByLastChar.getOrUpdateScore( make_pair(last_char, tag) , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapTagByFirstCharCat.getOrUpdateScore( make_pair(first_char_cat, tag) , m_nScoreIndex , amount , round ) ; 
-      nReturn += m_weights->m_mapTagByLastCharCat.getOrUpdateScore( make_pair(last_char_cat, tag) , m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTagByFirstChar.getOrUpdateScore( make_pair(first_char_0, tag_0) , m_nScoreIndex , amount , round ) ; 
+   nReturn += m_weights->m_mapTagByFirstCharCat.getOrUpdateScore( make_pair(first_char_cat_0, tag_0) , m_nScoreIndex , amount , round ) ; 
 
-      nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( 
-                              make_pair( first_char, tag), 
-                              m_nScoreIndex , amount , round ) ;
-
-      for ( j = 0 ; j < word_length ; ++j ) {
-
-         if ( j < word_length-1 ) {
-            if (amount==0) {
-               wt1.load( m_WordCache.find(start+j, start+j, sentence) , tag ); 
-               wt2.load(last_char); 
-               wt12.refer(&wt1, &wt2); 
-            }
-            else {
-               wt1.load( m_WordCache.replace(start+j, start+j, sentence) , tag ); 
-               wt2.load(last_char); 
-               wt12.allocate(wt1, wt2); 
-            }
-            nReturn += m_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(wt12, m_nScoreIndex, amount, round) ;
-         }
-      }
-   }
+   nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(first_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 
    return nReturn;
 }
@@ -208,15 +201,12 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
    static CTagSet<CTag, 2> tagset2;
    static CTagSet<CTag, 3> tagset3;
 
-   static unsigned long tmp ; 
-
    // adding scores with features
    nReturn = 0;
 
-   tmp = encodeTags(tag, last_tag);
-   tagset2.load( tmp );
+   tagset2.load( encodeTags(tag, last_tag) );
    nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tagset2, m_nScoreIndex , amount , round ) ;
-   tagset3.load( encodeTags(tmp, second_last_tag);
+   tagset3.load( encodeTags(tag, last_tag, second_last_tag) );
    nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( tagset3, m_nScoreIndex , amount , round ) ;
 
    nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(char_unigram, tag), m_nScoreIndex , amount , round ) ;
