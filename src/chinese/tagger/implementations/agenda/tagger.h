@@ -23,28 +23,29 @@ protected:
 public:
    void follow(const CSubStateItem &gold) {
       assert(size()<=gold.size());
-      if (size() < gold.size()) {
          if (size() == 0) {
-            append(0, CTag::NONE);
+            append(0, gold.getTag(0).code());
             return;
          }
          const unsigned &last_character = getWordEnd(size()-1);
          const unsigned &gold_last = gold.getWordEnd(size()-1);
          assert(last_character<=gold_last);
          if (last_character<gold_last) {
-            replace(last_character+1, CTag::NONE);
+            replaceIndex(last_character+1);
             return;
          }
          else {
-            append(last_character+1, CTag::NONE);
-            setTag(size()-2, gold.getTag(size()-2).code());
+            assert (size() < gold.size());
+            append(last_character+1, gold.getTag(size()).code());
             return;
          }
-      }
-      else { // size() == gold.size()
-         setTag(size()-1, gold.getTag(size()-1).code());
-         return;
-      }
+//      else { 
+//         const unsigned &last_character = getWordEnd(size()-1);
+//         const unsigned &gold_last = gold.getWordEnd(size()-1);
+//         assert(last_character<gold_last);
+//         replaceIndex(last_character+1);
+//         return;
+//      }
    }
 
 };
@@ -92,10 +93,15 @@ protected:
    inline bool canStartWord(const CStringVector &sentence, const unsigned long &tag, const unsigned long &index) {
       if (PENN_TAG_CLOSED[ tag ]) {
          static int tmp_i;
+         // if the first character doesn't match, don't search
+         if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index, &sentence ), tag ) == false) 
+            return false;
+         // if it matches, search from the next characters
          for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
-            if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index+tmp_i, &sentence ), tag ) == 0 ) 
-               return false;
+            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, min(index+tmp_i, sentence.size()-1), &sentence ), tag ) ) 
+               return true;
          }
+         return false;
       }
       return true;
    }
@@ -124,7 +130,7 @@ public:
 
    inline void updateScoreForState(const CStringVector *sentence, const tagger::CSubStateItem *item, const tagger::SCORE_TYPE &amount) {
       static unsigned tmp_i, tmp_j;
-      for (tmp_i=-1; tmp_i<item->size(); ++tmp_i) {
+      for (tmp_i=0; tmp_i<item->size(); ++tmp_i) {
          getOrUpdateSeparateScore(sentence, item, tmp_i, amount, m_nTrainingRound);
          for (tmp_j=item->getWordStart(tmp_i)+1; tmp_j<item->getWordEnd(tmp_i)+1; ++tmp_j)
             getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, amount, m_nTrainingRound);

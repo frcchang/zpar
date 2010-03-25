@@ -119,6 +119,7 @@ public:
          }
       THROW("Unknown tag (PENN Treebank): " << s);
    }
+   void load(const unsigned long &n) { m_code = n; }
 
 public:
    bool operator == (const CTag &t1) const { return m_code == t1.m_code; }

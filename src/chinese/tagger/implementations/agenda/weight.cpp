@@ -91,6 +91,9 @@ void CWeight::loadScores() {
    ASSERT(st=="Char tag dictionary", "Char tag dictionary not found from model.");
    is >> m_mapCharTagDictionary;
    getline(is, st);
+   ASSERT(st=="Can start", "Starting character dictionary not found from model.");
+   is >> m_mapCanStart;
+   getline(is, st);
    ASSERT(st=="Word frequency", "Word frequency not found from model.");
    is >> m_mapWordFrequency;
    getline(is, st);
@@ -150,6 +153,8 @@ void CWeight::saveScores() {
    os << m_mapTagDictionary;
    os << "Char tag dictionary" << endl;
    os << m_mapCharTagDictionary;
+   os << "Can start" << endl;
+   os << m_mapCanStart;
    os << "Word frequency" << endl;
    os << m_mapWordFrequency;
    os << "Maximum frequency" << endl;

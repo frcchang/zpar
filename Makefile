@@ -29,7 +29,7 @@
 # agenda: the single agenda method - reproduce paper
 # agendaplus: try to improve upon the decoding algorithm of agenda
 # viterbi: dynamic programming
-SEGMENTOR_IMPL = agenda
+SEGMENTOR_IMPL = viterbi
 
 # Chinese postagger implementations
 #
@@ -63,8 +63,8 @@ ENGLISH_CONPARSER_IMPL = sr
 #
 #================================================================
 
-#DEBUG = -DDEBUG
-DEBUG = -DNDEBUG
+DEBUG = -DDEBUG -g
+#DEBUG = -DNDEBUG
 
 #================================================================
 #
