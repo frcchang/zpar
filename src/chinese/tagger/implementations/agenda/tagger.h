@@ -93,7 +93,7 @@ protected:
       if (PENN_TAG_CLOSED[ tag ]) {
          static int tmp_i;
          for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
-            if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index+i, sentence ), tag ) == 0 ) 
+            if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index+tmp_i, &sentence ), tag ) == 0 ) 
                return false;
          }
       }

@@ -15,8 +15,10 @@
 using namespace chinese;
 using namespace chinese::tagger;
 
-// this is used to mark whether a word is correct
 static CWord g_emptyWord("");
+static CTag g_beginTag(CTag::SENTENCE_BEGIN);
+
+#define find_or_replace_word_cache(tmp_start, tmp_end) ( amount == 0 ? m_Cache.find(tmp_start, tmp_end, sentence) : m_Cache.replace(tmp_start, tmp_end, sentence) )
 
 /*===============================================================
  *
@@ -38,119 +40,102 @@ static CWord g_emptyWord("");
 
 SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
-   static unsigned long last_start , last_length ;
-   static unsigned long start , end , length , word_length ; // word length is the un-normalised version
+   static unsigned long start_0; 
+   static unsigned long start_1, end_1, length_1; 
+
    // about the words
-   start = item->getWordStart( index ) ;
-   end = item->getWordEnd( index ) ;
-   length = item->getWordLength( index ) ; 
+   start_0 = item->getWordStart( index ) ;
 
-   last_start = index > 0 ? item->getWordStart( index-1 ) : 0 ;
-   last_length = index > 0 ? item->getWordLength( index-1 ) : 0 ;
-   word_length = length ;  // use word_length instead of item->getWordLength() because the length can include " ".
+   start_1 = index > 0 ? item->getWordStart( index-1 ) : 0 ;
+   end_1 = index > 0 ? item->getWordEnd( index-1 ) : 0 ;
+   assert(end_1 == start_0-1);
+   length_1 = index > 0 ? item->getWordLength( index-1 ) : 0;
 
-   const CWord &word = amount==0 ? m_WordCache.find( start , end , sentence )
-                                 : m_WordCache.replace( start , end , sentence ) ; 
+   start_2 = index > 1 ? item->getWordStart( index-2 ) : 0 ;
+   end_2 = index > 1 ? item->getWordEnd( index-2 ) : 0 ;
+   assert(end_2 == start_1-1);
+   length_2 = index > 1 ? item->getWordLength( index-2 ) : 0;
 
-   const CWord &last_word =  index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start-1 , sentence )
-                                                     : m_WordCache.replace( last_start , start-1 , sentence ) )
-                                       : g_emptyWord ; 
+   const CWord &word_1 = index>0 ? find_or_replace_word_cache( start_1, end_1 ) : g_emptyWord; 
+   const CWord &word_2 = index>1 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord; 
 
    // about the length
-   if( length > LENGTH_MAX-1 ) length = LENGTH_MAX-1 ;
-   if( last_length > LENGTH_MAX-1 ) last_length = LENGTH_MAX-1 ;
+   if( length_1 > LENGTH_MAX-1 ) length_1 = LENGTH_MAX-1 ;
+   if( length_2 > LENGTH_MAX-1 ) length_2 = LENGTH_MAX-1 ;
 
    // about the chars
-   const CWord &first_char = amount==0 ? m_WordCache.find( start , start , sentence )
-                                      : m_WordCache.replace( start , start , sentence ) ;
-   const CWord &last_char = amount==0 ? m_WordCache.find( end , end , sentence )
-                                     : m_WordCache.replace( end , end , sentence ) ;
-   const CWord &first_char_last_word = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , last_start , sentence )
-                                                               : m_WordCache.replace( last_start , last_start , sentence ) )
-                                                 : g_emptyWord ;
-   const CWord &last_char_last_word = index > 0 ? ( amount==0 ? m_WordCache.find( start-1 , start-1 , sentence) 
-                                                              : m_WordCache.replace( start-1 , start-1 , sentence) )
-                                                : g_emptyWord ;
-   const CWord &two_char = index > 0 ? ( amount == 0 ? m_WordCache.find( start-1 , start, sentence) 
-                                                     : m_WordCache.replace( start-1 , start, sentence) )
-                                     : g_emptyWord ;
-   const CWord &lastword_firstchar = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start , sentence ) 
-                                                             : m_WordCache.replace( last_start , start , sentence ) )
-                                               : g_emptyWord ; 
-   const CWord &currentword_lastchar = index > 0 ? ( amount==0 ? m_WordCache.find( start-1 , end , sentence) 
-                                                               : m_WordCache.replace( start-1 , end , sentence) )
-                                                 : g_emptyWord ;
-   const CWord &three_char = ( length == 1 && start > 0 && end < sentence->size()-1 )                   ? 
-                                      ( amount==0 ? m_WordCache.find( start-1 , end+1 , sentence ) 
-                                                  : m_WordCache.replace( start-1 , end+1 , sentence ) ) : g_emptyWord ;
+   const CWord &first_char_0 = find_or_replace_word_cache( start_0, start_0 );
+   const CWord &first_char_1 = index>0 ? find_or_replace_word_cache( start_1, start_1 ) : g_emptyWord;
 
-   static CTwoWords two_word , first_and_last_char , firstchars_twoword , lastchars_twoword ;
-   if (amount==0) {
-      two_word.refer( &word , &last_word ) ;
-      first_and_last_char.refer( &first_char , &last_char ) ;
-      firstchars_twoword.refer( &first_char_last_word , &first_char ) ;
-      lastchars_twoword.refer( &last_char_last_word , &last_char ) ;
+   const CWord &last_char_1 = index>0 ? find_or_replace_word_cache( end_1, end_1 ) : g_emptyWord;
+   const CWord &last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_2 ) : g_emptyWord;
+   const CWord &two_char = index>0 ? find_or_replace_word_cache( end_1, start_0 ) : g_emptyWord ;
+   const CWord &word_1_first_char_0 = index>0 ? find_or_replace_word_cache( start_1, start_0 ) : g_emptyWord;
+   const CWord &word_1_last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_1 ) : g_emptyWord;
+   const CWord &three_char = ( length_1==1 && index>1 ) ? find_or_replace_word_cache( end_2, start_0 ) : g_emptyWord;
+
+   static CTwoWords word_2_word_1, first_char_1_last_char_1, first_char_0_first_char_1, last_char_1_last_char_2 ;
+   if (amount==0&&index>0) {
+      word_2_word_1.refer( &word_1 , &word_2 ) ;
+      first_char_1_last_char_1.refer( &first_char_1 , &last_char_1 ) ;
+      first_char_0_first_char_1.refer( &first_char_0 , &first_char_1 ) ;
+      last_char_1_last_char_2.refer( &last_char_1 , &last_char_2 ) ;
    }
    else {
-      two_word.allocate( word, last_word ) ;
-      first_and_last_char.allocate( first_char, last_char ) ;
-      firstchars_twoword.allocate( first_char_last_word, first_char ) ;
-      lastchars_twoword.allocate( last_char_last_word, last_char ) ;
+      word_2_word_1.allocate( word_1, word_2 ) ;
+      first_char_1_last_char_1.allocate( first_char_1, last_char_1 ) ;
+      first_char_0_first_char_1.allocate( first_char_0, first_char_1 ) ;
+      last_char_1_last_char_2.allocate( last_char_1, last_char2 ) ;
    }
 
    // about the tags 
-   const CTag &tag = item->getTag( index ) ;
-   const CTag &last_tag = index>0 ? item->getTag( index-1 ) : CTag(CTag::SENTENCE_BEGIN) ;
-   const CTag &second_last_tag = index>1 ? item->getTag(index-2) : CTag(CTag::SENTENCE_BEGIN) ;
+   const CTag &tag_0 = item->getTag( index ) ;
+   const CTag &tag_1 = index>0 ? item->getTag(index-1) : g_beginTag;
+   const CTag &tag_2 = index>1 ? item->getTag(index-2) : g_beginTag;
 
    static CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    static CTwoTaggedWords wt12;
 
-   unsigned long long first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (static_cast<unsigned long long>(1)<<tag.code()) ;
-   unsigned long long last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (static_cast<unsigned long long>(1)<<tag.code()) ;
+   unsigned long long first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(first_char_0) | (static_cast<unsigned long long>(1)<<tag_0.code()) ;
+   unsigned long long last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(last_char_1) | (static_cast<unsigned long long>(1)<<tag_1.code()) ;
 
    static int j ; 
 
    // adding scores with features
-   nReturn = m_weights->m_mapSeenWords.getOrUpdateScore( word , m_nScoreIndex , amount , round ) ; 
-   nReturn += m_weights->m_mapLastWordByWord.getOrUpdateScore( two_word , m_nScoreIndex , amount , round ) ;
+   if (index>0) {
+      nReturn = m_weights->m_mapSeenWords.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ; 
+      if (index>1) nReturn += m_weights->m_mapLastWordByWord.getOrUpdateScore( word_2_word_1 , m_nScoreIndex , amount , round ) ;
+   }
 
    if ( length == 1 ) {
       nReturn += m_weights->m_mapOneCharWord.getOrUpdateScore( word , m_nScoreIndex , amount , round ) ;
    }
    else {
-      nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_and_last_char , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_char_1_last_char_1 , m_nScoreIndex , amount , round ) ;
 
       nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char, length) , m_nScoreIndex , amount , round ) ;
       nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char, length) , m_nScoreIndex , amount , round ) ;
-
-      for (j=0; j<word_length-1; ++j)
-         nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( 
-                                    amount==0 ? m_WordCache.find(start+j, start+j+1, sentence) 
-                                              : m_WordCache.replace(start+j, start+j+1, sentence) , 
-                               m_nScoreIndex, amount, round ) ; 
    }
-   if ( start > 0 ) {
-//      nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
+
+   if ( index>0 ) {
+      nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
 
       nReturn += m_weights->m_mapCurrentWordLastChar.getOrUpdateScore( currentword_lastchar , m_nScoreIndex , amount , round ) ;
-//      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
 
-      nReturn += m_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore( firstchars_twoword , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapLastWordByLastChar.getOrUpdateScore( lastchars_twoword , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore( first_char_0_first_char_1 , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLastWordByLastChar.getOrUpdateScore( last_char_1_last_char_2 , m_nScoreIndex , amount , round ) ;
 
-//      nReturn += m_weights->m_mapLengthByLastWord.getOrUpdateScore( make_pair(last_word, length) , m_nScoreIndex , amount , round ) ;
-//      nReturn += m_weights->m_mapLastLengthByWord.getOrUpdateScore( make_pair(word, last_length), m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLengthByLastWord.getOrUpdateScore( make_pair(last_word, length) , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLastLengthByWord.getOrUpdateScore( make_pair(word, last_length), m_nScoreIndex , amount , round ) ;
    }
   
-   nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( make_pair(word, tag) , m_nScoreIndex , amount , round ) ; 
-   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( CTagSet<CTag, 2>(encodeTags( tag, last_tag )), m_nScoreIndex , amount , round ) ;
-   nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( CTagSet<CTag, 3>(encodeTags( tag, last_tag, second_last_tag )), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( make_pair(word_1, tag_1) , m_nScoreIndex , amount , round ) ; 
    if ( start > 0 ) {
       if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(last_word, tag) , m_nScoreIndex , amount , round ) ;
       if ( length <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getOrUpdateScore( make_pair(word, last_tag) , m_nScoreIndex , amount , round ) ;
       if ( length <= 2 ) nReturn += m_weights->m_mapTagByWordAndPrevChar.getOrUpdateScore( make_pair(currentword_lastchar, tag) , m_nScoreIndex , amount , round ) ;
-//      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex , amount , round ) ;
+      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex , amount , round ) ;
    }
    if ( length == 1 ) {
       if ( start > 0 && end < sentence->size()-1 )
@@ -162,34 +147,12 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       nReturn += m_weights->m_mapTagByFirstCharCat.getOrUpdateScore( make_pair(first_char_cat, tag) , m_nScoreIndex , amount , round ) ; 
       nReturn += m_weights->m_mapTagByLastCharCat.getOrUpdateScore( make_pair(last_char_cat, tag) , m_nScoreIndex , amount , round ) ;
 
+      nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( 
+                              make_pair( first_char, tag), 
+                              m_nScoreIndex , amount , round ) ;
+
       for ( j = 0 ; j < word_length ; ++j ) {
 
-         if ( j > 0 && j < word_length-1 )
-            nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( 
-                                    make_pair( amount==0 ? m_WordCache.find(start+j, start+j, sentence)
-                                                         : m_WordCache.replace(start+j, start+j, sentence), tag), 
-                                    m_nScoreIndex , amount , round ) ;
-
-         if ( j > 0 ) {
-
-            if (amount==0) {
-               wt1.load( m_WordCache.find(start+j, start+j, sentence) , tag ); 
-               wt2.load(first_char); 
-               wt12.refer(&wt1, &wt2); 
-            }
-            else {
-               wt1.load( m_WordCache.replace(start+j, start+j, sentence) , tag ); 
-               wt2.load(first_char); 
-               wt12.allocate(wt1, wt2);
-            }
-            nReturn += m_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore(wt12, m_nScoreIndex, amount, round) ;
-
-            if ( m_WordCache.find(start+j, start+j, sentence) == m_WordCache.find(start+j-1, start+j-1, sentence)) 
-               nReturn += m_weights->m_mapRepeatedCharByTag.getOrUpdateScore( 
-                                       make_pair( amount==0 ? m_WordCache.find(start+j, start+j, sentence)
-                                                            : m_WordCache.replace(start+j, start+j, sentence), tag), 
-                                       m_nScoreIndex, amount, round) ;
-         }
          if ( j < word_length-1 ) {
             if (amount==0) {
                wt1.load( m_WordCache.find(start+j, start+j, sentence) , tag ); 
@@ -223,75 +186,51 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
 
 SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, unsigned long char_index, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
-   static unsigned long last_start , last_length ;
-   static unsigned long start ; // word length is the un-normalised version
-   static int tmp_start, tmp_end;
-   // about the words
+   assert(char_index>0);
+   
+   static unsigned long start;
    start = item->getWordStart( index ) ;
 
-   last_start = index > 0 ? item->getWordStart( index-1 ) : 0 ;
-   last_length = index > 0 ? item->getWordLength( index-1 ) : 0 ;
-   const unsigned long length = sentence->size();
+   const CWord &char_unigram = find_or_replace_word_cache( char_index, char_index );
+   const CWord &char_bigram = find_or_replace_word_cache( char_index-1, char_index );
 
-   const CWord &last_word =  index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start-1 , sentence )
-                                                     : m_WordCache.replace( last_start , start-1 , sentence ) )
-                                       : g_emptyWord ; 
-
-   // about the length
-   if( last_length > LENGTH_MAX-1 ) last_length = LENGTH_MAX-1 ;
-
-   // about the chars
-   const CWord &first_char = amount==0 ? m_WordCache.find( start , start , sentence )
-                                      : m_WordCache.replace( start , start , sentence ) ;
-   const CWord &first_char_last_word = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , last_start , sentence )
-                                                               : m_WordCache.replace( last_start , last_start , sentence ) )
-                                                 : g_emptyWord ;
-   const CWord &last_char_last_word = index > 0 ? ( amount==0 ? m_WordCache.find( start-1 , start-1 , sentence) 
-                                                              : m_WordCache.replace( start-1 , start-1 , sentence) )
-                                                : g_emptyWord ;
-   const CWord &two_char = index > 0 ? ( amount == 0 ? m_WordCache.find( start-1 , start, sentence) 
-                                                     : m_WordCache.replace( start-1 , start, sentence) )
-                                     : g_emptyWord ;
-   tmp_start = max(static_cast<int>(start-2), 0);
-   const CWord &three_char_a = ( amount == 0 ? m_WordCache.find( tmp_start , start, sentence) 
-                                               : m_WordCache.replace( tmp_start , start, sentence) );
-   tmp_start = max(static_cast<int>(start-1), 0); tmp_end = min(start+1, length-1);
-   const CWord &three_char_b = ( amount == 0 ? m_WordCache.find( tmp_start , tmp_end, sentence) 
-                                               : m_WordCache.replace( tmp_start, tmp_end, sentence) );
-   const CWord &lastword_firstchar = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start , sentence ) 
-                                                             : m_WordCache.replace( last_start , start , sentence ) )
-                                               : g_emptyWord ; 
-
-   static CTwoWords firstchars_twoword ;
-   if (amount==0) {
-      firstchars_twoword.refer( &first_char_last_word , &first_char ) ;
-   }
-   else {
-      firstchars_twoword.allocate( first_char_last_word, first_char ) ;
-   }
+   const CWord &first_char = find_or_replace_word_cache( start, start );
+   const CWord &prev_char = find_or_replace_word_cache( char_index-1, char_index-1 );
 
    // about the tags 
-   const CTag &last_tag = index>0 ? item->getTag( index-1 ) : CTag(CTag::SENTENCE_BEGIN) ;
-   const CTag &second_last_tag = index>1 ? item->getTag(index-2) : CTag(CTag::SENTENCE_BEGIN) ;
+   const CTag &tag = item->getTag(index);
+   const CTag &last_tag = index>0 ? item->getTag(index-1) : g_beginTag;
+   const CTag &second_last_tag = index>1 ? item->getTag(index-2) : g_beginTag;
 
    static CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    static CTwoTaggedWords wt12;
 
-   static int j ; 
+   static CTagSet<CTag, 2> tagset2;
+   static CTagSet<CTag, 3> tagset3;
+
+   static unsigned long tmp ; 
 
    // adding scores with features
    nReturn = 0;
 
-   if ( start > 0 ) {
-      nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
-      nReturn += m_weights->m_mapThreeCharsA.getOrUpdateScore( three_char_a , m_nScoreIndex , amount , round ) ; 
-      nReturn += m_weights->m_mapThreeCharsB.getOrUpdateScore( three_char_b , m_nScoreIndex , amount , round ) ; 
+   tmp = encodeTags(tag, last_tag);
+   tagset2.load( tmp );
+   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tagset2, m_nScoreIndex , amount , round ) ;
+   tagset3.load( encodeTags(tmp, second_last_tag);
+   nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( tagset3, m_nScoreIndex , amount , round ) ;
 
-      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(char_unigram, tag), m_nScoreIndex , amount , round ) ;
 
-      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex , amount , round ) ;
-   }
-  
+   wt1.load(char_unigram); 
+   wt2.load(first_char);
+   if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+   nReturn += m_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore( wt12, m_nScoreIndex, amount, round ) ;
+
+   if (char_unigram == prev_char) 
+      nReturn += m_weights->m_mapRepeatedCharByTag.getOrUpdateScore( make_pair(char_unigram, tag), m_nScoreIndex, amount, round) ;
+
+   nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ; 
+
    return nReturn;
 }
 
@@ -358,7 +297,7 @@ bool CTagger::train( const CStringVector * sentence , const CTwoStringVector * c
 
       static CStringVector chars;
       chars.clear(); 
-      getCharactersFromUTF8String(word, &chars);
+      getCharactersFromUTF8String(correct->at(i).first, &chars);
 
       static string part_word;
       part_word.clear();
@@ -449,7 +388,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
       for (j=0; j<m_Agenda.generatorSize(); ++j) {
          if ( ( index > 0 ) && ( rules.canAppend(index) ) && 
               pGenerator->getWordLength(pGenerator->size()-1) < 
-                 m_weights->m_maxLengthByTag[pGenerator->getTag(pGenerator->size()-1)]
+                 m_weights->m_maxLengthByTag[pGenerator->getTag(pGenerator->size()-1).code()]
             ) {
             tempState.copy(pGenerator);
             tempState.replaceIndex(index);
@@ -469,16 +408,16 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
 
          for (j=0; j<m_Agenda.generatorSize(); ++j) {
 
-            const CWord &word = index > 0 ?  m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ) : g_emptyWord;
-
             if ( rules.canSeparate( index ) && 
-                (index == 0 || canAssignTag( m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ), pGenerator->getTag(pGenerator->size()-1) )) &&
-                 canStartWord(sentence, tag, index) 
+                (index == 0 || canAssignTag( m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ), pGenerator->getTag(pGenerator->size()-1).code() )) && // last word
+                 canStartWord(sentence, tag, index) // word
                ) {  
                tempState.copy(pGenerator);
                tempState.append(index, tag);
                tempState.score += getOrUpdateSeparateScore(&sentence, &tempState, tempState.size()-1);
                if (nBest==1) {
+                  // make sure only the best is stored among all ending with the same pos
+                  // bigram and last word (which is currently a single character)
                   bool bDuplicate = false;
                   for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
                      if (uniqueItems[temp_index].size() > 1 && 
