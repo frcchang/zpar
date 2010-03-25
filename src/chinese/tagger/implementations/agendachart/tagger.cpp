@@ -451,8 +451,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                      bool bSubstituted = false;
                      for (temp_index=0; temp_index<best_bigram_count; ++temp_index) {
                         if ( best_bigram[temp_index].size()>1 &&
-                             best_bigram[temp_index].getTag(best_bigram[temp_index].size()-2) == tempState.getTag(tempState.size()-2) &&
-                             best_bigram[temp_index].getWordStart(best_bigram[temp_index].size()-2) == tempState.getWordStart(tempState.size()-2) 
+                             best_bigram[temp_index].getTag(best_bigram[temp_index].size()-2) == tempState.getTag(tempState.size()-2) 
                             ) {
                             if (best_bigram[temp_index].score < tempState.score) {
                                best_bigram[temp_index].copy(&tempState);

@@ -26,7 +26,7 @@ static CWord g_emptyWord("");
 
 /*---------------------------------------------------------------
  *
- * getOrUpdateFullScore - get or update the local score for a word in sentence
+ * getOrUpdateSeparateScore - get or update the local score for a word in sentence
  *
  * When bigram is needed from the beginning of sentence, the
  * -BEGIN- tag and the empty word are used. 
@@ -36,7 +36,7 @@ static CWord g_emptyWord("");
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
+SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned long last_start , last_length ;
    static unsigned long start , end , length , word_length ; // word length is the un-normalised version
@@ -121,8 +121,8 @@ SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const C
    else {
       nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_and_last_char , m_nScoreIndex , amount , round ) ;
 
-//      nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char, length) , m_nScoreIndex , amount , round ) ;
-//      nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char, length) , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( make_pair(first_char, length) , m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( make_pair(last_char, length) , m_nScoreIndex , amount , round ) ;
 
       for (j=0; j<word_length-1; ++j)
          nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( 
@@ -211,7 +211,7 @@ SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const C
 
 /*---------------------------------------------------------------
  *
- * getOrUpdatePartScore - get or update the local score for a word in sentence
+ * getOrUpdateAppendScore - get or update the local score for a word in sentence
  *
  * When bigram is needed from the beginning of sentence, the
  * -BEGIN- tag and the empty word are used. 
@@ -221,15 +221,17 @@ SCORE_TYPE CTagger::getOrUpdateFullScore( const CStringVector *sentence, const C
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdatePartScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
+SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, unsigned long char_index, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned long last_start , last_length ;
    static unsigned long start ; // word length is the un-normalised version
+   static int tmp_start, tmp_end;
    // about the words
    start = item->getWordStart( index ) ;
 
    last_start = index > 0 ? item->getWordStart( index-1 ) : 0 ;
    last_length = index > 0 ? item->getWordLength( index-1 ) : 0 ;
+   const unsigned long length = sentence->size();
 
    const CWord &last_word =  index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start-1 , sentence )
                                                      : m_WordCache.replace( last_start , start-1 , sentence ) )
@@ -250,6 +252,12 @@ SCORE_TYPE CTagger::getOrUpdatePartScore( const CStringVector *sentence, const C
    const CWord &two_char = index > 0 ? ( amount == 0 ? m_WordCache.find( start-1 , start, sentence) 
                                                      : m_WordCache.replace( start-1 , start, sentence) )
                                      : g_emptyWord ;
+   tmp_start = max(static_cast<int>(start-2), 0);
+   const CWord &three_char_a = ( amount == 0 ? m_WordCache.find( tmp_start , start, sentence) 
+                                               : m_WordCache.replace( tmp_start , start, sentence) );
+   tmp_start = max(static_cast<int>(start-1), 0); tmp_end = min(start+1, length-1);
+   const CWord &three_char_b = ( amount == 0 ? m_WordCache.find( tmp_start , tmp_end, sentence) 
+                                               : m_WordCache.replace( tmp_start, tmp_end, sentence) );
    const CWord &lastword_firstchar = index > 0 ? ( amount==0 ? m_WordCache.find( last_start , start , sentence ) 
                                                              : m_WordCache.replace( last_start , start , sentence ) )
                                                : g_emptyWord ; 
@@ -276,6 +284,8 @@ SCORE_TYPE CTagger::getOrUpdatePartScore( const CStringVector *sentence, const C
 
    if ( start > 0 ) {
       nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
+      nReturn += m_weights->m_mapThreeCharsA.getOrUpdateScore( three_char_a , m_nScoreIndex , amount , round ) ; 
+      nReturn += m_weights->m_mapThreeCharsB.getOrUpdateScore( three_char_b , m_nScoreIndex , amount , round ) ; 
 
       nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( lastword_firstchar , m_nScoreIndex , amount , round ) ;
 
@@ -313,96 +323,6 @@ inline void buildStateItem(const CStringVector *raw, const CTwoStringVector *tag
 
 /*---------------------------------------------------------------
  *
- * getGlobalScore - get the score of particular outputs
- *
- * Inputs: the tagged and segmented output
- *
- *--------------------------------------------------------------*/
-
-SCORE_TYPE CTagger::getGlobalScore(const CTwoStringVector* tagged) {
-
-   static int i;
-
-   static CSubStateItem item ;
-   static CStringVector raw;
-
-   static SCORE_TYPE rv; rv=0;
-
-   raw.clear();
-   for (i=0; i<tagged->size(); ++i)
-      getCharactersFromUTF8String(tagged->at(i).first, &raw);
-
-   buildStateItem( &raw, tagged, &item );
-   for (i=0; i<tagged->size(); ++i)
-      rv += getOrUpdateLocalScore(&raw, &item, i);
-
-   return rv;
-}
-
-/*---------------------------------------------------------------
- *
- * updateScores - update the score vector by input
- *                this is used in training to adjust params
- *
- * Inputs: the tagged and the correct example
- *
- *--------------------------------------------------------------*/
-
-void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round) {
-
-   static int i , j ;
-   static CSubStateItem item ;
-   static CStringVector raw;
-
-   if ( *tagged != *correct ) {
-      
-      // get raw sentence from tagged output
-      raw.clear();
-      for (i=0; i<tagged->size(); ++i)
-         getCharactersFromUTF8String(tagged->at(i).first, &raw);
-
-      buildStateItem( &raw, tagged, &item );
-      for (i=0; i<tagged->size(); ++i)
-         getOrUpdateLocalScore(&raw, &item, i, -1, round);
-
-
-      buildStateItem( &raw, correct, &item );
-      for (i=0; i<correct->size(); ++i)
-         getOrUpdateLocalScore(&raw, &item, i, 1, round);
-
-   }
-
-   if ( round > m_nNumberOfCurrentTrainingExample ) {
-
-      m_nNumberOfCurrentTrainingExample = round ;
-
-      // Updates that are common for all example
-      for ( i=0; i<correct->size(); ++i ) {
-
-         const CWord &word = correct->at(i).first ;
-         unsigned long tag = CTag( correct->at(i).second ).code() ;
-
-         CStringVector chars;
-         chars.clear(); 
-         getCharactersFromUTF8String(correct->at(i).first, &chars);
-
-         m_weights->m_mapWordFrequency[word]++;
-         if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency) m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
-
-         m_weights->m_mapTagDictionary.add(word, tag);
-         for ( j = 0 ; j < chars.size() ; ++j ) m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
-
-         if ( !m_weights->m_Knowledge ||
-             (!m_weights->m_Knowledge->isFWorCD(chars[0])&&!m_weights->m_Knowledge->isFWorCD(chars[chars.size()-1])))
-         m_weights->setMaxLengthByTag( tag , chars.size() ) ;
-      }
-
-   }
-
-}
-
-/*---------------------------------------------------------------
- *
  * generate - helper function that generates tagged output
  *
  *--------------------------------------------------------------*/
@@ -436,19 +356,30 @@ bool CTagger::train( const CStringVector * sentence , const CTwoStringVector * c
       const CWord &word = correct->at(i).first ;
       unsigned long tag = CTag( correct->at(i).second ).code() ;
 
-      CStringVector chars;
+      static CStringVector chars;
       chars.clear(); 
-      getCharactersFromUTF8String(correct->at(i).first, &chars);
+      getCharactersFromUTF8String(word, &chars);
+
+      static string part_word;
+      part_word.clear();
 
       m_weights->m_mapWordFrequency[word]++;
-      if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency) m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
+      if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency) 
+         m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
 
       m_weights->m_mapTagDictionary.add(word, tag);
-      for ( unsigned j = 0 ; j < chars.size() ; ++j ) m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
+      for ( unsigned j=0 ; j<chars.size() ; ++j ) {
+         m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
+         if ( PENN_TAG_CLOSED[tag] ) {
+            part_word += chars[j];
+            m_weights->m_mapCanStart.add(part_word, tag);
+         }
+      }
 
       if ( !m_weights->m_Knowledge ||
-          (!m_weights->m_Knowledge->isFWorCD(chars[0])&&!m_weights->m_Knowledge->isFWorCD(chars[chars.size()-1])))
-      m_weights->setMaxLengthByTag( tag , chars.size() ) ;
+          (!m_weights->m_Knowledge->isFWorCD(chars[0])&&
+           !m_weights->m_Knowledge->isFWorCD(chars[chars.size()-1])))
+         m_weights->setMaxLengthByTag( tag , chars.size() ) ;
    }
    tag( sentence, NULL, NULL, 1, NULL );
    return m_bTrainingError;
@@ -493,75 +424,66 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    //TRACE("initialisation time: " << clock() - start_time);
    for (index=0; index<length; index++) {
 
-      static bool bAnyCorrect;
-      bAnyCorrect = false;
-      // 2. generate by replacing items
-      pGenerator = m_Agenda.generatorStart();
-      for (j=0; j<m_Agenda.generatorSize(); ++j) {
-         if ( m_bTrain )
-            if ( *pGenerator == goldState ) bAnyCorrect = true;
-         if ( ( index > 0 ) && ( rules.canAppend(index) ) ) {
-            tempState.copy(pGenerator);
-            tempState.replace(index, CTag::NONE);
-            m_Agenda.pushCandidate(&tempState);
-         } // if
-         if ( index == 0 ) {
-            tempState.copy(pGenerator);
-            tempState.append(index, CTag::NONE);
-            tempState.score += getOrUpdatePartScore(&sentence, &tempState, tempState.size()-1);
-            m_Agenda.pushCandidate(&tempState);;
-         }
-         pGenerator = m_Agenda.generatorNext();  // next generator
-      }
+      // decide correction
       if ( m_bTrain ) {
-         pGenerator = m_Agenda.bestGenerator();
-         if ( *pGenerator != goldState ) {
-            TRACE("Training error before last word" << index);
-            for (temp_index=0; temp_index<pGenerator->size()-1; ++temp_index) {
-               getOrUpdateFullScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
-               getOrUpdatePartScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
-            }
-            getOrUpdatePartScore(&sentence, pGenerator, pGenerator->size()-1, -1, m_nTrainingRound);
-            for (temp_index=0; temp_index<goldState.size()-1; ++temp_index) {
-               getOrUpdateFullScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
-               getOrUpdatePartScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
-            }
-            getOrUpdatePartScore(&sentence, &goldState, goldState.size()-1, 1, m_nTrainingRound);
+         static bool bAnyCorrect;
+         bAnyCorrect = false;
+         pGenerator = m_Agenda.generatorStart();
+         for (j=0; j<m_Agenda.generatorSize(); ++j) {
+            if ( *pGenerator == goldState ) bAnyCorrect = true;
+            pGenerator = m_Agenda.generatorNext();  // next generator
+         }
+         if ( !bAnyCorrect ) {
+            TRACE("Training error at character " << index);
+            pGenerator = m_Agenda.bestGenerator();
+            updateScoreForState(&sentence, pGenerator, -1);
+            updateScoreForState(&sentence, &goldState, 1);
             m_bTrainingError = true;
             return;
          }
+      }
+
+
+      // 2. generate by replacing items
+      pGenerator = m_Agenda.generatorStart();
+      for (j=0; j<m_Agenda.generatorSize(); ++j) {
+         if ( ( index > 0 ) && ( rules.canAppend(index) ) && 
+              pGenerator->getWordLength(pGenerator->size()-1) < 
+                 m_weights->m_maxLengthByTag[pGenerator->getTag(pGenerator->size()-1)]
+            ) {
+            tempState.copy(pGenerator);
+            tempState.replaceIndex(index);
+            getOrUpdateAppendScore(&sentence, &tempState, tempState.size()-1, index);
+            m_Agenda.pushCandidate(&tempState);
+         } // if
+         pGenerator = m_Agenda.generatorNext();  // next generator
       }
 
    //_
    // 1. generate new items according to each previous item. 
    // iterate postags
       for (tag=CTag::FIRST; tag<CTag::COUNT; ++tag) {
+
          pGenerator = m_Agenda.generatorStart();
          uniqueIndex=0;
+
          for (j=0; j<m_Agenda.generatorSize(); ++j) {
-            static unsigned start_index, end_index;
-            if ( index > 0 ) {
-               start_index = pGenerator->getWordStart(pGenerator->size()-1);
-            }
-            if ( index > 0 && rules.canSeparate( index ) && 
-                 (  (  m_weights->m_mapWordFrequency.find( m_WordCache.find( start_index , index-1 , &sentence ) , 0 ) < 
-                       m_weights->m_nMaxWordFrequency/5000+5 && 
-                       PENN_TAG_CLOSED[ tag ] == false  ) ||
-                    m_weights->m_mapTagDictionary.lookup( m_WordCache.find( start_index , index-1 , &sentence ), tag )
-                 )
+
+            const CWord &word = index > 0 ?  m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ) : g_emptyWord;
+
+            if ( rules.canSeparate( index ) && 
+                (index == 0 || canAssignTag( m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ), pGenerator->getTag(pGenerator->size()-1) )) &&
+                 canStartWord(sentence, tag, index) 
                ) {  
                tempState.copy(pGenerator);
-               tempState.append(index, CTag::NONE);
-               tempState.setTag(tempState.size()-2, tag);
-               tempState.score += getOrUpdateFullScore(&sentence, &tempState, tempState.size()-2);
-               tempState.score += getOrUpdatePartScore(&sentence, &tempState, tempState.size()-1);
+               tempState.append(index, tag);
+               tempState.score += getOrUpdateSeparateScore(&sentence, &tempState, tempState.size()-1);
                if (nBest==1) {
                   bool bDuplicate = false;
                   for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
-                     if (uniqueItems[temp_index].size() > 2 && 
-                         tempState.size() > 2 && 
-                         uniqueItems[temp_index].getWordStart(uniqueItems[temp_index].size()-3) == tempState.getWordStart(tempState.size()-3) &&
-                         uniqueItems[temp_index].getTag(uniqueItems[temp_index].size()-3) == tempState.getTag(tempState.size()-3) 
+                     if (uniqueItems[temp_index].size() > 1 && 
+                         tempState.size() > 1 && 
+                         uniqueItems[temp_index].getTag(uniqueItems[temp_index].size()-2) == tempState.getTag(tempState.size()-2) 
                         ) {
                           bDuplicate = true;
                           if (uniqueItems[temp_index].score < tempState.score) {
@@ -593,68 +515,12 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
       if (m_bTrain) goldState.follow(m_goldState);
    }
    
-   for (tag=CTag::FIRST; tag<CTag::COUNT; ++tag) {
-      pGenerator = m_Agenda.generatorStart();
-      uniqueIndex=0;
-      for (j=0; j<m_Agenda.generatorSize(); ++j) {
-         static unsigned start_index; start_index=pGenerator->getWordStart(pGenerator->size()-1);
-        
-         if ( (  (  m_weights->m_mapWordFrequency.find( m_WordCache.find( start_index , length-1 , &sentence ) , 0 ) < 
-                    m_weights->m_nMaxWordFrequency/5000+5 && 
-                    PENN_TAG_CLOSED[ tag ] == false  ) ||
-                 m_weights->m_mapTagDictionary.lookup( m_WordCache.find( start_index , length-1 , &sentence ), tag )
-              )
-            ) {  
-            tempState.copy(pGenerator);
-            tempState.setTag(tempState.size()-1, tag);
-            tempState.score += getOrUpdateFullScore(&sentence, &tempState, tempState.size()-1);
-            if (nBest==1) {
-               bool bDuplicate = false;
-               for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
-                  if (uniqueItems[temp_index].size() > 1 && 
-                      tempState.size() > 1 && 
-                      uniqueItems[temp_index].getWordStart(uniqueItems[temp_index].size()-2) == tempState.getWordStart(tempState.size()-2) &&
-                      uniqueItems[temp_index].getWordEnd(uniqueItems[temp_index].size()-2) == tempState.getWordEnd(tempState.size()-2) &&
-                      uniqueItems[temp_index].getTag(uniqueItems[temp_index].size()-2) == tempState.getTag(tempState.size()-2) 
-                     ) {
-                       bDuplicate = true;
-                       if (uniqueItems[temp_index].score < tempState.score) {
-                          uniqueItems[temp_index].copy(&tempState);
-                       }
-                       break;
-                     }
-               }
-               if (!bDuplicate) {
-                  // the number of generators is surely fewer than list size
-                  uniqueItems[uniqueIndex++].copy(&tempState);
-               }
-            }
-            else {
-               m_Agenda.pushCandidate(&tempState);
-            }
-         }
-         pGenerator = m_Agenda.generatorNext();
-      }
-      if (nBest==1) {
-	 for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
-	    m_Agenda.pushCandidate(&uniqueItems[temp_index]);
-	 }
-      }
-   }
-   m_Agenda.nextRound();
    if ( m_bTrain && 1 ) {
-      goldState.follow(m_goldState);
       pGenerator = m_Agenda.bestGenerator();
       if ( *pGenerator != goldState ) {
          TRACE("Training error at the last word");
-         for (temp_index=0; temp_index<pGenerator->size(); ++temp_index) {
-            getOrUpdateFullScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
-            getOrUpdatePartScore(&sentence, pGenerator, temp_index, -1, m_nTrainingRound);
-         }
-         for (temp_index=0; temp_index<goldState.size(); ++temp_index) {
-            getOrUpdateFullScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
-            getOrUpdatePartScore(&sentence, &goldState, temp_index, 1, m_nTrainingRound);
-         }
+         updateScoreForState(&sentence, pGenerator, -1);
+         updateScoreForState(&sentence, &goldState, 1);
          m_bTrainingError = true;
       }
       m_bTrainingError = false;
