@@ -326,8 +326,9 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    unsigned tag;
    unsigned index, last_tag;
  
-   static CSubStateItem uniqueItems[AGENDA_SIZE];
-   unsigned uniqueIndex;
+   static CSubStateItem uniqueItems[(1<<CTag::SIZE)];
+   unsigned long long uniqueMarkup;
+   assert(CTag::COUNT<=sizeof(unsigned long long)*8);
 
    static CStringVector sentence;
    static CRule rules(m_weights->m_bSegmentationRules);
@@ -372,6 +373,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
       if ( index > 0 ) {
          pGenerator = m_Agenda.generatorStart();
          for (j=0; j<m_Agenda.generatorSize(); ++j) {
+            assert(pGenerator->size()>0);
             if ( ( rules.canAppend(index) ) && // ( index > 0 ) &&
                  pGenerator->getWordLength(pGenerator->size()-1) < 
                     m_weights->m_maxLengthByTag[pGenerator->getTag(pGenerator->size()-1).code()]
@@ -391,36 +393,24 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
       for (tag=CTag::FIRST; tag<CTag::COUNT; ++tag) {
 
          pGenerator = m_Agenda.generatorStart();
-         uniqueIndex=0;
+         uniqueMarkup=0;
 
          for (j=0; j<m_Agenda.generatorSize(); ++j) {
 
+            last_tag = pGenerator->size()==0 ? CTag::SENTENCE_BEGIN : 
+                                  pGenerator->getTag(pGenerator->size()-1).code();
+
             if ( rules.canSeparate( index ) && 
-                (index == 0 || canAssignTag( m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ), pGenerator->getTag(pGenerator->size()-1).code() )) && // last word
+                (index == 0 || canAssignTag( m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ), last_tag )) && // last word
                  canStartWord(sentence, tag, index) // word
                ) {  
                tempState.copy(pGenerator);
                tempState.append(index, tag);
                tempState.score += getOrUpdateSeparateScore(&sentence, &tempState, tempState.size()-1);
                if (nBest==1) {
-                  // make sure only the best is stored among all ending with the same pos
-                  // bigram and last word (which is currently a single character)
-                  bool bDuplicate = false;
-                  for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
-                     if (uniqueItems[temp_index].size() > 1 && 
-                         tempState.size() > 1 && 
-                         uniqueItems[temp_index].getTag(uniqueItems[temp_index].size()-2) == tempState.getTag(tempState.size()-2) 
-                        ) {
-                          bDuplicate = true;
-                          if (uniqueItems[temp_index].score < tempState.score) {
-                             uniqueItems[temp_index].copy(&tempState);
-                          }
-                          break;
-                     }
-                  }
-                  if (!bDuplicate) {
-                     // the number of generators is surely fewer than list size
-                     uniqueItems[uniqueIndex++].copy(&tempState);
+                  if ( ((uniqueMarkup&(static_cast<unsigned long long>(1)<<last_tag))==0) || uniqueItems[last_tag].score < tempState.score ) {
+                     uniqueMarkup |= (static_cast<unsigned long long>(1)<<last_tag);
+                     uniqueItems[last_tag].copy(&tempState);
                   }
                }
                else {
@@ -431,8 +421,9 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
          }
          // push candidates
          if (nBest == 1) {
-            for (temp_index=0; temp_index<uniqueIndex; ++temp_index) {
-               m_Agenda.pushCandidate(&uniqueItems[temp_index]);
+            for (last_tag=0; last_tag<CTag::COUNT; ++last_tag) {
+               if ( (uniqueMarkup&(static_cast<unsigned long long>(1)<<last_tag)) )
+                  m_Agenda.pushCandidate(&(uniqueItems[last_tag]));
             }
          }
       }//tag
