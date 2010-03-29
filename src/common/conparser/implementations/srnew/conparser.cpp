@@ -374,9 +374,8 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    nReturn = 0;
 //
    // S0
-//   nReturn += cast_weights->m_mapS0w.getOrUpdateScore(make_pair(*(ctxt->s0w), action), m_nScoreIndex, amount, round);
-//   nReturn += cast_weights->m_mapS0c.getOrUpdateScore(s0c_action, m_nScoreIndex, amount, round);
-   //if (item->nodes[ctxt->s0].norv) nReturn += cast_weights->m_mapS0cm.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s0c, ctxt->s0m)), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapS0w.getOrUpdateScore(make_pair(*(ctxt->s0wt), action), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapS0c.getOrUpdateScore(make_pair(ctxt->s0c, action), m_nScoreIndex, amount, round);
    refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s0t), &(ctxt->s0c), &action); 
    nReturn += cast_weights->m_mapS0tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
    refer_or_allocate_tuple3(word_constituent_action, ctxt->s0w, &(ctxt->s0c), &action); 
@@ -384,9 +383,8 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S1
    if (ctxt->s1!=-1) {
-//      nReturn += cast_weights->m_mapS1w.getOrUpdateScore(make_pair(*(ctxt->s1w), action), m_nScoreIndex, amount, round);
-//      nReturn += cast_weights->m_mapS1c.getOrUpdateScore(s1c_action, m_nScoreIndex, amount, round);
-      //if (item->nodes[ctxt->s1].norv) nReturn += cast_weights->m_mapS1cm.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s1c, ctxt->s1m)), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS1w.getOrUpdateScore(make_pair(*(ctxt->s1wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS1c.getOrUpdateScore(make_pair(ctxt->s1c, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s1t), &(ctxt->s1c), &action); 
       nReturn += cast_weights->m_mapS1tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_constituent_action, ctxt->s1w, &(ctxt->s1c), &action); 
@@ -516,6 +514,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S0 S1
    if (ctxt->s1!=-1) {
+if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->s0ws1w), &(ctxt->s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0wcS1wc.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s0cs1c), &action); 
@@ -523,6 +522,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0wS1c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(make_pair(ctxt->s0cs1c, action), m_nScoreIndex, amount, round);
+}
 
       nReturn += cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(ctxt->s0wts1wt, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s0t), &action); 
@@ -539,6 +539,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S0 N0
    if (ctxt->n0!=-1) {
+if (!ctxt->s0c.empty()) {
       refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->s0wn0w), &(ctxt->s0cn0t), &action); 
       nReturn += cast_weights->m_mapS0wN0w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->n0w, &(ctxt->s0cn0t), &action); 
@@ -547,10 +548,12 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cN0t.getOrUpdateScore(make_pair(ctxt->s0cn0t, action), m_nScoreIndex, amount, round);
       //if (item->nodes[ctxt->s0].norv&&ctxt->n0norv) nReturn += cast_weights->m_mapS0cmN0tm.getOrUpdateScore(make_pair(s0cn0t_action, encodeRhythms(ctxt->s0c, ctxt->n0m)), m_nScoreIndex, amount, round);
+}
    }
 
    // S1 N0
    if (ctxt->s1!=-1 && ctxt->n0!=-1) {
+if (!ctxt->s1c.empty()) {
       refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->s1wn0w), &(ctxt->s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1wN0w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->n0w, &(ctxt->s1cn0t), &action); 
@@ -558,6 +561,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS1cN0t.getOrUpdateScore(make_pair(ctxt->s1cn0t, action), m_nScoreIndex, amount, round);
+}
    }
 
    // N0 N1
@@ -570,6 +574,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    
 #ifdef _CHINESE_CFG_H
    if (ctxt->open_bracket_match_type!=0) {
+if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       nReturn += cast_weights->m_mapBracketS0c.getOrUpdateScore(s0c_bracket_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapBracketS0w.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, ctxt->open_bracket_match_type)), m_nScoreIndex, amount, round);
       if (ctxt->s1!=-1) {
@@ -582,9 +587,11 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
          nReturn += cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(ctxt->s0w), n0t_bracket_action), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapBracketS0cN0t.getOrUpdateScore(s0cn0t_bracket_action, m_nScoreIndex, amount, round);
       }
+}
    }
 
    if (ctxt->s1!=-1) {
+if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       static unsigned long i;
       for (i=0; i<ctxt->s0c_separator.size(); ++i) {
          nReturn += cast_weights->m_mapS0cSeparator.getOrUpdateScore(encodeAction(action, ctxt->s0c_separator[i]), m_nScoreIndex, amount, round);
@@ -601,6 +608,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       for (i=0; i<ctxt->s0cs1c_separator.size(); ++i)
          nReturn += cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(encodeAction(action, ctxt->s0cs1c_separator[i]), m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(encodeAction(action, ctxt->s0cs1c_sepcount), m_nScoreIndex, amount, round);
+}
    }
 #endif
 
@@ -616,6 +624,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    }
 
    // S0 S1 N0
+if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
    refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0cs1cn0t), &action); 
    nReturn += cast_weights->m_mapS0wS1cN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    if (ctxt->s1!=-1)  {
@@ -628,9 +637,11 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    }
    nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(make_pair(ctxt->s0cs1cn0t, action), m_nScoreIndex, amount, round); 
    //if (ctxt->s1!=-1 && ctxt->n0!=-1 && item->nodes[ctxt->s1].norv && ctxt->n0norv) nReturn += cast_weights->m_mapS0cmS1cmN0tm.getOrUpdateScore(make_pair(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->n0t)), encodeRhythms(encodeRhythms(ctxt->s0m, ctxt->s1m), ctxt->n0m)), m_nScoreIndex, amount, round);
+}
 
    // S0 N0 N1
    if (ctxt->n0!=-1) {
+if (!ctxt->s0c.empty()) {
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0cn0tn1t), &action); 
       nReturn += cast_weights->m_mapS0wN0tN1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->n0w, &(ctxt->s0cn0tn1t), &action); 
@@ -640,10 +651,12 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
          nReturn += cast_weights->m_mapS0cN0tN1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
       nReturn += cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(ctxt->s0cn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
+}
    }
 
    // S0 S1 S2
    if (ctxt->s1!=-1) {
+if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0cs1cs2c), &action); 
       nReturn += cast_weights->m_mapS0wS1cS2c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s0cs1cs2c), &action); 
@@ -654,6 +667,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       }
       nReturn += cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(ctxt->s0cs1cs2c, action), m_nScoreIndex, amount, round);
       //if (ctxt->s2!=-1 && item->nodes[ctxt->s0].norv && item->nodes[ctxt->s1].norv && item->nodes[ctxt->s2].norv) nReturn += cast_weights->m_mapS0cmS1cmS2cm.getOrUpdateScore(make_pair(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->s2c)), encodeRhythms(encodeRhythms(ctxt->s0m, ctxt->s1m), ctxt->s2m)), m_nScoreIndex, amount, round);
+}
    }
 
    // Tag bigrams

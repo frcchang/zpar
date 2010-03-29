@@ -98,6 +98,7 @@ public:
 public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
+   const bool empty() const { return m_code==NONE; }
    string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
    void load(const string &s) {
       m_code = PENN_CON_NONE ;

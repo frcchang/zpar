@@ -41,6 +41,7 @@ typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
 typedef CScoreMap<CTuple3<CWord, CConstituent, unsigned long>, SCORE_TYPE> CWordConstituentIntMap;
 typedef CScoreMap<CTuple3<CTag, CConstituent, unsigned long>, SCORE_TYPE> CTagConstituentIntMap;
 typedef CScoreMap<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
+typedef CScoreMap<pair<CConstituent, unsigned long>, SCORE_TYPE> CConstituentIntMap;
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
@@ -89,28 +90,24 @@ public:
    CWordIntMap m_mapHwArityR;
    
    // S0
-   CIntMap m_mapS0c;
-   CIntMap m_mapS0cm;
-   CWordIntMap m_mapS0w;
+   CConstituentIntMap m_mapS0c;
+   CTaggedWordIntMap m_mapS0w;
    CTagConstituentIntMap m_mapS0tc;
    CWordConstituentIntMap m_mapS0wc;
 
    // S1
-   CIntMap m_mapS1c;
-   CIntMap m_mapS1cm;
-   CWordIntMap m_mapS1w;
+   CConstituentIntMap m_mapS1c;
+   CTaggedWordIntMap m_mapS1w;
    CTagConstituentIntMap m_mapS1tc;
    CWordConstituentIntMap m_mapS1wc;
 
    // S2
    CIntMap m_mapS2c;
-   CWordIntMap m_mapS2w;
    CTagConstituentIntMap m_mapS2tc;
    CWordConstituentIntMap m_mapS2wc;
 
    // S3
    CIntMap m_mapS3c;
-   CWordIntMap m_mapS3w;
    CTagConstituentIntMap m_mapS3tc;
    CWordConstituentIntMap m_mapS3wc;
 
@@ -349,24 +346,20 @@ public:
                                                m_mapHwArityR("HeadWordArityRight", 122651),
 
                                                m_mapS0c("Stack0Constituent"),
-                                               m_mapS0cm("Stack0ConstituentRhythm"),
                                                m_mapS0w("Stack0Word"),
                                                m_mapS0tc("Stack0Tag"),
                                                m_mapS0wc("Stack0WordConstituent"),
 
                                                m_mapS1c("Stack1Constituent"),
-                                               m_mapS1cm("Stack1ConstituentRhythm"),
                                                m_mapS1w("Stack1Word"),
                                                m_mapS1tc("Stack1Tag"),
                                                m_mapS1wc("Stack1WordConstituent"),
 
                                                m_mapS2c("Stack2Constituent"),
-                                               m_mapS2w("Stack2Word"),
                                                m_mapS2tc("Stack2Tag"),
                                                m_mapS2wc("Stack2WordConstituent"),
 
                                                m_mapS3c("Stack3Constituent"),
-                                               m_mapS3w("Stack3Word"),
                                                m_mapS3tc("Stack3Tag"),
                                                m_mapS3wc("Stack3WordConstituent"),
 

@@ -61,6 +61,7 @@ public:
 public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
+   const bool empty() const { return m_code==NONE; }
    bool operator == (const CConstituent &w) const { return m_code == w.m_code; }
    bool operator != (const CConstituent &w) const { return m_code != w.m_code; }
    bool operator < (const CConstituent &w) const { return m_code < w.m_code; }
