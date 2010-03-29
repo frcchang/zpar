@@ -397,19 +397,21 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
 
          for (j=0; j<m_Agenda.generatorSize(); ++j) {
 
-            last_tag = pGenerator->size()==0 ? CTag::SENTENCE_BEGIN : 
-                                  pGenerator->getTag(pGenerator->size()-1).code();
-
             if ( rules.canSeparate( index ) && 
                 (index == 0 || canAssignTag( m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ), last_tag )) && // last word
                  canStartWord(sentence, tag, index) // word
                ) {  
+
+               last_tag = pGenerator->size()==0 ? CTag::SENTENCE_BEGIN : 
+                                  pGenerator->getTag(pGenerator->size()-1).code();
+
                tempState.copy(pGenerator);
                tempState.append(index, tag);
                tempState.score += getOrUpdateSeparateScore(&sentence, &tempState, tempState.size()-1);
+
                if (nBest==1) {
                   if ( ((uniqueMarkup&(static_cast<unsigned long long>(1)<<last_tag))==0) || uniqueItems[last_tag].score < tempState.score ) {
-                     uniqueMarkup |= (static_cast<unsigned long long>(1)<<last_tag);
+                     uniqueMarkup |= (1LL<<last_tag);
                      uniqueItems[last_tag].copy(&tempState);
                   }
                }
@@ -422,7 +424,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
          // push candidates
          if (nBest == 1) {
             for (last_tag=0; last_tag<CTag::COUNT; ++last_tag) {
-               if ( (uniqueMarkup&(static_cast<unsigned long long>(1)<<last_tag)) )
+               if ( (uniqueMarkup&(1LL<<last_tag)) )
                   m_Agenda.pushCandidate(&(uniqueItems[last_tag]));
             }
          }
