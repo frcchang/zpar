@@ -437,7 +437,9 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                      m_weights->m_mapTagDictionary.lookup( m_WordCache.find( start_index+1 , index , &sentence ), tag ) 
                   ) // wordtag match
                ) {
+
                if (nBest==1) best_bigram_mask=0;
+
                for ( generator_index = 0 ; generator_index < m_Chart[ start_index+1 ]->size() ; ++ generator_index ) {
                   generator_item = m_Chart[ start_index+1 ]->item( generator_index ) ;
                   tempState.copy( generator_item ) ;
@@ -454,13 +456,13 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                      m_Chart[ index+1 ]->insertItem( &tempState );
                   }
                }
-            }//if
-            if (nBest==1) {
-               for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag ) { 
-                  if ( (best_bigram_mask&(static_cast<unsigned long long>(1)<<last_tag)) )
-                     m_Chart[ index+1 ]->insertItem( &(best_bigram[last_tag]) );
+               if (nBest==1) {
+                  for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag ) { 
+                     if ( (best_bigram_mask&(static_cast<unsigned long long>(1)<<last_tag)) )
+                        m_Chart[ index+1 ]->insertItem( &(best_bigram[last_tag]) );
+                  }
                }
-            }
+            }//if
 
             // control the first character of the candidate
             if ( rules.canAppend(start_index+1)==false ) 
