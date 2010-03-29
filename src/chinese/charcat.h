@@ -57,7 +57,7 @@ static const CWord ending_brackets[] = {
 };
 
 static const CWord separating_punctuations[] = {
-   CH_COMMA, CH_PERIOD, CH_DUN, CH_SEMICOLON
+   CH_COMMA, CH_PERIOD, CH_DUN, CH_SEMICOLON, CH_EXCLAMATION, CH_QUESTION
 };
 
 static const CWord sentence_separators[] = {

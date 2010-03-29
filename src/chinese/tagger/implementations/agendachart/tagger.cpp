@@ -446,9 +446,9 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   tempState.append( index , tag ) ;
                   tempState.score += getOrUpdateLocalScore( &sentence , &tempState , tempState.size()-1 ) ;
                   if (nBest==1) {
-                     last_tag = tempState.size() > 1 ? tempState.getTag(tempState.size()-2).code() : CTag::SENTENCE_BEGIN;
-                     if ( ((best_bigram_mask&(static_cast<unsigned long long>(1)<<last_tag))==0) || best_bigram[last_tag].score < tempState.score ) {
-                        best_bigram_mask|=(static_cast<unsigned long long>(1)<<last_tag);
+                     last_tag = tempState.size()>1 ? tempState.getTag(tempState.size()-2).code() : CTag::SENTENCE_BEGIN;
+                     if ( ((best_bigram_mask&(1LL<<last_tag))==0LL) || best_bigram[last_tag].score < tempState.score ) {
+                        best_bigram_mask|=(1LL<<last_tag);
                         best_bigram[last_tag].copy(&tempState);
                      }
                   }
@@ -458,7 +458,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                }
                if (nBest==1) {
                   for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag ) { 
-                     if ( (best_bigram_mask&(static_cast<unsigned long long>(1)<<last_tag)) )
+                     if ( (best_bigram_mask&(1LL<<last_tag)) )
                         m_Chart[ index+1 ]->insertItem( &(best_bigram[last_tag]) );
                   }
                }
