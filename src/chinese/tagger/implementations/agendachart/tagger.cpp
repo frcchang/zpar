@@ -375,8 +375,8 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    int index , start_index , generator_index , temp_index, word_length;
    const CStateItem * generator_item ; 
    CStateItem *candidate_item , tempState , maxState ;
-   static CStateItem best_bigram[ AGENDA_SIZE ] ; // candidates generated in one round
-   unsigned best_bigram_count = 0; // and the count
+   static CStateItem best_bigram[ 1<<CTag::SIZE ] ; 
+   unsigned long long best_bigram_mask = 0; // and the count
    unsigned long tag, last_tag ; 
 
    static CStringVector sentence;
@@ -393,12 +393,8 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    m_WordCache.clear() ; 
    m_Chart.clear() ;
    // put an empty sentence to the beginning 
-//   candidate_item = m_Chart[ 0 ]->newItem() ;
-//   candidate_item->clear() ; 
-//   m_Chart[ 0 ]->insertNewItem(  ) ;
    tempState.clear() ;
    m_Chart[ 0 ]->insertItem( &tempState ) ;
-//   assert(prunes==NULL);
 
    TRACE("Tagging started"); 
    // enumerating the end index
@@ -441,38 +437,30 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                      m_weights->m_mapTagDictionary.lookup( m_WordCache.find( start_index+1 , index , &sentence ), tag ) 
                   ) // wordtag match
                ) {
-               if (nBest==1) best_bigram_count=0;
+               if (nBest==1) best_bigram_mask=0;
                for ( generator_index = 0 ; generator_index < m_Chart[ start_index+1 ]->size() ; ++ generator_index ) {
                   generator_item = m_Chart[ start_index+1 ]->item( generator_index ) ;
                   tempState.copy( generator_item ) ;
                   tempState.append( index , tag ) ;
                   tempState.score += getOrUpdateLocalScore( &sentence , &tempState , tempState.size()-1 ) ;
                   if (nBest==1) {
-                     bool bSubstituted = false;
-                     for (temp_index=0; temp_index<best_bigram_count; ++temp_index) {
-                        if ( best_bigram[temp_index].size()>1 &&
-                             best_bigram[temp_index].getTag(best_bigram[temp_index].size()-2) == tempState.getTag(tempState.size()-2) 
-                            ) {
-                            if (best_bigram[temp_index].score < tempState.score) {
-                               best_bigram[temp_index].copy(&tempState);
-                            }
-                            bSubstituted = true;
-                            break;
-                        }
+                     last_tag = tempState.size() > 1 ? tempState.getTag(tempState.size()-2).code() : CTag::SENTENCE_BEGIN;
+                     if ( ((best_bigram_mask&(static_cast<unsigned long long>(1)<<last_tag))==0) || best_bigram[last_tag].score < tempState.score ) {
+                        best_bigram_mask|=(static_cast<unsigned long long>(1)<<last_tag);
+                        best_bigram[last_tag].copy(&tempState);
                      }
-                     if (!bSubstituted)
-                        best_bigram[best_bigram_count++].copy(&tempState);
                   }
                   else {
                      m_Chart[ index+1 ]->insertItem( &tempState );
                   }
                }
-               if (nBest==1) {
-                  for ( temp_index=0; temp_index<best_bigram_count; ++temp_index ) { 
-                     m_Chart[ index+1 ]->insertItem( &(best_bigram[temp_index]) );
-                  }
-               }
             }//if
+            if (nBest==1) {
+               for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag ) { 
+                  if ( (best_bigram_mask&(static_cast<unsigned long long>(1)<<last_tag)) )
+                     m_Chart[ index+1 ]->insertItem( &(best_bigram[last_tag]) );
+               }
+            }
 
             // control the first character of the candidate
             if ( rules.canAppend(start_index+1)==false ) 

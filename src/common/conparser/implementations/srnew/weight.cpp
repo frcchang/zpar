@@ -69,24 +69,20 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapHwArityR)right\
 \
    left(m_mapS0c)right\
-   left(m_mapS0cm)right\
    left(m_mapS0w)right\
    left(m_mapS0tc)right\
    left(m_mapS0wc)right\
 \
    left(m_mapS1c)right\
-   left(m_mapS1cm)right\
    left(m_mapS1w)right\
    left(m_mapS1tc)right\
    left(m_mapS1wc)right\
 \
    left(m_mapS2c)right\
-   left(m_mapS2w)right\
    left(m_mapS2tc)right\
    left(m_mapS2wc)right\
 \
    left(m_mapS3c)right\
-   left(m_mapS3w)right\
    left(m_mapS3tc)right\
    left(m_mapS3wc)right\
 \
