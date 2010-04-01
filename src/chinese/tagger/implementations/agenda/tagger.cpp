@@ -140,7 +140,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       nReturn += m_weights->m_mapTagByLastChar.getOrUpdateScore( make_pair(last_char_1, tag_1) , m_nScoreIndex , amount , round ) ;
       nReturn += m_weights->m_mapTagByLastCharCat.getOrUpdateScore( make_pair(last_char_cat_1, tag_1) , m_nScoreIndex , amount , round ) ;
 
-      for (j=0; j<length_1; ++j) {
+      for (j=0; j<length_1-1; ++j) {
          wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
          wt2.load(last_char_1);
          if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
@@ -209,7 +209,7 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(char_unigram, tag), m_nScoreIndex , amount , round ) ;
 
-   wt1.load(char_unigram); 
+   wt1.load(char_unigram, tag); 
    wt2.load(first_char);
    if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
    nReturn += m_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore( wt12, m_nScoreIndex, amount, round ) ;
@@ -397,20 +397,19 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
 
          for (j=0; j<m_Agenda.generatorSize(); ++j) {
 
+            last_tag = pGenerator->size()==0 ? CTag::SENTENCE_BEGIN : pGenerator->getTag(pGenerator->size()-1).code();
+
             if ( rules.canSeparate( index ) && 
                 (index == 0 || canAssignTag( m_WordCache.find( pGenerator->getWordStart(pGenerator->size()-1), index-1, &sentence ), last_tag )) && // last word
                  canStartWord(sentence, tag, index) // word
                ) {  
-
-               last_tag = pGenerator->size()==0 ? CTag::SENTENCE_BEGIN : 
-                                  pGenerator->getTag(pGenerator->size()-1).code();
 
                tempState.copy(pGenerator);
                tempState.append(index, tag);
                tempState.score += getOrUpdateSeparateScore(&sentence, &tempState, tempState.size()-1);
 
                if (nBest==1) {
-                  if ( ((uniqueMarkup&(static_cast<unsigned long long>(1)<<last_tag))==0) || uniqueItems[last_tag].score < tempState.score ) {
+                  if ( ((uniqueMarkup&(1LL<<last_tag))==0LL) || uniqueItems[last_tag].score < tempState.score ) {
                      uniqueMarkup |= (1LL<<last_tag);
                      uniqueItems[last_tag].copy(&tempState);
                   }

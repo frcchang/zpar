@@ -176,6 +176,7 @@ public:
    CWordCFGSetIntMap m_mapS0wS1c;
    CWordCFGSetIntMap m_mapS0cS1w;
    CCFGSetIntMap m_mapS0cS1c;
+
    CTwoTaggedWordsIntMap m_mapS0wtS1wt;
    CTwoWordsTagIntMap m_mapS0wtS1w;
    CTwoWordsTagIntMap m_mapS0wS1wt;
@@ -183,6 +184,8 @@ public:
    CWordCFGSetIntMap m_mapS0wtS1t;
    CWordCFGSetIntMap m_mapS0tS1wt;
    CCFGSetIntMap m_mapS0tS1t;
+
+   CCFGSetIntMap m_mapBetweenTags;
 
    // S0 N0
    CTwoWordsCFGSetIntMap m_mapS0wN0w;
@@ -242,20 +245,21 @@ public:
    CWordCFGSetIntMap m_mapS0cS1wN0t;
    CWordCFGSetIntMap m_mapS0cS1cN0w;
    CCFGSetIntMap m_mapS0cS1cN0t;
-   CTwoIntMap m_mapS0cmS1cmN0tm;
+   CCFGSetIntMap m_mapS0tS1tN0t;
 
    // S0 N0N1
    CWordCFGSetIntMap m_mapS0wN0tN1t;
    CWordCFGSetIntMap m_mapS0cN0wN1t;
    CWordCFGSetIntMap m_mapS0cN0tN1w;
    CCFGSetIntMap m_mapS0cN0tN1t;
+   CCFGSetIntMap m_mapS0tN0tN1t;
 
    // S0 S1S2
    CWordCFGSetIntMap m_mapS0wS1cS2c;
    CWordCFGSetIntMap m_mapS0cS1wS2c;
    CWordCFGSetIntMap m_mapS0cS1cS2w;
    CCFGSetIntMap m_mapS0cS1cS2c;
-   CTwoIntMap m_mapS0cmS1cmS2cm;
+   CCFGSetIntMap m_mapS0tS1tS2t;
 
    // tag bigram
    CIntMap m_mapS1cS2c;
@@ -276,6 +280,7 @@ public:
    CWordIntMap m_mapS0wS0LcN0t;
    CWordIntMap m_mapS0cS0LcN0w;
    CIntMap m_mapS0cS0RcN0t;
+   CIntMap m_mapS0cS0RjN0t;
    CWordIntMap m_mapS0wS0RcN0t;
    CWordIntMap m_mapS0cS0RcN0w;
    CIntMap m_mapS0cS0UcN0t;
@@ -283,26 +288,28 @@ public:
    CWordIntMap m_mapS0cS0UcN0w;
 
    // S0 S0LRUS1
-   CIntMap m_mapS0cS0LcS1c;
-   CWordIntMap m_mapS0wS0LcS1c;
-   CWordIntMap m_mapS0cS0LcS1w;
-   CIntMap m_mapS0cS0RcS1c;
-   CWordIntMap m_mapS0wS0RcS1c;
-   CWordIntMap m_mapS0cS0RcS1w;
-   CIntMap m_mapS0cS0UcS1c;
-   CWordIntMap m_mapS0wS0UcS1c;
-   CWordIntMap m_mapS0cS0UcS1w;
+   CCFGSetIntMap m_mapS0cS0LcS1c;
+   CCFGSetIntMap m_mapS0cS0LjS1j;
+   CWordCFGSetIntMap m_mapS0wS0LcS1c;
+   CWordCFGSetIntMap m_mapS0cS0LcS1w;
+   CCFGSetIntMap m_mapS0cS0RcS1c;
+   CWordCFGSetIntMap m_mapS0wS0RcS1c;
+   CWordCFGSetIntMap m_mapS0cS0RcS1w;
+   CCFGSetIntMap m_mapS0cS0UcS1c;
+   CWordCFGSetIntMap m_mapS0wS0UcS1c;
+   CWordCFGSetIntMap m_mapS0cS0UcS1w;
 
    // S0 S1LRUS1
-   CIntMap m_mapS0cS1cS1Lc;
-   CWordIntMap m_mapS0wS1cS1Lc;
-   CWordIntMap m_mapS0cS1wS1Lc;
-   CIntMap m_mapS0cS1cS1Rc;
-   CWordIntMap m_mapS0wS1cS1Rc;
-   CWordIntMap m_mapS0cS1wS1Rc;
-   CIntMap m_mapS0cS1cS1Uc;
-   CWordIntMap m_mapS0wS1cS1Uc;
-   CWordIntMap m_mapS0cS1wS1Uc;
+   CCFGSetIntMap m_mapS0cS1cS1Lc;
+   CWordCFGSetIntMap m_mapS0wS1cS1Lc;
+   CWordCFGSetIntMap m_mapS0cS1wS1Lc;
+   CCFGSetIntMap m_mapS0cS1cS1Rc;
+   CCFGSetIntMap m_mapS0jS1cS1Rj;
+   CWordCFGSetIntMap m_mapS0wS1cS1Rc;
+   CWordCFGSetIntMap m_mapS0cS1wS1Rc;
+   CCFGSetIntMap m_mapS0cS1cS1Uc;
+   CWordCFGSetIntMap m_mapS0wS1cS1Uc;
+   CWordCFGSetIntMap m_mapS0cS1wS1Uc;
 
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
@@ -420,6 +427,7 @@ public:
                                                m_mapS0wtS1t("Stack0WordTagStack1Tag"),
                                                m_mapS0tS1wt("Stack0TagStack1WordTag"),
                                                m_mapS0tS1t("Stack0TagStack1Tag"),
+                                               m_mapBetweenTags("BetweenTags"),
                                             
                                                m_mapS0wN0w("Stack0WordNext0Word", 122651),
                                                m_mapS0wN0t("Stack0WordNext0Tag", 122651),
@@ -472,18 +480,19 @@ public:
                                                m_mapS0cS1wN0t("Stack0ConstituentStack1WordNext0Tag", 122651),
                                                m_mapS0cS1cN0w("Stack0ConstituentStack1ConstituentNext0Word", 122651),
                                                m_mapS0cS1cN0t("Stack0ConstituentStack1ConstituentNext0Tag", 122651),
-                                               m_mapS0cmS1cmN0tm("Stack0ConstituentRhythmStack1ConstituentRhythmNext0TagRhythm", 122651),
+                                               m_mapS0tS1tN0t("Stack0TagStack1TagNext0Tag", 122651),
 
                                                m_mapS0wN0tN1t("Stack0WordNext0TagNext", 122651),
                                                m_mapS0cN0wN1t("Stack0ConstituentNext0WordNext1Tag", 122651),
                                                m_mapS0cN0tN1w("Stack0ConstituentNext0TagNext1Word", 122651),
                                                m_mapS0cN0tN1t("Stack0ConstituentNext0TagNext1Tag", 122651),
+                                               m_mapS0tN0tN1t("Stack0TagNext0TagNext1Tag", 122651),
 
                                                m_mapS0wS1cS2c("Stack0WordStack1ConstituentStack2Constituent", 122651),
                                                m_mapS0cS1wS2c("Stack0ConstituentStack1WordStack2Constituent", 122651),
                                                m_mapS0cS1cS2w("Stack0ConstituentStack1ConstituentStack2Word", 122651),
                                                m_mapS0cS1cS2c("Stack0ConstituentStack1ConstituentStack2Constituent", 122651),
-                                               m_mapS0cmS1cmS2cm("Stack0ConstituentRhythmStack1ConstituentRhythmStack2ConstituentRhythm", 122651),
+                                               m_mapS0tS1tS2t("Stack0TagStack1TagStack2Tag", 122651),
 
                                                m_mapS1cS2c("Stack1ConstituentStack2Constituent", 122651),
                                                m_mapS2cS3c("Stack2ConstituentStack3Constituent", 122651),
@@ -500,6 +509,7 @@ public:
                                                m_mapS0wS0LcN0t("Stack0WordStack0LConstituentNex0tTag", 122651),
                                                m_mapS0cS0LcN0w("Stack0ConstituentStack0LConstituentNex0tWord", 122651),
                                                m_mapS0cS0RcN0t("Stack0ConstituentStack0RConstituentNex0tTag", 122651),
+                                               m_mapS0cS0RjN0t("Stack0ConstituentStack0RTagOrConstituentNex0tTag", 122651),
                                                m_mapS0wS0RcN0t("Stack0WordStack0RConstituentNex0tTag", 122651),
                                                m_mapS0cS0RcN0w("Stack0ConstituentStack0RConstituentNex0tWord", 122651),
                                                m_mapS0cS0UcN0t("Stack0ConstituentStack0UConstituentNex0tTag", 122651),
@@ -507,6 +517,7 @@ public:
                                                m_mapS0cS0UcN0w("Stack0ConstituentStack0UConstituentNex0tWord", 122651),
 
                                                m_mapS0cS0LcS1c("Stack0ConstituentStack0LConstituentStack1Constituent", 122651),
+                                               m_mapS0cS0LjS1j("Stack0ConstituentStack0LTagOrConstituentStack1TagOrConstituent", 122651),
                                                m_mapS0wS0LcS1c("Stack0WordStack0LConstituentStack1Constituent", 122651),
                                                m_mapS0cS0LcS1w("Stack0ConstituentStack0LConstituentStack1Word", 122651),
                                                m_mapS0cS0RcS1c("Stack0ConstituentStack0RConstituentStack1Constituent", 122651),
@@ -521,6 +532,7 @@ public:
                                                m_mapS0wS1cS1Lc("Stack0WordStack1ConstituentStack1LConstituent", 122651),
                                                m_mapS0cS1wS1Lc("Stack0ConstituentStack1WordStack1LConstituent", 122651),
                                                m_mapS0cS1cS1Rc("Stack0ConstituentStack1ConstituentStack1RConstituent", 122651),
+                                               m_mapS0jS1cS1Rj("Stack0TagOrConstituentStack1ConstituentStack1RTagOrConstituent", 122651),
                                                m_mapS0wS1cS1Rc("Stack0WordStack1ConstituentStack1RConstituent", 122651),
                                                m_mapS0cS1wS1Rc("Stack0ConstituentStack1WordStack1RConstituent", 122651),
                                                m_mapS0cS1cS1Uc("Stack0ConstituentStack1ConstituentStack1UConstituent", 122651),
