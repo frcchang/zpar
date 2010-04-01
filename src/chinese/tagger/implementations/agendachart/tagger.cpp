@@ -438,7 +438,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
                   ) // wordtag match
                ) {
 
-               if (nBest==1) best_bigram_mask=0;
+               if (nBest==1) best_bigram_mask=0LL;
 
                for ( generator_index = 0 ; generator_index < m_Chart[ start_index+1 ]->size() ; ++ generator_index ) {
                   generator_item = m_Chart[ start_index+1 ]->item( generator_index ) ;

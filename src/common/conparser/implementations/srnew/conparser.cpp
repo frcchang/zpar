@@ -304,24 +304,10 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    const CContext *ctxt = item->context;
    if (ctxt->stacksize==0) return 0;
 
-//   static unsigned long s0c_action;
-//   static unsigned long s1c_action;
-//   static unsigned long s2c_action;
-//   static unsigned long s3c_action;
-
-//   static unsigned long n0t_action;
-//   static unsigned long n1t_action;
-//   static unsigned long n2t_action;
-//   static unsigned long n3t_action;
-
-//   static unsigned long s0cs1c_action;
-//   static unsigned long s0cn0t_action;
-//   static unsigned long n0tn1t_action;
-//   static unsigned long s1cn0t_action;
-
-//   static unsigned long s0cs1cs2c_action;
-//   static unsigned long s0cs1cn0t_action;
-//   static unsigned long s0cn0tn1t_action;
+   static unsigned long j;
+   
+   static CCFGSet s0ts1tbt;
+   s0ts1tbt.copy(ctxt->s0ts1tbt);
 
 #ifdef _CHINESE_CFG_H
    static unsigned long s0c_bracket_action;
@@ -331,26 +317,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    static unsigned long s0cn0t_bracket_action;
 #endif
 
-   static unsigned long s0cs1c_distaction;
-
-//   s0c_action = encodeAction(action, ctxt->s0c);
-//   s1c_action = encodeAction(action, ctxt->s1c);
-//   s2c_action = encodeAction(action, ctxt->s2c);
-//   s3c_action = encodeAction(action, ctxt->s3c);
-
-//   n0t_action = encodeAction(action, ctxt->n0t);
-//   n1t_action = encodeAction(action, ctxt->n1t);
-//   n2t_action = encodeAction(action, ctxt->n2t);
-//   n3t_action = encodeAction(action, ctxt->n3t);
-
-//   s0cs1c_action = encodeAction(action, ctxt->s0cs1c);
-//   s0cn0t_action = encodeAction(action, ctxt->s0cn0t);
-//   n0tn1t_action = encodeAction(action, ctxt->n0tn1t);
-//   s1cn0t_action = encodeAction(action, ctxt->s1cn0t);
-
-//   s0cs1cs2c_action=encodeAction(action, encodeTorCs(ctxt->s0c.code(), ctxt->s1c.code(), ctxt->s2c.code()));
-//   s0cs1cn0t_action=encodeAction(action, encodeTorCs(ctxt->s0c.code(), ctxt->s1c.code(), ctxt->n0t.code()));
-//   s0cn0tn1t_action=encodeAction(action, encodeTorCs(ctxt->s0c.code(), ctxt->n0t.code(), ctxt->n1t.code()));
+//   static unsigned long s0cs1c_distaction;
 
 #ifdef _CHINESE_CFG_H
    s0c_bracket_action = encodeAction(action, ctxt->s0c_bracket);
@@ -360,7 +327,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    s0cn0t_bracket_action = encodeAction(action, ctxt->s0cn0t_bracket);
 #endif
 
-   s0cs1c_distaction = encodeAction(action, ctxt->s0cs1c_dist);
+//   s0cs1c_distaction = encodeAction(action, ctxt->s0cs1c_dist);
 
    static CTuple3<CWord, CConstituent, unsigned long> word_constituent_action; 
    static CTuple3<CTag, CConstituent, unsigned long> tag_constituent_action;
@@ -375,7 +342,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 //
    // S0
    nReturn += cast_weights->m_mapS0w.getOrUpdateScore(make_pair(*(ctxt->s0wt), action), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapS0c.getOrUpdateScore(make_pair(ctxt->s0c, action), m_nScoreIndex, amount, round);
+   if (!ctxt->s0c.empty()) nReturn += cast_weights->m_mapS0c.getOrUpdateScore(make_pair(ctxt->s0c, action), m_nScoreIndex, amount, round);
    refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s0t), &(ctxt->s0c), &action); 
    nReturn += cast_weights->m_mapS0tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
    refer_or_allocate_tuple3(word_constituent_action, ctxt->s0w, &(ctxt->s0c), &action); 
@@ -384,7 +351,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    // S1
    if (ctxt->s1!=-1) {
       nReturn += cast_weights->m_mapS1w.getOrUpdateScore(make_pair(*(ctxt->s1wt), action), m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS1c.getOrUpdateScore(make_pair(ctxt->s1c, action), m_nScoreIndex, amount, round);
+      if (!ctxt->s1c.empty()) nReturn += cast_weights->m_mapS1c.getOrUpdateScore(make_pair(ctxt->s1c, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s1t), &(ctxt->s1c), &action); 
       nReturn += cast_weights->m_mapS1tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_constituent_action, ctxt->s1w, &(ctxt->s1c), &action); 
@@ -535,6 +502,11 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s0ts1t), &action); 
       nReturn += cast_weights->m_mapS0tS1wt.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0tS1t.getOrUpdateScore(make_pair(ctxt->s0ts1t, action), m_nScoreIndex, amount, round);
+
+//      for (j=0; j<ctxt->between_tag.size(); j++) {
+//         s0ts1tbt.setLast(ctxt->between_tag[j]);
+//         nReturn += cast_weights->m_mapBetweenTags.getOrUpdateScore(make_pair(s0ts1tbt, action), m_nScoreIndex, amount, round);
+//      }
    }
 
    // S0 N0
@@ -573,6 +545,7 @@ if (!ctxt->s1c.empty()) {
    }
    
 #ifdef _CHINESE_CFG_H
+/*
    if (ctxt->open_bracket_match_type!=0) {
 if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       nReturn += cast_weights->m_mapBracketS0c.getOrUpdateScore(s0c_bracket_action, m_nScoreIndex, amount, round);
@@ -610,6 +583,10 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       nReturn += cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(encodeAction(action, ctxt->s0cs1c_sepcount), m_nScoreIndex, amount, round);
 }
    }
+*/
+
+
+
 #endif
 
    if (ctxt->s1!=-1){
@@ -636,8 +613,8 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       nReturn += cast_weights->m_mapS0cS1cN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
    nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(make_pair(ctxt->s0cs1cn0t, action), m_nScoreIndex, amount, round); 
-   //if (ctxt->s1!=-1 && ctxt->n0!=-1 && item->nodes[ctxt->s1].norv && ctxt->n0norv) nReturn += cast_weights->m_mapS0cmS1cmN0tm.getOrUpdateScore(make_pair(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->n0t)), encodeRhythms(encodeRhythms(ctxt->s0m, ctxt->s1m), ctxt->n0m)), m_nScoreIndex, amount, round);
 }
+   nReturn += cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(make_pair(ctxt->s0ts1tn0t, action), m_nScoreIndex, amount, round); 
 
    // S0 N0 N1
    if (ctxt->n0!=-1) {
@@ -652,6 +629,7 @@ if (!ctxt->s0c.empty()) {
       }
       nReturn += cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(ctxt->s0cn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
 }
+      nReturn += cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(ctxt->s0tn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
    }
 
    // S0 S1 S2
@@ -666,8 +644,8 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
          nReturn += cast_weights->m_mapS0cS1cS2w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
       nReturn += cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(ctxt->s0cs1cs2c, action), m_nScoreIndex, amount, round);
-      //if (ctxt->s2!=-1 && item->nodes[ctxt->s0].norv && item->nodes[ctxt->s1].norv && item->nodes[ctxt->s2].norv) nReturn += cast_weights->m_mapS0cmS1cmS2cm.getOrUpdateScore(make_pair(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->s2c)), encodeRhythms(encodeRhythms(ctxt->s0m, ctxt->s1m), ctxt->s2m)), m_nScoreIndex, amount, round);
 }
+      nReturn += cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(ctxt->s0ts1ts2t, action), m_nScoreIndex, amount, round);
    }
 
    // Tag bigrams
@@ -690,8 +668,11 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
 //      nReturn += cast_weights->m_mapS0wS0LcN0t.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, encodeTorCs(ctxt->n0t, ctxt->s0lc))), m_nScoreIndex, amount, round);
 //      if (ctxt->n0!=-1) nReturn += cast_weights->m_mapS0cS0LcN0w.getOrUpdateScore(make_pair(*(ctxt->n0w), encodeAction(action, encodeTorCs(ctxt->s0c, ctxt->s0lc))), m_nScoreIndex, amount, round);
 //      }
-//      if (!item->nodes[ctxt->s0].temp||item->nodes[ctxt->s0].head_left) {
-//      nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s0cn0t, ctxt->s0rc)), m_nScoreIndex, amount, round);
+//      if (item->nodes[ctxt->s0].head_left) {
+      if (ctxt->n0!=-1) {
+         if (ctxt->s0r!=-1) nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(make_pair(ctxt->s0cs0rcn0t, action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(make_pair(ctxt->s0cs0rjn0t, action), m_nScoreIndex, amount, round);
+      }
 //      nReturn += cast_weights->m_mapS0wS0RcN0t.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, encodeTorCs(ctxt->n0t, ctxt->s0rc))), m_nScoreIndex, amount, round);
 //      if (ctxt->n0!=-1) nReturn += cast_weights->m_mapS0cS0RcN0w.getOrUpdateScore(make_pair(*(ctxt->n0w), encodeAction(action, encodeTorCs(ctxt->s0c, ctxt->s0rc))), m_nScoreIndex, amount, round);
 //      }
@@ -705,6 +686,12 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
 //   }
 
    // S0 S0LRUS1
+   if (ctxt->s1!=-1) {
+      if (ctxt->s0l!=-1) nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(make_pair(ctxt->s0cs0lcs1c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS0LjS1j.getOrUpdateScore(make_pair(ctxt->s0cs0ljs1j, action), m_nScoreIndex, amount, round);
+      if (ctxt->s1r!=-1) nReturn += cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(make_pair(ctxt->s0cs1cs1rc, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0jS1cS1Rj.getOrUpdateScore(make_pair(ctxt->s0js1cs1rj, action), m_nScoreIndex, amount, round);
+   }
 //   if (ctxt->s0l!=-1) {
 //      if (!item->nodes[ctxt->s0].temp||!item->nodes[ctxt->s0].head_left) {
 //      nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->s0lc)), m_nScoreIndex, amount, round);
@@ -960,8 +947,6 @@ void CConParser::shift(CStateItem &st) {
 void CConParser::reduce(CStateItem &st) {
    static unsigned long constituent;
    static unsigned long i, j;
-   //static CStateItem st;
-   //st = *item;
    static SCORE_TYPE original_score;
    static int unary_reduce;
    original_score = st.score;
@@ -984,8 +969,8 @@ void CConParser::reduce(CStateItem &st) {
                  ( !(prev_temp&&st.current_word==m_lCache.size()) || !temporary ) &&
                  ( !(prev_temp) || (!temporary||head_left) ) &&
                  ( !left.temp || (head_left&&constituent==left.constituent) ) &&
-                 ( !right.temp || (!head_left&&constituent==right.constituent) ) &&
-                 ( !temporary || CConstituent::canBeTemporary(constituent) ) 
+                 ( !right.temp || (!head_left&&constituent==right.constituent) ) //&&
+//                 ( !temporary || CConstituent::canBeTemporary(constituent) ) 
                ) {
                st.score += getOrUpdateStackScore(&st, encodeReduce(constituent, false, head_left, temporary));
                st.reduce(constituent, false, head_left, temporary);

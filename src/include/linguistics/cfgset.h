@@ -129,6 +129,11 @@ public:
    void load(const CConstituent& con1, const CConstituent& con2) {
       m_nHash = encodeTorCs(encodeC(con1), encodeC(con2));
    }
+   void setLast(const CTag& tag) {
+      m_nHash >>= PACKED_CON_OR_TAG_SIZE;
+      m_nHash = (m_nHash<<PACKED_CON_OR_TAG_SIZE)|encodeT(tag);
+   }
+   void copy(const CCFGSet &set) { m_nHash = set.m_nHash; }
    bool empty() { return m_nHash==0 ; }
    bool clear() { m_nHash = 0; }
 };

@@ -134,6 +134,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS0wtS1w)right\
    left(m_mapS0wS1wt)right\
    left(m_mapS0tS1t)right\
+   left(m_mapBetweenTags)right\
 \
    left(m_mapS0wN0w)right\
    left(m_mapS0cN0w)right\
@@ -166,18 +167,19 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS0cS1wN0t)right\
    left(m_mapS0cS1cN0w)right\
    left(m_mapS0cS1cN0t)right\
-   left(m_mapS0cmS1cmN0tm)right\
+   left(m_mapS0tS1tN0t)right\
 \
    left(m_mapS0wN0tN1t)right\
    left(m_mapS0cN0wN1t)right\
    left(m_mapS0cN0tN1w)right\
    left(m_mapS0cN0tN1t)right\
+   left(m_mapS0tN0tN1t)right\
 \
    left(m_mapS0wS1cS2c)right\
    left(m_mapS0cS1wS2c)right\
    left(m_mapS0cS1cS2w)right\
    left(m_mapS0cS1cS2c)right\
-   left(m_mapS0cmS1cmS2cm)right\
+   left(m_mapS0tS1tS2t)right\
 \
    left(m_mapS1cS2c)right\
    left(m_mapS2cS3c)right\
@@ -194,6 +196,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS0wS0LcN0t)right\
    left(m_mapS0cS0LcN0w)right\
    left(m_mapS0cS0RcN0t)right\
+   left(m_mapS0cS0RjN0t)right\
    left(m_mapS0wS0RcN0t)right\
    left(m_mapS0cS0RcN0w)right\
    left(m_mapS0cS0UcN0t)right\
@@ -201,6 +204,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS0cS0UcN0w)right\
 \
    left(m_mapS0cS0LcS1c)right\
+   left(m_mapS0cS0LjS1j)right\
    left(m_mapS0wS0LcS1c)right\
    left(m_mapS0cS0LcS1w)right\
    left(m_mapS0cS0RcS1c)right\
@@ -215,6 +219,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS0wS1cS1Lc)right\
    left(m_mapS0cS1wS1Lc)right\
    left(m_mapS0cS1cS1Rc)right\
+   left(m_mapS0jS1cS1Rj)right\
    left(m_mapS0wS1cS1Rc)right\
    left(m_mapS0cS1wS1Rc)right\
    left(m_mapS0cS1cS1Uc)right\
