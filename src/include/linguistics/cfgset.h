@@ -117,6 +117,10 @@ public:
          iss >> t;
       }
    }
+   void load(const CTag& tag) {m_nHash = encodeT(tag);}
+   void load(const CConstituent& con) {
+      m_nHash = encodeC(con);
+   }
    void load(const CTag& tag1, const CTag& tag2) {
       m_nHash = encodeTorCs(encodeT(tag1), encodeT(tag2));
    }
