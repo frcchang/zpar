@@ -276,16 +276,16 @@ public:
    CIntMap m_mapN0tN1tN2t;
 
    // S0 S0LRUN0
-   CIntMap m_mapS0cS0LcN0t;
-   CWordIntMap m_mapS0wS0LcN0t;
-   CWordIntMap m_mapS0cS0LcN0w;
-   CIntMap m_mapS0cS0RcN0t;
-   CIntMap m_mapS0cS0RjN0t;
-   CWordIntMap m_mapS0wS0RcN0t;
-   CWordIntMap m_mapS0cS0RcN0w;
-   CIntMap m_mapS0cS0UcN0t;
-   CWordIntMap m_mapS0wS0UcN0t;
-   CWordIntMap m_mapS0cS0UcN0w;
+   CCFGSetIntMap m_mapS0cS0LcN0t;
+   CWordCFGSetIntMap m_mapS0wS0LcN0t;
+   CWordCFGSetIntMap m_mapS0cS0LcN0w;
+   CCFGSetIntMap m_mapS0cS0RcN0t;
+   CCFGSetIntMap m_mapS0cS0RjN0t;
+   CWordCFGSetIntMap m_mapS0wS0RcN0t;
+   CWordCFGSetIntMap m_mapS0cS0RcN0w;
+   CCFGSetIntMap m_mapS0cS0UcN0t;
+   CWordCFGSetIntMap m_mapS0wS0UcN0t;
+   CWordCFGSetIntMap m_mapS0cS0UcN0w;
 
    // S0 S0LRUS1
    CCFGSetIntMap m_mapS0cS0LcS1c;
