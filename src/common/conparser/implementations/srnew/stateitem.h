@@ -1,70 +1,7 @@
 #ifndef _COMMON_CON_PARSER_STATEITEM
 #define _COMMON_CON_PARSER_STATEITEM
 
-/*===============================================================
- *
- * Reduce actions
- *
- *==============================================================*/
-
-inline unsigned long getConstituent(const unsigned long &action) {
-   return action & ((1<<CConstituent::SIZE)-1);
-}
-
-inline bool singleChild(const unsigned long &action) {
-   return action & (1<<(CConstituent::SIZE+1));
-}
-
-inline bool headLeft(const unsigned long &action) {
-   return action & (1<<CConstituent::SIZE);
-}
-
-inline bool isTemporary(const unsigned long &action) {
-   return action & (1<<(CConstituent::SIZE+2));
-}
-
-inline unsigned long encodeAction(const unsigned long &action, const unsigned long &num) {
-   assert(action>>(CConstituent::SIZE+4)==0);
-   return action | ( num << (CConstituent::SIZE+4) ); // action takes 4 extra bits plus consti (REDUCE, SINGLE_C, HEAD_L, TEMP)
-}
-
-inline unsigned long encodeReduce(const unsigned long &constituent, bool single_child, bool head_left, bool temporary) {
-   assert(!single_child || (!head_left&&!temporary));
-   return (1<<(CConstituent::SIZE+3)) | 
-          ((temporary?1:0) << (CConstituent::SIZE+2)) | 
-          ((single_child?1:0) << (CConstituent::SIZE+1)) | 
-          ((head_left?1:0) << CConstituent::SIZE) | 
-          constituent ;
-}
-
-inline unsigned long encodeShift() {
-   return 0;
-}
-
-inline unsigned long encodeReduceRoot() {
-   return encodeReduce(CConstituent::NONE, false, false, false);
-}
-
-inline bool isShift(const unsigned long &action) { return action == 0; }
-inline bool isReduce(const unsigned long &action) { return action & (1<<(CConstituent::SIZE+3)); }
-inline bool isReduceRoot(const unsigned long &action) { return action == 1<<(CConstituent::SIZE+3); }
-inline bool isReduceUnary(const unsigned long &action) { return isReduce(action) && (action & (1<<(CConstituent::SIZE+1))); }
-inline bool isReduceBinary(const unsigned long &action) { return isReduce(action) && !(action & (1<<(CConstituent::SIZE+1)))&&!isReduceRoot(action); }
-
-inline string printAction(const unsigned long &action) {
-   if (isShift(action)) return "SHIFT";
-   assert(isReduce(action));
-   string retval = "REDUCE";
-   if (isReduceRoot(action)) { retval += " ROOT"; return retval; }
-   else if (singleChild(action)) retval += " UNARY";
-   else {
-      retval += " BINARY";
-      retval += (headLeft(action)) ? " LEFT" : " RIGHT";
-      if (isTemporary(action)) retval += " TMP";
-   }
-   retval += " "; retval += CConstituent(getConstituent(action)).str();
-   return retval;
-}
+#include "action.h"
 
 /*===============================================================
  *
@@ -260,7 +197,7 @@ public:
    // This method applies to both full parse [CCFGTree] and partial parse [CStateItem]
    // The first case for standard move and the second for follow move in updating scores.
    //
-   template<class CPartialParseTree> unsigned long NextMove(const CPartialParseTree &snt) const {
+   template<class CPartialParseTree> void NextMove(const CPartialParseTree &snt, CAction &retval) const {
       int s = stack.back();
       const CCFGTreeNode &nd = snt.nodes[s];
       const CCFGTreeNode &hd = snt.nodes[nd.parent];
@@ -276,61 +213,67 @@ public:
       }
       else {
          // stack top left child ? shift
-         if (s == hd.left_child) 
-            return encodeShift();
+         if (s == hd.left_child) {
+            retval.encodeShift(); return;
+         }
          // stack top right child ? reduce bin
          assert(s==hd.right_child);
          single_child = false;
          head_left = hd.head_left;
          temporary = hd.temp;
       }
-      return encodeReduce(hd.constituent, single_child, head_left, temporary);
+      retval.encodeReduce(hd.constituent, single_child, head_left, temporary);
    }
 
-   unsigned long FollowMove(const CStateItem &st) const {
+   void FollowMove(const CStateItem &st, CAction &retval) const {
       // don't follow move when the states euqal
       assert(*this!=st);
 
       // stack empty?shift
-      if (stack.empty())
-         return encodeShift();
+      if (stack.empty()) {
+         retval.encodeShift();
+         return;
+      }
       int s = stack.back();
       if (st.nodes[s].parent == -1) { // not finished
          assert(st.stack[stack.size()-1]==s); // also on stack with guider state
          if (st.stack.size()==1) {
             assert(st.IsTerminated());
-            return encodeReduceRoot();
+            retval.encodeReduceRoot();
          }
          else {
-            return encodeShift();
+            retval.encodeShift();
          }
       }
       else {
-         return NextMove(st);
+         NextMove(st, retval);
       }
    }
 
-   unsigned long StandardMove(const CCFGTree &tr) const {
+   void StandardMove(const CCFGTree &tr, CAction &retval) const {
       assert(!IsTerminated());
       assert(tr.words.size() == sent->size());
       // stack empty?shift
-      if (stack.empty())
-         return encodeShift();
+      if (stack.empty()) {
+         retval.encodeShift();
+         return;
+      }
       int s = stack.back();
       if (tr.nodes[s].parent == -1) {
          assert(IsComplete());
-         return encodeReduceRoot();
+         retval.encodeReduceRoot();
+         return;
       }
-      return NextMove(tr);
+      NextMove(tr, retval);
    }
 
-   void Move(const unsigned long &action) {
-      if (isShift(action))
+   void Move(const CAction &action) {
+      if (action.isShift())
          shift();
-      else if (isReduceRoot(action))
+      else if (action.isReduceRoot())
          { assert(IsComplete()); terminate(); }
       else
-         reduce(getConstituent(action), singleChild(action), headLeft(action), isTemporary(action));
+         reduce(action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
    }
    
    bool IsComplete() const {
@@ -363,18 +306,18 @@ public:
    void trace(const CTwoStringVector *s=0) const {
       CStateItem st; 
       st.sent = sent;
-      unsigned long action;
+      CAction action;
       //TRACE("Nodes"); for (unsigned long i=0; i<nodes.size(); ++i) TRACE(nodes[i].str());
       //TRACE("Stack: " << toString(stack));
       TRACE("State item score == " << score);
       while (st!=*this) {
-         action = st.FollowMove(*this);
+         st.FollowMove(*this, action);
          st.Move(action);
          if (s) {
-            TRACE(printAction(action)<<" ["<<(st.stack.size()>0?s->at(st.nodes[st.stack.back()].lexical_head).first:"")<<"]"); 
+            TRACE(action.str()<<" ["<<(st.stack.size()>0?s->at(st.nodes[st.stack.back()].lexical_head).first:"")<<"]"); 
          }
          else {
-            TRACE(printAction(action));
+            TRACE(action.str());
          }
       }
       TRACE("");

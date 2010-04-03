@@ -15,8 +15,6 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::conparser;
 
 #define cast_weights static_cast<CWeight*>(m_weights)
-//#define s0_node(x) item->nodes[ctxt->s0_unbinarized[x]]
-//#define s1_node(x) item->nodes[ctxt->s1_unbinarized[x]]
 
 #define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
 
@@ -299,7 +297,7 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
  *
  *---------------------------------------------------------------*/
 
-inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, const unsigned long &action, SCORE_TYPE amount , int round ) {
+inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, const CAction &action, SCORE_TYPE amount , int round ) {
 
    const CContext *ctxt = item->context;
    if (ctxt->stacksize==0) return 0;
@@ -310,31 +308,31 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    s0ts1tbt.copy(ctxt->s0ts1tbt);
 
 #ifdef _CHINESE_CFG_H
-   static unsigned long s0c_bracket_action;
-   static unsigned long s1c_bracket_action;
-   static unsigned long n0t_bracket_action;
-   static unsigned long s0cs1c_bracket_action;
-   static unsigned long s0cn0t_bracket_action;
+//   static unsigned long s0c_bracket_action;
+//   static unsigned long s1c_bracket_action;
+//   static unsigned long n0t_bracket_action;
+//   static unsigned long s0cs1c_bracket_action;
+//   static unsigned long s0cn0t_bracket_action;
 #endif
 
 //   static unsigned long s0cs1c_distaction;
 
 #ifdef _CHINESE_CFG_H
-   s0c_bracket_action = encodeAction(action, ctxt->s0c_bracket);
-   s1c_bracket_action = encodeAction(action, ctxt->s1c_bracket);
-   n0t_bracket_action = encodeAction(action, ctxt->n0t_bracket);
-   s0cs1c_bracket_action = encodeAction(action, ctxt->s0cs1c_bracket);
-   s0cn0t_bracket_action = encodeAction(action, ctxt->s0cn0t_bracket);
+//   s0c_bracket_action = encodeAction(action, ctxt->s0c_bracket);
+//   s1c_bracket_action = encodeAction(action, ctxt->s1c_bracket);
+//   n0t_bracket_action = encodeAction(action, ctxt->n0t_bracket);
+//   s0cs1c_bracket_action = encodeAction(action, ctxt->s0cs1c_bracket);
+//   s0cn0t_bracket_action = encodeAction(action, ctxt->s0cn0t_bracket);
 #endif
 
 //   s0cs1c_distaction = encodeAction(action, ctxt->s0cs1c_dist);
 
-   static CTuple3<CWord, CConstituent, unsigned long> word_constituent_action; 
-   static CTuple3<CTag, CConstituent, unsigned long> tag_constituent_action;
-   static CTuple3<CTwoWords, CCFGSet, unsigned long> twoword_cfgset_action;
-   static CTuple3<CTwoWords, CTag, unsigned long> twoword_tag_action;
-   static CTuple3<CWord, CTag, unsigned long> word_tag_action;
-   static CTuple3<CWord, CCFGSet, unsigned long> word_cfgset_action;
+   static CTuple3<CWord, CConstituent, CAction> word_constituent_action; 
+   static CTuple3<CTag, CConstituent, CAction> tag_constituent_action;
+   static CTuple3<CTwoWords, CCFGSet, CAction> twoword_cfgset_action;
+   static CTuple3<CTwoWords, CTag, CAction> twoword_tag_action;
+   static CTuple3<CWord, CTag, CAction> word_tag_action;
+   static CTuple3<CWord, CCFGSet, CAction> word_cfgset_action;
 
    static SCORE_TYPE nReturn;
 
@@ -781,7 +779,7 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
 void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDATE update ) {
 
    static CStateItem st;
-   static unsigned long action;
+   static CAction action;
    st.clear();
    st.sent = &m_lCache;
    static CContext context;
@@ -799,18 +797,18 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
       if (stacksize>0) assert(st.stack.back()==context.s0);
       if (stacksize>1) assert(st.stack[stacksize-2]==context.s1);
       // update action
-      action = st.FollowMove(*item);
+      st.FollowMove(*item, action);
       getOrUpdateStackScore(&st, action, amount, m_nTrainingRound );
       // make action
       st.Move(action);
       // update graph
-      if ( !isShift(action) && !isReduceRoot(action) ) {
+      if ( !action.isShift() && !action.isReduceRoot() ) {
          // reduce
          getOrUpdateGraphScore(&st, amount, m_nTrainingRound);
-         single_child = singleChild(action);
-         head_left = headLeft(action);
-         temporary = isTemporary(action);
-         constituent = getConstituent(action);
+         single_child = action.singleChild();
+         head_left = action.headLeft();
+         temporary = action.isTemporary();
+         constituent = action.getConstituent();
          if ( !single_child ) {
             const CStateNode &left = st.nodes[context.s1];
             const CStateNode &right = st.nodes[context.s0];
@@ -887,7 +885,7 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
 //                                  amount, m_nTrainingRound);
          }
       }
-      if ( isReduceRoot(action) ) {
+      if ( action.isReduceRoot() ) {
          // finish
          const CStateNode &root = st.nodes[context.s0];
 //         getOrUpdateArityScore( root.lexical_head, 
@@ -926,11 +924,13 @@ void CConParser::shift(CStateItem &st) {
    if (st.stack.size()>0&&st.nodes[st.stack.back()].temp&&st.nodes[st.stack.back()].head_left==false)
       return;
    // try the shift action
+   static CAction action;
+   action.encodeShift();
    static SCORE_TYPE original_score;
    static int unary_reduce;
    original_score = st.score;
    unary_reduce = st.unary_reduce;
-   st.score += getOrUpdateStackScore(&st, encodeShift());
+   st.score += getOrUpdateStackScore(&st, action);
    st.shift();
    m_Agenda->pushCandidate(&st);
    st.unshift(original_score, unary_reduce);
@@ -953,6 +953,7 @@ void CConParser::reduce(CStateItem &st) {
    unary_reduce = st.unary_reduce;
    const unsigned long &stacksize = st.stack.size();
    const bool prev_temp = stacksize>2 ? st.nodes[st.stack[stacksize-3]].temp:false;
+   static CAction action;
    for (constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; constituent++) {
       for (i=0; i<=1; ++i) {
          for (j=0; j<=1; ++j) {
@@ -972,7 +973,8 @@ void CConParser::reduce(CStateItem &st) {
                  ( !right.temp || (!head_left&&constituent==right.constituent) ) //&&
 //                 ( !temporary || CConstituent::canBeTemporary(constituent) ) 
                ) {
-               st.score += getOrUpdateStackScore(&st, encodeReduce(constituent, false, head_left, temporary));
+               action.encodeReduce(constituent, false, head_left, temporary);
+               st.score += getOrUpdateStackScore(&st, action);
                st.reduce(constituent, false, head_left, temporary);
                if (head_left) {
                   assert(st.context->s0_unbinarized.size()==1 && st.context->s0==st.context->s0_unbinarized[0]);
@@ -1055,13 +1057,15 @@ void CConParser::reduce_unary(CStateItem &st) {
    original_score = st.score;
    unary_reduce = st.unary_reduce;
    static CCFGSet cf;
+   static CAction action;
    for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent){
       const CStateNode &child = st.nodes[st.stack.back()];
       const CWord &hw = m_lCache[child.lexical_head];
       assert(st.context->s0==st.stack.back());
       if (constituent != child.constituent
          ) { 
-         st.score += getOrUpdateStackScore(&st, encodeReduce(constituent, true, false, false));
+         action.encodeReduce(constituent, true, false, false);
+         st.score += getOrUpdateStackScore(&st, action);
          st.reduce(constituent, true, false, false);
 //         st.score += getOrUpdateHeadScore( constituent, 
 //                                           st.context->s0c, 
@@ -1086,11 +1090,13 @@ void CConParser::terminate(CStateItem &st) {
    //st = *item;
    static SCORE_TYPE original_score;
    static int unary_reduce;
+   static CAction action;
    original_score = st.score;
    unary_reduce = st.unary_reduce;
    assert(unary_reduce!=-1);
    assert(st.IsComplete());
-   st.score += getOrUpdateStackScore(&st, encodeReduceRoot());
+   action.encodeReduceRoot();
+   st.score += getOrUpdateStackScore(&st, action);
    st.terminate();
    st.score += getOrUpdateArityScore( st.nodes[st.context->s0].lexical_head, 
                                       st.context->s0ln, 
@@ -1123,6 +1129,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    const static CStateItem *pBestGen;
    static CContext context;
    static bool bParsingDone;
+   static CAction action;
 
    assert(length<MAX_SENTENCE_SIZE);
 
@@ -1205,8 +1212,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             return ;
          }
 #endif
-         if (!correctState.IsTerminated())
-            correctState.Move(correctState.StandardMove(correct));
+         if (!correctState.IsTerminated()) {
+            correctState.StandardMove(correct, action);
+            correctState.Move(action);
+         }
          assert (correctState.unary_reduce<=UNARY_MOVES) ;
       }  // end of update
 
@@ -1230,18 +1239,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    TRACE("Outputing sentence");
    pBestGen->GenerateTree( sentence, retval[0] );
    if (scores) scores[0] = pBestGen->score;
-/*
-   m_Agenda->sortGenerators();
-   for (int i=0; i<nBest; ++i) {
-      retval[i].clear();
-      if (scores) scores[i] = 0; //pGenerator->score();
-      pGenerator = m_Agenda->generator(i) ; 
-      if (pGenerator) {
-         pGenerator->GenerateTree( sentence , retval[i] ) ; 
-         if (scores) scores[i] = pGenerator->score;
-      }
-   }
-*/
+
    TRACE("Done, the highest score is: " << pBestGen->score ) ;
    TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
 }
