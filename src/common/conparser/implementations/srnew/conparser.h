@@ -101,7 +101,7 @@ private:
    inline conparser::SCORE_TYPE getOrUpdateBigramScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const bool &left, conparser::SCORE_TYPE amount=0, int round=0 );
    inline conparser::SCORE_TYPE getOrUpdateTrigramScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const unsigned long &childo, const bool &left, conparser::SCORE_TYPE amount=0, int round=0 );
    inline conparser::SCORE_TYPE getOrUpdateGraphScore( const conparser::CStateItem *item, conparser::SCORE_TYPE amount=0, int round=0 );
-   inline conparser::SCORE_TYPE getOrUpdateStackScore( const conparser::CStateItem *item, const unsigned long &action, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateStackScore( const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
    void updateScoresForStates( const conparser::CStateItem *output , const conparser::CStateItem *correct ) ;

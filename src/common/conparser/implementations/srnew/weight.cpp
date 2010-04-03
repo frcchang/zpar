@@ -78,11 +78,9 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS1tc)right\
    left(m_mapS1wc)right\
 \
-   left(m_mapS2c)right\
    left(m_mapS2tc)right\
    left(m_mapS2wc)right\
 \
-   left(m_mapS3c)right\
    left(m_mapS3tc)right\
    left(m_mapS3wc)right\
 \
