@@ -71,6 +71,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    const CWord &last_char_1 = index>0 ? find_or_replace_word_cache( end_1, end_1 ) : g_emptyWord;
    const CWord &last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_2 ) : g_emptyWord;
    const CWord &two_char = index>0 ? find_or_replace_word_cache( end_1, start_0 ) : g_emptyWord ;
+   const CWord &first_two_char_0 = start_0+1<sentence->size() ? find_or_replace_word_cache( start_0, start_0+1 ) : first_char_0 ;
    const CWord &word_1_first_char_0 = index>0 ? find_or_replace_word_cache( start_1, start_0 ) : g_emptyWord;
    const CWord &word_1_last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_1 ) : g_emptyWord;
    const CWord &three_char = ( length_1==1 && index>1 ) ? find_or_replace_word_cache( end_2, start_0 ) : g_emptyWord;
@@ -170,6 +171,8 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
 
    nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(first_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 
+   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(first_two_char_0, tag_0), m_nScoreIndex , amount , round ) ;
+
    return nReturn;
 }
 
@@ -195,6 +198,8 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
    const CWord &char_unigram = find_or_replace_word_cache( char_index, char_index );
    const CWord &char_bigram = find_or_replace_word_cache( char_index-1, char_index );
 
+   const CWord &char_and_next_char = char_index+1<sentence->size() ? find_or_replace_word_cache( char_index, char_index+1 ) : char_unigram ;
+
    const CWord &first_char = find_or_replace_word_cache( start, start );
    const CWord &prev_char = find_or_replace_word_cache( char_index-1, char_index-1 );
 
@@ -218,6 +223,8 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
       nReturn += m_weights->m_mapRepeatedCharByTag.getOrUpdateScore( make_pair(char_unigram, tag), m_nScoreIndex, amount, round) ;
 
    nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ; 
+
+   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(char_and_next_char, tag), m_nScoreIndex , amount , round ) ;
 
    return nReturn;
 }
