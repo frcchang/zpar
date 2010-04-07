@@ -13,6 +13,6 @@ if __name__ == "__main__":
       if not line:
          print; continue
       line = line.split("\t")
-      print "\t".join([getIdx(line[0]), line[1], line[4], getIdx(line[6]), line[7]])
+      print "\t".join([line[1], line[4], getIdx(line[6]), line[7]])
    file.close()
 

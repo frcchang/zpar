@@ -613,6 +613,7 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
    nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(make_pair(ctxt->s0cs1cn0t, action), m_nScoreIndex, amount, round); 
 }
    nReturn += cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(make_pair(ctxt->s0ts1tn0t, action), m_nScoreIndex, amount, round); 
+   nReturn += cast_weights->m_mapS0jS1jN0t.getOrUpdateScore(make_pair(ctxt->s0js1jn0t, action), m_nScoreIndex, amount, round); 
 
    // S0 N0 N1
    if (ctxt->n0!=-1) {
@@ -628,6 +629,7 @@ if (!ctxt->s0c.empty()) {
       nReturn += cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(ctxt->s0cn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
 }
       nReturn += cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(ctxt->s0tn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
+      nReturn += cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(make_pair(ctxt->s0jn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
    }
 
    // S0 S1 S2
@@ -644,6 +646,7 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
       nReturn += cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(ctxt->s0cs1cs2c, action), m_nScoreIndex, amount, round);
 }
       nReturn += cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(ctxt->s0ts1ts2t, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(make_pair(ctxt->s0js1js2j, action), m_nScoreIndex, amount, round);
    }
 
    // Tag bigrams
@@ -667,8 +670,8 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
 //      if (ctxt->n0!=-1) nReturn += cast_weights->m_mapS0cS0LcN0w.getOrUpdateScore(make_pair(*(ctxt->n0w), encodeAction(action, encodeTorCs(ctxt->s0c, ctxt->s0lc))), m_nScoreIndex, amount, round);
 //      }
 //      if (item->nodes[ctxt->s0].head_left) {
-      if (ctxt->n0!=-1) {
-         if (ctxt->s0r!=-1) nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(make_pair(ctxt->s0cs0rcn0t, action), m_nScoreIndex, amount, round);
+      if (ctxt->n0!=-1 && ctxt->s0r!=-1) {
+         nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(make_pair(ctxt->s0cs0rcn0t, action), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(make_pair(ctxt->s0cs0rjn0t, action), m_nScoreIndex, amount, round);
       }
 //      nReturn += cast_weights->m_mapS0wS0RcN0t.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, encodeTorCs(ctxt->n0t, ctxt->s0rc))), m_nScoreIndex, amount, round);
@@ -684,10 +687,12 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
 //   }
 
    // S0 S0LRUS1
-   if (ctxt->s1!=-1) {
-      if (ctxt->s0l!=-1) nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(make_pair(ctxt->s0cs0lcs1c, action), m_nScoreIndex, amount, round);
+   if (ctxt->s1!=-1 && ctxt->s0l!=-1) {
+      nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(make_pair(ctxt->s0cs0lcs1c, action), m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS0LjS1j.getOrUpdateScore(make_pair(ctxt->s0cs0ljs1j, action), m_nScoreIndex, amount, round);
-      if (ctxt->s1r!=-1) nReturn += cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(make_pair(ctxt->s0cs1cs1rc, action), m_nScoreIndex, amount, round);
+   }
+   if (ctxt->s1 != -1 && ctxt->s1r != -1) {
+      nReturn += cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(make_pair(ctxt->s0cs1cs1rc, action), m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0jS1cS1Rj.getOrUpdateScore(make_pair(ctxt->s0js1cs1rj, action), m_nScoreIndex, amount, round);
    }
 //   if (ctxt->s0l!=-1) {

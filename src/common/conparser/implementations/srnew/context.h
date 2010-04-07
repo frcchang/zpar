@@ -52,7 +52,8 @@ public:
 
    CCFGSet s0cs1c, s0ts1t, s0cn0t, s1cn0t, n0tn1t, s0tn0t, 
            s0cs1cn0t, s0cn0tn1t, s0cs1cs2c, 
-           s0ts1tn0t, s0tn0tn1t, s0ts1ts2t;
+           s0ts1tn0t, s0tn0tn1t, s0ts1ts2t,
+           s0js1jn0t, s0jn0tn1t, s0js1js2j;
    // here j means the combination of c and t -- t with non-constituent
    CCFGSet s0cs0rcn0t, s0cs0rjn0t, s0cs0lcs1c, s0cs0ljs1j, s0cs1cs1rc, s0js1cs1rj;
    CTwoWords s0ws1w, s0wn0w, n0wn1w, s1wn0w;
@@ -270,12 +271,25 @@ public:
       s0ts1ts2t = s0ts1t; s0ts1ts2t.add(s2t);
       s0tn0tn1t = s0tn0t; s0tn0tn1t.add(n1t);
 
+      if (s0c.empty()) s0js1jn0t.load(s0t); else s0js1jn0t.load(s0c);
+      if (s1c.empty()) s0js1jn0t.add(s1t); else s0js1jn0t.add(s1c);
+      s0js1jn0t.add(n0t);
+
+      if (s0c.empty()) s0jn0tn1t.load(s0t); else s0jn0tn1t.load(s0c);
+      s0jn0tn1t.add(n0t);
+      s0jn0tn1t.add(n1t);
+
+      if (s0c.empty()) s0js1js2j.load(s0t); else s0js1js2j.load(s0c);
+      if (s1c.empty()) s0js1js2j.add(s1t); else s0js1js2j.add(s1c);
+      if (s2c.empty()) s0js1js2j.add(s2t); else s0js1js2j.add(s2c);
+
       // s0 s0r and n0 -- by presuming that n0 exists!
       // s0rc is used when s0r exists, while s0rj is used all times
       // s0rc can be empty is s0r is not a constituent
       // s0rj is s0rc when s0rc not empty, and s0rt otherwise
       // s0rj empty only when s0r non existant
       s0cs0rcn0t = s0cn0t; s0cs0rcn0t.add(s0rc);
+
       s0cs0rjn0t = s0cn0t; 
       if (s0rc.empty()) s0cs0rjn0t.add(s0rt); else s0cs0rjn0t.add(s0rc);
 
@@ -283,6 +297,7 @@ public:
       // see comments above
       s0cs0lcs1c = s0cs1c;
       s0cs0lcs1c.add(s0lc);
+
       s0cs0ljs1j.load(s0c);
       if (s0lc.empty()) s0cs0ljs1j.add(s0lt); else s0cs0ljs1j.add(s0lc);
       if (s1c.empty()) s0cs0ljs1j.add(s1t); else s0cs0ljs1j.add(s1c);
@@ -290,6 +305,7 @@ public:
       // s0 slr and s1 -- by presuming that s1 exists!
       s0cs1cs1rc = s0cs1c;
       s0cs1cs1rc.add(s1rc);
+
       if (s0c.empty()) s0js1cs1rj.load(s0t); else s0js1cs1rj.load(s0c);
       s0js1cs1rj.add(s1c);
       if (s1rc.empty()) s0js1cs1rj.add(s1rt); else s0js1cs1rj.add(s1rc);

@@ -249,6 +249,7 @@ public:
    CWordCFGSetActionMap m_mapS0cS1cN0w;
    CCFGSetActionMap m_mapS0cS1cN0t;
    CCFGSetActionMap m_mapS0tS1tN0t;
+   CCFGSetActionMap m_mapS0jS1jN0t;
 
    // S0 N0N1
    CWordCFGSetActionMap m_mapS0wN0tN1t;
@@ -256,6 +257,7 @@ public:
    CWordCFGSetActionMap m_mapS0cN0tN1w;
    CCFGSetActionMap m_mapS0cN0tN1t;
    CCFGSetActionMap m_mapS0tN0tN1t;
+   CCFGSetActionMap m_mapS0jN0tN1t;
 
    // S0 S1S2
    CWordCFGSetActionMap m_mapS0wS1cS2c;
@@ -263,6 +265,7 @@ public:
    CWordCFGSetActionMap m_mapS0cS1cS2w;
    CCFGSetActionMap m_mapS0cS1cS2c;
    CCFGSetActionMap m_mapS0tS1tS2t;
+   CCFGSetActionMap m_mapS0jS1jS2j;
 
    // tag bigram
    CIntMap m_mapS1cS2c;
@@ -482,18 +485,21 @@ public:
                                                m_mapS0cS1cN0w("Stack0ConstituentStack1ConstituentNext0Word", 122651),
                                                m_mapS0cS1cN0t("Stack0ConstituentStack1ConstituentNext0Tag", 122651),
                                                m_mapS0tS1tN0t("Stack0TagStack1TagNext0Tag", 122651),
+                                               m_mapS0jS1jN0t("Stack0TagOrConstituentStack1TagOrConstituentNext0Tag", 122651),
 
                                                m_mapS0wN0tN1t("Stack0WordNext0TagNext", 122651),
                                                m_mapS0cN0wN1t("Stack0ConstituentNext0WordNext1Tag", 122651),
                                                m_mapS0cN0tN1w("Stack0ConstituentNext0TagNext1Word", 122651),
                                                m_mapS0cN0tN1t("Stack0ConstituentNext0TagNext1Tag", 122651),
                                                m_mapS0tN0tN1t("Stack0TagNext0TagNext1Tag", 122651),
+                                               m_mapS0jN0tN1t("Stack0TagOrConstituentNext0TagNext1Tag", 122651),
 
                                                m_mapS0wS1cS2c("Stack0WordStack1ConstituentStack2Constituent", 122651),
                                                m_mapS0cS1wS2c("Stack0ConstituentStack1WordStack2Constituent", 122651),
                                                m_mapS0cS1cS2w("Stack0ConstituentStack1ConstituentStack2Word", 122651),
                                                m_mapS0cS1cS2c("Stack0ConstituentStack1ConstituentStack2Constituent", 122651),
                                                m_mapS0tS1tS2t("Stack0TagStack1TagStack2Tag", 122651),
+                                               m_mapS0jS1jS2j("Stack0TagOrConstituentStack1TagOrConstituentStack2TagOrConstituent", 122651),
 
                                                m_mapS1cS2c("Stack1ConstituentStack2Constituent", 122651),
                                                m_mapS2cS3c("Stack2ConstituentStack3Constituent", 122651),
