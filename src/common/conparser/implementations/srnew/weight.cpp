@@ -166,18 +166,21 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS0cS1cN0w)right\
    left(m_mapS0cS1cN0t)right\
    left(m_mapS0tS1tN0t)right\
+   left(m_mapS0jS1jN0t)right\
 \
    left(m_mapS0wN0tN1t)right\
    left(m_mapS0cN0wN1t)right\
    left(m_mapS0cN0tN1w)right\
    left(m_mapS0cN0tN1t)right\
    left(m_mapS0tN0tN1t)right\
+   left(m_mapS0jN0tN1t)right\
 \
    left(m_mapS0wS1cS2c)right\
    left(m_mapS0cS1wS2c)right\
    left(m_mapS0cS1cS2w)right\
    left(m_mapS0cS1cS2c)right\
    left(m_mapS0tS1tS2t)right\
+   left(m_mapS0jS1jS2j)right\
 \
    left(m_mapS1cS2c)right\
    left(m_mapS2cS3c)right\
