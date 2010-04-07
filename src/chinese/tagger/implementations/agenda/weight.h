@@ -100,6 +100,7 @@ public:
    CTagDict<CWord, CTag> m_mapCharTagDictionary;
    CTagDict<CWord, CTag> m_mapCanStart;
 
+   CWordTagMap m_mapTaggedCharByPrevChar;
    CWordTagMap m_mapTaggedCharByNextChar;
 
    CTwoTaggedWordsMap m_mapTaggedSeparateChars;
@@ -152,6 +153,7 @@ public:
             m_mapCharTagDictionary(CTag::COUNT), 
             m_mapCanStart(CTag::COUNT), 
 
+            m_mapTaggedCharByPrevChar("TaggedCharByPrevChar", 65537) ,
             m_mapTaggedCharByNextChar("TaggedCharByNextChar", 65537) ,
 
             m_mapTaggedSeparateChars("TaggedSeparateChars", 65537) , 
