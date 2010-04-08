@@ -45,6 +45,7 @@ CHINESE_TAGGER_IMPL = agenda
 # currently support eisner, covington, nivre, combined and joint implementations 
 CHINESE_DEPPARSER_IMPL = nivre
 CHINESE_DEPPARSER_LABELED = false
+CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
 CHINESE_CONPARSER_IMPL = srnew
@@ -54,7 +55,8 @@ ENGLISH_TAGGER_IMPL = agenda
 
 # currently support eisner, covington, nivre, combined implementations 
 ENGLISH_DEPPARSER_IMPL = combined
-ENGLISH_DEPPARSER_LABELED = true
+ENGLISH_DEPPARSER_LABELED = false
+ENGLISH_DEPLABELER_IMPL = naive
 # currently support sr implementations 
 ENGLISH_CONPARSER_IMPL = sr
 #================================================================
@@ -139,6 +141,15 @@ OBJECT_DEPPARSER = $(OBJECT_DIR)/chinese.depparser
 DIST_ENGLISH_DEPPARSER = $(DIST_DIR)/english.depparser
 OBJECT_ENGLISH_DEPPARSER = $(OBJECT_DIR)/english.depparser
 
+# deplabeler
+SRC_COMMON_DEPLABELER = $(SRC_COMMON)/deplabeler
+SRC_CHINESE_DEPLABELER = $(SRC_COMMON_DEPLABELER)
+DIST_DEPLABELER = $(DIST_DIR)/chinese.deplabeler
+OBJECT_DEPLABELER = $(OBJECT_DIR)/chinese.deplabeler
+SRC_ENGLISH_DEPLABELER = $(SRC_COMMON_DEPLABELER)
+DIST_ENGLISH_DEPLABELER = $(DIST_DIR)/english.deplabeler
+OBJECT_ENGLISH_DEPLABELER = $(OBJECT_DIR)/english.deplabeler
+
 #  conparser
 SRC_COMMON_CONPARSER = $(SRC_COMMON)/conparser
 SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
@@ -189,6 +200,7 @@ include Makefile.postagger
 #----------------------------------------------------------------
 
 include Makefile.depparser
+include Makefile.deplabeler
 
 #----------------------------------------------------------------
 #

@@ -13,6 +13,7 @@ namespace chinese {
 // the penn constituent set
 const string PENN_CON_STRINGS[] = {
    "-NONE-",
+   "-BEGIN-",
    "ADJP", "ADVP", 
    "CLP", "CP", 
    "DNP", "DP", "DVP", 
@@ -30,6 +31,7 @@ const string PENN_CON_STRINGS[] = {
 
 enum PENN_CON_CONSTANTS {
    PENN_CON_NONE=0,
+   PENN_CON_BEGIN=0,
    PENN_CON_ADJP, PENN_CON_ADVP, 
    PENN_CON_CLP, PENN_CON_CP, 
    PENN_CON_DNP, PENN_CON_DP, PENN_CON_DVP, 
@@ -47,6 +49,7 @@ enum PENN_CON_CONSTANTS {
 
 const bool PENN_CON_TEMP[] = {
    false,
+   false,
    true, true, 
    false, true, 
    true, false, false, 
@@ -61,7 +64,7 @@ const bool PENN_CON_TEMP[] = {
    false, false
 };
 
-const int PENN_CON_FIRST = 1;
+const int PENN_CON_FIRST = 2;
 const int PENN_CON_COUNT_BITS = 5; 
 
 //===============================================================
@@ -69,6 +72,7 @@ const int PENN_CON_COUNT_BITS = 5;
 class CConstituent {
 public:
    enum {NONE=0};
+   enum {SENTENCE_BEGIN=1};
    enum {COUNT=PENN_CON_COUNT};
    enum {SIZE=PENN_CON_COUNT_BITS};
    enum {FIRST=PENN_CON_FIRST};

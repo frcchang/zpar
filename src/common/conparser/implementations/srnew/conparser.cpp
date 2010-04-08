@@ -277,12 +277,10 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    //   if (!nd.single_child) {
    //      for (i=0; i<s1_size; ++i) {
    //         ct += ctxt->s1_unbinarized_cs[i];
-            //if(nd.norv)j = encodeRhythms(j, encodeRhythm(item->nodes[s1_unbinarized[i], m_lWordLen));
    //      }
    //   }
    //   for (i=0; i<s0_size; ++i) {
    //      ct += ctxt->s0_unbinarized_cs[i];
-         //if(nd.norv)j = encodeRhythms(j, encodeRhythm(item->nodes[s0_unbinarized[i], m_lWordLen));
    //   }
    //   nReturn += cast_weights->m_mapRules.getOrUpdateScore(ct, m_nScoreIndex, amount, round);
       //if (nd.norv) nReturn += cast_weights->m_mapRulesWithSizes.getOrUpdateScore(make_pair(ct, j), m_nScoreIndex, amount, round);
@@ -613,7 +611,7 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
    nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(make_pair(ctxt->s0cs1cn0t, action), m_nScoreIndex, amount, round); 
 }
    nReturn += cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(make_pair(ctxt->s0ts1tn0t, action), m_nScoreIndex, amount, round); 
-   nReturn += cast_weights->m_mapS0jS1jN0t.getOrUpdateScore(make_pair(ctxt->s0js1jn0t, action), m_nScoreIndex, amount, round); 
+//   nReturn += cast_weights->m_mapS0jS1jN0t.getOrUpdateScore(make_pair(ctxt->s0js1jn0t, action), m_nScoreIndex, amount, round); 
 
    // S0 N0 N1
    if (ctxt->n0!=-1) {
@@ -629,12 +627,12 @@ if (!ctxt->s0c.empty()) {
       nReturn += cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(ctxt->s0cn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
 }
       nReturn += cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(ctxt->s0tn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
-      nReturn += cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(make_pair(ctxt->s0jn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
+//      nReturn += cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(make_pair(ctxt->s0jn0tn1t, action), m_nScoreIndex, amount, round); // ctxt->n0
    }
 
    // S0 S1 S2
    if (ctxt->s1!=-1) {
-if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
+//if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0cs1cs2c), &action); 
       nReturn += cast_weights->m_mapS0wS1cS2c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s0cs1cs2c), &action); 
@@ -644,9 +642,9 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty() && !ctxt->s2c.empty()) {
          nReturn += cast_weights->m_mapS0cS1cS2w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
       nReturn += cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(ctxt->s0cs1cs2c, action), m_nScoreIndex, amount, round);
-}
+//}
       nReturn += cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(ctxt->s0ts1ts2t, action), m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(make_pair(ctxt->s0js1js2j, action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(make_pair(ctxt->s0js1js2j, action), m_nScoreIndex, amount, round);
    }
 
    // Tag bigrams
@@ -1144,7 +1142,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    m_lWordLen.clear();
    for ( x=0; x<length; x++ ) {
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[x].first , sentence[x].second) );
-      m_lWordLen.push_back( normalize3(getUTF8StringLength(sentence[x].first)) );
+      m_lWordLen.push_back( getUTF8StringLength(sentence[x].first) );
    }
    // initialise agenda
    m_Agenda->clear();

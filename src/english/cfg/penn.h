@@ -15,6 +15,7 @@ namespace english {
 // the penn constituent set
 const string PENN_CON_STRINGS[] = {
    "-NONE-",
+   "-BEGIN-",
    "S", "SBAR", "SBARQ", "SINV", "SQ", 
    "ADJP", "ADVP", 
    "CONJP", 
@@ -34,6 +35,7 @@ const string PENN_CON_STRINGS[] = {
 
 enum PENN_CON_CONSTANTS {
    PENN_CON_NONE=0,
+   PENN_CON_BEGIN=0,
    PENN_CON_PENN_CON_S, PENN_CON_PENN_CON_SBAR, PENN_CON_PENN_CON_SBARQ, PENN_CON_PENN_CON_SINV, PENN_CON_PENN_CON_SQ, 
    PENN_CON_ADJP, PENN_CON_ADVP, 
    PENN_CON_CONJP, 
@@ -77,6 +79,7 @@ const int PENN_CON_COUNT_BITS = 5;
 class CConstituent {
 public:
    enum {NONE=0};
+   enum {BEGIN=0};
    enum {FIRST=1};
    enum {COUNT=PENN_CON_COUNT}; 
    enum {SIZE=PENN_CON_COUNT_BITS};
