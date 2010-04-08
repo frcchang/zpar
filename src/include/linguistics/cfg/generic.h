@@ -33,13 +33,15 @@ protected:
       public: 
          CConstituentTokenizer() : CTokenizer<string, 251>(0/*reserve for NONE BEGIN END*/) {
             lookup("-NONE-");
+            lookup("-BEGIN-");
          } 
          virtual ~CConstituentTokenizer() {}
    };
 
 public:
    enum {NONE = 0};
-   enum {FIRST = 1};
+   enum {SENTENCE_BEGIN = 1};
+   enum {FIRST = 2};
    enum {SIZE = 8};
    static unsigned long COUNT;
    static unsigned long LAST;

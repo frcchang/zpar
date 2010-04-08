@@ -171,8 +171,8 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
 
    nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(first_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 
-//   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(two_char, tag_0), m_nScoreIndex , amount , round ) ;
-//   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(first_two_char_0, tag_0), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(two_char, tag_0), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(first_two_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 
    if (index>0) {
       wt1.load(last_char_1, tag_1);
@@ -232,8 +232,8 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ; 
 
-//   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex , amount , round ) ;
-//   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(char_and_next_char, tag), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(char_and_next_char, tag), m_nScoreIndex , amount , round ) ;
    nReturn += m_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex, amount, round ) ; 
 
    return nReturn;
