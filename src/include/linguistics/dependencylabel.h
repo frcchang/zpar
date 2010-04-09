@@ -13,10 +13,6 @@
 
 #include "dependency.h"
 
-//==============================================================
-
-#include "dependency/penn.h"
-
 /*==============================================================
  *
  * CLabeledDependencyTreeNode
@@ -29,7 +25,7 @@ public:
    string label;
 
 public:
-   CLabeledDependencyTreeNode( ) : CDependencyTreeNode(), label(CDependencyLabel(PENN_DEP_NONE).str()) { }
+//   CLabeledDependencyTreeNode( ) : CDependencyTreeNode(), label(CDependencyLabel(PENN_DEP_NONE).str()) { }
    CLabeledDependencyTreeNode( const string &w, const string &t, const int &h, const string &l) : CDependencyTreeNode(w, t, h), label(l) { }
    virtual ~CLabeledDependencyTreeNode() {}
 
