@@ -26,10 +26,10 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
 
    cout << "Labeling started" << endl;
 
-   int time_start = clock();
+   clock_t time_start = clock();
 
    CDepLabeler labeler(sFeatureFile, false) ;
-   ofstream is(sInputFile.c_str());
+   ifstream is(sInputFile.c_str());
    assert(is.is_open());
    ofstream os(sOutputFile.c_str());
    assert(os.is_open());
@@ -50,11 +50,9 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       
       // Ouptut sent
       os << output_sent ;
-      }
-      
-      // Read the next example
    }
 
+   is.close();
    os.close();
 
    cout << "Labeling has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
