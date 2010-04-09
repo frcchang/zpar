@@ -28,11 +28,10 @@ inline int getLinkDirection(const int &head_index, const int &dep_index) {
 inline int getLinkDirectionEncode(const int &head_index, const int &dep_index) {
    return head_index>dep_index ? LINK_DIRECTION_HEAD_RIGHT : LINK_DIRECTION_HEAD_LEFT ;
 }
-#ifdef LABELED
+
 inline int getLabelAndDirectionOrDistanceEncode(const unsigned long &label, const int &dod) {
    return (dod<<PENN_DEP_COUNT)+label;
 }
-#endif
 
 // arity direction
 enum ARITY_DIRECTION { ARITY_DIRECTION_LEFT=0, ARITY_DIRECTION_RIGHT=1 } ;

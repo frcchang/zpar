@@ -20,22 +20,11 @@ namespace deplabeler {
 //
 // TYPE DEFINITIONS
 //
-typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
-typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
-typedef CScoreMap<pair<CWord, int>,  SCORE_TYPE> CWordIntMap;
-typedef CScoreMap<pair<CTag, int>,  SCORE_TYPE> CTagIntMap;
-typedef CScoreMap<pair<CTagSet<CTag, 2>, int>,  SCORE_TYPE> CTagSet2IntMap;
-typedef CScoreMap<pair<CTagSet<CTag, 3>, int>,  SCORE_TYPE> CTagSet3IntMap;
-typedef CScoreMap<pair<CTagSet<CTag, 4>, int>,  SCORE_TYPE> CTagSet4IntMap;
-typedef CScoreMap<CTuple3<CWord, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
-typedef CScoreMap<CTuple4<CWord, CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagTagIntMap;
-typedef CScoreMap<pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE> CTaggedWordIntMap;
-typedef CScoreMap<int, SCORE_TYPE> CIntMap;
-typedef CScoreMap<pair<int, int>, SCORE_TYPE> CTwoIntMap;
-typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
-typedef CScoreMap<pair<CTwoWords, int>, SCORE_TYPE> CTwoWordsIntMap;
-typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
-typedef CScoreMap<pair<CTwoTaggedWords, int>, SCORE_TYPE> CTwoTaggedWordsIntMap;
+typedef CScoreMap<pair<CDependencyLabel, int>, SCORE_TYPE> CLabelIntMap;
+typedef CScoreMap<CTuple3<CWord, CDependencyLabel, int>,  SCORE_TYPE> CWordLabelIntMap;
+typedef CScoreMap<CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>, CDependencyLabel, int>,  SCORE_TYPE> CTaggedWordLabelIntMap;
+typedef CScoreMap<CTuple3<CTag, CDependencyLabel, int>, SCORE_TYPE> CTagLabelIntMap;
+typedef CScoreMap<CTuple3<CTagSet<CTag,3>, CDependencyLabel, int>, SCORE_TYPE> CTagSet3LabelIntMap;
 
 /*===============================================================
  *
@@ -47,16 +36,17 @@ class CWeight : public CWeightBase {
 
 public:
 
-   CIntMap m_mapLabel;
-   CWordIntMap m_mapHeadWordLabel;
-   CWordIntMap m_mapDepWordLabel;
-   CTaggedWordIntMap m_mapHeadWordTagLabel;
-   CTaggedWordIntMap m_mapDepWordTagLabel;
-   CTwoIntMap m_mapHeadTagLabel;
-   CTwoIntMap m_mapDepTagLabel;
-   CTwoIntMap m_mapHeadSurroundingTagsLabel;
-   CTwoIntMap m_mapDepSurroundingTagsLabel;
+   CLabelIntMap m_mapLabel;
+   CWordLabelIntMap m_mapHeadWordLabel;
+   CWordLabelIntMap m_mapDepWordLabel;
+   CTaggedWordLabelIntMap m_mapHeadWordTagLabel;
+   CTaggedWordLabelIntMap m_mapDepWordTagLabel;
+   CTagLabelIntMap m_mapHeadTagLabel;
+   CTagLabelIntMap m_mapDepTagLabel;
+   CTagSet3LabelIntMap m_mapHeadSurroundingTagsLabel;
+   CTagSet3LabelIntMap m_mapDepSurroundingTagsLabel;
 
+//Int
 public:
 
    CWeight(const string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,

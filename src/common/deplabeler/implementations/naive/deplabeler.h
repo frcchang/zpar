@@ -34,6 +34,7 @@ class CDepLabeler : public CDepLabelerBase {
 private:
 
    vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   vector< int > m_lLinks;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -55,7 +56,7 @@ public:
    }
 
 public:
-   void label( const CDependencyTree &sentence , CLabeledDependencyTree *retval , int nBest=1 , deplabeler::SCORE_TYPE *scores=0 ) ;
+   void label( const CDependencyTree &sentence , CLabeledDependencyTree *retval ) ;
    void train( const CLabeledDependencyTree &correct ) ;
 
    void finishtraining() {
@@ -67,11 +68,10 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void train_link( const CLabeledDependencyTree &correct , const unsigned long &index ) ;
-
+   void initCaches( const CDependencyTree *sentence );
    void work( const CDependencyTree &sentence , CLabeledDependencyTree *retval, const CLabeledDependencyTree *correct, const unsigned long &index ) ; 
 
-   inline deplabeler::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned long &label, deplabeler::SCORE_TYPE amount=0, int round=0 );
+   inline deplabeler::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const CDependencyLabel &label, deplabeler::SCORE_TYPE amount=0, int round=0 );
 
 };
 

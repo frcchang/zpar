@@ -1,16 +1,28 @@
 
 #define getOrUpdateLabeledScoreTemplate(x)\
-   retval += cast_weights->m_mapLabel.getOrUpdateScore( x , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapHeadWordLabel.getOrUpdateScore( make_pair(head_word, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapDepWordLabel.getOrUpdateScore( make_pair(dep_word, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapHeadWordTagLabel.getOrUpdateScore( make_pair(head_word_tag, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapDepWordTagLabel.getOrUpdateScore( make_pair(dep_word_tag, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapHeadTagLabel.getOrUpdateScore( make_pair(head_tag, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapDepTagLabel.getOrUpdateScore( make_pair(dep_tag, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( make_pair(head_tag_lm, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( make_pair(head_tag_mr, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( make_pair(head_tag_lmr, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapDepSurroundingTagsLabel.getOrUpdateScore( make_pair(dep_tag_lm, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapDepSurroundingTagsLabel.getOrUpdateScore( make_pair(dep_tag_mr, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapDepSurroundingTagsLabel.getOrUpdateScore( make_pair(dep_tag_lmr, x) , m_nScoreIndex , amount , round ) ;
+   retval += cast_weights->m_mapLabel.getOrUpdateScore( make_pair(label, x) , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(word_label_int, &head_word, &label, &x);\
+   retval += cast_weights->m_mapHeadWordLabel.getOrUpdateScore( word_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(word_label_int, &dep_word, &label, &x);\
+   retval += cast_weights->m_mapDepWordLabel.getOrUpdateScore( word_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(taggedword_label_int, &head_word_tag, &label, &x);\
+   retval += cast_weights->m_mapHeadWordTagLabel.getOrUpdateScore( taggedword_label_int, m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(taggedword_label_int, &dep_word_tag, &label, &x);\
+   retval += cast_weights->m_mapDepWordTagLabel.getOrUpdateScore( taggedword_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tag_label_int, &head_tag, &label, &x);\
+   retval += cast_weights->m_mapHeadTagLabel.getOrUpdateScore( tag_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tag_label_int, &dep_tag, &label, &x);\
+   retval += cast_weights->m_mapDepTagLabel.getOrUpdateScore( tag_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tagset3_label_int, &head_tag_lm, &label, &x);\
+   retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( tagset3_label_int, m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tagset3_label_int, &head_tag_mr, &label, &x);\
+   retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( tagset3_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tagset3_label_int, &head_tag_lmr, &label, &x);\
+   retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( tagset3_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tagset3_label_int, &dep_tag_lm, &label, &x);\
+   retval += cast_weights->m_mapDepSurroundingTagsLabel.getOrUpdateScore( tagset3_label_int , m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tagset3_label_int, &dep_tag_mr, &label, &x);\
+   retval += cast_weights->m_mapDepSurroundingTagsLabel.getOrUpdateScore( tagset3_label_int, m_nScoreIndex , amount , round ) ;\
+   refer_or_allocate_tuple3(tagset3_label_int, &dep_tag_lmr, &label, &x);\
+   retval += cast_weights->m_mapDepSurroundingTagsLabel.getOrUpdateScore( tagset3_label_int , m_nScoreIndex , amount , round ) ;
 

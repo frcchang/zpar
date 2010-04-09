@@ -7,6 +7,7 @@
 #include "tuple3.h"
 #include "tuple4.h"
 #include "linguistics/taggedword.h"
+#include "linguistics/dependency/penn.h"
 #include "agenda.h"
 #include "pair_stream.h"
 
