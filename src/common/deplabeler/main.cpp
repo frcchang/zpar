@@ -46,7 +46,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       ++ nCount;
 
       // Find decoder output
-      labeler.label( input_sent , output_sent ) ;
+      labeler.label( input_sent , &output_sent ) ;
       
       // Ouptut sent
       os << output_sent ;
