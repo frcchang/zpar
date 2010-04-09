@@ -69,7 +69,7 @@ private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
    void initCaches( const CDependencyTree *sentence );
-   void work( const CDependencyTree &sentence , CLabeledDependencyTree *retval, const CLabeledDependencyTree *correct, const unsigned long &index ) ; 
+   void work( CLabeledDependencyTree *retval, const CLabeledDependencyTree *correct, const unsigned long &index ) ; 
 
    inline deplabeler::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const CDependencyLabel &label, deplabeler::SCORE_TYPE amount=0, int round=0 );
 

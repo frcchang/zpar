@@ -65,11 +65,20 @@ protected:
 
 public:
 
-   CDependencyLabel(const unsigned long &code) { m_code = code; }
+   CDependencyLabel() : m_code(NONE) {}
+   CDependencyLabel(const unsigned long &code) : m_code(code) { }
    CDependencyLabel(const string &str) { load(str); }
    virtual ~CDependencyLabel() {}
 
 public:
+
+   const unsigned long &hash() const { return m_code; }
+   bool operator == (const CDependencyLabel &l) const { return m_code == l.m_code; }
+   bool operator != (const CDependencyLabel &l) const { return m_code != l.m_code; }
+   bool operator < (const CDependencyLabel &l) const { return m_code < l.m_code; }
+   bool operator > (const CDependencyLabel &l) const { return m_code > l.m_code; }
+   bool operator <= (const CDependencyLabel &l) const { return m_code <= l.m_code; }
+   bool operator >= (const CDependencyLabel &l) const { return m_code >= l.m_code; }
 
    void load(const string &str) { 
       m_code = PENN_DEP_NONE;
@@ -81,7 +90,7 @@ public:
       }
    }
 
-   string str() { 
+   const string &str() const { 
       return PENN_DEP_STRINGS[ m_code ]; 
    }
 
@@ -90,3 +99,18 @@ public:
    }
 
 };
+
+//=============================================================
+
+inline istream & operator >> (istream &is, CDependencyLabel &label) {
+   string s;
+   is >> s;
+   label.load(s);
+   return is;
+}
+
+inline ostream & operator << (ostream &os, const CDependencyLabel &label) {
+   os << label.str() ;
+   return os;
+}
+

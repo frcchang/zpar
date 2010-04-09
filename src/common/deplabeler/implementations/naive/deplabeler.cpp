@@ -85,6 +85,15 @@ inline SCORE_TYPE CDepLabeler::getOrUpdateArcLabelScore( const int &head_index, 
  *--------------------------------------------------------------*/
 
 void CDepLabeler::initCaches( const CDependencyTree *sentence ) {
+   // initialise word cache
+   const unsigned &length = sentence->size() ; 
+   assert(length<MAX_SENTENCE_SIZE);
+   static unsigned temp_i ;
+   m_lCache.clear();
+   for ( temp_i=0; temp_i<length; temp_i++ ) {
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>((*sentence)[temp_i].word , (*sentence)[temp_i].tag) );
+      m_lLinks.push_back( (*sentence)[temp_i].head );
+   }
 }
 
 /*---------------------------------------------------------------
@@ -95,20 +104,7 @@ void CDepLabeler::initCaches( const CDependencyTree *sentence ) {
  *
  *--------------------------------------------------------------*/
 
-void CDepLabeler::work( const CDependencyTree &sentence , CLabeledDependencyTree *retval , const CLabeledDependencyTree *correct , const unsigned long &index ) {
-
-   const unsigned &length = sentence.size() ; 
-   static unsigned temp_i ;
-
-   assert(length<MAX_SENTENCE_SIZE);
-
-   // initialise word cache
-   m_lCache.clear();
-   for ( temp_i=0; temp_i<length; temp_i++ )
-      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[temp_i].word , sentence[temp_i].tag) );
-
-   if (m_bTrain) {
-   } 
+void CDepLabeler::work( CLabeledDependencyTree *retval , const CLabeledDependencyTree *correct , const unsigned long &index ) {
 
 }
 
@@ -120,8 +116,9 @@ void CDepLabeler::work( const CDependencyTree &sentence , CLabeledDependencyTree
 
 void CDepLabeler::label( const CDependencyTree &sentence , CLabeledDependencyTree *retval ) {
 
+   initCaches( &sentence );
    for (unsigned long i=0; i<sentence.size(); ++i)
-      work( sentence, retval, 0, i ) ;
+      work( retval, 0, i ) ;
 
 }
 
@@ -136,13 +133,10 @@ void CDepLabeler::train( const CLabeledDependencyTree &correct ) {
    static CDependencyTree parse ;
    static CLabeledDependencyTree label ; 
 
-   UnlabelSentence( &correct, &parse ) ;
-
-   // The following code does update for each processing stage
-
+   initCaches( &parse );
    for (unsigned long i=0; i<correct.size(); ++i) {
       ++m_nTrainingRound ;
-      work( parse , &label , &correct , i ) ; 
+      work( &label , &correct , i ) ; 
    }
 
 };

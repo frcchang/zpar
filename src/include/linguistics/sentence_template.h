@@ -30,7 +30,7 @@ public:
 //==============================================================
 
 template <typename CSentenceNode>
-inline istream & operator >> (istream &is, CSentenceTemplate<CSentenceNode> &sent) {
+inline std::istream & operator >> (std::istream &is, CSentenceTemplate<CSentenceNode> &sent) {
    sent.clear();
    string line;
 //   while(is && line.empty())
@@ -49,7 +49,7 @@ inline istream & operator >> (istream &is, CSentenceTemplate<CSentenceNode> &sen
 }
 
 template <typename CSentenceNode>
-inline ostream & operator << (ostream &os, const CSentenceTemplate<CSentenceNode> &sent) {
+inline std::ostream & operator << (std::ostream &os, const CSentenceTemplate<CSentenceNode> &sent) {
    for (int i=0; i<sent.size(); ++i)
       os << sent.at(i) << endl ;
    os << endl ;
