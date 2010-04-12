@@ -106,6 +106,34 @@ void CDepLabeler::initCaches( const CDependencyTree *sentence ) {
 
 void CDepLabeler::work( CLabeledDependencyTree *retval , const CLabeledDependencyTree *correct , const unsigned long &index ) {
 
+   static unsigned long label; 
+   static CDependencyLabel templ, bestl;
+   static SCORE_TYPE score;
+   static SCORE_TYPE bests;
+
+   for (label = CDependencyLabel::FIRST; label < CDependencyLabel::COUNT; ++label ) {
+      templ.load(label);
+      score = getOrUpdateArcLabelScore( m_lLinks[index], index, templ);
+      if (label == CDependencyLabel::FIRST || score > bests) {
+         bests = score;
+         bestl.load(label);
+      }
+   }
+
+   if (correct) {
+      assert(m_bTrain);
+      ++m_nTrainingRound;
+      templ.load((*correct)[index].label);
+      if (bestl != templ) {
+         getOrUpdateArcLabelScore( m_lLinks[index], index, bestl, -1, m_nTrainingRound);
+         getOrUpdateArcLabelScore( m_lLinks[index], index, templ, 1, m_nTrainingRound);
+      }
+   }
+   else {
+      assert(!m_bTrian);
+      (*retval)[index].label = bestl.str();
+   }
+
 }
 
 /*---------------------------------------------------------------

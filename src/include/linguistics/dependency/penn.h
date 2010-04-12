@@ -90,6 +90,10 @@ public:
       }
    }
 
+   void load(const unsigned long &u) { 
+      m_code = u;
+   }
+
    const string &str() const { 
       return PENN_DEP_STRINGS[ m_code ]; 
    }

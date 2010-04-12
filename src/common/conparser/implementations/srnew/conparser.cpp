@@ -477,7 +477,6 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S0 S1
    if (ctxt->s1!=-1) {
-if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->s0ws1w), &(ctxt->s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0wcS1wc.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s0cs1c), &action); 
@@ -485,7 +484,6 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0wS1c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(make_pair(ctxt->s0cs1c, action), m_nScoreIndex, amount, round);
-}
 
       nReturn += cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(ctxt->s0wts1wt, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s0t), &action); 
@@ -507,7 +505,6 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
 
    // S0 N0
    if (ctxt->n0!=-1) {
-if (!ctxt->s0c.empty()) {
       refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->s0wn0w), &(ctxt->s0cn0t), &action); 
       nReturn += cast_weights->m_mapS0wN0w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->n0w, &(ctxt->s0cn0t), &action); 
@@ -516,12 +513,10 @@ if (!ctxt->s0c.empty()) {
       nReturn += cast_weights->m_mapS0wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cN0t.getOrUpdateScore(make_pair(ctxt->s0cn0t, action), m_nScoreIndex, amount, round);
       //if (item->nodes[ctxt->s0].norv&&ctxt->n0norv) nReturn += cast_weights->m_mapS0cmN0tm.getOrUpdateScore(make_pair(s0cn0t_action, encodeRhythms(ctxt->s0c, ctxt->n0m)), m_nScoreIndex, amount, round);
-}
    }
 
    // S1 N0
    if (ctxt->s1!=-1 && ctxt->n0!=-1) {
-if (!ctxt->s1c.empty()) {
       refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->s1wn0w), &(ctxt->s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1wN0w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->n0w, &(ctxt->s1cn0t), &action); 
@@ -529,7 +524,6 @@ if (!ctxt->s1c.empty()) {
       refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS1cN0t.getOrUpdateScore(make_pair(ctxt->s1cn0t, action), m_nScoreIndex, amount, round);
-}
    }
 
    // N0 N1
