@@ -22,15 +22,14 @@ inline int getLinkSizeAndDirection(const int &head_index, const int &dep_index) 
    else if (diff<-5) diff = -5;
    return diff;
 }
-inline int getLinkDirection(const int &head_index, const int &dep_index) {
-   return head_index>dep_index ? 0 : 1 ;
-}
 inline int getLinkDirectionEncode(const int &head_index, const int &dep_index) {
    return head_index>dep_index ? LINK_DIRECTION_HEAD_RIGHT : LINK_DIRECTION_HEAD_LEFT ;
 }
-
-inline int getLabelAndDirectionOrDistanceEncode(const unsigned long &label, const int &dod) {
-   return (dod<<PENN_DEP_COUNT)+label;
+inline void UnlabelSentence(const CLabeledDependencyTree &labeled, CDependencyTree &output) {
+   static int i;
+   output.clear();
+   for (i=0;i<labeled.size();++i)
+      output.push_back(CDependencyTreeNode(labeled[i].word, labeled[i].tag, labeled[i].head));
 }
 
 // arity direction

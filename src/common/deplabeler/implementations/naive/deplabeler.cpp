@@ -37,15 +37,15 @@ const CTag g_beginTag(CTag::SENTENCE_BEGIN);
  *---------------------------------------------------------------*/
 
 inline SCORE_TYPE CDepLabeler::getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const CDependencyLabel &label, SCORE_TYPE amount, int round) {
-   const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = m_lCache[head_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = head_index == -1 ? g_emptyTaggedWord : m_lCache[head_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = m_lCache[dep_index];
-   const CWord &head_word = static_cast<const CWord&>(head_word_tag);
+   const CWord &head_word = head_index == -1 ? g_emptyWord : static_cast<const CWord&>(head_word_tag);
    const CWord &dep_word = static_cast<const CWord&>(dep_word_tag);
-   const CTag &head_tag = head_word_tag.tag;
+   const CTag &head_tag = head_index == -1 ? g_noneTag : head_word_tag.tag;
    const CTag &dep_tag = dep_word_tag.tag;
 
    const CTag &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag : g_beginTag ;
-   const CTag &head_tag_r = ( head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag : g_beginTag ;
+   const CTag &head_tag_r = ( head_index != -1 && head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag : g_beginTag ;
    const CTag &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag : g_beginTag ;
    const CTag &dep_tag_r = ( dep_index+1 < m_lCache.size() ) ? m_lCache[ dep_index+1 ].tag : g_beginTag ;
 
@@ -90,6 +90,7 @@ void CDepLabeler::initCaches( const CDependencyTree *sentence ) {
    assert(length<MAX_SENTENCE_SIZE);
    static unsigned temp_i ;
    m_lCache.clear();
+   m_lLinks.clear();
    for ( temp_i=0; temp_i<length; temp_i++ ) {
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>((*sentence)[temp_i].word , (*sentence)[temp_i].tag) );
       m_lLinks.push_back( (*sentence)[temp_i].head );
@@ -122,7 +123,6 @@ void CDepLabeler::work( CLabeledDependencyTree *retval , const CLabeledDependenc
 
    if (correct) {
       assert(m_bTrain);
-      ++m_nTrainingRound;
       templ.load((*correct)[index].label);
       if (bestl != templ) {
          getOrUpdateArcLabelScore( m_lLinks[index], index, bestl, -1, m_nTrainingRound);
@@ -130,7 +130,7 @@ void CDepLabeler::work( CLabeledDependencyTree *retval , const CLabeledDependenc
       }
    }
    else {
-      assert(!m_bTrian);
+      assert(!m_bTrain);
       (*retval)[index].label = bestl.str();
    }
 
@@ -145,6 +145,9 @@ void CDepLabeler::work( CLabeledDependencyTree *retval , const CLabeledDependenc
 void CDepLabeler::label( const CDependencyTree &sentence , CLabeledDependencyTree *retval ) {
 
    initCaches( &sentence );
+   retval->clear();
+   for (unsigned long i=0; i<sentence.size(); ++i)
+      retval->push_back(CLabeledDependencyTreeNode(sentence[i].word, sentence[i].tag, sentence[i].head, ""));
    for (unsigned long i=0; i<sentence.size(); ++i)
       work( retval, 0, i ) ;
 
@@ -161,6 +164,7 @@ void CDepLabeler::train( const CLabeledDependencyTree &correct ) {
    static CDependencyTree parse ;
    static CLabeledDependencyTree label ; 
 
+   UnlabelSentence(correct, parse);
    initCaches( &parse );
    for (unsigned long i=0; i<correct.size(); ++i) {
       ++m_nTrainingRound ;
