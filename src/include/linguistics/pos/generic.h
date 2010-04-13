@@ -55,9 +55,9 @@ protected:
    CTagTokenizer &getTokenizer() const {static CTagTokenizer tokenizer; return tokenizer;}
 
 public:
-   CTag() { clear(); }
+   CTag() : m_code(NONE) { }
    CTag(const string &s) { load(s); }
-   CTag(const CTag &t) { m_code=t.m_code; }
+   CTag(const CTag &t) : m_code(t.m_code) { }
    CTag(const unsigned &u) { assert(getTokenizer().count()>u); m_code=u; }
    virtual ~CTag() {}
 
