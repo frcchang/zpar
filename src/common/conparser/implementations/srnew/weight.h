@@ -204,10 +204,10 @@ public:
    CCFGSetActionMap m_mapS1cN0t;
 
    // N0 N1
-   CTwoWordsActionMap m_mapN0wN1w;
-   CWordIntMap m_mapN0tN1w;
-   CWordIntMap m_mapN0wN1t;
-   CIntMap m_mapN0tN1t;
+   CTwoWordsCFGSetActionMap m_mapN0wN1w;
+   CWordCFGSetActionMap m_mapN0tN1w;
+   CWordCFGSetActionMap m_mapN0wN1t;
+   CCFGSetActionMap m_mapN0tN1t;
 
    // Bracket
 #ifdef _CHINESE_CFG_H
