@@ -527,16 +527,16 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    }
 
    // N0 N1
-   if (ctxt->n1!=-1) {
-      refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->n0wn1w), &(ctxt->n0tn1t), &action); 
-      nReturn += cast_weights->m_mapN0wN1w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, ctxt->n1w, &(ctxt->n0tn1t), &action); 
-      nReturn += cast_weights->m_mapN0tN1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, ctxt->n0w, &(ctxt->n0tn1t), &action); 
-      nReturn += cast_weights->m_mapN0wN1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN0tN1t.getOrUpdateScore(make_pair(ctxt->n0tn1t, action), m_nScoreIndex, amount, round);
-   }
-   
+//   if (ctxt->n1!=-1) {
+//      refer_or_allocate_tuple3(twoword_cfgset_action, &(ctxt->n0wn1w), &(ctxt->n0tn1t), &action); 
+//      nReturn += cast_weights->m_mapN0wN1w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(word_cfgset_action, ctxt->n1w, &(ctxt->n0tn1t), &action); 
+//      nReturn += cast_weights->m_mapN0tN1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(word_cfgset_action, ctxt->n0w, &(ctxt->n0tn1t), &action); 
+//      nReturn += cast_weights->m_mapN0wN1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapN0tN1t.getOrUpdateScore(make_pair(ctxt->n0tn1t, action), m_nScoreIndex, amount, round);
+//   }
+//   
 #ifdef _CHINESE_CFG_H
 /*
    if (ctxt->open_bracket_match_type!=0) {
