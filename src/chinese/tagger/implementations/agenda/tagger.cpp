@@ -177,15 +177,15 @@ if (index<item->size()) {
 
    nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(first_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 
-//   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(two_char, tag_0), m_nScoreIndex , amount , round ) ;
-//   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(first_two_char_0, tag_0), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(two_char, tag_0), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(first_two_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 
-   if (index>0) {
-      wt1.load(last_char_1, tag_1);
-      wt2.load(first_char_0, tag_0);
-      if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
-      nReturn += m_weights->m_mapTaggedSeparateChars.getOrUpdateScore( wt12, m_nScoreIndex , amount , round ) ;
-   }
+//   if (index>0) {
+//      wt1.load(last_char_1, tag_1);
+//      wt2.load(first_char_0, tag_0);
+//      if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+//      nReturn += m_weights->m_mapTaggedSeparateChars.getOrUpdateScore( wt12, m_nScoreIndex , amount , round ) ;
+//   }
 }
 
    return nReturn;
@@ -239,9 +239,9 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ; 
 
-//   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex , amount , round ) ;
-//   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(char_and_next_char, tag), m_nScoreIndex , amount , round ) ;
-   nReturn += m_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex, amount, round ) ; 
+   nReturn += m_weights->m_mapTaggedCharByPrevChar.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapTaggedCharByNextChar.getOrUpdateScore( make_pair(char_and_next_char, tag), m_nScoreIndex , amount , round ) ;
+//   nReturn += m_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex, amount, round ) ; 
 
    return nReturn;
 }
