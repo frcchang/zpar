@@ -119,7 +119,7 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
    // Read the next sentence
    //
    while( output_reader.readTaggedSentence(output_sent) ) {
-      if (bFWCDRule)
+      if (bFWCDRule && !bSegmented)
          UntagAndDesegmentSentence(output_sent, input_sent, charcat);
       else
          UntagAndDesegmentSentence(output_sent, input_sent);
