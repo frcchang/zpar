@@ -232,7 +232,11 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    rules.segment(sentence_input, &sentence);
    const unsigned length = sentence.size();
 
-   assert(length<MAX_SENTENCE_SIZE);
+   if (length > MAX_SENTENCE_SIZE) {
+      cerr << "The size of the sentence is " << length << " characters, which is larger than the limit of the system (" << MAX_SENTENCE_SIZE <<endl;
+      vReturn->clear();
+      return;
+   }
    assert(vReturn!=NULL);
 
    //clock_t start_time = clock();

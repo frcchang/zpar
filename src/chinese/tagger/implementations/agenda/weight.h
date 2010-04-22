@@ -27,6 +27,7 @@ typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 typedef CScoreMap< pair<unsigned long long, CTag>, SCORE_TYPE > CIntTagMap;
 typedef CScoreMap< CTagSet<CTag, 2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
+typedef CScoreMap< pair<CWord, CTagSet<CTag, 2> >, SCORE_TYPE > CWordTagSet2Map;
 typedef CHashMap< CWord, int > CWordToIntMap;
 typedef CHashMap< pair<CWord, int>, int > CWordIntToIntMap;
 typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
@@ -100,11 +101,10 @@ public:
    CTagDict<CWord, CTag> m_mapCharTagDictionary;
    CTagDict<CWord, CTag> m_mapCanStart;
 
-   CWordTagMap m_mapTaggedCharByPrevChar;
-   CWordTagMap m_mapTaggedCharByNextChar;
-
    CTwoTaggedWordsMap m_mapTaggedSeparateChars;
    CWordTagMap m_mapTaggedConsecutiveChars;
+
+   CWordTagSet2Map m_mapWordTagTag;
 
 public:
    // note that m_bSegmentation rules will be covered by load()
@@ -153,11 +153,10 @@ public:
             m_mapCharTagDictionary(CTag::COUNT), 
             m_mapCanStart(CTag::COUNT), 
 
-            m_mapTaggedCharByPrevChar("TaggedCharByPrevChar", 65537) ,
-            m_mapTaggedCharByNextChar("TaggedCharByNextChar", 65537) ,
-
             m_mapTaggedSeparateChars("TaggedSeparateChars", 65537) , 
-            m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", 65537)
+            m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", 65537), 
+
+            m_mapWordTagTag("WordByTheNextTwoTag", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
