@@ -112,6 +112,7 @@ void train(const string &sOutputFile, const string &sFeatureFile, const bool &bA
       TRACE("Sentence " << nCount);
       ++nCount;
       segmentor->segment( input_sent, output_sent );
+      if (output_sent->empty()) continue;
 #ifdef DEBUG
       if ( *output_sent != *ref_sent ) {
          cout << "correct" << endl;
