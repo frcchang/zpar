@@ -485,7 +485,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0wS1c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(make_pair(ctxt->s0cs1c, action), m_nScoreIndex, amount, round);
 
-      nReturn += cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(ctxt->s0wts1wt, action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(ctxt->s0wts1wt, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s0t), &action); 
       nReturn += cast_weights->m_mapS0wtS1w.getOrUpdateScore(twoword_tag_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s1t), &action); 
