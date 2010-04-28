@@ -46,7 +46,8 @@ using namespace chinese::tagger;
    left(m_mapTagByLastCharCat)right \
    left(m_mapTaggedSeparateChars)right \
    left(m_mapTaggedConsecutiveChars)right\
-   left(m_mapWordTagTag)right
+   left(m_mapWordTagTag)right\
+   left(m_mapTagWordTag)right
 
 /*---------------------------------------------------------------
  *

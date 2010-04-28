@@ -55,7 +55,8 @@ public:
            s0ts1tn0t, s0tn0tn1t, s0ts1ts2t,
            s0js1jn0t, s0jn0tn1t, s0js1js2j;
    // here j means the combination of c and t -- t with non-constituent
-   CCFGSet s0cs0rcn0t, s0cs0rjn0t, s0cs0lcs1c, s0cs0ljs1j, s0cs1cs1rc, s0js1cs1rj;
+   CCFGSet s0cs0lc, s0cs0rc, s1cs1rc, 
+           s0cs0rcn0t, s0cs0rjn0t, s0cs0lcs1c, s0cs0ljs1j, s0cs1cs1rc, s0js1cs1rj;
    CTwoWords s0ws1w, s0wn0w, n0wn1w, s1wn0w;
    CTwoTaggedWords s0wts1wt;
 
@@ -288,6 +289,7 @@ public:
       // s0rc can be empty is s0r is not a constituent
       // s0rj is s0rc when s0rc not empty, and s0rt otherwise
       // s0rj empty only when s0r non existant
+      s0cs0rc.load(s0c, s0rc);
       s0cs0rcn0t = s0cn0t; s0cs0rcn0t.add(s0rc);
 
       s0cs0rjn0t = s0cn0t; 
@@ -295,6 +297,7 @@ public:
 
       // s0 s0l and s1 -- by presuming that s1 exists!
       // see comments above
+      s0cs0lc.load(s0c, s0lc);
       s0cs0lcs1c = s0cs1c;
       s0cs0lcs1c.add(s0lc);
 
@@ -303,6 +306,7 @@ public:
       if (s1c.empty()) s0cs0ljs1j.add(s1t); else s0cs0ljs1j.add(s1c);
 
       // s0 slr and s1 -- by presuming that s1 exists!
+      s1cs1rc.load(s1c, s1rc);
       s0cs1cs1rc = s0cs1c;
       s0cs1cs1rc.add(s1rc);
 

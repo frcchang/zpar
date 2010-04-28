@@ -101,10 +101,11 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    unsigned long long first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(first_char_0) | (static_cast<unsigned long long>(1)<<tag_0.code()) ;
    unsigned long long last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(last_char_1) | (static_cast<unsigned long long>(1)<<tag_1.code()) ;
 
-   static CTagSet<CTag, 2> tagset2;
-   static CTagSet<CTag, 3> tagset3;
-   tagset2.load( encodeTags(tag_0, tag_1) );
-   tagset3.load( encodeTags(tag_0, tag_1, tag_2) );
+   static CTagSet<CTag, 2> tag_0_tag_1, tag_0_tag_2;
+   static CTagSet<CTag, 3> tag_0_tag_1_tag_2;
+   tag_0_tag_1.load( encodeTags(tag_0, tag_1) );
+   tag_0_tag_2.load( encodeTags(tag_0, tag_2) );
+   tag_0_tag_1_tag_2.load( encodeTags(tag_0, tag_1, tag_2) );
 
    static int j ; 
 
@@ -152,12 +153,12 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    }
 
    // all about the current word
-   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tagset2, m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
 
    if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(word_1, tag_0) , m_nScoreIndex , amount , round ) ;
 
    if ( index > 0 ) {
-      nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( tagset3, m_nScoreIndex , amount , round ) ;
+      nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( tag_0_tag_1_tag_2, m_nScoreIndex , amount , round ) ;
    }
 
 if (index<item->size()) {
@@ -184,7 +185,9 @@ if (index<item->size()) {
    }
 }
 
-   if (index>1) nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(word_2, tagset2) , m_nScoreIndex , amount , round ) ;
+   if (index>1) nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(word_2, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
+   if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( make_pair(word_1, tag_0_tag_2) , m_nScoreIndex , amount , round ) ;
+   
 
    return nReturn;
 }

@@ -282,13 +282,14 @@ public:
    CIntMap m_mapN0tN1tN2t;
 
    // S0 S0LRUN0
+   CCFGSetActionMap m_mapS0cS0RcN0t;
+   CCFGSetActionMap m_mapS0cS0RjN0t;
+   CWordCFGSetActionMap m_mapS0cS0RcN0w;
+
    CCFGSetActionMap m_mapS0cS0LcN0t;
    CWordCFGSetActionMap m_mapS0wS0LcN0t;
    CWordCFGSetActionMap m_mapS0cS0LcN0w;
-   CCFGSetActionMap m_mapS0cS0RcN0t;
-   CCFGSetActionMap m_mapS0cS0RjN0t;
    CWordCFGSetActionMap m_mapS0wS0RcN0t;
-   CWordCFGSetActionMap m_mapS0cS0RcN0w;
    CCFGSetActionMap m_mapS0cS0UcN0t;
    CWordCFGSetActionMap m_mapS0wS0UcN0t;
    CWordCFGSetActionMap m_mapS0cS0UcN0w;
@@ -296,8 +297,9 @@ public:
    // S0 S0LRUS1
    CCFGSetActionMap m_mapS0cS0LcS1c;
    CCFGSetActionMap m_mapS0cS0LjS1j;
-   CWordCFGSetActionMap m_mapS0wS0LcS1c;
    CWordCFGSetActionMap m_mapS0cS0LcS1w;
+
+   CWordCFGSetActionMap m_mapS0wS0LcS1c;
    CCFGSetActionMap m_mapS0cS0RcS1c;
    CWordCFGSetActionMap m_mapS0wS0RcS1c;
    CWordCFGSetActionMap m_mapS0cS0RcS1w;
@@ -306,12 +308,13 @@ public:
    CWordCFGSetActionMap m_mapS0cS0UcS1w;
 
    // S0 S1LRUS1
-   CCFGSetActionMap m_mapS0cS1cS1Lc;
-   CWordCFGSetActionMap m_mapS0wS1cS1Lc;
-   CWordCFGSetActionMap m_mapS0cS1wS1Lc;
    CCFGSetActionMap m_mapS0cS1cS1Rc;
    CCFGSetActionMap m_mapS0jS1cS1Rj;
    CWordCFGSetActionMap m_mapS0wS1cS1Rc;
+
+   CCFGSetActionMap m_mapS0cS1cS1Lc;
+   CWordCFGSetActionMap m_mapS0wS1cS1Lc;
+   CWordCFGSetActionMap m_mapS0cS1wS1Lc;
    CWordCFGSetActionMap m_mapS0cS1wS1Rc;
    CCFGSetActionMap m_mapS0cS1cS1Uc;
    CWordCFGSetActionMap m_mapS0wS1cS1Uc;
