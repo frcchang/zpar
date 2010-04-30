@@ -185,9 +185,9 @@ if (index<item->size()) {
    }
 }
 
-   if (index>1) nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(word_2, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
    if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( make_pair(word_1, tag_0_tag_2) , m_nScoreIndex , amount , round ) ;
-   
+   if (index>1) nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(word_2, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
+   if (index>0) nReturn += m_weights->m_mapTagByLastTaggedWord.getOrUpdateScore( make_pair(word_1, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
 
    return nReturn;
 }

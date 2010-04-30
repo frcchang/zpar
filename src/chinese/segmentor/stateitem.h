@@ -33,7 +33,8 @@ struct CStateItem {
    // words 
    unsigned long int *m_lWords;                      // record the end of each word
    unsigned long int m_nLength;                      // the length of the sentence means the number of words it contains
-   unsigned char m_nLastWord;                   // the status of the last word: 0 - no use; 1 - end of a word; 2 - not end
+//   unsigned char m_nLastWord;                   // the status of the last word: 0 - no use; 1 - end of a word; 2 - not end
+
    // item score
    SCORE_TYPE m_nScore;
    CStateItem() { m_lWords = new unsigned long int[MAX_SENTENCE_SIZE]; clear(); }
@@ -63,38 +64,38 @@ struct CStateItem {
       for (int i=0; i<m_nLength; ++i) {
          m_lWords[i] = from->m_lWords[i];
       }
-      m_nLastWord = from->m_nLastWord;
+//      m_nLastWord = from->m_nLastWord;
    }
    void append(unsigned long int char_index) {
       m_lWords[m_nLength] = char_index;
       ++m_nLength ;
-      m_nLastWord = 0 ;
+//      m_nLastWord = 0 ;
    }
    void replace(unsigned long int char_index) {
       m_lWords[m_nLength-1] = char_index; 
-      m_nLastWord = 0 ;
+//      m_nLastWord = 0 ;
    }
-   void setWordEnd(bool bEnd = true) { // set the status of the last word ...
-      m_nLastWord = bEnd ? 1 : 2; 
-   }
-   bool canSeparate() const { // the next char can be separated from the last word?
-      return m_nLastWord != 2 ;
-   }
-   bool canAppend() const { // the next char can be appended to the last word?
-      return m_nLastWord != 1 ; 
-   }
-   bool isCompatibleWith(const CStateItem *item) const {
-      if (item->m_nLength==0) return true;
-      unsigned long int length = min(m_nLength, item->m_nLength);
-      for (int i=0; i<length-1; ++i)
-         if (m_lWords[i] != item->m_lWords[i]) return false;
-      if (m_lWords[length-1]<item->m_lWords[length-1])
-         return false;
-      else if (m_lWords[length-1]==item->m_lWords[length-1])
-         return this->canSeparate() == item->canSeparate() ;
-      return true;
-   }
-   inline void clear() { m_nScore = 0; m_nLength = 0; m_nLastWord = 0 ; }
+//   void setWordEnd(bool bEnd = true) { // set the status of the last word ...
+//      m_nLastWord = bEnd ? 1 : 2; 
+//   }
+//   bool canSeparate() const { // the next char can be separated from the last word?
+//      return m_nLastWord != 2 ;
+//   }
+//   bool canAppend() const { // the next char can be appended to the last word?
+//      return m_nLastWord != 1 ; 
+//   }
+//   bool isCompatibleWith(const CStateItem *item) const {
+//      if (item->m_nLength==0) return true;
+//      unsigned long int length = min(m_nLength, item->m_nLength);
+//      for (int i=0; i<length-1; ++i)
+//         if (m_lWords[i] != item->m_lWords[i]) return false;
+//      if (m_lWords[length-1]<item->m_lWords[length-1])
+//         return false;
+//      else if (m_lWords[length-1]==item->m_lWords[length-1])
+//         return this->canSeparate() == item->canSeparate() ;
+//      return true;
+//   }
+   inline void clear() { m_nScore = 0; m_nLength = 0; } //m_nLastWord = 0 ; }
 };
 
 }

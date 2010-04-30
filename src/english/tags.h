@@ -17,8 +17,6 @@ namespace english {
 
 const char TAG_SEPARATOR = '/';
 
-inline unsigned long hash(const CTag &tag) { return tag.code();}
-
 }; // namespace english
 
 //===============================================================
