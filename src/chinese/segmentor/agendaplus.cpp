@@ -465,7 +465,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
             temp_it.append(index);
             if (index==length-1) temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1);
 
-            word_length = pGenerator->getWordLength( pGenerator->m_nLength-1 );
+            word_length = index>0 ? pGenerator->getWordLength( pGenerator->m_nLength-1 ) : 0 ;
             if ( nBest == 1) {
                if ( doneWordRnd[word_length] < index+1 ) {
                   doneWordLink[word_length] = doneItemPointer;   // doneWordLink[i] caches the last word with length i+1
