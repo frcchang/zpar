@@ -35,9 +35,9 @@ public:
 
 public:
    CTaggedWord(): CWord() { }
-   CTaggedWord(const string &s, const CTag t) : CWord(s) { tag=t; }
-   CTaggedWord(const CWord &w, const CTag t) : CWord(w) { tag=t; }
-   CTaggedWord(const CTaggedWord &w) : CWord(static_cast<CWord>(w)) { tag = w.tag; }
+   CTaggedWord(const string &s, const CTag t) : CWord(s), tag(t) { }
+   CTaggedWord(const CWord &w, const CTag t) : CWord(w), tag(t) { }
+   CTaggedWord(const CTaggedWord &w) : CWord(static_cast<CWord>(w)), tag(w.tag) { }
    virtual ~CTaggedWord() {}
 
 public:

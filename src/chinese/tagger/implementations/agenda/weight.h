@@ -22,15 +22,16 @@ typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 typedef CScoreMap< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
 typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
-typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
+//typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 typedef CScoreMap< pair<unsigned long long, CTag>, SCORE_TYPE > CIntTagMap;
 typedef CScoreMap< CTagSet<CTag, 2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
 typedef CScoreMap< pair<CWord, CTagSet<CTag, 2> >, SCORE_TYPE > CWordTagSet2Map;
+typedef CScoreMap< pair<CWord, CTagSet<CTag, 3> >, SCORE_TYPE > CWordTagSet3Map;
 typedef CHashMap< CWord, int > CWordToIntMap;
-typedef CHashMap< pair<CWord, int>, int > CWordIntToIntMap;
-typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
+//typedef CHashMap< pair<CWord, int>, int > CWordIntToIntMap;
+//typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
 
 /*===============================================================
  *
@@ -106,6 +107,7 @@ public:
 
    CWordTagSet2Map m_mapWordTagTag;
    CWordTagSet2Map m_mapTagWordTag;
+   CWordTagSet2Map m_mapTagByLastTaggedWord;
 
 public:
    // note that m_bSegmentation rules will be covered by load()
@@ -158,7 +160,8 @@ public:
             m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", 65537), 
 
             m_mapWordTagTag("WordByTheNextTwoTag", 65537),
-            m_mapTagWordTag("TagByNextWordSecondNextTag", 65537)
+            m_mapTagWordTag("TagByNextWordSecondNextTag", 65537),
+            m_mapTagByLastTaggedWord("TagByLastTaggedWord", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
