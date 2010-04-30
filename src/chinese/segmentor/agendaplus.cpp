@@ -461,7 +461,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
          // 1. generate new items according to each previous item. 
          if ( rules.canSeparate( index ) ) {  
             temp_it.copy( pGenerator );
-            temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1);
+            if (index>0) temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1);
             temp_it.append(index);
             if (index==length-1) temp_it.m_nScore += getOrUpdateSeparateScore(segmentor, &sentence, &temp_it, temp_it.m_nLength-1);
 

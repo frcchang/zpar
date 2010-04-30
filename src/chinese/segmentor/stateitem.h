@@ -55,9 +55,9 @@ struct CStateItem {
    }
    inline bool operator != (const CStateItem &item) const { return ! ((*this) == item); }
    inline void operator = (const CStateItem &item) { copy(&item); }
-   inline const unsigned long int getWordStart(const unsigned long int i) const { return i>0?m_lWords[i-1]+1:0; }
-   inline const unsigned long int getWordEnd(const unsigned long int i) const { return m_lWords[i]; }
-   inline const unsigned long int getWordLength(const unsigned long int i) const { return i>0?m_lWords[i]-m_lWords[i-1]:m_lWords[0]+1;}
+   inline const unsigned long int getWordStart(const unsigned long int i) const { assert(i<m_nLength); return i>0?m_lWords[i-1]+1:0; }
+   inline const unsigned long int getWordEnd(const unsigned long int i) const { assert(i<m_nLength); return m_lWords[i]; }
+   inline const unsigned long int getWordLength(const unsigned long int i) const { assert(i<m_nLength); return i>0?m_lWords[i]-m_lWords[i-1]:m_lWords[0]+1;}
    void copy(const CStateItem *from) {
       m_nLength = from->m_nLength;
       m_nScore = from->m_nScore;
