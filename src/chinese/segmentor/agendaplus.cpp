@@ -233,8 +233,8 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
 
    // ===================================================================================
    // word scores from knowledge
-//   if ( segmentor->hasCharTypeKnowledge() ) {
-//      if ( end>0 && end<sentence->size()-1 ) {
+   if ( segmentor->hasCharTypeKnowledge() ) {
+      if ( end>0 && end<sentence->size()-1 ) {
 //         tmp_i = encodeCharInfoAndType( 
 //                    char_info , 
 //                    segmentor->charType(_cache_word(end-1, 1)),
@@ -242,8 +242,8 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
 //                    segmentor->charType(_cache_word(end+1, 1))
 //                 ) ;
 //         retval += weight.m_mapCharCatTrigram.getOrUpdateScore(tmp_i, which_score, amount, round) ;
-//      }
-//   }
+      }
+   }
 //
    return retval;
 }
@@ -357,16 +357,16 @@ inline void updateScoreVectorForState(CSegmentor *segmentor, const CStringVector
    static int char_index;
    static int word_index; static unsigned next_start;
    temp.clear();
-   word_index = 0; next_start = state->getWordEnd(word_index)+1;
-   for (char_index=0; char_index<index; ++char_index) {
+   word_index = -1; next_start = 0;
+   for (char_index=0; char_index<index+1; ++char_index) {
       if (char_index>0 && char_index<next_start) {
          getOrUpdateAppendScore(segmentor, sentence, &temp, word_index, amount, round); // update score
 	 temp.replace(char_index); // then take action
       }
       if (char_index==next_start) {
-         getOrUpdateSeparateScore(segmentor, sentence, &temp, word_index, amount, round);
+         if (char_index>0) getOrUpdateSeparateScore(segmentor, sentence, &temp, word_index, amount, round);
          temp.append(char_index); // next char
-         ++word_index;
+         ++word_index; next_start = state->getWordEnd(word_index)+1;
       }
    }
    if (index == sentence->size()) getOrUpdateSeparateScore(segmentor, sentence, &temp, word_index, amount, round);
@@ -446,6 +446,8 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
       for (j=0; j<MAX_SENTENCE_SIZE; ++j)       // note we use MAX_SENTENCE_SIZE though the index is word length
          doneWordRnd[j] = 0;                    // so that we don't have to be limited by a fixed max word size.
 
+   if (pCorrect) correct.clear();                             
+
    TRACE("Decoding started");
    //TRACE("initialisation time: " << clock() - start_time)
    for (index=0; index<length; index++) {
@@ -502,7 +504,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CRule &rules, CS
 
          pGenerator = segmentor->m_Agenda->bestGenerator() ;
 
-         updateScoreVectorForStates(segmentor, &sentence, segmentor->m_Agenda->bestGenerator(), pCorrect, round);
+         updateScoreVectorForStates(segmentor, &sentence, segmentor->m_Agenda->bestGenerator(), &correct, round);
          return false;
       }
 
