@@ -155,8 +155,6 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("a", "", "agressive learning: make sure one example is segmented correctly before moving on to the next example", "");
-      configurations.defineConfiguration("s", "", "implementation specific training by the segmentor, instead of the standard perceptron training", "");
       configurations.defineConfiguration("c", "Path", "provide character type info in Path", "");
       configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
       configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
@@ -176,14 +174,9 @@ int main(int argc, char* argv[]) {
          cout << "Warning: " << warning << endl;
       }
 
-      bool bAggressive = configurations.getConfiguration("a").empty() ? false : true;
-      bool bAutomatic = configurations.getConfiguration("s").empty() ? false : true;
       bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
       string sCharCatFile = configurations.getConfiguration("c");
       string sLexiconDict = configurations.getConfiguration("w");
-
-      if (bAutomatic && (bAggressive||bNoFWAndCD))
-         cout << "Warning: all other configurations will be ignored since automatic training is chosen." << endl;
 
       cout << "Training started ..." << endl;
       int time_start = clock();
@@ -193,10 +186,11 @@ int main(int argc, char* argv[]) {
 #endif
 
       for (int i=0; i<training_rounds; ++i) {
-         if (bAutomatic)
+#ifdef SELF_TRAIN
             auto_train(options.args[1], options.args[2], bNoFWAndCD, sCharCatFile, sLexiconDict);
-         else
-            train(options.args[1], options.args[2], bAggressive, bNoFWAndCD, sCharCatFile, sLexiconDict);
+#else
+            train(options.args[1], options.args[2], false, bNoFWAndCD, sCharCatFile, sLexiconDict);
+#endif
          if (i==0) { // from the next iteration these will be loaded from the db
             sCharCatFile = "";
             sLexiconDict = "";

@@ -9,6 +9,8 @@
 #define CScoreMapType CScoreMap
 #endif
 
+#define SELF_TRAIN 1
+
 typedef double SCORE_TYPE;
 
 /*===============================================================
