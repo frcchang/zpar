@@ -23,6 +23,7 @@ const int CHAR_CAT_BITS = 3;
    left(m_weights.m_mapSeparateChars)right\
    left(m_weights.m_mapConsecutiveChars)right\
    left(m_weights.m_mapFirstAndLastChars)right\
+   left(m_weights.m_mapFirstCharAndChar)right\
    left(m_weights.m_mapOneCharWord)right\
    left(m_weights.m_mapLengthByFirstChar)right\
    left(m_weights.m_mapLengthByLastChar)right\
@@ -60,6 +61,7 @@ public:
    CWordMap m_mapSeparateChars;
    CWordMap m_mapConsecutiveChars;
    CTwoWordsMap m_mapFirstAndLastChars;
+   CTwoWordsMap m_mapFirstCharAndChar;
    CWordMap m_mapOneCharWord;
    CWordIntMap m_mapLengthByFirstChar;
    CWordIntMap m_mapLengthByLastChar;
@@ -82,6 +84,7 @@ public:
                m_mapSeparateChars("SeparateChars", 65537),
                m_mapConsecutiveChars("ConsecutiveChars", 65537),
                m_mapFirstAndLastChars("FirstAndLastChars", 65537),
+               m_mapFirstCharAndChar("FirstCharAndChar", 65537),
                m_mapOneCharWord("OneCharWord", 65537),
                m_mapLengthByFirstChar("LengthByFirstChar", 65537),
                m_mapLengthByLastChar("LengthByLastChar", 65537),

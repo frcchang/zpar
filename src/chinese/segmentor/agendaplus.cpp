@@ -133,11 +133,11 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
 
    // ===================================================================================
    // character scores -- with end-1 middled
-   for (tmp_i = max(0, static_cast<int>(end)-3); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) 
-      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) 
+//      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
-   for (tmp_i = max(0, static_cast<int>(end)-3); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) 
-      nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) 
+//      nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
    // ===================================================================================
    // word scores 
@@ -213,23 +213,36 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    static int tmp_i;
 
    // about the chars
-   const unsigned long int end = item->getWordEnd(index);
+   const unsigned long start = item->getWordStart(index);
+   const unsigned long end = item->getWordEnd(index);
    assert( end<sentence->size()-1 );
    static bool bWordStart; // the last char starts a word?
    static int char_info; // start, middle, end or standalone
-   bWordStart = ( item->getWordStart(index) == end);
+   bWordStart = ( start == end);
    char_info = encodeCharSegmentation(bWordStart, false);
+
+   static CWord first_char, current_char;
+   static CTwoWords first_char_and_char;
+   first_char = _cache_word( start, 1 );
+   current_char = _cache_word(end+1, 1);
+   if (amount==0) {
+      first_char_and_char.refer(&first_char, &current_char);
+   }
+   else {
+      first_char_and_char.allocate(first_char, current_char);
+   }
 
    retval = 0;
    // ===================================================================================
    // character scores -- the middle character is end-1
-   for (tmp_i = max(0, static_cast<int>(end)-3); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) 
-      retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) 
+//      retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
-   for (tmp_i = max(0, static_cast<int>(end)-3); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) 
-      retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) 
+//      retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
    retval += weight.m_mapConsecutiveChars.getOrUpdateScore( _cache_word(end, 2), which_score, amount, round); 
+   retval += weight.m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, which_score, amount, round);
 
    // ===================================================================================
    // word scores from knowledge
