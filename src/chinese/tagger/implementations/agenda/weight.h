@@ -107,7 +107,7 @@ public:
 
    CWordTagSet2Map m_mapWordTagTag;
    CWordTagSet2Map m_mapTagWordTag;
-   CWordTagSet2Map m_mapTagByLastTaggedWord;
+   CTwoWordsMap m_mapFirstCharAndChar;
 
 public:
    // note that m_bSegmentation rules will be covered by load()
@@ -161,7 +161,7 @@ public:
 
             m_mapWordTagTag("WordByTheNextTwoTag", 65537),
             m_mapTagWordTag("TagByNextWordSecondNextTag", 65537),
-            m_mapTagByLastTaggedWord("TagByLastTaggedWord", 65537)
+            m_mapFirstCharAndChar("FirstCharAndChar", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;

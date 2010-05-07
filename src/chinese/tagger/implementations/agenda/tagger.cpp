@@ -19,6 +19,7 @@ static const CWord g_emptyWord("");
 static const CTag g_beginTag(CTag::SENTENCE_BEGIN);
 
 #define find_or_replace_word_cache(tmp_start, tmp_end) ( amount ? m_WordCache.replace(tmp_start, tmp_end, sentence) : m_WordCache.find(tmp_start, tmp_end, sentence) )
+#define refer_or_allocate(x, y, z) {if(amount==0) x.refer(&y, &z); else x.allocate(y, z);}
 
 /*===============================================================
  *
@@ -187,7 +188,6 @@ if (index<item->size()) {
 
    if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( make_pair(word_1, tag_0_tag_2) , m_nScoreIndex , amount , round ) ;
    if (index>1) nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(word_2, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
-   if (index>0) nReturn += m_weights->m_mapTagByLastTaggedWord.getOrUpdateScore( make_pair(word_1, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
 
    return nReturn;
 }
@@ -222,6 +222,7 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    static CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    static CTwoTaggedWords wt12;
+   static CTwoWords first_char_and_char;
 
    // adding scores with features
    nReturn = 0;
@@ -230,7 +231,7 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    wt1.load(char_unigram, tag); 
    wt2.load(first_char);
-   if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+   refer_or_allocate(wt12, wt1, wt2);
    nReturn += m_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore( wt12, m_nScoreIndex, amount, round ) ;
 
 //   if (char_unigram == prev_char) 
@@ -239,6 +240,9 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
    nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ; 
 
    nReturn += m_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore( make_pair(char_bigram, tag), m_nScoreIndex, amount, round ) ; 
+
+   refer_or_allocate(first_char_and_char, first_char, char_unigram);
+   nReturn += m_weights->m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, m_nScoreIndex , amount , round ) ;
 
    return nReturn;
 }
