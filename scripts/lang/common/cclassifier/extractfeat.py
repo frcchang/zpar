@@ -60,17 +60,16 @@ def extractOneFeat(sent, constituent, integerizer):
       size=6
    elif size>5:
       size=5
-   prefix = "word size"
-   for index in range(start, end+1):
-      retval.append(oneFeat(prefix, sent[index][0] + ' ' + str(size), integerizer))
    retval.append(oneFeat("word_0 size", sent[start][0] + ' ' + str(size), integerizer))
    retval.append(oneFeat("word_n size", sent[end][0] + ' ' + str(size), integerizer))
-   prefix = "pos bigram"
+   for index in range(start, end+1):
+      retval.append(oneFeat("word size", sent[index][0] + ' ' + str(size), integerizer))
+      retval.append(oneFeat("pos size", sent[index][1] + ' ' + str(size), integerizer))
    for index in range(start, end):
-      retval.append(oneFeat(prefix, sent[index][1] + ' ' + sent[index+1][1], integerizer))
-   prefix = "pos trigram"
+      retval.append(oneFeat("pos bigram", sent[index][1] + ' ' + sent[index+1][1], integerizer))
+      retval.append(oneFeat("pos bigram size", sent[index][1] + ' ' + sent[index+1][1] + ' ' + str(size), integerizer))
    for index in range(start, end-1):
-      retval.append(oneFeat(prefix, sent[index][1] + ' ' + sent[index+1][1] + ' ' + sent[index+2][1], integerizer))
+      retval.append(oneFeat("pos trigram", sent[index][1] + ' ' + sent[index+1][1] + ' ' + sent[index+2][1], integerizer))
    return retval
 
 def extractFeat(path, integerizer):
