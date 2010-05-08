@@ -256,8 +256,6 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    const CTag &t = m_lCache[nd.lexical_head].tag; // head tag
 
    static unsigned long n; // number of constituents in the rule
-   static unsigned long hd; // head node
-   hd = nd.single_child?ctxt->s0_head_node:nd.head_left?ctxt->s1_head_node:ctxt->s0_head_node;
    n = nd.single_child?s0_size:s1_size+s0_size;
 
    static SCORE_TYPE nReturn;
@@ -816,7 +814,7 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
             assert(!left.temp||(head_left&&constituent==left.constituent));
             assert(!right.temp||(!head_left&&constituent==right.constituent));
             if (head_left) {
-               const bool neighbour = context.s1_head_node==context.s1_unbinarized.back();
+               const bool neighbour = context.s1h_unbinarized==context.s1_unbinarized.back();
 //               getOrUpdateLinkScore( left.lexical_head, 
 //                                     right.lexical_head, 
 //                                     amount, m_nTrainingRound );
@@ -846,7 +844,7 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
 //                                                       amount, m_nTrainingRound );
             }
             else {
-               const bool neighbour = context.s0_head_node==context.s0_unbinarized[0];
+               const bool neighbour = context.s0h_unbinarized==context.s0_unbinarized[0];
 //               getOrUpdateLinkScore( right.lexical_head, 
 //                                     left.lexical_head, 
 //                                     amount, 
@@ -978,7 +976,7 @@ void CConParser::reduce(CStateItem &st) {
                st.reduce(constituent, false, head_left, temporary);
                if (head_left) {
                   assert(st.context->s0_unbinarized.size()==1 && st.context->s0==st.context->s0_unbinarized[0]);
-                  const bool neighbour = st.context->s1_head_node==st.context->s1_unbinarized.back();
+                  const bool neighbour = st.context->s1h_unbinarized==st.context->s1_unbinarized.back();
                   st.score += getOrUpdateLinkScore( left.lexical_head, 
                                                     right.lexical_head );
                   if (st.context->s1rd!=-1) 
@@ -1006,7 +1004,7 @@ void CConParser::reduce(CStateItem &st) {
                }
                else { 
                   assert(st.context->s1_unbinarized.size()==1 && st.context->s1==st.context->s1_unbinarized[0]);
-                  const bool neighbour = st.context->s0_head_node==st.context->s0_unbinarized[0];
+                  const bool neighbour = st.context->s0h_unbinarized==st.context->s0_unbinarized[0];
                   st.score += getOrUpdateLinkScore( right.lexical_head, 
                                                     left.lexical_head );
                   if (st.context->s0ld!=-1) 

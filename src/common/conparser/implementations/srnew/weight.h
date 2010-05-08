@@ -137,7 +137,7 @@ public:
    // S0L
    CWordConstituentActionMap m_mapS0Lwc;
    CTagConstituentActionMap m_mapS0Ltc;
-   CCFGSetActionMap m_mapS0cS0HcS0R2c;
+   CCFGSetActionMap m_mapS0cS0HcS0L2c;
 
    // S0R
    CWordConstituentActionMap m_mapS0Rwc;
@@ -398,7 +398,7 @@ public:
 
                                                m_mapS0Lwc("Stack0LeftWord"),
                                                m_mapS0Ltc("Stack0LeftConstituent"), 
-                                               m_mapS0cS0HcS0R2c("Stack0ConstituentStack0HeadSubConstituentS0Left2SubConstituents"),
+                                               m_mapS0cS0HcS0L2c("Stack0ConstituentStack0HeadSubConstituentS0Left2SubConstituents"),
 
                                                m_mapS0Rwc("Stack0RightWord"),
                                                m_mapS0Rtc("Stack0RightConstituent"), 
@@ -412,7 +412,7 @@ public:
 
                                                m_mapS1Rwc("Stack1RightWord"),
                                                m_mapS1Rtc("Stack1RightConstituent"), 
-                                               m_mapS1cS1hcS1l2c("Stack1ConstituentStack1HeadSubConstituentS1Right2SubConstituents"),
+                                               m_mapS1cS1HcS1R2c("Stack1ConstituentStack1HeadSubConstituentS1Right2SubConstituents"),
 
                                                m_mapS1Uwc("Stack1UniWord"),
                                                m_mapS1Utc("Stack1UniConstituent"), 
