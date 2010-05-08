@@ -421,7 +421,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    }
 
   if (ctxt->s0h!=-1) {
-      nReturn += cast_weights->m_mapS0cS0HcS0R2c.getOrUpdateScore(make_pair(ctxt->s0cs0hcs0r2c, action)m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS0HcS0R2c.getOrUpdateScore(make_pair(ctxt->s0cs0hcs0r2c, action), m_nScoreIndex, amount, round);
    }
 
    // S0U
@@ -450,7 +450,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    }
 
    if (ctxt->s1h!=-1) {
-      nReturn += cast_weights->m_mapS1cS1HcS1R2c.getOrUpdateScore(make_pair(ctxt->s1cs1hcs1r2c, action)m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS1cS1HcS1R2c.getOrUpdateScore(make_pair(ctxt->s1cs1hcs1r2c, action), m_nScoreIndex, amount, round);
    }
 
    // S1U
