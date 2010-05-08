@@ -408,12 +408,20 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0Lwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
+   if (ctxt->s0h!=-1) {
+      nReturn += cast_weights->m_mapS0cS0HcS0L2c.getOrUpdateScore(make_pair(ctxt->s0cs0hcs0l2c, action), m_nScoreIndex, amount, round);;
+   }
+
    // S0R
    if (ctxt->s0r!=-1) {         
       refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s0rt), &(ctxt->s0rc), &action); 
       nReturn += cast_weights->m_mapS0Rtc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_constituent_action, ctxt->s0rw, &(ctxt->s0rc), &action); 
       nReturn += cast_weights->m_mapS0Rwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
+   }
+
+  if (ctxt->s0h!=-1) {
+      nReturn += cast_weights->m_mapS0cS0HcS0R2c.getOrUpdateScore(make_pair(ctxt->s0cs0hcs0r2c, action)m_nScoreIndex, amount, round);
    }
 
    // S0U
@@ -439,6 +447,10 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS1Rtc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_constituent_action, ctxt->s1rw, &(ctxt->s1rc), &action); 
       nReturn += cast_weights->m_mapS1Rwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
+   }
+
+   if (ctxt->s1h!=-1) {
+      nReturn += cast_weights->m_mapS1cS1HcS1R2c.getOrUpdateScore(make_pair(ctxt->s1cs1hcs1r2c, action)m_nScoreIndex, amount, round);
    }
 
    // S1U
