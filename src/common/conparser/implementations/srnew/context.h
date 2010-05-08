@@ -66,6 +66,7 @@ public:
    vector<CTag> between_tag;
    CCFGSet s0ts1tbt;
 
+   // sub nodes unbinarized for the binarized 
    vector<unsigned long> s0_unbinarized;
    vector<unsigned long> s1_unbinarized;
    vector<CConstituent> s0_unbinarized_cs;
@@ -77,10 +78,10 @@ public:
    CCFGSet s0cs0hcs0r2c, s0cs0hcs0l2c, s1cs1hcs1r2c;
    // unpacked left/right nodes for those having >=2
    CCFGSet s0r6c, s0l6c, s1r6c;
-   int s0_head_node; // the head node among all unexpanded nodes from s0
-   int s1_head_node; // the head node among all unexpanded nodes from s1
-   int s0_head_index;
-   int s1_head_index;
+   int s0h_unbinarized; // the head node among all unexpanded nodes from s0
+   int s1h_unbinarized; // the head node among all unexpanded nodes from s1
+   int s0h_unbinarized_index;
+   int s1h_unbinarized_index;
 
    unsigned long open_bracket_match_type;
 #ifdef _CHINESE_CFG_H
@@ -338,73 +339,73 @@ public:
       s0_unbinarized_cs.clear();
       if (s0l!=-1) s0_unbinarized.push_back(s0l); // leftmost sub
       if (s0h!=-1) { // head sub
-         s0_head_node = s0h;
+         s0h_unbinarized = s0h;
          if (item->nodes[s0l].temp) // expand temporary node
-            s0_head_node = unbinarize(item->nodes, s0h, s0_unbinarized);
+            s0h_unbinarized = unbinarize(item->nodes, s0h, s0_unbinarized);
          else // no process for the non temporary nodes now
             s0_unbinarized.push_back(s0h);
       }
       if (s0r!=-1) s0_unbinarized.push_back(s0r); // rightmost sub
       // collect tag
-      s0_head_index = -1;
+      s0h_unbinarized_index = -1;
       for (tmp=0; tmp<s0_unbinarized.size(); tmp++) {
          s0_unbinarized_cs.push_back(constituent_or_none(item->nodes[s0_unbinarized[tmp]]));
-         if (s0_unbinarized[tmp]==s0_head_node) s0_head_index=tmp;
+         if (s0_unbinarized[tmp]==s0h_unbinarized) s0h_unbinarized_index=tmp;
       }
-      assert(s0_head_index!=-1);
+      assert(s0h_unbinarized_index!=-1);
       // unexpand s1 sub
       s1_unbinarized.clear();
       s1_unbinarized_cs.clear();
-      s1_head_index=-1;
       if (s1!=-1) {
          if (s1l!=-1) s1_unbinarized.push_back(s1l);
          if (s1h!=-1) {
-            s1_head_index = s1h;
+            s1h_unbinarized = s1h;
             if (item->nodes[s1h].temp)
-               s1_head_node = unbinarize(item->nodes, s1h, s1_unbinarized);
+               s1h_unbinarized = unbinarize(item->nodes, s1h, s1_unbinarized);
             else
                s1_unbinarized.push_back(s1h);
          }
          if (s1r!=-1) s1_unbinarized.push_back(s1r);
       }
-      else s1_head_node = -1;
+      else s1h_unbinarized = -1;
       // collect tag for the unexpanded sub node constituent
+      s1h_unbinarized_index=-1;
       if (s1!=-1)  {
          for(tmp=0; tmp<s1_unbinarized.size(); tmp++) {
             s1_unbinarized_cs.push_back(constituent_or_none(item->nodes[s1_unbinarized[tmp]]));
-            if (s1_unbinarized[tmp]==s1_head_node) s1_head_index=tmp;
+            if (s1_unbinarized[tmp]==s1h_unbinarized) s1h_unbinarized_index=tmp;
          }
       }
-      assert(s1==-1||s1_head_index!=-1);
+      assert(s1==-1||s1h_unbinarized_index!=-1);
 
       // s0hc and s1hc
-      s0hc.load(s0_head_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s0_head_index]]) : CConstituent::SENTENCE_BEGIN);
-      s1hc.load(s1_head_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s1_head_index]]) : CConstituent::SENTENCE_BEGIN);
+      s0hc.load(s0h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s0h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
+      s1hc.load(s1h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s1h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
 
       // s0cs0hcs0l2c, s0cs0hcs0r2c, s1cs1hcs1r2c
       s0cs0hcs0r2c.load(s0c, s0hc);
-      s0cs0hcs0r2c.add(s0_head_index+1<s0_unbinarized.size() ? s0_unbinarized.back() : g_beginConstituent);
-      s0cs0hcs0r2c.add(s0_head_index+2<s0_unbinarized.size() ? s0_unbinarized[s0_unbinarized.size()-2] : g_beginConstituent);
+      s0cs0hcs0r2c.add(s0h_unbinarized_index+1<s0_unbinarized.size() ? s0_unbinarized.back() : g_beginConstituent);
+      s0cs0hcs0r2c.add(s0h_unbinarized_index+2<s0_unbinarized.size() ? s0_unbinarized[s0_unbinarized.size()-2] : g_beginConstituent);
 
       s0cs0hcs0l2c.load(s0c, s0hc);
-      s0cs0hcs0l2c.add(s0_head_index>0 ? s0_unbinarized[0] : g_beginConstituent);
-      s0cs0hcs0l2c.add(s0_head_index>1 ? s0_unbinarized[1] : g_beginConstituent);
+      s0cs0hcs0l2c.add(s0h_unbinarized_index>0 ? s0_unbinarized[0] : g_beginConstituent);
+      s0cs0hcs0l2c.add(s0h_unbinarized_index>1 ? s0_unbinarized[1] : g_beginConstituent);
 
       s1cs1hcs1r2c.load(s1c, s1hc);
-      s1cs1hcs1r2c.add(s1_head_index+1<s1_unbinarized.size() ? s1_unbinarized.back() : g_beginConstituent);
-      s1cs1hcs1r2c.add(s1_head_index+2<s1_unbinarized.size() ? s1_unbinarized[s1_unbinarized.size()-2] : g_beginConstituent);
+      s1cs1hcs1r2c.add(s1h_unbinarized_index+1<s1_unbinarized.size() ? s1_unbinarized.back() : g_beginConstituent);
+      s1cs1hcs1r2c.add(s1h_unbinarized_index+2<s1_unbinarized.size() ? s1_unbinarized[s1_unbinarized.size()-2] : g_beginConstituent);
 
       s0l6c.clear();
       for (tmp=0; tmp<6; ++tmp) {
-         s0l6c.add(tmp<s0_head_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
+         s0l6c.add(tmp<s0h_unbinarized_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
       }
       s0r6c.clear();
       for (tmp=s0_unbinarized.size()-1; tmp>s0_unbinarized.size()-7; ++tmp) {
-         s0r6c.add(tmp>s0_head_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
+         s0r6c.add(tmp>s0h_unbinarized_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
       }
       s1r6c.clear();
       for (tmp=s1_unbinarized.size()-1; tmp>s1_unbinarized.size()-7; ++tmp) {
-         s1r6c.add(tmp>s1_head_index?s1_unbinarized_cs[tmp]:g_beginConstituent);
+         s1r6c.add(tmp>s1h_unbinarized_index?s1_unbinarized_cs[tmp]:g_beginConstituent);
       }
 
 #ifdef _CHINESE_CFG_H
@@ -444,7 +445,7 @@ public:
       s0_sepset=0; s1_sepset=0; s0s1_sepset=0;
       sepcount = 0;
       if (s1!=-1) {
-         for (i=s1_head_index+1; i<s0_head_index; ++i) {
+         for (i=s1h_unbinarized_index+1; i<s0h_unbinarized_index; ++i) {
             last_separator = getSeparatingPunctuation(wrds[item->nodes[i].lexical_head]);
             if (last_separator!=-1) {
                if ((s0s1_sepset&(1<<last_separator))==0) {
