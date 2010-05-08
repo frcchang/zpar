@@ -408,6 +408,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0Lwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
+   // s0h!=-1 when s0 has any sub nodes including the case of one
    if (ctxt->s0h!=-1) {
       nReturn += cast_weights->m_mapS0cS0HcS0L2c.getOrUpdateScore(make_pair(ctxt->s0cs0hcs0l2c, action), m_nScoreIndex, amount, round);;
    }
@@ -420,6 +421,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0Rwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
+  // s0h==-1 means that s0 has no sub nodes
   if (ctxt->s0h!=-1) {
       nReturn += cast_weights->m_mapS0cS0HcS0R2c.getOrUpdateScore(make_pair(ctxt->s0cs0hcs0r2c, action), m_nScoreIndex, amount, round);
    }
@@ -449,6 +451,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS1Rwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
+   // s1h==-1 means that there are no sub nodes
    if (ctxt->s1h!=-1) {
       nReturn += cast_weights->m_mapS1cS1HcS1R2c.getOrUpdateScore(make_pair(ctxt->s1cs1hcs1r2c, action), m_nScoreIndex, amount, round);
    }
