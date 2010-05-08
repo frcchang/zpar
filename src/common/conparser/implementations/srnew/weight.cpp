@@ -102,14 +102,17 @@ const CScore<SCORE_TYPE> g_zeroScore;
 \
    left(m_mapS0Lwc)right\
    left(m_mapS0Ltc)right\
+   left(m_mapS0cS0HcS0L2c)right\
    left(m_mapS0Rwc)right\
    left(m_mapS0Rtc)right\
+   left(m_mapS0cS0HcS0R2c)right\
    left(m_mapS0Uwc)right\
    left(m_mapS0Utc)right\
    left(m_mapS1Lwc)right\
    left(m_mapS1Ltc)right\
    left(m_mapS1Rwc)right\
    left(m_mapS1Rtc)right\
+   left(m_mapS1cS1HcS1R2c)right\
    left(m_mapS1Uwc)right\
    left(m_mapS1Utc)right\
    left(m_mapS0LDw)right\
