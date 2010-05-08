@@ -133,11 +133,11 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
 
    // ===================================================================================
    // character scores -- with end-1 middled
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) 
-//      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) 
+      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) 
-//      nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) 
+      nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
    // ===================================================================================
    // word scores 
@@ -235,11 +235,11 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    retval = 0;
    // ===================================================================================
    // character scores -- the middle character is end-1
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) 
-//      retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) 
+      retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) 
-//      retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) 
+      retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end+1) ), which_score, amount, round);
 
    retval += weight.m_mapConsecutiveChars.getOrUpdateScore( _cache_word(end, 2), which_score, amount, round); 
    retval += weight.m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, which_score, amount, round);
