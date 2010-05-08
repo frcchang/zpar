@@ -12,6 +12,7 @@ class CStateNode;
 class CStateItem;
 
 const CConstituent g_noneConstituent(CConstituent::NONE);
+const CConstituent g_beginConstituent(CConstituent::SENTENCE_BEGIN);
 const CTag g_noneTag(CTag::NONE);
 
 #define constituent_or_none(x) (x.is_constituent ? x.constituent : CConstituent::NONE)
@@ -26,8 +27,8 @@ class CContext {
 public:
    int s0, s1, s2, s3;
    int n0, n1, n2, n3;
-   int s0l, s0r, s0u;
-   int s1l, s1r, s1u;
+   int s0l, s0r, s0u, s0h;
+   int s1l, s1r, s1u, s1h;
    int s0ld, s0rd;
    int s1ld, s1rd;
 
@@ -69,6 +70,12 @@ public:
    vector<unsigned long> s1_unbinarized;
    vector<CConstituent> s0_unbinarized_cs;
    vector<CConstituent> s1_unbinarized_cs;
+   // the head child
+   CConstituent s0hc, s1hc;
+   // the constituent, its head child, and the left/right two ones
+   // applied to any constituent no matter how many sub-nodes
+   CCFGSet s0cs0hcs0r2c, s0cs0hcs0l2c, s1cs1hcs1r2c;
+   // unpacked left/right nodes for those having >=2
    CCFGSet s0r6c, s0l6c, s1r6c;
    int s0_head_node; // the head node among all unexpanded nodes from s0
    int s1_head_node; // the head node among all unexpanded nodes from s1
@@ -182,14 +189,15 @@ public:
       s2node = s2==-1 ? 0 : &(item->nodes[s2]);
       s3node = s3==-1 ? 0 : &(item->nodes[s3]);
   
-      s0l = s0node->is_constituent ? (s0node->single_child||s0node->head_left ? -1 : s0node->left_child) 
-                                   : -1;
+      s0l = s0node->is_constituent ? (s0node->single_child||s0node->head_left ? -1 : s0node->left_child) : -1;
       s0r = s0node->is_constituent ? (s0node->single_child||!s0node->head_left ? -1 : s0node->right_child) : -1;
       s0u = s0node->is_constituent ? (s0node->single_child ? s0node->left_child : -1) : -1;
+      s0h = s0node->is_constituent ? (s0node->single_child||s0node->head_left ? s0node->left_child : s0node->right_child) : -1;
 
       s1l = s1==-1 ? -1 : ( s1node->is_constituent ?  (s1node->single_child||s1node->head_left ? -1 : s1node->left_child) : -1 );
       s1r = s1==-1 ? -1 : ( s1node->is_constituent ? (s1node->single_child||!s1node->head_left ? -1 : s1node->right_child) : -1 );
       s1u = s1==-1 ? -1 : ( s1node->is_constituent ? (s1node->single_child ? s1node->left_child : -1) : -1 );
+      s1l = s1==-1 ? -1 : ( s1node->is_constituent ?  (s1node->single_child||s1node->head_left ? s1node->left_child : s1node->right_child) : -1 );
    
       s0c.load(s0node->is_constituent ? s0node->constituent : CConstituent::NONE);
       s0wt = &(wrds[s0node->lexical_head]);
@@ -325,21 +333,42 @@ public:
          between_tag.push_back(wrds[i].tag);
       }
 
-      // unexpand s0 and s1
+      // unexpand s0 sub
       s0_unbinarized.clear();
       s0_unbinarized_cs.clear();
-      s0_head_node = unbinarize(item->nodes, s0, s0_unbinarized);
+      if (s0l!=-1) s0_unbinarized.push_back(s0l); // leftmost sub
+      if (s0h!=-1) { // head sub
+         s0_head_node = s0h;
+         if (item->nodes[s0l].temp) // expand temporary node
+            s0_head_node = unbinarize(item->nodes, s0h, s0_unbinarized);
+         else // no process for the non temporary nodes now
+            s0_unbinarized.push_back(s0h);
+      }
+      if (s0r!=-1) s0_unbinarized.push_back(s0r); // rightmost sub
+      // collect tag
       s0_head_index = -1;
       for (tmp=0; tmp<s0_unbinarized.size(); tmp++) {
          s0_unbinarized_cs.push_back(constituent_or_none(item->nodes[s0_unbinarized[tmp]]));
          if (s0_unbinarized[tmp]==s0_head_node) s0_head_index=tmp;
       }
       assert(s0_head_index!=-1);
+      // unexpand s1 sub
       s1_unbinarized.clear();
       s1_unbinarized_cs.clear();
       s1_head_index=-1;
-      if (s1!=-1) s1_head_node = unbinarize(item->nodes, s1, s1_unbinarized);
+      if (s1!=-1) {
+         if (s1l!=-1) s1_unbinarized.push_back(s1l);
+         if (s1h!=-1) {
+            s1_head_index = s1h;
+            if (item->nodes[s1h].temp)
+               s1_head_node = unbinarize(item->nodes, s1h, s1_unbinarized);
+            else
+               s1_unbinarized.push_back(s1h);
+         }
+         if (s1r!=-1) s1_unbinarized.push_back(s1r);
+      }
       else s1_head_node = -1;
+      // collect tag for the unexpanded sub node constituent
       if (s1!=-1)  {
          for(tmp=0; tmp<s1_unbinarized.size(); tmp++) {
             s1_unbinarized_cs.push_back(constituent_or_none(item->nodes[s1_unbinarized[tmp]]));
@@ -348,17 +377,34 @@ public:
       }
       assert(s1==-1||s1_head_index!=-1);
 
+      // s0hc and s1hc
+      s0hc.load(s0_head_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s0_head_index]]) : CConstituent::SENTENCE_BEGIN);
+      s1hc.load(s1_head_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s1_head_index]]) : CConstituent::SENTENCE_BEGIN);
+
+      // s0cs0hcs0l2c, s0cs0hcs0r2c, s1cs1hcs1r2c
+      s0cs0hcs0r2c.load(s0c, s0hc);
+      s0cs0hcs0r2c.add(s0_head_index+1<s0_unbinarized.size() ? s0_unbinarized.back() : g_beginConstituent);
+      s0cs0hcs0r2c.add(s0_head_index+2<s0_unbinarized.size() ? s0_unbinarized[s0_unbinarized.size()-2] : g_beginConstituent);
+
+      s0cs0hcs0l2c.load(s0c, s0hc);
+      s0cs0hcs0l2c.add(s0_head_index>0 ? s0_unbinarized[0] : g_beginConstituent);
+      s0cs0hcs0l2c.add(s0_head_index>1 ? s0_unbinarized[1] : g_beginConstituent);
+
+      s1cs1hcs1r2c.load(s1c, s1hc);
+      s1cs1hcs1r2c.add(s1_head_index+1<s1_unbinarized.size() ? s1_unbinarized.back() : g_beginConstituent);
+      s1cs1hcs1r2c.add(s1_head_index+2<s1_unbinarized.size() ? s1_unbinarized[s1_unbinarized.size()-2] : g_beginConstituent);
+
       s0l6c.clear();
       for (tmp=0; tmp<6; ++tmp) {
-         s0l6c.add(tmp<s0_head_index?s0_unbinarized_cs[tmp]:CConstituent::SENTENCE_BEGIN);
+         s0l6c.add(tmp<s0_head_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
       }
       s0r6c.clear();
       for (tmp=s0_unbinarized.size()-1; tmp>s0_unbinarized.size()-7; ++tmp) {
-         s0r6c.add(tmp>s0_head_index?s0_unbinarized_cs[tmp]:CConstituent::SENTENCE_BEGIN);
+         s0r6c.add(tmp>s0_head_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
       }
       s1r6c.clear();
       for (tmp=s1_unbinarized.size()-1; tmp>s1_unbinarized.size()-7; ++tmp) {
-         s1r6c.add(tmp>s1_head_index?s1_unbinarized_cs[tmp]:CConstituent::SENTENCE_BEGIN);
+         s1r6c.add(tmp>s1_head_index?s1_unbinarized_cs[tmp]:g_beginConstituent);
       }
 
 #ifdef _CHINESE_CFG_H
