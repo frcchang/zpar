@@ -14,6 +14,8 @@ class CStateItem;
 const CConstituent g_noneConstituent(CConstituent::NONE);
 const CTag g_noneTag(CTag::NONE);
 
+#define constituent_or_none(x) (x.is_constituent ? x.constituent : CConstituent::NONE)
+
 //===============================================================
 //
 // CContext 
@@ -65,8 +67,9 @@ public:
 
    vector<unsigned long> s0_unbinarized;
    vector<unsigned long> s1_unbinarized;
-   vector<unsigned long> s0_unbinarized_cs;
-   vector<unsigned long> s1_unbinarized_cs;
+   vector<CConstituent> s0_unbinarized_cs;
+   vector<CConstituent> s1_unbinarized_cs;
+   CCFGSet s0r6c, s0l6c, s1r6c;
    int s0_head_node; // the head node among all unexpanded nodes from s0
    int s1_head_node; // the head node among all unexpanded nodes from s1
    int s0_head_index;
@@ -317,7 +320,8 @@ public:
       // a tag between s0 and s1
       s0ts1tbt = s0ts1t; s0ts1tbt.add(g_noneTag);
       between_tag.clear();
-      for (i=s1_head_index+1; i<s0_head_index; ++i) {
+      if (s1!=-1)
+      for (i=s1node->lexical_head+1; i<s0node->lexical_head; ++i) {
          between_tag.push_back(wrds[i].tag);
       }
 
@@ -327,7 +331,7 @@ public:
       s0_head_node = unbinarize(item->nodes, s0, s0_unbinarized);
       s0_head_index = -1;
       for (tmp=0; tmp<s0_unbinarized.size(); tmp++) {
-         s0_unbinarized_cs.push_back(encodeC(item->nodes[s0_unbinarized[tmp]], wrds));
+         s0_unbinarized_cs.push_back(constituent_or_none(item->nodes[s0_unbinarized[tmp]]));
          if (s0_unbinarized[tmp]==s0_head_node) s0_head_index=tmp;
       }
       assert(s0_head_index!=-1);
@@ -338,11 +342,24 @@ public:
       else s1_head_node = -1;
       if (s1!=-1)  {
          for(tmp=0; tmp<s1_unbinarized.size(); tmp++) {
-            s1_unbinarized_cs.push_back(encodeC(item->nodes[s1_unbinarized[tmp]], wrds));
+            s1_unbinarized_cs.push_back(constituent_or_none(item->nodes[s1_unbinarized[tmp]]));
             if (s1_unbinarized[tmp]==s1_head_node) s1_head_index=tmp;
          }
       }
       assert(s1==-1||s1_head_index!=-1);
+
+      s0l6c.clear();
+      for (tmp=0; tmp<6; ++tmp) {
+         s0l6c.add(tmp<s0_head_index?s0_unbinarized_cs[tmp]:CConstituent::SENTENCE_BEGIN);
+      }
+      s0r6c.clear();
+      for (tmp=s0_unbinarized.size()-1; tmp>s0_unbinarized.size()-7; ++tmp) {
+         s0r6c.add(tmp>s0_head_index?s0_unbinarized_cs[tmp]:CConstituent::SENTENCE_BEGIN);
+      }
+      s1r6c.clear();
+      for (tmp=s1_unbinarized.size()-1; tmp>s1_unbinarized.size()-7; ++tmp) {
+         s1r6c.add(tmp>s1_head_index?s1_unbinarized_cs[tmp]:CConstituent::SENTENCE_BEGIN);
+      }
 
 #ifdef _CHINESE_CFG_H
       // bracket
