@@ -1,5 +1,5 @@
 import extractfeat
-from libsvm import *
+from libsvm import svm, svmutil
 import sys
 
 import getopt
@@ -20,12 +20,16 @@ def train(data, path):
       labels.append(classid)
       samples.append(feature)
    print "Training SVM."
-   problem = svm_problem(labels, samples)
-   param = svm_parameter(kernel_type = POLY, degree=2, C=1, eps=1, shrinking=0)
-   model = svm_model(problem, param)
+   problem = svm.svm_problem(labels, samples)
+   param = svm.svm_parameter()
+   param.kernel_type = svm.LINEAR#
+   param.C=1
+   #param.degree=2
+   param.eps=1
+   model = svmutil.svm_train(problem, param)
    print "Saving model."
    os.mkdir(path)
-   model.save(os.path.join(path, "scr"))  
+   svmutil.svm_save_model(os.path.join(path, "scr"))  
    integerizer.write(os.path.join(path, "int"))
 
 if __name__ == "__main__":
