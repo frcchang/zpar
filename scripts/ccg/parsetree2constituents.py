@@ -37,6 +37,7 @@ def ToCon(tree, positive, negative):
          if negatives[i*size+j]:
             yield [str(i), str(j), '-NONE-']
             count -= 1
+            negatives[i*size+j]=0
 
 if __name__ == "__main__":
    hint = "usage: parsetree2constitu.py [--i prolog/pipe] [-n random] [-p tag] file"
