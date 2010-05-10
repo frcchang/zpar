@@ -1,5 +1,10 @@
 import extractfeat
-from svm import *
+from libsvm import *
+import sys
+
+import getopt
+
+import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
@@ -11,7 +16,7 @@ def train(data, path):
    integerizer = tools.integerization.CIntegerization()
    labels = []
    samples = []
-   for classid, feature in extractFeat(data, integerizer):
+   for classid, feature in extractfeat.extractFeat(data, integerizer):
       labels.append(classid)
       samples.append(feature)
    print "Training SVM."

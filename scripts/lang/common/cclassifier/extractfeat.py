@@ -23,7 +23,6 @@ def extractOneFeat(sent, constituent, integerizer):
       class_label = 1
    else:
       class_label = 0
-   retval.append(class_label)
    # decide features
    retval.append(oneFeat("word_0", sent[start][0], integerizer))
    retval.append(oneFeat("word_n", sent[end][0], integerizer))
@@ -70,7 +69,7 @@ def extractOneFeat(sent, constituent, integerizer):
       retval.append(oneFeat("pos bigram size", sent[index][1] + ' ' + sent[index+1][1] + ' ' + str(size), integerizer))
    for index in range(start, end-1):
       retval.append(oneFeat("pos trigram", sent[index][1] + ' ' + sent[index+1][1] + ' ' + sent[index+2][1], integerizer))
-   return retval
+   return (class_label, retval)
 
 def extractFeat(path, integerizer):
    for sent, constituents in constituentreader.read(path):

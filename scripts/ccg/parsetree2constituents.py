@@ -2,6 +2,7 @@ import sys
 import prolog
 import pipe
 import getopt
+import random
 
 format = pipe
 token_index = 2
@@ -16,17 +17,35 @@ def Iter(node, cons):
    if node.right: 
       Iter(node.right, cons)
 
-def ToCon(tree):
+def ToCon(tree, positive, negative):
    cons = []
    Iter(tree.root, cons)
-   return cons
+   size = len(tree.tokens)
+   if negative:
+      negatives = [1]*(size*size)
+   count = 0
+   for item in cons:
+      if positive == None or item[2] == positive:
+         yield item
+         if negative:
+            negatives[int(item[0])*size+int(item[1])]=0
+         count += 1
+   if negative == 'random':
+      while count:
+         i = random.randint(0, size-1)
+         j = random.randint(0, size-1)
+         if negatives[i*size+j]:
+            yield [str(i), str(j), '-NONE-']
+            count -= 1
 
 if __name__ == "__main__":
-   hint = "usage: parsetree2constitu.py [--input prolog/pipe] file"
-   optlist, args = getopt.getopt(sys.argv[1:], "i:", ["input="])
+   hint = "usage: parsetree2constitu.py [--i prolog/pipe] [-n random] [-p tag] file"
+   optlist, args = getopt.getopt(sys.argv[1:], "i:n:p:", ["input="])
    format = pipe
+   negative = None
+   positive = None
    for opt, val in optlist:
-      if opt == "--input":
+      if opt == "-i":
          if val == "prolog":
             format = prolog
             token_index = 2
@@ -35,6 +54,11 @@ if __name__ == "__main__":
             format = pipe
             token_index = 2
             pos_index = 4
+      if opt == '-n':
+         if val == 'random':
+            negative = val
+      if opt == '-p':
+         positive = val
    file = open(args[0])
    lastid = 0
    tree = format.LoadTree(file)
@@ -43,7 +67,7 @@ if __name__ == "__main__":
          print
       lastid = tree.id
       print ' '.join(['|'.join([token[2],token[4]]) for token in tree.tokens])
-      for constituent in ToCon(tree):
+      for constituent in ToCon(tree, positive, negative):
          print ' '.join(constituent)
       print
       tree = format.LoadTree(file)
