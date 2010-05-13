@@ -39,16 +39,17 @@ return 0;
    unsigned long dist = encodeLinkSize(head, mod);
    static CCFGSet cf;
 
-   const unsigned long ht = encodeTorC(m_lCache[head].tag.code(), true);
+   const CTag &ht = m_lCache[head].tag;
    const CWord &hw = m_lCache[head];
-   const unsigned long mt = encodeTorC(m_lCache[mod].tag.code(), true);
+   const CTag &mt = m_lCache[mod].tag;
    const CWord &mw = m_lCache[mod];
 
-   cf.clear(); cf+=ht; cf+=mt; cf+=0; cf+=0;
+/*
+   cf.clear(); cf.add(ht); cf.add(mt); cf.add(0); cf.add(0);
    nReturn += cast_weights->m_mapHtMt.getOrUpdateScore(cf, m_nScoreIndex, amount, round);
-   cf.clear(); cf+=ht; cf+=mt; cf+=direction; cf+=0;
+   cf.clear(); cf.add(ht); cf.add(mt); cf.add(direction); cf.add(0);
    nReturn += cast_weights->m_mapHtMt.getOrUpdateScore(cf, m_nScoreIndex, amount, round);
-   cf.clear(); cf+=ht; cf+=mt; cf+=direction; cf+=dist;
+   cf.clear(); cf.add(ht); cf.add(mt); cf.add(direction); cf.add(dist);
    nReturn += cast_weights->m_mapHtMt.getOrUpdateScore(cf, m_nScoreIndex, amount, round);
 
    cf.clear(); cf+=mt; cf+=0; cf+=0;
@@ -64,7 +65,7 @@ return 0;
    nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(make_pair(mw, cf), m_nScoreIndex, amount, round);
    cf.clear(); cf+=ht; cf+=direction;cf+=dist;
    nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(make_pair(mw, cf), m_nScoreIndex, amount, round);
-
+*/
    return nReturn;
 
 }
@@ -829,7 +830,6 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
             assert(!left.temp||(head_left&&constituent==left.constituent));
             assert(!right.temp||(!head_left&&constituent==right.constituent));
             if (head_left) {
-               const bool neighbour = context.s1h_unbinarized==context.s1_unbinarized.back();
 //               getOrUpdateLinkScore( left.lexical_head, 
 //                                     right.lexical_head, 
 //                                     amount, m_nTrainingRound );
@@ -859,7 +859,6 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
 //                                                       amount, m_nTrainingRound );
             }
             else {
-               const bool neighbour = context.s0h_unbinarized==context.s0_unbinarized[0];
 //               getOrUpdateLinkScore( right.lexical_head, 
 //                                     left.lexical_head, 
 //                                     amount, 
@@ -990,8 +989,6 @@ void CConParser::reduce(CStateItem &st) {
                st.score += getOrUpdateStackScore(&st, action);
                st.reduce(constituent, false, head_left, temporary);
                if (head_left) {
-                  assert(st.context->s0_unbinarized.size()==1 && st.context->s0==st.context->s0_unbinarized[0]);
-                  const bool neighbour = st.context->s1h_unbinarized==st.context->s1_unbinarized.back();
                   st.score += getOrUpdateLinkScore( left.lexical_head, 
                                                     right.lexical_head );
                   if (st.context->s1rd!=-1) 
@@ -1001,25 +998,8 @@ void CConParser::reduce(CStateItem &st) {
                   st.score += getOrUpdateArityScore( right.lexical_head, 
                                                      st.context->s0ln, 
                                                      st.context->s0rn );
-//                  if (!left.temp) 
-//                     st.score += getOrUpdateHeadScore( constituent, 
-//                                                       st.context->s1c, 
-//                                                       left.lexical_head );
-//                  st.score += getOrUpdateHeadModifierScore( constituent, 
-//                                                            st.context->s1_unbinarized_cs[st.context->s1_head_index], 
-//                                                            st.context->s0c, 
-//                                                            left.lexical_head, right.lexical_head,
-//                                                            true, 
-//                                                            neighbour );
-//                  if (!neighbour) 
-//                     st.score += getOrUpdateBigramScore( constituent, 
-//                                                         st.context->s1_unbinarized_cs.back(), 
-//                                                         st.context->s0c, 
-//                                                         true );
                }
                else { 
-                  assert(st.context->s1_unbinarized.size()==1 && st.context->s1==st.context->s1_unbinarized[0]);
-                  const bool neighbour = st.context->s0h_unbinarized==st.context->s0_unbinarized[0];
                   st.score += getOrUpdateLinkScore( right.lexical_head, 
                                                     left.lexical_head );
                   if (st.context->s0ld!=-1) 
@@ -1029,21 +1009,6 @@ void CConParser::reduce(CStateItem &st) {
                   st.score += getOrUpdateArityScore( left.lexical_head, 
                                                      st.context->s1ln, 
                                                      st.context->s1rn );
-//                  if (!right.temp) 
-//                     st.score += getOrUpdateHeadScore( constituent, 
-//                                                       st.context->s0c, 
-//                                                       right.lexical_head );
-//                  st.score += getOrUpdateHeadModifierScore( constituent, 
-//                                                            st.context->s0_unbinarized_cs[st.context->s0_head_index], 
-//                                                            st.context->s1c, 
-//                                                            right.lexical_head, left.lexical_head,
-//                                                            false, 
-//                                                            neighbour );
-//                  if (!neighbour) 
-//                     st.score += getOrUpdateBigramScore( constituent, 
-//                                                         st.context->s0_unbinarized_cs[0], 
-//                                                         st.context->s1c, 
-//                                                         false );
                }
                st.score += getOrUpdateGraphScore(&st);
                m_Agenda->pushCandidate(&st);

@@ -36,10 +36,10 @@ const int MAX_SENTENCE_SIZE_BITS = 8 ;
 //   return t;
 //}
 
-inline unsigned long encodeC(const CStateNode &node, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &cache ) {
-   assert((node.constituent&(1<<CConstituent::SIZE))==0);
-   return node.is_constituent ? encodeTorC(node.constituent, false) | (node.temp?(1<<CConstituent::SIZE):0) : encodeTorC(cache[node.lexical_head].tag.code(), true);
-}
+//inline unsigned long encodeC(const CStateNode &node, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &cache ) {
+//   assert((node.constituent&(1<<CConstituent::SIZE))==0);
+//   return node.is_constituent ? encodeTorC(node.constituent, false) | (node.temp?(1<<CConstituent::SIZE):0) : encodeTorC(cache[node.lexical_head].tag.code(), true);
+//}
 
 inline unsigned long normalize3(const unsigned long &x) {
    assert(x!=0); return x>2 ? 2 : x==2 ? 1 : 0;

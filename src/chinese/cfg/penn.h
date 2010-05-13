@@ -82,10 +82,8 @@ protected:
 
 public:
    CConstituent() { m_code=PENN_CON_NONE; }
-   CConstituent(PENN_CON_CONSTANTS t) { 
-      m_code=t; 
-   }
    CConstituent(const unsigned long &t) { 
+      assert(t<COUNT);
       m_code=t; 
    }
    CConstituent(const string &s) { load(s); }
@@ -110,7 +108,7 @@ public:
          THROW("unknown constituent: " << s << '.');
       }
    }
-   void load(const unsigned long &code) {m_code=code;}
+   void load(const unsigned long &code) { assert(code<COUNT); m_code=code; }
    inline bool canBeTemporary() const { return PENN_CON_TEMP[m_code]; }
    // convenience optimization function 
    inline static bool canBeTemporary(const unsigned long &code) { return PENN_CON_TEMP[code]; }
