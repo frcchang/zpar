@@ -275,14 +275,13 @@ public:
       s0cn0t.load(s0c, n0t);
       n0tn1t.load(n0t, n1t);
       s1cn0t.load(s1c, n0t);
-      s1cn0t.load(s1c, n0t);
       s0tn0t.load(s0t, n0t);
-      s0cs1cn0t = s0cs1c; s0cs1cn0t.add(n0t);
-      s0cs1cs2c = s0cs1c; s0cs1cs2c.add(s2c);
-      s0cn0tn1t = s0cn0t; s0cn0tn1t.add(n1t);
-      s0ts1tn0t = s0ts1t; s0ts1tn0t.add(n0t);
-      s0ts1ts2t = s0ts1t; s0ts1ts2t.add(s2t);
-      s0tn0tn1t = s0tn0t; s0tn0tn1t.add(n1t);
+      s0cs1cn0t.copy(s0cs1c); s0cs1cn0t.add(n0t);
+      s0cs1cs2c.copy(s0cs1c); s0cs1cs2c.add(s2c);
+      s0cn0tn1t.copy(s0cn0t); s0cn0tn1t.add(n1t);
+      s0ts1tn0t.copy(s0ts1t); s0ts1tn0t.add(n0t);
+      s0ts1ts2t.copy(s0ts1t); s0ts1ts2t.add(s2t);
+      s0tn0tn1t.copy(s0tn0t); s0tn0tn1t.add(n1t);
 
       if (s0c.empty()) s0js1jn0t.load(s0t); else s0js1jn0t.load(s0c);
       if (s1c.empty()) s0js1jn0t.add(s1t); else s0js1jn0t.add(s1c);
@@ -302,15 +301,15 @@ public:
       // s0rj is s0rc when s0rc not empty, and s0rt otherwise
       // s0rj empty only when s0r non existant
       s0cs0rc.load(s0c, s0rc);
-      s0cs0rcn0t = s0cn0t; s0cs0rcn0t.add(s0rc);
+      s0cs0rcn0t.copy(s0cn0t); s0cs0rcn0t.add(s0rc);
 
-      s0cs0rjn0t = s0cn0t; 
+      s0cs0rjn0t.copy(s0cn0t); 
       if (s0rc.empty()) s0cs0rjn0t.add(s0rt); else s0cs0rjn0t.add(s0rc);
 
       // s0 s0l and s1 -- by presuming that s1 exists!
       // see comments above
       s0cs0lc.load(s0c, s0lc);
-      s0cs0lcs1c = s0cs1c;
+      s0cs0lcs1c.copy(s0cs1c);
       s0cs0lcs1c.add(s0lc);
 
       s0cs0ljs1j.load(s0c);
@@ -319,7 +318,7 @@ public:
 
       // s0 slr and s1 -- by presuming that s1 exists!
       s1cs1rc.load(s1c, s1rc);
-      s0cs1cs1rc = s0cs1c;
+      s0cs1cs1rc.copy(s0cs1c);
       s0cs1cs1rc.add(s1rc);
 
       if (s0c.empty()) s0js1cs1rj.load(s0t); else s0js1cs1rj.load(s0c);
@@ -337,13 +336,10 @@ public:
       // unexpand s0 sub
       s0_unbinarized.clear();
       s0_unbinarized_cs.clear();
+      s0h_unbinarized = -1;
       if (s0l!=-1) s0_unbinarized.push_back(s0l); // leftmost sub
       if (s0h!=-1) { // head sub
-         s0h_unbinarized = s0h;
-         if (item->nodes[s0l].temp) // expand temporary node
-            s0h_unbinarized = unbinarize(item->nodes, s0h, s0_unbinarized);
-         else // no process for the non temporary nodes now
-            s0_unbinarized.push_back(s0h);
+         s0h_unbinarized = unbinarize(item->nodes, s0h, s0_unbinarized);
       }
       if (s0r!=-1) s0_unbinarized.push_back(s0r); // rightmost sub
       // collect tag
@@ -356,18 +352,14 @@ public:
       // unexpand s1 sub
       s1_unbinarized.clear();
       s1_unbinarized_cs.clear();
+      s1h_unbinarized = -1;
       if (s1!=-1) {
          if (s1l!=-1) s1_unbinarized.push_back(s1l);
          if (s1h!=-1) {
-            s1h_unbinarized = s1h;
-            if (item->nodes[s1h].temp)
-               s1h_unbinarized = unbinarize(item->nodes, s1h, s1_unbinarized);
-            else
-               s1_unbinarized.push_back(s1h);
+            s1h_unbinarized = unbinarize(item->nodes, s1h, s1_unbinarized);
          }
          if (s1r!=-1) s1_unbinarized.push_back(s1r);
       }
-      else s1h_unbinarized = -1;
       // collect tag for the unexpanded sub node constituent
       s1h_unbinarized_index=-1;
       if (s1!=-1)  {
