@@ -175,6 +175,7 @@ public:
       stacksize = item->stack.size();
       if (stacksize==0) return; // must shift; no feature updates, no comparisons for different actions
       static unsigned long tmp;
+      static int tmp_i;
       static int i, j;
       s0 = item->stack.back();
       s1 = stacksize<2 ? -1 : item->stack[stacksize-2];
@@ -348,7 +349,7 @@ public:
          s0_unbinarized_cs.push_back(constituent_or_none(item->nodes[s0_unbinarized[tmp]]));
          if (s0_unbinarized[tmp]==s0h_unbinarized) s0h_unbinarized_index=tmp;
       }
-      assert(s0h_unbinarized_index!=-1);
+      assert(s0_unbinarized.size()==0 || s0h_unbinarized_index!=-1);
       // unexpand s1 sub
       s1_unbinarized.clear();
       s1_unbinarized_cs.clear();
@@ -368,39 +369,48 @@ public:
             if (s1_unbinarized[tmp]==s1h_unbinarized) s1h_unbinarized_index=tmp;
          }
       }
-      assert(s1==-1||s1h_unbinarized_index!=-1);
+      assert(s1_unbinarized.size()==0 || s1h_unbinarized_index!=-1);
 
       // s0hc and s1hc
       s0hc.load(s0h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s0h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
-      s1hc.load(s1h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s1h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
+      s1hc.load(s1h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s1_unbinarized[s1h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
 
       // s0cs0hcs0l2c, s0cs0hcs0r2c, s1cs1hcs1r2c
       s0cs0hcs0r2c.load(s0c, s0hc);
-      s0cs0hcs0r2c.add(s0h_unbinarized_index+1<s0_unbinarized.size() ? s0_unbinarized.back() : g_beginConstituent);
-      s0cs0hcs0r2c.add(s0h_unbinarized_index+2<s0_unbinarized.size() ? s0_unbinarized[s0_unbinarized.size()-2] : g_beginConstituent);
+      s0cs0hcs0r2c.add(s0h_unbinarized_index+1<s0_unbinarized.size() ? s0_unbinarized_cs.back() : g_beginConstituent);
+      s0cs0hcs0r2c.add(s0h_unbinarized_index+2<s0_unbinarized.size() ? s0_unbinarized_cs[s0_unbinarized.size()-2] : g_beginConstituent);
 
       s0cs0hcs0l2c.load(s0c, s0hc);
-      s0cs0hcs0l2c.add(s0h_unbinarized_index>0 ? s0_unbinarized[0] : g_beginConstituent);
-      s0cs0hcs0l2c.add(s0h_unbinarized_index>1 ? s0_unbinarized[1] : g_beginConstituent);
+      s0cs0hcs0l2c.add(s0h_unbinarized_index>0 ? s0_unbinarized_cs[0] : g_beginConstituent);
+      s0cs0hcs0l2c.add(s0h_unbinarized_index>1 ? s0_unbinarized_cs[1] : g_beginConstituent);
 
       s1cs1hcs1r2c.load(s1c, s1hc);
-      s1cs1hcs1r2c.add(s1h_unbinarized_index+1<s1_unbinarized.size() ? s1_unbinarized.back() : g_beginConstituent);
-      s1cs1hcs1r2c.add(s1h_unbinarized_index+2<s1_unbinarized.size() ? s1_unbinarized[s1_unbinarized.size()-2] : g_beginConstituent);
+      s1cs1hcs1r2c.add(s1h_unbinarized_index+1<s1_unbinarized.size() ? s1_unbinarized_cs.back() : g_beginConstituent);
+      s1cs1hcs1r2c.add(s1h_unbinarized_index+2<s1_unbinarized.size() ? s1_unbinarized_cs[s1_unbinarized.size()-2] : g_beginConstituent);
 
       s0l6c.clear();
-      for (tmp=0; tmp<6; ++tmp) {
-         s0l6c.add(tmp<s0h_unbinarized_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
+      if (s0_unbinarized.size()!=0) {
+         for (tmp_i=0; tmp_i<6; ++tmp_i) {
+            s0l6c.add(static_cast<int>(tmp_i)<s0h_unbinarized_index?
+                      s0_unbinarized_cs[tmp_i]:g_beginConstituent);
+         }
       }
       s0r6c.clear();
-      for (tmp=s0_unbinarized.size()-1; tmp>s0_unbinarized.size()-7; ++tmp) {
-         s0r6c.add(tmp>s0h_unbinarized_index?s0_unbinarized_cs[tmp]:g_beginConstituent);
+      if (s0_unbinarized.size()>0) {
+         for (tmp_i=static_cast<int>(s0_unbinarized.size())-1; tmp_i>static_cast<int>(s0_unbinarized.size())-7; --tmp_i) {
+            s0r6c.add(tmp_i>s0h_unbinarized_index?
+                      s0_unbinarized_cs[tmp_i]:g_beginConstituent);
+         }
       }
       s1r6c.clear();
-      for (tmp=s1_unbinarized.size()-1; tmp>s1_unbinarized.size()-7; ++tmp) {
-         s1r6c.add(tmp>s1h_unbinarized_index?s1_unbinarized_cs[tmp]:g_beginConstituent);
+      if (s1_unbinarized.size()>0) {
+         for (tmp_i=static_cast<int>(s1_unbinarized.size())-1; tmp_i>static_cast<int>(s1_unbinarized.size())-7; --tmp_i) {
+            s1r6c.add(tmp_i>s1h_unbinarized_index?s1_unbinarized_cs[tmp_i]:g_beginConstituent);
+         }
       }
 
 #ifdef _CHINESE_CFG_H
+/*
       // bracket
       static int last_stack_starting_bracket;
       last_stack_starting_bracket = -1;
@@ -437,8 +447,8 @@ public:
       s0_sepset=0; s1_sepset=0; s0s1_sepset=0;
       sepcount = 0;
       if (s1!=-1) {
-         for (i=s1h_unbinarized_index+1; i<s0h_unbinarized_index; ++i) {
-            last_separator = getSeparatingPunctuation(wrds[item->nodes[i].lexical_head]);
+         for (i=s1node->lexical_head+1; i<s0node->lexical_head; ++i) {
+            last_separator = getSeparatingPunctuation(wrds[i]);
             if (last_separator!=-1) {
                if ((s0s1_sepset&(1<<last_separator))==0) {
                   s0s1_sepset|=(1<<last_separator);
@@ -458,7 +468,7 @@ public:
       }
       s0cs1c_sepcount=encodeTorCs(s0c.code(), s1c.code(),sepcount);
       s0c_sepcount=encodeTorCs(s0c.code(),sepcount);
-      s1c_sepcount=encodeTorCs(s1c.code(),sepcount);
+      s1c_sepcount=encodeTorCs(s1c.code(),sepcount);*/
 #endif
 
       // S{0/1}{LD/RD}
@@ -487,7 +497,7 @@ public:
 //         s0s1_dist = encodeLinkSize(s0node->lexical_head, s1node->lexical_head);
 //         s0cs1_dist = encodeTorCs(s0c, s0s1_dist);
 //         s0s1c_dist = encodeTorCs(s1c, s0s1_dist);
-         s0cs1c_dist = encodeTorCs(s0c.code(), s1c.code(), s0s1_dist);
+//         s0cs1c_dist = encodeTorCs(s0c.code(), s1c.code(), s0s1_dist);
       }
 
       return;

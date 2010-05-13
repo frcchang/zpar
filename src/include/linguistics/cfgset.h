@@ -20,20 +20,20 @@ const unsigned long PACKED_CON_OR_TAG_SIZE = std::max(static_cast<unsigned long>
 
 //=============================================================
 
-inline unsigned long encodeTorC(const unsigned long &tagorconstituent, const bool &tag) {
-   assert((tagorconstituent&(1<<(PACKED_CON_OR_TAG_SIZE-1)))==0);
-   return tagorconstituent | (tag?(1<<(PACKED_CON_OR_TAG_SIZE-1)):0);
-}
+//inline unsigned long encodeTorC(const unsigned long &tagorconstituent, const bool &tag) {
+//   assert((tagorconstituent&(1<<(PACKED_CON_OR_TAG_SIZE-1)))==0);
+//   return tagorconstituent | (tag?(1<<(PACKED_CON_OR_TAG_SIZE-1)):0);
+//}
 inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long &toc2) {
    assert((toc2>>PACKED_CON_OR_TAG_SIZE)==0);
    return (toc1<<PACKED_CON_OR_TAG_SIZE) | toc2;
 }
 
-inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long &toc2, const unsigned long &toc3) {
-   assert((toc2>>PACKED_CON_OR_TAG_SIZE)==0);
-   assert((toc3>>PACKED_CON_OR_TAG_SIZE)==0);
-   return (toc1<<(PACKED_CON_OR_TAG_SIZE*2)) | (toc2<<PACKED_CON_OR_TAG_SIZE) | toc3;
-}
+//inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long &toc2, const unsigned long &toc3) {
+//   assert((toc2>>PACKED_CON_OR_TAG_SIZE)==0);
+//   assert((toc3>>PACKED_CON_OR_TAG_SIZE)==0);
+//   return (toc1<<(PACKED_CON_OR_TAG_SIZE*2)) | (toc2<<PACKED_CON_OR_TAG_SIZE) | toc3;
+//}
 
 /*===============================================================
  *
