@@ -23,7 +23,7 @@ class CDependencyNode(object):
 
 class CHeadRules(object):
 
-   def __init__(self, sFile, sLogs):
+   def __init__(self, sFile, sLogs, bLabeled):
       self.m_dRules = {}
       file = open(sFile)
       line = file.readline()
@@ -39,10 +39,25 @@ class CHeadRules(object):
          self.log = open(sLogs, "w")
       else:
          self.log = None
+      self.m_bLabeled = bLabeled
 
    def __del__(self):
       if self.log != None:
          self.log.close()
+
+   def add_link(self, constituent, children, head_child):
+      for other_child, tmp in children:
+         print other_child.pos, tmp.name
+         if other_child != head_child:
+            assert other_child.link == -1
+            other_child.link = head_child.id
+
+   def add_label(self, constituent, children, head_child):
+      for other_child, tmp in children:
+         print other_child.pos, tmp.name
+         if other_child != head_child:
+            assert other_child.link == -1
+            other_child.link = head_child.id
 
    def find_head(self, node, lItems):
       if node.name == '-NONE-':
@@ -83,10 +98,10 @@ class CHeadRules(object):
             if self.log != None:
                print >> self.log, "can't find a rule for " + sLabel + " with " + ", ".join([child_node.name for child_node in node.children])
             head_child = lZipped[-1][0]
-         for other_child, tmp in lZipped:
-            if other_child != head_child:
-               assert other_child.link == -1
-               other_child.link = head_child.id
+         if self.m_bLabeled:
+            self.add_label(node.name, lZipped, head_child)
+         else:
+            self.add_link(node.name, lZipped, head_child)
          return head_child
 
    def process(self, sSentence):
@@ -110,7 +125,8 @@ class CHeadRules(object):
 #================================================================
 
 if __name__ == '__main__':
-   import sys
+   import sys, os
+   sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
    import config
    if len(sys.argv) < 3:
       print "\nUsage: ctb2dep.py rule_file config_file [log_file] > output\n"
@@ -118,6 +134,6 @@ if __name__ == '__main__':
    sLogs = None
    if len(sys.argv) == 4:
       sLogs = sys.argv[3]
-   rule = CHeadRules(sys.argv[1], sLogs)
    cf = config.CConfig(sys.argv[2])
+   rule = CHeadRules(sys.argv[1], sLogs, cf.labeled)
    fiditer.sentence_iterator(rule.process, cf.directory, cf.range)
