@@ -12,19 +12,23 @@ Author: Yue Zhang, 2006
 """
 import sys
 
+def gb2utf(s):
+   return s.decode("gb2312").encode("utf8")
+
 #
 # Main entry
 #
-iFile = open(sys.argv[1])
-oFile = open(sys.argv[2], "w")
-sLine = iFile.readline()
-while sLine:
-   try:
-      uLine = sLine.decode("gb2312")
-   except : 
-      sLine = iFile.readline()
-      continue
-   oFile.write(uLine.encode("utf8"))
+if __name__ == '__main__':
+   iFile = open(sys.argv[1])
+   oFile = open(sys.argv[2], "w")
    sLine = iFile.readline()
-iFile.close()
-oFile.close()
+   while sLine:
+      try:
+         uLine = sLine.decode("gb2312")
+      except : 
+         sLine = iFile.readline()
+         continue
+      oFile.write(uLine.encode("utf8"))
+      sLine = iFile.readline()
+   iFile.close()
+   oFile.clos
