@@ -30,5 +30,7 @@ if __name__ == "__main__":
    input = sys.argv[2]
    if option == "remove":
       for sent in depio.depread(input):
+         if len(sent) <= 1:
+            continue
          index = random.randint(0, len(sent)-1)
          depio.depprint(removeword(sent, index))
