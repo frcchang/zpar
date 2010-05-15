@@ -81,7 +81,7 @@ class CHeadRules(object):
                   if other_child.id > head_child.id:
                      other_child.label = 'POBJ'
                   else:
-                     other_child.label = '???'
+                     other_child.label = 'PMOD'
                elif constituent in ['NP', 'NN']:
                   if sub_cons[0] == '':
                      other_child.label = 'mod'
@@ -92,32 +92,40 @@ class CHeadRules(object):
                elif constituent == 'VRD':
                   other_child.label = 'VRD'
                elif constituent == 'IP':
-                  if head_child.pos in ['VV', 'VE', 'VC']:
+                  if head_child.pos in ['VV', 'VE', 'VC', 'VA']:
                      other_child.label = 'VMOD'
                   else:
-                     other_child.label = '???'
+                     print head_child.pos
                elif constituent == 'DNP':
                   other_child.label = 'DEG'
+               elif constituent == 'DVP':
+                  other_child.label = 'DEV'
                elif constituent == 'LCP':
                   other_child.label = 'LC'
+               elif constituent == 'QP':
+                  if head_child.pos == 'CD':
+                     other_child.label = 'NMOD'
+                  elif head_child.pos == 'M':
+                     other_child.label = 'M'
                elif constituent == 'PRN':
                   other_child.label = 'PRN'
+               elif constituent == 'VCP':
+                  other_child.label = 'VC'
                else:
                   if head_child.pos in ['VV', 'VC', 'VE']:
-                     other_child.label = 'VMOD...' + ''
-                     
-                     print constituent + '------'
+                     other_child.label = 'VMOD'
                   elif head_child.pos in ['NN', 'NR', 'PN']:
-                     other_child.label = 'NMOD...'
+                     other_child.label = 'NMOD'
                   elif head_child.pos == 'CS':
                      other_child.label = 'CS'
+                  elif head_child.pos == 'ADV':
+                     other_child.label = 'ADVMOD'
                   elif head_child.pos == 'DEC':
                      other_child.label = 'DEC'
                   elif head_child.pos == 'M':
                      other_child.label = 'M'
-                  if sub_cons[0] in ['NP', 'NN', 'NR']:
-                     print constituent
-                     other_child.label = '??'
+         if other_child.label == '':
+            other_child.label = '???'
 
    def find_head(self, node, lItems):
       """find head"""
