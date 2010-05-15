@@ -67,26 +67,56 @@ class CHeadRules(object):
             other_child.link = head_child.id
             # add label
             sub_cons = tmp.name.split('-')
-            if len(sub_cons)>1:
-               print sub_cons[1]
+            if len(sub_cons)>1 and sub_cons[1] in ['SBJ', 'OBJ']:
+               # subjects and objects
                if sub_cons[1] == 'OBJ':
                   other_child.label = 'OBJ'
                elif sub_cons[1] == 'SBJ':
                   other_child.label = 'SBJ'
+               else:
+                  print sub_cons[1], head_child.pos
             else:
-               if sub_cons[0] == 'ADJP':
-                  other_child.label = 'ADJ'
-               elif sub_cons[0] in ['NP', 'NN', 'NR']:
-                  if constituent == 'PP':
-                     if other_child.id > head_child.id:
-                        other_child.label = 'POBJ'
-                     else:
-                        other_child.label = '???'
-                  elif constituent == 'LCP':
-                     other_child.label = 'LC'
-                  elif constituent in ['NP', 'NN']:
-                     other_child.label = 'NMOD'
+               # any links from inside prepositional phrase
+               if constituent == 'PP':
+                  if other_child.id > head_child.id:
+                     other_child.label = 'POBJ'
                   else:
+                     other_child.label = '???'
+               elif constituent in ['NP', 'NN']:
+                  if sub_cons[0] == '':
+                     other_child.label = 'mod'
+                  else:
+                     other_child.label = 'NMOD'
+               elif constituent == 'VP':
+                  other_child.label = 'VMOD'
+               elif constituent == 'VRD':
+                  other_child.label = 'VRD'
+               elif constituent == 'IP':
+                  if head_child.pos in ['VV', 'VE', 'VC']:
+                     other_child.label = 'VMOD'
+                  else:
+                     other_child.label = '???'
+               elif constituent == 'DNP':
+                  other_child.label = 'DEG'
+               elif constituent == 'LCP':
+                  other_child.label = 'LC'
+               elif constituent == 'PRN':
+                  other_child.label = 'PRN'
+               else:
+                  if head_child.pos in ['VV', 'VC', 'VE']:
+                     other_child.label = 'VMOD...' + ''
+                     
+                     print constituent + '------'
+                  elif head_child.pos in ['NN', 'NR', 'PN']:
+                     other_child.label = 'NMOD...'
+                  elif head_child.pos == 'CS':
+                     other_child.label = 'CS'
+                  elif head_child.pos == 'DEC':
+                     other_child.label = 'DEC'
+                  elif head_child.pos == 'M':
+                     other_child.label = 'M'
+                  if sub_cons[0] in ['NP', 'NN', 'NR']:
+                     print constituent
                      other_child.label = '??'
 
    def find_head(self, node, lItems):
@@ -148,7 +178,9 @@ class CHeadRules(object):
       # output the dep node
       for head in lHead:
          lTokens = []
-         self.find_head(head, lTokens)
+         head_child = self.find_head(head, lTokens)
+         if self.m_bLabeled:
+            head_child.label = 'ROOT'
          for tokn in lTokens:
             if self.m_bLabeled:
                print gb2utf("\t".join([tokn.token, tokn.pos, str(tokn.link), tokn.label]))
@@ -159,7 +191,7 @@ class CHeadRules(object):
 #================================================================
 
 if __name__ == '__main__':
-   import config
+   from tools import config
    if len(sys.argv) < 3:
       print "\nUsage: ctb2dep.py rule_file config_file [log_file] > output\n"
       sys.exit(1)

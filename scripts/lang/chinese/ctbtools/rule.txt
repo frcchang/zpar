@@ -1,9 +1,9 @@
 ADJP	: r ADJP JJ AD;r
-ADVP	: r ADVP AD CS JJ NP PP P VA VV;r
+ADVP	: r ADVP AD; l CS; r JJ NP PP P VA VV;r
 CLP	: r CLP M NN NP;r
-CP	: r CP IP VP;r
+CP	: r DEC CP ADVP IP VP;r
 DNP	: r DEG DNP DEC QP;r
-DP	: r M; l DP DT OD;l
+DP	: r M CLP; l DP DT OD;l
 DVP	: r DEV AD VP;r
 IP	: r VP IP NP;r
 LCP	: r LCP LC;r
