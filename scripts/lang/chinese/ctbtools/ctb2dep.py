@@ -62,6 +62,9 @@ class CHeadRules(object):
       """add link and label to words after finding heads"""
       constituent = constituent.split('-')[0]
       for other_child, tmp in children:
+         if other_child == head_child:
+            h = tmp
+      for other_child, tmp in children:
          if other_child != head_child:
             assert other_child.link == -1
             other_child.link = head_child.id
@@ -95,37 +98,46 @@ class CHeadRules(object):
                   if head_child.pos in ['VV', 'VE', 'VC', 'VA']:
                      other_child.label = 'VMOD'
                   else:
-                     print head_child.pos
+                     other_child.label = 'VMOD'
                elif constituent == 'DNP':
                   other_child.label = 'DEG'
                elif constituent == 'DVP':
                   other_child.label = 'DEV'
                elif constituent == 'LCP':
                   other_child.label = 'LC'
-               elif constituent == 'QP':
+               elif constituent in ['QP', 'DP']:
                   if head_child.pos == 'CD':
                      other_child.label = 'NMOD'
                   elif head_child.pos == 'M':
                      other_child.label = 'M'
+                  elif head_child.pos == 'OD':
+                     other_child.label = 'NMOD'
                elif constituent == 'PRN':
                   other_child.label = 'PRN'
                elif constituent == 'VCP':
                   other_child.label = 'VC'
                else:
-                  if head_child.pos in ['VV', 'VC', 'VE']:
+                  if head_child.pos in ['VV', 'VC', 'VE', 'VA']:
                      other_child.label = 'VMOD'
-                  elif head_child.pos in ['NN', 'NR', 'PN']:
+                  elif head_child.pos in ['NN', 'NR', 'PN', 'NT']:
                      other_child.label = 'NMOD'
                   elif head_child.pos == 'CS':
                      other_child.label = 'CS'
-                  elif head_child.pos == 'ADV':
-                     other_child.label = 'ADVMOD'
+                  elif head_child.pos == 'AD':
+                     other_child.label = 'AMOD'
+                  elif head_child.pos == 'JJ':
+                     other_child.label = 'AMOD'
                   elif head_child.pos == 'DEC':
                      other_child.label = 'DEC'
                   elif head_child.pos == 'M':
                      other_child.label = 'M'
-         if other_child.label == '':
-            other_child.label = '???'
+                  elif head_child.pos == 'CD':
+                     other_child.label = 'NMOD'
+                  elif head_child.pos == 'OD':
+                     other_child.label = 'NMOD'
+            if other_child.label == '':
+               print h.name, sub_cons[0]
+               other_child.label = '???'
 
    def find_head(self, node, lItems):
       """find head"""
@@ -191,9 +203,9 @@ class CHeadRules(object):
             head_child.label = 'ROOT'
          for tokn in lTokens:
             if self.m_bLabeled:
-               print gb2utf("\t".join([tokn.token, tokn.pos, str(tokn.link), tokn.label]))
+               print "\t".join([gb2utf(tokn.token), tokn.pos, str(tokn.link), tokn.label])
             else:
-               print gb2utf("\t".join([tokn.token, tokn.pos, str(tokn.link)]))
+               print "\t".join([gb2utf(tokn.token), tokn.pos, str(tokn.link)])
          print # empty line
 
 #================================================================

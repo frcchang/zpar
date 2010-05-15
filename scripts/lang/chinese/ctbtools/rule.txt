@@ -15,7 +15,7 @@ PRN	: l PU;l
 QP	: r M QP CLP CD;r
 UCP	: l IP NP VP;l
 VCD	: l VV VA VE;l
-VP	: l VE VC VV VNV VPT VRD VSB VCD VP;l
+VP	: l VE VC VV VNV VPT VRD VSB VCD VP IP;l
 VPT	: l VA VV;l
 VRD	: l VV VA;l
 VSB	: r VV VE;r
