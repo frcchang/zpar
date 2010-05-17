@@ -12,11 +12,11 @@ NP	: r NP NN IP NR NT;r
 NN	: r NP NN IP NR NT;r
 PP	: l P PP;l
 PRN	: l PU;l
-QP	: r M QP CLP CD;r
-UCP	: l IP NP VP;l
+QP	: r M QP CLP CD OD;r
+UCP	: r IP NP VP;r
 VCD	: l VV VA VE;l
 VP	: l VE VC VV VNV VPT VRD VSB VCD VP IP;l
 VPT	: l VA VV;l
 VRD	: l VV VA;l
 VSB	: r VV VE;r
-FRAG	: r VV NR NN NT; r
+FRAG	: r VP NP VV NR NN NT; r
