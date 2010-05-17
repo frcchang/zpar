@@ -19,4 +19,4 @@ VP	: l VE VC VV VNV VPT VRD VSB VCD VP IP;l
 VPT	: l VA VV;l
 VRD	: l VV VA;l
 VSB	: r VV VE;r
-FRAG	: r VP NP VV NR NN NT; r
+FRAG	: r VP VV NP NR NN NT; r

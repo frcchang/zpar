@@ -13,7 +13,10 @@ Author: Yue Zhang, 2006
 import sys
 
 def gb2utf(s):
-   return s.decode("gb2312").encode("utf8")
+   try:
+      return s.decode("gb2312").encode("utf8")
+   except:
+      return '????????'
 
 #
 # Main entry

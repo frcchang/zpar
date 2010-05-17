@@ -62,9 +62,6 @@ class CHeadRules(object):
       """add link and label to words after finding heads"""
       constituent = constituent.split('-')[0]
       for other_child, tmp in children:
-         if other_child == head_child:
-            h = tmp
-      for other_child, tmp in children:
          if other_child != head_child:
             assert other_child.link == -1
             other_child.link = head_child.id
@@ -141,8 +138,11 @@ class CHeadRules(object):
                      other_child.label = 'NMOD'
                   elif head_child.pos == 'OD':
                      other_child.label = 'NMOD'
+                  elif head_child.pos == 'PU':
+                     other_child.label = 'NMOD'
+                  elif head_child.pos == 'P':
+                     other_child.label = 'PMOD'
             if other_child.label == '':
-               print constituent, h.name, sub_cons[0]
                other_child.label = '???'
 
    def find_head(self, node, lItems):
