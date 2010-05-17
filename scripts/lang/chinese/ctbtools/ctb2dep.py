@@ -112,10 +112,16 @@ class CHeadRules(object):
                      other_child.label = 'M'
                   elif head_child.pos == 'OD':
                      other_child.label = 'NMOD'
+                  elif head_child.pos == 'NN':
+                     other_child.label = 'NMOD'
+                  elif head_child.pos == 'DT':
+                     other_child.label = 'AMOD'
                elif constituent == 'PRN':
                   other_child.label = 'PRN'
                elif constituent == 'VCP':
                   other_child.label = 'VC'
+               elif constituent in ['VCD', 'UCP']:
+                  other_child.label = 'COOR'
                else:
                   if head_child.pos in ['VV', 'VC', 'VE', 'VA']:
                      other_child.label = 'VMOD'
@@ -136,7 +142,7 @@ class CHeadRules(object):
                   elif head_child.pos == 'OD':
                      other_child.label = 'NMOD'
             if other_child.label == '':
-               print h.name, sub_cons[0]
+               print constituent, h.name, sub_cons[0]
                other_child.label = '???'
 
    def find_head(self, node, lItems):
