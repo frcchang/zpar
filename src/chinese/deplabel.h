@@ -1,4 +1,8 @@
-#include "linguistics/dependency/penn.h"
+namespace chinese {
+
+#include "linguistics/dependency/ctb.h"
+
+}
 
 //=============================================================
 
