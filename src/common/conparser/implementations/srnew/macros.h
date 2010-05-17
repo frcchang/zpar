@@ -12,35 +12,6 @@ const int AGENDA_SIZE = 16 ;
 const int MAX_SENTENCE_SIZE = 256 ; 
 const int MAX_SENTENCE_SIZE_BITS = 8 ; 
 
-//inline unsigned long encodeT(const CTaggedWord<CTag, TAG_SEPARATOR> &wd) {
-//   return wd.tag.code();
-//   assert(PENN_TAG_COUNT+7<(1<<PENN_TAG_COUNT_BITS));
-//   const unsigned long t = wd.tag.code();
-//   if (t==PENN_TAG_PU) {
-//      const CWord &w = wd;
-//      if (w==CH_COMMA)
-//         return PENN_TAG_COUNT;
-//      if (w==CH_PERIOD)
-//         return PENN_TAG_COUNT+1;
-//      if (w==CH_DUN)
-//         return PENN_TAG_COUNT+2;
-//      if (w==CH_SEMICOLON)
-//         return PENN_TAG_COUNT+3;
-//      if (w==CH_COLON)
-//         return PENN_TAG_COUNT+4;
-//      if (getStartingBracket(w)!=-1)
-//         return PENN_TAG_COUNT+5;
-//      if (getEndingBracket(w)!=-1)
-//         return PENN_TAG_COUNT+6;
-//   }
-//   return t;
-//}
-
-//inline unsigned long encodeC(const CStateNode &node, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &cache ) {
-//   assert((node.constituent&(1<<CConstituent::SIZE))==0);
-//   return node.is_constituent ? encodeTorC(node.constituent, false) | (node.temp?(1<<CConstituent::SIZE):0) : encodeTorC(cache[node.lexical_head].tag.code(), true);
-//}
-
 inline unsigned long normalize3(const unsigned long &x) {
    assert(x!=0); return x>2 ? 2 : x==2 ? 1 : 0;
 }
