@@ -21,7 +21,7 @@ class CDependencyNode(object):
    def __init__(self, token, pos, id, link, label):
       self.id=id
       self.token=token
-      self.pos=pos
+      self.pos=pos.split('-')[0]
       self.link=link
       self.label = label
 
@@ -83,10 +83,7 @@ class CHeadRules(object):
                   else:
                      other_child.label = 'PMOD'
                elif constituent in ['NP', 'NN']:
-                  if sub_cons[0] == '':
-                     other_child.label = 'mod'
-                  else:
-                     other_child.label = 'NMOD'
+                  other_child.label = 'NMOD'
                elif constituent == 'VP':
                   other_child.label = 'VMOD'
                elif constituent == 'VRD':
@@ -142,6 +139,10 @@ class CHeadRules(object):
                      other_child.label = 'NMOD'
                   elif head_child.pos == 'P':
                      other_child.label = 'PMOD'
+                  elif head_child.pos == 'IJ':
+                     other_child.label = 'PMOD'
+                  elif head_child.pos == 'LC':
+                     other_child.label = 'LC'
             if other_child.label == '':
                other_child.label = '???'
 

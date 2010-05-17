@@ -11,7 +11,7 @@ $(OBJECT_DEPLABELER)/weight.o: $(OBJECT_DEPLABELER) $(SRC_CHINESE_DEPLABELER)/we
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPLABELER) -I$(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL) -c $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/weight.cpp -o $(OBJECT_DEPLABELER)/weight.o
 
 # the deplabeler object
-$(OBJECT_DIR)/chinese.deplabeler.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_DEPLABELER)/deplabeler_base.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.cpp ./Makefile
+$(OBJECT_DIR)/chinese.deplabeler.o: $(SRC_CHINESE)/deplabel.h $(SRC_CHINESE_DEPLABELER)/deplabeler_base.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.cpp ./Makefile
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPLABELER) -I$(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL) -c $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.cpp -o $(OBJECT_DIR)/chinese.deplabeler.o
 
 # the main executable
