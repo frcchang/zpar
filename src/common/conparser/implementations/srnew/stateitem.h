@@ -9,28 +9,84 @@
  *
  *==============================================================*/
 
-class CStateNode : public CCFGTreeNode {
+class CStateNode {
 public:
+   enum NODE_TYPE {LEAF=0, SINGLE_CHILD, HEAD_LEFT, HEAD_RIGHT};
+public:
+   int parent;
+   NODE_TYPE type;
+   bool temp;
+   // fields for constituents
+   CConstituent constituent;
+   int left_child;
+   int right_child;
+   // fields for tokens and constituents
    int lexical_head;
-   int lexical_start;
-   int lexical_end;
+//   int lexical_start;
+//   int lexical_end;
+
 public:
-   CStateNode() : CCFGTreeNode() { lexical_head=-1; lexical_start=-1; lexical_end = -1; }
+   inline bool head_left() const { return type==HEAD_LEFT; }
+   inline bool single_child() const { return type==SINGLE_CHILD; }
+   inline bool is_constituent() const { return type!=LEAF; }
+
+public:
+   CStateNode(const int &parent, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const int &left_child, const int &right_child, const int &lexical_head) : parent(parent), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head) {}
    virtual ~CStateNode() {}
 public:
    bool operator == (const CStateNode &nd) const {
-      return lexical_head == nd.lexical_head &&
-      lexical_start == nd.lexical_start &&
-      lexical_end == nd.lexical_end &&
-      is_constituent == nd.is_constituent &&
-      parent == nd.parent &&
-      constituent == nd.constituent &&
-      single_child == nd.single_child &&// single or double
-      head_left == nd.head_left && // double children 
-      left_child == nd.left_child &&
-      right_child == nd.right_child &&
-      temp == nd.temp &&
-      token == nd.token ;
+      return parent == nd.parent && 
+             type == nd.type && 
+             temp == nd.temp && 
+             constituent == nd.constituent && 
+             left_child == nd.left_child && 
+             right_child == nd.right_child &&
+             lexical_head == nd.lexical_head;
+   }
+   void operator = (const CStateNode &nd) {
+      parent = nd.parent;
+      type = nd.type;
+      temp = nd.temp;
+      constituent.copy(nd.constituent);
+      left_child = nd.left_child;
+      right_child = nd.right_child;
+      lexical_head = nd.lexical_head;
+   }
+public:
+   void toCCFGTreeNode(CCFGTreeNode &node) const {
+      node.parent = parent;
+      node.is_constituent = is_constituent();
+      node.temp = temp;
+      node.constituent = constituent.code();
+      node.single_child = single_child();
+      node.head_left = head_left();
+      node.left_child = left_child;
+      node.right_child = right_child;
+      node.token = lexical_head;
+   }
+   void fromCCFGTreeNode(const CCFGTreeNode &node) {
+      parent = node.parent;
+      temp = node.temp;
+      constituent.load(node.constituent);
+      left_child = node.left_child;
+      right_child = node.right_child;
+      lexical_head = node.token;
+      if (!node.is_constituent) {
+         type = LEAF;
+      }
+      else {
+         if (node.single_child) {
+            type = SINGLE_CHILD;
+         }
+         else {
+            if (node.head_left) {
+               type = HEAD_LEFT;
+            }
+            else {
+               type = HEAD_RIGHT;
+            }
+         }
+      }
    }
 };
 
@@ -66,22 +122,18 @@ public:
       context = 0;
       sent = 0;
    }
-   int newNode() { nodes.push_back(CStateNode()); return nodes.size()-1; }
+   int newNode(const int &parent, const CStateNode::NODE_TYPE &type, const bool &tmp, const unsigned long &constituent, const int &left_child, const int &right_child, const int &lexical_head) { nodes.push_back(CStateNode(parent, type, tmp, constituent, left_child, right_child, lexical_head)); return nodes.size()-1; }
 
 public:
    void shift() {
       //TRACE("shift");
       assert(!IsTerminated());
-      int t = newNode();
-      nodes[t].is_constituent = false;
-      nodes[t].single_child = false;
-      nodes[t].head_left = false;
-      nodes[t].temp = false;
-      nodes[t].constituent = CConstituent::NONE;
-      nodes[t].token = current_word;
-      nodes[t].lexical_start = current_word;
-      nodes[t].lexical_end = current_word;
-      nodes[t].lexical_head = current_word ++;
+      static int t;
+      t = newNode(-1, CStateNode::LEAF, false, CConstituent::NONE, -1, -1, current_word);
+//      nodes[t].lexical_start = current_word;
+//      nodes[t].lexical_end = current_word;
+//      nodes[t].lexical_head = current_word ++;
+      ++current_word;
       unary_reduce = 0;
       stack.push_back(t);
       assert(!IsTerminated());
@@ -89,43 +141,32 @@ public:
    void reduce(const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) {
       //TRACE("reduce");
       assert(!IsTerminated());
-      int c = newNode();         // the new node
+      static int c;         // the new node
+      static int l, r;
       assert(stack.size()>=0);
-      nodes[c].is_constituent = true;
-      nodes[c].constituent = constituent;
-      nodes[c].single_child = single_child;
-      nodes[c].head_left = head_left;
-      nodes[c].temp = temporary;//
       if (single_child) {
          assert(head_left == false);
          assert(temporary == false);
-         int l = stack.back();
+         l = stack.back();
          stack.pop_back();
-         nodes[c].left_child = l;
-         nodes[c].right_child = -1;
+         c = newNode(-1, CStateNode::SINGLE_CHILD, false, constituent, l, -1, nodes[l].lexical_head);
          nodes[l].parent = c;
-         nodes[c].lexical_start = nodes[l].lexical_start;
-         nodes[c].lexical_end = nodes[l].lexical_end;
-         nodes[c].lexical_head = nodes[l].lexical_head;
+//         nodes[c].lexical_start = nodes[l].lexical_start;
+//         nodes[c].lexical_end = nodes[l].lexical_end;
          stack.push_back(c);
          unary_reduce ++ ;
       }
       else {
          assert(stack.size()>=2);
-         int r = stack.back();
+         r = stack.back();
          stack.pop_back();
-         int l = stack.back();
+         l = stack.back();
          stack.pop_back();
-         nodes[c].left_child = l;
-         nodes[c].right_child = r;
+         c = newNode(-1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, constituent, l, r, (head_left?nodes[l].lexical_head:nodes[r].lexical_head));
          nodes[l].parent = c;
          nodes[r].parent = c;
-         nodes[c].lexical_start = nodes[l].lexical_start;
-         nodes[c].lexical_end = nodes[r].lexical_end;
-         if (head_left) 
-            nodes[c].lexical_head = nodes[l].lexical_head;
-         else
-            nodes[c].lexical_head = nodes[r].lexical_head;
+//         nodes[c].lexical_start = nodes[l].lexical_start;
+//         nodes[c].lexical_end = nodes[r].lexical_end;
          stack.push_back(c);
          unary_reduce = 0;
       }
@@ -134,7 +175,7 @@ public:
    void unshift(const SCORE_TYPE &original_score, const int &original_unary) {
       //TRACE("unshift");
       assert(!IsTerminated());
-      assert(!nodes[stack.back()].is_constituent);
+      assert(!nodes[stack.back()].is_constituent());
       assert(nodes.size()-1==stack.back());
       stack.pop_back();
       nodes.pop_back();
@@ -148,8 +189,8 @@ public:
       assert(!IsTerminated());
       int s = stack.back();
       assert(nodes.size()-1==s);
-      assert(nodes[s].is_constituent);
-      if (nodes[s].single_child) {
+      assert(nodes[s].is_constituent());
+      if (nodes[s].single_child()) {
          stack.pop_back();
          stack.push_back(nodes[s].left_child);
          nodes[nodes[s].left_child].parent = -1;
@@ -193,11 +234,7 @@ public:
 
 public:
 
-   //
-   // This method applies to both full parse [CCFGTree] and partial parse [CStateItem]
-   // The first case for standard move and the second for follow move in updating scores.
-   //
-   template<class CPartialParseTree> void NextMove(const CPartialParseTree &snt, CAction &retval) const {
+   void NextMove(const CCFGTree &snt, CAction &retval) const {
       int s = stack.back();
       const CCFGTreeNode &nd = snt.nodes[s];
       const CCFGTreeNode &hd = snt.nodes[nd.parent];
@@ -223,6 +260,33 @@ public:
          temporary = hd.temp;
       }
       retval.encodeReduce(hd.constituent, single_child, head_left, temporary);
+   }
+   void NextMove(const CStateItem &snt, CAction &retval) const {
+      int s = stack.back();
+      const CStateNode &nd = snt.nodes[s];
+      const CStateNode &hd = snt.nodes[nd.parent];
+      assert(hd.constituent.code()!=CConstituent::NONE); // so that reduce and reduce_root are not same
+      bool single_child;
+      bool head_left;
+      bool temporary;
+      // stack top single child ? reduce unary
+      if (hd.single_child()) {
+         single_child = true;
+         head_left = false; assert(hd.head_left()==false);
+         temporary = false; assert(hd.temp==false);
+      }
+      else {
+         // stack top left child ? shift
+         if (s == hd.left_child) {
+            retval.encodeShift(); return;
+         }
+         // stack top right child ? reduce bin
+         assert(s==hd.right_child);
+         single_child = false;
+         head_left = hd.head_left();
+         temporary = hd.temp;
+      }
+      retval.encodeReduce(hd.constituent.code(), single_child, head_left, temporary);
    }
 
    void FollowMove(const CStateItem &st, CAction &retval) const {
@@ -296,7 +360,7 @@ public:
          out.newWord(tagged[i].first, tagged[i].second);
       for (i=0; i<nodes.size(); ++i) {
          j = out.newNode();
-         out.nodes[j] = static_cast<CCFGTreeNode>(nodes[j]);
+         nodes[j].toCCFGTreeNode(out.nodes[j]);
       }
       out.root = stack.back();
    }

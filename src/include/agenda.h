@@ -55,18 +55,18 @@ class CAgendaSimple {
       }
       const CNode* item(int index) { assert(index<m_nBeamSize); return m_lBeamPointer[index]; }
       int size() { return m_nBeamSize; }
-      CNode* newItem() {
-         assert( !m_bItemSorted ); 
-         if (m_nBeamSize == m_nMaxSize) { 
-            pop_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more); 
-            return m_lBeamPointer[m_nMaxSize-1]; 
-         }
-         return m_lBeamPointer[m_nBeamSize++];
-      }
-      void insertNewItem() { 
-         assert( !m_bItemSorted );
-         push_heap(m_lBeamPointer, m_lBeamPointer+m_nBeamSize, more ); 
-      }
+//      CNode* newItem() {
+//         assert( !m_bItemSorted ); 
+//         if (m_nBeamSize == m_nMaxSize) { 
+//            pop_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more); 
+//            return m_lBeamPointer[m_nMaxSize-1]; 
+//         }
+//         return m_lBeamPointer[m_nBeamSize++];
+//      }
+//      void insertNewItem() { 
+//         assert( !m_bItemSorted );
+//         push_heap(m_lBeamPointer, m_lBeamPointer+m_nBeamSize, more ); 
+//      }
       void insertItem(const CNode *item) {
          assert( !m_bItemSorted );
          if (m_nBeamSize == m_nMaxSize) {

@@ -16,6 +16,10 @@ import sys
 
 import getopt
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
+
+from tools.encoding.gb2utf import *
+
 class CBinarizedTreeNode(object):
    slots = ['type',        # 'constituent' / 'token'
             'name',        # ['NP', 'OBJ'] 
@@ -40,7 +44,7 @@ class CBinarizedTreeNode(object):
             sContent = self.left_child.__str__() + " " + self.right_child.__str__()
       elif self.type == 'token':
          sType = 't'
-         sContent = self.token
+         sContent = gb2utf(self.token)
       else:
          raise "Type not defined for node"
       if self.temporary:
