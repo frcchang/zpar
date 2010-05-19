@@ -40,7 +40,7 @@ public:
 
 inline istream & operator >> (istream &is, CLabeledDependencyTreeNode &node) {
    (is) >> static_cast<CDependencyTreeNode&>(node) >> node.label ;
-   if (node.label.empty()) THROW("dependency label is unavailable in the input file");
+   if (node.label.empty()) THROW("dependency label is unavailable for the input: " << node.word);
    return is ;
 }
 

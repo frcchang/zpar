@@ -87,19 +87,16 @@ protected:
    unsigned long m_code;
 
 public:
-   CTag() { m_code=PENN_TAG_COUNT; }
-   CTag(PENN_TAG_CONSTANTS t) { 
-      m_code=t; 
-   }
-   CTag(int t) { 
-      m_code=t; 
-   }
+   CTag() : m_code(NONE) {}
+   CTag(PENN_TAG_CONSTANTS t) : m_code(t) { }
+   CTag(int t) : m_code(t) { }
    CTag(const string &s) { load(s); }
    virtual ~CTag() {}
 
 public:
    unsigned long code() const { return m_code; }
    unsigned long hash() const { return m_code; }
+   void copy(const CTag &t) { m_code = t.m_code; }
    string str() const { assert(m_code<PENN_TAG_COUNT) ; return PENN_TAG_STRINGS[m_code]; }
    void load(const string &s) {
       m_code = PENN_TAG_NONE ;

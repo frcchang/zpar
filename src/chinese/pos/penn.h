@@ -86,13 +86,9 @@ protected:
    unsigned long m_code;
 
 public:
-   CTag() { m_code=PENN_TAG_COUNT; }
-   CTag(PENN_TAG_CONSTANTS t) { 
-      m_code=t; 
-   }
-   CTag(int t) { 
-      m_code=t; 
-   }
+   CTag() : m_code(NONE) {}
+   CTag(PENN_TAG_CONSTANTS t) : m_code(t) { }
+   CTag(int t) : m_code(t) { }
    CTag(const string &s) { load(s); }
    virtual ~CTag() {}
 
@@ -120,6 +116,7 @@ public:
       THROW("Unknown tag (PENN Treebank): " << s);
    }
    void load(const unsigned long &n) { m_code = n; }
+   void copy(const CTag &t) { m_code = t.m_code; }
 
 public:
    bool operator == (const CTag &t1) const { return m_code == t1.m_code; }

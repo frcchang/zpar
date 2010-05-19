@@ -24,18 +24,6 @@ inline unsigned long normalize510(const unsigned long &x) {
    return x>10 ? 6 : x>5 ? 5 : x;
 }
 
-inline unsigned long encodeRhythm(const CStateNode &node, const vector<unsigned long> &wordlen) {
-   // single word consitituent : 1wordlen; 
-   // multiple word constituent : 0wordnum;
-   assert(node.lexical_start!=-1&&node.lexical_end!=-1&&node.lexical_head!=-1);
-   return (node.lexical_start==node.lexical_end ? wordlen[node.lexical_head]|(1<<2) : normalize3(node.lexical_end-node.lexical_start));
-}
-
-inline unsigned long encodeRhythms(const unsigned long &r1, const unsigned long &r2) {
-   assert(r2>>3==0);
-   return (r1<<3)|r2;
-}
-
 // unary moves 
 const int UNARY_MOVES = 3;
 

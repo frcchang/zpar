@@ -228,7 +228,7 @@ return 0;
 SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE amount, int round ) {
    return 0;
    assert(item->stack.size()>0);
-   assert(item->nodes[item->stack.back()].is_constituent);
+   assert(item->nodes[item->stack.back()].is_constituent());
    const CStateNode &nd = item->nodes[item->stack.back()];
    if (nd.temp) return 0; // no constituent score for temp nodes
 
@@ -245,8 +245,8 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    const unsigned long &s0_size = ctxt->s0_unbinarized.size();
    const unsigned long &s1_size = ctxt->s1_unbinarized.size();
 
-   if (!nd.single_child) {
-      assert( (!nd.head_left||s0_size==1) && (nd.head_left||s1_size==1) );
+   if (!nd.single_child()) {
+      assert( (!nd.head_left()||s0_size==1) && (nd.head_left()||s1_size==1) );
       assert( nd.left_child==ctxt->s1 && nd.right_child==ctxt->s0);
    }
    else {
@@ -257,13 +257,13 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    const CTag &t = m_lCache[nd.lexical_head].tag; // head tag
 
    static unsigned long n; // number of constituents in the rule
-   n = nd.single_child?s0_size:s1_size+s0_size;
+   n = nd.single_child()?s0_size:s1_size+s0_size;
 
    static SCORE_TYPE nReturn;
 
    nReturn = 0;
 
-   //const int bracket_start = getStartingBracket(m_lCache[item->nodes[nd.single_child?ctxt->s0_unbinarized.front():ctxt->s1_unbinarized.front()].lexical_head]);
+   //const int bracket_start = getStartingBracket(m_lCache[item->nodes[nd.single_child()?ctxt->s0_unbinarized.front():ctxt->s1_unbinarized.front()].lexical_head]);
    //const int bracket_end = getEndingBracket(m_lCache[item->nodes[ctxt->s0_unbinarized.back()].lexical_head]);
    //const unsigned long bracket = (bracket_start!=-1||bracket_end!=-1) ? (bracket_start==bracket_end) ? 1 : 2 : 0;
    //if (bracket != 0) 
@@ -273,7 +273,7 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    //if (n<6) {
    //   ct = cf;
    //   j = 0;
-   //   if (!nd.single_child) {
+   //   if (!nd.single_child()) {
    //      for (i=0; i<s1_size; ++i) {
    //         ct += ctxt->s1_unbinarized_cs[i];
    //      }
@@ -429,10 +429,10 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S0U
    if (ctxt->s0u!=-1) {         
-//      refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s0ut), &(ctxt->s0uc), &action); 
-//      nReturn += cast_weights->m_mapS0Utc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(word_constituent_action, ctxt->s0uw, &(ctxt->s0uc), &action); 
-//      nReturn += cast_weights->m_mapS0Uwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s0ut), &(ctxt->s0uc), &action); 
+      nReturn += cast_weights->m_mapS0Utc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple3(word_constituent_action, ctxt->s0uw, &(ctxt->s0uc), &action); 
+      nReturn += cast_weights->m_mapS0Uwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
 
@@ -459,10 +459,10 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S1U
    if (ctxt->s1u!=-1) {         
-//      refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s1ut), &(ctxt->s1uc), &action); 
-//      nReturn += cast_weights->m_mapS1Utc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(word_constituent_action, ctxt->s1uw, &(ctxt->s1uc), &action); 
-//      nReturn += cast_weights->m_mapS1Uwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple3(tag_constituent_action, &(ctxt->s1ut), &(ctxt->s1uc), &action); 
+      nReturn += cast_weights->m_mapS1Utc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple3(word_constituent_action, ctxt->s1uw, &(ctxt->s1uc), &action); 
+      nReturn += cast_weights->m_mapS1Uwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S0LD
@@ -670,12 +670,12 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
    // S0 S0LRUN0
 //   if (ctxt->s0l!=-1) {
 //      assert(ctxt->s0r!=-1);
-//      if (!item->nodes[ctxt->s0].temp||!item->nodes[ctxt->s0].head_left) {
+//      if (!item->nodes[ctxt->s0].temp||!item->nodes[ctxt->s0].head_left()) {
 //      nReturn += cast_weights->m_mapS0cS0LcN0t.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s0cn0t, ctxt->s0lc)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0wS0LcN0t.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, encodeTorCs(ctxt->n0t, ctxt->s0lc))), m_nScoreIndex, amount, round);
 //      if (ctxt->n0!=-1) nReturn += cast_weights->m_mapS0cS0LcN0w.getOrUpdateScore(make_pair(*(ctxt->n0w), encodeAction(action, encodeTorCs(ctxt->s0c, ctxt->s0lc))), m_nScoreIndex, amount, round);
 //      }
-//      if (item->nodes[ctxt->s0].head_left) {
+//      if (item->nodes[ctxt->s0].head_left()) {
       if (ctxt->n0!=-1 && ctxt->s0r!=-1) {
          nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(make_pair(ctxt->s0cs0rcn0t, action), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(make_pair(ctxt->s0cs0rjn0t, action), m_nScoreIndex, amount, round);
@@ -707,11 +707,11 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
       nReturn += cast_weights->m_mapS0wS1cS1Rc.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
 //   if (ctxt->s0l!=-1) {
-//      if (!item->nodes[ctxt->s0].temp||!item->nodes[ctxt->s0].head_left) {
+//      if (!item->nodes[ctxt->s0].temp||!item->nodes[ctxt->s0].head_left()) {
 //      nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->s0lc)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0wS0LcS1c.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, encodeTorCs(ctxt->s0lc, ctxt->s1c))), m_nScoreIndex, amount, round);
 //      }
-//      if (!item->nodes[ctxt->s0].temp||item->nodes[ctxt->s0].head_left) {
+//      if (!item->nodes[ctxt->s0].temp||item->nodes[ctxt->s0].head_left()) {
 //         nReturn += cast_weights->m_mapS0cS0RcS1c.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->s0rc)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0wS0RcS1c.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, encodeTorCs(ctxt->s0rc, ctxt->s1c))), m_nScoreIndex, amount, round);
 //      if (ctxt->s1!=-1) nReturn += cast_weights->m_mapS0cS0RcS1w.getOrUpdateScore(make_pair(*(ctxt->s1w), encodeAction(action, encodeTorCs(ctxt->s0c, ctxt->s0rc))), m_nScoreIndex, amount, round);
@@ -729,7 +729,7 @@ if (!ctxt->s0c.empty() && !ctxt->s1c.empty()) {
    //}
 //   if (ctxt->s1l!=-1) {
 //      assert(ctxt->s1r!=-1);
-//      assert(!item->nodes[ctxt->s1].temp||item->nodes[ctxt->s1].head_left);
+//      assert(!item->nodes[ctxt->s1].temp||item->nodes[ctxt->s1].head_left());
 //      if (!item->nodes[ctxt->s1].temp) {
 //         nReturn += cast_weights->m_mapS0cS1cS1Lc.getOrUpdateScore(encodeAction(action, encodeTorCs(ctxt->s0cs1c, ctxt->s1lc)), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0wS1cS1Lc.getOrUpdateScore(make_pair(*(ctxt->s0w), encodeAction(action, encodeTorCs(ctxt->s1c, ctxt->s1lc))), m_nScoreIndex, amount, round);
@@ -827,8 +827,8 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
             const CStateNode &left = st.nodes[context.s1];
             const CStateNode &right = st.nodes[context.s0];
             assert(!left.temp||!right.temp);
-            assert(!left.temp||(head_left&&constituent==left.constituent));
-            assert(!right.temp||(!head_left&&constituent==right.constituent));
+            assert(!left.temp||(head_left&&constituent==left.constituent.code()));
+            assert(!right.temp||(!head_left&&constituent==right.constituent.code()));
             if (head_left) {
 //               getOrUpdateLinkScore( left.lexical_head, 
 //                                     right.lexical_head, 
@@ -933,7 +933,7 @@ void CConParser::updateScoresForStates( const CStateItem *output , const CStateI
  *--------------------------------------------------------------*/
 
 void CConParser::shift(CStateItem &st) {
-   if (st.stack.size()>0&&st.nodes[st.stack.back()].temp&&st.nodes[st.stack.back()].head_left==false)
+   if (st.stack.size()>0&&st.nodes[st.stack.back()].temp&&st.nodes[st.stack.back()].head_left()==false)
       return;
    // try the shift action
    static CAction action;
@@ -966,6 +966,9 @@ void CConParser::reduce(CStateItem &st) {
    const unsigned long &stacksize = st.stack.size();
    const bool prev_temp = stacksize>2 ? st.nodes[st.stack[stacksize-3]].temp:false;
    static CAction action;
+   static CScoredAction scoredaction;
+   static CAgendaSimple<CScoredAction> beam(4);
+   beam.clear();
    for (constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; constituent++) {
       for (i=0; i<=1; ++i) {
          for (j=0; j<=1; ++j) {
@@ -981,41 +984,50 @@ void CConParser::reduce(CStateItem &st) {
                  ( !(stacksize==2) || (!temporary||head_left) ) &&
                  ( !(prev_temp&&st.current_word==m_lCache.size()) || !temporary ) &&
                  ( !(prev_temp) || (!temporary||head_left) ) &&
-                 ( !left.temp || (head_left&&constituent==left.constituent) ) &&
-                 ( !right.temp || (!head_left&&constituent==right.constituent) ) //&&
+                 ( !left.temp || (head_left&&constituent==left.constituent.code()) ) &&
+                 ( !right.temp || (!head_left&&constituent==right.constituent.code()) ) //&&
 //                 ( !temporary || CConstituent::canBeTemporary(constituent) ) 
                ) {
                action.encodeReduce(constituent, false, head_left, temporary);
-               st.score += getOrUpdateStackScore(&st, action);
-               st.reduce(constituent, false, head_left, temporary);
-               if (head_left) {
-                  st.score += getOrUpdateLinkScore( left.lexical_head, 
-                                                    right.lexical_head );
-                  if (st.context->s1rd!=-1) 
-                     st.score += getOrUpdateSiblingLinkScore( left.lexical_head, 
-                                                              right.lexical_head, 
-                                                              st.nodes[st.context->s1rd].lexical_head );
-                  st.score += getOrUpdateArityScore( right.lexical_head, 
-                                                     st.context->s0ln, 
-                                                     st.context->s0rn );
-               }
-               else { 
-                  st.score += getOrUpdateLinkScore( right.lexical_head, 
-                                                    left.lexical_head );
-                  if (st.context->s0ld!=-1) 
-                     st.score += getOrUpdateSiblingLinkScore( right.lexical_head, 
-                                                              left.lexical_head, 
-                                                              st.nodes[st.context->s0ld].lexical_head );
-                  st.score += getOrUpdateArityScore( left.lexical_head, 
-                                                     st.context->s1ln, 
-                                                     st.context->s1rn );
-               }
-               st.score += getOrUpdateGraphScore(&st);
-               m_Agenda->pushCandidate(&st);
-               st.unreduce(original_score, unary_reduce);
+////               st.score += getOrUpdateStackScore(&st, action);
+////               st.reduce(constituent, false, head_left, temporary);
+//               if (head_left) {
+//                  st.score += getOrUpdateLinkScore( left.lexical_head, 
+//                                                    right.lexical_head );
+//                  if (st.context->s1rd!=-1) 
+//                     st.score += getOrUpdateSiblingLinkScore( left.lexical_head, 
+//                                                              right.lexical_head, 
+//                                                              st.nodes[st.context->s1rd].lexical_head );
+//                  st.score += getOrUpdateArityScore( right.lexical_head, 
+//                                                     st.context->s0ln, 
+//                                                     st.context->s0rn );
+//               }
+//               else { 
+//                  st.score += getOrUpdateLinkScore( right.lexical_head, 
+//                                                    left.lexical_head );
+//                  if (st.context->s0ld!=-1) 
+//                     st.score += getOrUpdateSiblingLinkScore( right.lexical_head, 
+//                                                              left.lexical_head, 
+//                                                              st.nodes[st.context->s0ld].lexical_head );
+//                  st.score += getOrUpdateArityScore( left.lexical_head, 
+//                                                     st.context->s1ln, 
+//                                                     st.context->s1rn );
+//               }
+//               st.score += getOrUpdateGraphScore(&st);
+//               m_Agenda->pushCandidate(&st);
+//               st.unreduce(original_score, unary_reduce);
+               scoredaction.load(action, getOrUpdateStackScore(&st, action));
+               beam.insertItem(&scoredaction);
             }
          }
       }
+   }
+   for (i=0; i<beam.size(); ++i) {
+      st.score += beam.item(i)->score ;
+      st.Move(beam.item(i)->action);
+      
+      m_Agenda->pushCandidate(&st);
+      st.unreduce(original_score, unary_reduce);
    }
 }
 
@@ -1035,23 +1047,35 @@ void CConParser::reduce_unary(CStateItem &st) {
    original_score = st.score;
    unary_reduce = st.unary_reduce;
    static CCFGSet cf;
+   static unsigned i;
    static CAction action;
+   static CScoredAction scoredaction;
+   static CAgendaSimple<CScoredAction> beam(4);
+   beam.clear();
    for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent){
       const CStateNode &child = st.nodes[st.stack.back()];
       const CWord &hw = m_lCache[child.lexical_head];
       assert(st.context->s0==st.stack.back());
-      if (constituent != child.constituent
+      if (constituent != child.constituent.code()
          ) { 
          action.encodeReduce(constituent, true, false, false);
-         st.score += getOrUpdateStackScore(&st, action);
-         st.reduce(constituent, true, false, false);
+//         st.score += getOrUpdateStackScore(&st, action);
+//         st.reduce(constituent, true, false, false);
 //         st.score += getOrUpdateHeadScore( constituent, 
 //                                           st.context->s0c, 
 //                                           child.lexical_head );
-         st.score += getOrUpdateGraphScore(&st);
-         m_Agenda->pushCandidate(&st);
-         st.unreduce(original_score, unary_reduce);
+//         st.score += getOrUpdateGraphScore(&st);
+//         m_Agenda->pushCandidate(&st);
+         scoredaction.load(action, getOrUpdateStackScore(&st, action));
+         beam.insertItem(&scoredaction);
+//         st.unreduce(original_score, unary_reduce);
       }
+   }
+   for (i=0; i<beam.size(); ++i) {
+      st.score += beam.item(i)->score;
+      st.Move(beam.item(i)->action);
+      m_Agenda->pushCandidate(&st);
+      st.unreduce(original_score, unary_reduce);
    }
 }
 
@@ -1076,9 +1100,9 @@ void CConParser::terminate(CStateItem &st) {
    action.encodeReduceRoot();
    st.score += getOrUpdateStackScore(&st, action);
    st.terminate();
-   st.score += getOrUpdateArityScore( st.nodes[st.context->s0].lexical_head, 
-                                      st.context->s0ln, 
-                                      st.context->s0rn );
+//   st.score += getOrUpdateArityScore( st.nodes[st.context->s0].lexical_head, 
+//                                      st.context->s0ln, 
+//                                      st.context->s0rn );
    m_Agenda->pushCandidate(&st);
    st.unterminate(original_score, unary_reduce);
 }
