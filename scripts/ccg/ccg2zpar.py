@@ -12,7 +12,10 @@ def Iter(node):
    assert node
    if node.left:
       if node.right:
-         type = 'l'
+         if node.head_left == '1':
+            type = 'l'
+         else:
+            type = 'r'
       else:
          type = 's'
    else:
@@ -20,7 +23,7 @@ def Iter(node):
       type = 't'
    if type == 't':
       retval =  '( ' + node.supercategory + ' s ( ' + node.tree.tokens[node.start_index][pos_index] + ' t ' + node.tree.tokens[node.start_index][token_index] + ' ) )'
-   elif type == 'l':
+   elif type in ['l', 'r']:
       retval =  '( ' + node.supercategory + ' ' + type + ' ' + Iter(node.left) + ' ' + Iter(node.right) + ' )'
    else:
       assert type == 's'
