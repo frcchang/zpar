@@ -117,7 +117,7 @@ class CBinarizedTreeNode(object):
    def copy(self, node):
       self.type = node.type
       self.name = node.name
-      if self.type == 'token':
+      if node.type == 'token':
          self.token = node.token
       else:
          self.left_child = node.left_child
@@ -128,7 +128,7 @@ class CBinarizedTreeNode(object):
 
          self.temporary = node.temporary
 
-         self.head_leaf = node.head_leaf
+         if 'head_leaf' in dir(node) : self.head_leaf = node.head_leaf
 
    def tokens(self):
       if self.type == 'constituent':
@@ -238,12 +238,15 @@ class CBinarizer(object):
       return True
 
    def build_binarized_node(self, node, srcnode):
+
+      # remove all unary reduces
       if self.m_bRemoveUnary:
          while srcnode.type == "constituent" and len(srcnode.children) == 1:
             srcnode = srcnode.children[0]
+
       if srcnode.name == '-NONE-':
          return False
-      srcname = srcnode.name.split("-")[0]
+      srcname = srcnode.name.split("-")[0].split("=")[0]
       node.name = srcname
       node.type = srcnode.type
       if srcnode.type == 'token':
@@ -259,7 +262,7 @@ class CBinarizer(object):
          if tuplechildren == []:
             return False
          if len(tuplechildren) == 1:
-            if self.m_bRemoveUnary:
+            if self.m_bRemoveUnary or node.name == tuplechildren[0][1].name:
                node.copy(tuplechildren[0][1])
             else:
                node.left_child = tuplechildren[0][1]
@@ -270,6 +273,8 @@ class CBinarizer(object):
             headchild = self.find_head(srcnode)
             # two child 
             if len(tuplechildren) == 2:
+               node.left_child = tuplechildren[0][1]
+               node.right_child = tuplechildren[1][1]
                if headchild == tuplechildren[0][0]:
                   node.head_child = 'l'
                else:
@@ -277,8 +282,6 @@ class CBinarizer(object):
                      print headchild, tuplechildren[0][0], tuplechildren[1][0]
                   assert headchild == tuplechildren[1][0]
                   node.head_child = 'r'
-               node.left_child = tuplechildren[0][1]
-               node.right_child = tuplechildren[1][1]
                return True
             # more than two child
             else:
@@ -309,13 +312,13 @@ class CBinarizer(object):
                   lTemp.pop(-1)
             # now there are exactly two left
             assert len(lTemp) == 2
+            node.left_child = lTemp[0][1]
+            node.right_child = lTemp[1][1]
             if headchild == lTemp[0][0]:
                node.head_child = 'l'
             else:
                assert headchild == lTemp[1][0]
                node.head_child = 'r'
-            node.left_child = lTemp[0][1]
-            node.right_child = lTemp[1][1]
       return True
 
    def process(self, sSentence):

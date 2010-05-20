@@ -340,6 +340,15 @@ public:
          reduce(action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
    }
    
+   void UnMove(const CAction &action, const SCORE_TYPE &original_score, const int &original_unary) {
+      if (action.isShift())
+         unshift(original_score, original_unary);
+      else if (action.isReduceRoot())
+         { unterminate(original_score, original_unary); }
+      else
+         unreduce(original_score, original_unary);
+   }
+
    bool IsComplete() const {
       return current_word == sent->size() && stack.size() == 1;
    }
