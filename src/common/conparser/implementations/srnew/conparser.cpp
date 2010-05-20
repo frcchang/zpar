@@ -930,8 +930,8 @@ void CConParser::updateScoresForStates( const CStateItem *output , const CStateI
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE getOrUpdateScore( const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount, int round ) {
-   return getOrUpdateStackScore(item, action, amount, round);
+SCORE_TYPE CConParser::getOrUpdateScore( const conparser::CStateItem &item, const conparser::CAction &action, conparser::SCORE_TYPE amount, int round ) {
+   return getOrUpdateStackScore(&item, action, amount, round);
 }
 
 /*---------------------------------------------------------------
@@ -959,7 +959,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    static CContext context;
    static bool bParsingDone;
    static CAction action;
-   static CAgendaSimple beam(AGENDA_SIZE);
+   static CAgendaSimple<CScoredAction> beam(AGENDA_SIZE);
    static vector<CAction> actions; // actions to apply for a candidate
    static CScoredAction scored_action; // used rank actions
 
@@ -1019,8 +1019,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             beam.clear();
             m_rule.getActions(oCandidate, actions);
             for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
-               scoredaction.load(actions[tmp_j], getOrUpdateScore(oCandidate, actions[tmp_j]));
-               beam.insertItem(&scoredaction);
+               scored_action.load(actions[tmp_j], getOrUpdateScore(oCandidate, actions[tmp_j]));
+               beam.insertItem(&scored_action);
             }
    
             // insertItems
