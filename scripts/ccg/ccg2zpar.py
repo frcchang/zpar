@@ -18,14 +18,13 @@ def Iter(node):
    else:
       assert not node.right
       type = 't'
-   retval =  '( ' + node.supercategory + ' ' + type + ' '
    if type == 't':
-      retval += node.tree.tokens[node.start_index][token_index] + ' )'
+      retval =  '( ' + node.supercategory + ' s ( ' + node.tree.tokens[node.start_index][pos_index] + ' t ' + node.tree.tokens[node.start_index][token_index] + ' ) )'
    elif type == 'l':
-      retval += Iter(node.left) + ' ' + Iter(node.right) + ' )'
+      retval =  '( ' + node.supercategory + ' ' + type + ' ' + Iter(node.left) + ' ' + Iter(node.right) + ' )'
    else:
       assert type == 's'
-      retval += Iter(node.left) + ' )'
+      retval =  '( ' + node.supercategory + ' ' + type + ' ' + Iter(node.left) + ' )'
    return retval
 
 def ToCon(tree):
