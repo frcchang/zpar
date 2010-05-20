@@ -49,6 +49,7 @@ private:
    int m_nTotalErrors;
    bool m_bScoreModified;
    int m_nScoreIndex;
+   CRule m_rule;
 
 public:
    // constructor and destructor
@@ -85,11 +86,6 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   inline void shift(conparser::CStateItem &item);
-   inline void reduce(conparser::CStateItem &item);
-   inline void reduce_unary(conparser::CStateItem &item);
-   inline void terminate(conparser::CStateItem &item);
-
    void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
 
    // get the global score for a parsed sentence or section
@@ -102,6 +98,7 @@ private:
    inline conparser::SCORE_TYPE getOrUpdateTrigramScore( const unsigned long &parent, const unsigned long &child, const unsigned long &child1, const unsigned long &childo, const bool &left, conparser::SCORE_TYPE amount=0, int round=0 );
    inline conparser::SCORE_TYPE getOrUpdateGraphScore( const conparser::CStateItem *item, conparser::SCORE_TYPE amount=0, int round=0 );
    inline conparser::SCORE_TYPE getOrUpdateStackScore( const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline conparser::SCORE_TYPE getOrUpdateScore( const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
    void updateScoresForStates( const conparser::CStateItem *output , const conparser::CStateItem *correct ) ;

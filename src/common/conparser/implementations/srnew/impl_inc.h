@@ -37,4 +37,6 @@ typedef double SCORE_TYPE ;
 
 }
 
+#include "rule.h"
+
 #endif

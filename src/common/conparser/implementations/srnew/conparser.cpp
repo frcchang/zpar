@@ -926,185 +926,12 @@ void CConParser::updateScoresForStates( const CStateItem *output , const CStateI
 
 /*---------------------------------------------------------------
  *
- * shift - shift action
- *
- * Input: the generator item
+ * getOrUpdateScore - get or update the score of a state and act
  *
  *--------------------------------------------------------------*/
 
-void CConParser::shift(CStateItem &st) {
-   if (st.stack.size()>0&&st.nodes[st.stack.back()].temp&&st.nodes[st.stack.back()].head_left()==false)
-      return;
-   // try the shift action
-   static CAction action;
-   action.encodeShift();
-   static SCORE_TYPE original_score;
-   static int unary_reduce;
-   original_score = st.score;
-   unary_reduce = st.unary_reduce;
-   st.score += getOrUpdateStackScore(&st, action);
-   st.shift();
-   m_Agenda->pushCandidate(&st);
-   st.unshift(original_score, unary_reduce);
-}
-
-/*---------------------------------------------------------------
- *
- * reduce - reduce action
- *
- * Input: the generator item
- *
- *--------------------------------------------------------------*/
-
-void CConParser::reduce(CStateItem &st) {
-   static unsigned long constituent;
-   static unsigned long i, j;
-   static SCORE_TYPE original_score;
-   static int unary_reduce;
-   original_score = st.score;
-   unary_reduce = st.unary_reduce;
-   const unsigned long &stacksize = st.stack.size();
-   const bool prev_temp = stacksize>2 ? st.nodes[st.stack[stacksize-3]].temp:false;
-   static CAction action;
-   static CScoredAction scoredaction;
-   static CAgendaSimple<CScoredAction> beam(4);
-   beam.clear();
-   for (constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; constituent++) {
-      for (i=0; i<=1; ++i) {
-         for (j=0; j<=1; ++j) {
-            const bool &head_left = static_cast<bool>(i);
-            const bool &temporary = static_cast<bool>(j);
-            const CStateNode &right = st.nodes[st.stack.back()];
-            const CStateNode  &left = st.nodes[st.stack[stacksize-2]];
-            assert( st.stack.back() == st.context->s0 );
-            assert( st.stack[stacksize-2] == st.context ->s1 );
-            const CWord &head_wd = m_lCache[ (head_left?left:right).lexical_head ];
-            if ( ( !left.temp || !right.temp ) &&
-                 ( !(stacksize==2&&st.current_word==m_lCache.size()) || !temporary ) &&
-                 ( !(stacksize==2) || (!temporary||head_left) ) &&
-                 ( !(prev_temp&&st.current_word==m_lCache.size()) || !temporary ) &&
-                 ( !(prev_temp) || (!temporary||head_left) ) &&
-                 ( !left.temp || (head_left&&constituent==left.constituent.code()) ) &&
-                 ( !right.temp || (!head_left&&constituent==right.constituent.code()) ) //&&
-//                 ( !temporary || CConstituent::canBeTemporary(constituent) ) 
-               ) {
-               action.encodeReduce(constituent, false, head_left, temporary);
-////               st.score += getOrUpdateStackScore(&st, action);
-////               st.reduce(constituent, false, head_left, temporary);
-//               if (head_left) {
-//                  st.score += getOrUpdateLinkScore( left.lexical_head, 
-//                                                    right.lexical_head );
-//                  if (st.context->s1rd!=-1) 
-//                     st.score += getOrUpdateSiblingLinkScore( left.lexical_head, 
-//                                                              right.lexical_head, 
-//                                                              st.nodes[st.context->s1rd].lexical_head );
-//                  st.score += getOrUpdateArityScore( right.lexical_head, 
-//                                                     st.context->s0ln, 
-//                                                     st.context->s0rn );
-//               }
-//               else { 
-//                  st.score += getOrUpdateLinkScore( right.lexical_head, 
-//                                                    left.lexical_head );
-//                  if (st.context->s0ld!=-1) 
-//                     st.score += getOrUpdateSiblingLinkScore( right.lexical_head, 
-//                                                              left.lexical_head, 
-//                                                              st.nodes[st.context->s0ld].lexical_head );
-//                  st.score += getOrUpdateArityScore( left.lexical_head, 
-//                                                     st.context->s1ln, 
-//                                                     st.context->s1rn );
-//               }
-//               st.score += getOrUpdateGraphScore(&st);
-//               m_Agenda->pushCandidate(&st);
-//               st.unreduce(original_score, unary_reduce);
-               scoredaction.load(action, getOrUpdateStackScore(&st, action));
-               beam.insertItem(&scoredaction);
-            }
-         }
-      }
-   }
-   for (i=0; i<beam.size(); ++i) {
-      st.score += beam.item(i)->score ;
-      st.Move(beam.item(i)->action);
-      
-      m_Agenda->pushCandidate(&st);
-      st.unreduce(original_score, unary_reduce);
-   }
-}
-
-/*---------------------------------------------------------------
- *
- * reduce_unary - reduce action
- *
- * Input: the generator item
- *
- *--------------------------------------------------------------*/
-
-void CConParser::reduce_unary(CStateItem &st) {
-   // reduce unary can't be with a temp node
-   if (st.nodes[st.stack.back()].temp) return;
-   static SCORE_TYPE original_score;
-   static int unary_reduce;
-   original_score = st.score;
-   unary_reduce = st.unary_reduce;
-   static CCFGSet cf;
-   static unsigned i;
-   static CAction action;
-   static CScoredAction scoredaction;
-   static CAgendaSimple<CScoredAction> beam(4);
-   beam.clear();
-   for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent){
-      const CStateNode &child = st.nodes[st.stack.back()];
-      const CWord &hw = m_lCache[child.lexical_head];
-      assert(st.context->s0==st.stack.back());
-      if (constituent != child.constituent.code()
-         ) { 
-         action.encodeReduce(constituent, true, false, false);
-//         st.score += getOrUpdateStackScore(&st, action);
-//         st.reduce(constituent, true, false, false);
-//         st.score += getOrUpdateHeadScore( constituent, 
-//                                           st.context->s0c, 
-//                                           child.lexical_head );
-//         st.score += getOrUpdateGraphScore(&st);
-//         m_Agenda->pushCandidate(&st);
-         scoredaction.load(action, getOrUpdateStackScore(&st, action));
-         beam.insertItem(&scoredaction);
-//         st.unreduce(original_score, unary_reduce);
-      }
-   }
-   for (i=0; i<beam.size(); ++i) {
-      st.score += beam.item(i)->score;
-      st.Move(beam.item(i)->action);
-      m_Agenda->pushCandidate(&st);
-      st.unreduce(original_score, unary_reduce);
-   }
-}
-
-/*---------------------------------------------------------------
- *
- * terminate - termination action
- *
- * Input: the generator item
- *
- *--------------------------------------------------------------*/
-
-void CConParser::terminate(CStateItem &st) {
-   //static CStateItem st;
-   //st = *item;
-   static SCORE_TYPE original_score;
-   static int unary_reduce;
-   static CAction action;
-   original_score = st.score;
-   unary_reduce = st.unary_reduce;
-   assert(unary_reduce!=-1);
-   assert(st.IsComplete());
-   action.encodeReduceRoot();
-   st.score += getOrUpdateStackScore(&st, action);
-   st.terminate();
-//   st.score += getOrUpdateArityScore( st.nodes[st.context->s0].lexical_head, 
-//                                      st.context->s0ln, 
-//                                      st.context->s0rn );
-   m_Agenda->pushCandidate(&st);
-   st.unterminate(original_score, unary_reduce);
+SCORE_TYPE getOrUpdateScore( const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount, int round ) {
+   return getOrUpdateStackScore(item, action, amount, round);
 }
 
 /*---------------------------------------------------------------
@@ -1127,11 +954,14 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    static bool bCorrect ;  // used in learning for early update
    static CStateItem correctState ;
    static unsigned long stack_size;
-   static int x;
+   static int tmp_i, tmp_j;
    const static CStateItem *pBestGen;
    static CContext context;
    static bool bParsingDone;
    static CAction action;
+   static CAgendaSimple beam(AGENDA_SIZE);
+   static vector<CAction> actions; // actions to apply for a candidate
+   static CScoredAction scored_action; // used rank actions
 
    assert(length<MAX_SENTENCE_SIZE);
 
@@ -1139,9 +969,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    // initialise word cache
    m_lCache.clear();
    m_lWordLen.clear();
-   for ( x=0; x<length; x++ ) {
-      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[x].first , sentence[x].second) );
-      m_lWordLen.push_back( getUTF8StringLength(sentence[x].first) );
+   for ( tmp_i=0; tmp_i<length; tmp_i++ ) {
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[tmp_i].first , sentence[tmp_i].second) );
+      m_lWordLen.push_back( getUTF8StringLength(sentence[tmp_i].first) );
    }
    // initialise agenda
    m_Agenda->clear();
@@ -1164,47 +994,59 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
       if (pBestGen->IsTerminated()) break; // if the first item is complete
       bParsingDone = false;
-      for (x=0; x<m_Agenda->generatorSize(); ++x) {
-         if (m_Agenda->generator(x)->score == pBestGen->score && 
-               m_Agenda->generator(x)->IsTerminated()) {
-             pBestGen = m_Agenda->generator(x);
+      for (tmp_i=0; tmp_i<m_Agenda->generatorSize(); ++tmp_i) {
+         if (m_Agenda->generator(tmp_i)->score == pBestGen->score && 
+               m_Agenda->generator(tmp_i)->IsTerminated()) {
+             pBestGen = m_Agenda->generator(tmp_i);
              bParsingDone = true; break;
          }
       }
       if (bParsingDone) break;
          
-      for (x=0; x<m_Agenda->generatorSize(); ++x) { // for each generator
+      for (tmp_i=0; tmp_i<m_Agenda->generatorSize(); ++tmp_i) { // for each generator
 
-         if (pGenerator->IsTerminated()) { // don't do anything for completed items
+         // don't do anything for completed items
+         if (pGenerator->IsTerminated()) { 
             m_Agenda->pushCandidate(pGenerator); // push it back intacit
          }
          else {
+            // load context
+            context.load(pGenerator, m_lCache, m_lWordLen, false);
             oCandidate = *pGenerator;
-            context.load(&oCandidate, m_lCache, m_lWordLen, false);
             oCandidate.context = &context;
-            if (pGenerator->IsComplete()) { // finish parsing
-               terminate(oCandidate);
+   
+            // get actions
+            beam.clear();
+            m_rule.getActions(oCandidate, actions);
+            for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
+               scoredaction.load(actions[tmp_j], getOrUpdateScore(oCandidate, actions[tmp_j]));
+               beam.insertItem(&scoredaction);
             }
-            if ( pGenerator->current_word < length ) { // some words hvnt processed
-               shift(oCandidate);
-            }
-            stack_size = pGenerator->stack.size();
-            if ( stack_size > 1 ) {
-               reduce(oCandidate);
-            }
-            if ( stack_size && pGenerator->unary_reduce<UNARY_MOVES ) {
-                  reduce_unary(oCandidate);
+   
+            // insertItems
+            for (tmp_j=0; tmp_j<beam.size(); ++tmp_j) {
+               static SCORE_TYPE original_score;
+               static int original_unary;
+               original_score = oCandidate.score;
+               original_unary = oCandidate.unary_reduce;
+               oCandidate.Move(beam.item(tmp_j)->action);
+               oCandidate.score += beam.item(tmp_j)->score;
+               m_Agenda->pushCandidate(&oCandidate);
+               oCandidate.UnMove(beam.item(tmp_j)->action, original_score, original_unary);
             }
          }
-   
-         if (bTrain && *pGenerator == correctState) { // compare generator to corr
+
+         // compare generator to corr
+         if (bTrain && *pGenerator == correctState) { 
             bCorrect = true ;
          }
 
-         pGenerator = m_Agenda->generatorNext() ; // next loop
+         // next loop
+         pGenerator = m_Agenda->generatorNext() ; 
       } // done iterating generator item
 
-      if (bTrain) { // update items if correct item jump out of the agenda
+      // update items if correct item jump out of the agenda
+      if (bTrain) { 
 #ifdef EARLY_UPDATE
          if (!bCorrect) {
             correctState.trace(&sentence);
