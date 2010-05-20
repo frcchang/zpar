@@ -20,6 +20,7 @@ public:
 
       static CAction action;
       const unsigned &stack_size = item.stack.size();
+      const unsigned &length = item.sent->size();
 
       // finish parsing
       if (item.IsComplete()) { 
@@ -29,7 +30,7 @@ public:
       // shift
       if ( item.current_word < length ) { 
          // do not shift for head right tmp item
-         if (stack_size()>0 && 
+         if (stack_size>0 && 
              item.nodes[item.stack.back()].temp &&
              item.nodes[item.stack.back()].head_left()==false) {
          }
@@ -40,6 +41,7 @@ public:
       }
       // reduce bin
       if ( stack_size > 1 ) {
+         const bool prev_temp = stack_size>2 ? item.nodes[item.stack[stack_size-3]].temp:false;
 	 for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
 	    for (unsigned i=0; i<=1; ++i) {
 	       for (unsigned j=0; j<=1; ++j) {
@@ -49,11 +51,11 @@ public:
 		  const CStateNode  &left = item.nodes[item.stack[stack_size-2]];
 		  assert( item.stack.back() == item.context->s0 );
 		  assert( item.stack[stack_size-2] == item.context ->s1 );
-		  const CWord &head_wd = m_lCache[ (head_left?left:right).lexical_head ];
+		  const CWord &head_wd = item.sent->at( (head_left?left:right).lexical_head );
 		  if ( ( !left.temp || !right.temp ) &&
-		       ( !(stack_size==2&&item.current_word==m_lCache.size()) || !temporary ) &&
+		       ( !(stack_size==2 && item.current_word==item.sent->size()) || !temporary ) &&
 		       ( !(stack_size==2) || (!temporary||head_left) ) &&
-		       ( !(prev_temp&&item.current_word==m_lCache.size()) || !temporary ) &&
+		       ( !(prev_temp && item.current_word==item.sent->size()) || !temporary ) &&
 		       ( !(prev_temp) || (!temporary||head_left) ) &&
 		       ( !left.temp || (head_left&&constituent==left.constituent.code()) ) &&
 		       ( !right.temp || (!head_left&&constituent==right.constituent.code()) ) //&&
