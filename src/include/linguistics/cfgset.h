@@ -11,12 +11,11 @@
 #ifndef _CFGSET_H
 #define _CFGSET_H
 
-#define CFGSET_SIZE 9
-
 #include "hash.h"
 
 const unsigned long PACKED_CON_OR_TAG_SIZE = std::max(static_cast<unsigned long>(CConstituent::SIZE), static_cast<unsigned long>(CTag::SIZE)) + 1;
 // the first bit being one for pos
+const unsigned long CFGSET_SIZE = sizeof(unsigned long long) / PACKED_CON_OR_TAG_SIZE;
 
 //=============================================================
 

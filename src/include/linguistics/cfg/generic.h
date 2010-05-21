@@ -42,7 +42,7 @@ public:
    enum {NONE = 0};
    enum {SENTENCE_BEGIN = 1};
    enum {FIRST = 2};
-   enum {SIZE = 8};
+   enum {SIZE = 12};
    static unsigned long COUNT;
    static unsigned long LAST;
 
@@ -74,6 +74,7 @@ public:
 
    void load(const string &s) {
       m_code=getTokenizer().lookup(s); 
+      if (getTokenizer().count()>COUNT) TRACE(s);
       COUNT = getTokenizer().count();
       LAST = COUNT-1;
       assert((1<<SIZE)>COUNT);

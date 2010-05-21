@@ -239,7 +239,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
  *
  *--------------------------------------------------------------*/
 
-void CWeight::loadScores(const ifstream &file) {
+void CWeight::loadScores(ifstream &file) {
    clock_t time_start = clock();
    cout<<"Loading scores..."; cout.flush();
 //   ifstream file ; 

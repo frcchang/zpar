@@ -62,6 +62,7 @@ public:
       file.open(sFeatureDBPath.c_str());
       m_weights->loadScores(file);
       // load rules
+      CConstituent c;
       m_rule.loadRules(file);
       file.close();
       // initialize 
@@ -71,9 +72,6 @@ public:
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
-      assert(PENN_CON_COUNT_BITS == PENN_TAG_COUNT_BITS-1); // for encoding token tags
-      assert(PACKED_CON_OR_TAG_SIZE * 3 + PENN_CON_COUNT_BITS+4<=32); // the largest encoded feature
-      assert(CFGSET_SIZE*PACKED_CON_OR_TAG_SIZE<sizeof(unsigned long long)*8); // the cfg set can hold it
    }
    ~CConParser() {
       delete m_Agenda;
@@ -85,7 +83,7 @@ public:
 
 public:
    void LoadBinaryRules(const string &sBinaryRulePath) {
-      ASSERT(!m_bTrain, "Rules can only be loaded during training!");
+      ASSERT(m_bTrain, "Rules can only be loaded during training!");
       if (!m_weights->empty() || m_nTrainingRound !=0 ) {
          WARNING("Ignored binary rules from " << sBinaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
       }
@@ -96,7 +94,7 @@ public:
       file.close();
    }
    void LoadUnaryRules(const string &sUnaryRulePath) {
-      ASSERT(!m_bTrain, "Rules can only be loaded during training!");
+      ASSERT(m_bTrain, "Rules can only be loaded during training!");
       if (!m_weights->empty() || m_nTrainingRound !=0 ) {
          WARNING("Ignored unary rules from " << sUnaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
       }

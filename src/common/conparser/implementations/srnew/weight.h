@@ -561,7 +561,7 @@ public:
 
 
    // MEHTODS
-   virtual void loadScores(const ifstream &is);
+   virtual void loadScores(ifstream &is);
    virtual void saveScores(ofstream &os);
    void computeAverageFeatureWeights(int round);
    SCORE_TYPE dotProduct(const CWeight &w);

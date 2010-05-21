@@ -16,8 +16,8 @@ namespace conparser {
 class CRule {
 
 protected:
-   CHashMap< CTuple3<CAction, CConstituent, CConstituent> > *m_mapBinaryRules;
-   CHashMap< CTuple2<CAction, CConstituent> > *m_mapUnaryRules;
+   CHashMap< CTuple3<CAction, CConstituent, CConstituent>, unsigned > *m_mapBinaryRules;
+   CHashMap< CTuple2<CAction, CConstituent>, unsigned > *m_mapUnaryRules;
 
 public:
    CRule() : m_mapBinaryRules(0), m_mapUnaryRules(0) {}
@@ -104,29 +104,31 @@ public:
    }
 
 public:
-   void loadRules(const ifstream &is) {
+   void loadRules(ifstream &is) {
       if (!is.is_open()) {
          return;
       }
       // TODO
    }
 
-   void saveRules(ostream &os) {
+   void saveRules(ofstream &os) {
       ASSERT(os.is_open(), "Cannot save rules possibly because the output file is not accessible.");
       // TODO
    }
 
-   void LoadBinaryRules(const ifstream &is) {
+   void LoadBinaryRules(ifstream &is) {
       if (!is.is_open()) {
          THROW("Loading binary rules failed possibly becaues file not exists.");
       }
-      if >> (*m_mapBinaryRules);
+      m_mapBinaryRules = new CHashMap< CTuple3<CAction, CConstituent, CConstituent>, unsigned >;
+      is >> (*m_mapBinaryRules);
    }
 
-   void LoadUnaryRules(const ifstream &is) {
+   void LoadUnaryRules(ifstream &is) {
       if (!is.is_open()) {
          THROW("Loading unary rules failed possibly becaues file not exists.");
       }
+      m_mapUnaryRules = new CHashMap< CTuple2<CAction, CConstituent>, unsigned >;
       is >> (*m_mapUnaryRules);
    }
 

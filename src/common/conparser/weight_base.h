@@ -34,7 +34,7 @@ public:
    CWeightBase(bool bTrain) : m_bTrain(bTrain) , m_bEmpty(true) {}
    virtual ~CWeightBase() { }
 
-   virtual void loadScores(const ifstream &is) = 0 ;
+   virtual void loadScores(ifstream &is) = 0 ;
    virtual void saveScores(ofstream &os) = 0 ; 
 
    bool empty() const {return m_bEmpty;}
