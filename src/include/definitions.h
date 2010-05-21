@@ -48,6 +48,7 @@ using namespace std;
 
 // error report tool
 #define REPORT(x) { cerr << endl << "In " << __FILE__ << ", line " << __LINE__ << ": " << endl << x << endl; cerr.flush(); }
+#define WARNING(x) { cerr << x << endl; cerr.flush(); }
 
 // trace tool
 #ifdef DEBUG 

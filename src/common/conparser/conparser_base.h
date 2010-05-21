@@ -30,10 +30,11 @@ protected:
    conparser::CWeightBase *m_weights;
 
    bool m_bTrain ; // the system runs either at training mode or decoding mode
+   string m_sFeatureDB;
 
 public:
    // constructor and destructor
-   CConParserBase( string sFeatureDBPath , bool bTrain ) : m_bTrain(bTrain) { 
+   CConParserBase( string sFeatureDBPath , bool bTrain ) : m_bTrain(bTrain), m_sFeatureDB(sFeatureDBPath) { 
       // do nothing
    }
    virtual ~CConParserBase() {

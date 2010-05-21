@@ -11,6 +11,12 @@ import fidtree
 
 import getopt
 
+def adddict(d, i):
+   if not i in d:
+      d[i] = 1
+   else:
+      d[i] += 1
+
 class CRuleExtracter(object):
 
    def __init__(self, sInput, sLogs):
@@ -31,27 +37,30 @@ class CRuleExtracter(object):
          assert srcnode.type == "constituent"
          item = 'REDUCE '
          if srcnode.head_child == 's':
-            item += 'UNARY '
-            item += srcnode.constituent
-            item += ' , '
-            item += srcnode.left_child.constituent
-            item += ' : 1'
-            retval[0].add(item)
+            if srcnode.left_child.type != 'token':
+               item += 'UNARY '
+               item += srcnode.name
+               item += ' , '
+               item += srcnode.left_child.name
+               adddict(retval[0], item)
+               self.extract_rules(srcnode.left_child, retval)
          else:
             item += 'BINARY '
             if srcnode.head_child == 'l':
                item += 'LEFT '
             else:
+               assert srcnode.head_child == 'r'
                item += 'RIGHT '
             if srcnode.temporary:
                item += 'TEMP '
-            item += node.constituent
+            item += srcnode.name
             item += ' , '
-            item += node.left_child.constituent
+            item += srcnode.left_child.name
             item += ' , '
-            item += node.right_child.constituent
-            item += ' : 1'
-            retval[1].add(item)
+            item += srcnode.right_child.name
+            adddict(retval[1], item)
+            self.extract_rules(srcnode.left_child, retval)
+            self.extract_rules(srcnode.right_child, retval)
    #----------------------------------------------------------------
 
    def process(self, retval):
@@ -91,16 +100,16 @@ if __name__ == '__main__':
    for opt in opts:
       if opt[0] == '-l':
          sLogs = opt[1]
-   retval = [set(), set()] # unary, binary
+   retval = [{}, {}] # unary, binary
    rule = CRuleExtracter(args[0], sLogs)
    rule.process(retval)
    unary_file = open(args[1], 'w')
    for item in retval[0]:
-      unary_file.write(item)
+      unary_file.write(item + ' : ' + str(retval[0][item]))
       unary_file.write('\n')
    unary_file.close()
    binary_file = open(args[2], 'w')
    for item in retval[1]:
-      binary_file.write(item)
+      binary_file.write(item + ' : ' + str(retval[1][item]))
       binary_file.write('\n')
-   binaru_file.close()
+   binary_file.close()

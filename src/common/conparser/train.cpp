@@ -23,11 +23,15 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const string &sBinaryRulePath, const string &sUnaryRulePath) {
 
    cout << "Training iteration is started ... " << endl ; cout.flush();
 
    CConParser parser(sFeatureFile, true);
+   if (!sBinaryRulePath.empty()) 
+      parser.LoadBinaryRules(sBinaryRulePath);
+   if (!sUnaryRulePath.empty())
+      parser.LoadUnaryRules(sUnaryRulePath);
 
    ifstream is(sOutputFile.c_str());
    assert(is.is_open());
@@ -62,8 +66,12 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
+      configurations.defineConfiguration("b", "Path", "use only the binary rules from the given path", "");
+      configurations.defineConfiguration("u", "Path", "use only the unary rules from the given path", "");
+      configurations.defineConfiguration("i", "r|c", "format of the input: r - pos tagged sentence; c - multiple constituents for terminal tokens", "r");
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
+         cout << configurations.message() << endl;
          return 1;
       } 
    
@@ -76,11 +84,19 @@ int main(int argc, char* argv[]) {
       if (!warning.empty()) {
          cout << "Warning: " << warning << endl;
       }
+
+      string sBinaryRulePath = configurations.getConfiguration("b");
+      string sUnaryRulePath = configurations.getConfiguration("u");
+      string sInputFormat = configurations.getConfiguration("i");
    
       cout << "Training started." << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) {
-         auto_train(argv[1], argv[2]); // set update tag dict false now
+         auto_train(argv[1], argv[2], sBinaryRulePath, sUnaryRulePath); // set update tag dict false now
+         if (i==0) { // do not apply rules in next iterations
+            sBinaryRulePath.clear();
+            sUnaryRulePath.clear();
+         }
       }
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    
