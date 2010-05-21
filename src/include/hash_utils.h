@@ -22,9 +22,6 @@ template<typename T>
 inline unsigned long hash(const T& t) { return t.hash(); }
 
 template<typename T1, typename T2>
-//inline unsigned long hash(const pair<T1, T2> &o) { return hash(o.first)*29 + hash(o.second) ; }
-inline unsigned long hash(const pair<T1, T2> &o) { 
-   return (hash(o.first)<<8) + hash(o.first) + hash(o.second); 
-}
+inline unsigned long hash(const pair<T1, T2> &o) { return hash(o.first)*29 + hash(o.second) ; }
 
 #endif

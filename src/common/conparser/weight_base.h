@@ -24,18 +24,20 @@ class CWeightBase {
 
 protected:
    bool m_bTrain;
-   bool m_bModified;
+//   bool m_bModified;
+   bool m_bEmpty;
  
-   string m_sRecordPath;
+//   string m_sRecordPath;
 
 public:
    // CONSTRUCTOR 
-   CWeightBase(const string &sFile, bool bTrain) : m_bTrain(bTrain) , m_sRecordPath(sFile) { }
+   CWeightBase(bool bTrain) : m_bTrain(bTrain) , m_bEmpty(true) {}
    virtual ~CWeightBase() { }
 
-   virtual void loadScores() = 0 ;
-   virtual void saveScores() = 0 ; 
+   virtual void loadScores(const ifstream &is) = 0 ;
+   virtual void saveScores(ofstream &os) = 0 ; 
 
+   bool empty() const {return m_bEmpty;}
 };
 
 };

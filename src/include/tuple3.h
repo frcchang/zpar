@@ -126,7 +126,7 @@ protected:
 //===============================================================
 
 template <class CClass1, class CClass2, class CClass3>
-istream & operator >> (istream &is, CTuple3<CClass1, CClass2, CClass3> &tuple3) {
+const istream & operator >> (const istream &is, CTuple3<CClass1, CClass2, CClass3> &tuple3) {
    char c, d ;
    CClass1 object1; 
    CClass2 object2;

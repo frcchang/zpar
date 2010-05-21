@@ -239,15 +239,16 @@ const CScore<SCORE_TYPE> g_zeroScore;
  *
  *--------------------------------------------------------------*/
 
-void CWeight::loadScores() {
+void CWeight::loadScores(const ifstream &file) {
    clock_t time_start = clock();
    cout<<"Loading scores..."; cout.flush();
-   ifstream file ; 
-   file.open(m_sRecordPath.c_str()) ;
+//   ifstream file ; 
+//   file.open(m_sRecordPath.c_str()) ;
 
    if (!file.is_open()) {
       cout << " empty." << endl; return;
    }
+   m_bEmpty = false;
 
    iterate_templates(file >>,;);
 
@@ -263,7 +264,7 @@ void CWeight::loadScores() {
    iss.str(s);
    iss >> m_nMaxWordFrequency;
 
-   file.close() ;
+//   file.close() ;
    cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
 }
 
@@ -276,10 +277,10 @@ void CWeight::loadScores() {
  *
  *--------------------------------------------------------------*/
 
-void CWeight::saveScores() {
+void CWeight::saveScores(ofstream &file) {
    cout<<"Saving scores..."; cout.flush();
-   ofstream file ;
-   file.open(m_sRecordPath.c_str()) ;
+//   ofstream file ;
+//   file.open(m_sRecordPath.c_str()) ;
 
    iterate_templates(file<<,;)
 
@@ -288,7 +289,7 @@ void CWeight::saveScores() {
    file << "Maximum frequency" << endl; 
    file << m_nMaxWordFrequency << endl;
 
-   file.close();
+//   file.close();
    cout<<" done."<<endl;
 }
 

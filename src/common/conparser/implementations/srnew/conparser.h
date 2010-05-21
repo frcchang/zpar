@@ -54,8 +54,20 @@ private:
 public:
    // constructor and destructor
    CConParser( const string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain) { 
+      // initialize agenda
       m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
-      m_weights = new conparser :: CWeight(sFeatureDBPath, bTrain );
+      // and initialize the weith module laoding content
+      m_weights = new conparser :: CWeight( bTrain );
+      ifstream file;
+      file.open(sFeatureDBPath.c_str());
+      m_weights->loadScores(file);
+      // load rules
+      m_rule.loadRules(file);
+      file.close();
+      // initialize 
+      if (!bTrain && m_weights->empty()) { // when decoding, model must be found
+         THROW("The model file is not found.")
+      }
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
@@ -72,12 +84,43 @@ public:
    }
 
 public:
+   void LoadBinaryRules(const string &sBinaryRulePath) {
+      ASSERT(!m_bTrain, "Rules can only be loaded during training!");
+      if (!m_weights->empty() || m_nTrainingRound !=0 ) {
+         WARNING("Ignored binary rules from " << sBinaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
+      }
+      // load rule from the specified file 
+      ifstream file ; 
+      file.open(sBinaryRulePath.c_str()) ;
+      m_rule.LoadBinaryRules(file);
+      file.close();
+   }
+   void LoadUnaryRules(const string &sUnaryRulePath) {
+      ASSERT(!m_bTrain, "Rules can only be loaded during training!");
+      if (!m_weights->empty() || m_nTrainingRound !=0 ) {
+         WARNING("Ignored unary rules from " << sUnaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
+      }
+      // load rule from the file specified
+      ifstream file;
+      file.open(sUnaryRulePath.c_str());
+      m_rule.LoadUnaryRules(file);
+      file.close();
+   }
+
+public:
    void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
 
    void finishtraining() {
+      // compute average
       static_cast<conparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
-      static_cast<conparser::CWeight*>(m_weights)->saveScores();
+      // save scores
+      ofstream file ;
+      file.open(m_sFeatureDB.c_str()) ;
+      static_cast<conparser::CWeight*>(m_weights)->saveScores(file);
+      // save rules
+      m_rule.saveRules(file);
+      file.close();
       cout << "Total number of training errors are: " << m_nTotalErrors << endl;
    }
    conparser::SCORE_TYPE getGlobalScore(const CSentenceParsed &parsed);

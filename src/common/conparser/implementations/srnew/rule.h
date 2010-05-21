@@ -7,11 +7,26 @@
  *
  *==============================================================*/
 
+#include "tuple2.h"
+
 namespace TARGET_LANGUAGE {
 
 namespace conparser {
 
 class CRule {
+
+protected:
+   CHashMap< CTuple3<CAction, CConstituent, CConstituent> > *m_mapBinaryRules;
+   CHashMap< CTuple2<CAction, CConstituent> > *m_mapUnaryRules;
+
+public:
+   CRule() : m_mapBinaryRules(0), m_mapUnaryRules(0) {}
+   virtual ~CRule() {
+      if (m_mapBinaryRules) 
+         delete m_mapBinaryRules; 
+      if (m_mapUnaryRules) 
+         delete m_mapUnaryRules;
+   }
 
 public:
    void getActions(const CStateItem &item, vector<CAction> &actions) {
@@ -80,6 +95,39 @@ public:
             }
          } // for constituent
       }
+   }
+
+public:
+   bool binaryRuleAllow() {
+      if (m_mapBinaryRules==0) return true;
+      // TODO
+   }
+
+public:
+   void loadRules(const ifstream &is) {
+      if (!is.is_open()) {
+         return;
+      }
+      // TODO
+   }
+
+   void saveRules(ostream &os) {
+      ASSERT(os.is_open(), "Cannot save rules possibly because the output file is not accessible.");
+      // TODO
+   }
+
+   void LoadBinaryRules(const ifstream &is) {
+      if (!is.is_open()) {
+         THROW("Loading binary rules failed possibly becaues file not exists.");
+      }
+      if >> (*m_mapBinaryRules);
+   }
+
+   void LoadUnaryRules(const ifstream &is) {
+      if (!is.is_open()) {
+         THROW("Loading unary rules failed possibly becaues file not exists.");
+      }
+      is >> (*m_mapUnaryRules);
    }
 
 };

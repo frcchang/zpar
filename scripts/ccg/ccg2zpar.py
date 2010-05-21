@@ -12,7 +12,7 @@ def Iter(node):
    assert node
    if node.left:
       if node.right:
-         if node.head_left == '1':
+         if node.head_left:
             type = 'l'
          else:
             type = 'r'
