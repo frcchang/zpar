@@ -126,12 +126,16 @@ protected:
 //===============================================================
 
 template <class CClass1, class CClass2, class CClass3>
-const istream & operator >> (const istream &is, CTuple3<CClass1, CClass2, CClass3> &tuple3) {
+std::istream & operator >> (std::istream &is, CTuple3<CClass1, CClass2, CClass3> &tuple3) {
    char c, d ;
    CClass1 object1; 
    CClass2 object2;
    CClass3 object3;
-   is >> object1 >> c >> object2 >> d >> object3;
+   is >> object1; 
+   is >> c;
+   is >> object2; 
+   is >> d; 
+   is >> object3;
    tuple3.allocate(&object1, &object2, &object3) ;
    assert( c == ',' && d == ',' ) ;
    return is ;

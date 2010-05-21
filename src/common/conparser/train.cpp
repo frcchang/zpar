@@ -34,7 +34,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const str
       parser.LoadUnaryRules(sUnaryRulePath);
 
    ifstream is(sOutputFile.c_str());
-   assert(is.is_open());
+   ASSERT(is.is_open(), "The training file is unaccessible.");
 
    CSentenceParsed ref_sent; 
 

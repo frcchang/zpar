@@ -8,7 +8,7 @@ GENERIC_DEPPARSER_LABELED = false
 # current naive
 GENERIC_DEPLABELER_IMPL = naive
 # currently support sr implementations 
-GENERIC_CONPARSER_IMPL = sr
+GENERIC_CONPARSER_IMPL = srnew
 
 #===================================================================
 

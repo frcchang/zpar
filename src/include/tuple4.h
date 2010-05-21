@@ -145,7 +145,14 @@ istream & operator >> (istream &is, CTuple4<CClass1, CClass2, CClass3, CClass4> 
    CClass2 object2;
    CClass3 object3;
    CClass4 object4;
-   is >> object1 >> c >> object2 >> d >> object3 >> e >> object4;
+   // one at a time because inlined (weird bug is they are separated sometimes)
+   is >> object1; 
+   is >> c; 
+   is >> object2; 
+   is >> d; 
+   is >> object3; 
+   is >> e; 
+   is >> object4;
    tuple4.allocate(&object1, &object2, &object3, &object4) ;
    assert( c == ',' && d == ',' && e == ',') ;
    return is ;

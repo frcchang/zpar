@@ -112,13 +112,15 @@ protected:
 
 
 template <class CClass1, class CClass2>
-const istream & operator >> (const istream &is, CTuple2<CClass1, CClass2> &tuple2) {
+istream & operator >> (istream &is, CTuple2<CClass1, CClass2> &tuple2) {
    char c;
    CClass1 object1; 
    CClass2 object2;
-   is >> object1 >> c >> object2;
+   is >> object1;
+   is >> c; 
+   is >> object2;
    tuple2.allocate(&object1, &object2) ;
-   assert( c == ',' && d == ',' ) ;
+   assert( c == ',' ) ;
    return is ;
 }
 
