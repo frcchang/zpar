@@ -15,7 +15,8 @@ const CConstituent g_noneConstituent(CConstituent::NONE);
 const CConstituent g_beginConstituent(CConstituent::SENTENCE_BEGIN);
 const CTag g_noneTag(CTag::NONE);
 
-#define constituent_or_none(x) ((x).is_constituent() ? (x).constituent.code() : CConstituent::NONE)
+//#define constituent_or_none(x) ((x).is_constituent() ? (x).constituent.code() : CConstituent::NONE)
+#define constituent_or_none(x) ((x).constituent.code())
 
 //===============================================================
 //
