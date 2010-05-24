@@ -77,7 +77,9 @@ public:
       //                 ( !temporary || CConstituent::canBeTemporary(constituent) ) 
 		     ) {
 		     action.encodeReduce(constituent, false, head_left, temporary);
-                     actions.push_back(action);
+                     if (binaryRuleAllow(action, left.constituent, right.constituent)) {
+                        actions.push_back(action);
+                     } // if rules allow
 		  }
                } // for j
             } // for i
@@ -91,29 +93,68 @@ public:
             assert(item.context->s0==item.stack.back());
             if (constituent != child.constituent.code()) { 
                action.encodeReduce(constituent, true, false, false);
-               actions.push_back(action);
+               if (unaryRuleAllow(action, child.constituent)) {
+                  actions.push_back(action);
+               }
             }
          } // for constituent
       }
    }
 
 public:
-   bool binaryRuleAllow() {
+   bool binaryRuleAllow(const CAction &action, const CConstituent &c1, const CConstituent &c2) {
       if (m_mapBinaryRules==0) return true;
-      // TODO
+      static CTuple3<CAction, CConstituent, CConstituent> tuple3;
+      tuple3.refer(&action, &c1, &c2);
+      return m_mapBinaryRules->find(tuple3, 0);
+   }
+   bool unaryRuleAllow(const CAction &action, const CConstituent &c) {
+      if (m_mapUnaryRules==0) return true;
+      static CTuple2<CAction, CConstituent> tuple2;
+      tuple2.refer(&action, &c);
+      return m_mapUnaryRules->find(tuple2, 0);
    }
 
 public:
    void loadRules(ifstream &is) {
+      // initialization
       if (!is.is_open()) {
          return;
       }
-      // TODO
+      static string s;
+      getline(is, s);
+      // binary rules
+      ASSERT(s=="Binary rules" or s=="Free binary rules", "Binary rules not found from model.");
+      if (s=="Free binary rules")
+         return;
+      ASSERT(!m_mapBinaryRules, "Binary rules already loaded");
+      m_mapBinaryRules = new CHashMap< CTuple3<CAction, CConstituent, CConstituent>, unsigned >;
+      is >> (*m_mapBinaryRules);
+      // unary rules
+      getline(is, s);
+      ASSERT(s=="Unary rules" or s=="Free unary rules", "Unary rules not found from model.");
+      if (s=="Free unary rules")
+         return;
+      ASSERT(!m_mapUnaryRules, "Unary rules already loaded");
+      m_mapUnaryRules = new CHashMap< CTuple2<CAction, CConstituent>, unsigned >;
+      is >> (*m_mapUnaryRules);
    }
 
    void saveRules(ofstream &os) {
       ASSERT(os.is_open(), "Cannot save rules possibly because the output file is not accessible.");
-      // TODO
+      if (m_mapBinaryRules) {
+         os << "Binary rules" << endl;
+         os << (*m_mapBinaryRules);
+      }
+      else {
+         os << "Free binary rules" << endl;
+       }
+      if (m_mapUnaryRules) {
+         os << "Unary rules" << endl;
+         os << (*m_mapUnaryRules);
+      }
+      else { os << "Free unary rules" << endl; }
+      os << endl;
    }
 
    void LoadBinaryRules(ifstream &is) {

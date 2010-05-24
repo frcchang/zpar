@@ -194,9 +194,11 @@ inline std::istream & operator >> (std::istream &is, CAction &action) {
          action.encodeReduce(c.code(), false, head_left, temporary);
       }
    }
+   return is;
 }
 
 inline std::ostream & operator << (std::ostream &os, const CAction &action) {
    os << action.str();
+   return os;
 }
 #endif
