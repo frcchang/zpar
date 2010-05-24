@@ -7,6 +7,7 @@
 #include "tuple4.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"
+#include "linguistics/sentence_multicon.h"
 #include "agenda.h"
 #include "pair_stream.h"
 #ifdef _CHINESE_CFG_H

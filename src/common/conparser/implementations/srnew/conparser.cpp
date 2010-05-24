@@ -499,17 +499,17 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0wS1c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(make_pair(ctxt->s0cs1c, action), m_nScoreIndex, amount, round);
 
-      nReturn += cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(ctxt->s0wts1wt, action), m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s0t), &action); 
-      nReturn += cast_weights->m_mapS0wtS1w.getOrUpdateScore(twoword_tag_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s1t), &action); 
-      nReturn += cast_weights->m_mapS0wS1wt.getOrUpdateScore(twoword_tag_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0wS1w.getOrUpdateScore(make_pair(ctxt->s0ws1w, action), m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0ts1t), &action); 
-      nReturn += cast_weights->m_mapS0wtS1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s0ts1t), &action); 
-      nReturn += cast_weights->m_mapS0tS1wt.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0tS1t.getOrUpdateScore(make_pair(ctxt->s0ts1t, action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(ctxt->s0wts1wt, action), m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s0t), &action); 
+//      nReturn += cast_weights->m_mapS0wtS1w.getOrUpdateScore(twoword_tag_action, m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(twoword_tag_action, &(ctxt->s0ws1w), &(ctxt->s1t), &action); 
+//      nReturn += cast_weights->m_mapS0wS1wt.getOrUpdateScore(twoword_tag_action, m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapS0wS1w.getOrUpdateScore(make_pair(ctxt->s0ws1w, action), m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(word_cfgset_action, ctxt->s0w, &(ctxt->s0ts1t), &action); 
+//      nReturn += cast_weights->m_mapS0wtS1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(word_cfgset_action, ctxt->s1w, &(ctxt->s0ts1t), &action); 
+//      nReturn += cast_weights->m_mapS0tS1wt.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapS0tS1t.getOrUpdateScore(make_pair(ctxt->s0ts1t, action), m_nScoreIndex, amount, round);
 
 //      for (j=0; j<ctxt->between_tag.size(); j++) {
 //         s0ts1tbt.setLast(ctxt->between_tag[j]);
@@ -1106,6 +1106,24 @@ void CConParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retv
 
 /*---------------------------------------------------------------
  *
+ * parse - do constituent parsing to a sentence
+ *
+ * Returns: makes a new instance of CSentenceParsed 
+ *
+ *--------------------------------------------------------------*/
+
+void CConParser::parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+
+   static CSentenceParsed empty ;
+
+   m_rule.SetLexConstituents( sentence.constituents );
+   work(false, sentence.words, retval, empty, nBest, scores ) ;
+   m_rule.UnsetLexConstituents();
+
+}
+
+/*---------------------------------------------------------------
+ *
  * train - train the models with an example
  *
  *---------------------------------------------------------------*/
@@ -1122,8 +1140,22 @@ void CConParser::train( const CSentenceParsed &correct , int round ) {
 //   work( true , sentence , &output , correct , 1 , 0 ) ; 
    work( true , sentence , 0 , correct , 1 , 0 ) ; 
 
-//   cerr << output;
-
 };
 
+/*---------------------------------------------------------------
+ *
+ * train - train the models with an example
+ *
+ *---------------------------------------------------------------*/
+
+void CConParser::train( const CSentenceMultiCon<CConstituent> &con_input, const CSentenceParsed &correct , int round ) {
+
+   // The following code does update for each processing stage
+   m_nTrainingRound = round ;
+
+   m_rule.SetLexConstituents( con_input.constituents );
+   work( true , con_input.words , 0 , correct , 1 , 0 ) ; 
+   m_rule.UnsetLexConstituents();
+
+};
 

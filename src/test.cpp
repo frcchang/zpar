@@ -9,14 +9,12 @@
  ****************************************************************/
 
 #include "options.h"
+#include "vector_stream.h"
 
 int main(int argc, char**argv){
-   int c = 1;
-   int d = 2;
-   pair<int, int> a=make_pair(c, d);
-   pair<const int&, const int&>b=make_pair(c, d);
-   
-   cout << (a==b) << endl;
+   vector <int> v;
+   cin >> v;
+   cout << v;
    return 0;
 };
 

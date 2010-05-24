@@ -19,10 +19,11 @@
  *
  *==============================================================*/
 
+template<typename CConstituent>
 class CSentenceMultiCon {
 
 public:
-   CTwoStringVector words, 
+   CTwoStringVector words; 
    vector< vector<CConstituent> > constituents;
 
 public:
@@ -35,7 +36,8 @@ public:
 
 //==============================================================
 
-inline std::istream & operator >> (std::istream &is, CSentenceMultiCon &sent) {
+template<typename CConstituent>
+inline std::istream & operator >> (std::istream &is, CSentenceMultiCon<CConstituent> &sent) {
    sent.clear();
    string line;
    string word;
@@ -60,11 +62,12 @@ inline std::istream & operator >> (std::istream &is, CSentenceMultiCon &sent) {
    return is ;
 }
 
-inline std::ostream & operator << (std::ostream &os, const CSentenceMultiCon &sent) {
+template<typename CConstituent>
+inline std::ostream & operator << (std::ostream &os, const CSentenceMultiCon<CConstituent> &sent) {
    ASSERT(sent.words.size()==sent.constituents.size(), "Internal error: sentence multicon contains different words and constituents");
    for (int i=0; i<sent.words.size(); ++i) {
       os << sent.words.at(i).first << " " << sent.words.at(i).second;
-      for (int j=0; j<sent.constituents.size(); ++j)
+      for (int j=0; j<sent.constituents.at(i).size(); ++j)
          os << " " << sent.constituents.at(i).at(j);
       os << endl ;
    }

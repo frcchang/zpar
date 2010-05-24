@@ -23,7 +23,7 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const string &sBinaryRulePath, const string &sUnaryRulePath) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const string &sBinaryRulePath, const string &sUnaryRulePath, const string &sConInputPath) {
 
    cout << "Training iteration is started ... " << endl ; cout.flush();
 
@@ -36,7 +36,11 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const str
    ifstream is(sOutputFile.c_str());
    ASSERT(is.is_open(), "The training file is unaccessible.");
 
-   CSentenceParsed ref_sent; 
+   ifstream *cis;
+   if (!sConInputPath.empty()) cis=new ifstream(sConInputPath.c_str());
+
+   static CSentenceMultiCon<CConstituent> con_input;
+   static CSentenceParsed ref_sent; 
 
    int nCount=0;
    
@@ -44,7 +48,13 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const str
    while( ! ref_sent.empty() ) {
       cout << "Sentence " << nCount << " ... ";
       nCount ++;
-      parser.train( ref_sent, nCount );
+      if (!sConInputPath.empty()) {
+         ASSERT((*cis) >> con_input, "No input provided for the sentence, though the input data is provided.");
+         parser.train( con_input, ref_sent, nCount );
+      }
+      else {
+         parser.train( ref_sent, nCount );
+      }
       cout << "done." << endl;
       is >> ref_sent;
    }
@@ -68,7 +78,7 @@ int main(int argc, char* argv[]) {
       CConfigurations configurations;
       configurations.defineConfiguration("b", "Path", "use only the binary rules from the given path", "");
       configurations.defineConfiguration("u", "Path", "use only the unary rules from the given path", "");
-      configurations.defineConfiguration("i", "r|c", "format of the input: r - pos tagged sentence; c - multiple constituents for terminal tokens", "r");
+      configurations.defineConfiguration("c", "Path", "input with multiple constituents for terminal tokens", "");
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
          cout << configurations.message() << endl;
@@ -87,12 +97,12 @@ int main(int argc, char* argv[]) {
 
       string sBinaryRulePath = configurations.getConfiguration("b");
       string sUnaryRulePath = configurations.getConfiguration("u");
-      string sInputFormat = configurations.getConfiguration("i");
+      string sConInputPath = configurations.getConfiguration("c");
    
       cout << "Training started." << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) {
-         auto_train(argv[1], argv[2], sBinaryRulePath, sUnaryRulePath); // set update tag dict false now
+         auto_train(argv[1], argv[2], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
          if (i==0) { // do not apply rules in next iterations
             sBinaryRulePath.clear();
             sUnaryRulePath.clear();
