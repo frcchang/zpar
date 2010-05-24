@@ -123,6 +123,7 @@ public:
       sent = 0;
    }
    int newNode(const int &parent, const CStateNode::NODE_TYPE &type, const bool &tmp, const unsigned long &constituent, const int &left_child, const int &right_child, const int &lexical_head) { nodes.push_back(CStateNode(parent, type, tmp, constituent, left_child, right_child, lexical_head)); return nodes.size()-1; }
+   int newNodeIndex() const { return nodes.size(); }
 
 public:
    void shift(const unsigned long &constituent = CConstituent::NONE) {
@@ -251,7 +252,7 @@ public:
       else {
          // stack top left child ? shift
          if (s == hd.left_child) {
-            retval.encodeShift(); return;
+            retval.encodeShift(snt.nodes[newNodeIndex()].constituent); return;
          }
          // stack top right child ? reduce bin
          assert(s==hd.right_child);
@@ -278,7 +279,7 @@ public:
       else {
          // stack top left child ? shift
          if (s == hd.left_child) {
-            retval.encodeShift(); return;
+            retval.encodeShift(snt.nodes[newNodeIndex()].constituent.code()); return;
          }
          // stack top right child ? reduce bin
          assert(s==hd.right_child);
@@ -295,7 +296,7 @@ public:
 
       // stack empty?shift
       if (stack.empty()) {
-         retval.encodeShift();
+         retval.encodeShift(st.nodes[newNodeIndex()].constituent.code());
          return;
       }
       int s = stack.back();
@@ -306,7 +307,7 @@ public:
             retval.encodeReduceRoot();
          }
          else {
-            retval.encodeShift();
+            retval.encodeShift(st.nodes[newNodeIndex()].constituent.code());
          }
       }
       else {
@@ -319,7 +320,7 @@ public:
       assert(tr.words.size() == sent->size());
       // stack empty?shift
       if (stack.empty()) {
-         retval.encodeShift();
+         retval.encodeShift(tr.nodes[newNodeIndex()].constituent);
          return;
       }
       int s = stack.back();

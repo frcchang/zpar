@@ -37,13 +37,13 @@ class CRuleExtracter(object):
          assert srcnode.type == "constituent"
          item = 'REDUCE '
          if srcnode.head_child == 's':
-            if srcnode.left_child.type != 'token':
-               item += 'UNARY '
-               item += srcnode.name
-               item += ' , '
-               item += srcnode.left_child.name
-               adddict(retval[0], item)
-               self.extract_rules(srcnode.left_child, retval)
+#            if srcnode.left_child.type != 'token':
+            item += 'UNARY '
+            item += srcnode.name
+            item += ' , '
+            item += srcnode.left_child.name
+            adddict(retval[0], item)
+            self.extract_rules(srcnode.left_child, retval)
          else:
             item += 'BINARY '
             if srcnode.head_child == 'l':

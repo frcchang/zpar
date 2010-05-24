@@ -63,12 +63,13 @@ int CCFGTree::readNode(istream &is) {
          assert(s==")");
       }
       else {
-         assert(s[0]=='t');
+         ASSERT(s[0]=='t' || s[0]=='c', "A leaf node must be tagged t or c, not "<<s[0]);
          string token;
          node = newNode();
          nodes[node].is_constituent = false;
          nodes[node].single_child = false;
          nodes[node].head_left = false;
+         if (s[0]=='c') { nodes[node].constituent = CConstituent(name).code(); is >> name; }
          is >> token;
          is >> s;
          while (s != ")") {
@@ -105,9 +106,16 @@ string CCFGTree::writeNode(int node) const {
          }
       }
       else {
-         name = words[nd.token].second;
-         type = "t";
-         cont = words[nd.token].first;
+         if (nd.constituent!=CConstituent::NONE) {
+            type = "c";
+            name = CConstituent(nd.constituent).str() + " " + words[nd.token].second;
+            cont = words[nd.token].first;
+         }
+         else {
+            name = words[nd.token].second;
+            type = "t";
+            cont = words[nd.token].first;
+         }
       }
       return "( " + name + " " + type + " " + cont + " )";
 }
@@ -131,7 +139,10 @@ string CCFGTree::writeNodeUnbin(int node) const {
       }
    }
    else {
-      name = words[nd.token].second;
+      if (nd.constituent==CConstituent::NONE)
+         name = words[nd.token].second;
+      else
+         name = CConstituent(nd.constituent).str();
       cont = words[nd.token].first;
       return "(" + name + " " + cont + ")";
    }
