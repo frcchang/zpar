@@ -20,9 +20,10 @@ def Iter(node):
          type = 's'
    else:
       assert not node.right
-      type = 't'
-   if type == 't':
-      retval =  '( ' + node.supercategory + ' s ( ' + node.tree.tokens[node.start_index][pos_index] + ' t ' + node.tree.tokens[node.start_index][token_index] + ' ) )'
+      type = 'c'
+   if type == 'c':
+      #retval =  '( ' + node.supercategory + ' s ( ' + node.tree.tokens[node.start_index][pos_index] + ' t ' + node.tree.tokens[node.start_index][token_index] + ' ) )'
+      retval =  '( ' + node.supercategory + ' ' + type + ' ' + node.tree.tokens[node.start_index][pos_index] + ' ' + node.tree.tokens[node.start_index][token_index] + ' )'
    elif type in ['l', 'r']:
       retval =  '( ' + node.supercategory + ' ' + type + ' ' + Iter(node.left) + ' ' + Iter(node.right) + ' )'
    else:

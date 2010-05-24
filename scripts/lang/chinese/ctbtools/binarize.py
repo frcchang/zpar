@@ -92,8 +92,11 @@ class CBinarizedTreeNode(object):
          nIndex = self.left_child.load_list(lToken, nIndex)
          self.head_leaf = self.left_child.head_leaf
       else:
-         assert sType[0] == "t"
+         assert sType[0] == "t" or sType[0] == "c"
          self.type = "token"
+         if sType[0] == "c":
+            tmp = lToken[nIndex] # self.x?
+            nIndex += 1
          self.token = lToken[nIndex]
          nIndex += 1
          while lToken[nIndex] != ")": # space in token maybe
