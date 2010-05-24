@@ -9,8 +9,6 @@
 
 #include "tuple2.h"
 
-const vector<CAction> g_emptyVector;
-
 namespace TARGET_LANGUAGE {
 
 namespace conparser {
@@ -69,16 +67,16 @@ public:
 
 protected:
    void getShiftRules(const CStateItem &item, vector<CAction> &actions) {
+      static CAction action;
       // the rules onto lexical item constituents
       if (m_LexConstituents) {
          for (int i=0; i<m_LexConstituents->at(item.current_word).size(); ++i) {
-            action.encodeShift(m_LexConstituents->at(item.current_word).at(i));
+            action.encodeShift(m_LexConstituents->at(item.current_word).at(i).code());
             actions.push_back(action);
          }
          return;
       }
       // the default rules
-      static CAction action;
       action.encodeShift();
       actions.push_back(action);
    }
@@ -90,8 +88,8 @@ protected:
       // specified rules
       if (m_mapBinaryRules) {
          static CTuple2<CConstituent, CConstituent> tuple2;
-         tuple2.refer(left.consitutuent, right.constituent);
-         const vector<CAction> &result = m_mapBinaryRules->find(tuple2, g_emptyVector);
+         tuple2.refer(&(left.constituent), &(right.constituent));
+         const vector<CAction> &result = m_mapBinaryRules->find(tuple2, vector<CAction>());
          actions.insert(actions.end(), result.begin(), result.end());
          return;
       }
@@ -114,20 +112,19 @@ protected:
                      ( !right.temp || (!head_left&&constituent==right.constituent.code()) ) //&&
 //                     ( !temporary || CConstituent::canBeTemporary(constituent) ) 
                  ) {
-                     action.encodeReduce(constituent, false, head_left, temporary);
+                        action.encodeReduce(constituent, false, head_left, temporary);
                         actions.push_back(action);
-                     } // if rules allow
                   }
                } // for j
             } // for i
          } // for constituent
    }
 
-   void getUnaryRules(const CStateItem &item, vector<CAction> a&actions) {
+   void getUnaryRules(const CStateItem &item, vector<CAction> &actions) {
       const CStateNode &child = item.nodes[item.stack.back()];
       // input rule list
       if (m_mapUnaryRules) {
-         const vector<CAction> &result = m_mapUnaryRules->find(child.constituent, g_emptyVector);
+         const vector<CAction> &result = m_mapUnaryRules->find(child.constituent, vector<CAction>());
          actions.insert(actions.end(), result.begin(), result.end());
          return;
       }
@@ -138,9 +135,7 @@ protected:
          assert(item.context->s0==item.stack.back());
          if (constituent != child.constituent.code()) { 
             action.encodeReduce(constituent, true, false, false);
-            if (unaryRuleAllow(action, child.constituent)) {
-               actions.push_back(action);
-            }
+            actions.push_back(action);
          }
       } // for constituent
    }
