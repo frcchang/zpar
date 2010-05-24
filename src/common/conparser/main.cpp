@@ -40,7 +40,7 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
    conparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
    static CTwoStringVector raw_input;
-   static CSentenceMultiCon con_input;
+   static CSentenceMultiCon<CConstituent> con_input;
    CSentenceParsed *output_sent; 
 
    int nCount=0;
@@ -63,6 +63,8 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
       cout << "Sentence " << nCount << "...";
       ++ nCount;
 
+      os << con_input;
+
       // Find decoder output
       if (cInputFormat=='c')
          parser.parse( con_input , output_sent , nBest , scores ) ;
@@ -81,7 +83,7 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
       cout << "done. " << endl; 
       
       // Read the next example
-      if (cInputFormat==;c;)
+      if (cInputFormat=='c')
          bReadSuccessful = ((*is)>>con_input);
       else
          bReadSuccessful = input_reader->readTaggedSentence(&raw_input, false, TAG_SEPARATOR);
@@ -89,7 +91,7 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
 
    delete [] output_sent ;
    if (input_reader) delete input_reader;
-   if (is) {is.close(); delete is;}
+   if (is) {is->close(); delete is;}
    os.close();
 
    if (bScores) {

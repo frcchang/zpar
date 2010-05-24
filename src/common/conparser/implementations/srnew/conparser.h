@@ -67,7 +67,7 @@ public:
       file.close();
       // initialize 
       if (!bTrain && m_weights->empty()) { // when decoding, model must be found
-         THROW("The model file is not found.")
+         THROW("The model file " << sFeatureDBPath<< " is not found.")
       }
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
@@ -107,7 +107,9 @@ public:
 
 public:
    void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
+   void train( const CSentenceMultiCon<CConstituent> &con_input, const CSentenceParsed &correct , int round ) ;
 
    void finishtraining() {
       // compute average

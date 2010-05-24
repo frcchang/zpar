@@ -18,9 +18,10 @@ class CRule {
 protected:
    CHashMap< CTuple3<CAction, CConstituent, CConstituent>, unsigned > *m_mapBinaryRules;
    CHashMap< CTuple2<CAction, CConstituent>, unsigned > *m_mapUnaryRules;
+   const vector< vector<CConstituent> > *m_LexConstituents;
 
 public:
-   CRule() : m_mapBinaryRules(0), m_mapUnaryRules(0) {}
+   CRule() : m_mapBinaryRules(0), m_mapUnaryRules(0), m_LexConstituents(0) {}
    virtual ~CRule() {
       if (m_mapBinaryRules) 
          delete m_mapBinaryRules; 
@@ -171,6 +172,13 @@ public:
       }
       m_mapUnaryRules = new CHashMap< CTuple2<CAction, CConstituent>, unsigned >;
       is >> (*m_mapUnaryRules);
+   }
+
+   void SetLexConstituents(const vector<vector<CConstituent> > &con_input) {
+      m_LexConstituents = &con_input;
+   }
+   void UnsetLexConstituents() {
+      m_LexConstituents=0;
    }
 
 };
