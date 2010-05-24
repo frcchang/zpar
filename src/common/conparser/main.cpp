@@ -63,8 +63,6 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
       cout << "Sentence " << nCount << "...";
       ++ nCount;
 
-      os << con_input;
-
       // Find decoder output
       if (cInputFormat=='c')
          parser.parse( con_input , output_sent , nBest , scores ) ;

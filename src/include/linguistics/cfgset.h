@@ -15,7 +15,7 @@
 
 const unsigned long PACKED_CON_OR_TAG_SIZE = std::max(static_cast<unsigned long>(CConstituent::SIZE), static_cast<unsigned long>(CTag::SIZE)) + 1;
 // the first bit being one for pos
-const unsigned long CFGSET_SIZE = sizeof(unsigned long long) / PACKED_CON_OR_TAG_SIZE;
+const unsigned long CFGSET_SIZE = sizeof(unsigned long long) * 8 / PACKED_CON_OR_TAG_SIZE;
 
 //=============================================================
 

@@ -125,7 +125,11 @@ protected:
       // input rule list
       if (m_mapUnaryRules) {
          const vector<CAction> &result = m_mapUnaryRules->find(child.constituent, vector<CAction>());
-         actions.insert(actions.end(), result.begin(), result.end());
+         for (int i=0; i<result.size(); ++i) {
+            if (result.at(i).getConstituent() != child.constituent.code()) {
+               actions.push_back( result.at(i) );
+            }
+         }
          return;
       }
       // the normal rules
