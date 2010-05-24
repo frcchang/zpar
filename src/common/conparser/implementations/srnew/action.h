@@ -3,61 +3,127 @@
 
 /*===============================================================
  *
- * Reduce actions
+ * type actions
+ *
+ *==============================================================*/
+
+class CActionType {
+
+public:
+   static const unsigned long SIZE=2;
+   enum CODE {SHIFT=0, POP_ROOT=1, REDUCE_BINARY=2, REDUCE_UNARY=3};
+
+public:
+   unsigned long code;
+
+};
+
+inline std::istream & operator >> (std::istream &is, CActionType &action) {
+   string s;
+   is >> s;
+   if (s=="SHIFT")
+      action.code = CActionType::SHIFT;
+   else if (s=="REDUCE_UNARY")
+      action.code = CActionType::REDUCE_UNARY;
+   else if (s=="REDUCE_BINARY")
+      action.code = CActionType::REDUCE_BINARY;
+   else if (s=="POP_ROOT")
+      action.code = CActionType::POP_ROOT;
+   else
+      THROW("Action type unrecognized (" << s << ")");
+   return is;
+}
+
+inline std::ostream & operator << (std::ostream &os, const CAction &action) {
+   switch(action.code) {
+   case CActionType::SHIFT:
+      os << "SHIFT";
+      break;
+   case CActionType::REDUCE_UNARY:
+      os << "REDUCE_UNARY";
+      break;
+   case CActionType::REDUCE_BINARY:
+      os << "REDUCE_BINARY";
+      break;
+   case CActionType::POP_ROOT:
+      os << "POP_ROOT";
+      break;
+   default:
+      THROW("Internal error: unknown action type code (" << action.code << ")");
+   }
+   return os;
+}
+
+/*===============================================================
+ *
+ * actions
  *
  *==============================================================*/
 
 class CAction {
 
-public: 
-   inline unsigned long encodeAction(const unsigned long &action, const unsigned long &num) {
-      assert(action>>(CConstituent::SIZE+4)==0);
-      return action | ( num << (CConstituent::SIZE+4) ); // action takes 4 extra bits plus consti (REDUCE, SINGLE_C, HEAD_L, TEMP)
-   }
+   // CONSTITUENT(CConstituent::SIZE) TEMP(1 bit) HEAD(1) ACTIONTYPE(CActionType::SIZE)
+   const static unsigned long HEADLEFT_SHIFT = CActionType::SIZE;
+   const static unsigned long TEMPORARY_SHIFT = CActionType::SIZE+1;
+   const static unsigned long CONSTITUENT_SHIFT = CActionType::SIZE+2;
+
+   const static unsigned long ACTIONTYPE_MASK = (1L<<CActionType::SIZE)-1
+   const static unsigned long HEADLEFT_MASK = 1L<<HEADLEFT_SHIFT;
+   const static unsigned long TEMPORARY_MASK = 1L<<TEMPORARY_SHIFT;
+   const static unsigned long CONSTITUENT_MASK = ((1L<<CConstituent::SIZE)-1)<<CONSTITUENT_SHIFT;
+
+//public: 
+//   inline unsigned long encodeAction(const unsigned long &action, const unsigned long &num) {
+//      assert(action>>(CConstituent::SIZE+4)==0);
+//      return action | ( num << (CConstituent::SIZE+4) ); // action takes 4 extra bits plus consti (REDUCE, SINGLE_C, HEAD_L, TEMP)
+//   }
    
 protected:
    unsigned long action;
 
 public:
-   inline bool isShift() const { return action == 0; }
-   inline bool isReduce() const { return action & (1<<(CConstituent::SIZE+3)); }
-   inline bool isReduceRoot() const { return action == 1<<(CConstituent::SIZE+3); }
-   inline bool isReduceUnary() const { return isReduce() && (action & (1<<(CConstituent::SIZE+1))); }
-   inline bool isReduceBinary() const { return isReduce() && !(action & (1<<(CConstituent::SIZE+1)))&&!isReduceRoot(); }
+   inline bool isShift() const { return type()==CActionType::SHIFT; }
+//   inline bool isReduce() const { return isReduceUnary() || isReduceBinary(); }
+   inline bool isReduceRoot() const { return type()==CActionType::POP_ROOT; }
+   inline bool isReduceUnary() const { return type==CActionType::REDUCE_UNARY; }
+   inline bool isReduceBinary() const { return type()==CActionType::REDUCE_BINARY; }
 
 public:
    inline void encodeReduce(const unsigned long &constituent, bool single_child, bool head_left, bool temporary) {
       assert(!single_child || (!head_left&&!temporary));
-      action = (1<<(CConstituent::SIZE+3)) | 
-               ((temporary?1:0) << (CConstituent::SIZE+2)) | 
-               ((single_child?1:0) << (CConstituent::SIZE+1)) | 
-               ((head_left?1:0) << CConstituent::SIZE) | 
-               constituent ;
+      action = (constituent<<CONSTITUENT_SHIFT |
+                temporary<<TEMPORARY_SHIFT |
+                head_left<<HEADLEFT_SHIFT |
+               (single_child ? CActionType::REDUCE_UNARY : CActionType::REDUCE_BINARY));
    }
    
-   inline void encodeShift() {
-      action = 0;
+   inline void encodeShift(const unsigned long &constituent=0) {
+      action = (constituent<<CONSTITUENT_SHIFT |
+                CActionType::SHIFT);
    }
    
    inline void encodeReduceRoot() {
-      encodeReduce(CConstituent::NONE, false, false, false);
+      action = CActionType::POP_ROOT;
    }
 
 public:
+   inline unsigned long type() const {
+      return action & ADCTIONTYPE_MASK;
+   }
    inline unsigned long getConstituent() const {
-      return action & ((1<<CConstituent::SIZE)-1);
+      return (action & CONSTITUENT_MASK) >> CONSTITUENT_SHIFT;
    }
    
    inline bool singleChild() const {
-      return action & (1<<(CConstituent::SIZE+1));
+      return type() == CActionType::REDUCE_UNARY;
    }
    
    inline bool headLeft() const {
-      return action & (1<<CConstituent::SIZE);
+      return action & HEADLEFT_MASK;
    }
    
    inline bool isTemporary() const {
-      return action & (1<<(CConstituent::SIZE+2));
+      return action & TEMPORARY_MASK;
    }
  
 public:
@@ -128,6 +194,12 @@ public:
    bool operator > (const CAction &a1) const { return action > a1.action; }
 
 };
+
+/*===============================================================
+ *
+ * scored actions
+ *
+ *==============================================================*/
 
 class CScoredAction {
 
