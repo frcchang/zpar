@@ -154,7 +154,7 @@ public:
 //         nodes[c].lexical_start = nodes[l].lexical_start;
 //         nodes[c].lexical_end = nodes[l].lexical_end;
          stack.push_back(c);
-         unary_reduce ++ ;
+         ++ unary_reduce ;
       }
       else {
          assert(stack.size()>=2);

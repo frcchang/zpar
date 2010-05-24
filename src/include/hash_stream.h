@@ -12,7 +12,7 @@ istream & operator >> (istream &is, CHashMap<K, V> &table) {
    while (is && !(s.empty())) {
       istringstream iss(s) ; 
       iss >> key >> c >> value ;
-      assert( c == ':' ) ;
+      ASSERT( c == ':' , "Hash map does not match key : value format") ;
       table.insert(key,value);
       getline(is, s);
    }

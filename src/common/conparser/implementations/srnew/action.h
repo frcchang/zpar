@@ -94,7 +94,7 @@ public:
       action = (constituent<<CONSTITUENT_SHIFT |
                 temporary<<TEMPORARY_SHIFT |
                 head_left<<HEADLEFT_SHIFT |
-               (single_child ? CActionType::REDUCE_UNARY : CActionType::REDUCE_BINARY));
+               (single_child ? static_cast<unsigned long>(CActionType::REDUCE_UNARY) : static_cast<unsigned long>(CActionType::REDUCE_BINARY)));
    }
    
    inline void encodeShift(const unsigned long &constituent=CConstituent::NONE) {
@@ -130,17 +130,19 @@ public:
    inline string str() const {
       if (isReduceRoot()) { return "REDUCE ROOT"; }
       string retval;
-      if (isShift()) 
-         retval =  "SHIFT ";
-      else
-          retval = "REDUCE";
-      if (isReduceUnary()) 
-         retval += " UNARY";
+      if (isShift()) {
+         retval =  "SHIFT";
+      }
       else {
-         ASSERT(isReduceBinary(), "Internal error: unknown action code ("<<action<<")");
-         retval += " BINARY";
-         retval += (headLeft()) ? " LEFT" : " RIGHT";
-         if (isTemporary()) retval += " TMP";
+          retval = "REDUCE";
+         if (isReduceUnary()) 
+            retval += " UNARY";
+         else {
+            ASSERT(isReduceBinary(), "Internal error: unknown action code ("<<action);
+            retval += " BINARY";
+            retval += (headLeft()) ? " LEFT" : " RIGHT";
+            if (isTemporary()) retval += " TMP";
+         }
       }
       retval += " "; retval += CConstituent(getConstituent()).str();
       return retval;
@@ -237,7 +239,8 @@ inline std::istream & operator >> (std::istream &is, CAction &action) {
    bool head_left, temporary;
    is >> tmp;
    if (tmp=="SHIFT") {
-      action.encodeShift();
+      is >> tmp; c.load(tmp);
+      action.encodeShift(c.code());
    }
    else {
       assert (tmp=="REDUCE"); 
