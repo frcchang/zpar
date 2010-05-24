@@ -34,7 +34,7 @@ inline std::istream & operator >> (std::istream &is, CActionType &action) {
    return is;
 }
 
-inline std::ostream & operator << (std::ostream &os, const CAction &action) {
+inline std::ostream & operator << (std::ostream &os, const CActionType &action) {
    switch(action.code) {
    case CActionType::SHIFT:
       os << "SHIFT";
@@ -67,7 +67,7 @@ class CAction {
    const static unsigned long TEMPORARY_SHIFT = CActionType::SIZE+1;
    const static unsigned long CONSTITUENT_SHIFT = CActionType::SIZE+2;
 
-   const static unsigned long ACTIONTYPE_MASK = (1L<<CActionType::SIZE)-1
+   const static unsigned long ACTIONTYPE_MASK = (1L<<CActionType::SIZE)-1;
    const static unsigned long HEADLEFT_MASK = 1L<<HEADLEFT_SHIFT;
    const static unsigned long TEMPORARY_MASK = 1L<<TEMPORARY_SHIFT;
    const static unsigned long CONSTITUENT_MASK = ((1L<<CConstituent::SIZE)-1)<<CONSTITUENT_SHIFT;
@@ -85,7 +85,7 @@ public:
    inline bool isShift() const { return type()==CActionType::SHIFT; }
 //   inline bool isReduce() const { return isReduceUnary() || isReduceBinary(); }
    inline bool isReduceRoot() const { return type()==CActionType::POP_ROOT; }
-   inline bool isReduceUnary() const { return type==CActionType::REDUCE_UNARY; }
+   inline bool isReduceUnary() const { return type()==CActionType::REDUCE_UNARY; }
    inline bool isReduceBinary() const { return type()==CActionType::REDUCE_BINARY; }
 
 public:
@@ -97,7 +97,7 @@ public:
                (single_child ? CActionType::REDUCE_UNARY : CActionType::REDUCE_BINARY));
    }
    
-   inline void encodeShift(const unsigned long &constituent=0) {
+   inline void encodeShift(const unsigned long &constituent=CConstituent::NONE) {
       action = (constituent<<CONSTITUENT_SHIFT |
                 CActionType::SHIFT);
    }
@@ -108,7 +108,7 @@ public:
 
 public:
    inline unsigned long type() const {
-      return action & ADCTIONTYPE_MASK;
+      return action & ACTIONTYPE_MASK;
    }
    inline unsigned long getConstituent() const {
       return (action & CONSTITUENT_MASK) >> CONSTITUENT_SHIFT;
@@ -128,12 +128,16 @@ public:
  
 public:
    inline string str() const {
-      if (isShift()) return "SHIFT";
-      assert(isReduce());
-      string retval = "REDUCE";
-      if (isReduceRoot()) { retval += " ROOT"; return retval; }
-      else if (singleChild()) retval += " UNARY";
+      if (isReduceRoot()) { return "REDUCE ROOT"; }
+      string retval;
+      if (isShift()) 
+         retval =  "SHIFT ";
+      else
+          retval = "REDUCE";
+      if (isReduceUnary()) 
+         retval += " UNARY";
       else {
+         ASSERT(isReduceBinary(), "Internal error: unknown action code ("<<action<<")");
          retval += " BINARY";
          retval += (headLeft()) ? " LEFT" : " RIGHT";
          if (isTemporary()) retval += " TMP";
@@ -149,7 +153,9 @@ public:
       bool head_left, temporary;
       iss >> tmp;
       if (tmp=="SHIFT") {
-         encodeShift();
+         iss >> tmp;
+         c.load(tmp);
+         encodeShift(c.code());
       }
       else {
          assert (tmp=="REDUCE"); 

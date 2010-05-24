@@ -125,11 +125,11 @@ public:
    int newNode(const int &parent, const CStateNode::NODE_TYPE &type, const bool &tmp, const unsigned long &constituent, const int &left_child, const int &right_child, const int &lexical_head) { nodes.push_back(CStateNode(parent, type, tmp, constituent, left_child, right_child, lexical_head)); return nodes.size()-1; }
 
 public:
-   void shift() {
+   void shift(const unsigned long &constituent = CConstituent::NONE) {
       //TRACE("shift");
       assert(!IsTerminated());
       static int t;
-      t = newNode(-1, CStateNode::LEAF, false, CConstituent::NONE, -1, -1, current_word);
+      t = newNode(-1, CStateNode::LEAF, false, constituent, -1, -1, current_word);
 //      nodes[t].lexical_start = current_word;
 //      nodes[t].lexical_end = current_word;
 //      nodes[t].lexical_head = current_word ++;
@@ -374,7 +374,7 @@ public:
          // copy node
          nodes[j].toCCFGTreeNode(out.nodes[j]);
          // update words ; use the constituent label for leaf nodes if any
-         if (!nodes[j].is_constituent && node[j].constituent.code()!=CConstituent::NONE) {
+         if (!nodes[j].is_constituent() && nodes[j].constituent.code()!=CConstituent::NONE) {
             out.words[nodes[j].lexical_head].second = nodes[j].constituent.str();
          }
       }
