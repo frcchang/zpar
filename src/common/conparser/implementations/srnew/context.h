@@ -386,7 +386,7 @@ public:
       s1cs1hcs1r2c.load(s1c, s1hc);
       s1cs1hcs1r2c.add(s1h_unbinarized_index+1<s1_unbinarized.size() ? s1_unbinarized_cs.back() : g_beginConstituent);
       s1cs1hcs1r2c.add(s1h_unbinarized_index+2<s1_unbinarized.size() ? s1_unbinarized_cs[s1_unbinarized.size()-2] : g_beginConstituent);
-
+/*
       s0l6c.clear();
       if (s0_unbinarized.size()!=0) {
          for (tmp_i=0; tmp_i<6; ++tmp_i) {
@@ -407,7 +407,7 @@ public:
             s1r6c.add(tmp_i>s1h_unbinarized_index?s1_unbinarized_cs[tmp_i]:g_beginConstituent);
          }
       }
-
+*/
 #ifdef _CHINESE_CFG_H
 /*
       // bracket

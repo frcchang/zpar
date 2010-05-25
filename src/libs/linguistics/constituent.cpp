@@ -108,8 +108,8 @@ string CCFGTree::writeNode(int node) const {
       else {
          if (nd.constituent!=CConstituent::NONE) {
             type = "c";
-            name = CConstituent(nd.constituent).str() + " " + words[nd.token].second;
-            cont = words[nd.token].first;
+            name = CConstituent(nd.constituent).str();
+            cont = words[nd.token].second + " " + words[nd.token].first;
          }
          else {
             name = words[nd.token].second;

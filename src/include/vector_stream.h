@@ -33,7 +33,7 @@ ostream & operator << (ostream &os, const vector<T> &p) {
       os << p.at(i);
       if (i!=p.size()-1) os << " , ";
    }
-   os << " ]" << endl;
+   os << " ]";
    return os ;
 }
 

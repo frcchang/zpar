@@ -42,7 +42,7 @@ public:
    enum {NONE = 0};
    enum {SENTENCE_BEGIN = 1};
    enum {FIRST = 2};
-   enum {SIZE = 8};
+   enum {SIZE = 12};
    static unsigned long COUNT;
    static unsigned long LAST;
 

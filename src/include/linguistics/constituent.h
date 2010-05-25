@@ -88,7 +88,7 @@ public:
    int root;
 
 public:
-   CCFGTree() {}
+   CCFGTree() : root (-1) {}
    virtual ~CCFGTree() {}
 
 public:
@@ -96,18 +96,24 @@ public:
    int newWord(const string &word, const string &pos) { words.push_back(make_pair(word, pos)); return(words.size()-1); }
 
    bool empty() const {return nodes.empty()&&words.empty();}
-   void clear() {nodes.clear(); words.clear();}
+   void clear() {root=-1;nodes.clear(); words.clear();}
    int readNode(istream &is);
    string writeNode(int node) const;
    string writeNodeUnbin(int node) const;
    bool nodesEqual(const CCFGTree &tree, int i, int tree_i) const ;
    string str() const {
+      if (root == -1)
+         return "";
       return writeNode(root);
    }
    string str_unbinarized() const {
+      if (root == -1)
+         return ""; 
       return writeNodeUnbin(root);
    }
    bool operator == (const CCFGTree &tree) const {
+      if (root == -1 || tree.root == -1)
+         return root == tree.root;
       return nodesEqual(tree, root, tree.root);
    }
 }; 

@@ -990,6 +990,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       if (bTrain) bCorrect = false ; 
 
       pGenerator = m_Agenda->generatorStart();
+      if (pGenerator==0) { // no parse if found (rule constrainted)
+         TRACE("Parsing failed");
+         if (retval) retval[0].clear(); return;
+      }
       pBestGen = m_Agenda->bestGenerator();
 
       if (pBestGen->IsTerminated()) break; // if the first item is complete

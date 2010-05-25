@@ -53,7 +53,7 @@ $(OBJECT_DIR)/cfg.ge.o: $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/cfg/ge
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/cfg/generic.cpp -o $@
 
 # the constituent
-$(OBJECT_GENERIC_CONPARSER)/constituent.o: $(OBJECT_GENERIC_CONPARSER) $(SRC_GENERIC)/cfg.h $(SRC_LIBS)/linguistics/constituent.cpp
+$(OBJECT_GENERIC_CONPARSER)/constituent.o: $(OBJECT_GENERIC_CONPARSER) $(SRC_GENERIC)/cfg.h $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_LIBS)/linguistics/constituent.cpp
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/constituent.cpp -o $@
 
 #===================================================================
@@ -120,7 +120,7 @@ $(OBJECT_GENERIC_CONPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/weight_base.h $(SR
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.cpp -o $(OBJECT_GENERIC_CONPARSER)/weight.o
 
 # the conparser object
-$(OBJECT_DIR)/generic.conparser.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER)/conparser_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.cpp $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/stateitem.h ./Makefile
+$(OBJECT_DIR)/generic.conparser.o: $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER)/conparser_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.cpp $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/stateitem.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/rule.h ./Makefile
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/generic.conparser.o
 
 # the main executable

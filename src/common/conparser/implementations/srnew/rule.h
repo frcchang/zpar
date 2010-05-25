@@ -70,7 +70,9 @@ protected:
       static CAction action;
       // the rules onto lexical item constituents
       if (m_LexConstituents) {
+         ASSERT(m_LexConstituents->at(item.current_word).size()>0, "no lexical constituents for word "<<item.current_word<<" ("<<item.sent->at(item.current_word).str()<<") is provided.");
          for (int i=0; i<m_LexConstituents->at(item.current_word).size(); ++i) {
+//            TRACE("shift "<<m_LexConstituents->at(item.current_word).at(i).str());
             action.encodeShift(m_LexConstituents->at(item.current_word).at(i).code());
             actions.push_back(action);
          }
