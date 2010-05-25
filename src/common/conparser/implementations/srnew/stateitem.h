@@ -334,7 +334,7 @@ public:
 
    void Move(const CAction &action) {
       if (action.isShift())
-         shift();
+         shift(action.getConstituent());
       else if (action.isReduceRoot())
          { assert(IsComplete()); terminate(); }
       else

@@ -51,7 +51,7 @@ class CBinarizedTreeNode(object):
          sType += "*"
       return "( %s %s %s ) " % (self.name, sType, sContent)
 
-   def prettyprint(self):
+   def prettyprint(self, escape=lambda x:x):
       if self.type == 'constituent':
          sType = self.head_child
          if self.head_child == 's':
@@ -59,8 +59,8 @@ class CBinarizedTreeNode(object):
          else:
             sContent = self.left_child.prettyprint() + " " + self.right_child.prettyprint()
       elif self.type == 'token':
-         sContent = self.token
-      return "( %s %s ) " % (self.name, sContent)
+         sContent = escape(self.token)
+      return "( %s %s ) " % (escape(self.name), sContent)
 
    def load(self, string):
       self.load_list(string.split(), 0)
@@ -146,7 +146,7 @@ class CBinarizedTreeNode(object):
 
 class CBinarizer(object):
 
-   def __init__(self, sFile, sLogs, bBinarize, bRemoveUnary):
+   def __init__(self, sFile, sLogs, bBinarize, bRemoveUnary, sDictionary):
       self.m_dRules = {}
       file = open(sFile)
       line = file.readline()
@@ -164,10 +164,23 @@ class CBinarizer(object):
          self.log = None
       self.m_bBinarize = bBinarize
       self.m_bRemoveUnary = bRemoveUnary
+      self.m_mapDict = {}
+      if sDictionary != None:
+         file = open(sDictionary)
+         for line in file:
+            line = line.split()
+            self.m_mapDict[line[0]] = line[1]
+         file.close()
 
    def __del__(self):
       if self.log != None:
          self.log.close()
+
+   def escape(self, sText):
+      retval = []
+      for c in sText:
+         retval.append(self.m_mapDict.get(c, c))
+      return ''.join(retval)
 
    def find_head(self, srcnode):
       sLabel = srcnode.name.split('-')[0]
@@ -223,11 +236,11 @@ class CBinarizer(object):
       if srcnode.name == '-NONE-':
          return False
       node.type = srcnode.type
-      node.name = srcnode.name.split("-")[0]
+      node.name = self.escape(srcnode.name.split("-")[0])
       node.start_index = srcnode.start_index
       node.end_index = srcnode.end_index
       if node.type == 'token':
-         node.token = srcnode.token
+         node.token = self.escape(srcnode.token)
       if srcnode.type == "constituent":
          node.children = []
          for srcchildnode in srcnode.children:
@@ -351,17 +364,21 @@ if __name__ == '__main__':
    import sys
    import config
    try:
-      opts, args = getopt.getopt(sys.argv[1:], "nul:")
+      opts, args = getopt.getopt(sys.argv[1:], "nul:d:")
    except getopt.GetoptError: 
-      print "\nUsage: binarize.py [-nu] [-llogfile] rule_file input_file > output\n"
+      print "\nUsage: binarize.py [-nu] [-llogfile] [-ddictionary_file] rule_file input_file > output\n"
       print "-n: not binarize\n"
+      print "-u: remove unary nodes\n"
+      print "-d: replace with dictionary\n"
       sys.exit(1)
    if len(args) != 2:
       print "\nUsage: binarize.py [-nu] [-llogfile] rule_file input_file > output\n"
       print "-n: not binarize\n"
       print "-u: remove unary nodes\n"
+      print "-d: replace with dictionary\n"
       sys.exit(1)
    sLogs = None
+   sDictionary = None
    bBinarize = True
    bRemoveUnary = False
    for opt in opts:
@@ -371,7 +388,9 @@ if __name__ == '__main__':
          sLogs = opt[1]
       elif opt[0] == '-u':
          bRemoveUnary = True
-   rule = CBinarizer(args[0], sLogs, bBinarize, bRemoveUnary)
+      elif opt[0] == '-d':
+         sDictionary = opt[1]
+   rule = CBinarizer(args[0], sLogs, bBinarize, bRemoveUnary, sDictionary)
    file = open(args[1])
    for line in file:
       rule.process(line)

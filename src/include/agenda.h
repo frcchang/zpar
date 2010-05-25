@@ -160,7 +160,7 @@ class CAgendaBeam {
          // when the parameter indicates one agenda, only this is cleaned. 
          else m_nBeamSize[which] = 0; 
       }
-      CNode* generatorStart() { m_nGeneratorIndex=0; return m_lBeamPointer[m_nGenerator][m_nGeneratorIndex]; }
+      CNode* generatorStart() { if (m_nBeamSize[m_nGenerator]!=0) { m_nGeneratorIndex=0; return m_lBeamPointer[m_nGenerator][m_nGeneratorIndex]; } else return 0; }
       CNode* generatorNext() { 
          ++m_nGeneratorIndex;
          if (m_nGeneratorIndex>=m_nBeamSize[m_nGenerator])
