@@ -8,8 +8,12 @@
 #
 #****************************************************************
 
+import os
+
 import binarize
 import fidtree
+
+import sys
 
 import getopt
 
@@ -86,6 +90,16 @@ class CUnBinarizer(object):
          print srcnode.prettyprint(self.escape)
       file.close()
 
+   def topipe(self):
+      sys.path.append(os.path.join(os.path.dirname(__file__), '../../../ccg'))
+      import pipe
+      file = open(self.path)
+      for line in file:
+         if not line.strip(): print; continue
+         srcnode = binarize.CBinarizedTreeNode()
+         srcnode.load(line)
+         print pipe.PrintBinarizedTree(srcnode)
+      file.close()
 
 #================================================================
 
@@ -93,29 +107,41 @@ if __name__ == '__main__':
    import sys
    import config
    try:
-      opts, args = getopt.getopt(sys.argv[1:], "nl:d:")
-   except getopt.GetOptError: 
-      print "\nUsage: unbinarize.py [-ddictionary] [-llogfile] [-n] binarized_file > output\n"
-      print "-n not binarize; only pretty print"
+      opts, args = getopt.getopt(sys.argv[1:], "o:l:d:")
+   except getopt.GetoptError: 
+      print "\nUsage: unbinarize.py [-ddictionary] [-llogfile] [-on|p] binarized_file > output\n"
+      print "-o output: n not binarize; only pretty print"
+      print "           p to ccg pipe"
       print "-d use dictionary to replace"
       sys.exit(1)
    if len(args) != 1:
-      print "\nUsage: unbinarize.py [-llogfile] [-n] binarized_file > output\n"
-      print "-n not binarize; only pretty print"
+      print "\nUsage: unbinarize.py [-llogfile] [-on|p] binarized_file > output\n"
+      print "-o output: n not binarize; only pretty print"
+      print "           p to ccg pipe"
       print "-d use dictionary to replace"
       sys.exit(1)
    sLogs = None
    bUnbinarize = True
+   bPipe = False
    sDictionaryFile = None
    for opt in opts:
       if opt[0] == '-l':
          sLogs = opt[1]
-      if opt[0] == '-n':
-         bUnbinarize = False
+      if opt[0] == '-o':
+         if opt[1] == 'n':
+            bUnbinarize = False
+         elif opt[1] == 'p':
+            bUnbinarize = False
+            bPipe = True
+         else:
+            print "warning: ingored output form -o"+opt[1]
       if opt[0] == '-d':
          sDictionaryFile = opt[1]
    rule = CUnBinarizer(args[0], sLogs, sDictionaryFile)
    if bUnbinarize:
       rule.process()
    else:
-      rule.prettyprint()
+      if bPipe == False:
+         rule.prettyprint()
+      else:
+         rule.topipe()

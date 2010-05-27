@@ -375,9 +375,9 @@ public:
          // copy node
          nodes[j].toCCFGTreeNode(out.nodes[j]);
          // update words ; use the constituent label for leaf nodes if any
-         if (!nodes[j].is_constituent() && nodes[j].constituent.code()!=CConstituent::NONE) {
-            out.words[nodes[j].lexical_head].second = nodes[j].constituent.str();
-         }
+//         if (!nodes[j].is_constituent() && nodes[j].constituent.code()!=CConstituent::NONE) {
+//            out.words[nodes[j].lexical_head].second = nodes[j].constituent.str();
+//         }
       }
       out.root = stack.back();
    }

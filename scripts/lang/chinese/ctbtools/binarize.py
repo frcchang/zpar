@@ -22,7 +22,8 @@ from tools.encoding.gb2utf import *
 
 class CBinarizedTreeNode(object):
    slots = ['type',        # 'constituent' / 'token'
-            'name',        # ['NP', 'OBJ'] 
+            'name',        # ['NP', 'JJ'] 
+            'pos',         # only for 'c'; empty for 't' and other types
             'token',       # 'Oxford'
             'left_child',  # left child
             'right_child', # right child
@@ -43,8 +44,12 @@ class CBinarizedTreeNode(object):
          else:
             sContent = self.left_child.__str__() + " " + self.right_child.__str__()
       elif self.type == 'token':
-         sType = 't'
-         sContent = gb2utf(self.token)
+         if self.pos == "":
+            sType = 't'
+            sContent = gb2utf(self.token)
+         else:
+            sType = 'c'
+            sContent = self.pos + ' ' + gb2utf(self.token)
       else:
          raise "Type not defined for node"
       if self.temporary:
@@ -72,6 +77,7 @@ class CBinarizedTreeNode(object):
       nIndex += 1
       sType = lToken[nIndex]
       nIndex += 1
+      self.pos = ""
       assert len(sType) <= 2
       if sType[0] == "l" or sType[0] == "r":
          self.type = "constituent"
@@ -95,7 +101,7 @@ class CBinarizedTreeNode(object):
          assert sType[0] == "t" or sType[0] == "c"
          self.type = "token"
          if sType[0] == "c":
-            tmp = lToken[nIndex] # self.x?
+            self.pos = lToken[nIndex] # self.x?
             nIndex += 1
          self.token = lToken[nIndex]
          nIndex += 1
