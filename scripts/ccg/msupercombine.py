@@ -8,6 +8,8 @@ if __name__ == "__main__":
    ref = open(sys.argv[2])
    ref_line = ''
    tokens = []
+   total = 0
+   patched = 0
    for line in file:
       line = line.strip()
       if not line: 
@@ -20,8 +22,10 @@ if __name__ == "__main__":
          assert len(ref_tokens) == len(tokens)
          # add items
          for i in range(len(ref_tokens)):
+            total += 1
             assert ref_tokens[i][0] == tokens[i][0]
             if not ref_tokens[i][2] in tokens[i][2:]:
+               patched += 1
                tokens[i].append(ref_tokens[i][2])
          for token in tokens:
             print " ".join(token); 
@@ -42,3 +46,4 @@ if __name__ == "__main__":
    # job done      
    ref.close()
    file.close() 
+   print >>sys.stderr, "patched ", float(patched) / total
