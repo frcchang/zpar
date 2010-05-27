@@ -6,7 +6,7 @@
 
 
 // The size of agenda
-const int AGENDA_SIZE = 16 ;
+const unsigned long AGENDA_SIZE = 16;
 
 // The size of a sentence and the words
 const int MAX_SENTENCE_SIZE = 256 ; 
