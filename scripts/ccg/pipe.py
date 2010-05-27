@@ -52,6 +52,45 @@ def PrintNode(node):
 def PrintTree(tree):
    return "###\n%s"  % PrintNode(tree.root)
 
+def PrintBinarizedNode(node):
+   retval = ""
+   retval += "("
+   if node.type == "token":
+      retval += "<L "
+      retval += "*** "
+      retval += node.name
+      retval += " "
+      retval += node.pos
+      retval += " "
+      retval += node.token
+      retval += ">\n"
+      retval += ")"
+      retval += "\n"
+   else:
+      assert node.type == "constituent"
+      retval += "<T "
+      retval += "*** "
+      retval += node.name
+      retval += " * "
+      head_left = '0' 
+      if node.head_child == 'r': head_left = '1'
+      retval += head_left
+      retval += " "
+      assert node.left_child 
+      ch = 1 
+      if node.right_child: ch = 2
+      retval += str(ch)
+      retval += ">\n"
+      retval += PrintBinarizedNode(node.left_child)
+      if ch == 2:
+         retval += PrintBinarizedNode(node.right_child)
+      retval += ")"
+      retval += "\n"
+   return retval
+
+def PrintBinarizedTree(tree):
+   return "###\n%s" % PrintBinarizedNode(tree)
+
 #================================================================
 
 def LoadTree(file):

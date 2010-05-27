@@ -144,31 +144,31 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
 
    // ===================================================================================
    // word scores 
-//   nReturn += weight.m_mapSeenWords.getOrUpdateScore(word, which_score, amount, round); 
-//   if (length==1) 
-//      nReturn += weight.m_mapOneCharWord.getOrUpdateScore(word, which_score, amount, round);
-//   if (length>1) {
-//      nReturn += weight.m_mapFirstAndLastChars.getOrUpdateScore(first_and_last_char, which_score, amount, round);
+   nReturn += weight.m_mapSeenWords.getOrUpdateScore(word, which_score, amount, round); 
+   if (length==1) 
+      nReturn += weight.m_mapOneCharWord.getOrUpdateScore(word, which_score, amount, round);
+   if (length>1) {
+      nReturn += weight.m_mapFirstAndLastChars.getOrUpdateScore(first_and_last_char, which_score, amount, round);
 
-//      nReturn += weight.m_mapLengthByFirstChar.getOrUpdateScore(make_pair(first_char, length), which_score, amount, round);
-//      nReturn += weight.m_mapLengthByLastChar.getOrUpdateScore(make_pair(last_char, length), which_score, amount, round);
-//   }
+      nReturn += weight.m_mapLengthByFirstChar.getOrUpdateScore(make_pair(first_char, length), which_score, amount, round);
+      nReturn += weight.m_mapLengthByLastChar.getOrUpdateScore(make_pair(last_char, length), which_score, amount, round);
+   }
 
-//   if (index>0) {
-//      nReturn += weight.m_mapLastWordByWord.getOrUpdateScore(two_word, which_score, amount, round);
+   if (index>0) {
+      nReturn += weight.m_mapLastWordByWord.getOrUpdateScore(two_word, which_score, amount, round);
 
-//      nReturn += weight.m_mapWordAndPrevChar.getOrUpdateScore(word_lastchar, which_score, amount, round);
-//      nReturn += weight.m_mapLastWordByLastChar.getOrUpdateScore(lastword_lastchar, which_score, amount, round);
-      
-//      nReturn += weight.m_mapLengthByLastWord.getOrUpdateScore(make_pair(last_word, length), which_score, amount, round);
-//      nReturn += weight.m_mapLastLengthByWord.getOrUpdateScore(make_pair(word, last_length), which_score, amount, round);
-//   }
-//   if ( end < sentence->size()-1 ) {
-//      nReturn += weight.m_mapSeparateChars.getOrUpdateScore(two_char, which_score, amount, round); 
-      
-//      nReturn += weight.m_mapWordAndNextChar.getOrUpdateScore(word_nextchar, which_score, amount, round);
-//      nReturn += weight.m_mapFirstCharLastWordByWord.getOrUpdateScore(first_chars_two_words, which_score, amount, round);
-//   }
+      nReturn += weight.m_mapWordAndPrevChar.getOrUpdateScore(word_lastchar, which_score, amount, round);
+      nReturn += weight.m_mapLastWordByLastChar.getOrUpdateScore(lastword_lastchar, which_score, amount, round);
+    
+      nReturn += weight.m_mapLengthByLastWord.getOrUpdateScore(make_pair(last_word, length), which_score, amount, round);
+      nReturn += weight.m_mapLastLengthByWord.getOrUpdateScore(make_pair(word, last_length), which_score, amount, round);
+   }
+   if ( end < sentence->size()-1 ) {
+      nReturn += weight.m_mapSeparateChars.getOrUpdateScore(two_char, which_score, amount, round); 
+    
+      nReturn += weight.m_mapWordAndNextChar.getOrUpdateScore(word_nextchar, which_score, amount, round);
+      nReturn += weight.m_mapFirstCharLastWordByWord.getOrUpdateScore(first_chars_two_words, which_score, amount, round);
+   }
 
    // ===================================================================================
    // word scores from knowledge
@@ -247,8 +247,8 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-2, end); ++tmp_i) 
       retval += weight.m_mapCharTrigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
 
-//   retval += weight.m_mapConsecutiveChars.getOrUpdateScore( _cache_word(end, 2), which_score, amount, round); 
-//   retval += weight.m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, which_score, amount, round);
+   retval += weight.m_mapConsecutiveChars.getOrUpdateScore( _cache_word(end, 2), which_score, amount, round); 
+   retval += weight.m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, which_score, amount, round);
 
    // ===================================================================================
    // word scores from knowledge

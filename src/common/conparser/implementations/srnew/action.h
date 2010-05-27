@@ -16,6 +16,13 @@ public:
 public:
    unsigned long code;
 
+public:
+   const unsigned long &hash() const {return code;}
+   bool operator == (const CActionType &a1) const { return code == a1.code; }
+   bool operator != (const CActionType &a1) const { return code != a1.code; }
+   bool operator < (const CActionType &a1) const { return code < a1.code; }
+   bool operator > (const CActionType &a1) const { return code > a1.code; }
+
 };
 
 inline std::istream & operator >> (std::istream &is, CActionType &action) {

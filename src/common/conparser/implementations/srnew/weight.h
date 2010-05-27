@@ -32,19 +32,24 @@ typedef CScoreMap<unsigned long, SCORE_TYPE> CIntMap;
 typedef CScoreMap<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
 typedef CScoreMap<pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
+typedef CScoreMap<pair<CTwoWords, CActionType>, SCORE_TYPE> CTwoWordsActionTypeMap;
 typedef CScoreMap<CTuple3<CTwoWords, CTag, CAction>, SCORE_TYPE> CTwoWordsTagActionMap;
+typedef CScoreMap<CTuple3<CTwoWords, CTag, CActionType>, SCORE_TYPE> CTwoWordsTagActionTypeMap;
 typedef CScoreMap<CTuple3<CTwoWords, CCFGSet, CAction>, SCORE_TYPE>
 CTwoWordsCFGSetActionMap;
 typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
 typedef CScoreMap<pair<CTwoTaggedWords, CAction>, SCORE_TYPE> CTwoTaggedWordsActionMap;
+typedef CScoreMap<pair<CTwoTaggedWords, CActionType>, SCORE_TYPE> CTwoTaggedWordsActionTypeMap;
 typedef CScoreMap<CCFGSet, SCORE_TYPE> CCFGSetMap;
 typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
 typedef CScoreMap<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
 typedef CScoreMap<CTuple3<CWord, CCFGSet, CAction>, SCORE_TYPE> CWordCFGSetActionMap;
+typedef CScoreMap<CTuple3<CWord, CCFGSet, CActionType>, SCORE_TYPE> CWordCFGSetActionTypeMap;
 typedef CScoreMap<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
 typedef CScoreMap<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
 typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
 typedef CScoreMap<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
+typedef CScoreMap<pair<CCFGSet, CActionType>, SCORE_TYPE> CCFGSetActionTypeMap;
 typedef CScoreMap<CTuple3<CWord, CConstituent, CAction>, SCORE_TYPE>
 CWordConstituentActionMap;
 typedef CScoreMap<CTuple3<CTag, CConstituent, CAction>, SCORE_TYPE> CTagConstituentActionMap;
@@ -186,13 +191,13 @@ public:
    CWordCFGSetActionMap m_mapS0cS1w;
    CCFGSetActionMap m_mapS0cS1c;
 
-   CTwoTaggedWordsActionMap m_mapS0wtS1wt;
-   CTwoWordsTagActionMap m_mapS0wtS1w;
-   CTwoWordsTagActionMap m_mapS0wS1wt;
-   CTwoWordsActionMap m_mapS0wS1w;
-   CWordCFGSetActionMap m_mapS0wtS1t;
-   CWordCFGSetActionMap m_mapS0tS1wt;
-   CCFGSetActionMap m_mapS0tS1t;
+   CTwoTaggedWordsActionTypeMap m_mapS0wtS1wt;
+   CTwoWordsTagActionTypeMap m_mapS0wtS1w;
+   CTwoWordsTagActionTypeMap m_mapS0wS1wt;
+   CTwoWordsActionTypeMap m_mapS0wS1w;
+   CWordCFGSetActionTypeMap m_mapS0wtS1t;
+   CWordCFGSetActionTypeMap m_mapS0tS1wt;
+   CCFGSetActionTypeMap m_mapS0tS1t;
 
    CCFGSetActionMap m_mapBetweenTags;
 
