@@ -14,6 +14,7 @@ const int CHAR_CAT_BITS = 3;
 #define iterate_templates(left,right) \
    left(m_weights.m_mapCharUnigram)right\
    left(m_weights.m_mapCharBigram)right\
+   left(m_weights.m_mapCharTrigram)right\
    left(m_weights.m_mapSeenWords)right\
    left(m_weights.m_mapLastWordByWord)right\
    left(m_weights.m_mapWordAndNextChar)right\
@@ -50,6 +51,7 @@ public:
    // char based features
    CWordIntMap m_mapCharUnigram;
    CWordIntMap m_mapCharBigram;
+   CWordIntMap m_mapCharTrigram;
 
    // word based features
    CWordMap m_mapSeenWords;
@@ -75,6 +77,7 @@ public:
 public:
    CWeight() : m_mapCharUnigram("CharUnigram", 65537),
                m_mapCharBigram("CharBigram", 65537),
+               m_mapCharTrigram("CharTrigram", 65537),
                m_mapSeenWords("SeenWords", 65537),
                m_mapLastWordByWord("LastWordByWord", 65537),
                m_mapWordAndNextChar("WordAndNextChar", 65537),
