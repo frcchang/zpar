@@ -8,8 +8,6 @@
  *                                                              *
  ****************************************************************/
 
-#include "definitions.h"
-
 namespace english {
 
 // the penn constituent set
@@ -55,6 +53,7 @@ enum PENN_CON_CONSTANTS {
 
 const bool PENN_CON_TEMP[] = {
    false,
+   false,
    true, true, true, true, true, 
    true, true, 
    true, 
@@ -71,16 +70,16 @@ const bool PENN_CON_TEMP[] = {
    true
 };
 
-const int PENN_CON_FIRST = 1;
+const int PENN_CON_FIRST = 2;
 const int PENN_CON_COUNT_BITS = 5; 
 
 //===============================================================
 
-class CConstituent {
+class CConstituentLabel {
 public:
    enum {NONE=0};
-   enum {BEGIN=0};
-   enum {FIRST=1};
+   enum {SENTENCE_BEGIN=PENN_CON_BEGIN};
+   enum {FIRST=PENN_CON_FIRST};
    enum {COUNT=PENN_CON_COUNT}; 
    enum {SIZE=PENN_CON_COUNT_BITS};
 
@@ -88,20 +87,20 @@ protected:
    unsigned long m_code;
 
 public:
-   CConstituent() { m_code=PENN_CON_NONE; }
-   CConstituent(PENN_CON_CONSTANTS t) { 
+   CConstituentLabel() { m_code=PENN_CON_NONE; }
+   CConstituentLabel(PENN_CON_CONSTANTS t) { 
       m_code=t; 
    }
-   CConstituent(const unsigned long &t) { 
+   CConstituentLabel(const unsigned long &t) { 
       m_code=t; 
    }
-   CConstituent(const string &s) { load(s); }
-   virtual ~CConstituent() {}
+   CConstituentLabel(const string &s) { load(s); }
+   virtual ~CConstituentLabel() {}
 
 public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
-   void copy(const CConstituent &c) {m_code = c.m_code; }
+   void copy(const CConstituentLabel &c) {m_code = c.m_code; }
    const bool empty() const { return m_code==NONE; }
    string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
    void load(const string &s) {
@@ -124,11 +123,11 @@ public:
    inline static bool canBeTemporary(const unsigned long &code) { return PENN_CON_TEMP[code]; }
 
 public:
-   bool operator == (const CConstituent &t1) const { return m_code == t1.m_code; }
-   bool operator < (const CConstituent &t1) const { return m_code < t1.m_code; }
-   bool operator > (const CConstituent &t1) const { return m_code > t1.m_code; }
-   bool operator <= (const CConstituent &t1) const { return m_code <= t1.m_code; }
-   bool operator >= (const CConstituent &t1) const { return m_code >= t1.m_code; }
+   bool operator == (const CConstituentLabel &t1) const { return m_code == t1.m_code; }
+   bool operator < (const CConstituentLabel &t1) const { return m_code < t1.m_code; }
+   bool operator > (const CConstituentLabel &t1) const { return m_code > t1.m_code; }
+   bool operator <= (const CConstituentLabel &t1) const { return m_code <= t1.m_code; }
+   bool operator >= (const CConstituentLabel &t1) const { return m_code >= t1.m_code; }
 };
 
 };

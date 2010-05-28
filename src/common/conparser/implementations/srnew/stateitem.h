@@ -63,6 +63,9 @@ public:
       node.left_child = left_child;
       node.right_child = right_child;
       node.token = lexical_head;
+#ifdef NO_TEMP_CONSTITUENT
+      ASSERT(!node.temp, "Internal error: this version does not temporary constituents but state items have them.")
+#endif
    }
    void fromCCFGTreeNode(const CCFGTreeNode &node) {
       parent = node.parent;
@@ -259,6 +262,9 @@ public:
          single_child = false;
          head_left = hd.head_left;
          temporary = hd.temp;
+#ifdef NO_TEMP_CONSTITUENT
+         ASSERT(!temporary, "This version does not accept temporary constituents, but the training data give them.");
+#endif
       }
       retval.encodeReduce(hd.constituent, single_child, head_left, temporary);
    }

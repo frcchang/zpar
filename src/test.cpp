@@ -8,13 +8,19 @@
  *                                                      
  ****************************************************************/
 
-#include "options.h"
-#include "vector_stream.h"
+#include "definitions.h"
+
+class A {
+public:
+   enum {C=0, D};
+};
+
+class B : public A {
+public:
+   enum {C=A::C+1};
+};
 
 int main(int argc, char**argv){
-   vector <int> v;
-   cin >> v;
-   cout << v;
-   return 0;
+   cout << B::C << B::D << endl;
 };
 
