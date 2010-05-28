@@ -96,28 +96,34 @@ protected:
          return;
       }
       // the normal method
+#ifdef NO_TEMP_CONSTITUENT
+      const bool temporary = false;
+#else
       const bool prev_temp = stack_size>2 ? item.nodes[item.stack[stack_size-3]].temp:false;
+#endif
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {
+	    const bool &head_left = static_cast<bool>(i);
+            const CWord &head_wd = item.sent->at( (head_left?left:right).lexical_head );
+#ifndef NO_TEMP_CONSTITUENT
             for (unsigned j=0; j<=1; ++j) {
-	       const bool &head_left = static_cast<bool>(i);
                const bool &temporary = static_cast<bool>(j);
-               assert( item.stack.back() == item.context->s0 );
-               assert( item.stack[stack_size-2] == item.context ->s1 );
-               const CWord &head_wd = item.sent->at( (head_left?left:right).lexical_head );
                if ( ( !left.temp || !right.temp ) &&
                      ( !(stack_size==2 && item.current_word==item.sent->size()) || !temporary ) &&
                      ( !(stack_size==2) || (!temporary||head_left) ) &&
                      ( !(prev_temp && item.current_word==item.sent->size()) || !temporary ) &&
                      ( !(prev_temp) || (!temporary||head_left) ) &&
-                     ( !left.temp || (head_left&&constituent==left.constituent.code()) ) &&
-                     ( !right.temp || (!head_left&&constituent==right.constituent.code()) ) //&&
+                     ( !left.temp || (head_left&&constituent==left.constituent.extractConstituentCode()) ) &&
+                     ( !right.temp || (!head_left&&constituent==right.constituent.extractConstituentCode()) ) //&&
 //                     ( !temporary || CConstituent::canBeTemporary(constituent) ) 
                  ) {
+#endif
                         action.encodeReduce(constituent, false, head_left, temporary);
                         actions.push_back(action);
+#ifndef NO_TEMP_CONSTITUENT
                   }
                } // for j
+#endif
             } // for i
          } // for constituent
    }

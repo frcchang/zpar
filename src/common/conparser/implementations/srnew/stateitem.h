@@ -166,7 +166,11 @@ public:
          stack.pop_back();
          l = stack.back();
          stack.pop_back();
+#ifdef NO_TEMP_CONSTITUENT
          c = newNode(-1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, constituent, l, r, (head_left?nodes[l].lexical_head:nodes[r].lexical_head));
+#else
+         c = newNode(-1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, CConstituent::encodeTmp(constituent, temporary), l, r, (head_left?nodes[l].lexical_head:nodes[r].lexical_head));
+#endif
          nodes[l].parent = c;
          nodes[r].parent = c;
 //         nodes[c].lexical_start = nodes[l].lexical_start;

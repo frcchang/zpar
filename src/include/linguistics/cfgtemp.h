@@ -62,11 +62,19 @@ public:
       if (temporary)
          CConstituentLabel::m_code |= (1L << CConstituentLabel::SIZE);
       else
-         CConstituentLabel::m_code &= (!(1L<<CConstituentLabel::SIZE));
+         CConstituentLabel::m_code &= (~(1L<<CConstituentLabel::SIZE));
    }
    bool getTemporary() const { return CConstituentLabel::m_code & (1L << CConstituentLabel::SIZE);}
 
    bool canBeTemporary() const { return true; }
+   unsigned long extractConstituentCode() const {
+      return CConstituentLabel::m_code & (~(1L<<CConstituentLabel::SIZE));
+   }
+
+public:
+   static unsigned long encodeTmp(const unsigned long &constituent, const bool &temporary) {
+      return (temporary?constituent|(1L<<CConstituentLabel::SIZE):constituent);
+   }
 }; 
 
 //===============================================================
