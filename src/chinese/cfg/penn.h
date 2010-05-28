@@ -69,7 +69,7 @@ const int PENN_CON_COUNT_BITS = 5;
 
 //===============================================================
 
-class CConstituent {
+class CConstituentLabel {
 public:
    enum {NONE=0};
    enum {SENTENCE_BEGIN=1};
@@ -81,18 +81,18 @@ protected:
    unsigned long m_code;
 
 public:
-   CConstituent() { m_code=PENN_CON_NONE; }
-   CConstituent(const unsigned long &t) { 
+   CConstituentLabel() { m_code=PENN_CON_NONE; }
+   CConstituentLabel(const unsigned long &t) { 
       assert(t<COUNT);
       m_code=t; 
    }
-   CConstituent(const string &s) { load(s); }
-   virtual ~CConstituent() {}
+   CConstituentLabel(const string &s) { load(s); }
+   virtual ~CConstituentLabel() {}
 
 public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
-   void copy(const CConstituent &c) {m_code = c.m_code; }
+   void copy(const CConstituentLabel &c) {m_code = c.m_code; }
    const bool empty() const { return m_code==NONE; }
    string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
    void load(const string &s) {
@@ -115,11 +115,11 @@ public:
    inline static bool canBeTemporary(const unsigned long &code) { return PENN_CON_TEMP[code]; }
 
 public:
-   bool operator == (const CConstituent &t1) const { return m_code == t1.m_code; }
-   bool operator < (const CConstituent &t1) const { return m_code < t1.m_code; }
-   bool operator > (const CConstituent &t1) const { return m_code > t1.m_code; }
-   bool operator <= (const CConstituent &t1) const { return m_code <= t1.m_code; }
-   bool operator >= (const CConstituent &t1) const { return m_code >= t1.m_code; }
+   bool operator == (const CConstituentLabel &t1) const { return m_code == t1.m_code; }
+   bool operator < (const CConstituentLabel &t1) const { return m_code < t1.m_code; }
+   bool operator > (const CConstituentLabel &t1) const { return m_code > t1.m_code; }
+   bool operator <= (const CConstituentLabel &t1) const { return m_code <= t1.m_code; }
+   bool operator >= (const CConstituentLabel &t1) const { return m_code >= t1.m_code; }
 };
 
 };

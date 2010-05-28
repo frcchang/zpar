@@ -2,5 +2,5 @@
 
 using namespace TARGET_LANGUAGE;
 
-unsigned long CConstituent::COUNT = 1;
-unsigned long CConstituent::LAST = 0;
+unsigned long CConstituentLabel::COUNT = 1;
+unsigned long CConstituentLabel::LAST = 0;

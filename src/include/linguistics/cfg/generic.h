@@ -11,6 +11,10 @@
 #ifndef _GENERIC_CFG_TAG_H
 #define _GENERIC_CFG_TAG_H
 
+#ifndef GENERIC_CONLABEL_SIZE
+#define GENERIC_CONLABEL_SIZE 8
+#endif
+
 #include "tokenizer.h"
 
 namespace TARGET_LANGUAGE {
@@ -21,7 +25,7 @@ namespace TARGET_LANGUAGE {
  *
  *==============================================================*/
 
-class CConstituent {
+class CConstituentLabel {
 protected:
    /*===============================================================
     *
@@ -29,20 +33,20 @@ protected:
     *
     *==============================================================*/
    
-   class CConstituentTokenizer : public CTokenizer<string, 251> {
+   class CConstituentLabelTokenizer : public CTokenizer<string, 251> {
       public: 
-         CConstituentTokenizer() : CTokenizer<string, 251>(0/*reserve for NONE BEGIN END*/) {
+         CConstituentLabelTokenizer() : CTokenizer<string, 251>(0/*reserve for NONE BEGIN END*/) {
             lookup("-NONE-");
             lookup("-BEGIN-");
          } 
-         virtual ~CConstituentTokenizer() {}
+         virtual ~CConstituentLabelTokenizer() {}
    };
 
 public:
    enum {NONE = 0};
    enum {SENTENCE_BEGIN = 1};
    enum {FIRST = 2};
-   enum {SIZE = 12};
+   enum {SIZE = GENERIC_CONLABEL_SIZE};
    static unsigned long COUNT;
    static unsigned long LAST;
 
@@ -51,26 +55,26 @@ protected:
 
 protected:
    // static method assigns tokenizer as global dictionary of words
-   CConstituentTokenizer &getTokenizer() const {static CConstituentTokenizer tokenizer; return tokenizer;}
+   CConstituentLabelTokenizer &getTokenizer() const {static CConstituentLabelTokenizer tokenizer; return tokenizer;}
 
 public:
-   CConstituent() : m_code(NONE) { }
-   CConstituent(const CConstituent &t) { m_code=t.m_code; }
-   CConstituent(const unsigned long &u) { assert(getTokenizer().count()>u); m_code=u; }
-   CConstituent(const string &s) { load(s); }
-   virtual ~CConstituent() {}
+   CConstituentLabel() : m_code(NONE) { }
+   CConstituentLabel(const CConstituentLabel &t) { m_code=t.m_code; }
+   CConstituentLabel(const unsigned long &u) { assert(getTokenizer().count()>u); m_code=u; }
+   CConstituentLabel(const string &s) { load(s); }
+   virtual ~CConstituentLabel() {}
 
 public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
-   void copy(const CConstituent &c) {m_code = c.m_code; }
+   void copy(const CConstituentLabel &c) {m_code = c.m_code; }
    const bool empty() const { return m_code==NONE; }
-   bool operator == (const CConstituent &w) const { return m_code == w.m_code; }
-   bool operator != (const CConstituent &w) const { return m_code != w.m_code; }
-   bool operator < (const CConstituent &w) const { return m_code < w.m_code; }
-   bool operator > (const CConstituent &w) const { return m_code > w.m_code; }
-   bool operator <= (const CConstituent &w) const { return m_code <= w.m_code; }
-   bool operator >= (const CConstituent &w) const { return m_code >= w.m_code; }
+   bool operator == (const CConstituentLabel &w) const { return m_code == w.m_code; }
+   bool operator != (const CConstituentLabel &w) const { return m_code != w.m_code; }
+   bool operator < (const CConstituentLabel &w) const { return m_code < w.m_code; }
+   bool operator > (const CConstituentLabel &w) const { return m_code > w.m_code; }
+   bool operator <= (const CConstituentLabel &w) const { return m_code <= w.m_code; }
+   bool operator >= (const CConstituentLabel &w) const { return m_code >= w.m_code; }
 
    void load(const string &s) {
       m_code=getTokenizer().lookup(s); 
@@ -91,7 +95,7 @@ public:
 
 };
 
-inline const unsigned long &hash(const TARGET_LANGUAGE::CConstituent &tag) {return tag.code(); }
+inline const unsigned long &hash(const TARGET_LANGUAGE::CConstituentLabel &tag) {return tag.code(); }
 
 #endif
 

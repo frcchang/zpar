@@ -48,7 +48,7 @@ public:
       single_child = true;
       head_left = false;
       temp = false;
-      constituent=CConstituent::NONE;
+      constituent=CConstituentLabel::NONE;
    }
    virtual ~CCFGTreeNode() {}
 

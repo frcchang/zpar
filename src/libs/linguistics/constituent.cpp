@@ -39,7 +39,7 @@ int CCFGTree::readNode(istream &is) {
          else nodes[node].head_left = false;
          nodes[node].left_child = left;
          nodes[node].right_child = right;
-         nodes[node].constituent = CConstituent(name).code();
+         nodes[node].constituent = CConstituentLabel(name).code();
          nodes[node].token = s[0]=='l' ? nodes.at(left).token : nodes.at(right).token;
          assert(nodes[node].token!=-1);
          nodes[node].temp = temporary;
@@ -53,7 +53,7 @@ int CCFGTree::readNode(istream &is) {
          nodes[node].is_constituent = true;
          nodes[node].single_child = true;
          nodes[node].left_child = left;
-         nodes[node].constituent = CConstituent(name).code();
+         nodes[node].constituent = CConstituentLabel(name).code();
          nodes[node].right_child = -1;
          nodes[node].token = nodes.at(left).token;
          nodes[node].head_left = false;
@@ -69,7 +69,7 @@ int CCFGTree::readNode(istream &is) {
          nodes[node].is_constituent = false;
          nodes[node].single_child = false;
          nodes[node].head_left = false;
-         if (s[0]=='c') { nodes[node].constituent = CConstituent(name).code(); is >> name; }
+         if (s[0]=='c') { nodes[node].constituent = CConstituentLabel(name).code(); is >> name; }
          is >> token;
          is >> s;
          while (s != ")") {
@@ -90,7 +90,7 @@ string CCFGTree::writeNode(int node) const {
       string type;
       string cont;
       if (nd.is_constituent) {
-         name = CConstituent(nd.constituent).str();
+         name = CConstituentLabel(nd.constituent).str();
          if (nd.single_child) 
             type = "s";
          else if (nd.head_left)
@@ -106,9 +106,9 @@ string CCFGTree::writeNode(int node) const {
          }
       }
       else {
-         if (nd.constituent!=CConstituent::NONE) {
+         if (nd.constituent!=CConstituentLabel::NONE) {
             type = "c";
-            name = CConstituent(nd.constituent).str();
+            name = CConstituentLabel(nd.constituent).str();
             cont = words[nd.token].second + " " + words[nd.token].first;
          }
          else {
@@ -129,7 +129,7 @@ string CCFGTree::writeNodeUnbin(int node) const {
          return writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
       }
       else {
-         name = CConstituent(nd.constituent).str();
+         name = CConstituentLabel(nd.constituent).str();
          if (nd.single_child) 
             cont = writeNodeUnbin(nd.left_child);
          else {
@@ -139,10 +139,10 @@ string CCFGTree::writeNodeUnbin(int node) const {
       }
    }
    else {
-      if (nd.constituent==CConstituent::NONE)
+      if (nd.constituent==CConstituentLabel::NONE)
          name = words[nd.token].second;
       else
-         name = CConstituent(nd.constituent).str();
+         name = CConstituentLabel(nd.constituent).str();
       cont = words[nd.token].first;
       return "(" + name + " " + cont + ")";
    }

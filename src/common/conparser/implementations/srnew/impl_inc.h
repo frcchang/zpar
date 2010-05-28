@@ -1,6 +1,15 @@
 #ifndef _CONPARSER_IMPL_INCLUDE_H
 #define _CONPARSER_IMPL_INCLUDE_H
 
+namespace TARGET_LANGUAGE {
+#ifdef NO_TEMP_CONSTITUENTT
+typedef CConstituentLabel CConstituent;
+#else
+#include "linguistics/cfgtemp.h"
+typedef CTemporary<CConstituentLabel> CConstituent;
+#endif
+};
+
 #include "hash.h"
 #include "bigram.h"
 #include "tuple3.h"
