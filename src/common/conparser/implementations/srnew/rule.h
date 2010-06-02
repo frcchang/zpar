@@ -46,21 +46,28 @@ public:
       // shift
       if ( item.current_word < length ) { 
          // do not shift for head right tmp item
+#ifndef NO_TEMP_CONSTITUENT
          if (stack_size>0 && 
              item.nodes[item.stack.back()].temp &&
              item.nodes[item.stack.back()].head_left()==false) {
          }
          else {
+#endif // NO_TEMP_CONSTITUENT
              getShiftRules(item, actions);
+#ifndef NO_TEMP_CONSTITUENT
          }
+#endif // NO_TEMP_CONSTITUENT
       }
       // reduce bin
       if ( stack_size > 1 ) {
          getBinaryRules(item, actions);
       }
       // reduce unary
-      if ( stack_size && item.unary_reduce<UNARY_MOVES &&
-           !item.nodes[item.stack.back()].temp ) {
+      if ( stack_size && item.unary_reduce<UNARY_MOVES 
+#ifndef NO_TEMP_CONSTITUENT
+           && !item.nodes[item.stack.back()].temp 
+#endif
+      ) {
          getUnaryRules(item, actions);
       }
    }

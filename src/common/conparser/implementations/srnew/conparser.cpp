@@ -836,8 +836,13 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
             const CStateNode &left = st.nodes[context.s1];
             const CStateNode &right = st.nodes[context.s0];
             assert(!left.temp||!right.temp);
+#ifdef NO_TEMP_CONSTITUENT
             assert(!left.temp||(head_left&&constituent==left.constituent.code()));
             assert(!right.temp||(!head_left&&constituent==right.constituent.code()));
+#else
+            assert(!left.temp||(head_left&&CConstituent::clearTmp(constituent)==left.constituent.extractConstituentCode()));
+            assert(!right.temp||(!head_left&&CConstituent::clearTmp(constituent)==right.constituent.extractConstituentCode()));
+#endif
             if (head_left) {
 //               getOrUpdateLinkScore( left.lexical_head, 
 //                                     right.lexical_head, 
@@ -971,6 +976,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    static CAgendaSimple<CScoredAction> beam(AGENDA_SIZE);
    static vector<CAction> actions; // actions to apply for a candidate
    static CScoredAction scored_action; // used rank actions
+   ASSERT(nBest=1, "currently only do 1 best parse");
+   // TODO: it is easy to extend this into N-best; just use a vector for candidate_output. during train maybe use the best to adjust
+   static CStateItem candidate_output;
 
    assert(length<MAX_SENTENCE_SIZE);
 
@@ -978,6 +986,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    // initialise word cache
    m_lCache.clear();
    m_lWordLen.clear();
+   candidate_output.clear();
    for ( tmp_i=0; tmp_i<length; tmp_i++ ) {
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[tmp_i].first , sentence[tmp_i].second) );
       m_lWordLen.push_back( getUTF8StringLength(sentence[tmp_i].first) );
@@ -999,28 +1008,30 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       if (bTrain) bCorrect = false ; 
 
       pGenerator = m_Agenda->generatorStart();
-      if (pGenerator==0) { // no parse if found (rule constrainted)
-         TRACE("Parsing failed");
-         if (retval) retval[0].clear(); return;
+      if (pGenerator==0) { // no more generators
+         ASSERT(candidate_output.IsTerminated(), "Internal error: cannot find a parse for the sentence.");
+         break; // finish
       }
-      pBestGen = m_Agenda->bestGenerator();
+//      pBestGen = m_Agenda->bestGenerator();
 
-      if (pBestGen->IsTerminated()) break; // if the first item is complete
-      bParsingDone = false;
-      for (tmp_i=0; tmp_i<m_Agenda->generatorSize(); ++tmp_i) {
-         if (m_Agenda->generator(tmp_i)->score == pBestGen->score && 
-               m_Agenda->generator(tmp_i)->IsTerminated()) {
-             pBestGen = m_Agenda->generator(tmp_i);
-             bParsingDone = true; break;
-         }
-      }
-      if (bParsingDone) break;
+//      if (pBestGen->IsTerminated()) break; // if the first item is complete
+//      bParsingDone = false;
+//      for (tmp_i=0; tmp_i<m_Agenda->generatorSize(); ++tmp_i) {
+//         if (m_Agenda->generator(tmp_i)->score == pBestGen->score && 
+//               m_Agenda->generator(tmp_i)->IsTerminated()) {
+//             pBestGen = m_Agenda->generator(tmp_i);
+//             bParsingDone = true; break;
+//         }
+//      }
+//      if (bParsingDone) break;
          
       for (tmp_i=0; tmp_i<m_Agenda->generatorSize(); ++tmp_i) { // for each generator
 
-         // don't do anything for completed items
+         // when an item is terminated, move it to potential outputs.
          if (pGenerator->IsTerminated()) { 
-            m_Agenda->pushCandidate(pGenerator); // push it back intacit
+            //m_Agenda->pushCandidate(pGenerator); // push it back intacit
+            if (candidate_output.empty() || pGenerator->score > candidate_output.score )
+              candidate_output = *pGenerator;
          }
          else {
             // load context
@@ -1061,7 +1072,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       // update items if correct item jump out of the agenda
       if (bTrain) { 
 #ifdef EARLY_UPDATE
-         if (!bCorrect) {
+         if (!bCorrect && candidate_output!=correctState) {
+            // no generator, nor the candidate output is error-free.
+            pBestGen = (m_Agenda->generatorSize()==0 || m_Agenda->bestGenerator()->score < candidate_output.score) ? &candidate_output : m_Agenda->bestGenerator();
             correctState.trace(&sentence);
             pBestGen->trace(&sentence);
             TRACE("Error at the "<<correctState.current_word<<"th word; total is "<<correct.words.size())
@@ -1081,11 +1094,11 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
    if (bTrain) {
       // make sure that the correct item is stack top finally
-      if ( *(pBestGen) != correctState ) {
+      if ( candidate_output != correctState ) {
          correctState.trace(&sentence);
-         pBestGen->trace(&sentence);
+         candidate_output.trace(&sentence);
          TRACE("The best item is not the correct one")
-         updateScoresForStates(pBestGen, &correctState) ; 
+         updateScoresForStates(&candidate_output, &correctState) ; 
          return ;
       }
    } 
@@ -1094,10 +1107,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       return;
 
    TRACE("Outputing sentence");
-   pBestGen->GenerateTree( sentence, retval[0] );
-   if (scores) scores[0] = pBestGen->score;
+   candidate_output.GenerateTree( sentence, retval[0] );
+   if (scores) scores[0] = candidate_output.score;
 
-   TRACE("Done, the highest score is: " << pBestGen->score ) ;
+   TRACE("Done, the highest score is: " << candidate_output.score ) ;
    TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
 }
 

@@ -27,7 +27,7 @@ int CCFGTree::readNode(istream &is) {
          assert(s[1]=='*');
          temporary = true;
       }
-      if (s[0] == 'l' || s[0] == 'r') {
+      if (s[0] == 'l' || s[0] == 'r' || s[0] == 'e' ) {
          left = readNode(is);
          right = readNode(is);
          node = newNode();
@@ -35,13 +35,28 @@ int CCFGTree::readNode(istream &is) {
          nodes.at(right).parent = node;
          nodes[node].is_constituent = true;
          nodes[node].single_child = false;
+         // l - head left; r / e - head right
          if (s[0] =='l') nodes[node].head_left = true;
          else nodes[node].head_left = false;
          nodes[node].left_child = left;
          nodes[node].right_child = right;
-         nodes[node].constituent = CConstituentLabel(name).code();
-         nodes[node].token = s[0]=='l' ? nodes.at(left).token : nodes.at(right).token;
-         assert(nodes[node].token!=-1);
+         // e - NONE node; l / r - labeled node
+         if (s[0] == 'e') {
+            ASSERT(name==CConstituentLabel(CConstituentLabel::NONE).str(), "An empty node has constituent: " << name);
+            nodes[node].constituent = CConstituentLabel::NONE;
+         }
+         else {
+            nodes[node].constituent = CConstituentLabel(name).code();
+         }
+         // e - no token; l / r - has token
+         if (s[0] == 'e') {
+            nodes[node].token = -1;
+         }
+         else {
+            nodes[node].token = s[0]=='l' ? nodes.at(left).token : nodes.at(right).token;
+            ASSERT(nodes[node].token!=-1, "Cannot find the lexical head for node " << name);
+         }
+         if (s[0] == 'e') ASSERT(temporary==false, "An empty node was marked as temporary");
          nodes[node].temp = temporary;
          is >> s;
          assert(s==")");
@@ -89,14 +104,22 @@ string CCFGTree::writeNode(int node) const {
       string name;
       string type;
       string cont;
-      if (nd.is_constituent) {
+      if (nd.is_constituent) { // [1]node type cons
+         if (nd.constituent==CConstituentLabel::NONE) {
+            type = "e";
+            ASSERT(nd.temp == false, "Internal error: a NONE node is marked temporary.");
+            ASSERT(nd.head_left==false, "Internal error: a NONE node is marked head_left.");
+            ASSERT(nd.single_child==false, "Internal error: a NONE node is marked as unary branching.");
+         }
+         else {
+            if (nd.single_child) 
+               type = "s";
+            else if (nd.head_left)
+               type = "l";
+            else 
+               type = "r";
+         }
          name = CConstituentLabel(nd.constituent).str();
-         if (nd.single_child) 
-            type = "s";
-         else if (nd.head_left)
-            type = "l";
-         else
-            type = "r";
          if (nd.temp)
             type += "*";
          if (nd.single_child) 
@@ -105,7 +128,7 @@ string CCFGTree::writeNode(int node) const {
             cont = writeNode(nd.left_child) + " " + writeNode(nd.right_child);
          }
       }
-      else {
+      else { //[2] node.type token
          if (nd.constituent!=CConstituentLabel::NONE) {
             type = "c";
             name = CConstituentLabel(nd.constituent).str();
@@ -124,8 +147,9 @@ string CCFGTree::writeNodeUnbin(int node) const {
    const CCFGTreeNode &nd = nodes[node] ;
    string name;
    string cont;
-   if (nd.is_constituent) {
-      if (nd.temp) {
+   if (nd.is_constituent) { // [1] constituent
+      // do not write node label for temp nodes and NONE nodes (fragmented tree)
+      if (nd.temp || nd.constituent==CConstituentLabel::NONE) {
          return writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
       }
       else {
@@ -138,7 +162,7 @@ string CCFGTree::writeNodeUnbin(int node) const {
          return "(" + name + " " + cont + ")";
       }
    }
-   else {
+   else { // [2] token
       if (nd.constituent==CConstituentLabel::NONE)
          name = words[nd.token].second;
       else
