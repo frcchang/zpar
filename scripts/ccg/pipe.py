@@ -13,7 +13,7 @@ import sys
 
 #================================================================
 
-def PrintNode(node):
+def PrintNode(node, bFragmented=False):
    retval = ""
    retval += "("
    if node.type == "token":
@@ -29,6 +29,15 @@ def PrintNode(node):
       retval += "\n"
    else:
       assert node.type == "constituent"
+      if bFragmented and node.name == '-NONE-': 
+         assert node.right
+         if node.left.name != '-NONE-':
+            print '###' 
+         retval += PrintFragmentedNode(node.left)
+         if node.right.name != '-NONE-':
+            print '###'
+         retval += PrintFragmentedNode(node.right)
+         return retval
       retval += "<T "
       retval += "*** "
       retval += node.supercategory
@@ -49,9 +58,25 @@ def PrintNode(node):
       retval += "\n"
    return retval
 
-def PrintTree(tree):
+def PrintTree(tree, bFragmented=False):
    return "###\n%s"  % PrintNode(tree.root)
 
+# print sexical categories
+def PrintLexicalCat(node, bFragmented=False):
+   retval = ""
+   if node.type == "token":
+      retval += '%s|%s|%s ' % (node.tree.tokens[node.start_index][2], node.tree.tokens[node.start_index][-1], node.supercategory)
+   else:
+      assert node.type == "constituent"
+      retval += PrintLexicalCat(node.left)
+      if node.right:
+         retval += PrintLexicalCat(node.right)
+   return retval
+
+def PrintLexicalCategories(tree):
+   return PrintLexicalCat(tree.root)
+
+# node from a binarized tree
 def PrintBinarizedNode(node):
    retval = ""
    retval += "("
@@ -153,3 +178,27 @@ def LoadNode(file, tree):
       assert line.strip()==')'
    return retval
 
+def SplitPipe(path, cat_path, frag_path):
+   file = open(path)
+   filecat = open(cat_path, 'w')
+   filefrg = open(frag_path, 'w')
+   tree = LoadTree(file)
+   while tree:
+      filecat.write(PrintLexicalCategories(tree))
+      filecat.write('\n')
+      filefrg.write(PrintTree(tree, bFragmented=True))
+      filefrg.write('\n')
+      tree = LoadTree(file)
+   file.close()
+   filefrg.close()
+   filecat.close()
+
+if __name__ == '__main__':
+   if len(sys.argv) < 2:
+      print 'pipe.py command arg'
+      print 'commands: split'
+      sys.exit(1)
+   command = sys.argv[1]
+   if command == 'split':
+      if len(sys.argv) != 5: print 'split input output-cat, output-frg'; sys.exit(1)
+      SplitPipe(sys.argv[2], sys.argv[3], sys.argv[4])
