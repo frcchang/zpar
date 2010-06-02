@@ -29,12 +29,12 @@ def PrintNode(node, bFragmented=False):
       retval += "\n"
    else:
       assert node.type == "constituent"
-      if bFragmented and node.name == '-NONE-': 
+      if bFragmented and node.supercategory == '-NONE-': 
          assert node.right
-         if node.left.name != '-NONE-':
+         if node.left.supercategory != '-NONE-':
             print '###' 
          retval += PrintFragmentedNode(node.left)
-         if node.right.name != '-NONE-':
+         if node.right.supercategory != '-NONE-':
             print '###'
          retval += PrintFragmentedNode(node.right)
          return retval
