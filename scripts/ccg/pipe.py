@@ -15,9 +15,8 @@ import sys
 
 def PrintNode(node, bFragmented=False):
    retval = ""
-   retval += "("
    if node.type == "token":
-      retval += "<L "
+      retval += "(<L "
       retval += "*** "
       retval += node.supercategory
       retval += " "
@@ -32,13 +31,17 @@ def PrintNode(node, bFragmented=False):
       if bFragmented and node.supercategory == '-NONE-': 
          assert node.right
          if node.left.supercategory != '-NONE-':
-            print '###' 
-         retval += PrintFragmentedNode(node.left)
+            retval += '###<START>' + str(node.left.start_index) + '\n'
+         retval += PrintNode(node.left, bFragmented)
+         if node.left.supercategory != '-NONE-':
+            retval += '\n'
          if node.right.supercategory != '-NONE-':
-            print '###'
-         retval += PrintFragmentedNode(node.right)
+            retval += '###<START>' + str(node.right.start_index) + '\n'
+         retval += PrintNode(node.right, bFragmented)
+         if node.right.supercategory != '-NONE-':
+            retval += '\n'
          return retval
-      retval += "<T "
+      retval += "(<T "
       retval += "*** "
       retval += node.supercategory
       retval += " * "
@@ -51,15 +54,15 @@ def PrintNode(node, bFragmented=False):
       if node.right: ch = 2
       retval += str(ch)
       retval += ">\n"
-      retval += PrintNode(node.left)
+      retval += PrintNode(node.left, bFragmented)
       if ch == 2:
-         retval += PrintNode(node.right)
+         retval += PrintNode(node.right, bFragmented)
       retval += ")"
       retval += "\n"
    return retval
 
 def PrintTree(tree, bFragmented=False):
-   return "###\n%s"  % PrintNode(tree.root)
+   return PrintNode(tree.root, bFragmented)
 
 # print sexical categories
 def PrintLexicalCat(node, bFragmented=False):
@@ -184,7 +187,9 @@ def SplitPipe(path, cat_path, frag_path):
    filefrg = open(frag_path, 'w')
    tree = LoadTree(file)
    while tree:
+      filecat.write('<c> ')
       filecat.write(PrintLexicalCategories(tree))
+      filecat.write('</c>')
       filecat.write('\n')
       filefrg.write(PrintTree(tree, bFragmented=True))
       filefrg.write('\n')
