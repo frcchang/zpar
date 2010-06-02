@@ -57,15 +57,17 @@ public:
       node.parent = parent;
       node.is_constituent = is_constituent();
       node.temp = temp;
+#ifdef NO_TEMP_CONSTITUENT
+      ASSERT(!node.temp, "Internal error: this version does not temporary constituents but state items have them.")
       node.constituent = constituent.code();
+#else
+      node.constituent = constituent.extractConstituentCode();
+#endif
       node.single_child = single_child();
       node.head_left = head_left();
       node.left_child = left_child;
       node.right_child = right_child;
       node.token = lexical_head;
-#ifdef NO_TEMP_CONSTITUENT
-      ASSERT(!node.temp, "Internal error: this version does not temporary constituents but state items have them.")
-#endif
    }
    void fromCCFGTreeNode(const CCFGTreeNode &node) {
       parent = node.parent;
@@ -113,7 +115,7 @@ public:
    const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
    
 public:
-   CStateItem() {clear();}
+   CStateItem() : current_word(0), score(0), unary_reduce(0), context(0), sent(0), stack(), nodes() {}
    virtual ~CStateItem() {}
 public:
    void clear() {
@@ -124,6 +126,13 @@ public:
       unary_reduce = 0;
       context = 0;
       sent = 0;
+   }
+   bool empty() const {
+      if (current_word==0) {
+         assert(stack.empty() && nodes.empty() && unary_reduce==0 && score==0);
+         return true;
+      }
+      return false;
    }
    int newNode(const int &parent, const CStateNode::NODE_TYPE &type, const bool &tmp, const unsigned long &constituent, const int &left_child, const int &right_child, const int &lexical_head) { nodes.push_back(CStateNode(parent, type, tmp, constituent, left_child, right_child, lexical_head)); return nodes.size()-1; }
    int newNodeIndex() const { return nodes.size(); }
@@ -361,18 +370,31 @@ public:
    }
 
    bool IsComplete() const {
+#ifdef FRAGMENTED_TREE
+      return current_word == sent->size(); // allow multiple-rt.
+#else
       return current_word == sent->size() && stack.size() == 1;
+#endif
    }
 
    bool IsTerminated() const {
-      assert( unary_reduce>=0 || IsComplete() );
+      assert( unary_reduce>=0 || IsComplete() ); // if not terminated; then comp
       return unary_reduce == -1; 
    }
 
    void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &out) const {
       // parsing done?
-      assert(IsComplete());
+      //assert(IsComplete());
+      assert(IsTerminated());
       assert(tagged.size()==sent->size());
+#ifdef FRAGMENTED_TREE
+      while (stack.size()>1) {
+         // form NONE nodes
+         reduce(CConstituent::NONE, false, false, false); 
+      }
+#else
+      assert(stack.size()==1);
+#endif
       // generate nodes for out
       out.clear();
       int i,j;

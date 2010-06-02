@@ -51,7 +51,7 @@ public:
    void load(const unsigned long &code) {CConstituentLabel::m_code=code;}
    const string &str() const { 
       static string tmp;
-      tmp = CConstituentLabel::str();
+      tmp = CConstituentLabel(clearTmp(CConstituentLabel::m_code)).str();
       if (getTemporary()) {
          tmp += "*";
       }
@@ -68,12 +68,15 @@ public:
 
    bool canBeTemporary() const { return true; }
    unsigned long extractConstituentCode() const {
-      return CConstituentLabel::m_code & (~(1L<<CConstituentLabel::SIZE));
+      return clearTmp(CConstituentLabel::m_code);
    }
 
 public:
    static unsigned long encodeTmp(const unsigned long &constituent, const bool &temporary) {
       return (temporary?constituent|(1L<<CConstituentLabel::SIZE):constituent);
+   }
+   static unsigned long clearTmp(const unsigned long &constituent) {
+      return constituent&(~(1L<<CConstituentLabel::SIZE));
    }
 }; 
 

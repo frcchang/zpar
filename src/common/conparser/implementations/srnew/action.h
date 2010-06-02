@@ -98,7 +98,11 @@ public:
 public:
    inline void encodeReduce(const unsigned long &constituent, bool single_child, bool head_left, bool temporary) {
       assert(!single_child || (!head_left&&!temporary));
+#ifdef NO_TEMP_CONSTITUENT
       action = (constituent<<CONSTITUENT_SHIFT |
+#else
+      action = ((CConstituent::encodeTmp(constituent, temporary))<<CONSTITUENT_SHIFT |
+#endif
                 temporary<<TEMPORARY_SHIFT |
                 head_left<<HEADLEFT_SHIFT |
                (single_child ? static_cast<unsigned long>(CActionType::REDUCE_UNARY) : static_cast<unsigned long>(CActionType::REDUCE_BINARY)));
