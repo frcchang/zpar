@@ -321,7 +321,7 @@ public:
       int s = stack.back();
       if (st.nodes[s].parent == -1) { // not finished
          assert(st.stack[stack.size()-1]==s); // also on stack with guider state
-         if (st.stack.size()==1) {
+         if (IsComplete()) { // if terminated
             assert(st.IsTerminated());
             retval.encodeReduceRoot();
          }
@@ -391,10 +391,12 @@ public:
       if (stack.size()>1) {
          static CStateItem item;
          item = *this;
+         item.unterminate(item.score, 0);
          while (item.stack.size()>1) {
             // form NONE nodes
             item.reduce(CConstituent::NONE, false, false, false); 
          }
+         item.terminate();
          item.GenerateTree(tagged, out);
          return;
       }

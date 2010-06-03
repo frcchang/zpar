@@ -6,7 +6,7 @@ rm $1.ccgbank_deps
 echo '#' >>$1.ccgbank_deps
 echo '#' >>$1.ccgbank_deps
 echo '' >>$1.ccgbank_deps
-count=`wc -l $1.pipe|cut -d\  -f1`
+count=`wc -l $1.txt|cut -d\  -f1`
 for i in `seq 1 $count`;
 do
   cat $1.txt | head -$i | tail -1 >$1.txt.part
