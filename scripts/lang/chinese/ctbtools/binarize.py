@@ -79,7 +79,7 @@ class CBinarizedTreeNode(object):
       nIndex += 1
       self.pos = ""
       assert len(sType) <= 2
-      if sType[0] == "l" or sType[0] == "r":
+      if sType[0] == "l" or sType[0] == "r" or sType[0] == "e":
          self.type = "constituent"
          self.head_child = sType[0]
          self.left_child = CBinarizedTreeNode()
@@ -119,7 +119,7 @@ class CBinarizedTreeNode(object):
       if name == 'type':
          assert value == 'constituent' or value == 'token'
       if name == 'head_child':
-         assert value == 'l' or value == 'r' or value == 's'
+         assert value == 'l' or value == 'r' or value == 's' or value == 'e'
       if name == 'temporary':
          assert value == True or value == False
 

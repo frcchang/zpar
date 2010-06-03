@@ -31,15 +31,15 @@ def PrintNode(node, bFragmented=False):
       if bFragmented and node.supercategory == '-NONE-': 
          assert node.right
          if node.left.supercategory != '-NONE-':
-            retval += '###<START>' + str(node.left.start_index) + '\n'
+            retval += '\n###<START>' + str(node.left.start_index) + '\n'
          retval += PrintNode(node.left, bFragmented)
-         if node.left.supercategory != '-NONE-':
-            retval += '\n'
+#         if node.left.supercategory != '-NONE-':
+#            retval += '\n'
          if node.right.supercategory != '-NONE-':
-            retval += '###<START>' + str(node.right.start_index) + '\n'
+            retval += '\n###<START>' + str(node.right.start_index) + '\n'
          retval += PrintNode(node.right, bFragmented)
-         if node.right.supercategory != '-NONE-':
-            retval += '\n'
+#         if node.right.supercategory != '-NONE-':
+#            retval += '\n'
          return retval
       retval += "(<T "
       retval += "*** "
@@ -62,7 +62,7 @@ def PrintNode(node, bFragmented=False):
    return retval
 
 def PrintTree(tree, bFragmented=False):
-   return PrintNode(tree.root, bFragmented)
+   return PrintNode(tree.root, bFragmented).lstrip('\n')
 
 # print sexical categories
 def PrintLexicalCat(node, bFragmented=False):
@@ -101,7 +101,7 @@ def PrintBinarizedNode(node):
       retval += node.name
       retval += " * "
       head_left = '0' 
-      if node.head_child == 'r': head_left = '1'
+      if node.head_child == 'r' or node.head_child == 'e': head_left = '1'
       retval += head_left
       retval += " "
       assert node.left_child 
@@ -189,7 +189,6 @@ def SplitPipe(path, cat_path, frag_path):
    while tree:
       filecat.write('<c> ')
       filecat.write(PrintLexicalCategories(tree))
-      filecat.write('</c>')
       filecat.write('\n\n')
       filefrg.write(PrintTree(tree, bFragmented=True))
       filefrg.write('\n')
