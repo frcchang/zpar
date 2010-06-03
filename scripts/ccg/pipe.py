@@ -190,7 +190,7 @@ def SplitPipe(path, cat_path, frag_path):
       filecat.write('<c> ')
       filecat.write(PrintLexicalCategories(tree))
       filecat.write('</c>')
-      filecat.write('\n')
+      filecat.write('\n\n')
       filefrg.write(PrintTree(tree, bFragmented=True))
       filefrg.write('\n')
       tree = LoadTree(file)

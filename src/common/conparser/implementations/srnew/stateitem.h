@@ -388,9 +388,15 @@ public:
       assert(IsTerminated());
       assert(tagged.size()==sent->size());
 #ifdef FRAGMENTED_TREE
-      while (stack.size()>1) {
-         // form NONE nodes
-         reduce(CConstituent::NONE, false, false, false); 
+      if (stack.size()>1) {
+         static CStateItem item;
+         item = *this;
+         while (item.stack.size()>1) {
+            // form NONE nodes
+            item.reduce(CConstituent::NONE, false, false, false); 
+         }
+         item.GenerateTree(tagged, out);
+         return;
       }
 #else
       assert(stack.size()==1);
