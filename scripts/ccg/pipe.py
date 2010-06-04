@@ -31,12 +31,12 @@ def PrintNode(node, bFragmented=False):
       if bFragmented and node.supercategory == '-NONE-': 
          assert node.right
          if node.left.supercategory != '-NONE-':
-            retval += '\n###<START>' + str(node.left.start_index) + '\n'
+            retval += '\n###<START>' + str(node.left.start_index) + ' <END>' + str(node.left.end_index) + '\n'
          retval += PrintNode(node.left, bFragmented)
 #         if node.left.supercategory != '-NONE-':
 #            retval += '\n'
          if node.right.supercategory != '-NONE-':
-            retval += '\n###<START>' + str(node.right.start_index) + '\n'
+            retval += '\n###<START>' + str(node.right.start_index) + ' <END>' + str(node.right.end_index) + '\n'
          retval += PrintNode(node.right, bFragmented)
 #         if node.right.supercategory != '-NONE-':
 #            retval += '\n'
