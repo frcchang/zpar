@@ -5,7 +5,7 @@ scratch=./scratch
 
 if [ -e $scratch ]
 then
-  echo $scratch dir already exists; exiting now
+  echo $scratch dir already exists, exiting now
   exit
 fi
 
@@ -30,7 +30,7 @@ do
     python $scripts/ccg/pipe.py split $scratch/$1.pipe.part.$i $scratch/$1.cat.part.$i $scratch/$1.pipe.fragmented.part.$i
     $candc/bin/generate -j $candc/src/data/ccg/cats $candc/src/data/ccg/cats/markedup $scratch/$1.pipe.fragmented.part.$i >$scratch/$1.ccgbank_deps.part.$i
     python $scripts/ccg/mergefragmenteddeps.py $scratch/$1.ccgbank_deps.part.$i $scratch/$1.pipe.fragmented.part.$i $scratch/$1.cat.part.$i >$scratch/$1.ccgbank_deps.formatted.part.$i
-    if [ `../../../../app/candc/bin/generate -T $candc/src/data/ccg/cats/ $candc/src/data/ccg/cats/markedup $scratch/$1.pipe.fragmented.part.$i | grep '__PARSE_FAILED__' | wc -l | cut -d\  -f1` == 0 ]
+    if [ `$candc/bin/generate -T $candc/src/data/ccg/cats/ $candc/src/data/ccg/cats/markedup $scratch/$1.pipe.fragmented.part.$i | grep '__PARSE_FAILED__' | wc -l | cut -d\  -f1` == 0 ]
 #    if [ `wc -w $scratch/$1.ccgbank_deps.formatted.part.$i|cut -d\  -f1` == 0 ] 
     then
       grep ^[^\#] $scratch/$1.ccgbank_deps.formatted.part.$i >>$1.ccgbank_deps
