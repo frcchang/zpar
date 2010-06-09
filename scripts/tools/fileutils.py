@@ -1,6 +1,7 @@
 import sys
 
 def countlines(file):
+   """count the number of lines in a file"""
    path = open(file)
    total = 0
    for line in path:
@@ -9,6 +10,7 @@ def countlines(file):
    return total
 
 def filterlines(path, dLines, bConsume=False):
+   """ filter lines from path with lines in dLines"""
    file = open(path)
    for line in file:
       line = line.strip()
@@ -18,6 +20,26 @@ def filterlines(path, dLines, bConsume=False):
       else:
          print line
    file.close()
+
+def getchunks(path):
+   """split file into chunks, each of which ends with an empty line"""
+   file = open(path)
+   r = []
+   for line in file:
+      r.append(line[:-1])
+      if not r[-1]:
+         yield r
+         r = []
+   file.close()
+
+def selectchunks(path, lChunks):
+   """selectively print chunks from file, according to lChunks"""
+   index = 0
+   for lChunk in getchunks(path):
+      index += 1
+      if index in lChunks:
+         for line in lChunk:
+            print line
 
 if __name__ == '__main__':
    if len(sys.argv) < 2:
@@ -35,3 +57,11 @@ if __name__ == '__main__':
       file.close()
       filterlines(sys.argv[2], dLines, True)
       assert dLines=={} # every exclude line in file
+   elif command == 'selectchunk':
+      if not len(sys.argv) == 4:
+         print 'fileutils.py selectchunk path chunks(in python list format without space)'
+         sys.exit(0)
+      path = sys.argv[2]
+      chunks = eval(sys.argv[3])
+      assert type(chunks) == list
+      selectchunks(path, chunks)
