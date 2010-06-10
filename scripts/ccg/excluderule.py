@@ -51,6 +51,8 @@ def mapping(a):
       return 'S[dcl]/NP'
    elif a == '(S[b]\NP)':
       return 'S[b]\NP'
+   elif a == '(S[intj]\S[intj])':
+      return 'S[intj]\S[intj]'
    else:
       return a  
 
@@ -67,7 +69,7 @@ def contains(set1, tuple2):
          
    def enumeratetuple(tuple2):
       retval = []
-      d = {'NP[conj]' : ['NP\NP'], 'S[pss]\NP[conj]' : ['(S[pss]\NP)\(S[pss]\NP)'], 'S[dcl][conj]' : ['S[dcl]\S[dcl]'], '(S\NP)\(S\NP)[conj]' : ['((S\NP)\(S\NP))\((S\NP)\(S\NP))'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)'], '(S\NP)\((S\NP)/(S[adj]\NP))[conj]' : ['(((S\NP)\((S\NP)/(S[adj]\NP)))\((S\NP)\((S\NP)/(S[adj]\NP))))'], 'S[adj]\NP[conj]' : ['(S[adj]\NP)\(S[adj]\NP)'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)']}
+      d = {'NP[conj]' : ['NP\NP'], 'S[pss]\NP[conj]' : ['(S[pss]\NP)\(S[pss]\NP)'], 'S[dcl][conj]' : ['S[dcl]\S[dcl]'], '(S\NP)\(S\NP)[conj]' : ['((S\NP)\(S\NP))\((S\NP)\(S\NP))'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)'], '(S\NP)\((S\NP)/(S[adj]\NP))[conj]' : ['(((S\NP)\((S\NP)/(S[adj]\NP)))\((S\NP)\((S\NP)/(S[adj]\NP))))'], 'S[adj]\NP[conj]' : ['(S[adj]\NP)\(S[adj]\NP)'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)'], 'S[intj][conj]' : ['S[intj]\S[intj]']}
 #'NP\NP' : ['NP[conj]'], 
 #'(S[pss]\NP)\(S[pss]\NP)' : ['S[pss]\NP[conj]'], 
       l=list(tuple2)
