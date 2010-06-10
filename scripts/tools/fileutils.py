@@ -36,10 +36,22 @@ def selectchunks(path, lChunks):
    """selectively print chunks from file, according to lChunks"""
    index = 0
    for lChunk in getchunks(path):
-      index += 1
       if index in lChunks:
          for line in lChunk:
             print line
+      index += 1
+
+def excludechunks(path, lChunks, lReplaceChunk):
+   """selectively print chunks from file, excluding those from lChunks and replacing them with the lReplaceChunk item"""
+   index = 0
+   for lChunk in getchunks(path):
+      if index in lChunks:
+         for line in lReplaceChunk:
+            print line
+      else:
+         for line in lChunk:
+            print line
+      index += 1
 
 if __name__ == '__main__':
    if len(sys.argv) < 2:
@@ -59,9 +71,18 @@ if __name__ == '__main__':
       assert dLines=={} # every exclude line in file
    elif command == 'selectchunk':
       if not len(sys.argv) == 4:
-         print 'fileutils.py selectchunk path chunks(in python list format without space)'
+         print 'fileutils.py selectchunk path chunks(in python list format without space 0 start)'
          sys.exit(0)
       path = sys.argv[2]
       chunks = eval(sys.argv[3])
       assert type(chunks) == list
       selectchunks(path, chunks)
+   elif command == 'excludechunk':
+      if not len(sys.argv) == 5:
+         print 'fileutils.py selectchunk path chunks(in python list format without space 0 start) replacechunk(in python list format one element perline; empty list[] means no replacing)'
+         sys.exit(0)
+      path = sys.argv[2]
+      chunks = eval(sys.argv[3])
+      replace = eval(sys.argv[4])
+      assert type(chunks) == list and type(replace) == list
+      excludechunks(path, chunks, replace)
