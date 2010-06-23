@@ -1009,7 +1009,12 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
       pGenerator = m_Agenda->generatorStart();
       if (pGenerator==0) { // no more generators
-         ASSERT(candidate_output.IsTerminated(), "Internal error: cannot find a parse for the sentence.");
+         if (!candidate_output.IsTerminated()) {
+             WARNING("Parser failed: cannot find a parse for the sentence.");
+             ASSERT(retval, "Internal error: parser failed during training");
+             retval->clear();
+             return;
+         }
          break; // finish
       }
 //      pBestGen = m_Agenda->bestGenerator();

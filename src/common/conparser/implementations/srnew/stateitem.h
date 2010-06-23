@@ -387,6 +387,7 @@ public:
       //assert(IsComplete());
       assert(IsTerminated());
       assert(tagged.size()==sent->size());
+      out.clear();
 #ifdef FRAGMENTED_TREE
       if (stack.size()>1) {
          static CStateItem item;
@@ -401,10 +402,10 @@ public:
          return;
       }
 #else
-      assert(stack.size()==1);
+      //assert(stack.size()==1);
+      if (stack.size()>1) { WARNING("Parser failed.");return; }
 #endif
       // generate nodes for out
-      out.clear();
       int i,j;
       // first words
       for (i=0; i<tagged.size(); ++i) 

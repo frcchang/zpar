@@ -53,6 +53,40 @@ def mapping(a):
       return 'S[b]\NP'
    elif a == '(S[intj]\S[intj])':
       return 'S[intj]\S[intj]'
+   elif a == '((S\NP)/(S\NP))':
+      return '(S\NP)/(S\NP)'
+   elif a == '(NP[nb]/N)':
+      return 'NP[nb]/N'
+   elif a == '(NP/(S[dcl]\NP))':
+      return 'NP/(S[dcl]\NP)'
+   elif a == '((S[ng]\NP)\(S[ng]\NP))':
+      return '(S[ng]\NP)\(S[ng]\NP)'
+   elif a == '(((S/S)/(S[adj]\NP))\(((S/S)/(S[adj]\NP))/NP))':
+      return '((S/S)/(S[adj]\NP))\(((S/S)/(S[adj]\NP))/NP)'
+   elif a == '((S[b]\NP)\(S[b]\NP))':
+      return '(S[b]\NP)\(S[b]\NP)'
+   elif a == '((S[dcl]/NP)/NP)':
+      return '(S[dcl]/NP)/NP'
+   elif a == '(((S[adj]\NP)/NP)\((S[adj]\NP)/NP))':
+      return '((S[adj]\NP)/NP)\((S[adj]\NP)/NP)'
+   elif a == '(S\(S/NP))':
+      return 'S\(S/NP)'
+   elif a == '((S[adj]\NP)\NP)':
+      return '(S[adj]\NP)\NP'
+   elif a == '((S[adj]\NP)/(S[adj]\NP))':
+      return '(S[adj]\NP)/(S[adj]\NP)'
+   elif a == '(((S\NP)/(S[adj]\NP))\(((S\NP)/(S[adj]\NP))/NP))':
+      return '((S\NP)/(S[adj]\NP))\(((S\NP)/(S[adj]\NP))/NP)'
+   elif a == '((S\NP)/(S[adj]\NP))\(((S\NP)/(S[adj]\NP))/NP)':
+      return '(S\NP)/(S[adj]\NP))\(((S\NP)/(S[adj]\NP))/NP'
+   elif a == '((S\NP)\(((S\NP)/(S[adj]\NP))/NP))':
+      return '(S\NP)\(((S\NP)/(S[adj]\NP))/NP)'
+   elif a == '((((S\NP)\(S\NP))\((S\NP)\(S\NP)))\(((S\NP)\(S\NP))\((S\NP)\(S\NP))))':
+      return '(((S\NP)\(S\NP))\((S\NP)\(S\NP)))\(((S\NP)\(S\NP))\((S\NP)\(S\NP)))'
+   elif a == '((S[ng]\NP)/NP)':
+      return '(S[ng]\NP)/NP'
+   elif a == '((NP\NP)/NP)':
+      return '(NP\NP)/NP'
    else:
       return a  
 
@@ -69,7 +103,7 @@ def contains(set1, tuple2):
          
    def enumeratetuple(tuple2):
       retval = []
-      d = {'NP[conj]' : ['NP\NP'], 'S[pss]\NP[conj]' : ['(S[pss]\NP)\(S[pss]\NP)'], 'S[dcl][conj]' : ['S[dcl]\S[dcl]'], '(S\NP)\(S\NP)[conj]' : ['((S\NP)\(S\NP))\((S\NP)\(S\NP))'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)'], '(S\NP)\((S\NP)/(S[adj]\NP))[conj]' : ['(((S\NP)\((S\NP)/(S[adj]\NP)))\((S\NP)\((S\NP)/(S[adj]\NP))))'], 'S[adj]\NP[conj]' : ['(S[adj]\NP)\(S[adj]\NP)'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)'], 'S[intj][conj]' : ['S[intj]\S[intj]']}
+      d = {'NP[conj]' : ['NP\NP'], 'S[pss]\NP[conj]' : ['(S[pss]\NP)\(S[pss]\NP)'], 'S[dcl][conj]' : ['S[dcl]\S[dcl]'], '(S\NP)\(S\NP)[conj]' : ['((S\NP)\(S\NP))\((S\NP)\(S\NP))'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)'], '(S\NP)\((S\NP)/(S[adj]\NP))[conj]' : ['(((S\NP)\((S\NP)/(S[adj]\NP)))\((S\NP)\((S\NP)/(S[adj]\NP))))'], 'S[adj]\NP[conj]' : ['(S[adj]\NP)\(S[adj]\NP)'], 'S[dcl]\NP[conj]' : ['(S[dcl]\NP)\(S[dcl]\NP)'], 'S[intj][conj]' : ['S[intj]\S[intj]'], 'S[ng]\NP[conj]' : ['(S[ng]\NP)\(S[ng]\NP)'], 'S[b]\NP[conj]' : ['(S[b]\NP)\(S[b]\NP)'], '(S[adj]\NP)/NP[conj]' : ['((S[adj]\NP)/NP)\((S[adj]\NP)/NP)'], 'PP[conj]' : ['PP\PP']}
 #'NP\NP' : ['NP[conj]'], 
 #'(S[pss]\NP)\(S[pss]\NP)' : ['S[pss]\NP[conj]'], 
       l=list(tuple2)
@@ -152,8 +186,8 @@ def filterbinary(path, exceptpath):
             else:
                excepts.remove(r)
             assert index == len(line)-1
-            if line[index-1] in filtered:
-               print >>sys.stderr, line[0], line[2], line[index-1]
+#            if line[index-1] in filtered:
+#               print >>sys.stderr, line[0], line[2], line[index-1]
             #assert not line[index-1] in filtered
          elif line[index] == ',':
             r = contains(excepts, (line[0], line[2], line[index-1]))
