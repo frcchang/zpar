@@ -40,11 +40,12 @@ def ToCon(tree, positive, negative):
             negatives[i*size+j]=0
 
 if __name__ == "__main__":
-   hint = "usage: parsetree2constitu.py [--i prolog/pipe] [-n random] [-p tag] file"
-   optlist, args = getopt.getopt(sys.argv[1:], "i:n:p:", ["input="])
+   hint = "usage: parsetree2constitu.py [-i prolog/pipe] [-o index/tokens] [-n random] [-p tag] file"
+   optlist, args = getopt.getopt(sys.argv[1:], "i:o:n:p:", ["input="])
    format = pipe
    negative = None
    positive = None
+   output = 'index'
    for opt, val in optlist:
       if opt == "-i":
          if val == "prolog":
@@ -55,6 +56,8 @@ if __name__ == "__main__":
             format = pipe
             token_index = 2
             pos_index = 4
+      if opt == '-o':
+         output = val
       if opt == '-n':
          if val == 'random':
             negative = val
@@ -67,9 +70,13 @@ if __name__ == "__main__":
       for y in range(tree.id-lastid-1):
          print
       lastid = tree.id
-      print ' '.join(['|'.join([token[2],token[4]]) for token in tree.tokens])
+      words = ['|'.join([token[2],token[4]]) for token in tree.tokens]
+      print ' '.join(words)
       for constituent in ToCon(tree, positive, negative):
-         print ' '.join(constituent)
+         if output == 'index':
+            print ' '.join(constituent)
+         elif output == 'tokens':
+            print constituent[2] + ': ' + ' '.join([token[2] for token in tree.tokens][int(constituent[0]):int(constituent[1])])
       print
       tree = format.LoadTree(file)
    file.close()

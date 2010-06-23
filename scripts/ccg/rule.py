@@ -77,3 +77,15 @@ if __name__ == '__main__':
          for item in s.get(key, []):
             d[key].remove(item)
       printunaryruleexpanded(d)
+   elif command == 'countbinary':
+      d = readbinaryrules(sys.argv[2])
+      total = 0
+      for key in d:
+         total += len(d[key])
+      print 'Total rules:', total
+   elif command == 'countunary':
+      d = readunaryrules(sys.argv[2])
+      total = 0
+      for key in d:
+         total += len(d[key])
+      print 'Total rules:', total
