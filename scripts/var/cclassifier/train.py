@@ -12,6 +12,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 import tools.integerization
 
 def train(data, path):
+   if os.path.exists(path):
+      print 'Model path exists, do nothing.'
+      return
    print "Loading features."
    integerizer = tools.integerization.CIntegerization()
    labels = []
@@ -26,10 +29,11 @@ def train(data, path):
    param.C=1
    #param.degree=2
    param.eps=1
+   param.probability=1
    model = svmutil.svm_train(problem, param)
    print "Saving model."
    os.mkdir(path)
-   svmutil.svm_save_model(os.path.join(path, "scr"))  
+   svmutil.svm_save_model(os.path.join(path, "scr"), model)  
    integerizer.write(os.path.join(path, "int"))
 
 if __name__ == "__main__":
