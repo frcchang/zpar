@@ -33,9 +33,9 @@ class CIntegerization(object):
       file.close()
 
    @classmethod
-   def read(path):
+   def read(cls, path):
       file = open(path)
-      self = cPickle.load(path)
+      self = cPickle.load(file)
       file.close()
       return self
 
