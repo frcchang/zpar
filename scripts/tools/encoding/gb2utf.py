@@ -34,4 +34,4 @@ if __name__ == '__main__':
       oFile.write(uLine.encode("utf8"))
       sLine = iFile.readline()
    iFile.close()
-   oFile.clos
+   oFile.close()
