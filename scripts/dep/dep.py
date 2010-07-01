@@ -2,11 +2,11 @@ import sys
 import depio
 
 class CDepNode(object):
-   __slots__ = ['token', 'pos', 'parent', 'left_children', 'right_children', 'word_index', 'label', 'extra']
+   __slots__ = ['token', 'pos', 'parent', 'left_children', 'right_children', 'size', 'word_index', 'label', 'extra']
    def __init__(self):
       self.left_children = [  ]
       self.right_children = [  ]
-   
+  
 class CDep(object):
    def __init__(self, lWords):
       nodes = [CDepNode() for word in lWords]
@@ -35,6 +35,17 @@ class CDep(object):
          #
          #
          index += 1
+      self.updateSize(self.root)
+
+   def updateSize(self, node):
+      node.size=0
+      for l_child in node.left_children:
+         self.updateSize(l_child)
+         node.size += l_child.size
+      node.size += 1
+      for r_child in node.right_children:
+         self.updateSize(r_child)
+         node.size += r_child.size
 
    def printnode(self, node):
       parent_index = -1
