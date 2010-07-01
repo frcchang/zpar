@@ -1,6 +1,7 @@
 import sys
 
 def depread(path):
+   """read dependency trees"""
    file = open(path)
    sent = []
    for line in file:
