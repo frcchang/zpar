@@ -9,7 +9,7 @@ class CDepNode(object):
    
 class CDep(object):
    def __init__(self, lWords):
-      nodes = [CDepNode() for word in words]
+      nodes = [CDepNode() for word in lWords]
       index = 0
       for word in lWords:
          node = nodes[index]
