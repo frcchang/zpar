@@ -22,6 +22,17 @@ def removeword(sent, index):
          ret.append(word)
    return ret
 
+def headdepcount(path, counts):
+   for deptree in depio.depread(input):
+      for index in range(len(deptree)):
+         headindex = int(deptree[index][2])
+         if headindex != -1:
+            dep = deptree[index][0]
+            head = deptree[headindex][0]
+            if not (head, dep) in counts:
+               counts[(head, dep)] = 0
+            counts[(head, dep)] += 1
+
 if __name__ == "__main__":
    if len(sys.argv) != 3:
       print "depop.py options input >output"
@@ -34,3 +45,8 @@ if __name__ == "__main__":
             continue
          index = random.randint(0, len(sent)-1)
          depio.depprint(removeword(sent, index))
+   if option == "headdepcount":
+      counts = {}
+      headdepcount(input, counts)
+      for head, dep in counts:
+         print head, dep, counts[(head, dep)]
