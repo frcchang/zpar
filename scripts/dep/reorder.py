@@ -1,6 +1,7 @@
 import sys
 import depio
 import dep
+import getopt
 
 def printOrderForNode(node):
    retval = []
@@ -89,8 +90,20 @@ def compare(node1, node2):
 #========================================
 
 if __name__ == '__main__':
-   for tree in depio.depread(sys.argv[1]):
+   opts, args = getopt.getopt(sys.argv[1:], "o:")
+   if len(args) < 1:
+      print 'reorder [-oi|r] input'
+      sys.exit(0)
+   sOutput = 'd'
+   for opt, val in opts:
+      if opt == '-o':
+         sOutput = val
+   for tree in depio.depread(args[0]):
       dept = dep.CDep(tree)
       reorder(dept)
-      print dept
-      #print printOrder(dept)
+      if sOutput == 'd':
+         print dept
+      elif sOutput == 'r':
+         print dept.toRaw()
+      elif sOutput == 'i':
+         print printOrder(dept)
