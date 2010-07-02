@@ -68,6 +68,18 @@ class CDep(object):
    def __str__(self):
       return self.printtree(self.root)
    
+   def printrawnode(self, node):
+      retval = []
+      for left_child in node.left_children:
+         retval.extend(self.printrawnode(left_child))
+      retval.append(node.token)
+      for right_child in node.right_children:
+         retval.extend(self.printrawnode(right_child))
+      return retval
+
+   def toRaw(self):
+      return ' '.join(self.printrawnode(self.root))
+
 if __name__ == '__main__':
    for words in depio.depread(sys.argv[1]):
       dep = CDep(words)
