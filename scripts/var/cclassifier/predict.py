@@ -7,6 +7,8 @@ import posreader
 
 import os
 
+import ctypes
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
 
@@ -28,8 +30,9 @@ def predict(data, path):
             assert label == -1
             nodes, x = svmutil.gen_svm_nodearray(feature)
             label = svm.libsvm.svm_predict(model, nodes)
-            label = svm.libsvm.svm_predict_probability(model, nodes, [])
-            print start, end, label
+            probabilities = (ctypes.c_double*2)()
+            label = svm.libsvm.svm_predict_probability(model, nodes, probabilities)
+            print start, end, probabilities[0], probabilities[1]
 
 if __name__ == "__main__":
    opts, args = getopt.getopt(sys.argv[1:], "", [])
