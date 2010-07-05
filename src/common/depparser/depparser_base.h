@@ -31,9 +31,11 @@ protected:
 
    bool m_bTrain ; // the system runs either at training mode or decoding mode
 
+   const depparser::CSuperTag *m_supertags;
+
 public:
    // constructor and destructor
-   CDepParserBase( string sFeatureDBPath , bool bTrain ) : m_bTrain(bTrain) { 
+   CDepParserBase( string sFeatureDBPath , bool bTrain ) : m_bTrain(bTrain) , m_supertags(0) { 
       // do nothing
    }
    virtual ~CDepParserBase() {
@@ -41,6 +43,13 @@ public:
    }
    CDepParserBase( CDepParserBase &depparser) { 
       THROW("CDepParser does not support copy constructor!"); 
+   }
+
+public:
+   void setSuperTags(const depparser::CSuperTag *supertags) {
+      // set sueprtags to 0 if no supertags are to be used
+      // set supertags before parsing
+      m_supertags = supertags;
    }
 
 public:

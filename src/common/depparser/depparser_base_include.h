@@ -6,3 +6,5 @@
 #include "options.h"
 
 #include "depparser_impl_inc.h"
+
+#include "supertag.h"

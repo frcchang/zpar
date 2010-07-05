@@ -22,7 +22,7 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, unsigned long nBest, const bool bScores) {
+void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, unsigned long nBest, const bool bScores, const string &sSuperPath) {
 
    cout << "Parsing started" << endl;
 
@@ -36,6 +36,14 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    assert(os.is_open());
    CTwoStringVector input_sent;
    CDependencyParse *output_sent; 
+   depparser::CSuperTag *supertags;
+   ifstream *is_supertags;
+
+   supertags = 0;
+   if (!sSuperPath.empty()) {
+      supertags = new depparser::CSuperTag();
+      is_supertags = new ifstream(sSuperPath.c_str());
+   }
 
    int nCount=0;
    bool bReadSuccessful;
@@ -55,6 +63,11 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       ++ nCount;
 
       // Find decoder output
+      if (supertags) {
+         supertags->setSentenceSize( input_sent.size() );
+         (*is_supertags) >> *supertags;
+         parser.setSuperTags(supertags);
+      }
       parser.parse( input_sent , output_sent , nBest , scores ) ;
       
       // Ouptut sent
@@ -76,6 +89,14 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       delete []scores;
    }
 
+   if (supertags) 
+      delete supertags;
+
+   if (is_supertags) {
+      is_supertags->close();
+      delete is_supertags;
+   }
+
    cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
 }
 
@@ -91,6 +112,7 @@ int main(int argc, char* argv[]) {
       CConfigurations configurations;
       configurations.defineConfiguration("n", "N", "N best list output", "1");
       configurations.defineConfiguration("s", "", "output scores to output_file.scores", "");
+      configurations.defineConfiguration("p", "path", "supertags", "");
       // check arguments
       if (options.args.size() != 4) {
          cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
@@ -105,8 +127,9 @@ int main(int argc, char* argv[]) {
          return 1;
       }
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
+      string sSuperPath = configurations.getConfiguration("p");
    
-      process(argv[1], argv[2], argv[3], nBest, bScores);
+      process(argv[1], argv[2], argv[3], nBest, bScores, sSuperPath);
       return 0;
    } catch (const string &e) {
       cerr << "Error: " << e << endl;
