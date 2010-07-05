@@ -708,6 +708,11 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    m_Agenda->nextRound();                       // as the generator item
    if (bTrain) correctState.clear();
 
+   // verifying supertags
+   if (m_supertags) {
+      ASSERT(m_supertags->getSentenceSize()==length, "Sentence size does not match supertags size");
+   }
+
 #ifdef LABELED
    unsigned long label;
 #endif
@@ -746,7 +751,11 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                }
             }
             if ( !pGenerator->stackempty() ) {
-               if ( pGenerator->size() < length-1 || pGenerator->numberoflocalheads() == 1 ) { // keep only one global root
+               if ( ( pGenerator->size() < length-1 || 
+                      pGenerator->numberoflocalheads() == 1 ) && // one root
+                    ( m_supertags == 0 ||
+                      m_supertags->getSuperTag(pGenerator->stacktop(), pGenerator->size()) ) // supertags conform to this action
+                  ) { 
 #ifdef LABELED
                   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
                      if (label != CDependencyLabel::ROOT) {
@@ -769,19 +778,21 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   m_Agenda->pushCandidate(&pCandidate) ;
                }
                else {
+                  if ( m_supertags == 0 || m_supertags->getSuperTag(pGenerator->size(), pGenerator->stacktop()) ) {
 #ifdef LABELED
-                  for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
-                     if (label != CDependencyLabel::ROOT) {
-                        pCandidate = *pGenerator ;
-                        arcleft(&pCandidate, label);
-                        m_Agenda->pushCandidate(&pCandidate);
+                     for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
+                        if (label != CDependencyLabel::ROOT) {
+                           pCandidate = *pGenerator ;
+                           arcleft(&pCandidate, label);
+                           m_Agenda->pushCandidate(&pCandidate);
+                        }
                      }
-                  }
 #else
-                  pCandidate = *pGenerator ;
-                  arcleft(&pCandidate) ;
-                  m_Agenda->pushCandidate(&pCandidate) ;
+                     pCandidate = *pGenerator ;
+                     arcleft(&pCandidate) ;
+                     m_Agenda->pushCandidate(&pCandidate) ;
 #endif
+                  }
                }
             }
          }

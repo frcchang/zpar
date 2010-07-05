@@ -9,7 +9,11 @@
 #ifndef _DEPPARSER_SUPERTAG_H
 #define _DEPPARSER_SUPERTAG_H 
 
-class CDepParserSuperTag {
+namespace TARGET_LANGUAGE {
+
+namespace depparser {
+
+class CSuperTag {
 
 protected:
    unsigned long m_tags[MAX_SENTENCE_SIZE*MAX_SENTENCE_SIZE];
@@ -22,14 +26,15 @@ public:
    void setSentenceSize(const unsigned long &size) { m_size = size; }
    const unsigned long &getSentenceSize() const { return m_size; }
 
-friend istream & operator >> (istream &is, CDepParserSuperTag &p);
-friend ostream & operator << (ostream &os, const CDepParserSuperTag &p);
+public:
+   friend std::istream & operator >> (std::istream &is, CSuperTag &p);
+   friend std::ostream & operator << (std::ostream &os, const CSuperTag &p);
 
 };
 
 //==============================================================================
 
-istream & operator >> (istream &is, CDepParserSuperTag &p) {
+inline std::istream & operator >> (std::istream &is, CSuperTag &p) {
    unsigned long index ;
    string s ; 
    getline(is, s);
@@ -47,12 +52,16 @@ istream & operator >> (istream &is, CDepParserSuperTag &p) {
    return is;
 }
 
-ostream & operator << (ostream &os, const CDepParserSuperTag &p) {
+//ostream & operator << (ostream &os, const TARGET_LANGUAGE::depparser::CSuperTag &p) {
+inline std::ostream & operator << (std::ostream &os, const CSuperTag &p) {
    for (unsigned long i=0; i<p.m_size*p.m_size; ++i) {
       os << p.m_tags[i];
    }
    os << endl;
    return os ;
 }
+
+} // namespace ddepparser
+} // namespace TARGET_LANGUAGE
 
 #endif
