@@ -723,6 +723,12 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
       
       if (bTrain) bCorrect = false ; 
 
+      // none can this find with pruning ???
+      if (m_Agenda->generatorSize() == 0) {
+         WARNING("parsing failed"); 
+         return;
+      }
+
       pGenerator = m_Agenda->generatorStart();
       // iterate generators
       for (int j=0; j<m_Agenda->generatorSize(); ++j) {
@@ -831,8 +837,6 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    TRACE("Outputing sentence");
    m_Agenda->sortGenerators();
    for (int i=0; i<nBest; ++i) {
-      retval[i].clear();
-      if (scores) scores[i] = 0; //pGenerator->score();
       pGenerator = m_Agenda->generator(i) ; 
       if (pGenerator) {
          pGenerator->GenerateTree( sentence , retval[i] ) ; 
@@ -854,6 +858,12 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest , SCORE_TYPE *scores ) {
 
    static CDependencyParse empty ;
+
+   for (int i=0; i<nBest; ++i) {
+      // clear the output sentences
+      retval[i].clear();
+      if (scores) scores[i] = 0; //pGenerator->score();
+   }
 
    work(false, sentence, retval, empty, nBest, scores ) ;
 

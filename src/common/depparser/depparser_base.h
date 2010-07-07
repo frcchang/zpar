@@ -40,6 +40,7 @@ public:
    }
    virtual ~CDepParserBase() {
       // do nothing
+      m_supertags = 0;
    }
    CDepParserBase( CDepParserBase &depparser) { 
       THROW("CDepParser does not support copy constructor!"); 
