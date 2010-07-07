@@ -45,6 +45,7 @@ inline std::istream & operator >> (std::istream &is, CSuperTag &p) {
          ++index;
          ASSERT(index <MAX_SENTENCE_SIZE*MAX_SENTENCE_SIZE,"The input supertag sequence does not match the sentence size.");
       }
+      ASSERT(index==p.m_size*p.m_size,"The input supertag sequence does not match the sentence size.");
    }
    else {
       THROW("No supertags read.");

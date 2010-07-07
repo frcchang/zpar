@@ -43,6 +43,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    if (!sSuperPath.empty()) {
       supertags = new depparser::CSuperTag();
       is_supertags = new ifstream(sSuperPath.c_str());
+      parser.setSuperTags(supertags);
    }
 
    int nCount=0;
@@ -66,9 +67,15 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       if (supertags) {
          supertags->setSentenceSize( input_sent.size() );
          (*is_supertags) >> *supertags;
+      }
+
+      parser.parse( input_sent , output_sent , nBest , scores ) ;
+
+      if (supertags && output_sent->empty()) {
+         parser.setSuperTags(0);
+         parser.parse( input_sent , output_sent , nBest , scores ) ;
          parser.setSuperTags(supertags);
       }
-      parser.parse( input_sent , output_sent , nBest , scores ) ;
       
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
@@ -89,10 +96,8 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       delete []scores;
    }
 
-   if (supertags) 
+   if (supertags) {
       delete supertags;
-
-   if (is_supertags) {
       is_supertags->close();
       delete is_supertags;
    }
@@ -129,7 +134,7 @@ int main(int argc, char* argv[]) {
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       string sSuperPath = configurations.getConfiguration("p");
    
-      process(argv[1], argv[2], argv[3], nBest, bScores, sSuperPath);
+      process(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
       return 0;
    } catch (const string &e) {
       cerr << "Error: " << e << endl;
