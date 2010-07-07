@@ -1,3 +1,4 @@
+import io
 import feature
 from libsvm import svm, svmutil
 import sys
@@ -19,15 +20,17 @@ def train(data, path):
    integerizer = tools.integerization.CIntegerization()
    labels = []
    samples = []
-   for classid, feature in extractfeat.extractFeat(data, integerizer):
-      labels.append(classid)
-      samples.append(feature)
+   for sent in io.getsent(data):
+      for index in range(len(sent)):
+         f = feature.extractFeatures(sent, index, integerizer)
+         labels.append(sent[index][2])
+         samples.append(f)
    print "Training SVM."
    problem = svm.svm_problem(labels, samples)
    param = svm.svm_parameter()
-   param.kernel_type = svm.LINEAR#
+   param.kernel_type = svm.POLY
    param.C=1
-   #param.degree=2
+   param.degree=2
    param.eps=1
    param.probability=1
    model = svmutil.svm_train(problem, param)
