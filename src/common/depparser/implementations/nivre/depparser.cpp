@@ -749,7 +749,9 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          // for the state items that still need more words
          else {  
             if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
-               if ( pGenerator->size() < length-1 || pGenerator->stackempty() ) { // keep only one global root
+               if ( ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
+                    ( m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) )
+                  {
                   //pCandidate = m_Agenda->candidateItem() ;
                   pCandidate = *pGenerator ;
                   shift(&pCandidate) ;
@@ -760,7 +762,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                if ( ( pGenerator->size() < length-1 || 
                       pGenerator->numberoflocalheads() == 1 ) && // one root
                     ( m_supertags == 0 ||
-                      m_supertags->getSuperTag(pGenerator->stacktop(), pGenerator->size()) ) // supertags conform to this action
+                      m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) // supertags conform to this action
                   ) { 
 #ifdef LABELED
                   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
@@ -784,7 +786,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   m_Agenda->pushCandidate(&pCandidate) ;
                }
                else {
-                  if ( m_supertags == 0 || m_supertags->getSuperTag(pGenerator->size(), pGenerator->stacktop()) ) {
+                  if ( m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop()) ) {
 #ifdef LABELED
                      for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
                         if (label != CDependencyLabel::ROOT) {
