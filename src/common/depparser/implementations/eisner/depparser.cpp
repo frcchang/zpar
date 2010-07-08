@@ -330,7 +330,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
                if ( span_starting_index < length + 1 - span_length ) {
 
                   // LF
-                  if ( m_supertags == 0 || m_supertags.getSuperTag(span_starting_index, span_ending_index) ) {
+                  if ( m_supertags == 0 || m_supertags->getSuperTag(span_starting_index, span_ending_index) ) {
                      total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
                      temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
                      temp_span.score() = left_span->score() + right_span->score() ; 
@@ -374,7 +374,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
                if ( span_starting_index < length + 1 - span_length ) {
 
                   // LF
-                  if ( m_supertags == 0 || m_supertags.getSuperTag(span_starting_index, span_ending_index) ) {
+                  if ( m_supertags == 0 || m_supertags->getSuperTag(span_starting_index, span_ending_index) ) {
                      total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
                      temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
                      temp_span.score() = left_span->score() + right_span->score() ; 
@@ -394,8 +394,8 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
         
                // RF
                // When adding right link to EOS, make sure on one has linked to it.
-               if ( ( span_ending_index < lengthh || !right_span->isRightLinkedTo() ) &&
-                    ( span_ending_index == lengthh || m_supertags == 0 || m_supertags.getSuperTag(span_ending_index, span_starting_index) ) 
+               if ( ( span_ending_index < length || !right_span->isRightLinkedTo() ) &&
+                    ( span_ending_index == length || m_supertags == 0 || m_supertags->getSuperTag(span_ending_index, span_starting_index) ) 
                   ) {
                   total_span = &(chart[span_starting_index][span_length][CSpan::RF]) ; 
                   temp_span.setCombinedSpan(*left_span, *right_span, CSpan::RF) ; 
