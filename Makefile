@@ -54,7 +54,7 @@ CHINESE_CONPARSER_IMPL = srnew
 ENGLISH_TAGGER_IMPL = agenda
 
 # currently support eisner, covington, nivre, combined implementations 
-ENGLISH_DEPPARSER_IMPL = noisy
+ENGLISH_DEPPARSER_IMPL = combined
 ENGLISH_DEPPARSER_LABELED = false
 ENGLISH_DEPLABELER_IMPL = naive
 # currently support sr implementations 
@@ -65,8 +65,8 @@ ENGLISH_CONPARSER_IMPL = srnew
 #
 #================================================================
 
-DEBUG = -DDEBUG -g
-#DEBUG = -DNDEBUG
+#DEBUG = -DDEBUG -g
+DEBUG = -DNDEBUG
 
 #================================================================
 #

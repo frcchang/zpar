@@ -44,7 +44,7 @@ if __name__== '__main__':
    for opt, val in opts:
       if opt == '-o':
          sOutput = val
-   for sent in depio.depread(sys.argv[1]):
+   for sent in depio.depread(args[0]):
       dept = dep.CDep(sent)
       supertags = toSuperTag(dept)
       if sOutput == 'hm':
