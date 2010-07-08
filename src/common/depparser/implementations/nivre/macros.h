@@ -4,7 +4,8 @@
 // early update? 
 #define EARLY_UPDATE 1
 
-
+// supertag
+#define SR_SUPERTAG 1
 typedef double SCORE_TYPE ;
 
 // The size of agenda

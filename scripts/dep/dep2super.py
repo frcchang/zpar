@@ -27,6 +27,10 @@ def toSuperTagForNode(node):
       word.append('0')
    else:
       word.append('1')
+   if node.parent == None:
+      word.append('1')
+   else:
+      word.append('0')
    retval.append(word)
    for right_child in node.right_children:
       retval.extend(toSuperTagForNode(right_child))
@@ -34,6 +38,9 @@ def toSuperTagForNode(node):
 
 def toSuperTag(tree):
    return toSuperTagForNode(tree.root)
+
+def encode(hl, hr, dl, dr, rt):
+   return str( (int(hl)<<0) | (int(hr)<<1) | (int(dl)<<2) | (int(dr)<<3) | (int(rt)<<4) )
 
 if __name__== '__main__':
    opts, args = getopt.getopt(sys.argv[1:], "o:")
@@ -48,11 +55,11 @@ if __name__== '__main__':
       dept = dep.CDep(sent)
       supertags = toSuperTag(dept)
       if sOutput == 'hm':
-         print ' '.join(['|'.join(word) for word in supertags])
+         print ' '.join(['|'.join([word[0], word[1], encode(word[2], word[3], word[4], word[5], word[6])]) for word in supertags])
       elif sOutput == 'h':
-         print ' '.join(['|'.join([word[0], word[1], word[2], word[3]]) for word in supertags])
+         print ' '.join(['|'.join([word[0], word[1], encode(word[2], word[3], 0, 0, 0)]) for word in supertags])
       elif sOutput == 'm':
-         print ' '.join(['|'.join([word[0], word[1], word[4], word[5]]) for word in supertags])
+         print ' '.join(['|'.join([word[0], word[1], encode(0, 0, word[4], word[5], 0)]) for word in supertags])
       elif sOutput == 'hl':
          print ' '.join(['|'.join([word[0], word[1], word[2]]) for word in supertags])
       elif sOutput == 'hr':
