@@ -23,7 +23,9 @@ def train(data, path):
    for sent in io.getsent(data):
       for index in range(len(sent)):
          f = feature.extractFeatures(sent, index, integerizer)
-         labels.append(sent[index][2])
+         x = int(sent[index][2])
+         assert x == 0 or x == 1
+         labels.append(x)
          samples.append(f)
    print "Training SVM."
    problem = svm.svm_problem(labels, samples)

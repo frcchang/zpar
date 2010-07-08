@@ -4,7 +4,6 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
-import constituentreader
 import tools.integerization
 
 def oneFeat(prefix, content, integerizer):
@@ -21,8 +20,8 @@ def extractFeatures(sent, index, integerizer):
    g_beginTag = '-BEG-'
    retval = {}
    assert index>=0 and index<len(sent)
-   token = sentence[index][0]
-   pos = sentence[index][1]
+   token = sent[index][0]
+   pos = sent[index][1]
    if index>0:
       tokenl1 = sent[index-1][0]
       posl1 = sent[index-1][1]
@@ -62,12 +61,12 @@ def extractFeatures(sent, index, integerizer):
    if index>0: addFeat(retval, oneFeat("posl2", posl2, integerizer))
    if index>2: addFeat(retval, oneFeat("wordl3", tokenl3, integerizer))
    if index>1: addFeat(retval, oneFeat("posl3", posl3, integerizer))
-   if index<len(sent): addFeat(retval, oneFeat("wordr1", tokenr1, integerizer))
+   if index+1<len(sent): addFeat(retval, oneFeat("wordr1", tokenr1, integerizer))
    addFeat(retval, oneFeat("posr1", posr1, integerizer))
-   if index+1<len(sent): addFeat(retval, oneFeat("wordr2", tokenr2, integerizer))
-   if index<len(sent): addFeat(retval, oneFeat("posr2", posr2, integerizer))
-   if index+2<len(sent): addFeat(retval, oneFeat("wordr3", tokenr3, integerizer))
-   if index+1<len(sent): addFeat(retval, oneFeat("posr3", posr3, integerizer))
+   if index+2<len(sent): addFeat(retval, oneFeat("wordr2", tokenr2, integerizer))
+   if index+1<len(sent): addFeat(retval, oneFeat("posr2", posr2, integerizer))
+   if index+3<len(sent): addFeat(retval, oneFeat("wordr3", tokenr3, integerizer))
+   if index+2<len(sent): addFeat(retval, oneFeat("posr3", posr3, integerizer))
    return retval
 
 if __name__ == "__main__":

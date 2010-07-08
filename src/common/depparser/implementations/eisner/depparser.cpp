@@ -305,6 +305,8 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
          // for each generator
          for ( span_starting_index = 0 ; span_starting_index <= length + 1 - span_length ; ++ span_starting_index ) {
 
+            int span_ending_index = span_starting_index + span_length - 1;
+
             // LF + LF = LF
             left_span = &(chart[span_starting_index][left_length][CSpan::LF]) ;
             right_span = &(chart[span_starting_index+left_length-1][span_length-left_length+1][CSpan::LF]) ;
@@ -328,12 +330,14 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
                if ( span_starting_index < length + 1 - span_length ) {
 
                   // LF
-                  total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
-                  temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
-                  temp_span.score() = left_span->score() + right_span->score() ; 
-                  temp_span.score() += getCrossLinkScore(&temp_span) ;
-                  if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
-                     total_span->copy( temp_span ) ;
+                  if ( m_supertags == 0 || m_supertags.getSuperTag(span_starting_index, span_ending_index) ) {
+                     total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
+                     temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
+                     temp_span.score() = left_span->score() + right_span->score() ; 
+                     temp_span.score() += getCrossLinkScore(&temp_span) ;
+                     if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
+                        total_span->copy( temp_span ) ;
+                     }
                   }
    
                   // BF
@@ -346,7 +350,9 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
         
                // RF
                // When adding right link to EOS, make sure on one has linked to it.
-               if ( span_starting_index < length + 1 - span_length || !right_span->isRightLinkedTo() ) {
+               if ( ( span_ending_index < length || !right_span->isRightLinkedTo() ) &&
+                    ( span_ending_index == length || m_supertags == 0 || m_supertags->getSuperTag(span_ending_index, span_starting_index) )
+                  ) {
                   total_span = &(chart[span_starting_index][span_length][CSpan::RF]) ; 
                   temp_span.setCombinedSpan(*left_span, *right_span, CSpan::RF) ; 
                   temp_span.score() = left_span->score() + right_span->score() ; 
@@ -368,12 +374,14 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
                if ( span_starting_index < length + 1 - span_length ) {
 
                   // LF
-                  total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
-                  temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
-                  temp_span.score() = left_span->score() + right_span->score() ; 
-                  temp_span.score() += getCrossLinkScore(&temp_span) ;
-                  if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
-                     total_span->copy( temp_span ) ;
+                  if ( m_supertags == 0 || m_supertags.getSuperTag(span_starting_index, span_ending_index) ) {
+                     total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
+                     temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
+                     temp_span.score() = left_span->score() + right_span->score() ; 
+                     temp_span.score() += getCrossLinkScore(&temp_span) ;
+                     if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
+                        total_span->copy( temp_span ) ;
+                     }
                   }
    
                   // BF
@@ -386,7 +394,9 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
         
                // RF
                // When adding right link to EOS, make sure on one has linked to it.
-               if ( span_starting_index < length + 1 - span_length || !right_span->isRightLinkedTo() ) {
+               if ( ( span_ending_index < lengthh || !right_span->isRightLinkedTo() ) &&
+                    ( span_ending_index == lengthh || m_supertags == 0 || m_supertags.getSuperTag(span_ending_index, span_starting_index) ) 
+                  ) {
                   total_span = &(chart[span_starting_index][span_length][CSpan::RF]) ; 
                   temp_span.setCombinedSpan(*left_span, *right_span, CSpan::RF) ; 
                   temp_span.score() = left_span->score() + right_span->score() ; 
