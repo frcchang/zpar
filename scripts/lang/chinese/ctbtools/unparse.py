@@ -39,7 +39,9 @@ class CUnParse(object):
 
 if __name__ == '__main__':
    import sys
-   import config
+   import os
+   sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
+   from tools import config
    try:
       opts, args = getopt.getopt(sys.argv[1:], "nl:")
    except getopt.GetOptError: 
