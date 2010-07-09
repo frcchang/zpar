@@ -51,7 +51,7 @@ def reorderNode(node):
          left_child = node.left_children.pop(-1) # for each left
          if left_child.pos=='PU': # don't move cross PU
             bPUFound = True
-         if bPUFound == False and left_child.pos in ['P', 'NT']:
+         if bPUFound == False and left_child.pos in ['P', 'NT', 'M', 'CD', 'OD']:
             index = 0
             for index in range(len(node.right_children)):
                if compare(left_child, node.right_children[index])==1:
@@ -62,6 +62,21 @@ def reorderNode(node):
          else:
             left_children.insert(0, left_child)
       node.left_children = left_children
+   # n.
+   elif node.pos in ['NN', 'NR']:
+      left_children = []
+      while node.left_children:
+         left_child = node.left_children.pop(-1) # for each left
+         if left_child.pos == 'DEC' or (left_child.pos == 'DEG' and reorderDEG(left_child)):
+            node.right_children.insert(0, left_child)
+         else:
+            left_children.insert(0, left_child)
+      node.left_children = left_children
+   # dec
+   elif node.pos == 'DEC' or node.pos == 'DEG' and reorderDEG(node) or node.pos == 'LC':
+      while node.left_children:
+         left_child = node.left_children.pop(0)
+         node.right_children.insert(0, left_child)
 
 def reorder(tree):
    reorderNode(tree.root)
@@ -86,6 +101,13 @@ def compare(node1, node2):
       return retval
    retval = sizeCompare(node1, node2)
    return retval
+
+def reorderDEG(node):
+   assert node.pos == 'DEG'
+   for left_child in node.left_children:
+      if left_child.pos == 'JJ':
+         return False
+   return True
 
 #========================================
 
