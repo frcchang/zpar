@@ -750,7 +750,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          else {  
             if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
                if ( ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
-                    ( m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) )
+                    ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) )
                   {
                   //pCandidate = m_Agenda->candidateItem() ;
                   pCandidate = *pGenerator ;

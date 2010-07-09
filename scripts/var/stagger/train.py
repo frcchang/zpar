@@ -22,17 +22,20 @@ def train(data, path):
    samples = []
    for sent in io.getsent(data):
       for index in range(len(sent)):
-         f = feature.extractFeatures(sent, index, integerizer)
+#         f = feature.extractFeatures(sent, index, integerizer)
+         f = feature.extractFeatures(sent, index, None)
          x = int(sent[index][2])
+         print x, f
          assert x == 0 or x == 1
          labels.append(x)
          samples.append(f)
+   return
    print "Training SVM."
    problem = svm.svm_problem(labels, samples)
    param = svm.svm_parameter()
-   param.kernel_type = svm.POLY
+   param.kernel_type = svm.LINEAR#
    param.C=1
-   param.degree=2
+   #param.degree=2
    param.eps=1
    param.probability=1
    model = svmutil.svm_train(problem, param)
