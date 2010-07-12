@@ -43,7 +43,7 @@ CHINESE_TAGGER_IMPL = segmented
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = combined
+CHINESE_DEPPARSER_IMPL = eisner
 CHINESE_DEPPARSER_LABELED = false
 CHINESE_DEPLABELER_IMPL = naive
 
@@ -54,7 +54,7 @@ CHINESE_CONPARSER_IMPL = srnew
 ENGLISH_TAGGER_IMPL = agenda
 
 # currently support eisner, covington, nivre, combined implementations 
-ENGLISH_DEPPARSER_IMPL = combined
+ENGLISH_DEPPARSER_IMPL = eisner
 ENGLISH_DEPPARSER_LABELED = false
 ENGLISH_DEPLABELER_IMPL = naive
 # currently support sr implementations 
@@ -65,8 +65,8 @@ ENGLISH_CONPARSER_IMPL = srnew
 #
 #================================================================
 
-#DEBUG = -DDEBUG -g
-DEBUG = -DNDEBUG
+DEBUG = -DDEBUG -g
+#DEBUG = -DNDEBUG
 
 #================================================================
 #

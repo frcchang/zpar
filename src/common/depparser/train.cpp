@@ -23,7 +23,7 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const string &sSuperPath) {
 
    cout << "Training iteration is started..." << endl ; cout.flush();
 
@@ -34,17 +34,39 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile) {
 
    CDependencyParse ref_sent; 
 
+   depparser::CSuperTag *supertags;
+   ifstream *is_supertags;
+
+   supertags = 0;
+   if (!sSuperPath.empty()) {
+      supertags = new depparser::CSuperTag();
+      is_supertags = new ifstream(sSuperPath.c_str());
+      parser.setSuperTags(supertags);
+   }
+
    int nCount=0;
    
    is >> ref_sent;
    while( ! ref_sent.empty() ) {
       TRACE("Sentence " << nCount);
       ++ nCount ; 
+
+      if (supertags) {
+         supertags->setSentenceSize( ref_sent.size() );
+         (*is_supertags) >> *supertags;
+      }
+
       parser.train( ref_sent, nCount );
       is >> ref_sent;
    }
 
    parser.finishtraining();
+
+   if (supertags) {
+      delete supertags;
+      is_supertags->close();
+      delete is_supertags;
+   }
 
    cout << "Done. " << endl;
 
@@ -60,10 +82,13 @@ int main(int argc, char* argv[]) {
 
    try {
       COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("p", "path", "supertags", "");
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
          return 1;
       } 
+      configurations.loadConfigurations(options.opts);
    
       int training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
@@ -71,10 +96,12 @@ int main(int argc, char* argv[]) {
          return 1;
       }
    
+      string sSuperPath = configurations.getConfiguration("p");
+
       cout << "Training started" << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
-         auto_train(argv[1], argv[2]);
+         auto_train(argv[1], argv[2], sSuperPath);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    
       return 0;

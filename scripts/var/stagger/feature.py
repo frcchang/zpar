@@ -59,14 +59,14 @@ def extractFeatures(sent, index, integerizer):
    addFeat(retval, oneFeat("posl1", posl1, integerizer))
    if index>1: addFeat(retval, oneFeat("wordl2", tokenl2, integerizer))
    if index>0: addFeat(retval, oneFeat("posl2", posl2, integerizer))
-   if index>2: addFeat(retval, oneFeat("wordl3", tokenl3, integerizer))
-   if index>1: addFeat(retval, oneFeat("posl3", posl3, integerizer))
+#   if index>2: addFeat(retval, oneFeat("wordl3", tokenl3, integerizer))
+#   if index>1: addFeat(retval, oneFeat("posl3", posl3, integerizer))
    if index+1<len(sent): addFeat(retval, oneFeat("wordr1", tokenr1, integerizer))
    addFeat(retval, oneFeat("posr1", posr1, integerizer))
    if index+2<len(sent): addFeat(retval, oneFeat("wordr2", tokenr2, integerizer))
    if index+1<len(sent): addFeat(retval, oneFeat("posr2", posr2, integerizer))
-   if index+3<len(sent): addFeat(retval, oneFeat("wordr3", tokenr3, integerizer))
-   if index+2<len(sent): addFeat(retval, oneFeat("posr3", posr3, integerizer))
+#   if index+3<len(sent): addFeat(retval, oneFeat("wordr3", tokenr3, integerizer))
+#   if index+2<len(sent): addFeat(retval, oneFeat("posr3", posr3, integerizer))
    return retval
 
 if __name__ == "__main__":
