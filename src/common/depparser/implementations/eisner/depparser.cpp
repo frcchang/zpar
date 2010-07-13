@@ -280,14 +280,22 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 
    // initialise binary
    // note that because of the special EOS token, span_start reaches length-1
-   for ( span_starting_index = 0; span_starting_index < length; span_starting_index++ ) {
+   for ( span_starting_index = 0; span_starting_index < length; ++span_starting_index ) {
       total_span = &(chart[span_starting_index][2][CSpan::LF]) ;
-      total_span->setBinarySpan(span_starting_index, CSpan::LF);
-      total_span->score() = getCrossLinkScore(total_span);
+      if ( span_starting_index+1 == length || m_supertags == 0 || m_supertags->getSuperTag(span_starting_index, span_starting_index+1) ) {
+         total_span->setBinarySpan(span_starting_index, CSpan::LF);
+         total_span->score() = getCrossLinkScore(total_span);
+      }
+      else
+         total_span->clear();
 
       total_span = &(chart[span_starting_index][2][CSpan::RF]) ;    
-      total_span->setBinarySpan(span_starting_index, CSpan::RF);
-      total_span->score() = getCrossLinkScore(total_span);
+      if ( span_starting_index+1 == length || m_supertags == 0 || m_supertags->getSuperTag(span_starting_index+1, span_starting_index) ) {
+         total_span->setBinarySpan(span_starting_index, CSpan::RF);
+         total_span->score() = getCrossLinkScore(total_span);
+      }
+      else
+         total_span->clear();
 
       total_span = &(chart[span_starting_index][2][CSpan::BF]) ;
       total_span->setBinarySpan(span_starting_index, CSpan::BF);
@@ -327,7 +335,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
             if ( left_span->isActive() && right_span->isActive() && left_span->isMinimal() ) {
 
                // for a span that does not include the end of the sentence
-               if ( span_starting_index < length + 1 - span_length ) {
+               if ( span_ending_index < length ) {
 
                   // LF
                   if ( m_supertags == 0 || m_supertags->getSuperTag(span_starting_index, span_ending_index) ) {
@@ -339,13 +347,13 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
                         total_span->copy( temp_span ) ;
                      }
                   }
+               }
    
-                  // BF
-                  total_span = &(chart[span_starting_index][span_length][CSpan::BF]) ; 
-                  if ( !total_span->isActive() || left_span->score() + right_span->score() > total_span->score() ) {
-                     total_span->setCombinedSpan(*left_span, *right_span, CSpan::BF) ; 
-                     total_span->score() = left_span->score() + right_span->score() ;
-                  }
+               // BF
+               total_span = &(chart[span_starting_index][span_length][CSpan::BF]) ; 
+               if ( !total_span->isActive() || left_span->score() + right_span->score() > total_span->score() ) {
+                  total_span->setCombinedSpan(*left_span, *right_span, CSpan::BF) ; 
+                  total_span->score() = left_span->score() + right_span->score() ;
                }
         
                // RF
@@ -371,7 +379,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
             if ( left_span->isActive() && right_span->isActive() && left_span->isMinimal() ) {
 
                // for a span that does not include the end of the sentence
-               if ( span_starting_index < length + 1 - span_length ) {
+               if ( span_ending_index < length ) {
 
                   // LF
                   if ( m_supertags == 0 || m_supertags->getSuperTag(span_starting_index, span_ending_index) ) {
