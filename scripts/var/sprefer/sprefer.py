@@ -1,7 +1,7 @@
 import fileinput
 import linecache
 
-cutoff = 0.9 
+cutoff = 0.000001 
 
 def findindex(path):
    h = {}
@@ -51,7 +51,6 @@ def sprefer(data, pref):
          line = findline(pref, dindex[j]+3) # dep probs
          assert line != []
          for i in range(len(sent)): # for head
-            print len(line), hindex[i]
             pro.append(line[hindex[i]]) # find head probability
             if maxpro == None or pro[-1] >maxpro:
                maxpro = pro[-1]

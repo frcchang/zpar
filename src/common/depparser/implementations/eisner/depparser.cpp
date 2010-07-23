@@ -222,8 +222,9 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
  *---------------------------------------------------------------*/
 
 void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *depparser, CDependencyParse &retval) {
-   assert ( span.getLeftBoundary() == 0 && span.getRightBoundary() == sentence.size() ) ;
    retval.clear() ; 
+   if (!span.isActive()) return;
+   assert ( span.getLeftBoundary() == 0 && span.getRightBoundary() == sentence.size() ) ;
    bool bFoundHead = false;
    for ( int i=0; i<sentence.size(); ++i ) {
       int head = span.getLink(i); 

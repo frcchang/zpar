@@ -38,12 +38,12 @@ SEGMENTOR_IMPL = agendaplus
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = segmented
+CHINESE_TAGGER_IMPL = agendachart
 
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = eisner
+CHINESE_DEPPARSER_IMPL = combined
 CHINESE_DEPPARSER_LABELED = false
 CHINESE_DEPLABELER_IMPL = naive
 
@@ -65,8 +65,8 @@ ENGLISH_CONPARSER_IMPL = srnew
 #
 #================================================================
 
-DEBUG = -DDEBUG -g
-#DEBUG = -DNDEBUG
+#DEBUG = -DDEBUG -g
+DEBUG = -DNDEBUG
 
 #================================================================
 #
