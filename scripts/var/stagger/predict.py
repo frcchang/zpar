@@ -13,6 +13,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
 import tools.integerization
 
+cutoff = 0.99
+
 def predict(data, path):
    if not os.path.exists(path):
       print 'Model path does not exist, do nothing.'
@@ -29,7 +31,7 @@ def predict(data, path):
          probabilities = (ctypes.c_double*2)()
          label = svm.libsvm.svm_predict_probability(model, nodes, probabilities)
          x = 1
-         if probabilities[0] > 0.9:
+         if probabilities[0] > cutoff:
             x = 0
          labels.append(str(x))
       print ' '.join(labels)
