@@ -50,6 +50,7 @@ private:
    bool m_bScoreModified;
    int m_nScoreIndex;
    conparser::CRule m_rule;
+   conparser::CContext m_Context;
 
 public:
    // constructor and destructor

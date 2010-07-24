@@ -35,7 +35,7 @@ public:
       actions.clear();
 
       static CAction action;
-      const unsigned &stack_size = item.stack.size();
+      const unsigned stack_size = item.stacksize();
       const unsigned &length = item.sent->size();
 
       // finish parsing
@@ -47,9 +47,7 @@ public:
       if ( item.current_word < length ) { 
          // do not shift for head right tmp item
 #ifndef NO_TEMP_CONSTITUENT
-         if (stack_size>0 && 
-             item.nodes[item.stack.back()].temp &&
-             item.nodes[item.stack.back()].head_left()==false) {
+         if (stack_size>0 && item.node.temp && item.node.head_left()==false) {
          }
          else {
 #endif // NO_TEMP_CONSTITUENT
@@ -63,9 +61,9 @@ public:
          getBinaryRules(item, actions);
       }
       // reduce unary
-      if ( stack_size && item.unary_reduce<UNARY_MOVES 
+      if ( stack_size && item.unaryreduces()<UNARY_MOVES 
 #ifndef NO_TEMP_CONSTITUENT
-           && !item.nodes[item.stack.back()].temp 
+           && !item.node.temp
 #endif
       ) {
          getUnaryRules(item, actions);
@@ -91,9 +89,10 @@ protected:
    }
    void getBinaryRules(const CStateItem &item, vector<CAction> &actions) {
       static CAction action;
-      const unsigned &stack_size = item.stack.size();
-      const CStateNode &right = item.nodes[item.stack.back()];
-      const CStateNode  &left = item.nodes[item.stack[stack_size-2]];
+      const unsigned stack_size = item.stacksize();
+      ASSERT(stack_size>0, "Binary reduce required for stack containing one node");
+      const CStateNode &right = item.node;
+      const CStateNode  &left = item.stackPtr->node;
       // specified rules
       if (m_mapBinaryRules) {
          static CTuple2<CConstituent, CConstituent> tuple2;
@@ -106,7 +105,7 @@ protected:
 #ifdef NO_TEMP_CONSTITUENT
       const bool temporary = false;
 #else
-      const bool prev_temp = stack_size>2 ? item.nodes[item.stack[stack_size-3]].temp:false;
+      const bool prev_temp = stack_size>2 ? item.stackPtr->stackPtr->node.temp:false;
 #endif
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {
@@ -136,7 +135,7 @@ protected:
    }
 
    void getUnaryRules(const CStateItem &item, vector<CAction> &actions) {
-      const CStateNode &child = item.nodes[item.stack.back()];
+      const CStateNode &child = item.node;
       // input rule list
       if (m_mapUnaryRules) {
          const vector<CAction> &result = m_mapUnaryRules->find(child.constituent, vector<CAction>());
@@ -149,7 +148,7 @@ protected:
       }
       // the normal rules
       static CAction action;
-      const unsigned &stack_size = item.stack.size();
+      const unsigned stack_size = item.stacksize();
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent){
          if (constituent != child.constituent.code()) { 
             action.encodeReduce(constituent, true, false, false);

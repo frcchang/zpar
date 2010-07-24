@@ -89,6 +89,9 @@ protected:
    unsigned long action;
 
 public:
+   void clear() { action=0; }
+
+public:
    inline bool isShift() const { return type()==CActionType::SHIFT; }
 //   inline bool isReduce() const { return isReduceUnary() || isReduceBinary(); }
    inline bool isReduceRoot() const { return type()==CActionType::POP_ROOT; }

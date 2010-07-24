@@ -26,10 +26,10 @@ const CTag g_noneTag(CTag::NONE);
 
 class CContext {
 public:
-   int s0, s1, s2, s3;
+   const CStateNode *s0, *s1, *s2, *s3;
+   const CStateNode *s0l, *s0r, *s0u, *s0h;
+   const CStateNode *s1l, *s1r, *s1u, *s1h;
    int n0, n1, n2, n3;
-   int s0l, s0r, s0u, s0h;
-   int s1l, s1r, s1u, s1h;
    int s0ld, s0rd;
    int s1ld, s1rd;
 
@@ -68,10 +68,10 @@ public:
    CCFGSet s0ts1tbt;
 
    // sub nodes unbinarized for the binarized 
-   vector<unsigned long> s0_unbinarized;
-   vector<unsigned long> s1_unbinarized;
-   vector<CConstituent> s0_unbinarized_cs;
-   vector<CConstituent> s1_unbinarized_cs;
+//   vector<unsigned long> s0_unbinarized;
+//   vector<unsigned long> s1_unbinarized;
+//   vector<CConstituent> s0_unbinarized_cs;
+//   vector<CConstituent> s1_unbinarized_cs;
    // the head child
    CConstituent s0hc, s1hc;
    // the constituent, its head child, and the left/right two ones
@@ -79,10 +79,10 @@ public:
    CCFGSet s0cs0hcs0r2c, s0cs0hcs0l2c, s1cs1hcs1r2c;
    // unpacked left/right nodes for those having >=2
    CCFGSet s0r6c, s0l6c, s1r6c;
-   int s0h_unbinarized; // the head node among all unexpanded nodes from s0
-   int s1h_unbinarized; // the head node among all unexpanded nodes from s1
-   int s0h_unbinarized_index;
-   int s1h_unbinarized_index;
+//   int s0h_unbinarized; // the head node among all unexpanded nodes from s0
+//   int s1h_unbinarized; // the head node among all unexpanded nodes from s1
+//   int s0h_unbinarized_index;
+//   int s1h_unbinarized_index;
 
    unsigned long open_bracket_match_type;
 #ifdef _CHINESE_CFG_H
@@ -101,144 +101,142 @@ public:
    bool n0norv;
 
    unsigned long s0s1_dist, s0cs1_dist, s0s1c_dist, s0cs1c_dist;
-protected:
-   // protected because they're transient
-   const CStateNode *s0node, *s1node, *s2node, *s3node;
+
 //public:
 //   CContext() {}
 //   ~CContext() {}
 public:
-   unsigned long unbinarize(const vector<CStateNode> &nodes, const unsigned long &curr, vector<unsigned long> &rval) {
-      unsigned long head;
-      head = curr;
-      if (nodes[curr].temp) {
-         assert(nodes[curr].is_constituent()&&!nodes[curr].single_child());
-         if (nodes[curr].head_left()) {
-            head = unbinarize(nodes, nodes[curr].left_child, rval);
-            assert(!nodes[nodes[curr].right_child].temp);
-            rval.push_back(nodes[curr].right_child);
-         }
-         else {
-            rval.push_back(nodes[curr].left_child);
-            assert(!nodes[nodes[curr].left_child].temp);
-            head = unbinarize(nodes, nodes[curr].right_child, rval);
-         }
-      }
-      else {
-         rval.push_back(curr);
-      }
-      return head;
-   }
-   void countleftdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
-      if (!nodes[i].is_constituent()) {
-         last = -1;
-         count = 0;
-      }
-      else {
-         if (nodes[i].single_child()) {
-            countleftdependents(nodes, nodes[i].left_child, last, count);
-         }
-         else {
-            if (nodes[i].head_left()) {
-               countleftdependents(nodes, nodes[i].left_child, last, count);
-            }
-            else {
-               countleftdependents(nodes, nodes[i].right_child, last, count) ;
-               count ++;
-               last = nodes[i].left_child;
-            }
-         }
-      }
-   }
-   void countrightdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
-      if (!nodes[i].is_constituent()) {
-         last = -1;
-         count = 0;
-      }
-      else {
-         if (nodes[i].single_child()) {
-            countrightdependents(nodes, nodes[i].left_child, last, count);
-         }
-         else {
-            if (nodes[i].head_left()) {
-               countrightdependents(nodes, nodes[i].left_child, last, count);
-               count ++;
-               last = nodes[i].right_child;
-            }
-            else {
-               countrightdependents(nodes, nodes[i].right_child, last, count) ;
-            }
-         }
-      }
-   }
+//   unsigned long unbinarize(const vector<CStateNode> &nodes, const unsigned long &curr, vector<unsigned long> &rval) {
+//      unsigned long head;
+//      head = curr;
+//      if (nodes[curr].temp) {
+//         assert(nodes[curr].is_constituent()&&!nodes[curr].single_child());
+//         if (nodes[curr].head_left()) {
+//            head = unbinarize(nodes, nodes[curr].left_child, rval);
+//            assert(!nodes[nodes[curr].right_child].temp);
+//            rval.push_back(nodes[curr].right_child);
+//         }
+//         else {
+//            rval.push_back(nodes[curr].left_child);
+//            assert(!nodes[nodes[curr].left_child].temp);
+//            head = unbinarize(nodes, nodes[curr].right_child, rval);
+//         }
+//      }
+//      else {
+//         rval.push_back(curr);
+//      }
+//      return head;
+//   }
+//   void countleftdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
+//      if (!nodes[i].is_constituent()) {
+//         last = -1;
+//         count = 0;
+//      }
+//      else {
+//         if (nodes[i].single_child()) {
+//            countleftdependents(nodes, nodes[i].left_child, last, count);
+//         }
+//         else {
+//            if (nodes[i].head_left()) {
+//               countleftdependents(nodes, nodes[i].left_child, last, count);
+//            }
+//            else {
+//               countleftdependents(nodes, nodes[i].right_child, last, count) ;
+//               count ++;
+//               last = nodes[i].left_child;
+//            }
+//         }
+//      }
+//   }
+//   void countrightdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
+//      if (!nodes[i].is_constituent()) {
+//         last = -1;
+//         count = 0;
+//      }
+//      else {
+//         if (nodes[i].single_child()) {
+//            countrightdependents(nodes, nodes[i].left_child, last, count);
+//         }
+//         else {
+//            if (nodes[i].head_left()) {
+//               countrightdependents(nodes, nodes[i].left_child, last, count);
+//               count ++;
+//               last = nodes[i].right_child;
+//            }
+//            else {
+//               countrightdependents(nodes, nodes[i].right_child, last, count) ;
+//            }
+//         }
+//      }
+//   }
    void load(const CStateItem *item, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &wrds, const vector<unsigned long> &wordlen, const bool &modify) {
-      stacksize = item->stack.size();
+      stacksize = item->stacksize();
       if (stacksize==0) return; // must shift; no feature updates, no comparisons for different actions
+      assert(!item->IsTerminated());
       static unsigned long tmp;
       static int tmp_i;
       static int i, j;
-      s0 = item->stack.back();
-      s1 = stacksize<2 ? -1 : item->stack[stacksize-2];
-      s2 = stacksize<3 ? -1 : item->stack[stacksize-3];
-      s3 = stacksize<4 ? -1 : item->stack[stacksize-4];
       n0 = item->current_word >= wrds.size() ? -1 : item->current_word;
       n1 = item->current_word+1 >= wrds.size() ? -1 : item->current_word+1;
       n2 = item->current_word+2 >= wrds.size() ? -1 : item->current_word+2;
       n3 = item->current_word+3 >= wrds.size() ? -1 : item->current_word+3;
    
-      s0node = &(item->nodes[s0]);
-      s1node = s1==-1 ? 0 : &(item->nodes[s1]);
-      s2node = s2==-1 ? 0 : &(item->nodes[s2]);
-      s3node = s3==-1 ? 0 : &(item->nodes[s3]);
+      s0 = &(item->node);
+      s1 = stacksize<2 ? 0 : &(item->statePtr->node);
+      s2 = stacksize<3 ? 0 : &(item->statePtr->statePtr->node);
+      s3 = stacksize<4 ? 0 : &(item->statePtr->statePtr->statePtr->node);
   
-      s0l = s0node->is_constituent() ? (s0node->single_child()||s0node->head_left() ? -1 : s0node->left_child) : -1;
-      s0r = s0node->is_constituent() ? (s0node->single_child()||!s0node->head_left() ? -1 : s0node->right_child) : -1;
-      s0u = s0node->is_constituent() ? (s0node->single_child() ? s0node->left_child : -1) : -1;
-      s0h = s0node->is_constituent() ? (s0node->single_child()||s0node->head_left() ? s0node->left_child : s0node->right_child) : -1;
+      s0l = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? 0 : s0->left_child) : 0;
+      s0r = s0->is_constituent() ? (s0->single_child()||!s0->head_left() ? 0 : s0->right_child) : 0;
+      s0u = s0->is_constituent() ? (s0->single_child() ? s0->left_child : 0) : 0;
+      s0h = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? s0->left_child : s0->right_child) : 0;
 
-      s1l = s1==-1 ? -1 : ( s1node->is_constituent() ?  (s1node->single_child()||s1node->head_left() ? -1 : s1node->left_child) : -1 );
-      s1r = s1==-1 ? -1 : ( s1node->is_constituent() ? (s1node->single_child()||!s1node->head_left() ? -1 : s1node->right_child) : -1 );
-      s1u = s1==-1 ? -1 : ( s1node->is_constituent() ? (s1node->single_child() ? s1node->left_child : -1) : -1 );
-      s1l = s1==-1 ? -1 : ( s1node->is_constituent() ?  (s1node->single_child()||s1node->head_left() ? s1node->left_child : s1node->right_child) : -1 );
+      s1l = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? 0 : s1->left_child) : 0 );
+      s1r = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||!s1->head_left() ? 0 : s1->right_child) : 0 );
+      s1u = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child() ? s1->left_child : 0) : 0 );
+      s1l = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? s1->left_child : s1->right_child) : 0 );
    
-      s0c.load(constituent_or_none(*s0node));
-      s0wt = &(wrds[s0node->lexical_head]);
+      s0c.load( constituent_or_none(*s0) );
+      s0wt = &( wrds[s0->lexical_head] );
       s0w = s0wt;
       s0t = s0wt->tag;
    
-      s1c.load(s1==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1node));
-      s1wt = s1 == -1 ? 0 : &(wrds[s1node->lexical_head]);
+      s1c.load( s1==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1) );
+      s1wt = s1 == 0 ? 0 : &( wrds[s1->lexical_head] );
       s1w = s1wt;
-      s1t = s1 == -1 ? g_noneTag : s1wt->tag;
+      s1t = s1 == 0 ? g_noneTag : s1wt->tag;
    
-      s2c.load(s2==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2node));
-      s2w = s2 == -1 ? 0 : &(wrds[s2node->lexical_head]);
-      s2t = s2 == -1 ? 0 : wrds[s2node->lexical_head].tag;
+      s2c.load( s2==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2) );
+      s2w = s2 == 0 ? 0 : &(wrds[s2->lexical_head]);
+      s2t = s2 == 0 ? 0 : wrds[s2->lexical_head].tag;
    
-      s3c.load(s3==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s3node));
-      s3w = s3 == -1 ? 0 : &(wrds[s3node->lexical_head]);
-      s3t = s3 == -1 ? 0 : wrds[s3node->lexical_head].tag;
+      s3c.load( s3==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s3) );
+      s3w = s3 == 0 ? 0 : &(wrds[s3->lexical_head]);
+      s3t = s3 == 0 ? 0 : wrds[s3->lexical_head].tag;
    
-      s0lc.load(s0l==-1 ? CConstituent::SENTENCE_BEGIN  
-                        : constituent_or_none(item->nodes[s0l]));
-      s0lw = s0l==-1 ? 0 : &(wrds[item->nodes[s0l].lexical_head]);
-      s0lt = s0l==-1 ? g_noneTag : wrds[item->nodes[s0l].lexical_head].tag;
-      s0rc.load(s0r==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(item->nodes[s0r]));
-      s0rw = s0r==-1 ? 0 : &(wrds[item->nodes[s0r].lexical_head]);
-      s0rt = s0r==-1 ? 0 : wrds[item->nodes[s0r].lexical_head].tag;
-      s0uc.load(s0u==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(item->nodes[s0u]));
-      s0uw = s0u==-1 ? 0 : &(wrds[item->nodes[s0u].lexical_head]);
-      s0ut = s0u==-1 ? 0 : wrds[item->nodes[s0u].lexical_head].tag;
+      s0lc.load( s0l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0l) );
+      s0lw = s0l==0 ? 0 : &(wrds[s0l->lexical_head]);
+      s0lt = s0l==0 ? g_noneTag : wrds[s0l->lexical_head].tag;
+
+      s0rc.load(s0r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0r));
+      s0rw = s0r==0 ? 0 : &(wrds[s0r->lexical_head]);
+      s0rt = s0r==0 ? 0 : wrds[s0r->lexical_head].tag;
+
+      s0uc.load(s0u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0u));
+      s0uw = s0u==0 ? 0 : &(wrds[s0u->lexical_head]);
+      s0ut = s0u==0 ? 0 : wrds[s0u->lexical_head].tag;
    
-      s1lc.load(s1l==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(item->nodes[s1l]));
-      s1lw = s1l==-1 ? 0 : &(wrds[item->nodes[s1l].lexical_head]);
-      s1lt = s1l==-1 ? 0 : wrds[item->nodes[s1l].lexical_head].tag;
-      s1rc.load(s1r==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(item->nodes[s1r]));
-      s1rw = s1r==-1 ? 0 : &(wrds[item->nodes[s1r].lexical_head]);
-      s1rt = s1r==-1 ? 0 : wrds[item->nodes[s1r].lexical_head].tag;
-      s1uc.load(s1u==-1 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(item->nodes[s1u]));
-      s1uw = s1u==-1 ? 0 : &(wrds[item->nodes[s1u].lexical_head]);
-      s1ut = s1u==-1 ? 0 : wrds[item->nodes[s1u].lexical_head].tag;
+      s1lc.load(s1l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1l));
+      s1lw = s1l==0 ? 0 : &(wrds[s1l->lexical_head]);
+      s1lt = s1l==0 ? 0 : wrds[s1l->lexical_head].tag;
+
+      s1rc.load(s1r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1r));
+      s1rw = s1r==0 ? 0 : &(wrds[s1r->lexical_head]);
+      s1rt = s1r==0 ? 0 : wrds[s1r->lexical_head].tag;
+
+      s1uc.load(s1u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1u));
+      s1uw = s1u==0 ? 0 : &(wrds[s1u->lexical_head]);
+      s1ut = s1u==0 ? 0 : wrds[s1u->lexical_head].tag;
 
       n0t = n0==-1 ? g_noneTag : wrds[n0].tag;
       n0w = n0 == -1 ? 0 : &(wrds[n0]);
@@ -257,18 +255,18 @@ public:
       n3wt = n3 == -1 ? 0 : &(wrds[n3]);
 
       if (modify==false) {
-         if (s1!=-1) s0ws1w.refer(s0w, s1w); 
-         if (n0!=-1) s0wn0w.refer(s0w, n0w); 
-         if (n1!=-1) n0wn1w.refer(n0w, n1w);
-         if (s1!=-1&&n0!=-1) s1wn0w.refer(s1w, n0w);
-         if (s1!=-1) s0wts1wt.refer(s0wt, s1wt); 
+         if (s1!=0) s0ws1w.refer(s0w, s1w); 
+         if (n0!=0) s0wn0w.refer(s0w, n0w); 
+         if (n1!=0) n0wn1w.refer(n0w, n1w);
+         if (s1!=0&&n0!=0) s1wn0w.refer(s1w, n0w);
+         if (s1!=0) s0wts1wt.refer(s0wt, s1wt); 
       }
       else {
-         if (s1!=-1) s0ws1w.allocate(*s0w, *s1w);
-         if (n0!=-1) s0wn0w.allocate(*s0w, *n0w);
-         if (n1!=-1) n0wn1w.allocate(*n0w, *n1w);
-         if (s1!=-1&&n0!=-1) s1wn0w.allocate(*s1w, *n0w);
-         if (s1!=-1) s0wts1wt.allocate(*s0wt, *s1wt);
+         if (s1!=0) s0ws1w.allocate(*s0w, *s1w);
+         if (n0!=0) s0wn0w.allocate(*s0w, *n0w);
+         if (n1!=0) n0wn1w.allocate(*n0w, *n1w);
+         if (s1!=0&&n0!=0) s1wn0w.allocate(*s1w, *n0w);
+         if (s1!=0) s0wts1wt.allocate(*s0wt, *s1wt);
       }
       s0cs1c.load(s0c, s1c);
       s0ts1t.load(s0t, s1t);
@@ -328,64 +326,64 @@ public:
       // a tag between s0 and s1
       s0ts1tbt = s0ts1t; s0ts1tbt.add(g_noneTag);
       between_tag.clear();
-      if (s1!=-1)
-      for (i=s1node->lexical_head+1; i<s0node->lexical_head; ++i) {
+      if (s1!=0)
+      for (i=s1->lexical_head+1; i<s0->lexical_head; ++i) {
          between_tag.push_back(wrds[i].tag);
       }
 
       // unexpand s0 sub
-      s0_unbinarized.clear();
-      s0_unbinarized_cs.clear();
-      s0h_unbinarized = -1;
-      if (s0l!=-1) s0_unbinarized.push_back(s0l); // leftmost sub
-      if (s0h!=-1) { // head sub
-         s0h_unbinarized = unbinarize(item->nodes, s0h, s0_unbinarized);
-      }
-      if (s0r!=-1) s0_unbinarized.push_back(s0r); // rightmost sub
-      // collect tag
-      s0h_unbinarized_index = -1;
-      for (tmp=0; tmp<s0_unbinarized.size(); tmp++) {
-         s0_unbinarized_cs.push_back(constituent_or_none(item->nodes[s0_unbinarized[tmp]]));
-         if (s0_unbinarized[tmp]==s0h_unbinarized) s0h_unbinarized_index=tmp;
-      }
-      assert(s0_unbinarized.size()==0 || s0h_unbinarized_index!=-1);
-      // unexpand s1 sub
-      s1_unbinarized.clear();
-      s1_unbinarized_cs.clear();
-      s1h_unbinarized = -1;
-      if (s1!=-1) {
-         if (s1l!=-1) s1_unbinarized.push_back(s1l);
-         if (s1h!=-1) {
-            s1h_unbinarized = unbinarize(item->nodes, s1h, s1_unbinarized);
-         }
-         if (s1r!=-1) s1_unbinarized.push_back(s1r);
-      }
-      // collect tag for the unexpanded sub node constituent
-      s1h_unbinarized_index=-1;
-      if (s1!=-1)  {
-         for(tmp=0; tmp<s1_unbinarized.size(); tmp++) {
-            s1_unbinarized_cs.push_back(constituent_or_none(item->nodes[s1_unbinarized[tmp]]));
-            if (s1_unbinarized[tmp]==s1h_unbinarized) s1h_unbinarized_index=tmp;
-         }
-      }
-      assert(s1_unbinarized.size()==0 || s1h_unbinarized_index!=-1);
+//      s0_unbinarized.clear();
+//      s0_unbinarized_cs.clear();
+//      s0h_unbinarized = -1;
+//      if (s0l!=0) s0_unbinarized.push_back(s0l); // leftmost sub
+//      if (s0h!=0) { // head sub
+//         s0h_unbinarized = unbinarize(item->nodes, s0h, s0_unbinarized);
+//      }
+//      if (s0r!=0) s0_unbinarized.push_back(s0r); // rightmost sub
+//      // collect tag
+//      s0h_unbinarized_index = -1;
+//      for (tmp=0; tmp<s0_unbinarized.size(); tmp++) {
+//         s0_unbinarized_cs.push_back(constituent_or_none(item->nodes[s0_unbinarized[tmp]]));
+//         if (s0_unbinarized[tmp]==s0h_unbinarized) s0h_unbinarized_index=tmp;
+//      }
+//      assert(s0_unbinarized.size()==0 || s0h_unbinarized_index!=-1);
+//      // unexpand s1 sub
+//      s1_unbinarized.clear();
+//      s1_unbinarized_cs.clear();
+//      s1h_unbinarized = -1;
+//      if (s1!=-1) {
+//         if (s1l!=-1) s1_unbinarized.push_back(s1l);
+//         if (s1h!=-1) {
+//            s1h_unbinarized = unbinarize(item->nodes, s1h, s1_unbinarized);
+//         }
+//         if (s1r!=-1) s1_unbinarized.push_back(s1r);
+//      }
+//      // collect tag for the unexpanded sub node constituent
+//      s1h_unbinarized_index=-1;
+//      if (s1!=-1)  {
+//         for(tmp=0; tmp<s1_unbinarized.size(); tmp++) {
+//            s1_unbinarized_cs.push_back(constituent_or_none(item->nodes[s1_unbinarized[tmp]]));
+//            if (s1_unbinarized[tmp]==s1h_unbinarized) s1h_unbinarized_index=tmp;
+//         }
+//      }
+//      assert(s1_unbinarized.size()==0 || s1h_unbinarized_index!=-1);
 
       // s0hc and s1hc
-      s0hc.load(s0h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s0h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
-      s1hc.load(s1h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s1_unbinarized[s1h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
+//      s0hc.load(s0h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s0_unbinarized[s0h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
+//      s1hc.load(s1h_unbinarized_index!=-1 ? constituent_or_none(item->nodes[s1_unbinarized[s1h_unbinarized_index]]) : CConstituent::SENTENCE_BEGIN);
 
       // s0cs0hcs0l2c, s0cs0hcs0r2c, s1cs1hcs1r2c
-      s0cs0hcs0r2c.load(s0c, s0hc);
-      s0cs0hcs0r2c.add(s0h_unbinarized_index+1<s0_unbinarized.size() ? s0_unbinarized_cs.back() : g_beginConstituent);
-      s0cs0hcs0r2c.add(s0h_unbinarized_index+2<s0_unbinarized.size() ? s0_unbinarized_cs[s0_unbinarized.size()-2] : g_beginConstituent);
+//      s0cs0hcs0r2c.load(s0c, s0hc);
+//      s0cs0hcs0r2c.add(s0h_unbinarized_index+1<s0_unbinarized.size() ? s0_unbinarized_cs.back() : g_beginConstituent);
+//      s0cs0hcs0r2c.add(s0h_unbinarized_index+2<s0_unbinarized.size() ? s0_unbinarized_cs[s0_unbinarized.size()-2] : g_beginConstituent);
 
-      s0cs0hcs0l2c.load(s0c, s0hc);
-      s0cs0hcs0l2c.add(s0h_unbinarized_index>0 ? s0_unbinarized_cs[0] : g_beginConstituent);
-      s0cs0hcs0l2c.add(s0h_unbinarized_index>1 ? s0_unbinarized_cs[1] : g_beginConstituent);
+//      s0cs0hcs0l2c.load(s0c, s0hc);
+//      s0cs0hcs0l2c.add(s0h_unbinarized_index>0 ? s0_unbinarized_cs[0] : g_beginConstituent);
+//      s0cs0hcs0l2c.add(s0h_unbinarized_index>1 ? s0_unbinarized_cs[1] : g_beginConstituent);
 
-      s1cs1hcs1r2c.load(s1c, s1hc);
-      s1cs1hcs1r2c.add(s1h_unbinarized_index+1<s1_unbinarized.size() ? s1_unbinarized_cs.back() : g_beginConstituent);
-      s1cs1hcs1r2c.add(s1h_unbinarized_index+2<s1_unbinarized.size() ? s1_unbinarized_cs[s1_unbinarized.size()-2] : g_beginConstituent);
+//      s1cs1hcs1r2c.load(s1c, s1hc);
+//      s1cs1hcs1r2c.add(s1h_unbinarized_index+1<s1_unbinarized.size() ? s1_unbinarized_cs.back() : g_beginConstituent);
+//      s1cs1hcs1r2c.add(s1h_unbinarized_index+2<s1_unbinarized.size() ? s1_unbinarized_cs[s1_unbinarized.size()-2] : g_beginConstituent);
 /*
       s0l6c.clear();
       if (s0_unbinarized.size()!=0) {
@@ -446,7 +444,7 @@ public:
       s0_sepset=0; s1_sepset=0; s0s1_sepset=0;
       sepcount = 0;
       if (s1!=-1) {
-         for (i=s1node->lexical_head+1; i<s0node->lexical_head; ++i) {
+         for (i=s1->lexical_head+1; i<s0->lexical_head; ++i) {
             last_separator = getSeparatingPunctuation(wrds[i]);
             if (last_separator!=-1) {
                if ((s0s1_sepset&(1<<last_separator))==0) {
@@ -471,33 +469,33 @@ public:
 #endif
 
       // S{0/1}{LD/RD}
-      countleftdependents(item->nodes, s0, s0ld, s0ln);
-      countrightdependents(item->nodes, s0, s0rd, s0rn);
-      if (s1==-1) {
-         s1ld = -1;
-         s1rd = -1;
-         s1ln = 0;
-         s1rn = 0;
-      }
-      else {
-         countleftdependents(item->nodes, s1, s1ld, s1ln);
-         countrightdependents(item->nodes, s1, s1rd, s1rn);
-      }
-      s0ldt = s0ld==-1 ? 0 : wrds[item->nodes[s0ld].lexical_head].tag.code();
-      s0ldw = s0ld == -1 ? 0 : &(wrds[item->nodes[s0ld].lexical_head]);
-      s0rdt = s0rd==-1 ? 0 : wrds[item->nodes[s0rd].lexical_head].tag.code();
-      s0rdw = s0rd == -1 ? 0 : &(wrds[item->nodes[s0rd].lexical_head]);
-      s1ldt = s1ld==-1 ? 0 : wrds[item->nodes[s1ld].lexical_head].tag.code();
-      s1ldw = s1ld == -1 ? 0 : &(wrds[item->nodes[s1ld].lexical_head]);
-      s1rdt = s1rd==-1 ? 0 : wrds[item->nodes[s1rd].lexical_head].tag.code();
-      s1rdw = s1rd == -1 ? 0 : &(wrds[item->nodes[s1rd].lexical_head]);
+//      countleftdependents(item->nodes, s0, s0ld, s0ln);
+//      countrightdependents(item->nodes, s0, s0rd, s0rn);
+//      if (s1==-1) {
+//         s1ld = -1;
+//         s1rd = -1;
+//         s1ln = 0;
+//         s1rn = 0;
+//      }
+//      else {
+//         countleftdependents(item->nodes, s1, s1ld, s1ln);
+//         countrightdependents(item->nodes, s1, s1rd, s1rn);
+//      }
+//      s0ldt = s0ld==-1 ? 0 : wrds[item->nodes[s0ld].lexical_head].tag.code();
+//      s0ldw = s0ld == -1 ? 0 : &(wrds[item->nodes[s0ld].lexical_head]);
+//      s0rdt = s0rd==-1 ? 0 : wrds[item->nodes[s0rd].lexical_head].tag.code();
+//      s0rdw = s0rd == -1 ? 0 : &(wrds[item->nodes[s0rd].lexical_head]);
+//      s1ldt = s1ld==-1 ? 0 : wrds[item->nodes[s1ld].lexical_head].tag.code();
+//      s1ldw = s1ld == -1 ? 0 : &(wrds[item->nodes[s1ld].lexical_head]);
+//      s1rdt = s1rd==-1 ? 0 : wrds[item->nodes[s1rd].lexical_head].tag.code();
+//      s1rdw = s1rd == -1 ? 0 : &(wrds[item->nodes[s1rd].lexical_head]);
 
-      if (s1!=-1) {
-//         s0s1_dist = encodeLinkSize(s0node->lexical_head, s1node->lexical_head);
+//      if (s1!=0) {
+//         s0s1_dist = encodeLinkSize(s0->lexical_head, s1->lexical_head);
 //         s0cs1_dist = encodeTorCs(s0c, s0s1_dist);
 //         s0s1c_dist = encodeTorCs(s1c, s0s1_dist);
 //         s0cs1c_dist = encodeTorCs(s0c.code(), s1c.code(), s0s1_dist);
-      }
+//      }
 
       return;
    }
