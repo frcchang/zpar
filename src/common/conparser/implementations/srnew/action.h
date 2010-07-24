@@ -214,33 +214,6 @@ public:
 
 };
 
-/*===============================================================
- *
- * scored actions
- *
- *==============================================================*/
-
-class CScoredAction {
-
-public:
-   CAction action;
-   SCORE_TYPE score;
-
-public:
-   CScoredAction() : action(), score(0) {}
-   void load(const CAction &action, const SCORE_TYPE &score) {
-      this->action = action; 
-      this->score = score;
-   }
-
-public:
-   bool operator < (const CScoredAction &a1) const { return score < a1.score; }
-   bool operator > (const CScoredAction &a1) const { return score > a1.score; }
-   bool operator <= (const CScoredAction &a1) const { return score <= a1.score; }
-   bool operator >= (const CScoredAction &a1) const { return score >= a1.score; }
-
-};
-
 //=================================================================================
 
 inline std::istream & operator >> (std::istream &is, CAction &action) {

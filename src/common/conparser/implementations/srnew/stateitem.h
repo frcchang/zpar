@@ -417,4 +417,33 @@ public:
    }
 };
 
+/*===============================================================
+ *
+ * scored actions
+ *
+ *==============================================================*/
+
+class CScoredStateAction {
+
+public:
+   CAction action;
+   const CStateItem *item;
+   SCORE_TYPE score;
+
+public:
+   CScoredAction() : action(), score(0) {}
+   void load(const CAction &action, const CStateItem *item, const SCORE_TYPE &score) {
+      this->action = action; 
+      this->item = item;
+      this->score = score;
+   }
+
+public:
+   bool operator < (const CScoredAction &a1) const { return score < a1.score; }
+   bool operator > (const CScoredAction &a1) const { return score > a1.score; }
+   bool operator <= (const CScoredAction &a1) const { return score <= a1.score; }
+   bool operator >= (const CScoredAction &a1) const { return score >= a1.score; }
+
+};
+
 #endif
