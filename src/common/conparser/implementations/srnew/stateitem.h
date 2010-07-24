@@ -35,7 +35,8 @@ public:
    CStateNode(const int &id, CStateNode* &parent, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head) : id(id), parent(parent), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head) {}
    virtual ~CStateNode() {}
 public:
-   void clear()() { 
+   bool valid() { return id!=-1; }
+   void clear() { 
       this->id = -1;
       this->parent = 0; 
       this->type = 0; 
@@ -133,12 +134,12 @@ public:
    CStateNode node;
    CStateItem *stackPtr;
    int current_word;
-   int unary_reduce; // unary_reduce stores two things: non-negative value is the number of unary_reduces consecutively, -1 means that the state item is finished.
+   CAction action;
    const CContext *context;
    const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
    
 public:
-   CStateItem() : current_word(0), score(0), unary_reduce(0), context(0), sent(0), stackPtr(0), node() {}
+   CStateItem() : current_word(0), score(0), action(), context(0), sent(0), stackPtr(0), node() {}
    virtual ~CStateItem() {}
 public:
    void clear() {
@@ -146,27 +147,55 @@ public:
       current_word = 0;
       node.clear();
       score = 0;
-      unary_reduce = 0;
+      action = 0;
       context = 0;
       sent = 0;
    }
    bool empty() const {
       if (current_word==0) {
-         assert(stackPtr == 0 && unary_reduce==0 && score==0);
+         assert(stackPtr == 0 && action==0 && score==0);
          return true;
       }
       return false;
    }
+   unsigned stacksize() const {
+      unsigned retval = 0;
+      CStateItem *current = this;
+      while (current) {
+         if (current->node.valid()) ++retval;// no node -> start/fini
+         current = current->stackPtr;
+      }
+      return retval;
+   }
+   unsigned unaryreduces() const {
+      unsigned retval = 0;
+      CStateItem *current = this;
+      while (current) {
+         if (current.action == CActionType::REDUCE_UNARY)
+            ++retval;
+         else
+            return retval;
+         current = current->stackPtr;
+      }
+      return retval;
+   }
    int newNodeIndex() const { return node.id+1; }
 
 public:
+   bool operator < (const CStateItem &st) const { return score < st.score; }
+   bool operator > (const CStateItem &st) const { return score > st.score; }
+   bool operator == (const CStateItem &st) const {
+      THROW("State items are not comparable with each other");
+   }
+   bool operator != (const CStateItem &st) const { return !( (*this) == st ); }
+
+protected:
    void shift(CStateItem *retval, const unsigned long &constituent = CConstituent::NONE) {
       //TRACE("shift");
       assert(!IsTerminated());
       static int t;
       retval->node.set(node.id+1, 0, CStateNode::LEAF, false, constituent, 0, 0, current_word);
       retval->current_word = current_word+1;
-      retval->unary_reduce = 0;
       return->stackPtr = this; ///  
       assert(!retval->IsTerminated());
    }
@@ -182,11 +211,10 @@ public:
          l = &node;
          retval->node->set(node.id+1, -1, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head);
          l->parent = &retval0>node;
-         retval->unary_reduce = unary_reduce+1;
          retval->stackPtr = stackPtr;
       }
       else {
-         assert(stack.size()>=2);
+         assert(stacksize()>=2);
          r = &node;
          l = &(stackPtr->node);
 #ifdef NO_TEMP_CONSTITUENT
@@ -197,7 +225,6 @@ public:
          l->parent = &(retval->node);
          r->parent = &(retval->node);
          retval->stackPtr = stackPtr->stackPtr;
-         retval->unary_reduce = 0;
       }
       assert(!IsTerminated());
    }
@@ -206,19 +233,9 @@ public:
       assert(IsComplete());
       assert(!IsTerminated());
       retval->clear();
-      retval->unary_reduce = -1;
       retval->stackPtr=this;
       assert(retval->IsTerminated());
    }
-
-public:
-   bool operator < (const CStateItem &st) const { return score < st.score; }
-   bool operator > (const CStateItem &st) const { return score > st.score; }
-//   bool operator == (const CStateItem &st) const {
-//      return current_word == st.current_word && unary_reduce == st.unary_reduce && nodes == st.nodes && stack == st.stack ;
-//   }
-//   bool operator != (const CStateItem &st) const { return !( (*this) == st ); }
-//   void operator = (const CStateItem &st) { current_word=st.current_word; unary_reduce=st.unary_reduce; nodes=st.nodes; stack=st.stack; score=st.score; sent = st.sent; }
 
 public:
 
@@ -280,31 +297,6 @@ public:
       retval.encodeReduce(hd.constituent.code(), single_child, head_left, temporary);
    }
 
-   void FollowMove(const CStateItem &st, CAction &retval) const {
-      // don't follow move when the states euqal
-      assert(*this!=st);
-
-      // stack empty?shift
-      if (stack.empty()) {
-         retval.encodeShift(st.nodes[newNodeIndex()].constituent.code());
-         return;
-      }
-      int s = stack.back();
-      if (st.nodes[s].parent == -1) { // not finished
-         assert(st.stack[stack.size()-1]==s); // also on stack with guider state
-         if (IsComplete()) { // if terminated
-            assert(st.IsTerminated());
-            retval.encodeReduceRoot();
-         }
-         else {
-            retval.encodeShift(st.nodes[newNodeIndex()].constituent.code());
-         }
-      }
-      else {
-         NextMove(st, retval);
-      }
-   }
-
    void StandardMove(const CCFGTree &tr, CAction &retval) const {
       assert(!IsTerminated());
       assert(tr.words.size() == sent->size());
@@ -322,35 +314,26 @@ public:
       NextMove(tr, retval);
    }
 
-   void Move(const CAction &action) {
+   void Move(CStateItem *retval, const CAction &action) {
+      retval->action = action;
       if (action.isShift())
-         shift(action.getConstituent());
+         shift(retval, action.getConstituent());
       else if (action.isReduceRoot())
-         { assert(IsComplete()); terminate(); }
+         { assert(IsComplete()); terminate(retval); }
       else
-         reduce(action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
+         reduce(retval, action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
    }
    
-   void UnMove(const CAction &action, const SCORE_TYPE &original_score, const int &original_unary) {
-      if (action.isShift())
-         unshift(original_score, original_unary);
-      else if (action.isReduceRoot())
-         { unterminate(original_score, original_unary); }
-      else
-         unreduce(original_score, original_unary);
-   }
-
    bool IsComplete() const {
 #ifdef FRAGMENTED_TREE
       return current_word == sent->size(); // allow multiple-rt.
 #else
-      return current_word == sent->size() && stack.size() == 1;
+      return current_word == sent->size() && stacksize() == 1;
 #endif
    }
 
    bool IsTerminated() const {
-      assert( unary_reduce>=0 || IsComplete() ); // if not terminated; then comp
-      return unary_reduce == -1; 
+      return action == CActionType::POP_ROOT; 
    }
 
    void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &out) const {
@@ -360,57 +343,75 @@ public:
       assert(tagged.size()==sent->size());
       out.clear();
 #ifdef FRAGMENTED_TREE
-      if (stack.size()>1) {
-         static CStateItem item;
-         item = *this;
-         item.unterminate(item.score, 0);
-         while (item.stack.size()>1) {
+      if (stacksize()>1) {
+         static CStateItem *item;
+         item = stackPtr;
+         static CStateItem *tmp;
+         tmp = new CStateItem[stacksize()];
+         static CStateItem *current;
+         current = tmp;
+         while (item->stacksize()>1) {
             // form NONE nodes
-            item.reduce(CConstituent::NONE, false, false, false); 
+            item->reduce(current, CConstituent::NONE, false, false, false); 
+            item = current;
+            ++ current;
          }
-         item.terminate();
-         item.GenerateTree(tagged, out);
+         item->terminate(current);
+         item = current;
+         item->GenerateTree(tagged, out);
+         delete tmp;
          return;
       }
 #else
-      //assert(stack.size()==1);
-      if (stack.size()>1) { WARNING("Parser failed.");return; }
+      if (stacksize()>1) { WARNING("Parser failed.");return; }
 #endif
       // generate nodes for out
-      int i,j;
+      static int i,j;
       // first words
       for (i=0; i<tagged.size(); ++i) 
          out.newWord(tagged[i].first, tagged[i].second);
       // second constituents
-      for (i=0; i<nodes.size(); ++i) {
+      static CStateNode* nodes[MAX_SENTENCE_SIZE*(2+UNARY_REDUCE)+2];
+      static int count;
+      count = 0;
+      static CStateItem *current;
+      current = this;
+      while (current) {
+         if (current->node.valid()) nodes[count] = &current->node;
+         current = current->stackPtr;
+         ++count; 
+      }
+
+      for (i=count-1; i>=0; --i) {
          j = out.newNode();
          // copy node
-         nodes[j].toCCFGTreeNode(out.nodes[j]);
-         // update words ; use the constituent label for leaf nodes if any
-//         if (!nodes[j].is_constituent() && nodes[j].constituent.code()!=CConstituent::NONE) {
-//            out.words[nodes[j].lexical_head].second = nodes[j].constituent.str();
-//         }
+         assert(j==nodes[i]->id);
+         nodes[i]->toCCFGTreeNode(out.nodes[j]);
       }
-      out.root = stack.back();
+      out.root = nodes[0]->id;
    }
 
    //===============================================================================
 
    void trace(const CTwoStringVector *s=0) const {
-      CStateItem st; 
-      st.sent = sent;
-      CAction action;
-      //TRACE("Nodes"); for (unsigned long i=0; i<nodes.size(); ++i) TRACE(nodes[i].str());
-      //TRACE("Stack: " << toString(stack));
+      static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_REDUCE)+2];
+      static int count;
+      static CStateItem *current;
+      count = 0;
+      current = this;
+      while (current) {
+         if (current) states[count] = current;
+         ++count ; //updating
+         current = current->stackPtr;
+      }
       TRACE("State item score == " << score);
-      while (st!=*this) {
-         st.FollowMove(*this, action);
-         st.Move(action);
+      --count;
+      while (count>=0) {
          if (s) {
-            TRACE(action.str()<<" ["<<(st.stack.size()>0?s->at(st.nodes[st.stack.back()].lexical_head).first:"")<<"]"); 
+            TRACE(states[count]->action.str()<<" ["<<(states[count]->stacksize()>0?s->at(states[count]->node.lexical_head).first:"")<<"]"); 
          }
          else {
-            TRACE(action.str());
+            TRACE(states[count]->action.str());
          }
       }
       TRACE("");

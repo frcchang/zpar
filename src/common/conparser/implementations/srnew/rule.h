@@ -151,7 +151,6 @@ protected:
       static CAction action;
       const unsigned &stack_size = item.stack.size();
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent){
-         assert(item.context->s0==item.stack.back());
          if (constituent != child.constituent.code()) { 
             action.encodeReduce(constituent, true, false, false);
             actions.push_back(action);
