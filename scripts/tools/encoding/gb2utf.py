@@ -15,8 +15,8 @@ import sys
 def gb2utf(s):
    try:
       return s.decode("gb2312").encode("utf8")
-   except:
-      return '????????'
+   except Exception, err:
+      return "????????"
 
 #
 # Main entry
