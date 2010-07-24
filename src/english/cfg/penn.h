@@ -101,6 +101,7 @@ public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
    void copy(const CConstituentLabel &c) {m_code = c.m_code; }
+   const void clear() { m_code=NONE; }
    const bool empty() const { return m_code==NONE; }
    string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
    void load(const string &s) {

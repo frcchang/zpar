@@ -68,6 +68,7 @@ public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
    void copy(const CConstituentLabel &c) {m_code = c.m_code; }
+   const void clear() { m_code=NONE; }
    const bool empty() const { return m_code==NONE; }
    bool operator == (const CConstituentLabel &w) const { return m_code == w.m_code; }
    bool operator != (const CConstituentLabel &w) const { return m_code != w.m_code; }
