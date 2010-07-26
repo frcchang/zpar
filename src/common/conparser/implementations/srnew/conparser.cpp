@@ -233,8 +233,8 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    nReturn = 0;
 
    //const int bracket_start =
-   //getStartingBracket(m_lCache[item->nodes[nd.single_child()?m_Context->s0_unbinarized.front():m_Context->s1_unbinarized.front()].lexical_head]);
-   //const int bracket_end = getEndingBracket(m_lCache[item->nodes[m_Context->s0_unbinarized.back()].lexical_head]);
+   //getStartingBracket(m_lCache[item->nodes[nd.single_child()?m_Context.s0_unbinarized.front():m_Context.s1_unbinarized.front()].lexical_head]);
+   //const int bracket_end = getEndingBracket(m_lCache[item->nodes[m_Context.s0_unbinarized.back()].lexical_head]);
    //const unsigned long bracket = (bracket_start!=-1||bracket_end!=-1) ? (bracket_start==bracket_end) ? 1 : 2 : 0;
    //if (bracket != 0) 
    //   nReturn += cast_weights->m_mapBracket.getOrUpdateScore(encodeTorCs(bracket, nd.constituent), m_nScoreIndex, amount, round);
@@ -245,11 +245,11 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    //   j = 0;
    //   if (!nd.single_child()) {
    //      for (i=0; i<s1_size; ++i) {
-   //         ct += m_Context->s1_unbinarized_cs[i];
+   //         ct += m_Context.s1_unbinarized_cs[i];
    //      }
    //   }
    //   for (i=0; i<s0_size; ++i) {
-   //      ct += m_Context->s0_unbinarized_cs[i];
+   //      ct += m_Context.s0_unbinarized_cs[i];
    //   }
    //   nReturn += cast_weights->m_mapRules.getOrUpdateScore(ct, m_nScoreIndex, amount, round);
       //if (nd.norv) nReturn += cast_weights->m_mapRulesWithSizes.getOrUpdateScore(make_pair(ct, j), m_nScoreIndex, amount, round);
@@ -266,12 +266,12 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
 
 inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, const CAction &action, SCORE_TYPE amount , int round ) {
 
-   if (m_Context->stacksize==0) return 0;
+   if (m_Context.stacksize==0) return 0;
 
    static unsigned long j;
    
    static CCFGSet s0ts1tbt;
-   s0ts1tbt.copy(m_Context->s0ts1tbt);
+   s0ts1tbt.copy(m_Context.s0ts1tbt);
 
 #ifdef _CHINESE_CFG_H
 //   static unsigned long s0c_bracket_action;
@@ -284,14 +284,14 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 //   static unsigned long s0cs1c_distaction;
 
 #ifdef _CHINESE_CFG_H
-//   s0c_bracket_action = encodeAction(action, m_Context->s0c_bracket);
-//   s1c_bracket_action = encodeAction(action, m_Context->s1c_bracket);
-//   n0t_bracket_action = encodeAction(action, m_Context->n0t_bracket);
-//   s0cs1c_bracket_action = encodeAction(action, m_Context->s0cs1c_bracket);
-//   s0cn0t_bracket_action = encodeAction(action, m_Context->s0cn0t_bracket);
+//   s0c_bracket_action = encodeAction(action, m_Context.s0c_bracket);
+//   s1c_bracket_action = encodeAction(action, m_Context.s1c_bracket);
+//   n0t_bracket_action = encodeAction(action, m_Context.n0t_bracket);
+//   s0cs1c_bracket_action = encodeAction(action, m_Context.s0cs1c_bracket);
+//   s0cn0t_bracket_action = encodeAction(action, m_Context.s0cn0t_bracket);
 #endif
 
-//   s0cs1c_distaction = encodeAction(action, m_Context->s0cs1c_dist);
+//   s0cs1c_distaction = encodeAction(action, m_Context.s0cs1c_dist);
 
    static CTuple3<CWord, CConstituent, CAction> word_constituent_action; 
    static CTuple3<CTag, CConstituent, CAction> tag_constituent_action;
@@ -310,253 +310,253 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    nReturn = 0;
 //
    // action type features
-//   if (m_Context->s1!=-1) {
+//   if (m_Context.s1!=-1) {
 //      nReturn +=
-//      cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(m_Context->s0wts1wt, actionType), m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(twoword_tag_actiontype, &(m_Context->s0ws1w),
-//      &(m_Context->s0t), &actionType); 
+//      cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(m_Context.s0wts1wt, actionType), m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(twoword_tag_actiontype, &(m_Context.s0ws1w),
+//      &(m_Context.s0t), &actionType); 
 //      nReturn += cast_weights->m_mapS0wtS1w.getOrUpdateScore(twoword_tag_actiontype, m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(twoword_tag_actiontype, &(m_Context->s0ws1w),
-//      &(m_Context->s1t), &actionType); 
+//      refer_or_allocate_tuple3(twoword_tag_actiontype, &(m_Context.s0ws1w),
+//      &(m_Context.s1t), &actionType); 
 //      nReturn += cast_weights->m_mapS0wS1wt.getOrUpdateScore(twoword_tag_actiontype, m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1w.getOrUpdateScore(make_pair(m_Context->s0ws1w, actionType), m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(word_cfgset_actiontype, m_Context->s0w,
-//      &(m_Context->s0ts1t), &actionType);
+//      cast_weights->m_mapS0wS1w.getOrUpdateScore(make_pair(m_Context.s0ws1w, actionType), m_nScoreIndex, amount, round);
+//      refer_or_allocate_tuple3(word_cfgset_actiontype, m_Context.s0w,
+//      &(m_Context.s0ts1t), &actionType);
 //      nReturn += cast_weights->m_mapS0wtS1t.getOrUpdateScore(word_cfgset_actiontype, m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(word_cfgset_actiontype, m_Context->s1w,
-//      &(m_Context->s0ts1t), &actionType); 
+//      refer_or_allocate_tuple3(word_cfgset_actiontype, m_Context.s1w,
+//      &(m_Context.s0ts1t), &actionType); 
 //      nReturn += cast_weights->m_mapS0tS1wt.getOrUpdateScore(word_cfgset_actiontype, m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0tS1t.getOrUpdateScore(make_pair(m_Context->s0ts1t, actionType), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0tS1t.getOrUpdateScore(make_pair(m_Context.s0ts1t, actionType), m_nScoreIndex, amount, round);
 //
-//      for (j=0; j<m_Context->between_tag.size(); j++) {
-//         s0ts1tbt.setLast(m_Context->between_tag[j]);
+//      for (j=0; j<m_Context.between_tag.size(); j++) {
+//         s0ts1tbt.setLast(m_Context.between_tag[j]);
 //         nReturn += cast_weights->m_mapBetweenTags.getOrUpdateScore(make_pair(s0ts1tbt, actiontype), m_nScoreIndex, amount, round);
 //      }
 //   }
 
    // S0
-   nReturn += cast_weights->m_mapS0w.getOrUpdateScore(make_pair(*(m_Context->s0wt), action), m_nScoreIndex, amount, round);
-   if (!m_Context->s0c.empty()) nReturn += cast_weights->m_mapS0c.getOrUpdateScore(make_pair(m_Context->s0c, action), m_nScoreIndex, amount, round);
-   refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s0t), &(m_Context->s0c), &action); 
+   nReturn += cast_weights->m_mapS0w.getOrUpdateScore(make_pair(*(m_Context.s0wt), action), m_nScoreIndex, amount, round);
+   if (!m_Context.s0c.empty()) nReturn += cast_weights->m_mapS0c.getOrUpdateScore(make_pair(m_Context.s0c, action), m_nScoreIndex, amount, round);
+   refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s0t), &(m_Context.s0c), &action); 
    nReturn += cast_weights->m_mapS0tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-   refer_or_allocate_tuple3(word_constituent_action, m_Context->s0w, &(m_Context->s0c), &action); 
+   refer_or_allocate_tuple3(word_constituent_action, m_Context.s0w, &(m_Context.s0c), &action); 
    nReturn += cast_weights->m_mapS0wc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
 
    // S1
-   if (m_Context->s1!=0) {
-      nReturn += cast_weights->m_mapS1w.getOrUpdateScore(make_pair(*(m_Context->s1wt), action), m_nScoreIndex, amount, round);
-      if (!m_Context->s1c.empty()) nReturn += cast_weights->m_mapS1c.getOrUpdateScore(make_pair(m_Context->s1c, action), m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s1t), &(m_Context->s1c), &action); 
+   if (m_Context.s1!=0) {
+      nReturn += cast_weights->m_mapS1w.getOrUpdateScore(make_pair(*(m_Context.s1wt), action), m_nScoreIndex, amount, round);
+      if (!m_Context.s1c.empty()) nReturn += cast_weights->m_mapS1c.getOrUpdateScore(make_pair(m_Context.s1c, action), m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s1t), &(m_Context.s1c), &action); 
       nReturn += cast_weights->m_mapS1tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s1w, &(m_Context->s1c), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s1w, &(m_Context.s1c), &action); 
       nReturn += cast_weights->m_mapS1wc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S2
-   if (m_Context->s2!=0) {
-//      nReturn += cast_weights->m_mapS2w.getOrUpdateScore(make_pair(*(m_Context->s2w), action), m_nScoreIndex, amount, round);
+   if (m_Context.s2!=0) {
+//      nReturn += cast_weights->m_mapS2w.getOrUpdateScore(make_pair(*(m_Context.s2w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS2c.getOrUpdateScore(s2c_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s2t), &(m_Context->s2c), &action); 
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s2t), &(m_Context.s2c), &action); 
       nReturn += cast_weights->m_mapS2tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s2w, &(m_Context->s2c), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s2w, &(m_Context.s2c), &action); 
       nReturn += cast_weights->m_mapS2wc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S3
-   if (m_Context->s3!=0) {
-//      nReturn += cast_weights->m_mapS3w.getOrUpdateScore(make_pair(*(m_Context->s3w), action), m_nScoreIndex, amount, round);
+   if (m_Context.s3!=0) {
+//      nReturn += cast_weights->m_mapS3w.getOrUpdateScore(make_pair(*(m_Context.s3w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS3c.getOrUpdateScore(s3c_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s3t), &(m_Context->s3c), &action); 
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s3t), &(m_Context.s3c), &action); 
       nReturn += cast_weights->m_mapS3tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s3w, &(m_Context->s3c), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s3w, &(m_Context.s3c), &action); 
       nReturn += cast_weights->m_mapS3wc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // N0
-   if (m_Context->n0!=-1) {
-//      nReturn += cast_weights->m_mapN0w.getOrUpdateScore(make_pair(*(m_Context->n0w), action), m_nScoreIndex, amount, round);
+   if (m_Context.n0!=-1) {
+//      nReturn += cast_weights->m_mapN0w.getOrUpdateScore(make_pair(*(m_Context.n0w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN0t.getOrUpdateScore(n0t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN0wt.getOrUpdateScore(make_pair(*(m_Context->n0wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN0wt.getOrUpdateScore(make_pair(*(m_Context.n0wt), action), m_nScoreIndex, amount, round);
    }
 
    // N1
-   if (m_Context->n1!=-1) {
-//      nReturn += cast_weights->m_mapN1w.getOrUpdateScore(make_pair(*(m_Context->n1w), action), m_nScoreIndex, amount, round);
+   if (m_Context.n1!=-1) {
+//      nReturn += cast_weights->m_mapN1w.getOrUpdateScore(make_pair(*(m_Context.n1w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN1t.getOrUpdateScore(n1t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN1wt.getOrUpdateScore(make_pair(*(m_Context->n1wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN1wt.getOrUpdateScore(make_pair(*(m_Context.n1wt), action), m_nScoreIndex, amount, round);
    }
 
    // N2
-   if (m_Context->n2!=-1) {
-//      nReturn += cast_weights->m_mapN2w.getOrUpdateScore(make_pair(*(m_Context->n2w), action), m_nScoreIndex, amount, round);
+   if (m_Context.n2!=-1) {
+//      nReturn += cast_weights->m_mapN2w.getOrUpdateScore(make_pair(*(m_Context.n2w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN2t.getOrUpdateScore(n2t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN2wt.getOrUpdateScore(make_pair(*(m_Context->n2wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN2wt.getOrUpdateScore(make_pair(*(m_Context.n2wt), action), m_nScoreIndex, amount, round);
    }
 
    // N3
-   if (m_Context->n3!=-1) {
-//      nReturn += cast_weights->m_mapN3w.getOrUpdateScore(make_pair(*(m_Context->n3w), action), m_nScoreIndex, amount, round);
+   if (m_Context.n3!=-1) {
+//      nReturn += cast_weights->m_mapN3w.getOrUpdateScore(make_pair(*(m_Context.n3w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN3t.getOrUpdateScore(n3t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN3wt.getOrUpdateScore(make_pair(*(m_Context->n3wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN3wt.getOrUpdateScore(make_pair(*(m_Context.n3wt), action), m_nScoreIndex, amount, round);
    }
 
    // S0L
-   if (m_Context->s0l!=0) {
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s0lt), &(m_Context->s0lc), &action); 
+   if (m_Context.s0l!=0) {
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s0lt), &(m_Context.s0lc), &action); 
       nReturn += cast_weights->m_mapS0Ltc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s0lw, &(m_Context->s0lc), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s0lw, &(m_Context.s0lc), &action); 
       nReturn += cast_weights->m_mapS0Lwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S0R
-   if (m_Context->s0r!=0) {         
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s0rt), &(m_Context->s0rc), &action); 
+   if (m_Context.s0r!=0) {         
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s0rt), &(m_Context.s0rc), &action); 
       nReturn += cast_weights->m_mapS0Rtc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s0rw, &(m_Context->s0rc), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s0rw, &(m_Context.s0rc), &action); 
       nReturn += cast_weights->m_mapS0Rwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S0U
-   if (m_Context->s0u!=0) {         
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s0ut), &(m_Context->s0uc), &action); 
+   if (m_Context.s0u!=0) {         
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s0ut), &(m_Context.s0uc), &action); 
       nReturn += cast_weights->m_mapS0Utc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s0uw, &(m_Context->s0uc), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s0uw, &(m_Context.s0uc), &action); 
       nReturn += cast_weights->m_mapS0Uwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
 
    // S1L
-   if (m_Context->s1l!=0) {         
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s1lt), &(m_Context->s1lc), &action); 
+   if (m_Context.s1l!=0) {         
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s1lt), &(m_Context.s1lc), &action); 
       nReturn += cast_weights->m_mapS1Ltc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s1lw, &(m_Context->s1lc), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s1lw, &(m_Context.s1lc), &action); 
       nReturn += cast_weights->m_mapS1Lwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S1R
-   if (m_Context->s1r!=0) {         
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s1rt), &(m_Context->s1rc), &action); 
+   if (m_Context.s1r!=0) {         
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s1rt), &(m_Context.s1rc), &action); 
       nReturn += cast_weights->m_mapS1Rtc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s1rw, &(m_Context->s1rc), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s1rw, &(m_Context.s1rc), &action); 
       nReturn += cast_weights->m_mapS1Rwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S1U
-   if (m_Context->s1u!=0) {         
-      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context->s1ut), &(m_Context->s1uc), &action); 
+   if (m_Context.s1u!=0) {         
+      refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s1ut), &(m_Context.s1uc), &action); 
       nReturn += cast_weights->m_mapS1Utc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_constituent_action, m_Context->s1uw, &(m_Context->s1uc), &action); 
+      refer_or_allocate_tuple3(word_constituent_action, m_Context.s1uw, &(m_Context.s1uc), &action); 
       nReturn += cast_weights->m_mapS1Uwc.getOrUpdateScore(word_constituent_action, m_nScoreIndex, amount, round);
    }
 
    // S0 S1
-   if (m_Context->s1!=0) {
-      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context->s0ws1w), &(m_Context->s0cs1c), &action); 
+   if (m_Context.s1!=0) {
+      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context.s0ws1w), &(m_Context.s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0wcS1wc.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s1w, &(m_Context->s0cs1c), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s1w, &(m_Context.s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0cS1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s0w, &(m_Context->s0cs1c), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0wS1c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(make_pair(m_Context->s0cs1c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(make_pair(m_Context.s0cs1c, action), m_nScoreIndex, amount, round);
 
    }
 
    // S0 N0
-   if (m_Context->n0!=-1) {
-      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context->s0wn0w), &(m_Context->s0cn0t), &action); 
+   if (m_Context.n0!=-1) {
+      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context.s0wn0w), &(m_Context.s0cn0t), &action); 
       nReturn += cast_weights->m_mapS0wN0w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->n0w, &(m_Context->s0cn0t), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.s0cn0t), &action); 
       nReturn += cast_weights->m_mapS0cN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s0w, &(m_Context->s0cn0t), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s0cn0t), &action); 
       nReturn += cast_weights->m_mapS0wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0cN0t.getOrUpdateScore(make_pair(m_Context->s0cn0t, action), m_nScoreIndex, amount, round);
-      //if (item->nodes[m_Context->s0].norv&&m_Context->n0norv) nReturn +=
+      nReturn += cast_weights->m_mapS0cN0t.getOrUpdateScore(make_pair(m_Context.s0cn0t, action), m_nScoreIndex, amount, round);
+      //if (item->nodes[m_Context.s0].norv&&m_Context.n0norv) nReturn +=
       //cast_weights->m_mapS0cmN0tm.getOrUpdateScore(make_pair(s0cn0t_action,
-      //encodeRhythms(m_Context->s0c, m_Context->n0m)), m_nScoreIndex, amount, round);
+      //encodeRhythms(m_Context.s0c, m_Context.n0m)), m_nScoreIndex, amount, round);
    }
 
    // S1 N0
-   if (m_Context->s1!=0 && m_Context->n0!=-1) {
-      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context->s1wn0w), &(m_Context->s1cn0t), &action); 
+   if (m_Context.s1!=0 && m_Context.n0!=-1) {
+      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context.s1wn0w), &(m_Context.s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1wN0w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->n0w, &(m_Context->s1cn0t), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1cN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s1w, &(m_Context->s1cn0t), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s1w, &(m_Context.s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS1cN0t.getOrUpdateScore(make_pair(m_Context->s1cn0t, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS1cN0t.getOrUpdateScore(make_pair(m_Context.s1cn0t, action), m_nScoreIndex, amount, round);
    }
 
    // N0 N1
-//   if (m_Context->n1!=-1) {
-//      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context->n0wn1w),
-//      &(m_Context->n0tn1t), &action); 
+//   if (m_Context.n1!=-1) {
+//      refer_or_allocate_tuple3(twoword_cfgset_action, &(m_Context.n0wn1w),
+//      &(m_Context.n0tn1t), &action); 
 //      nReturn += cast_weights->m_mapN0wN1w.getOrUpdateScore(twoword_cfgset_action, m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(word_cfgset_action, m_Context->n1w, &(m_Context->n0tn1t), &action); 
+//      refer_or_allocate_tuple3(word_cfgset_action, m_Context.n1w, &(m_Context.n0tn1t), &action); 
 //      nReturn += cast_weights->m_mapN0tN1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple3(word_cfgset_action, m_Context->n0w, &(m_Context->n0tn1t), &action); 
+//      refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.n0tn1t), &action); 
 //      nReturn += cast_weights->m_mapN0wN1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapN0tN1t.getOrUpdateScore(make_pair(m_Context->n0tn1t, action), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapN0tN1t.getOrUpdateScore(make_pair(m_Context.n0tn1t, action), m_nScoreIndex, amount, round);
 //   }
 //   
 #ifdef _CHINESE_CFG_H
 /*
-   if (m_Context->open_bracket_match_type!=0) {
-if (!m_Context->s0c.empty() && !m_Context->s1c.empty()) {
+   if (m_Context.open_bracket_match_type!=0) {
+if (!m_Context.s0c.empty() && !m_Context.s1c.empty()) {
       nReturn += cast_weights->m_mapBracketS0c.getOrUpdateScore(s0c_bracket_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapBracketS0w.getOrUpdateScore(make_pair(*(m_Context->s0w), encodeAction(action, m_Context->open_bracket_match_type)), m_nScoreIndex, amount, round);
-      if (m_Context->s1!=0) {
-         nReturn += cast_weights->m_mapBracketS0wS1c.getOrUpdateScore(make_pair(*(m_Context->s0w), s1c_bracket_action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapBracketS0w.getOrUpdateScore(make_pair(*(m_Context.s0w), encodeAction(action, m_Context.open_bracket_match_type)), m_nScoreIndex, amount, round);
+      if (m_Context.s1!=0) {
+         nReturn += cast_weights->m_mapBracketS0wS1c.getOrUpdateScore(make_pair(*(m_Context.s0w), s1c_bracket_action), m_nScoreIndex, amount, round);
          nReturn +=
-cast_weights->m_mapBracketS0cS1w.getOrUpdateScore(make_pair(*(m_Context->s1w), s0c_bracket_action), m_nScoreIndex, amount, round);
+cast_weights->m_mapBracketS0cS1w.getOrUpdateScore(make_pair(*(m_Context.s1w), s0c_bracket_action), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapBracketS0cS1c.getOrUpdateScore(s0cs1c_bracket_action, m_nScoreIndex, amount, round);
       }
-      if (m_Context->n0!=-1) {
+      if (m_Context.n0!=-1) {
          nReturn +=
-cast_weights->m_mapBracketS0cN0w.getOrUpdateScore(make_pair(*(m_Context->n0w), s0c_bracket_action), m_nScoreIndex, amount, round);
+cast_weights->m_mapBracketS0cN0w.getOrUpdateScore(make_pair(*(m_Context.n0w), s0c_bracket_action), m_nScoreIndex, amount, round);
          nReturn +=
-cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context->s0w), n0t_bracket_action), m_nScoreIndex, amount, round);
+cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0t_bracket_action), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapBracketS0cN0t.getOrUpdateScore(s0cn0t_bracket_action, m_nScoreIndex, amount, round);
       }
 }
    }
 
-   if (m_Context->s1!=0) {
-if (!m_Context->s0c.empty() && !m_Context->s1c.empty()) {
+   if (m_Context.s1!=0) {
+if (!m_Context.s0c.empty() && !m_Context.s1c.empty()) {
       static unsigned long i;
-      for (i=0; i<m_Context->s0c_separator.size(); ++i) {
+      for (i=0; i<m_Context.s0c_separator.size(); ++i) {
          nReturn +=
-cast_weights->m_mapS0cSeparator.getOrUpdateScore(encodeAction(action, m_Context->s0c_separator[i]), m_nScoreIndex, amount, round);
+cast_weights->m_mapS0cSeparator.getOrUpdateScore(encodeAction(action, m_Context.s0c_separator[i]), m_nScoreIndex, amount, round);
          nReturn +=
-cast_weights->m_mapS0wcSeparator.getOrUpdateScore(make_pair(*(m_Context->s0w),
-encodeAction(action, m_Context->s0c_separator[i])), m_nScoreIndex, amount, round);
+cast_weights->m_mapS0wcSeparator.getOrUpdateScore(make_pair(*(m_Context.s0w),
+encodeAction(action, m_Context.s0c_separator[i])), m_nScoreIndex, amount, round);
       }
       nReturn +=
-cast_weights->m_mapS0cSepCount.getOrUpdateScore(encodeAction(action, m_Context->s0c_sepcount), m_nScoreIndex, amount, round);
+cast_weights->m_mapS0cSepCount.getOrUpdateScore(encodeAction(action, m_Context.s0c_sepcount), m_nScoreIndex, amount, round);
       nReturn +=
-cast_weights->m_mapS0wcSepCount.getOrUpdateScore(make_pair(*(m_Context->s0w),
-encodeAction(action, m_Context->s0c_sepcount)), m_nScoreIndex, amount, round);
-      for (i=0; i<m_Context->s1c_separator.size(); ++i) {
+cast_weights->m_mapS0wcSepCount.getOrUpdateScore(make_pair(*(m_Context.s0w),
+encodeAction(action, m_Context.s0c_sepcount)), m_nScoreIndex, amount, round);
+      for (i=0; i<m_Context.s1c_separator.size(); ++i) {
          nReturn +=
-cast_weights->m_mapS1cSeparator.getOrUpdateScore(encodeAction(action, m_Context->s1c_separator[i]), m_nScoreIndex, amount, round);
+cast_weights->m_mapS1cSeparator.getOrUpdateScore(encodeAction(action, m_Context.s1c_separator[i]), m_nScoreIndex, amount, round);
          nReturn +=
-cast_weights->m_mapS1wcSeparator.getOrUpdateScore(make_pair(*(m_Context->s1w),
-encodeAction(action, m_Context->s1c_separator[i])), m_nScoreIndex, amount, round);
+cast_weights->m_mapS1wcSeparator.getOrUpdateScore(make_pair(*(m_Context.s1w),
+encodeAction(action, m_Context.s1c_separator[i])), m_nScoreIndex, amount, round);
       }
       nReturn +=
-cast_weights->m_mapS1cSepCount.getOrUpdateScore(encodeAction(action, m_Context->s1c_sepcount), m_nScoreIndex, amount, round);
+cast_weights->m_mapS1cSepCount.getOrUpdateScore(encodeAction(action, m_Context.s1c_sepcount), m_nScoreIndex, amount, round);
       nReturn +=
-cast_weights->m_mapS1wcSepCount.getOrUpdateScore(make_pair(*(m_Context->s1w),
-encodeAction(action, m_Context->s1c_sepcount)), m_nScoreIndex, amount, round);
-      for (i=0; i<m_Context->s0cs1c_separator.size(); ++i)
+cast_weights->m_mapS1wcSepCount.getOrUpdateScore(make_pair(*(m_Context.s1w),
+encodeAction(action, m_Context.s1c_sepcount)), m_nScoreIndex, amount, round);
+      for (i=0; i<m_Context.s0cs1c_separator.size(); ++i)
          nReturn +=
 cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(encodeAction(action,
-m_Context->s0cs1c_separator[i]), m_nScoreIndex, amount, round);
+m_Context.s0cs1c_separator[i]), m_nScoreIndex, amount, round);
       nReturn +=
 cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(encodeAction(action,
-m_Context->s0cs1c_sepcount), m_nScoreIndex, amount, round);
+m_Context.s0cs1c_sepcount), m_nScoreIndex, amount, round);
 }
    }
 */
@@ -565,230 +565,230 @@ m_Context->s0cs1c_sepcount), m_nScoreIndex, amount, round);
 
 #endif
 
-//   if (m_Context->s1!=0){
+//   if (m_Context.s1!=0){
 //      nReturn +=
-//      cast_weights->m_mapS0wS1Dist.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, m_Context->s0s1_dist)), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1Dist.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, m_Context.s0s1_dist)), m_nScoreIndex, amount, round);
 //      nReturn +=
 //      cast_weights->m_mapS0cS1Dist.getOrUpdateScore(encodeAction(action,
-//      m_Context->s0cs1_dist), m_nScoreIndex, amount, round);
+//      m_Context.s0cs1_dist), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0S1wDist.getOrUpdateScore(make_pair(*(m_Context->s1w),
-//      encodeAction(action, m_Context->s0s1_dist)), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0S1wDist.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      encodeAction(action, m_Context.s0s1_dist)), m_nScoreIndex, amount, round);
 //      nReturn +=
 //      cast_weights->m_mapS0S1cDist.getOrUpdateScore(encodeAction(action,
-//      m_Context->s0s1c_dist), m_nScoreIndex, amount, round);
+//      m_Context.s0s1c_dist), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1wDist.getOrUpdateScore(make_pair(m_Context->s0ws1w, s0cs1c_distaction), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1wDist.getOrUpdateScore(make_pair(m_Context.s0ws1w, s0cs1c_distaction), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1cDist.getOrUpdateScore(make_pair(*(m_Context->s0w), s0cs1c_distaction), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1cDist.getOrUpdateScore(make_pair(*(m_Context.s0w), s0cs1c_distaction), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wDist.getOrUpdateScore(make_pair(*(m_Context->s1w), s0cs1c_distaction), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0cS1wDist.getOrUpdateScore(make_pair(*(m_Context.s1w), s0cs1c_distaction), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0cS1cDist.getOrUpdateScore(s0cs1c_distaction, m_nScoreIndex, amount, round);
 //   }
 
    // S0 S1 N0
-   refer_or_allocate_tuple3(word_cfgset_action, m_Context->s0w, &(m_Context->s0cs1cn0t), &action); 
+   refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s0cs1cn0t), &action); 
    nReturn += cast_weights->m_mapS0wS1cN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-   if (m_Context->s1!=0)  {
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s1w, &(m_Context->s0cs1cn0t), &action); 
+   if (m_Context.s1!=0)  {
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s1w, &(m_Context.s0cs1cn0t), &action); 
       nReturn += cast_weights->m_mapS0cS1wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
-   if (m_Context->n0!=-1) {
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->n0w, &(m_Context->s0cs1cn0t), &action); 
+   if (m_Context.n0!=-1) {
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.s0cs1cn0t), &action); 
       nReturn += cast_weights->m_mapS0cS1cN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
-   nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(make_pair(m_Context->s0cs1cn0t, action), m_nScoreIndex, amount, round); 
+   nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(make_pair(m_Context.s0cs1cn0t, action), m_nScoreIndex, amount, round); 
 
-   nReturn += cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(make_pair(m_Context->s0ts1tn0t, action), m_nScoreIndex, amount, round); 
+   nReturn += cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(make_pair(m_Context.s0ts1tn0t, action), m_nScoreIndex, amount, round); 
 //   nReturn +=
-//   cast_weights->m_mapS0jS1jN0t.getOrUpdateScore(make_pair(m_Context->s0js1jn0t, action), m_nScoreIndex, amount, round); 
+//   cast_weights->m_mapS0jS1jN0t.getOrUpdateScore(make_pair(m_Context.s0js1jn0t, action), m_nScoreIndex, amount, round); 
 
    // S0 N0 N1
-   if (m_Context->n0!=-1) {
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s0w, &(m_Context->s0cn0tn1t), &action); 
+   if (m_Context.n0!=-1) {
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s0cn0tn1t), &action); 
       nReturn += cast_weights->m_mapS0wN0tN1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->n0w, &(m_Context->s0cn0tn1t), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.s0cn0tn1t), &action); 
       nReturn += cast_weights->m_mapS0cN0wN1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      if (m_Context->n1!=-1) {
-         refer_or_allocate_tuple3(word_cfgset_action, m_Context->n1w, &(m_Context->s0cn0tn1t), &action); 
+      if (m_Context.n1!=-1) {
+         refer_or_allocate_tuple3(word_cfgset_action, m_Context.n1w, &(m_Context.s0cn0tn1t), &action); 
          nReturn += cast_weights->m_mapS0cN0tN1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
       nReturn +=
-cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(m_Context->s0cn0tn1t,
-action), m_nScoreIndex, amount, round); // m_Context->n0
+cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(m_Context.s0cn0tn1t,
+action), m_nScoreIndex, amount, round); // m_Context.n0
 
       nReturn +=
-cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(m_Context->s0tn0tn1t,
-action), m_nScoreIndex, amount, round); // m_Context->n0
+cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(m_Context.s0tn0tn1t,
+action), m_nScoreIndex, amount, round); // m_Context.n0
 //      nReturn +=
-//      cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(make_pair(m_Context->s0jn0tn1t,
-//      action), m_nScoreIndex, amount, round); // m_Context->n0
+//      cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(make_pair(m_Context.s0jn0tn1t,
+//      action), m_nScoreIndex, amount, round); // m_Context.n0
    }
 
    // S0 S1 S2
-   if (m_Context->s1!=-1) {
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s0w, &(m_Context->s0cs1cs2c), &action); 
+   if (m_Context.s1!=0) {
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s0cs1cs2c), &action); 
       nReturn += cast_weights->m_mapS0wS1cS2c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s1w, &(m_Context->s0cs1cs2c), &action); 
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s1w, &(m_Context.s0cs1cs2c), &action); 
       nReturn += cast_weights->m_mapS0cS1wS2c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      if (m_Context->s2!=-1) {
-         refer_or_allocate_tuple3(word_cfgset_action, m_Context->s2w, &(m_Context->s0cs1cs2c), &action); 
+      if (m_Context.s2!=0) {
+         refer_or_allocate_tuple3(word_cfgset_action, m_Context.s2w, &(m_Context.s0cs1cs2c), &action); 
          nReturn += cast_weights->m_mapS0cS1cS2w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
       nReturn +=
-cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(m_Context->s0cs1cs2c, action), m_nScoreIndex, amount, round);
+cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(m_Context.s0cs1cs2c, action), m_nScoreIndex, amount, round);
 
       nReturn +=
-cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(m_Context->s0ts1ts2t, action), m_nScoreIndex, amount, round);
+cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(m_Context.s0ts1ts2t, action), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(make_pair(m_Context->s0js1js2j, action), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(make_pair(m_Context.s0js1js2j, action), m_nScoreIndex, amount, round);
    }
 
    // Tag bigrams
 //   nReturn += cast_weights->m_mapS1cS2c.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->s1c, m_Context->s2c)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.s1c, m_Context.s2c)), m_nScoreIndex, amount, round);
 //   nReturn += cast_weights->m_mapS2cS3c.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->s2c, m_Context->s3c)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.s2c, m_Context.s3c)), m_nScoreIndex, amount, round);
 //   nReturn += cast_weights->m_mapN1tN2t.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->n1t, m_Context->n2t)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.n1t, m_Context.n2t)), m_nScoreIndex, amount, round);
 //   nReturn += cast_weights->m_mapN2tN3t.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->n2t, m_Context->n3t)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.n2t, m_Context.n3t)), m_nScoreIndex, amount, round);
    
 //   nReturn += cast_weights->m_mapS0cS2c.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->s0c, m_Context->s2c)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.s0c, m_Context.s2c)), m_nScoreIndex, amount, round);
 //   nReturn += cast_weights->m_mapS1cS3c.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->s1c, m_Context->s3c)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.s1c, m_Context.s3c)), m_nScoreIndex, amount, round);
 //   nReturn += cast_weights->m_mapS0cN1t.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->s0c, m_Context->n1t)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.s0c, m_Context.n1t)), m_nScoreIndex, amount, round);
 //   nReturn += cast_weights->m_mapN0tN2t.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->n0t, m_Context->n2t)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.n0t, m_Context.n2t)), m_nScoreIndex, amount, round);
 //   nReturn += cast_weights->m_mapN1tN3t.getOrUpdateScore(encodeAction(action,
-//   encodeTorCs(m_Context->n1t, m_Context->n3t)), m_nScoreIndex, amount, round);
+//   encodeTorCs(m_Context.n1t, m_Context.n3t)), m_nScoreIndex, amount, round);
 
    // S0 S0LRUN0
-//   if (m_Context->s0l!=0) {
-//      assert(m_Context->s0r!=0);
-//      if (!item->nodes[m_Context->s0].temp||!item->nodes[m_Context->s0].head_left()) {
+//   if (m_Context.s0l!=0) {
+//      assert(m_Context.s0r!=0);
+//      if (!item->nodes[m_Context.s0].temp||!item->nodes[m_Context.s0].head_left()) {
 //      nReturn +=
 //      cast_weights->m_mapS0cS0LcN0t.getOrUpdateScore(encodeAction(action,
-//      encodeTorCs(m_Context->s0cn0t, m_Context->s0lc)), m_nScoreIndex, amount, round);
+//      encodeTorCs(m_Context.s0cn0t, m_Context.s0lc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0LcN0t.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->n0t, m_Context->s0lc))), m_nScoreIndex, amount, round);
-//      if (m_Context->n0!=0) nReturn +=
-//      cast_weights->m_mapS0cS0LcN0w.getOrUpdateScore(make_pair(*(m_Context->n0w),
-//      encodeAction(action, encodeTorCs(m_Context->s0c, m_Context->s0lc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS0LcN0t.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.n0t, m_Context.s0lc))), m_nScoreIndex, amount, round);
+//      if (m_Context.n0!=0) nReturn +=
+//      cast_weights->m_mapS0cS0LcN0w.getOrUpdateScore(make_pair(*(m_Context.n0w),
+//      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0lc))), m_nScoreIndex, amount, round);
 //      }
-//      if (item->nodes[m_Context->s0].head_left()) {
-      if (m_Context->n0!=-1 && m_Context->s0r!=0) {
-         nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(make_pair(m_Context->s0cs0rcn0t, action), m_nScoreIndex, amount, round);
-         nReturn += cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(make_pair(m_Context->s0cs0rjn0t, action), m_nScoreIndex, amount, round);
-         refer_or_allocate_tuple3(word_cfgset_action, m_Context->n0w, &(m_Context->s0cs0rc), &action); 
+//      if (item->nodes[m_Context.s0].head_left()) {
+      if (m_Context.n0!=-1 && m_Context.s0r!=0) {
+         nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(make_pair(m_Context.s0cs0rcn0t, action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(make_pair(m_Context.s0cs0rjn0t, action), m_nScoreIndex, amount, round);
+         refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.s0cs0rc), &action); 
          nReturn += cast_weights->m_mapS0cS0RcN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
 //      nReturn +=
-//      cast_weights->m_mapS0wS0RcN0t.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->n0t, m_Context->s0rc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS0RcN0t.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.n0t, m_Context.s0rc))), m_nScoreIndex, amount, round);
 //      }
 //   }
-//   if (m_Context->s0u!=0) {
-//      assert(m_Context->s0l==0);
-//      assert(item->nodes[m_Context->s0].temp==false);
+//   if (m_Context.s0u!=0) {
+//      assert(m_Context.s0l==0);
+//      assert(item->nodes[m_Context.s0].temp==false);
 //      nReturn +=
 //      cast_weights->m_mapS0cS0UcN0t.getOrUpdateScore(encodeAction(action,
-//      encodeTorCs(m_Context->s0cn0t, m_Context->s0uc)), m_nScoreIndex, amount, round);
+//      encodeTorCs(m_Context.s0cn0t, m_Context.s0uc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0UcN0t.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->s0uc, m_Context->n0t))), m_nScoreIndex, amount, round);
-//      if (m_Context->n0!=-1) nReturn +=
-//      cast_weights->m_mapS0cS0UcN0w.getOrUpdateScore(make_pair(*(m_Context->n0w),
-//      encodeAction(action, encodeTorCs(m_Context->s0c, m_Context->s0uc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS0UcN0t.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.s0uc, m_Context.n0t))), m_nScoreIndex, amount, round);
+//      if (m_Context.n0!=-1) nReturn +=
+//      cast_weights->m_mapS0cS0UcN0w.getOrUpdateScore(make_pair(*(m_Context.n0w),
+//      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0uc))), m_nScoreIndex, amount, round);
 //   }
 
    // S0 S0LRUS1
-   if (m_Context->s1!=0 && m_Context->s0l!=0) {
-      nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(make_pair(m_Context->s0cs0lcs1c, action), m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0cS0LjS1j.getOrUpdateScore(make_pair(m_Context->s0cs0ljs1j, action), m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s1w, &(m_Context->s0cs0lc), &action); 
+   if (m_Context.s1!=0 && m_Context.s0l!=0) {
+      nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(make_pair(m_Context.s0cs0lcs1c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS0LjS1j.getOrUpdateScore(make_pair(m_Context.s0cs0ljs1j, action), m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s1w, &(m_Context.s0cs0lc), &action); 
       nReturn += cast_weights->m_mapS0cS0LcS1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
-   if (m_Context->s1 != 0 && m_Context->s1r != 0) {
-      nReturn += cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(make_pair(m_Context->s0cs1cs1rc, action), m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0jS1cS1Rj.getOrUpdateScore(make_pair(m_Context->s0js1cs1rj, action), m_nScoreIndex, amount, round);
-      refer_or_allocate_tuple3(word_cfgset_action, m_Context->s0w, &(m_Context->s1cs1rc), &action); 
+   if (m_Context.s1 != 0 && m_Context.s1r != 0) {
+      nReturn += cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(make_pair(m_Context.s0cs1cs1rc, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0jS1cS1Rj.getOrUpdateScore(make_pair(m_Context.s0js1cs1rj, action), m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s1cs1rc), &action); 
       nReturn += cast_weights->m_mapS0wS1cS1Rc.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
-//   if (m_Context->s0l!=0) {
-//      if (!item->nodes[m_Context->s0].temp||!item->nodes[m_Context->s0].head_left()) {
+//   if (m_Context.s0l!=0) {
+//      if (!item->nodes[m_Context.s0].temp||!item->nodes[m_Context.s0].head_left()) {
 //      nReturn +=
 //      cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(encodeAction(action,
-//      encodeTorCs(m_Context->s0cs1c, m_Context->s0lc)), m_nScoreIndex, amount, round);
+//      encodeTorCs(m_Context.s0cs1c, m_Context.s0lc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0LcS1c.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->s0lc, m_Context->s1c))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS0LcS1c.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.s0lc, m_Context.s1c))), m_nScoreIndex, amount, round);
 //      }
-//      if (!item->nodes[m_Context->s0].temp||item->nodes[m_Context->s0].head_left()) {
+//      if (!item->nodes[m_Context.s0].temp||item->nodes[m_Context.s0].head_left()) {
 //         nReturn +=
 //         cast_weights->m_mapS0cS0RcS1c.getOrUpdateScore(encodeAction(action,
-//         encodeTorCs(m_Context->s0cs1c, m_Context->s0rc)), m_nScoreIndex, amount, round);
+//         encodeTorCs(m_Context.s0cs1c, m_Context.s0rc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0RcS1c.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->s0rc, m_Context->s1c))), m_nScoreIndex, amount, round);
-//      if (m_Context->s1!=0) nReturn +=
-//      cast_weights->m_mapS0cS0RcS1w.getOrUpdateScore(make_pair(*(m_Context->s1w),
-//      encodeAction(action, encodeTorCs(m_Context->s0c, m_Context->s0rc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS0RcS1c.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.s0rc, m_Context.s1c))), m_nScoreIndex, amount, round);
+//      if (m_Context.s1!=0) nReturn +=
+//      cast_weights->m_mapS0cS0RcS1w.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0rc))), m_nScoreIndex, amount, round);
 //      }
 //   }
-//   if (m_Context->s0u!=0) {
+//   if (m_Context.s0u!=0) {
 //      nReturn +=
 //      cast_weights->m_mapS0cS0UcS1c.getOrUpdateScore(encodeAction(action,
-//      encodeTorCs(m_Context->s0cs1c, m_Context->s0uc)), m_nScoreIndex, amount, round);
+//      encodeTorCs(m_Context.s0cs1c, m_Context.s0uc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0UcS1c.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->s0uc, m_Context->s1c))), m_nScoreIndex, amount, round);
-//      if (m_Context->s1!=) nReturn +=
-//      cast_weights->m_mapS0cS0UcS1w.getOrUpdateScore(make_pair(*(m_Context->s1w),
-//      encodeAction(action, encodeTorCs(m_Context->s0c, m_Context->s0uc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS0UcS1c.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.s0uc, m_Context.s1c))), m_nScoreIndex, amount, round);
+//      if (m_Context.s1!=) nReturn +=
+//      cast_weights->m_mapS0cS0UcS1w.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0uc))), m_nScoreIndex, amount, round);
 //   }
 
    // Tag trigram
-   //if (m_Context->n0!=-1) {
-   //   if (m_Context->n1!=-1) nReturn +=
+   //if (m_Context.n0!=-1) {
+   //   if (m_Context.n1!=-1) nReturn +=
    //   cast_weights->m_mapN0tN1tN2t.getOrUpdateScore(encodeAction(action,
-   //   encodeTorCs(m_Context->n0tn1t, m_Context->n2t)), m_nScoreIndex, amount, round);
+   //   encodeTorCs(m_Context.n0tn1t, m_Context.n2t)), m_nScoreIndex, amount, round);
    //}
-//   if (m_Context->s1l!=-1) {
-//      assert(m_Context->s1r!=-1);
-//      assert(!item->nodes[m_Context->s1].temp||item->nodes[m_Context->s1].head_left());
-//      if (!item->nodes[m_Context->s1].temp) {
+//   if (m_Context.s1l!=-1) {
+//      assert(m_Context.s1r!=-1);
+//      assert(!item->nodes[m_Context.s1].temp||item->nodes[m_Context.s1].head_left());
+//      if (!item->nodes[m_Context.s1].temp) {
 //         nReturn +=
 //         cast_weights->m_mapS0cS1cS1Lc.getOrUpdateScore(encodeAction(action,
-//         encodeTorCs(m_Context->s0cs1c, m_Context->s1lc)), m_nScoreIndex, amount, round);
+//         encodeTorCs(m_Context.s0cs1c, m_Context.s1lc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1cS1Lc.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->s1c, m_Context->s1lc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1cS1Lc.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.s1c, m_Context.s1lc))), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wS1Lc.getOrUpdateScore(make_pair(*(m_Context->s1w),
-//      encodeAction(action, encodeTorCs(m_Context->s0c, m_Context->s1lc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0cS1wS1Lc.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s1lc))), m_nScoreIndex, amount, round);
 //      }
 //      nReturn +=
 //      cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(encodeAction(action,
-//      encodeTorCs(m_Context->s0cs1c, m_Context->s1rc)), m_nScoreIndex, amount, round);
+//      encodeTorCs(m_Context.s0cs1c, m_Context.s1rc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wS1Rc.getOrUpdateScore(make_pair(*(m_Context->s1w),
-//      encodeAction(action, encodeTorCs(m_Context->s0c, m_Context->s1rc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0cS1wS1Rc.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s1rc))), m_nScoreIndex, amount, round);
 //   }
-//   if (m_Context->s1u!=-1) {
+//   if (m_Context.s1u!=-1) {
 //      nReturn +=
 //      cast_weights->m_mapS0cS1cS1Uc.getOrUpdateScore(encodeAction(action,
-//      encodeTorCs(m_Context->s0cs1c, m_Context->s1uc)), m_nScoreIndex, amount, round);
+//      encodeTorCs(m_Context.s0cs1c, m_Context.s1uc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1cS1Uc.getOrUpdateScore(make_pair(*(m_Context->s0w),
-//      encodeAction(action, encodeTorCs(m_Context->s1c, m_Context->s1uc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1cS1Uc.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      encodeAction(action, encodeTorCs(m_Context.s1c, m_Context.s1uc))), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wS1Uc.getOrUpdateScore(make_pair(*(m_Context->s1w),
-//      encodeAction(action, encodeTorCs(m_Context->s0c, m_Context->s1uc))), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0cS1wS1Uc.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s1uc))), m_nScoreIndex, amount, round);
 //   }
    return nReturn;
 }
@@ -843,11 +843,11 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
 
    const SCORE_TYPE amount = (update==eAdd ? 1 : -1);
 
-   static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+   const static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
    static int count;
-   static CStateItem *current;
+   const CStateItem *current;
    count = 0;
-   current = this;
+   current = item;
    while (current) {
       if (current) states[count] = current;
       ++count ; //updating
@@ -912,8 +912,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    const static CStateItem *pBestGen;
    const static CStateItem *correctState ;
    static CAction action;
-   static CAgendaSimple<CScoredAction> beam(AGENDA_SIZE);
    static vector<CAction> actions; // actions to apply for a candidate
+   static CAgendaSimple<CScoredStateAction> beam(AGENDA_SIZE);
    static CScoredStateAction scored_action; // used rank actions
    ASSERT(nBest=1, "currently only do 1 best parse");
    // TODO: it is easy to extend this into N-best; just use a vector for candidate_output. during train maybe use the best to adjust
@@ -934,10 +934,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    // initialise agenda
    lattice_index[0] = lattice;
    lattice_index[0]->clear();
-   lattice_index[0]->sent = &m_lCache;
    if (bTrain) { 
       correctState = lattice_index[0];
-      correctState.sent = &m_lCache; //TODO
    }
    index=0;
 
@@ -970,9 +968,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             m_Context.load(pGenerator, m_lCache, m_lWordLen, false);
    
             // get actions
-            m_rule.getActions(pGenerator, actions);
+            m_rule.getActions(*pGenerator, actions);
             for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
-               scored_action.load(actions[tmp_j], pGenerator, getOrUpdateScore(pGenerator, actions[tmp_j]));
+               scored_action.load(actions[tmp_j], pGenerator, getOrUpdateScore(*pGenerator, actions[tmp_j]));
                beam.insertItem(&scored_action);
             }
          }
@@ -992,7 +990,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          }
       }
       for (tmp_j=0; tmp_j<beam.size(); ++tmp_j) { // insert from
-         pGenerator = beam.item(tmp_j)->state;
+         pGenerator = beam.item(tmp_j)->item;
          pGenerator->Move(lattice_index[index+1], beam.item(tmp_j)->action);
          lattice_index[index+1]->score += beam.item(tmp_j)->score;
          // update bestgen
@@ -1004,8 +1002,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
                // pGenerator==correctState implies correctState not finished
                // since a finished generator will not be put into beam
                // and thus it implis that action is valid
-               correctState = lattice_index[index+1]
-               assert (correctState.unary_reduce<=UNARY_MOVES) ; //TODO
+               correctState = lattice_index[index+1];
+               assert (correctState.unaryreduces()<=UNARY_MOVES) ; //TODO
                bCorrect = true;
             }
          }
@@ -1020,7 +1018,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
             TRACE("Error at the "<<correctState->current_word<<"th word; total is "<<m_lCache.size())
-            updateScoresForStates(pBestGen, &correctState) ; 
+            updateScoresForStates(pBestGen, correctState) ; 
             return ;
          }
 #endif

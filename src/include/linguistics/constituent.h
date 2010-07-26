@@ -26,7 +26,6 @@ namespace TARGET_LANGUAGE {
 class CCFGTreeNode {
 
 public:
-   int parent;
    bool is_constituent; // constituent or token
    bool single_child; // single or double
    bool head_left; // double children
@@ -41,7 +40,6 @@ public:
 public:
    CCFGTreeNode() { 
       token=-1; 
-      parent=-1; 
       left_child=-1; 
       right_child=-1; 
       is_constituent = true;
@@ -60,8 +58,8 @@ public:
    string str() const {
      ostringstream os;
      if (is_constituent)
-        os << "Constituent(parent=" << parent << ", left=" << left_child << ", right=" << right_child << ")";
-     else os << "Token(parent=" << parent << ")";
+        os << "Constituent(left=" << left_child << ", right=" << right_child << ")";
+     else os << "Token";
      
      return os.str();
    }
@@ -115,6 +113,14 @@ public:
       if (root == -1 || tree.root == -1)
          return root == tree.root;
       return nodesEqual(tree, root, tree.root);
+   }
+
+   int parent(const int &node) const {
+      for (int i=node+1; i<nodes.size(); ++i) {
+         if (nodes[i].left_child==node || nodes[i].right_child==node)
+            return i;
+      }
+      return -1;
    }
 }; 
 

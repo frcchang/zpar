@@ -14,13 +14,12 @@ public:
    enum NODE_TYPE {LEAF=0, SINGLE_CHILD, HEAD_LEFT, HEAD_RIGHT};
 public:
    int id;
-   CStateNode *parent;
    NODE_TYPE type;
    bool temp;
    // fields for constituents
    CConstituent constituent;
-   CStateNode* left_child;
-   CStateNode* right_child;
+   const CStateNode* left_child;
+   const CStateNode* right_child;
    // fields for tokens and constituents
    int lexical_head;
 //   int lexical_start;
@@ -32,14 +31,13 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, CStateNode* &parent, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head) : id(id), parent(parent), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head) {}
-   CStateNode() : id(-1), parent(0), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0) {}
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head) {}
+   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0) {}
    virtual ~CStateNode() {}
 public:
    bool valid() const { return id!=-1; }
    void clear() { 
       this->id = -1;
-      this->parent = 0; 
       this->type = static_cast<NODE_TYPE>(0); 
       this->temp = 0; 
       this->constituent.clear(); 
@@ -47,9 +45,8 @@ public:
       this->right_child = 0; 
       this->lexical_head = 0; 
    }
-   void set(const int &id, CStateNode *parent, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head) { 
+   void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head) { 
       this->id = id;
-      this->parent = parent; 
       this->type = type; 
       this->temp = temp; 
       this->constituent = constituent; 
@@ -59,7 +56,6 @@ public:
    }//{}
    bool operator == (const CStateNode &nd) const {
       return id == nd.id &&
-             parent == nd.parent && 
              type == nd.type && 
              temp == nd.temp && 
              constituent == nd.constituent && 
@@ -69,7 +65,6 @@ public:
    }
    void operator = (const CStateNode &nd) {
       id = nd.id;
-      parent = nd.parent;
       type = nd.type;
       temp = nd.temp;
       constituent.copy(nd.constituent);
@@ -79,7 +74,7 @@ public:
    }
 public:
    void toCCFGTreeNode(CCFGTreeNode &node) const {
-      node.parent = parent->id;
+//      node.parent = parent->id;
       node.is_constituent = is_constituent();
       node.temp = temp;
 #ifdef NO_TEMP_CONSTITUENT
@@ -109,15 +104,14 @@ class CStateItem {
 public:
    SCORE_TYPE score;
    CStateNode node;
-   CStateItem *statePtr;
-   CStateItem *stackPtr;
+   const CStateItem *statePtr;
+   const CStateItem *stackPtr;
    int current_word;
    CAction action;
-   const CContext *context;
-   const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
+//   const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
    
 public:
-   CStateItem() : current_word(0), score(0), action(), context(0), sent(0), stackPtr(0), statePtr(0), node() {}
+   CStateItem() : current_word(0), score(0), action(), /*sent(0),*/ stackPtr(0), statePtr(0), node() {}
    virtual ~CStateItem() {}
 public:
    void clear() {
@@ -125,10 +119,10 @@ public:
       stackPtr = 0;
       current_word = 0;
       node.clear();
+      stackPtr = 0;
       score = 0;
       action.clear();
-      context = 0;
-      sent = 0;
+//      sent = 0;
    }
    bool empty() const {
       if (current_word==0) {
@@ -170,27 +164,26 @@ public:
 
 protected:
    // now this aftions MUST BE called by Move
-   void shift(CStateItem *retval, const unsigned long &constituent = CConstituent::NONE) {
+   void shift(CStateItem *retval, const unsigned long &constituent = CConstituent::NONE) const {
       //TRACE("shift");
       assert(!IsTerminated());
       static int t;
-      retval->node.set(node.id+1, 0, CStateNode::LEAF, false, constituent, 0, 0, current_word);
+      retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, current_word);
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///  
       assert(!retval->IsTerminated());
    }
-   void reduce(CStateItem *retval, const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) {
+   void reduce(CStateItem *retval, const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) const {
       //TRACE("reduce");
       assert(!IsTerminated());
       static int c;         // the new node
-      static CStateNode *l, *r;
+      const static CStateNode *l, *r;
       assert(stackPtr!=0);
       if (single_child) {
          assert(head_left == false);
          assert(temporary == false);
          l = &node;
-         retval->node.set(node.id+1, 0, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head);
-         l->parent = &retval->node;
+         retval->node.set(node.id+1, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head);
          retval->stackPtr = stackPtr;
       }
       else {
@@ -198,19 +191,17 @@ protected:
          r = &node;
          l = &(stackPtr->node);
 #ifdef NO_TEMP_CONSTITUENT
-         retval->node.set(node.id+1, 0, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, constituent, l, r, (head_left?l->lexical_head:r->lexical_head));
+         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, constituent, l, r, (head_left?l->lexical_head:r->lexical_head));
 #else
-         retval->node.set(node.id+1, 0, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, CConstituent::encodeTmp(constituent, temporary), l, r, (head_left?l->lexical_head:r->lexical_head));
+         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, CConstituent::encodeTmp(constituent, temporary), l, r, (head_left?l->lexical_head:r->lexical_head));
 #endif
-         l->parent = &(retval->node);
-         r->parent = &(retval->node);
          retval->stackPtr = stackPtr->stackPtr;
       }
       assert(!IsTerminated());
    }
-   void terminate(CStateItem *retval) {
+   void terminate(CStateItem *retval) const {
       //TRACE("terminate");
-      assert(IsComplete());
+//      assert(IsComplete());
       assert(!IsTerminated());
       retval->clear();
       retval->stackPtr=this;
@@ -222,7 +213,7 @@ public:
    void NextMove(const CCFGTree &snt, CAction &retval) const {
       int s = node.id;
       const CCFGTreeNode &nd = snt.nodes[s];
-      const CCFGTreeNode &hd = snt.nodes[nd.parent];
+      const CCFGTreeNode &hd = snt.nodes[snt.parent(s)];
       assert(hd.constituent!=CConstituent::NONE); // so that reduce and reduce_root are not same
       bool single_child;
       bool head_left;
@@ -252,37 +243,36 @@ public:
 
    void StandardMove(const CCFGTree &tr, CAction &retval) const {
       assert(!IsTerminated());
-      assert(tr.words.size() == sent->size());
+//      assert(tr.words.size() == sent->size());
       // stack empty?shift
       if (stacksize()==0) {
          retval.encodeShift(tr.nodes[newNodeIndex()].constituent);
          return;
       }
-      int s = node.id;
-      if (tr.nodes[s].parent == -1) {
-         assert(IsComplete());
+      if (tr.parent(node.id) == -1) {
+         assert(IsComplete(tr.words.size()));
          retval.encodeReduceRoot();
          return;
       }
       NextMove(tr, retval);
    }
 
-   void Move(CStateItem *retval, const CAction &action) {
+   void Move(CStateItem *retval, const CAction &action) const {
       retval->action = action; // this makes it necessary for the actions to 
       retval->statePtr = this; // be called by Move
       if (action.isShift())
          shift(retval, action.getConstituent());
       else if (action.isReduceRoot())
-         { assert(IsComplete()); terminate(retval); }
+         { /*assert(IsComplete());*/ terminate(retval); }
       else
          reduce(retval, action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
    }
    
-   bool IsComplete() const {
+   bool IsComplete(const int &nWords) const {
 #ifdef FRAGMENTED_TREE
-      return current_word == sent->size(); // allow multiple-rt.
+      return current_word == nWords; // allow multiple-rt.
 #else
-      return current_word == sent->size() && stacksize() == 1;
+      return current_word == nWords && stacksize() == 1;
 #endif
    }
 
@@ -292,9 +282,8 @@ public:
 
    void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &out) const {
       // parsing done?
-      //assert(IsComplete());
       assert(IsTerminated());
-      assert(tagged.size()==sent->size());
+//      assert(tagged.size()==sent->size());
       out.clear();
 #ifdef FRAGMENTED_TREE
       if (stacksize()>1) {
