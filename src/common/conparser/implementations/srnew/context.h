@@ -256,16 +256,16 @@ public:
 
       if (modify==false) {
          if (s1!=0) s0ws1w.refer(s0w, s1w); 
-         if (n0!=0) s0wn0w.refer(s0w, n0w); 
-         if (n1!=0) n0wn1w.refer(n0w, n1w);
-         if (s1!=0&&n0!=0) s1wn0w.refer(s1w, n0w);
+         if (n0!=-1) s0wn0w.refer(s0w, n0w); 
+         if (n1!=-1) n0wn1w.refer(n0w, n1w);
+         if (s1!=0&&n0!=-1) s1wn0w.refer(s1w, n0w);
          if (s1!=0) s0wts1wt.refer(s0wt, s1wt); 
       }
       else {
          if (s1!=0) s0ws1w.allocate(*s0w, *s1w);
-         if (n0!=0) s0wn0w.allocate(*s0w, *n0w);
-         if (n1!=0) n0wn1w.allocate(*n0w, *n1w);
-         if (s1!=0&&n0!=0) s1wn0w.allocate(*s1w, *n0w);
+         if (n0!=-1) s0wn0w.allocate(*s0w, *n0w);
+         if (n1!=-1) n0wn1w.allocate(*n0w, *n1w);
+         if (s1!=0&&n0!=-1) s1wn0w.allocate(*s1w, *n0w);
          if (s1!=0) s0wts1wt.allocate(*s0wt, *s1wt);
       }
       s0cs1c.load(s0c, s1c);
