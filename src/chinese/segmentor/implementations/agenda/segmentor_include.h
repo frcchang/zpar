@@ -19,7 +19,7 @@ const int BEAM_SIZE = 16;
 //
 // All segmentor must define the following
 //
-const int MAX_SENTENCE_SIZE = 512; // restrict size of sentences 
+const int MAX_SENTENCE_SIZE = 1024; // restrict size of sentences 
 const int MAX_WORD_SIZE = 128; // restrict size of words
 
 const int LENGTH_MAX_BITS = 3;

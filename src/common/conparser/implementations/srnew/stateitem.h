@@ -119,14 +119,13 @@ public:
       stackPtr = 0;
       current_word = 0;
       node.clear();
-      stackPtr = 0;
       score = 0;
       action.clear();
 //      sent = 0;
    }
    bool empty() const {
       if (current_word==0) {
-         assert(stackPtr == 0 && statePtr == 0 && action==0 && score==0);
+         assert(stackPtr == 0 && statePtr == 0 && score==0);
          return true;
       }
       return false;
@@ -197,14 +196,16 @@ protected:
 #endif
          retval->stackPtr = stackPtr->stackPtr;
       }
+      retval->current_word = current_word;
       assert(!IsTerminated());
    }
    void terminate(CStateItem *retval) const {
       //TRACE("terminate");
 //      assert(IsComplete());
       assert(!IsTerminated());
-      retval->clear();
+      retval->node.clear();
       retval->stackPtr=this;
+      retval->current_word = current_word;
       assert(retval->IsTerminated());
    }
 
@@ -358,6 +359,7 @@ public:
          else {
             TRACE(states[count]->action.str());
          }
+         --count;
       }
       TRACE("");
    }
