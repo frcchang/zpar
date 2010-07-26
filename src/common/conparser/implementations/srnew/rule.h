@@ -19,9 +19,10 @@ protected:
    CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> > *m_mapBinaryRules;
    CHashMap< CConstituent, vector<CAction> > *m_mapUnaryRules;
    const vector< vector<CConstituent> > *m_LexConstituents;
+   const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *m_sent;
 
 public:
-   CRule() : m_mapBinaryRules(0), m_mapUnaryRules(0), m_LexConstituents(0) {}
+   CRule(const vector< CTaggedWord<CTag, TAG_SEPARATOR> >*sent) : m_mapBinaryRules(0), m_mapUnaryRules(0), m_LexConstituents(0), m_sent(sent) {}
    virtual ~CRule() {
       if (m_mapBinaryRules) 
          delete m_mapBinaryRules; 
@@ -36,10 +37,10 @@ public:
 
       static CAction action;
       const unsigned stack_size = item.stacksize();
-      const unsigned &length = item.sent->size();
+      const unsigned &length = m_sent->size();
 
       // finish parsing
-      if (item.IsComplete()) { 
+      if (item.IsComplete(length)) { 
          action.encodeReduceRoot();
          actions.push_back(action);
       }
@@ -75,7 +76,7 @@ protected:
       static CAction action;
       // the rules onto lexical item constituents
       if (m_LexConstituents) {
-         ASSERT(m_LexConstituents->at(item.current_word).size()>0, "no lexical constituents for word "<<item.current_word<<" ("<<item.sent->at(item.current_word).str()<<") is provided.");
+         ASSERT(m_LexConstituents->at(item.current_word).size()>0, "no lexical constituents for word "<<item.current_word<<" ("<<m_sent->at(item.current_word).str()<<") is provided.");
          for (int i=0; i<m_LexConstituents->at(item.current_word).size(); ++i) {
 //            TRACE("shift "<<m_LexConstituents->at(item.current_word).at(i).str());
             action.encodeShift(m_LexConstituents->at(item.current_word).at(i).code());
@@ -87,7 +88,7 @@ protected:
       action.encodeShift();
       actions.push_back(action);
    }
-   void getBinaryRules(const CStateItem &item, vector<CAction> &actions) {
+   void getBinaryRules(const CStateItem &item,  vector<CAction> &actions) {
       static CAction action;
       const unsigned stack_size = item.stacksize();
       ASSERT(stack_size>0, "Binary reduce required for stack containing one node");
@@ -110,14 +111,14 @@ protected:
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {
 	    const bool &head_left = static_cast<bool>(i);
-            const CWord &head_wd = item.sent->at( (head_left?left:right).lexical_head );
+            const CWord &head_wd = m_sent->at( (head_left?left:right).lexical_head );
 #ifndef NO_TEMP_CONSTITUENT
             for (unsigned j=0; j<=1; ++j) {
                const bool &temporary = static_cast<bool>(j);
                if ( ( !left.temp || !right.temp ) &&
-                     ( !(stack_size==2 && item.current_word==item.sent->size()) || !temporary ) &&
+                     ( !(stack_size==2 && item.current_word==m_sent->size()) || !temporary ) &&
                      ( !(stack_size==2) || (!temporary||head_left) ) &&
-                     ( !(prev_temp && item.current_word==item.sent->size()) || !temporary ) &&
+                     ( !(prev_temp && item.current_word==m_sent->size()) || !temporary ) &&
                      ( !(prev_temp) || (!temporary||head_left) ) &&
                      ( !left.temp || (head_left&&constituent==left.constituent.extractConstituentCode()) ) &&
                      ( !right.temp || (!head_left&&constituent==right.constituent.extractConstituentCode()) ) //&&
@@ -134,7 +135,7 @@ protected:
          } // for constituent
    }
 
-   void getUnaryRules(const CStateItem &item, vector<CAction> &actions) {
+   void getUnaryRules(const CStateItem &item,  vector<CAction> &actions) {
       const CStateNode &child = item.node;
       // input rule list
       if (m_mapUnaryRules) {

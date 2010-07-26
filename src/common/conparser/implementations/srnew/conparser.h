@@ -54,7 +54,7 @@ private:
 
 public:
    // constructor and destructor
-   CConParser( const string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain) { 
+   CConParser( const string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache) { 
       // initialize agenda
       m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
@@ -78,7 +78,7 @@ public:
       delete m_Agenda;
       delete m_weights;
    }
-   CConParser( CConParser &conparser) : CConParserBase(conparser) { 
+   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache) { 
       assert(1==0);
    }
 

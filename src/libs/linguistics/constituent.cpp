@@ -31,8 +31,6 @@ int CCFGTree::readNode(istream &is) {
          left = readNode(is);
          right = readNode(is);
          node = newNode();
-         nodes.at(left).parent = node;
-         nodes.at(right).parent = node;
          nodes[node].is_constituent = true;
          nodes[node].single_child = false;
          // l - head left; r / e - head right
@@ -64,7 +62,6 @@ int CCFGTree::readNode(istream &is) {
       else if (s[0] == 's') {
          left = readNode(is);
          node = newNode();
-         nodes.at(left).parent = node;
          nodes[node].is_constituent = true;
          nodes[node].single_child = true;
          nodes[node].left_child = left;
