@@ -992,7 +992,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       for (tmp_j=0; tmp_j<beam.size(); ++tmp_j) { // insert from
          pGenerator = beam.item(tmp_j)->item;
          pGenerator->Move(lattice_index[index+1], beam.item(tmp_j)->action);
-         lattice_index[index+1]->score += beam.item(tmp_j)->score;
+         lattice_index[index+1]->score = beam.item(tmp_j)->score;
          // update bestgen
          if (bTrain) {
             if ( pBestGen == 0 || lattice_index[index+1]->score > pBestGen->score ) {

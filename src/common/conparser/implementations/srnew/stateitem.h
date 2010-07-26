@@ -85,8 +85,8 @@ public:
 #endif
       node.single_child = single_child();
       node.head_left = head_left();
-      node.left_child = left_child->id;
-      node.right_child = right_child->id;
+      node.left_child = left_child ? left_child->id : -1;
+      node.right_child = right_child ? right_child->id : -1;
       node.token = lexical_head;
    }
 };
@@ -323,9 +323,11 @@ public:
       const static CStateItem *current;
       current = this;
       while (current) {
-         if (current->node.valid()) nodes[count] = &current->node;
+         if (current->node.valid()) {
+            nodes[count] = &current->node;
+            ++count; 
+         }
          current = current->statePtr;
-         ++count; 
       }
 
       for (i=count-1; i>=0; --i) {
@@ -383,7 +385,7 @@ public:
    void load(const CAction &action, const CStateItem *item, const SCORE_TYPE &score) {
       this->action = action; 
       this->item = item;
-      this->score = score;
+      this->score = item->score + score;
    }
 
 public:
