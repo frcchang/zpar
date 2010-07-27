@@ -54,7 +54,6 @@ public:
    }
 public:
    void toCCFGTreeNode(CCFGTreeNode &node) const {
-      node.parent = parent;
       node.is_constituent = is_constituent();
       node.temp = temp;
 #ifdef NO_TEMP_CONSTITUENT
@@ -70,7 +69,6 @@ public:
       node.token = lexical_head;
    }
    void fromCCFGTreeNode(const CCFGTreeNode &node) {
-      parent = node.parent;
       temp = node.temp;
       constituent.load(node.constituent);
       left_child = node.left_child;
@@ -254,7 +252,7 @@ public:
    void NextMove(const CCFGTree &snt, CAction &retval) const {
       int s = stack.back();
       const CCFGTreeNode &nd = snt.nodes[s];
-      const CCFGTreeNode &hd = snt.nodes[nd.parent];
+      const CCFGTreeNode &hd = snt.nodes[snt.parent(s)];
       assert(hd.constituent!=CConstituent::NONE); // so that reduce and reduce_root are not same
       bool single_child;
       bool head_left;
@@ -343,7 +341,7 @@ public:
          return;
       }
       int s = stack.back();
-      if (tr.nodes[s].parent == -1) {
+      if (tr.parent(s) == -1) {
          assert(IsComplete());
          retval.encodeReduceRoot();
          return;
