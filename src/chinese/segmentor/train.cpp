@@ -78,6 +78,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
    segmentor->finishTraining(nCount);
    delete input_sent;
    delete ref_sent;
+   delete segmentor;
    cout << "Done. " << endl;
 }
 

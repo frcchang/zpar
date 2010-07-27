@@ -6,7 +6,7 @@ def countlines(file):
    total = 0
    for line in path:
       total += 1
-   close(path)
+   path.close()
    return total
 
 def filterlines(path, dLines, bConsume=False):
