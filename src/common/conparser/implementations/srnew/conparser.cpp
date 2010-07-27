@@ -847,7 +847,7 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
    count = 0;
    current = item;
    while (current) {
-      if (current) states[count] = current;
+      states[count] = current;
       ++count ; //updating
       current = current->statePtr;
    }
@@ -975,10 +975,6 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             }
          }
    
-         // compare generator to corr
-//         if (bTrain && *pGenerator == correctState) { 
-//            bCorrect = true ;
-//         }
       } // done iterating generator item
 
       // insertItems
@@ -1003,7 +999,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
                // since a finished generator will not be put into beam
                // and thus it implis that action is valid
                correctState = lattice_index[index+1];
-               assert (correctState->unaryreduces()<=UNARY_MOVES) ; //TODO
+               assert (correctState->unaryreduces()<=UNARY_MOVES) ; 
                bCorrect = true;
             }
          }
@@ -1030,9 +1026,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          }
 #endif
       }  // end of update
-
-      m_Agenda->nextRound(); // move round
-   }
+   } // while
 
    if (bTrain) {
       // make sure that the correct item is stack top finally

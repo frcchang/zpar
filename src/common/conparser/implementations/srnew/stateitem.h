@@ -289,7 +289,8 @@ public:
 #ifdef FRAGMENTED_TREE
       if (stacksize()>1) {
          static CStateItem *item;
-         item = stackPtr;
+         item = statePtr;
+         assert(item==stackPtr);
          static CStateItem *tmp;
          tmp = new CStateItem[stacksize()];
          static CStateItem *current;
@@ -347,8 +348,8 @@ public:
       const static CStateItem *current;
       count = 0;
       current = this;
-      while (current) {
-         if (current) states[count] = current;
+      while (current->statePtr) {
+         states[count] = current;
          ++count ; //updating
          current = current->statePtr;
       }
@@ -381,7 +382,7 @@ public:
    SCORE_TYPE score;
 
 public:
-   CScoredStateAction() : action(), score(0) {}
+   CScoredStateAction() : item(0), action(), score(0) {}
    void load(const CAction &action, const CStateItem *item, const SCORE_TYPE &score) {
       this->action = action; 
       this->item = item;

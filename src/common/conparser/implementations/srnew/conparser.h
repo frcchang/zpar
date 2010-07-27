@@ -42,7 +42,7 @@ class CConParser : public CConParserBase {
 
 private:
 
-   CAgendaBeam<conparser::CStateItem> *m_Agenda;
+//   CAgendaBeam<conparser::CStateItem> *m_Agenda;
    vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    vector<unsigned long> m_lWordLen;
    int m_nTrainingRound;
@@ -56,7 +56,7 @@ public:
    // constructor and destructor
    CConParser( const string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache) { 
       // initialize agenda
-      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
+//      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
       m_weights = new conparser :: CWeight( bTrain );
       ifstream file;
@@ -75,7 +75,7 @@ public:
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
    }
    ~CConParser() {
-      delete m_Agenda;
+//      delete m_Agenda;
       delete m_weights;
    }
    CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache) { 
