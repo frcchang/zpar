@@ -48,7 +48,7 @@ CHINESE_DEPPARSER_LABELED = false
 CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
-CHINESE_CONPARSER_IMPL = sr
+CHINESE_CONPARSER_IMPL = srnew
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = agenda
@@ -65,8 +65,8 @@ ENGLISH_CONPARSER_IMPL = srnew
 #
 #================================================================
 
-DEBUG = -DDEBUG -g
-#DEBUG = -DNDEBUG
+#DEBUG = -DDEBUG -g
+DEBUG = -DNDEBUG
 
 #================================================================
 #
