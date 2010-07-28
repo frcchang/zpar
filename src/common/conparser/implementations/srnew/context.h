@@ -182,9 +182,9 @@ public:
       n3 = item->current_word+3 >= wrds.size() ? -1 : item->current_word+3;
    
       s0 = &(item->node);
-      s1 = stacksize<2 ? 0 : &(item->statePtr->node);
-      s2 = stacksize<3 ? 0 : &(item->statePtr->statePtr->node);
-      s3 = stacksize<4 ? 0 : &(item->statePtr->statePtr->statePtr->node);
+      s1 = stacksize<2 ? 0 : &(item->stackPtr->node);
+      s2 = stacksize<3 ? 0 : &(item->stackPtr->stackPtr->node);
+      s3 = stacksize<4 ? 0 : &(item->stackPtr->stackPtr->stackPtr->node);
   
       s0l = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? 0 : s0->left_child) : 0;
       s0r = s0->is_constituent() ? (s0->single_child()||!s0->head_left() ? 0 : s0->right_child) : 0;
