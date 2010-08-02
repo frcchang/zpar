@@ -31,6 +31,8 @@ const int CHAR_CAT_BITS = 3;
    left(m_weights.m_mapLengthByLastWord)right\
    left(m_weights.m_mapLastLengthByWord)right\
    left(m_weights.m_mapLexiconWord)right\
+   left(m_weights.m_mapCharCatUnigram)right\
+   left(m_weights.m_mapCharCatBigram)right\
    left(m_weights.m_mapCharCatTrigram)right
 
 /*===============================================================
@@ -44,6 +46,7 @@ class CWeight {
 public:
    typedef CScoreMapType< CWord, SCORE_TYPE > CWordMap;
    typedef CScoreMapType< CTwoWords, SCORE_TYPE > CTwoWordsMap;
+   typedef CScoreMapType< pair<int, int>, SCORE_TYPE > CPairIntMap;
    typedef CScoreMapType< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
    typedef CScoreMapType< pair<CTwoWords, int>, SCORE_TYPE > CTwoWordsIntMap;
    typedef CScoreMapType< unsigned long int, SCORE_TYPE > CIntMap;
@@ -71,8 +74,10 @@ public:
    CWordIntMap m_mapLastLengthByWord;
 
    // word knowledge features
-   CIntMap m_mapLexiconWord;
-   CIntMap m_mapCharCatTrigram;
+   CPairIntMap m_mapLexiconWord;
+   CPairIntMap m_mapCharCatUnigram;
+   CPairIntMap m_mapCharCatBigram;
+   CPairIntMap m_mapCharCatTrigram;
 
 public:
    CWeight() : m_mapCharUnigram("CharUnigram", 65537),
@@ -94,6 +99,8 @@ public:
                m_mapLengthByLastWord("LengthByLastWord", 65537),
                m_mapLastLengthByWord("LastLengthByWord", 65537),
                m_mapLexiconWord("LexiconWord", 7), 
+               m_mapCharCatUnigram("CharCatUnigram", 997),
+               m_mapCharCatBigram("CharCatBigram", 997), 
                m_mapCharCatTrigram("CharCatTrigram", 997) {
    }
 };

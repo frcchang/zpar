@@ -133,14 +133,20 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
 
    // ===================================================================================
    // character scores -- with end-1 middled
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) 
-//      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) {
+      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatUnigram.getOrUpdateScore( make_pair( segmentor->charType(_cache_word(tmp_i, 1)), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   }
 
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) 
-//      nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) {
+      nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatBigram.getOrUpdateScore( make_pair( segmentor->charType(_cache_word(tmp_i, 2)), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   }
 
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-2, end); ++tmp_i) 
-//      nReturn += weight.m_mapCharTrigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-2, end); ++tmp_i) {
+      nReturn += weight.m_mapCharTrigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatTrigram.getOrUpdateScore( make_pair( segmentor->charType(_cache_word(tmp_i, 3)), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   }
 
    // ===================================================================================
    // word scores 
@@ -169,20 +175,6 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
       nReturn += weight.m_mapWordAndNextChar.getOrUpdateScore(word_nextchar, which_score, amount, round);
       nReturn += weight.m_mapFirstCharLastWordByWord.getOrUpdateScore(first_chars_two_words, which_score, amount, round);
    }
-
-   // ===================================================================================
-   // word scores from knowledge
-//   if ( segmentor->hasCharTypeKnowledge() ) {
-//      if ( end>0 && end<sentence->size()-1 ) {
-//         tmp_i = encodeCharInfoAndType( 
-//                    char_info , 
-//                    segmentor->charType( _cache_word(end-1, 1) ), 
-//                    segmentor->charType( _cache_word(end, 1) ),
-//                    segmentor->charType( _cache_word(end+1, 1) ),
-//                 ) ;
-//         nReturn += weight.m_mapCharCatTrigram.getOrUpdateScore(tmp_i, which_score, amount, round) ;
-//      }
-//   }
 
    // ===================================================================================
    // word scores from knowledge
@@ -238,32 +230,24 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    retval = 0;
    // ===================================================================================
    // character scores -- the middle character is end-1
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) 
-//      retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) {
+      retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatUnigram.getOrUpdateScore( make_pair( segmentor->charType(_cache_word(tmp_i, 1)), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   }
 
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) 
-//      retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) {
+      retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatBigram.getOrUpdateScore( make_pair( segmentor->charType(_cache_word(tmp_i, 2)), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   }
 
-//   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-2, end); ++tmp_i) 
-//      retval += weight.m_mapCharTrigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-2, end); ++tmp_i) {
+      retval += weight.m_mapCharTrigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatTrigram.getOrUpdateScore( make_pair( segmentor->charType(_cache_word(tmp_i, 3)), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   }
 
    retval += weight.m_mapConsecutiveChars.getOrUpdateScore( _cache_word(end, 2), which_score, amount, round); 
    retval += weight.m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, which_score, amount, round);
 
-   // ===================================================================================
-   // word scores from knowledge
-   if ( segmentor->hasCharTypeKnowledge() ) {
-      if ( end>0 && end<sentence->size()-1 ) {
-//         tmp_i = encodeCharInfoAndType( 
-//                    char_info , 
-//                    segmentor->charType(_cache_word(end-1, 1)),
-//                    segmentor->charType(_cache_word(end, 1)),
-//                    segmentor->charType(_cache_word(end+1, 1))
-//                 ) ;
-//         retval += weight.m_mapCharCatTrigram.getOrUpdateScore(tmp_i, which_score, amount, round) ;
-      }
-   }
-//
    return retval;
 }
 
