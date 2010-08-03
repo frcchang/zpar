@@ -9,7 +9,7 @@
 #ifndef SEGMENTOR_AGENDA_IMPL_H
 #define SEGMENTOR_AGENDA_IMPL_H
 
-const int CHAR_CAT_BITS = 3;
+const int CHAR_TYPE_SIZE = 4;
 
 #define iterate_templates(left,right) \
    left(m_weights.m_mapCharUnigram)right\
@@ -133,13 +133,6 @@ inline int encodeCharSegmentation(const bool &b, const bool &e) {
 inline int encodeCharInfoAndPosition(const int &char_info, const int &pos) {
    assert( pos >= -3 && pos <= 3 ); // pos+3 0->6
    return (char_info<<3) | (pos+3);
-}
-
-inline int encodeCharInfoAndType(const int &char_info, const int &charcat1, const int &charcat2, const int &charcat3) {
-   assert( charcat1 >= 0 && charcat1 < (1<<CHAR_CAT_BITS) );
-   assert( charcat2 >= 0 && charcat2 < (1<<CHAR_CAT_BITS) );
-   assert( charcat3 >= 0 && charcat3 < (1<<CHAR_CAT_BITS) );
-   return (char_info<<(CHAR_CAT_BITS*3)) | (charcat1<<(CHAR_CAT_BITS*2)) | (charcat2<<CHAR_CAT_BITS) | charcat3;
 }
 
 #endif
