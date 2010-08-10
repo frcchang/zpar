@@ -16,7 +16,7 @@
 // utilities defining the hash for types
 #include "hash_utils.h"
 // the implementation: choose between hash_simple and hash_combined
-#include "hash_combined.h"
+#include "hash_simple.h"
 
 // io
 #include "hash_stream.h"
