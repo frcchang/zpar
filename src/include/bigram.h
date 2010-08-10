@@ -31,20 +31,7 @@ public:
    CBigram() { m_unigram1 = 0; m_unigram2 = 0; m_bAllocated = false; }
    // if an allocated bigram is copied to another, both will be allocated. 
    // if the source bigram is unallocated, neither will the target be allocated. 
-   CBigram(const CBigram &w) { 
-      if (w.m_bAllocated) { 
-         m_unigram1 = new CUnigram(*(w.m_unigram1)); 
-         m_unigram2 = new CUnigram(*(w.m_unigram2)); 
-         m_nHash = w.m_nHash;
-         m_bAllocated = true; 
-      } 
-      else { 
-         m_unigram1 = w.m_unigram1;
-         m_unigram2 = w.m_unigram2;
-         m_nHash = w.m_nHash;
-         m_bAllocated = false;
-      } 
-   }
+   CBigram(const CBigram &w) { *this = w;}
    virtual ~CBigram() { if (m_bAllocated) { delete m_unigram1; delete m_unigram2;} }
 
 public:
@@ -87,6 +74,22 @@ public:
    // comparison methods
    bool operator == (const CBigram &w) const { return *m_unigram1 == *(w.m_unigram1) && *m_unigram2 == *(w.m_unigram2); }
    bool operator < (const CBigram &w) const { return *m_unigram1<*(w.m_unigram1) || (*m_unigram1==*(w.m_unigram1) && *m_unigram2<*(w.m_unigram2)); }
+
+   // assignment
+   void operator = (const CBigram &w) {
+      if (w.m_bAllocated) { 
+         m_unigram1 = new CUnigram(*(w.m_unigram1)); 
+         m_unigram2 = new CUnigram(*(w.m_unigram2)); 
+         m_nHash = w.m_nHash;
+         m_bAllocated = true; 
+      } 
+      else { 
+         m_unigram1 = w.m_unigram1;
+         m_unigram2 = w.m_unigram2;
+         m_nHash = w.m_nHash;
+         m_bAllocated = false;
+      } 
+   }
 
 protected:
    inline void computehash() { m_nHash = m_unigram1->hash() * 31 + m_unigram2->hash(); }

@@ -111,6 +111,9 @@ public:
       // save rule
       os << m_bRule << endl;
       // save features
+#ifdef DEBUG
+      iterate_templates(,.trace(););
+#endif
       iterate_templates(os<<,;);
       // finalization
       os.close();

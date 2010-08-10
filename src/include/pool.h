@@ -18,27 +18,29 @@
 template <typename T>
 class CMemoryPool {
 protected:
-   vector<const T*> blocks;
-   unsigned nItem;
-   unsigned block_size;
+   vector<T*> blocks;
+   unsigned long nItem;
+   unsigned long block_size;
 public:
-   CMemoryPool(const unsigned &block_size): block_size(block_size), nItem(0) {
-      T* block = new T[block_size];
-      blocks.push_back(block);
+   CMemoryPool(const unsigned long &block_size): block_size(block_size), nItem(0) {
+      newblock();
    }
    virtual ~CMemoryPool() {
-      for (unsigned i=0; i<blocks.size(); ++i)
-         delete blocks[i];
-      }
+      for (unsigned i=0; i<blocks.size(); ++i) { delete [] (blocks[i]); }
+   }
+protected:
+   void newblock() {
+      T* block = new T[block_size];
+      blocks.push_back(block);
    }
 public:
    T* allocate() { 
       if (nItem==block_size) {
-         T* block = new T[block_size];
-         blocks.push_back(block);
+         newblock();
          nItem = 0;
       }
-      return blocks.back()[nItem++];
+      ++nItem;
+      return blocks.back() + nItem - 1 ;
    }
 };
 

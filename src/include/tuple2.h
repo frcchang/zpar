@@ -30,17 +30,8 @@ public:
    CTuple2() : m_object1(0), m_object2(0), m_bAllocated(false) {}
    // if an allocated tuple2 is copied to another, both will be allocated. 
    // if the source tuple2 is unallocated, neither will the target be allocated. 
-   CTuple2(const CTuple2 &w) : m_nHash(w.m_nHash) { 
-      if (w.m_bAllocated) { 
-         m_object1 = new CClass1(*(w.m_object1)); 
-         m_object2 = new CClass2(*(w.m_object2)); 
-         m_bAllocated = true; 
-      } 
-      else { 
-         m_object1 = w.m_object1;
-         m_object2 = w.m_object2;
-         m_bAllocated = false;
-      } 
+   CTuple2(const CTuple2 &w) { 
+      *this = w;
    }
    virtual ~CTuple2() { 
       if (m_bAllocated) { 
@@ -100,6 +91,20 @@ public:
    }
    bool operator < (const CTuple2 &w) const { 
       return *m_object1<*(w.m_object1) || (*m_object1==*(w.m_object1) && *m_object2<*(w.m_object2)); 
+   }
+
+   void operator = (const CTuple2 &w) {
+      if (w.m_bAllocated) { 
+         m_object1 = new CClass1(*(w.m_object1)); 
+         m_object2 = new CClass2(*(w.m_object2)); 
+         m_bAllocated = true; 
+      } 
+      else { 
+         m_object1 = w.m_object1;
+         m_object2 = w.m_object2;
+         m_bAllocated = false;
+      } 
+      m_nHash = w.m_nHash;
    }
 
 protected:

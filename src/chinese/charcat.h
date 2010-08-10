@@ -46,6 +46,7 @@ static const CWord CH_LBK = CWord("《");
 static const CWord CH_RRB = CWord("）");
 static const CWord CH_RQ = CWord("”");
 static const CWord CH_RBK = CWord("》");
+static const CWord CH_ELLIPSIS = CWord("…");
 //
 
 static const CWord starting_brackets[] = {
@@ -57,7 +58,7 @@ static const CWord ending_brackets[] = {
 };
 
 static const CWord separating_punctuations[] = {
-   CH_COMMA, CH_PERIOD, CH_DUN, CH_SEMICOLON, CH_EXCLAMATION, CH_QUESTION
+   CH_COMMA, CH_PERIOD, CH_DUN, CH_SEMICOLON, CH_EXCLAMATION, CH_QUESTION, CH_ELLIPSIS
 };
 
 static const CWord sentence_separators[] = {

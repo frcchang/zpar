@@ -10,6 +10,7 @@
 #define SEGMENTOR_AGENDA_IMPL_H
 
 const int CHAR_TYPE_SIZE = 4;
+const unsigned DEFAULT_TABLE_SIZE = 65536;
 
 #define iterate_templates(left,right) \
    left(m_weights.m_mapCharUnigram)right\
@@ -80,24 +81,24 @@ public:
    CPairIntMap m_mapCharCatTrigram;
 
 public:
-   CWeight() : m_mapCharUnigram("CharUnigram", 65537),
-               m_mapCharBigram("CharBigram", 65537),
-               m_mapCharTrigram("CharTrigram", 65537),
-               m_mapSeenWords("SeenWords", 65537),
-               m_mapLastWordByWord("LastWordByWord", 65537),
-               m_mapWordAndNextChar("WordAndNextChar", 65537),
-               m_mapWordAndPrevChar("WordAndPrevChar", 65537),
-               m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", 65537),
-               m_mapLastWordByLastChar("LastWordByLastChar", 65537),
-               m_mapSeparateChars("SeparateChars", 65537),
-               m_mapConsecutiveChars("ConsecutiveChars", 65537),
-               m_mapFirstAndLastChars("FirstAndLastChars", 65537),
-               m_mapFirstCharAndChar("FirstCharAndChar", 65537),
-               m_mapOneCharWord("OneCharWord", 65537),
-               m_mapLengthByFirstChar("LengthByFirstChar", 65537),
-               m_mapLengthByLastChar("LengthByLastChar", 65537),
-               m_mapLengthByLastWord("LengthByLastWord", 65537),
-               m_mapLastLengthByWord("LastLengthByWord", 65537),
+   CWeight() : m_mapCharUnigram("CharUnigram", DEFAULT_TABLE_SIZE),
+               m_mapCharBigram("CharBigram", DEFAULT_TABLE_SIZE),
+               m_mapCharTrigram("CharTrigram", DEFAULT_TABLE_SIZE),
+               m_mapSeenWords("SeenWords", DEFAULT_TABLE_SIZE),
+               m_mapLastWordByWord("LastWordByWord", DEFAULT_TABLE_SIZE),
+               m_mapWordAndNextChar("WordAndNextChar", DEFAULT_TABLE_SIZE),
+               m_mapWordAndPrevChar("WordAndPrevChar", DEFAULT_TABLE_SIZE),
+               m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", DEFAULT_TABLE_SIZE),
+               m_mapLastWordByLastChar("LastWordByLastChar", DEFAULT_TABLE_SIZE),
+               m_mapSeparateChars("SeparateChars", DEFAULT_TABLE_SIZE),
+               m_mapConsecutiveChars("ConsecutiveChars", DEFAULT_TABLE_SIZE),
+               m_mapFirstAndLastChars("FirstAndLastChars", DEFAULT_TABLE_SIZE),
+               m_mapFirstCharAndChar("FirstCharAndChar", DEFAULT_TABLE_SIZE),
+               m_mapOneCharWord("OneCharWord", DEFAULT_TABLE_SIZE),
+               m_mapLengthByFirstChar("LengthByFirstChar", DEFAULT_TABLE_SIZE),
+               m_mapLengthByLastChar("LengthByLastChar", DEFAULT_TABLE_SIZE),
+               m_mapLengthByLastWord("LengthByLastWord", DEFAULT_TABLE_SIZE),
+               m_mapLastLengthByWord("LastLengthByWord", DEFAULT_TABLE_SIZE),
                m_mapLexiconWord("LexiconWord", 7), 
                m_mapCharCatUnigram("CharCatUnigram", 997),
                m_mapCharCatBigram("CharCatBigram", 997), 
