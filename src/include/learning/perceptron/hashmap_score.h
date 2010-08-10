@@ -91,6 +91,14 @@ public:
       }
       return retval;
    }
+
+#ifdef DEBUG
+public:
+   void trace() {
+      cout << name << ": ";
+      CHashMap< K , CScore<SCORE_TYPE> >::trace();
+   }
+#endif
 };
 
 //===============================================================

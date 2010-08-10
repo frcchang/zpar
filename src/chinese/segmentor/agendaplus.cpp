@@ -223,7 +223,7 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    // about the chars
    const unsigned long start = item->getWordStart(index);
    const unsigned long end = item->getWordEnd(index);
-   assert( end<sentence->size()-1 );
+   assert( start>=0 && start<sentence->size()-1 && end<sentence->size()-1 );
    static bool bWordStart; // the last char starts a word?
    static int char_info; // start, middle, end or standalone
    bWordStart = ( start == end);

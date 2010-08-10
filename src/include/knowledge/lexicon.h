@@ -16,6 +16,8 @@
 
 class CLexiconSet : public CHashMap<CWord, unsigned long> {
 public:
+   CLexiconSet(const unsigned &size=65537) : CHashMap<CWord, unsigned long>(size) {}
+public:
    void add(const CWord &word) { (*this)[word]=1; }
    bool contains(const CWord &word) { return static_cast<bool>(find(word, 0)); }
 };

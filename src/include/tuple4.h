@@ -32,21 +32,8 @@ public:
    CTuple4() : m_object1(0), m_object2(0), m_object3(0), m_object4(0), m_bAllocated(false) {}
    // if an allocated tuple4 is copied to another, both will be allocated. 
    // if the source tuple4 is unallocated, neither will the target be allocated. 
-   CTuple4(const CTuple4 &w) : m_nHash(w.m_nHash) { 
-      if (w.m_bAllocated) { 
-         m_object1 = new CClass1(*(w.m_object1)); 
-         m_object2 = new CClass2(*(w.m_object2)); 
-         m_object3 = new CClass3(*(w.m_object3)); 
-         m_object4 = new CClass4(*(w.m_object4)); 
-         m_bAllocated = true; 
-      } 
-      else { 
-         m_object1 = w.m_object1;
-         m_object2 = w.m_object2;
-         m_object3 = w.m_object3;
-         m_object4 = w.m_object4;
-         m_bAllocated = false;
-      } 
+   CTuple4(const CTuple4 &w) { 
+      *this = w;
    }
    virtual ~CTuple4() { 
       if (m_bAllocated) { 
@@ -123,6 +110,24 @@ public:
              (*m_object1==*(w.m_object1) && *m_object2<*(w.m_object2)) || 
              (*m_object1==*(w.m_object1) && *m_object2 == *(w.m_object2) && *m_object3<*(w.m_object3)) || 
              (*m_object1==*(w.m_object1) && *m_object2 == *(w.m_object2) && *m_object3==*(w.m_object3) && *m_object4<*(w.m_object4)); 
+   }
+
+   void operator = (const CTuple3 &w) {
+      if (w.m_bAllocated) { 
+         m_object1 = new CClass1(*(w.m_object1)); 
+         m_object2 = new CClass2(*(w.m_object2)); 
+         m_object3 = new CClass3(*(w.m_object3)); 
+         m_object4 = new CClass4(*(w.m_object4)); 
+         m_bAllocated = true; 
+      } 
+      else { 
+         m_object1 = w.m_object1;
+         m_object2 = w.m_object2;
+         m_object3 = w.m_object3;
+         m_object4 = w.m_object4;
+         m_bAllocated = false;
+      }
+      m_nHash = w.m_nHash; 
    }
 
 protected:
