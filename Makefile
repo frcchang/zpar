@@ -24,12 +24,12 @@
 #
 #================================================================
 
-# choose between agenda, chart, agendachart etc ## NO SPACE AFTER NAME ###
+# choose between agenda, agendachart etc ## NO SPACE AFTER NAME ###
 #
 # agenda: the single agenda method - reproduce paper
 # agendaplus: try to improve upon the decoding algorithm of agenda
 # viterbi: dynamic programming
-SEGMENTOR_IMPL = agendaplus
+SEGMENTOR_IMPL = acl07
 
 # Chinese postagger implementations
 #
