@@ -1,7 +1,7 @@
 #ifndef _CHINESE_TAGGER_IMPLINCLUDE_H
 #define _CHINESE_TAGGER_IMPLINCLUDE_H
 
-#include "agendachart.h"
+#include "agenda.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"
 #include "learning/perceptron/score.h"

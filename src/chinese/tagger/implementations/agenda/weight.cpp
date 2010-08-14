@@ -14,6 +14,9 @@ using namespace chinese;
 using namespace chinese::tagger;
 
 #define iterate_templates(left,right) \
+   left(m_mapCharUnigram)right \
+   left(m_mapCharBigram)right \
+   left(m_mapCharTrigram)right \
    left(m_mapSeenWords)right \
    left(m_mapLastWordByWord)right \
    left(m_mapCurrentWordLastChar)right \
@@ -48,7 +51,9 @@ using namespace chinese::tagger;
    left(m_mapTaggedConsecutiveChars)right\
    left(m_mapWordTagTag)right\
    left(m_mapTagWordTag)right\
-   left(m_mapFirstCharAndChar)right
+   left(m_mapFirstCharAndChar)right\
+   left(m_mapSepCharAndNextChar)right\
+   left(m_mapAppCharAndNextChar)right
 
 /*---------------------------------------------------------------
  *

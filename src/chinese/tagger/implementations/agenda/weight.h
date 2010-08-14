@@ -57,6 +57,11 @@ public:
          m_maxLengthByTag[CTag::COUNT]=length;
    }
 
+   // feature templates about characters
+   CWordIntMap m_mapCharUnigram;
+   CWordIntMap m_mapCharBigram;
+   CWordIntMap m_mapCharTrigram;
+
    // feature templates about words
    CWordMap m_mapSeenWords;
    CTwoWordsMap m_mapLastWordByWord;
@@ -89,6 +94,17 @@ public:
    CTwoTaggedWordsMap m_mapTaggedCharByFirstChar;
    CTwoTaggedWordsMap m_mapTaggedCharByLastChar;
 
+   // extra features
+   CTwoTaggedWordsMap m_mapTaggedSeparateChars;
+   CWordTagMap m_mapTaggedConsecutiveChars;
+
+   CWordTagSet2Map m_mapWordTagTag;
+   CWordTagSet2Map m_mapTagWordTag;
+   CTwoWordsMap m_mapFirstCharAndChar;
+
+   CWordMap m_mapSepCharAndNextChar;
+   CWordMap m_mapAppCharAndNextChar;
+
    // feature templates knowledge
    CIntTagMap m_mapTagByFirstCharCat;
    CIntTagMap m_mapTagByLastCharCat;
@@ -102,13 +118,6 @@ public:
    CTagDict<CWord, CTag> m_mapCharTagDictionary;
    CTagDict<CWord, CTag> m_mapCanStart;
 
-   CTwoTaggedWordsMap m_mapTaggedSeparateChars;
-   CWordTagMap m_mapTaggedConsecutiveChars;
-
-   CWordTagSet2Map m_mapWordTagTag;
-   CWordTagSet2Map m_mapTagWordTag;
-   CTwoWordsMap m_mapFirstCharAndChar;
-
 public:
    // note that m_bSegmentation rules will be covered by load()
    // if there is a model file to load
@@ -117,6 +126,9 @@ public:
             CWeightBase(sFeatureDB, bTrain) ,
             m_Knowledge(0) ,
             m_bSegmentationRules(bSegmentationRules) ,
+            m_mapCharUnigram("CharacterUnigram", 65537) ,
+            m_mapCharBigram("CharacterBigram", 65537) ,
+            m_mapCharTrigram("CharacterTrigram", 65537) ,
             m_mapSeenWords("WordDictionary", 65537) ,
             m_mapLastWordByWord("LastWordByWord", 65537) ,
             m_mapCurrentWordLastChar("CurrentWordLastChar", 65537) , 
@@ -161,7 +173,9 @@ public:
 
             m_mapWordTagTag("WordByTheNextTwoTag", 65537),
             m_mapTagWordTag("TagByNextWordSecondNextTag", 65537),
-            m_mapFirstCharAndChar("FirstCharAndChar", 65537)
+            m_mapFirstCharAndChar("FirstCharAndChar", 65537),
+            m_mapSepCharAndNextChar("SeparatedCharAndNextChar", 65537),
+            m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
