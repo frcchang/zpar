@@ -60,7 +60,11 @@ public:
       string line;
       cout << "Loading model ... "; cout.flush();
       ifstream is(m_sFeatureDB.c_str());
-      if (!is.is_open()) { cout << "empty."<<endl; return; }
+      if (!is.is_open()) { 
+         cout << "empty."<<endl; 
+         iterate_templates(,.init(););
+         return; 
+      }
       // use char cat information?
       bool bCharCat; 
       getline(is, line);

@@ -1,16 +1,18 @@
-#include "agenda.h"
-#include "pair_stream.h"
-#include "linguistics/word_tokenized.h"
-#include "learning/perceptron/hashmap_score_nnf.h"
-#include "pool.h"
-
 #ifdef NO_NEG_FEATURE
 #define CScoreMapType CScoreMapNoNegFeatures
 #else
 #define CScoreMapType CScoreMap
 #endif
 
-#define SELF_TRAIN 1
+#define SELF_TRAIN
+#define SIMPLE_HASH
+
+#include "agenda.h"
+#include "pair_stream.h"
+#include "linguistics/word_tokenized.h"
+#include "learning/perceptron/hashmap_score_nnf.h"
+#include "pool.h"
+
 
 typedef double SCORE_TYPE;
 
