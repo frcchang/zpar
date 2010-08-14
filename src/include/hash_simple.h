@@ -25,7 +25,7 @@ template <typename K, typename V>
 class CHashMap {
 
 protected:
-   const unsigned long int m_nTableSize;
+   unsigned long int m_nTableSize;
 
 protected:
 
@@ -119,8 +119,8 @@ public:
    }
    void init() {
       ASSERT(m_buckets==0, "Cannot initialize hashmap after initialization");
-      m_buckets = new CEntry*[TABLE_SIZE] ;
-      for (int i=0; i<TABLE_SIZE; ++i) 
+      m_buckets = new CEntry*[m_nTableSize] ;
+      for (int i=0; i<m_nTableSize; ++i) 
          m_buckets[i]=0;
    }
 

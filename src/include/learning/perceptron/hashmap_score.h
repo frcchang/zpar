@@ -28,12 +28,19 @@ protected:
 
 public:
    const string name ;
+   bool initialized ;
+   unsigned count ;
 
 public:
 //   CScoreMap(string input_name) : name(input_name) , m_zero() {}
-   CScoreMap(string input_name, int TABLE_SIZE) : name(input_name) , m_zero() , CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, false) { }
+   CScoreMap(string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) { }
 
 public:
+   virtual inline void init() {
+      initialized = true;
+      CHashMap<K, CScore<SCORE_TYPE> >::init();
+   }
+
    virtual inline SCORE_TYPE getScore( const K &key , const int &which ) {
       return this->find( key , m_zero ).score( which );
    }
@@ -54,10 +61,12 @@ public:
    }
 
    void computeAverage(unsigned long int round) {
+      count = 0;
       typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
       while (it != this->end()) {
          it.second().updateAverage(round) ;
          ++ it;
+         ++ count;
       }
    }
 
@@ -111,16 +120,18 @@ istream & operator >> (istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
    // match name
    const unsigned &size = score_map.name.size();
    if ( s.substr(0, size)!=score_map.name ) THROW("the expected score map " << score_map.name << " is not matched.");
-   // match size
-   if ( s.size()>size ) {
-      unsigned table_size = 0;
-      istringstream buffer(s.substr(size));
-      buffer >> table_size;
-      if (table_size) {
-         score_map.resize(table_size);
+   if ( !score_map.initialized ) {
+      // match size
+      if ( s.size()>size ) {
+         unsigned table_size = 0;
+         istringstream buffer(s.substr(size));
+         buffer >> table_size;
+         if (table_size) {
+            score_map.resize(table_size);
+         }
       }
+      score_map.init();
    }
-   score_map.init();
    is >> static_cast< CHashMap< K, CScore<SCORE_TYPE> > &>(score_map) ;
    return is ;
 }
@@ -129,7 +140,10 @@ template<typename K, typename SCORE_TYPE>
 inline
 ostream & operator << (ostream &os, CScoreMap<K, SCORE_TYPE> &score_map) {
    assert(os);
-   os << score_map.name << ' ' << score_map.count() << endl ;
+   if (score_map.count)
+      os << score_map.name << ' ' << score_map.count << endl ;
+   else
+      os << score_map.name << endl ;
 
    typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
