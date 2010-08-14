@@ -103,18 +103,25 @@ protected:
    CEntry **m_buckets;
    CMemoryPool<CEntry> pool;
 public:
-   CHashMap(unsigned long TABLE_SIZE) : m_nTableSize(TABLE_SIZE), pool(POOL_BLOCK_SIZE) { 
-      m_buckets = new CEntry*[TABLE_SIZE] ;
-      for (int i=0; i<TABLE_SIZE; ++i) 
-         m_buckets[i]=0;
+   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), pool(POOL_BLOCK_SIZE), m_buckets(0) { 
+      if (initialize) init();
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0), pool(1) { 
       cerr << "CHashMap does not support copy constructor!"; 
       assert(1==0);
    }
    virtual ~CHashMap() { 
-//      for (int i=0; i<m_nTableSize; ++i) if (m_buckets[i])delete m_buckets[i]; 
       delete [] m_buckets;
+   }
+   void resize(const unsigned long &size) {
+      ASSERT(m_buckets==0, "Cannot resize hashmap after initialization");
+      m_nTableSize = size;
+   }
+   void init() {
+      ASSERT(m_buckets==0, "Cannot initialize hashmap after initialization");
+      m_buckets = new CEntry*[TABLE_SIZE] ;
+      for (int i=0; i<TABLE_SIZE; ++i) 
+         m_buckets[i]=0;
    }
 
 protected:

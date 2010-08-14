@@ -30,9 +30,8 @@ public:
    const string name ;
 
 public:
-   CScoreMap(string input_name) : name(input_name) , m_zero() {}
-   CScoreMap(string input_name, int TABLE_SIZE) : name(input_name) , m_zero() , 
-                                                  CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE) { }
+//   CScoreMap(string input_name) : name(input_name) , m_zero() {}
+   CScoreMap(string input_name, int TABLE_SIZE) : name(input_name) , m_zero() , CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, false) { }
 
 public:
    virtual inline SCORE_TYPE getScore( const K &key , const int &which ) {
@@ -109,7 +108,19 @@ istream & operator >> (istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
    if (!is) return is ;
    string s ;
    getline(is, s) ;
-   if ( s!=score_map.name ) THROW("the expected score map " << score_map.name << " is not matched.");
+   // match name
+   const unsigned &size = score_map.name.size();
+   if ( s.substr(0, size)!=score_map.name ) THROW("the expected score map " << score_map.name << " is not matched.");
+   // match size
+   if ( s.size()>size ) {
+      unsigned table_size = 0;
+      istringstream buffer(s.substr(size));
+      buffer >> table_size;
+      if (table_size) {
+         score_map.resize(table_size);
+      }
+   }
+   score_map.init();
    is >> static_cast< CHashMap< K, CScore<SCORE_TYPE> > &>(score_map) ;
    return is ;
 }
@@ -118,7 +129,7 @@ template<typename K, typename SCORE_TYPE>
 inline
 ostream & operator << (ostream &os, CScoreMap<K, SCORE_TYPE> &score_map) {
    assert(os);
-   os << score_map.name << endl ;
+   os << score_map.name << ' ' << score_map.count() << endl ;
 
    typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
