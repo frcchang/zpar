@@ -49,14 +49,14 @@ public:
       return m_nIndex == item.m_nIndex && m_prev == item.m_prev && m_bAppend == item.m_bAppend;
    }
    inline bool operator != (const CStateItem &item) const { return ! ((*this) == item); }
-   inline const unsigned long int getWordStart() const { 
-      return m_prev->m_nIndex+1; 
+   inline const long int getWordStart() const { 
+      return m_prev==0 ? -1 : m_prev->m_nIndex+1; 
    }
-   inline const unsigned long int getWordEnd() const { 
-      return m_nIndex; 
+   inline const long int getWordEnd() const { 
+      return m_prev==0 ? -1 : m_nIndex; 
    }
-   inline const unsigned long int getWordLength() const { 
-      return m_nIndex - m_prev->m_nIndex;
+   inline const long int getWordLength() const { 
+      return m_prev==0 ? 0 : m_nIndex - m_prev->m_nIndex;
    }
    void append(CStateItem *retval) const {
       retval->m_nIndex = m_nIndex+1;
@@ -74,8 +74,12 @@ public:
    inline const long &index() const {
       return m_nIndex;
    }
-   inline const CStateItem *&prev() const {
+   inline const CStateItem *prev() const {
       return m_prev;
+   }
+
+   inline bool empty() const {
+       return m_nIndex==-1;
    }
 
 };
@@ -92,16 +96,17 @@ public:
    bool append;
    SCORE_TYPE score;
 public:
+   CScoredAct() : item(0), append(false), score(0) {}
    CScoredAct(const CStateItem *st, bool append, SCORE_TYPE score) : item(st), append(append), score(st->score+score) {}
-   load(const CStateItem *st, bool append, SCORE_TYPE score) {
+   void load(const CStateItem *st, bool append, SCORE_TYPE score) {
       item = st;
       this->append = append;
-      this->score = st.score + score;
+      this->score = st->score + score;
    }
 
-   bool operator < (const CScoredAct &a) const { return score > a.score; }
+   bool operator > (const CScoredAct &a) const { return score > a.score; }
    bool operator < (const CScoredAct &a) const { return score < a.score; }
-}
+};
 
 }
 }

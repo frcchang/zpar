@@ -121,4 +121,13 @@ inline int normalizeLength(const int &length) {
    return length<LENGTH_MAX-1?length:LENGTH_MAX-1;
 }
 
+inline int encodeCharSegmentation(const bool &b, const bool &e) {
+   return ( b ? 2 : 0 ) + ( e ? 1 : 0 ) ; // 00 01 10 11
+}
+
+inline int encodeCharInfoAndPosition(const int &char_info, const int &pos) {
+   assert( pos >= -3 && pos <= 3 ); // pos+3 0->6
+   return (char_info<<3) | (pos+3);
+}
+
 #endif
