@@ -17,7 +17,7 @@ template <typename K, typename V>
 class CHashMap {
 
 protected:
-   const unsigned long int m_nTableSize ;
+   unsigned long int m_nTableSize ;
 
 public:
 
@@ -91,14 +91,24 @@ protected:
    //===============================================================
 
 public:
-   CHashMap(unsigned long TABLE_SIZE = DEFAULT_SIZE) : m_nTableSize(TABLE_SIZE) { 
-      m_mapBuckets = new map<K, V>[TABLE_SIZE]; 
+   CHashMap(unsigned long TABLE_SIZE = DEFAULT_SIZE, bool bInit=true) : m_nTableSize(TABLE_SIZE), m_mapBuckets(0) { 
+      if (bInit) init();
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0) { 
       cerr << "CHashMap does not support copy constructor!"; 
       assert(1==0);
    }
    virtual ~CHashMap() { delete[] m_mapBuckets;}
+
+   void resize(const unsigned &size) {
+      ASSERT(m_mapBuckets==0, "Cannot resize table after init");
+      m_nTableSize = size;
+   }
+
+   void init() {
+      ASSERT(m_mapBuckets==0, "Cannot reinit table");
+      m_mapBuckets = new map<K, V>[m_nTableSize]; 
+   }
 
    V &operator[] (const K &key) { return m_mapBuckets[hash(key)%m_nTableSize][key]; }
 
