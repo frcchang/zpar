@@ -75,7 +75,8 @@ unsigned long groupCharTypes(CSegmentor *segmentor, const CStringVector *sentenc
 
 SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* item, SCORE_TYPE amount=0, int round=0){
 
-   if (item->index()==-1) return;
+   if (item->empty()) return 0;
+   assert(item->prev()); // non-empty items have
 
    static SCORE_TYPE nReturn; 
    // about score
@@ -91,14 +92,14 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    start = item->getWordStart();
    end = item->getWordEnd();
    length = item->getWordLength(); 
-   last_start = item->prev() ? item->prev()->getWordStart() : 0; // make sure that this is only used when index>0
-   last_end = item->prev() ? item->prev()->getWordEnd() : 0; // make sure that this is only used when index>0
-   last_length = item->prev() ? item->prev()->getWordLength() : 0;  // similar to the above
+   last_start = item->prev()->getWordStart(); // make sure that this is only used when index>0
+   last_end = item->prev()->getWordEnd(); // make sure that this is only used when index>0
+   last_length = item->prev()->getWordLength();  // similar to the above
    word_length = length ; 
 
    // about the words
    const CWord &word=_cache_word(start, length);
-   const CWord &last_word = item->prev() ? _cache_word(last_start, last_length) : g_emptyWord; // use empty word for sentence beginners. 
+   const CWord &last_word = item->prev()->empty() ? g_emptyWord : _cache_word(last_start, last_length); // use empty word for sentence beginners. 
    static CTwoWords two_word;
    if (amount==0)
       two_word.refer(&word, &last_word);
@@ -112,8 +113,8 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    char_info = encodeCharSegmentation(bWordStart, true);
    const CWord &first_char=_cache_word(start, 1);
    const CWord &last_char=_cache_word(end, 1);
-   const CWord &first_char_last_word = item->prev() ? _cache_word(last_start, 1) : g_emptyWord;
-   const CWord &last_char_last_word = item->prev() ? _cache_word(last_end, 1) : g_emptyWord;
+   const CWord &first_char_last_word = item->prev()->empty() ? g_emptyWord : _cache_word(last_start, 1);
+   const CWord &last_char_last_word = item->prev()->empty() ? g_emptyWord : _cache_word(last_end, 1);
    const CWord &first_char_next_word = end<sentence->size()-1 ? _cache_word(end+1, 1) : g_emptyWord;
    static CTwoWords first_and_last_char, word_nextchar, word_lastchar, first_chars_two_words, lastword_lastchar;
    if (amount==0)
@@ -121,7 +122,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    else
       first_and_last_char.allocate(first_char, last_char);
    const CWord &two_char = end<sentence->size()-1 ? _cache_word(end, 2) : _cache_word(end, 1);
-   if (item->prev()) {
+   if (!item->prev()->empty()) {
       if (amount==0) {
          word_lastchar.refer(&word, &last_char_last_word);
          lastword_lastchar.refer(&last_char_last_word, &last_char);
@@ -177,7 +178,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
       nReturn += weight.m_mapLengthByLastChar.getOrUpdateScore(make_pair(last_char, length), which_score, amount, round);
    }
 
-   if (item->prev()) {
+   if (!item->prev()->empty()) {
       nReturn += weight.m_mapLastWordByWord.getOrUpdateScore(two_word, which_score, amount, round);
 
       nReturn += weight.m_mapWordAndPrevChar.getOrUpdateScore(word_lastchar, which_score, amount, round);
@@ -225,7 +226,7 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    // about the chars
    const unsigned long start = item->getWordStart();
    const unsigned long end = index;
-   assert( start>=0 && start<sentence->size()-1 && end<sentence->size()-1 );
+   assert( start>=0 && start<sentence->size() && end<sentence->size() );
    static bool bWordStart; // the last char starts a word?
    static int char_info; // start, middle, end or standalone
    bWordStart = ( start == end);
@@ -329,15 +330,15 @@ void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStrin
  *
  *--------------------------------------------------------------*/
 
-inline void updateScoreVectorForState(CSegmentor *segmentor, const CStringVector* sentence, CStateItem* state, SCORE_TYPE amount, int round) {
+inline void updateScoreVectorForState(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* state, SCORE_TYPE amount, int round) {
    static const CStateItem *temp;
    static int char_index;
 
    temp = state;
-   while (temp) {
+   while (!temp->empty()) {
       getOrUpdateSeparateScore(segmentor, sentence, temp, amount, round);
       for (char_index=temp->getWordStart(); char_index<temp->getWordEnd(); ++char_index) {
-         getOrUpdateAppendScore(segmentor, sentence, &temp, char_index, amount, round); // update score
+         getOrUpdateAppendScore(segmentor, sentence, temp, char_index, amount, round); // update score
       }
       temp = temp->prev();
    }
@@ -351,7 +352,7 @@ inline void updateScoreVectorForState(CSegmentor *segmentor, const CStringVector
  *
  *--------------------------------------------------------------*/
 
-void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sentence, CStateItem* output, CStateItem* correct, int round) {
+void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* output, const CStateItem* correct, int round) {
    updateScoreVectorForState(segmentor, sentence, output, -1, round);
    updateScoreVectorForState(segmentor, sentence, correct, 1, round);
 }
@@ -364,24 +365,6 @@ void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sent
  *
  *==============================================================*/
 
-/*--------------------------------------------------------------
- *
- * trace_candidate - print detail
- *
- *--------------------------------------------------------------*/
-
-void trace_candidate(CStateItem *pCandidate, const CStringVector &sentence) {
-   for ( int j=0; j<pCandidate->m_nLength; ++j ) {
-      string temp = "";
-      for ( int l = pCandidate->getWordStart(j); l <= pCandidate->getWordEnd(j); ++l ) {
-         assert(sentence.at(l)!=" "); // [SPACE]
-         temp += sentence.at(l);
-      }
-      cout<<temp<<" ";
-   }
-   cout<<"|score="<<pCandidate->score<<endl;
-}
-
 /*---------------------------------------------------------------
  *
  * work - do the segmentation and if there is a correct
@@ -389,22 +372,22 @@ void trace_candidate(CStateItem *pCandidate, const CStringVector &sentence) {
  *
  *--------------------------------------------------------------*/
 
-bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *vReturn, CRule &rules, vector<unsigned> *correct_starts, int nBest, int round) {
-   static CStateItem lattice[(MAX_SENTENCE_SIZE+2)*AGENDA_SIZE];
+bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *vReturn, double *out_scores, CRule &rules, vector<unsigned> *correct_starts, unsigned nBest, int round) {
+   static CStateItem lattice[(MAX_SENTENCE_SIZE+2)*BEAM_SIZE];
    static CStateItem *lattice_index[MAX_SENTENCE_SIZE+2];
    static const CStateItem *pGenerator, *pBestGen;
    static const CStateItem *correct, *temp;
    static int index, temp_index;                       // the index of the current char
    static unsigned long int doneWordRnd[MAX_SENTENCE_SIZE];  // mask whether candidate with the last word has been cached
    static unsigned long int doneWordLink[MAX_SENTENCE_SIZE]; // link to the corresponding cache state item from word_length + 1
-   static CScoredAct doneWordItems[BEAM_SIZE];          // the allocated cache state items stores the candidates
+   static CScoredAct doneWordItems[BEAM_SIZE]; 
    static int doneItemPointer; 
    static unsigned correct_word;
    static bool correct_append;
    static unsigned long word_length;
    static bool bCompatible; 
    const int length = sentence.size();
-   static CAgendaSimple<CScoredAct> beam;
+   static CAgendaSimple<CScoredAct> beam(BEAM_SIZE);
    static CScoredAct action;
    static const CStateItem *best[BEAM_SIZE];
    static unsigned nBestGen;
@@ -485,12 +468,12 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
             ++correct_word;
          }
          else {
-            assert(index<correct_starts->at(correct_word));
+            assert(correct_word==correct_starts->size()||index<correct_starts->at(correct_word));
             correct_append = true;
          }
          pBestGen = 0;
       }
-      for (temp_index=0; temp_index<beam.size() ++temp_index) {
+      for (temp_index=0; temp_index<beam.size(); ++temp_index) {
          pGenerator = beam.item(temp_index)->item;
          if (beam.item(temp_index)->append)
             pGenerator->append(lattice_index[index+2]);
@@ -498,7 +481,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
             pGenerator->separate(lattice_index[index+2]);
          lattice_index[index+2]->score = beam.item(temp_index)->score;
          if (correct_starts) {
-            if (pBestGen==0 || lattice_index[index+2].score > pBestGen->score)
+            if (pBestGen==0 || lattice_index[index+2]->score > pBestGen->score)
                pBestGen = lattice_index[index+2];
             if (correct == pGenerator && correct_append == beam.item(temp_index)->append) {
                bCompatible = true;
@@ -551,25 +534,25 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
       for ( index=0; index<min(nBest, nBestGen); ++index ) {
          // clear
          vReturn[index].clear();
-         if ( out_scores!=NULL ) 
-            out_scores[index] = 0;
+         if ( out_scores ) out_scores[index] = 0;
          // assign retval
          static unsigned count;
          static unsigned start;
          count = 0;
          temp = best[index];
-         while (temp->index()!=-1) {
+         while (!temp->empty()) {
             ++count;
+            temp = temp->prev();
          }
          vReturn[index].resize(count);
          --count;
          temp = best[index];
-         while (temp->index()!=-1) {
+         while (!temp->empty()) {
             for (temp_index=temp->getWordStart(); temp_index<=temp->getWordEnd(); ++temp_index) {
-               vReturn[count] += sentence->at(temp_index);
+               vReturn->at(count) += sentence.at(temp_index);
             }
             --count;
-            temp = temp.prev();
+            temp = temp->prev();
          }
          if ( out_scores!=NULL )
             out_scores[index] = best[index]->score;
@@ -598,10 +581,10 @@ void CSegmentor::train(const CStringVector* sentence_input, const CStringVector*
 
    static vector<unsigned> correct_starts;
    static int word_length, word_index, char_length, char_index; // word_xxx are from correct, char_xxx from sentence
-   item_correct.clear();
 
    char_index = 0;
    int count = 0; 
+   correct_starts.clear();
    correct_starts.push_back(count);
    for (word_index=0; word_index<correct->size(); word_index++) {
       word_length = correct->at(word_index).size();
@@ -615,7 +598,7 @@ void CSegmentor::train(const CStringVector* sentence_input, const CStringVector*
    }
 
    // the main learning process with update
-   work(this, sentence, 0, rules, &correct_starts, 1, round);
+   work(this, sentence, 0, 0, rules, &correct_starts, 1, round);
 
    TRACE("Done");
    TRACE("total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
@@ -647,7 +630,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
 
    // try to work out the best item with the
    // correct output reference param as NULL
-   work(this, sentence, vReturn, rules, NULL, nBest, -1);
+   work(this, sentence, vReturn, out_scores, rules, NULL, nBest, -1);
 
    TRACE("Done, the best score: " << pGenerator->score);
    TRACE("total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
