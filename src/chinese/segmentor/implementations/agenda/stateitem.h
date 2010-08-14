@@ -50,13 +50,13 @@ public:
    }
    inline bool operator != (const CStateItem &item) const { return ! ((*this) == item); }
    inline const unsigned long int getWordStart() const { 
-      return m_bAppend ? m_prev->m_nIndex : m_nIndex; 
+      return m_prev->m_nIndex+1; 
    }
    inline const unsigned long int getWordEnd() const { 
       return m_nIndex; 
    }
    inline const unsigned long int getWordLength() const { 
-      return m_bAppend ? m_nIndex - m_prev->m_nIndex + 1 : 1;
+      return m_nIndex - m_prev->m_nIndex;
    }
    void append(CStateItem *retval) const {
       retval->m_nIndex = m_nIndex+1;
@@ -77,6 +77,7 @@ public:
    inline const CStateItem *&prev() const {
       return m_prev;
    }
+
 };
 
 /*===============================================================
