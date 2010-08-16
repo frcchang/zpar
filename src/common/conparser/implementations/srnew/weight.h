@@ -26,9 +26,11 @@ namespace conparser {
 typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
 typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
 typedef CScoreMap<pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
+typedef CScoreMap<CTuple3<CWord, unsigned long, CAction>,  SCORE_TYPE> CWordIntActionMap;
 typedef CScoreMap<pair<CWord, CAction>,  SCORE_TYPE> CWordActionMap;
 typedef CScoreMap<pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE> CTaggedWordActionMap;
 typedef CScoreMap<unsigned long, SCORE_TYPE> CIntMap;
+typedef CScoreMap<pair<unsigned long, CAction>, SCORE_TYPE> CIntActionMap;
 typedef CScoreMap<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
 typedef CScoreMap<pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
@@ -232,16 +234,16 @@ public:
    CIntMap m_mapBracketS0cN0t;
 
    // Separator
-   CIntMap m_mapS0cSeparator;
-   CWordIntMap m_mapS0wcSeparator;
-   CIntMap m_mapS0cSepCount;
-   CWordIntMap m_mapS0wcSepCount;
-   CIntMap m_mapS1cSeparator;
-   CWordIntMap m_mapS1wcSeparator;
-   CIntMap m_mapS1cSepCount;
-   CWordIntMap m_mapS1wcSepCount;
-   CIntMap m_mapS0cS1cSeparator;
-   CIntMap m_mapS0cS1cSepCount;
+   CIntActionMap m_mapS0cSeparator;
+   CWordIntActionMap m_mapS0wcSeparator;
+   CIntActionMap m_mapS0cSepCount;
+   CWordIntActionMap m_mapS0wcSepCount;
+   CIntActionMap m_mapS1cSeparator;
+   CWordIntActionMap m_mapS1wcSeparator;
+   CIntActionMap m_mapS1cSepCount;
+   CWordIntActionMap m_mapS1wcSepCount;
+   CIntActionMap m_mapS0cS1cSeparator;
+   CIntActionMap m_mapS0cS1cSepCount;
 #endif
 
    // Distance

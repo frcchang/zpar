@@ -17,6 +17,8 @@ const CTag g_noneTag(CTag::NONE);
 
 //#define constituent_or_none(x) ((x).is_constituent() ? (x).constituent.code() : CConstituent::NONE)
 #define constituent_or_none(x) ((x).constituent.code())
+#define _encode_three_constituents(x, y, z) ((x<<CConstituent::SIZE<<CConstituent::SIZE)|(y<<CConstituent::SIZE)|z)
+#define _encode_two_constituents(x, y) ((x<<CConstituent::SIZE)|y)
 
 //===============================================================
 //
@@ -443,29 +445,30 @@ public:
       s1c_separator.clear();
       s0_sepset=0; s1_sepset=0; s0s1_sepset=0;
       sepcount = 0;
-      if (s1!=-1) {
+      if (s1!=0) {
          for (i=s1->lexical_head+1; i<s0->lexical_head; ++i) {
             last_separator = getSeparatingPunctuation(wrds[i]);
             if (last_separator!=-1) {
                if ((s0s1_sepset&(1<<last_separator))==0) {
                   s0s1_sepset|=(1<<last_separator);
-                  s0cs1c_separator.push_back(encodeTorCs(s0c.code(), s1c.code(), last_separator));
+                  s0cs1c_separator.push_back( _encode_three_constituents(last_separator, s0c.code(), s1c.code()) );
                }
                if ((s0_sepset&(1<<last_separator))==0) {
                   s0_sepset |= (1<<last_separator);
-                  s0c_separator.push_back(encodeTorCs(s0c.code(), last_separator));
+                  s0c_separator.push_back(_encode_two_constituents(last_separator, s0c.code()));
                }
                if ((s1_sepset & (1<<last_separator)) == 0) {
                   s1_sepset |= (1<<last_separator);
-                  s1c_separator.push_back(encodeTorCs(s1c.code(), last_separator));
+                  s1c_separator.push_back(_encode_two_constituents(last_separator, s1c.code()));
                }
                sepcount++ ;
             }
          }
       }
-      s0cs1c_sepcount=encodeTorCs(s0c.code(), s1c.code(),sepcount);
-      s0c_sepcount=encodeTorCs(s0c.code(),sepcount);
-      s1c_sepcount=encodeTorCs(s1c.code(),sepcount);*/
+      s0cs1c_sepcount=_encode_three_constituents(sepcount, s0c.code(), s1c.code());
+      s0c_sepcount=_encode_two_constituents(sepcount, s0c.code());
+      s1c_sepcount=_encode_two_constituents(sepcount, s1c.code());
+*/
 #endif
 
       // S{0/1}{LD/RD}

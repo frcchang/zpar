@@ -9,7 +9,7 @@
 typedef double SCORE_TYPE ;
 
 // The size of agenda
-const int AGENDA_SIZE = 128 ;
+const int AGENDA_SIZE = 64 ;
 
 // The size of a sentence and the words
 const int MAX_SENTENCE_SIZE = 256 ; 
