@@ -53,7 +53,8 @@ using namespace chinese::tagger;
    left(m_mapTagWordTag)right\
    left(m_mapFirstCharAndChar)right\
    left(m_mapSepCharAndNextChar)right\
-   left(m_mapAppCharAndNextChar)right
+   left(m_mapAppCharAndNextChar)right\
+   left(m_mapPartialWord)right
 
 /*---------------------------------------------------------------
  *
