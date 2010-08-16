@@ -24,7 +24,7 @@ namespace segmentor {
 //
 // Beam segmentor specific item
 //
-const int BEAM_SIZE = 16;
+const int BEAM_SIZE = 64;
 //
 // All segmentor must define the following
 //

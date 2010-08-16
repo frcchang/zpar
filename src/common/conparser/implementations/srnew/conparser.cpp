@@ -301,6 +301,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    static CTuple3<CWord, CCFGSet, CAction> word_cfgset_action;
    static CTuple3<CTwoWords, CTag, CActionType> twoword_tag_actiontype;
    static CTuple3<CWord, CCFGSet, CActionType> word_cfgset_actiontype;
+   static CTuple3<CWord, unsigned long, CAction> word_int_action; 
 
    static CActionType actionType;
    actionType.code = action.type();
@@ -522,46 +523,31 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
       }
 }
    }
-
    if (m_Context.s1!=0) {
-if (!m_Context.s0c.empty() && !m_Context.s1c.empty()) {
-      static unsigned long i;
-      for (i=0; i<m_Context.s0c_separator.size(); ++i) {
-         nReturn +=
-cast_weights->m_mapS0cSeparator.getOrUpdateScore(encodeAction(action, m_Context.s0c_separator[i]), m_nScoreIndex, amount, round);
-         nReturn +=
-cast_weights->m_mapS0wcSeparator.getOrUpdateScore(make_pair(*(m_Context.s0w),
-encodeAction(action, m_Context.s0c_separator[i])), m_nScoreIndex, amount, round);
+      if (!m_Context.s0c.empty() && !m_Context.s1c.empty()) {
+         static unsigned long i;
+         for (i=0; i<m_Context.s0c_separator.size(); ++i) {
+            nReturn += cast_weights->m_mapS0cSeparator.getOrUpdateScore(make_pair(m_Context.s0c_separator[i], action), m_nScoreIndex, amount, round);
+            refer_or_allocate_tuple3(word_int_action, m_Context.s0w, &(m_Context.s0c_separator[i]), &action); 
+            nReturn += cast_weights->m_mapS0wcSeparator.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
+         }
+         nReturn += cast_weights->m_mapS0cSepCount.getOrUpdateScore(make_pair(m_Context.s0c_sepcount, action), m_nScoreIndex, amount, round);
+         refer_or_allocate_tuple3(word_int_action, m_Context.s0w, &(m_Context.s0c_sepcount), &action); 
+         nReturn += cast_weights->m_mapS0wcSepCount.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
+         for (i=0; i<m_Context.s1c_separator.size(); ++i) {
+            nReturn += cast_weights->m_mapS1cSeparator.getOrUpdateScore(make_pair(m_Context.s1c_separator[i], action), m_nScoreIndex, amount, round);
+            refer_or_allocate_tuple3(word_int_action, m_Context.s1w, &(m_Context.s1c_separator[i]), &action); 
+            nReturn += cast_weights->m_mapS1wcSeparator.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
+         }
+         nReturn += cast_weights->m_mapS1cSepCount.getOrUpdateScore(make_pair(m_Context.s1c_sepcount, action), m_nScoreIndex, amount, round);
+         refer_or_allocate_tuple3(word_int_action, m_Context.s1w, &(m_Context.s1c_sepcount), &action); 
+         nReturn += cast_weights->m_mapS1wcSepCount.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
+         for (i=0; i<m_Context.s0cs1c_separator.size(); ++i)
+            nReturn += cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(make_pair(m_Context.s0cs1c_separator[i], action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(make_pair(m_Context.s0cs1c_sepcount, action), m_nScoreIndex, amount, round);
       }
-      nReturn +=
-cast_weights->m_mapS0cSepCount.getOrUpdateScore(encodeAction(action, m_Context.s0c_sepcount), m_nScoreIndex, amount, round);
-      nReturn +=
-cast_weights->m_mapS0wcSepCount.getOrUpdateScore(make_pair(*(m_Context.s0w),
-encodeAction(action, m_Context.s0c_sepcount)), m_nScoreIndex, amount, round);
-      for (i=0; i<m_Context.s1c_separator.size(); ++i) {
-         nReturn +=
-cast_weights->m_mapS1cSeparator.getOrUpdateScore(encodeAction(action, m_Context.s1c_separator[i]), m_nScoreIndex, amount, round);
-         nReturn +=
-cast_weights->m_mapS1wcSeparator.getOrUpdateScore(make_pair(*(m_Context.s1w),
-encodeAction(action, m_Context.s1c_separator[i])), m_nScoreIndex, amount, round);
-      }
-      nReturn +=
-cast_weights->m_mapS1cSepCount.getOrUpdateScore(encodeAction(action, m_Context.s1c_sepcount), m_nScoreIndex, amount, round);
-      nReturn +=
-cast_weights->m_mapS1wcSepCount.getOrUpdateScore(make_pair(*(m_Context.s1w),
-encodeAction(action, m_Context.s1c_sepcount)), m_nScoreIndex, amount, round);
-      for (i=0; i<m_Context.s0cs1c_separator.size(); ++i)
-         nReturn +=
-cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(encodeAction(action,
-m_Context.s0cs1c_separator[i]), m_nScoreIndex, amount, round);
-      nReturn +=
-cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(encodeAction(action,
-m_Context.s0cs1c_sepcount), m_nScoreIndex, amount, round);
-}
    }
 */
-
-
 
 #endif
 
@@ -614,13 +600,9 @@ m_Context.s0cs1c_sepcount), m_nScoreIndex, amount, round);
          refer_or_allocate_tuple3(word_cfgset_action, m_Context.n1w, &(m_Context.s0cn0tn1t), &action); 
          nReturn += cast_weights->m_mapS0cN0tN1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
-      nReturn +=
-cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(m_Context.s0cn0tn1t,
-action), m_nScoreIndex, amount, round); // m_Context.n0
+      nReturn += cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(m_Context.s0cn0tn1t, action), m_nScoreIndex, amount, round); // m_Context.n0
 
-      nReturn +=
-cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(m_Context.s0tn0tn1t,
-action), m_nScoreIndex, amount, round); // m_Context.n0
+      nReturn += cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(m_Context.s0tn0tn1t, action), m_nScoreIndex, amount, round); // m_Context.n0
 //      nReturn +=
 //      cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(make_pair(m_Context.s0jn0tn1t,
 //      action), m_nScoreIndex, amount, round); // m_Context.n0
@@ -636,11 +618,9 @@ action), m_nScoreIndex, amount, round); // m_Context.n0
          refer_or_allocate_tuple3(word_cfgset_action, m_Context.s2w, &(m_Context.s0cs1cs2c), &action); 
          nReturn += cast_weights->m_mapS0cS1cS2w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
-      nReturn +=
-cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(m_Context.s0cs1cs2c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(m_Context.s0cs1cs2c, action), m_nScoreIndex, amount, round);
 
-      nReturn +=
-cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(m_Context.s0ts1ts2t, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(m_Context.s0ts1ts2t, action), m_nScoreIndex, amount, round);
 //      nReturn +=
 //      cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(make_pair(m_Context.s0js1js2j, action), m_nScoreIndex, amount, round);
    }
