@@ -105,6 +105,8 @@ public:
    CWordMap m_mapSepCharAndNextChar;
    CWordMap m_mapAppCharAndNextChar;
 
+   CWordMap m_mapPartialWord;
+
    // feature templates knowledge
    CIntTagMap m_mapTagByFirstCharCat;
    CIntTagMap m_mapTagByLastCharCat;
@@ -175,7 +177,8 @@ public:
             m_mapTagWordTag("TagByNextWordSecondNextTag", 65537),
             m_mapFirstCharAndChar("FirstCharAndChar", 65537),
             m_mapSepCharAndNextChar("SeparatedCharAndNextChar", 65537),
-            m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537)
+            m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537),
+            m_mapPartialWord("PartialWord", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;

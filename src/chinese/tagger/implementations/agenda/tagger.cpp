@@ -284,6 +284,8 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 //   refer_or_allocate(first_char_and_char, first_char, char_unigram);
 //   nReturn += m_weights->m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, m_nScoreIndex , amount , round ) ;
 
+   nReturn += m_weights->m_mapPartialWord.getOrUpdateScore( find_or_replace_word_cache( start, char_index ), m_nScoreIndex, amount, round );
+
    // character scores -- the middle character is char_index-1
    static int char_info;
    char_info = encodeCharInfoAndPosition(start==prev_char_index, false);
