@@ -106,6 +106,7 @@ public:
    CWordMap m_mapAppCharAndNextChar;
 
    CWordMap m_mapPartialWord;
+   CWordIntMap m_mapPartialLengthByFirstChar;
    CWordTagMap m_mapPartialWordTag;
 
    // feature templates knowledge
@@ -180,6 +181,7 @@ public:
             m_mapSepCharAndNextChar("SeparatedCharAndNextChar", 65537),
             m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537),
             m_mapPartialWord("PartialWord", 65537),
+            m_mapPartialLengthByFirstChar("PartialLengthByFirstChar", 65537),
             m_mapPartialWordTag("PartialWordTag", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 

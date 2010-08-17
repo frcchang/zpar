@@ -111,10 +111,11 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    unsigned long long first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(first_char_0) | (static_cast<unsigned long long>(1)<<tag_0.code()) ;
    unsigned long long last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(last_char_1) | (static_cast<unsigned long long>(1)<<tag_1.code()) ;
 
-   static CTagSet<CTag, 2> tag_0_tag_1, tag_0_tag_2;
+   static CTagSet<CTag, 2> tag_0_tag_1, tag_0_tag_2, tag_1_tag_2;
    static CTagSet<CTag, 3> tag_0_tag_1_tag_2;
    tag_0_tag_1.load( encodeTags(tag_0, tag_1) );
    tag_0_tag_2.load( encodeTags(tag_0, tag_2) );
+   tag_1_tag_2.load( encodeTags(tag_1, tag_2) );
    tag_0_tag_1_tag_2.load( encodeTags(tag_0, tag_1, tag_2) );
 
    static int j ; 
@@ -220,7 +221,7 @@ if (index<item->size()) {
       }
    }
 
-//   if (index>0) nReturn += m_weights->m_mapTagTagWordTag.getOrUpdateScore( make_pair(word_1, tag_0_tag_2) , m_nScoreIndex , amount , round ) ;
+   if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( make_pair(first_char_0, tag_1_tag_2) , m_nScoreIndex , amount , round ) ;
 //   if (index>1) nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(word_2, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
 
    return nReturn;
@@ -242,10 +243,15 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
    static SCORE_TYPE nReturn ; 
    assert(char_index>0);
    
-   static unsigned long start;
+   static unsigned long start, length;
    static unsigned long prev_char_index;
    start = item->getWordStart( index ) ;
+   length = item->getWordLength( index ) ;
    prev_char_index = char_index-1;
+   const CTag &tag_1 = index>0? item->getTag(index-1): g_beginTag;
+   const CTag &tag_2 = index>1? item->getTag(index-2): g_beginTag;
+   static CTagSet<CTag, 2> tag_1_tag_2;
+   tag_1_tag_2.load( encodeTags(tag_1, tag_2) );
 
    const CWord &char_unigram = find_or_replace_word_cache( char_index, char_index );
    const CWord &char_bigram = find_or_replace_word_cache( char_index-1, char_index );
@@ -284,8 +290,7 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 //   refer_or_allocate(first_char_and_char, first_char, char_unigram);
 //   nReturn += m_weights->m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, m_nScoreIndex , amount , round ) ;
 
-//   nReturn += m_weights->m_mapPartialWord.getOrUpdateScore( find_or_replace_word_cache( start, char_index ), m_nScoreIndex, amount, round );
-//   nReturn += m_weights->m_mapPartialWordTag.getOrUpdateScore( make_pair(find_or_replace_word_cache( start, char_index ), tag), m_nScoreIndex, amount, round );
+   if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( make_pair(find_or_replace_word_cache(start, char_index), tag_1_tag_2) , m_nScoreIndex , amount , round ) ;
 
    // character scores -- the middle character is char_index-1
    static int char_info;
