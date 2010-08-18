@@ -112,7 +112,7 @@ public:
              (*m_object1==*(w.m_object1) && *m_object2 == *(w.m_object2) && *m_object3==*(w.m_object3) && *m_object4<*(w.m_object4)); 
    }
 
-   void operator = (const CTuple3 &w) {
+   void operator = (const CTuple4 &w) {
       if (w.m_bAllocated) { 
          m_object1 = new CClass1(*(w.m_object1)); 
          m_object2 = new CClass2(*(w.m_object2)); 

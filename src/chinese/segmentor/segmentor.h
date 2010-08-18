@@ -23,7 +23,6 @@ namespace chinese {
 
 class CSegmentor;
 
-//typedef CHashMap<CWord, int> CWordIntMap ; 
 namespace segmentor {
 
 #include "feature.h"
@@ -52,7 +51,7 @@ namespace segmentor {
 class CSegmentor : public segmentor::CSegmentorImpl {
 
 private:
-   CWord *m_lWordCache;
+   unsigned long *m_lWordCache;
    bool m_bTrain;
    segmentor::CFeatureHandle *m_Feature;
 
@@ -63,7 +62,7 @@ public:
       // load features
       m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain, bRule); 
       // initialize word cache
-      m_lWordCache = new CWord[segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_WORD_SIZE];
+      m_lWordCache = new unsigned long[segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_SENTENCE_SIZE];
       // load knowledge
       if (!bTrain) {
          if (!sCharCatFile.empty())
@@ -86,7 +85,10 @@ public:
          }
       }
    }
-   virtual ~CSegmentor() { delete m_Feature; delete [] m_lWordCache;}
+   virtual ~CSegmentor() { 
+      delete m_Feature; 
+      delete [] m_lWordCache;
+   }
    CSegmentor(CSegmentor& segmentor) { THROW("CSegmentor does not support copy constructor!"); }
 
 //-------------------------------------------------------------
@@ -157,34 +159,34 @@ public:
 //-------------------------------------------------------------
 // Word cache
 public:
-   const CWord& findWordFromCache(const int &start, const int &length, const CStringVector* sentence) {
-      if (m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].empty()) { // empty string
+   const unsigned long& findWordFromCache(const int &start, const int &length, const CStringVector* sentence) {
+      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L) { // empty string
          static string temp; 
          static unsigned long int i; 
          temp.clear();
          for ( i = start; i < start+length ; ++i ) 
             temp += sentence->at(i) ; 
-         m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].setString(temp);
+         m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] = CWord(temp, false).code();
       }
-      return m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ];
+      return m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ];
    }
-   const CWord& replaceWordToCache(const int &start, const int &length, const CStringVector* sentence) {
+   const unsigned long& replaceWordToCache(const int &start, const int &length, const CStringVector* sentence) {
       assert(start+length<=sentence->size());
-      if (m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].empty()||
-          m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ].unknown()) { // empty string
+      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L || m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == g_tokenForUnknownString) { // empty string
          static string temp; 
          static unsigned long int i; 
          temp.clear();
          for ( i = start; i < start+length ; ++i ) 
             temp += sentence->at(i) ; 
-         m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ] = (temp);
+         m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] = CWord(temp).code();
       }
-      return m_lWordCache[ start * segmentor::MAX_WORD_SIZE + length - 1 ];
+      return m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ];
    }
    void clearWordCache() {
-      for (int i=0; i<segmentor::MAX_SENTENCE_SIZE; ++i)
-         for (int j=0; j<segmentor::MAX_WORD_SIZE; j++) 
-            m_lWordCache[i*segmentor::MAX_WORD_SIZE+j].clear();
+      memset(m_lWordCache, 255, sizeof(m_lWordCache[0])*segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_SENTENCE_SIZE);
+//      for (int i=0; i<segmentor::MAX_SENTENCE_SIZE; ++i)
+//         for (int j=0; j<segmentor::MAX_SENTENCE_SIZE; j++) 
+//            m_lWordCache[i*segmentor::MAX_SENTENCE_SIZE+j].clear();
    }
 };
 

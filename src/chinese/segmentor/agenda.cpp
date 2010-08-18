@@ -406,9 +406,8 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
       correct_append=false;
    }
 
-   if (nBest == 1)                              // optimization for one best
-      for (temp_index=0; temp_index<MAX_SENTENCE_SIZE; ++temp_index)       // note we use MAX_SENTENCE_SIZE though the index is word length
-         doneWordRnd[temp_index] = 0;                    // so that we don't have to be limited by a fixed max word size.
+   if (nBest == 1) // optimization for one best
+      memset(doneWordRnd, 0, MAX_SENTENCE_SIZE*sizeof(doneWordRnd[0]));
 
    TRACE("Decoding started");
    // index is character index and lattice index shifts 1 right
