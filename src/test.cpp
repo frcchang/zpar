@@ -22,5 +22,6 @@ public:
 
 int main(int argc, char**argv){
    cout << B::C << B::D << endl;
+   cout << ~0UL << endl;
 };
 

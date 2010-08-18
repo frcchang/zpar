@@ -127,7 +127,10 @@ istream & operator >> (istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
          istringstream buffer(s.substr(size));
          buffer >> table_size;
          if (table_size) {
-            score_map.resize(table_size*2);
+            unsigned hash_size = 1;
+            while (hash_size<table_size) hash_size <<= 1;
+            hash_size <<= 1;
+            score_map.resize(hash_size);
          }
       }
       score_map.init();

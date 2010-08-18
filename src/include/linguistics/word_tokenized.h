@@ -54,17 +54,19 @@ protected:
 
 public:
    CWord() { clear(); }
-   CWord(const string &s) : m_nHash(getTokenizer().lookup(s)) { }
+   CWord(const string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, g_tokenForUnknownString)) { }
    CWord(const CWord &w) : m_nHash(w.m_nHash) { }
-   CWord(const CWord *w) : m_nHash(w->m_nHash) { }
+   CWord(const unsigned long &n) : m_nHash(n) { }
+//   CWord(const CWord *w) : m_nHash(w->m_nHash) { }
    virtual ~CWord() {}
 
 public:
    unsigned long hash() const { return m_nHash; }
+   unsigned long code() const { return m_nHash; }
    bool operator == (const CWord &w) const { return m_nHash == w.m_nHash; }
    bool operator != (const CWord &w) const { return m_nHash != w.m_nHash; }
    bool operator < (const CWord &w) const { return m_nHash < w.m_nHash; }
-   void operator = (const string &s) { m_nHash = getTokenizer().lookup(s); }
+//   void operator = (const string &s) { m_nHash = getTokenizer().lookup(s); }
    bool operator = (const CWord &w) { m_nHash =  w.m_nHash; }
    void copy(const CWord &w) { m_nHash = w.m_nHash; }
    void setString(const string &s) { m_nHash = getTokenizer().find(s, g_tokenForUnknownString); }
