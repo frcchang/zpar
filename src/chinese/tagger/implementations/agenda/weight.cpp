@@ -55,7 +55,10 @@ using namespace chinese::tagger;
    left(m_mapSepCharAndNextChar)right\
    left(m_mapAppCharAndNextChar)right\
    left(m_mapPartialWord)right\
-   left(m_mapPartialLengthByFirstChar)right 
+   left(m_mapPartialLengthByFirstChar)right \
+   left(m_mapLengthByTagAndFirstChar)right \
+   left(m_mapLengthByTagAndLastChar)right \
+   left(m_mapSizeAndLastTagByTag)right
 
 /*---------------------------------------------------------------
  *

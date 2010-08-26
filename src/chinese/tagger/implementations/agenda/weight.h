@@ -30,6 +30,7 @@ typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
 typedef CScoreMap< pair<CWord, CTagSet<CTag, 2> >, SCORE_TYPE > CWordTagSet2Map;
 typedef CScoreMap< pair<CWord, CTagSet<CTag, 3> >, SCORE_TYPE > CWordTagSet3Map;
 typedef CHashMap< CWord, int > CWordToIntMap;
+typedef CScoreMap< pair<CTagSet<CTag, 2>, int>, SCORE_TYPE > CTagSet2IntMap;
 //typedef CHashMap< pair<CWord, int>, int > CWordIntToIntMap;
 //typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
 
@@ -107,7 +108,10 @@ public:
 
    CWordMap m_mapPartialWord;
    CWordIntMap m_mapPartialLengthByFirstChar;
-   CWordTagMap m_mapPartialWordTag;
+   CWordIntMap m_mapLengthByTagAndFirstChar;
+   CWordIntMap m_mapLengthByTagAndLastChar;
+
+   CTagSet2IntMap m_mapSizeAndLastTagByTag;
 
    // feature templates knowledge
    CIntTagMap m_mapTagByFirstCharCat;
@@ -182,7 +186,9 @@ public:
             m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537),
             m_mapPartialWord("PartialWord", 65537),
             m_mapPartialLengthByFirstChar("PartialLengthByFirstChar", 65537),
-            m_mapPartialWordTag("PartialWordTag", 65537)
+            m_mapLengthByTagAndFirstChar("LengthByTagAndFirstChar", 65537) , 
+            m_mapLengthByTagAndLastChar("LengthByTagAndLastChar", 65537) , 
+            m_mapSizeAndLastTagByTag("SizeAndLastTagByTag", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
