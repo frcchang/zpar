@@ -45,7 +45,6 @@ class CWeight : public CWeightBase {
 public: 
    unsigned long m_maxLengthByTag[CTag::COUNT+1];
    CCharCatDictionary *m_Knowledge;
-   bool m_bSegmentationRules;
    unsigned long m_nMaxWordFrequency;
 
 public:
@@ -133,7 +132,6 @@ public:
    CWeight(const string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
             CWeightBase(sFeatureDB, bTrain) ,
             m_Knowledge(0) ,
-            m_bSegmentationRules(bSegmentationRules) ,
             m_mapCharUnigram("CharacterUnigram", 65537) ,
             m_mapCharBigram("CharacterBigram", 65537) ,
             m_mapCharTrigram("CharacterTrigram", 65537) ,
@@ -192,6 +190,7 @@ public:
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
+      if(bSegmentationRules)newKnowledge();
       loadScores();
    }
 
@@ -204,6 +203,7 @@ public:
    void computeAverageFeatureWeights(unsigned long round);
 
    void newKnowledge() {
+      cout << "Set character knowledge" << endl;
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
       m_Knowledge = new CCharCatDictionary();
    }

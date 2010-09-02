@@ -11,12 +11,9 @@ class CRule : public CRuleBase {
 private:
    CCharCatDictionary *m_char_categories; // use rules to segment foreign words?
 public:
-   CRule(bool bCDorFW=false) : CRuleBase(), m_char_categories(0) { 
-      if (bCDorFW)
-         m_char_categories = new CCharCatDictionary;
+   CRule(CCharCatDictionary *d=0) : CRuleBase(), m_char_categories(d) { 
    }
    virtual ~CRule() {
-      if (m_char_categories) delete m_char_categories;
    }
 
 public:
@@ -54,7 +51,7 @@ public:
                  m_char_categories->isFW( current_char ) ) ||
                  ( m_char_categories->isCD( last_char ) &&
                  m_char_categories->isCD( current_char ) ) )
-               )
+               ) 
                setSeparate(index_out, false); 
             // always process space 
             if ( index_raw > 0 && last_char == " ")
