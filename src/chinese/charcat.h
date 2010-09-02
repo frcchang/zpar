@@ -138,6 +138,16 @@ public:
       return type==eFW || type==eCD;
    }
 
+   bool isFW( const CWord &s ) const {
+      unsigned long int type = find( s, 0 );
+      return type==eFW;
+   }
+
+   bool isCD( const CWord &s ) const {
+      unsigned long int type = find( s, 0 );
+      return type==eCD;
+   }
+
 };
 
 #endif

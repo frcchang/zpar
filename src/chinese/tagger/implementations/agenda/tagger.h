@@ -75,15 +75,15 @@ public:
    virtual ~CTagger() {}
    
 protected:
-   void loadKnowledge(const string &sKnowledgePath) {
-      cout << "Loading knowledge ... ";
-      m_weights->newKnowledge();
-      ifstream ifs(sKnowledgePath.c_str());
-      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
-      ifs >> (*m_weights->m_Knowledge); 
-      ifs.close();
-      cout << "done." << endl;
-   }
+//   void loadKnowledge(const string &sKnowledgePath) {
+//      cout << "Loading knowledge ... ";
+//      m_weights->newKnowledge();
+//      ifstream ifs(sKnowledgePath.c_str());
+//      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
+//      ifs >> (*m_weights->m_Knowledge); 
+//      ifs.close();
+//      cout << "done." << endl;
+//   }
    inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
       return ( m_weights->m_mapWordFrequency.find( word, 0 ) < 
                   m_weights->m_nMaxWordFrequency/5000+5 && 

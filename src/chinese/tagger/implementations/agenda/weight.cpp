@@ -83,20 +83,21 @@ void CWeight::loadScores() {
    // load tag dictionary
    getline(is, st);
    if (st=="Segmentation rules") {
-      m_bSegmentationRules = true;
+      if (m_bTrain) {ASSERT(m_Knowledge, "The model indicates that there is knowledge, but the training parameters did not indicate knowledge");}
+      else newKnowledge();
    }
    else {
       ASSERT(st=="Segmentation rules=0", "Segmentation rules on/off switch not found from model.");
-      m_bSegmentationRules = false;
+      ASSERT(m_Knowledge==0, "The model indicates no knowledge but the system parameters indicates knowledge");
    }
-   getline(is, st);
-   if (st=="Knowledge") {
-      ASSERT(m_Knowledge==0, "Model loading knowledge but it already exists.")
-      is >> (*m_Knowledge);
-   }
-   else {
-      ASSERT(st=="Knowledge=0", "Knowledge not found from model.");
-   }
+//   getline(is, st);
+//   if (st=="Knowledge") {
+//      ASSERT(m_Knowledge==0, "Model loading knowledge but it already exists.")
+//      is >> (*m_Knowledge);
+//   }
+//   else {
+//      ASSERT(st=="Knowledge=0", "Knowledge not found from model.");
+//   }
    getline(is, st);
    ASSERT(st=="Tag dictionary", "Tag dictionary not found from model.");
    is >> m_mapTagDictionary;
@@ -151,16 +152,16 @@ void CWeight::saveScores() {
    ASSERT(os.is_open(), "Can't open "<<m_sFeatureDB<<" for saving model.");
    iterate_templates(os<<,;);
 
-   if (m_bSegmentationRules) os << "Segmentation rules" << endl;
+   if (m_Knowledge) os << "Segmentation rules" << endl;
    else os << "Segmentation rules=0" << endl;
 
-   if (m_Knowledge==0) {
-      os << "Knowledge=0" << endl;
-   }
-   else {
-      os << "Knowledge" << endl;
-      os << (*m_Knowledge);
-   }
+//   if (m_Knowledge==0) {
+//      os << "Knowledge=0" << endl;
+//   }
+//   else {
+//      os << "Knowledge" << endl;
+//      os << (*m_Knowledge);
+//   }
 
    os << "Tag dictionary" << endl;
    os << m_mapTagDictionary;

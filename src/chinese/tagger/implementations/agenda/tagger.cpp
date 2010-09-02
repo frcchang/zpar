@@ -72,8 +72,8 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    const CWord &word_2 = index>1 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord; 
 
    // about the length
-   if( length_1 > LENGTH_MAX-1 ) length_1 = LENGTH_MAX-1 ;
-   if( length_2 > LENGTH_MAX-1 ) length_2 = LENGTH_MAX-1 ;
+   if (length_1>LENGTH_MAX) length_1 = LENGTH_MAX;
+   if (length_2>LENGTH_MAX) length_2 = LENGTH_MAX;
 
    // about the chars
    const CWord &first_char_0 = index<item->size() ? find_or_replace_word_cache( start_0, start_0 ) : g_emptyWord ;
@@ -158,17 +158,17 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       nReturn += m_weights->m_mapTagByLastChar.getOrUpdateScore( make_pair(last_char_1, tag_1) , m_nScoreIndex , amount , round ) ;
       nReturn += m_weights->m_mapTagByLastCharCat.getOrUpdateScore( make_pair(last_char_cat_1, tag_1) , m_nScoreIndex , amount , round ) ;
 
-      for (j=0; j<length_1-1; ++j) {
-         wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
-         wt2.load(last_char_1);//
-         if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
-         nReturn += m_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(wt12, m_nScoreIndex, amount, round) ;
-      }
+//      for (j=0; j<length_1-1; ++j) {
+//         wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
+//         wt2.load(last_char_1);//
+//         if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+//         nReturn += m_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(wt12, m_nScoreIndex, amount, round) ;
+//      }
    }
 
    // all about the current word
    nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
-//   nReturn += m_weights->m_mapSizeAndLastTagByTag.getOrUpdateScore( make_pair( tag_0_tag_1, (length_1<<LENGTH_MAX_BITS)|length_2 ), m_nScoreIndex , amount , round ) ;
+   nReturn += m_weights->m_mapSizeAndLastTagByTag.getOrUpdateScore( make_pair( tag_0_tag_1, (length_1<<LENGTH_MAX_BITS)|length_2 ), m_nScoreIndex , amount , round ) ;
 
    if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(word_1, tag_0) , m_nScoreIndex , amount , round ) ;
 
@@ -186,7 +186,7 @@ if (index<item->size()) {
 
       if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( make_pair(word_1_first_char_0, tag_1) , m_nScoreIndex , amount , round ) ;
 
-//      nReturn += m_weights->m_mapSepCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache(start_0-1, start_0==sentence->size()-1?start_0:start_0+1) , m_nScoreIndex , amount , round ) ; 
+//      nReturn += m_weights->m_mapSepCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache(start_0, start_0==sentence->size()-1?start_0:start_0+1) , m_nScoreIndex , amount , round ) ; 
       
    }
   
@@ -224,8 +224,6 @@ if (index<item->size()) {
 //         if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatTrigram.getOrUpdateScore( make_pair( groupCharTypes(segmentor, sentence, j, 3, amount), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
 //      }
 //   }
-//   if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( make_pair(first_char_0, tag_1_tag_2) , m_nScoreIndex , amount , round ) ;
-//   nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(first_char_0, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
 
    return nReturn;
 }
@@ -292,15 +290,14 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ; 
 
-//   nReturn += m_weights->m_mapAppCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache( char_index-1, char_index==sentence->size()-1?char_index:char_index+1 ), m_nScoreIndex, amount, round );
+//   nReturn += m_weights->m_mapAppCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache( char_index, char_index==sentence->size()-1?char_index:char_index+1 ), m_nScoreIndex, amount, round );
 
    nReturn += m_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore( make_pair(char_bigram, tag_0), m_nScoreIndex, amount, round ) ; 
 
 //   refer_or_allocate(first_char_and_char, first_char, char_unigram);
 //  nReturn += m_weights->m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, m_nScoreIndex , amount , round ) ;
 
-//   if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( make_pair(find_or_replace_word_cache(start, char_index), tag_1_tag_2) , m_nScoreIndex , amount , round ) ;
-//   nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( make_pair(find_or_replace_word_cache(start, char_index), tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
+//   nReturn += m_weights->m_mapPartialWord.getOrUpdateScore( find_or_replace_word_cache( start, char_index ), m_nScoreIndex, amount, round );
 
    // character scores -- the middle character is char_index-1
 //   static int char_info;
@@ -432,7 +429,7 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    static bool bUnique;
 
    static CStringVector sentence;
-   static CRule rules(m_weights->m_bSegmentationRules);
+   CRule rules(m_weights->m_Knowledge);
    rules.segment(sentence_input, &sentence);
    const unsigned length=sentence.size();
 
