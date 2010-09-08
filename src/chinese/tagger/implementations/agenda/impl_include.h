@@ -27,4 +27,6 @@ const int LENGTH_MAX = 1<<LENGTH_MAX_BITS;
 
 #include "segmentor/rules/external.h"
 }} // namespaces
+#include "reader.h"
+#include "writer.h"
 #endif

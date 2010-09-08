@@ -68,6 +68,9 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const uns
 
    CBitArray word_ends(MAX_SENTENCE_SIZE);
 
+#ifdef DEBUG
+   CSentenceWriter output_writer("");
+#endif
    //
    // Read the next sentence
    //
@@ -77,6 +80,9 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const uns
       else
          UntagAndDesegmentSentence(output_sent, input_sent);
       TRACE("Sentence " << nCount);
+#ifdef DEBUG
+      output_writer.writeSentence(input_sent);
+#endif
       ++nCount;
       //
       // Find the decoder output
