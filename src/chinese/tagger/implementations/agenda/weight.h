@@ -173,6 +173,7 @@ public:
             m_mapTagDictionary(CTag::COUNT),
             m_mapCharTagDictionary(CTag::COUNT), 
             m_mapCanStart(CTag::COUNT), 
+            m_mapWordFrequency(65537),
 
             m_mapTaggedSeparateChars("TaggedSeparateChars", 65537) , 
             m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", 65537), 

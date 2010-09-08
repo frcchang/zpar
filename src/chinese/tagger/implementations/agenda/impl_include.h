@@ -1,6 +1,8 @@
 #ifndef _CHINESE_TAGGER_IMPLINCLUDE_H
 #define _CHINESE_TAGGER_IMPLINCLUDE_H
 
+#define SIMPLE_HASH
+
 #include "agenda.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"

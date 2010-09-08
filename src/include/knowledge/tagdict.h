@@ -29,7 +29,7 @@ protected:
 
 public:
 
-   CTagDict(unsigned long nTotalNumberOfTags) { 
+   CTagDict(unsigned long nTotalNumberOfTags) : m_mapItems(65537) { 
       m_nTotalNumberOfTags = nTotalNumberOfTags ;
       assert( nTotalNumberOfTags < (sizeof(unsigned long long)*8) );   
    }
