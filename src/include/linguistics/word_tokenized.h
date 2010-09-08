@@ -5,7 +5,7 @@
  * A faster alternative to word.h                               *
  *                                                              *
  * Pay special attention to unseen words.                       *
- * They are all allocated as g_tokenForUnknownString in the map,*
+ * They are all allocated as UNKNOWN in the map,                *
  * so this shouldn't be used if necessary to distinguish them.  *
  * Using constructor and the method setString has two effects.  *
  *                                                              *
@@ -34,8 +34,8 @@ class CStringTokenizer : public CTokenizer<string, 65537> {
       virtual ~CStringTokenizer() {}
 };
 
-const unsigned long g_tokenForUnknownString = 0;
-const unsigned long g_tokenForEmptyString = 1;
+//const unsigned long g_tokenForUnknownString = 0;
+//const unsigned long g_tokenForEmptyString = 1;
 
 /*===============================================================
  *
@@ -53,8 +53,11 @@ protected:
    CStringTokenizer &getTokenizer() const {static CStringTokenizer tokenizer; return tokenizer;}
 
 public:
+   enum {UNKNOWN=0, EMPTY=1};
+
+public:
    CWord() { clear(); }
-   CWord(const string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, g_tokenForUnknownString)) { }
+   CWord(const string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, UNKNOWN)) { }
    CWord(const CWord &w) : m_nHash(w.m_nHash) { }
    CWord(const unsigned long &n) : m_nHash(n) { }
 //   CWord(const CWord *w) : m_nHash(w->m_nHash) { }
@@ -69,12 +72,12 @@ public:
 //   void operator = (const string &s) { m_nHash = getTokenizer().lookup(s); }
    bool operator = (const CWord &w) { m_nHash =  w.m_nHash; }
    void copy(const CWord &w) { m_nHash = w.m_nHash; }
-   void setString(const string &s) { m_nHash = getTokenizer().find(s, g_tokenForUnknownString); }
+   void setString(const string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
    // do not use str() for unknown words!!
    const string &str() const { return getTokenizer().key(m_nHash); }
-   bool empty() { return m_nHash==g_tokenForEmptyString; }
-   bool unknown() { return m_nHash==g_tokenForUnknownString; }
-   void clear() { m_nHash=g_tokenForEmptyString; }
+   bool empty() { return m_nHash==EMPTY; }
+   bool unknown() { return m_nHash==UNKNOWN; }
+   void clear() { m_nHash=EMPTY; }
 }; 
 
 //===============================================================

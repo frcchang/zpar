@@ -172,7 +172,7 @@ public:
    }
    const unsigned long& replaceWordToCache(const int &start, const int &length, const CStringVector* sentence) {
       assert(start+length<=sentence->size());
-      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L || m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == g_tokenForUnknownString) { // empty string
+      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L || m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == CWord::UNKNOWN) { // empty string
          static string temp; 
          static unsigned long int i; 
          temp.clear();
