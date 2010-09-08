@@ -23,6 +23,7 @@
 #include <ctime>                                // clock(); CLK_TCK
 #include <vector>
 #include <string>
+#include <cstring>
 #include <map>
 #include <set>
 #include <stack>
