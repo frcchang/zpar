@@ -115,62 +115,67 @@ void train(string sOutputFile, string sFeatureFile, int nBest, const string &sKn
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " training_input_file feature_file number_of_iterations [-nN] [-k{n|m}Path]\n\n\
-Options:\n\
--n:        n best list train\n\
--kn / -km: give knowledge path that contains tagdict.txt; only assign \n\
-           tags that agree to the dict\n\
--kn:       when a training example contradicts the dictionary, give \n\
-           warning and pass on without modifying the dictionary.\n\
--km:       when a training example contradicts the dictionary, update\n\
-           the dictionary with the new example.\n\
-";
-   if (argc < 4) {
-      cout << "\nUsage: " << argv[0] << hint << endl ;
-      return 1;
-   } 
-   int nBest = 1;
-   string sKnowledgeBase = "";
-   bool bUpdateKnowledgeBase = false;
-
-   int training_rounds = atoi(argv[3]);
-   if (training_rounds < 0)
-      training_rounds = TRAINING_ROUND;
-   if (argc>4) {
-      for (int i=4; i<argc; ++i) {
-         if ( argv[i][0]!='-' || strlen(argv[i])==1 ) {
-            cout << "\nUsage: " << argv[0] << hint << endl ;
-            return 1;
-         }
-         switch (argv[i][1]) {
-            case 'n':
-               nBest = atoi(string(argv[i]).substr(2).c_str());
-               break;
-            case 'k':
-               sKnowledgeBase = string(argv[i]).substr(2)+"/tagdict.txt";
-               if ( strlen(argv[i]) != 2 ) {
-                  cout << "\nUsage: " << argv[0] << hint << endl ;
-                  return 1;
-               }
-               if ( argv[i][1] == 'm' ) 
-                  bUpdateKnowledgeBase = true;
-               else if ( argv[i][1] != 'n' ) {
-                  cout << "\nUsage: " << argv[0] << hint << endl ;
-                  return 1;
-               }
-               break;
-
-            default:
+   try {
+      const string hint = " training_input_file feature_file number_of_iterations [-nN] [-k{n|m}Path]\n\n\
+   Options:\n\
+   -n:        n best list train\n\
+   -kn / -km: give knowledge path that contains tagdict.txt; only assign \n\
+              tags that agree to the dict\n\
+   -kn:       when a training example contradicts the dictionary, give \n\
+              warning and pass on without modifying the dictionary.\n\
+   -km:       when a training example contradicts the dictionary, update\n\
+              the dictionary with the new example.\n\
+   ";
+      if (argc < 4) {
+         cout << "\nUsage: " << argv[0] << hint << endl ;
+         return 1;
+      } 
+      int nBest = 1;
+      string sKnowledgeBase = "";
+      bool bUpdateKnowledgeBase = false;
+   
+      int training_rounds = atoi(argv[3]);
+      if (training_rounds < 0)
+         training_rounds = TRAINING_ROUND;
+      if (argc>4) {
+         for (int i=4; i<argc; ++i) {
+            if ( argv[i][0]!='-' || strlen(argv[i])==1 ) {
                cout << "\nUsage: " << argv[0] << hint << endl ;
                return 1;
+            }
+            switch (argv[i][1]) {
+               case 'n':
+                  nBest = atoi(string(argv[i]).substr(2).c_str());
+                  break;
+               case 'k':
+                  sKnowledgeBase = string(argv[i]).substr(2)+"/tagdict.txt";
+                  if ( strlen(argv[i]) != 2 ) {
+                     cout << "\nUsage: " << argv[0] << hint << endl ;
+                     return 1;
+                  }
+                  if ( argv[i][1] == 'm' ) 
+                     bUpdateKnowledgeBase = true;
+                  else if ( argv[i][1] != 'n' ) {
+                     cout << "\nUsage: " << argv[0] << hint << endl ;
+                     return 1;
+                  }
+                  break;
+   
+               default:
+                  cout << "\nUsage: " << argv[0] << hint << endl ;
+                  return 1;
+            }
          }
       }
+      cout << "Training started" << endl;
+      int time_start = clock();
+      for (int i=0; i<training_rounds; ++i)
+         auto_train(argv[1], argv[2], nBest, sKnowledgeBase, bUpdateKnowledgeBase);
+      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+      return 0;
+   } catch (const string &e) {
+      cerr << "Error: " << e << endl;
+      return 1;
    }
-   cout << "Training started" << endl;
-   int time_start = clock();
-   for (int i=0; i<training_rounds; ++i)
-      auto_train(argv[1], argv[2], nBest, sKnowledgeBase, bUpdateKnowledgeBase);
-   cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
-   return 0;
 }
 
