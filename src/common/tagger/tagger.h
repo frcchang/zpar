@@ -25,7 +25,7 @@ class CTagger;
 
 namespace tagger {
 #include "tagger_impl.h"
-#include "stateitem.h"
+#include "tagger_stateitem.h"
 }; // namespace tagger
 };
 

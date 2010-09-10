@@ -16,8 +16,7 @@
 namespace TARGET_LANGUAGE {
 namespace tagger {
 
-#include "tagger_impl.h"
-#include "stateitem.h"
+#include "macros.h"
 
 #define iterate_templates(left, right)\
    left(m_mapLastTagByTag)right\
@@ -54,8 +53,9 @@ typedef CScoreMap< CTag, SCORE_TYPE > CTagMap;
  *
  *==============================================================*/
 
-struct CWeight : public CWeightBase {
+class CWeight : public CWeightBase {
 
+public:
    // FEATURE TEMPLATES 
    CTagSet2Map m_mapLastTagByTag;
    CTagSet3Map m_mapLastTwoTagsByTag;
@@ -86,6 +86,7 @@ struct CWeight : public CWeightBase {
                                                     m_mapContainCapitalLetter("ontains capitalized letter", 65537),
                                                     m_mapTagByPrefix("Tag by prefix", 65537),
                                                     m_mapTagBySuffix("Tag by suffix", 65537) {}
+   virtual ~CWeight() {}
 
    // MEHTODS
    void loadScores(); 

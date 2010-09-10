@@ -1,6 +1,6 @@
 
 #ifndef _COMMON_TAGGER_STATEITEM_H
-#define _COMMON_TAGGER_STATEITEM_H 1
+#define _COMMON_TAGGER_STATEITEM_H
 
 /*===============================================================
  *
