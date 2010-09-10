@@ -1,8 +1,6 @@
 #ifndef _DEPPARSER_IMPL_INCLUDE_H
 #define _DEPPARSER_IMPL_INCLUDE_H
 
-#define SIMPLE_HASH
-
 #include "tags.h"
 #include "bigram.h"
 #include "linguistics/word_tokenized.h"
