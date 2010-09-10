@@ -9,19 +9,7 @@
 #ifndef TAGGER_SEGMENTED_IMPL_H
 #define TAGGER_SEGMENTED_IMPL_H 1
 
-typedef double SCORE_TYPE ;
-
-//
-// Specific global
-//
-const int AGENDA_SIZE = 16;
-//
-// General definitions for any method tagger.
-//
-const int MAX_SENTENCE_SIZE = 512; // restrict size of sentences 
-
-const int LENGTH_MAX_BITS = 3;
-const int LENGTH_MAX = 1<<LENGTH_MAX_BITS;
+#include "macros.h"
 
 class CStateItem;
 
@@ -40,7 +28,5 @@ class CTaggerImpl {
          delete m_Agenda;
       }
 };
-
-inline long int hash(const int &i) {return i;}
 
 #endif

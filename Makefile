@@ -65,8 +65,8 @@ ENGLISH_CONPARSER_IMPL = srnew
 #
 #================================================================
 
-#DEBUG = -DDEBUG -g
-DEBUG = -DNDEBUG
+DEBUG = -DDEBUG -g
+#DEBUG = -DNDEBUG
 
 #================================================================
 #

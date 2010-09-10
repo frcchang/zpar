@@ -20,7 +20,7 @@ using namespace TARGET_LANGUAGE::tagger;
  *
  *------------------------------------------------------------*/
 
-void CWeight::loadScores() {
+void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
    cout << "Loading model..."; cout.flush();
    ifstream is(m_sFeatureDB.c_str());
    iterate_templates(is>>,;);
@@ -34,7 +34,7 @@ void CWeight::loadScores() {
  *
  *-------------------------------------------------------------*/
 
-void CWeight::saveScores() {
+void TARGET_LANGUAGE::tagger::CWeight::saveScores() {
    cout << "Saving model..."; cout.flush();
    ofstream os(m_sFeatureDB.c_str());
    assert(os.is_open());
@@ -49,7 +49,7 @@ void CWeight::saveScores() {
  *
  *-------------------------------------------------------------*/
 
-void CWeight::computeAverageFeatureWeights(int round) {
+void TARGET_LANGUAGE::tagger::CWeight::computeAverageFeatureWeights(int round) {
    cout << "Computing averaged feature scores...";
    iterate_templates(,.computeAverage(round););
    cout << " Done" << endl;
