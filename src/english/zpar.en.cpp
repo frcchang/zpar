@@ -10,14 +10,14 @@
 
 #include "definitions.h"
 #include "options.h"
-//#include "tagger.h"
-//#include "conparser.h"
-//#include "depparser.h"
-//#include "reader.h"
-//#include "writer.h"
-//#include "stdlib.h"
+#include "tagger.h"
+#include "conparser.h"
+#include "depparser.h"
+#include "reader.h"
+#include "writer.h"
+#include "stdlib.h"
 
-//using namespace english;
+using namespace english;
 
 #define MAX_SENTENCE_SIZE 512
 
@@ -29,7 +29,6 @@
 
 void tag(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
    cout << "Tagging started" << endl;
-/*
    int time_start = clock();
    string sTaggerFeatureFile = sFeaturePath + "/tagger";
    CTagger *tagger;
@@ -65,7 +64,6 @@ void tag(const string sInputFile, const string sOutputFile, const string sFeatur
    delete tagger;
 
    cout << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
-*/
 }
 
 /*===============================================================
@@ -73,7 +71,7 @@ void tag(const string sInputFile, const string sOutputFile, const string sFeatur
  * parse
  *
  *==============================================================*/
-/*
+
 void parse(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
    cout << "Parsing started" << endl;
    int time_start = clock();
@@ -114,13 +112,13 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
    if (sOutputFile!="") delete outs;
    cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
 }
-*/
+
 /*===============================================================
  *
  * depparse
  *
  *==============================================================*/
-/*
+
 void depparse(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
    cout << "Parsing started" << endl;
    int time_start = clock();
@@ -161,7 +159,7 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
    if (sOutputFile!="") delete outs;
    cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
 }
-*/
+
 /*===============================================================
  *
  * main
@@ -169,7 +167,7 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-//   try {
+   try {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("o", "{t|d|c}", "output format; 't' pos-tagged format in sentences, 'd' refers to dependency parse tree format, and 'c' refers to constituent parse tree format", "d");
@@ -187,13 +185,13 @@ int main(int argc, char* argv[]) {
       string sInputFile = options.args.size() > 2 ? options.args[2] : "";
       string sToFile = options.args.size() > 3 ? options.args[3] : "";
       string sOutFormat = configurations.getConfiguration("o");
-//      if (sOutFormat == "t")
-//          tag(sInputFile, sToFile, options.args[1]);
-//      else if (sOutFormat == "c" )
-//          parse(sInputFile, sToFile, options.args[1]);
+      if (sOutFormat == "t")
+          tag(sInputFile, sToFile, options.args[1]);
+      else if (sOutFormat == "c" )
+          parse(sInputFile, sToFile, options.args[1]);
 //      else if (sOutFormat == "d" )
 //          depparse(sInputFile, sToFile, options.args[1]);
       return 0;
-//   } catch(const string&e) {cerr<<"Error: "<<e<<endl;return 1;}
+   } catch(const string&e) {cerr<<"Error: "<<e<<endl;return 1;}
 }
 

@@ -7,7 +7,7 @@
  ***************************************************************/
 
 #ifndef _COMMON_TAGGER_WEIGHTS_H
-#define _COMMON_TAGGER_WEIGHTS_H 1
+#define _COMMON_TAGGER_WEIGHTS_H
 
 #include "tagger_include.h"
 

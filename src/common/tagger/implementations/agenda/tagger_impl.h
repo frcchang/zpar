@@ -6,8 +6,8 @@
  *
  ***************************************************************/
 
-#ifndef TAGGER_SEGMENTED_IMPL_H
-#define TAGGER_SEGMENTED_IMPL_H 1
+#ifndef TAGGER_IMPL_H
+#define TAGGER_IMPL_H
 
 #include "macros.h"
 
