@@ -1,3 +1,6 @@
+#ifndef _COMMON_TAGGER_INCLUDE
+#define _COMMON_TAGGER_INCLUDE
+
 #include "definitions.h"
 #include "pair_stream.h"
 #include "linguistics/word.h" 
@@ -8,3 +11,4 @@
 #include "learning/perceptron/score.h"
 #include "learning/perceptron/hashmap_score.h"
 #include "linguistics/tagset.h"
+#endif

@@ -21,8 +21,6 @@
 
 namespace TARGET_LANGUAGE {
 
-class CTagger;
-
 namespace tagger {
 #include "tagger_impl.h"
 #include "tagger_stateitem.h"
