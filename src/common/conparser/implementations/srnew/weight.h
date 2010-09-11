@@ -12,7 +12,7 @@
 #include "weight_base.h"
 
 //#define TABLE_SIZE 122651
-#define TABLE_SIZE 131072
+const static unsigned TABLE_SIZE = 131072;
 
 namespace TARGET_LANGUAGE {
 
@@ -342,6 +342,7 @@ public:
    CWeight(bool bTrain) : CWeightBase(bTrain) ,
 
                           m_nMaxWordFrequency(0) ,
+                          m_mapWordFrequency(TABLE_SIZE),
 
                           m_mapHw("HeadWord", TABLE_SIZE),
                           m_mapHt("HeadTag", TABLE_SIZE),

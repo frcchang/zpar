@@ -82,7 +82,9 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/conparser");
+   cout << "[tagger] ";
    CTagger tagger(sTaggerFeatureFile, false);
+   cout << "[parser] ";
    CConParser conparser(sParserFeatureFile, false);
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
@@ -122,6 +124,7 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
 void depparse(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
    cout << "Parsing started" << endl;
    int time_start = clock();
+   int time_one;
    ostream *outs; if (sOutputFile=="") outs=&cout; else outs = new ofstream(sOutputFile.c_str()); 
    string sTaggerFeatureFile = sFeaturePath + "/tagger";
    string sParserFeatureFile = sFeaturePath + "/depparser";
@@ -129,7 +132,9 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/depparser");
+   cout << "[tagger] ";
    CTagger tagger(sTaggerFeatureFile, false);
+   cout << "[parser] ";
    CDepParser depparser(sParserFeatureFile, false);
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
@@ -142,8 +147,9 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
 
    // If we read segmented sentence, we will ignore spaces from input. 
    while( input_reader.readSegmentedSentence(input_sent) ) {
-      TRACE("Sentence " << nCount);
+//      TRACE("Sentence " << nCount);
       ++ nCount;
+      time_one = clock();
       if ( input_sent->back()=="\n" ) {
          input_sent->pop_back();
       }
@@ -151,6 +157,7 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
       depparser.parse(*tagged_sent, output_sent, 1, NULL);
       // Ouptut sent
       (*outs) << *output_sent;
+      cout << "Sentence " << nCount << " processed in " << double(clock()-time_one)/CLOCKS_PER_SEC << " sec." << endl;
    }
    delete input_sent;
    delete tagged_sent;
@@ -186,12 +193,16 @@ int main(int argc, char* argv[]) {
       string sToFile = options.args.size() > 3 ? options.args[3] : "";
       string sOutFormat = configurations.getConfiguration("o");
       if (sOutFormat == "t")
-          tag(sInputFile, sToFile, options.args[1]);
+         tag(sInputFile, sToFile, options.args[1]);//
       else if (sOutFormat == "c" )
-          parse(sInputFile, sToFile, options.args[1]);
-//      else if (sOutFormat == "d" )
-//          depparse(sInputFile, sToFile, options.args[1]);
+         parse(sInputFile, sToFile, options.args[1]);//
+      else if (sOutFormat == "d" )
+         depparse(sInputFile, sToFile, options.args[1]);//
       return 0;
-   } catch(const string&e) {cerr<<"Error: "<<e<<endl;return 1;}
+   } catch(const string&e) {
+      cerr<<"Error: "<<e;
+      cerr<<endl;
+      return 1;
+   }
 }
 

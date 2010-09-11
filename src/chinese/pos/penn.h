@@ -88,7 +88,7 @@ protected:
 public:
    CTag() : m_code(NONE) {}
    CTag(PENN_TAG_CONSTANTS t) : m_code(t) { }
-   CTag(int t) : m_code(t) { }
+   CTag(int t) : m_code(t) { assert(t<PENN_TAG_COUNT); }
    CTag(const string &s) { load(s); }
    virtual ~CTag() {}
 

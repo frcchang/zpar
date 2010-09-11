@@ -174,6 +174,9 @@ void CWeight::saveScores() {
    file.open(m_sRecordPath.c_str()) ;
 
    iterate_templates(file<<,;)
+#ifdef DEBUG
+   iterate_templates(,.trace(););
+#endif
 
    file.close();
    cout<<" done."<<endl;

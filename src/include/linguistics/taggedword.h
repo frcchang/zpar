@@ -25,54 +25,50 @@
 
 // the word class, which includes hash
 template <typename CTag, char sTagSep>
-class CTaggedWord : virtual public CWord {
+class CTaggedWord {
 
 public:
    const static char sSeparator = sTagSep;
 
 public:
+   CWord word;
    CTag tag;
 
 public:
-   CTaggedWord(): CWord() { }
-   CTaggedWord(const string &s, const CTag t) : CWord(s), tag(t) { }
-   CTaggedWord(const CWord &w, const CTag t) : CWord(w), tag(t) { }
-   CTaggedWord(const CTaggedWord &w) : CWord(static_cast<CWord>(w)), tag(w.tag) { }
+   CTaggedWord() {}
+//   CTaggedWord(const string &s, const CTag t) : word(s), tag(t) { }
+   CTaggedWord(const string &s, const string &t) : word(s), tag(t) { }
+   CTaggedWord(const CWord &w, const CTag t) : word(w), tag(t) { }
+   CTaggedWord(const CTaggedWord &w) : word(w.word), tag(w.tag) { }
    virtual ~CTaggedWord() {}
 
 public:
    inline bool operator == (const CTaggedWord &w) const { 
-      return static_cast<CWord>(*this) == static_cast<CWord>(w) && (tag == w.tag) ; 
+      return word == w.word && tag == w.tag ; 
    }
    inline bool operator != (const CTaggedWord &w) const { 
-      return static_cast<CWord>(*this) != static_cast<CWord>(w) || (tag != w.tag); 
+      return !(*this == w); 
    }
    // the ordering of words are defined:
    // when the hash are not equal, order is defined by hash
    // when the hash are equal, order is defined by char-value
    inline bool operator < (const CTaggedWord &w) const { 
-      return static_cast<CWord>(*this) == static_cast<CWord>(w) ?  
-             tag < w.tag : 
-             static_cast<CWord>(*this) < static_cast<CWord>(w) ; 
+      return word == w.word ? tag < w.tag : word < w.word ; 
    }
-   inline bool empty() { return static_cast<CWord>(*this).empty() && tag==0; }
-   inline bool clear() { CWord::clear(); tag = 0; }
+   inline bool empty() { return word.empty() && tag.empty(); }
+   inline bool clear() { CWord::clear(); tag.clear(); }
+   inline unsigned long hash() const { return (word.code()<<CTag::SIZE)|tag.code(); }
    // assign value
-   inline void operator = (const CTaggedWord &word) {
-      static_cast<CWord>(*this) = static_cast<const CWord &>(word);
-      tag = word.tag;
+   inline void operator = (const CTaggedWord &tw) {
+      word = tw.word;
+      tag = tw.tag;
    }
-   inline void load(const CWord &word, const CTag &tt=0) {
-      CWord::operator=(word) ;
+   inline void load(const CWord &word, const CTag &tt=CTag::NONE) {
+      this->word = (word) ;
       tag = tt ;
    }
 };
    
-//===============================================================
-
-template <typename CTag, char sTagSep>
-inline unsigned long int hash( const CTaggedWord<CTag, sTagSep> &tw ) { return hash(static_cast<CWord>(tw))*37+hash(tw.tag); }
-
 //===============================================================
 
 template <typename CTag, char sTagSep>
@@ -89,9 +85,9 @@ istream & operator >> (istream &is, CTaggedWord<CTag, sTagSep> &tw) {
 
 template <typename CTag, char sTagSep>
 ostream & operator << (ostream &os, const CTaggedWord<CTag, sTagSep> &tw) {
-   os << tw.str() ;
+   os << tw.word.str() ;
    os << sTagSep ;
-   os << tw.tag ; 
+   os << tw.tag.str() ; 
    return os ;
 }
 

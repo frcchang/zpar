@@ -5,8 +5,8 @@
    /*----------------------word unigram----------------------*/
    const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = m_lCache[head_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = m_lCache[dep_index];
-   const CWord &head_word = static_cast<const CWord&>(head_word_tag);
-   const CWord &dep_word = static_cast<const CWord&>(dep_word_tag);
+   const CWord &head_word = head_word_tag.word;
+   const CWord &dep_word = dep_word_tag.word;
    const CTag &head_tag = head_word_tag.tag;
    const CTag &dep_tag = dep_word_tag.tag;
    const CTaggedWord<CTag, TAG_SEPARATOR> head_word_nil(head_word, CTag::NONE);
@@ -62,7 +62,7 @@
    /*----------------------sibling----------------------*/
 
    const CTaggedWord<CTag, TAG_SEPARATOR> &sibling = sibling_index==DEPENDENCY_LINK_NO_HEAD ? g_emptyTaggedWord : m_lCache[sibling_index] ;
-   const CWord &sibling_word = static_cast<const CWord&>(sibling);
+   const CWord &sibling_word = sibling.word;
    const CTag &sibling_tag = sibling.tag;
 
    const CTaggedWord<CTag, TAG_SEPARATOR> sibling_word_tag(sibling_word, dep_tag);

@@ -2,6 +2,12 @@
 #define _DEPPARSER_IMPL_INCLUDE_H
 
 #include "tags.h"
+namespace TARGET_LANGUAGE { 
+namespace depparser { 
+#include "macros.h" 
+}
+}
+
 #include "bigram.h"
 #include "linguistics/word_tokenized.h"
 #include "tuple3.h"
@@ -21,14 +27,6 @@ typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARAT
    typedef CDependencyTree CDependencyParse;
 #endif
 
-namespace TARGET_LANGUAGE { 
 
-namespace depparser { 
-
-#include "macros.h" 
-
-}
-
-}
 
 #endif
