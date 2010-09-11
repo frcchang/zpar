@@ -40,9 +40,9 @@ return 0;
    static CCFGSet cf;
 
    const CTag &ht = m_lCache[head].tag;
-   const CWord &hw = m_lCache[head];
+   const CWord &hw = m_lCache[head].word;
    const CTag &mt = m_lCache[mod].tag;
-   const CWord &mw = m_lCache[mod];
+   const CWord &mw = m_lCache[mod].word;
 
 /*
    cf.clear(); cf.add(ht); cf.add(mt); cf.add(0); cf.add(0);
@@ -84,11 +84,11 @@ return 0;
    unsigned long dist = encodeLinkDirectionAndSize(mod, sibling);
 
    const CTag &ht = m_lCache[head].tag;
-   const CWord &hw = m_lCache[head];
+   const CWord &hw = m_lCache[head].word;
    const CTag &mt = m_lCache[mod].tag;
-   const CWord &mw = m_lCache[mod];
+   const CWord &mw = m_lCache[mod].word;
    const CTag &st = m_lCache[sibling].tag;
-   const CWord &sw = m_lCache[sibling];
+   const CWord &sw = m_lCache[sibling].word;
 
    unsigned long k = encodeTags(ht, mt, st);
    nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k, m_nScoreIndex, amount, round);
@@ -118,7 +118,7 @@ SCORE_TYPE CConParser::getOrUpdateArityScore( const unsigned long &head, const u
    static SCORE_TYPE nReturn;
    nReturn = 0;return nReturn;
 
-   const CWord &w = m_lCache[head];
+   const CWord &w = m_lCache[head].word;
    const CTag &t = m_lCache[head].tag;
 
    nReturn += cast_weights->m_mapHwArityL.getOrUpdateScore(make_pair(w, arityleft), m_nScoreIndex, amount, round);
@@ -139,7 +139,7 @@ SCORE_TYPE CConParser::getOrUpdateHeadScore( const unsigned long &parent, const 
    static SCORE_TYPE nReturn;
    nReturn = 0;
 return 0;
-   const CWord &w = m_lCache[head];
+   const CWord &w = m_lCache[head].word;
    const CTag &t = m_lCache[head].tag;
    static CCFGSet cs; cs.clear();
    cs += parent; cs += child;
@@ -165,8 +165,8 @@ SCORE_TYPE CConParser::getOrUpdateHeadModifierScore( const unsigned long &parent
 return 0;
    assert(left&&head<mod || !left&&head>mod);
 
-   const CWord &hw = m_lCache[head];
-   const CWord &mw = m_lCache[mod];
+   const CWord &hw = m_lCache[head].word;
+   const CWord &mw = m_lCache[mod].word;
    static CTwoWords hwmw;
    if (amount!=0)
       hwmw.allocate(hw, mw);

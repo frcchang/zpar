@@ -200,60 +200,60 @@ public:
    
       s0c.load( constituent_or_none(*s0) );
       s0wt = &( wrds[s0->lexical_head] );
-      s0w = s0wt;
+      s0w = &(s0wt->word);
       s0t = s0wt->tag;
    
       s1c.load( s1==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1) );
       s1wt = s1 == 0 ? 0 : &( wrds[s1->lexical_head] );
-      s1w = s1wt;
+      s1w = &(s1wt->word);
       s1t = s1 == 0 ? g_noneTag : s1wt->tag;
    
       s2c.load( s2==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2) );
-      s2w = s2 == 0 ? 0 : &(wrds[s2->lexical_head]);
+      s2w = s2 == 0 ? 0 : &(wrds[s2->lexical_head].word);
       s2t = s2 == 0 ? 0 : wrds[s2->lexical_head].tag;
    
       s3c.load( s3==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s3) );
-      s3w = s3 == 0 ? 0 : &(wrds[s3->lexical_head]);
+      s3w = s3 == 0 ? 0 : &(wrds[s3->lexical_head].word);
       s3t = s3 == 0 ? 0 : wrds[s3->lexical_head].tag;
    
       s0lc.load( s0l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0l) );
-      s0lw = s0l==0 ? 0 : &(wrds[s0l->lexical_head]);
+      s0lw = s0l==0 ? 0 : &(wrds[s0l->lexical_head].word);
       s0lt = s0l==0 ? g_noneTag : wrds[s0l->lexical_head].tag;
 
       s0rc.load(s0r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0r));
-      s0rw = s0r==0 ? 0 : &(wrds[s0r->lexical_head]);
+      s0rw = s0r==0 ? 0 : &(wrds[s0r->lexical_head].word);
       s0rt = s0r==0 ? 0 : wrds[s0r->lexical_head].tag;
 
       s0uc.load(s0u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0u));
-      s0uw = s0u==0 ? 0 : &(wrds[s0u->lexical_head]);
+      s0uw = s0u==0 ? 0 : &(wrds[s0u->lexical_head].word);
       s0ut = s0u==0 ? 0 : wrds[s0u->lexical_head].tag;
    
       s1lc.load(s1l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1l));
-      s1lw = s1l==0 ? 0 : &(wrds[s1l->lexical_head]);
+      s1lw = s1l==0 ? 0 : &(wrds[s1l->lexical_head].word);
       s1lt = s1l==0 ? 0 : wrds[s1l->lexical_head].tag;
 
       s1rc.load(s1r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1r));
-      s1rw = s1r==0 ? 0 : &(wrds[s1r->lexical_head]);
+      s1rw = s1r==0 ? 0 : &(wrds[s1r->lexical_head].word);
       s1rt = s1r==0 ? 0 : wrds[s1r->lexical_head].tag;
 
       s1uc.load(s1u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1u));
-      s1uw = s1u==0 ? 0 : &(wrds[s1u->lexical_head]);
+      s1uw = s1u==0 ? 0 : &(wrds[s1u->lexical_head].word);
       s1ut = s1u==0 ? 0 : wrds[s1u->lexical_head].tag;
 
       n0t = n0==-1 ? g_noneTag : wrds[n0].tag;
-      n0w = n0 == -1 ? 0 : &(wrds[n0]);
+      n0w = n0 == -1 ? 0 : &(wrds[n0].word);
       n0wt = n0 == -1 ? 0 : &(wrds[n0]);
    
       n1t = n1==-1 ? g_noneTag : wrds[n1].tag;
-      n1w = n1 == -1 ? 0 : &(wrds[n1]);
+      n1w = n1 == -1 ? 0 : &(wrds[n1].word);
       n1wt = n1 == -1 ? 0 : &(wrds[n1]);
    
       n2t = n2==-1 ? g_noneTag : wrds[n2].tag;
-      n2w = n2 == -1 ? 0 : &(wrds[n2]);
+      n2w = n2 == -1 ? 0 : &(wrds[n2].word);
       n2wt = n2 == -1 ? 0 : &(wrds[n2]);
  
       n3t = n3==-1 ? g_noneTag : wrds[n3].tag;
-      n3w = n3 == -1 ? 0 : &(wrds[n3]);
+      n3w = n3 == -1 ? 0 : &(wrds[n3].word);
       n3wt = n3 == -1 ? 0 : &(wrds[n3]);
 
       if (modify==false) {

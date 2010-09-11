@@ -1,6 +1,8 @@
 #ifndef _GENERAL_DEPPARSER_MACROS_H
 #define _GENERAL_DEPPARSER_MACROS_H
 
+#define SIMPLE_HASH
+
 // early update? 
 #define EARLY_UPDATE 1
 
@@ -27,7 +29,7 @@ inline int getLinkSizeAndDirection(const int &head_index, const int &dep_index) 
    if (diff>10) diff = 6; 
    else if (diff>5) diff = 5; 
    if (diff<-10) diff = -6; 
-   else if (diff<-5) diff = -5;
+   else if (diff<-5) diff = -5; 
    return diff;
 }
 inline int getLinkDirection(const int &head_index, const int &dep_index) {

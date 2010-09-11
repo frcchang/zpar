@@ -76,7 +76,7 @@ protected:
       static CAction action;
       // the rules onto lexical item constituents
       if (m_LexConstituents) {
-         ASSERT(m_LexConstituents->at(item.current_word).size()>0, "no lexical constituents for word "<<item.current_word<<" ("<<m_sent->at(item.current_word).str()<<") is provided.");
+         ASSERT(m_LexConstituents->at(item.current_word).size()>0, "no lexical constituents for word "<<item.current_word<<" ("<<m_sent->at(item.current_word)<<") is provided.");
          for (int i=0; i<m_LexConstituents->at(item.current_word).size(); ++i) {
 //            TRACE("shift "<<m_LexConstituents->at(item.current_word).at(i).str());
             action.encodeShift(m_LexConstituents->at(item.current_word).at(i).code());
@@ -111,7 +111,7 @@ protected:
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {
 	    const bool &head_left = static_cast<bool>(i);
-            const CWord &head_wd = m_sent->at( (head_left?left:right).lexical_head );
+            const CWord &head_wd = m_sent->at((head_left?left:right).lexical_head).word;
 #ifndef NO_TEMP_CONSTITUENT
             for (unsigned j=0; j<=1; ++j) {
                const bool &temporary = static_cast<bool>(j);
@@ -171,7 +171,7 @@ public:
       if (s=="Free binary rules")
          return;
       ASSERT(!m_mapBinaryRules, "Binary rules already loaded");
-      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> >;
+      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> >(257);
       is >> (*m_mapBinaryRules);
       // unary rules
       getline(is, s);
@@ -179,7 +179,7 @@ public:
       if (s=="Free unary rules")
          return;
       ASSERT(!m_mapUnaryRules, "Unary rules already loaded");
-      m_mapUnaryRules = new CHashMap< CConstituent, vector<CAction> >;
+      m_mapUnaryRules = new CHashMap< CConstituent, vector<CAction> >(257);
       is >> (*m_mapUnaryRules);
    }
 
@@ -204,7 +204,7 @@ public:
       if (!is.is_open()) {
          THROW("Loading binary rules failed possibly becaues file not exists.");
       }
-      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> >;
+      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> >(257);
       is >> (*m_mapBinaryRules);
    }
 
@@ -212,7 +212,7 @@ public:
       if (!is.is_open()) {
          THROW("Loading unary rules failed possibly becaues file not exists.");
       }
-      m_mapUnaryRules = new CHashMap< CConstituent, vector<CAction> >;
+      m_mapUnaryRules = new CHashMap< CConstituent, vector<CAction> >(257);
       is >> (*m_mapUnaryRules);
    }
 

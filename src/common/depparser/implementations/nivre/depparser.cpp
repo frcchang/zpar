@@ -15,7 +15,7 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
 
 const CWord g_emptyWord("");
-const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", CTag::NONE);
+const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord;
 const CTag g_noneTag = CTag::NONE;
 //const CScore<SCORE_TYPE> g_zeroScore;
 
@@ -208,9 +208,9 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
    const CTaggedWord<CTag, TAG_SEPARATOR> &sth_word_tag = sth_index==-1 ? g_emptyTaggedWord : m_lCache[sth_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &n0_word_tag = n0_index==-1 ? g_emptyTaggedWord : m_lCache[n0_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &n1_word_tag = n1_index==-1 ? g_emptyTaggedWord : m_lCache[n1_index];
-   const CWord &st_word = static_cast<const CWord&>(st_word_tag);
-   const CWord &n0_word = static_cast<const CWord&>(n0_word_tag);
-   const CWord &n1_word = static_cast<const CWord&>(n1_word_tag);
+   const CWord &st_word = st_word_tag.word;
+   const CWord &n0_word = n0_word_tag.word;
+   const CWord &n1_word = n1_word_tag.word;
    const CTag &st_tag = st_word_tag.tag;
    const CTag &n0_tag = n0_word_tag.tag;
    const CTag &n1_tag = n1_word_tag.tag;
