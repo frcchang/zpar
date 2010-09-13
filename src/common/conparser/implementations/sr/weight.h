@@ -18,7 +18,7 @@ namespace TARGET_LANGUAGE {
 
 namespace conparser {
 
-#include "macros.h"
+//#include "conparser_macros.h"
 
 //
 // TYPE DEFINITIONS

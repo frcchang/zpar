@@ -8,8 +8,8 @@
  *                                                              *
  ****************************************************************/
 
-#ifndef _HASH_H
-#define _HASH_H
+#ifndef _HASH_SIMPLE_H
+#define _HASH_SIMPLE_H
 
 #include "pool.h"
 

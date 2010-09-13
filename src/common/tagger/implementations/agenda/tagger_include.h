@@ -1,6 +1,6 @@
 #ifndef _COMMON_TAGGER_INCLUDE
 #define _COMMON_TAGGER_INCLUDE
-//#define SIMPLE_HASH
+#define SIMPLE_HASH
 #include "definitions.h"
 #include "pair_stream.h"
 #include "linguistics/word.h" 

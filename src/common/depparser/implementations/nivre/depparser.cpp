@@ -9,7 +9,7 @@
  ****************************************************************/
 
 #include "depparser.h"
-#include "weight.h"
+#include "depparser_weight.h"
 
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
