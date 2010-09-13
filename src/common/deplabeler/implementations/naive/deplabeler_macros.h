@@ -1,6 +1,8 @@
 #ifndef _GENERAL_DEPLABELER_MACROS_H
 #define _GENERAL_DEPLABELER_MACROS_H
 
+#define SIMPLE_HASH
+
 typedef double SCORE_TYPE ;
 
 // The size of a sentence and the words
@@ -24,12 +26,6 @@ inline int getLinkSizeAndDirection(const int &head_index, const int &dep_index) 
 }
 inline int getLinkDirectionEncode(const int &head_index, const int &dep_index) {
    return head_index>dep_index ? LINK_DIRECTION_HEAD_RIGHT : LINK_DIRECTION_HEAD_LEFT ;
-}
-inline void UnlabelSentence(const CLabeledDependencyTree &labeled, CDependencyTree &output) {
-   static int i;
-   output.clear();
-   for (i=0;i<labeled.size();++i)
-      output.push_back(CDependencyTreeNode(labeled[i].word, labeled[i].tag, labeled[i].head));
 }
 
 // arity direction

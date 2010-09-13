@@ -15,7 +15,7 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::deplabeler;
 
 const CWord g_emptyWord("");
-const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord("", CTag::NONE);
+const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord;
 const CTag g_noneTag(CTag::NONE);
 const CTag g_beginTag(CTag::SENTENCE_BEGIN);
 //const CScore<SCORE_TYPE> g_zeroScore;
@@ -39,8 +39,8 @@ const CTag g_beginTag(CTag::SENTENCE_BEGIN);
 inline SCORE_TYPE CDepLabeler::getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const CDependencyLabel &label, SCORE_TYPE amount, int round) {
    const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = head_index == -1 ? g_emptyTaggedWord : m_lCache[head_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = m_lCache[dep_index];
-   const CWord &head_word = head_index == -1 ? g_emptyWord : static_cast<const CWord&>(head_word_tag);
-   const CWord &dep_word = static_cast<const CWord&>(dep_word_tag);
+   const CWord &head_word = head_index == -1 ? g_emptyWord : head_word_tag.word;
+   const CWord &dep_word = dep_word_tag.word;
    const CTag &head_tag = head_index == -1 ? g_noneTag : head_word_tag.tag;
    const CTag &dep_tag = dep_word_tag.tag;
 
@@ -151,6 +151,19 @@ void CDepLabeler::label( const CDependencyTree &sentence , CLabeledDependencyTre
    for (unsigned long i=0; i<sentence.size(); ++i)
       work( retval, 0, i ) ;
 
+}
+
+/*---------------------------------------------------------------
+ *
+ * UnlabelSentence - remove labels
+ *
+ *---------------------------------------------------------------*/
+
+inline void UnlabelSentence(const CLabeledDependencyTree &labeled, CDependencyTree &output) {
+   static int i;
+   output.clear();
+   for (i=0;i<labeled.size();++i)
+      output.push_back(CDependencyTreeNode(labeled[i].word, labeled[i].tag, labeled[i].head));
 }
 
 /*---------------------------------------------------------------
