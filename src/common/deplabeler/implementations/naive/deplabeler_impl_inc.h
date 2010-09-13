@@ -16,14 +16,4 @@
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
-namespace TARGET_LANGUAGE { 
-
-namespace deplabeler { 
-
-#include "macros.h" 
-
-}
-
-}
-
 #endif

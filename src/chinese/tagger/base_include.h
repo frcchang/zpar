@@ -1,4 +1,5 @@
 #include "definitions.h"
+#include "tagger_macros.h"
 #include "tags.h"
 #include "utils.h"
 #include "file_utils.h"

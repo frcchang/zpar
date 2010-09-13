@@ -15,7 +15,7 @@ namespace TARGET_LANGUAGE {
 
 namespace deplabeler {
 
-#include "macros.h"
+//#include "macros.h"
 
 //
 // TYPE DEFINITIONS
