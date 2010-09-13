@@ -8,6 +8,8 @@
  *                                                              *
  ****************************************************************/
 
+#define SIMPLE_HASH
+
 #include "definitions.h"
 #include "options.h"
 #include "tagger.h"
@@ -71,7 +73,7 @@ void tag(const string sInputFile, const string sOutputFile, const string sFeatur
  * parse
  *
  *==============================================================*/
-
+/*
 void parse(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
    cout << "Parsing started" << endl;
    int time_start = clock();
@@ -114,7 +116,7 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
    if (sOutputFile!="") delete outs;
    cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
 }
-
+*/
 /*===============================================================
  *
  * depparse
@@ -194,8 +196,8 @@ int main(int argc, char* argv[]) {
       string sOutFormat = configurations.getConfiguration("o");
       if (sOutFormat == "t")
          tag(sInputFile, sToFile, options.args[1]);//
-      else if (sOutFormat == "c" )
-         parse(sInputFile, sToFile, options.args[1]);//
+/*      else if (sOutFormat == "c" )
+         parse(sInputFile, sToFile, options.args[1]);//*/
       else if (sOutFormat == "d" )
          depparse(sInputFile, sToFile, options.args[1]);//
       return 0;

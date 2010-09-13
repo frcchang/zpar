@@ -4,7 +4,9 @@
 #define SIMPLE_HASH
 
 // early update? 
-#define EARLY_UPDATE 1
+#ifndef EARLY_UPDATE
+#define EARLY_UPDATE
+#endif
 
 // supertag
 #define SR_SUPERTAG 1

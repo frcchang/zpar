@@ -9,12 +9,10 @@
  *                                                              *
  ****************************************************************/
 
-#include "weight.h"
+#include "depparser_weight.h"
 
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
-
-//===============================================================
 
 #define iterate_templates(left, right) \
    left(m_mapHeadWord)right \
@@ -25,8 +23,8 @@ using namespace TARGET_LANGUAGE::depparser;
    left(m_mapDepTag)right \
    left(m_mapHeadWordTagDepWordTag)right \
    left(m_mapHeadWordTagDepWord)right \
-   left(m_mapHeadWordDepWordTag)right \
    left(m_mapHeadWordTagDepTag)right \
+   left(m_mapHeadWordDepWordTag)right \
    left(m_mapHeadTagDepWordTag)right \
    left(m_mapHeadWordDepWord)right \
    left(m_mapHeadTagDepTag)right \
@@ -34,56 +32,38 @@ using namespace TARGET_LANGUAGE::depparser;
    left(m_mapSurroundingTagsLL)right \
    left(m_mapSurroundingTagsLR)right \
    left(m_mapSurroundingTagsRL)right \
-   left(m_mapSurroundingTagsRR)right \
-   left(m_mapSiblingWords)right \
-   left(m_mapSiblingWordTag)right \
-   left(m_mapSiblingTagWord)right \
-   left(m_mapSiblingTags)right \
-   left(m_mapSiblingAndParentTags)right \
-   left(m_mapGrandChildTags)right \
-   left(m_mapHeadWordTagArity)right \
-   left(m_mapHeadTagArity)right \
-   left(m_mapHeadWordTagArityByTag)right \
-   left(m_mapHeadTagArityByTag)right \
-   left(m_mapTwoSiblingTags)right \
-   left(m_mapTwoSiblingAndParentTags)right 
+   left(m_mapSurroundingTagsRR)right 
 
-/*---------------------------------------------------------------
+/*--------------------------------------------------------------
  *
- * loadScores - load scores from the file specified at constructor
- *              currently this uses database, but it can be modified
- *         
- * Affects: m_bScoreModified, clearing it. 
+ * loadScores - load score from a certain file for a weight
+ *              structure specifically.
+ * 
+ * Inputs: sFeatureDB - the feature database file
  *
- *--------------------------------------------------------------*/
+ *------------------------------------------------------------*/
 
 void CWeight::loadScores() {
    TRACE("Loading scores...");
-   ifstream file ; 
-   file.open(m_sRecordPath.c_str()) ;
-
-   iterate_templates(file >>,;);
-
-   file.close() ;
+   ifstream file(m_sRecordPath.c_str());
+   iterate_templates(file>>,;);
+   file.close();
    TRACE("Done");
 }
 
-/*---------------------------------------------------------------
+/*--------------------------------------------------------------
  *
- * saveScores - save scores back to database
+ * saveScores - save score from specific weight structure
+ *              to some specific file. 
  *
- * This method is called by the destructor is m_bScoreModified
- * is true.
+ * Inputs: sFeatureDB - file for the data
  *
- *--------------------------------------------------------------*/
+ *-------------------------------------------------------------*/
 
 void CWeight::saveScores() {
    TRACE("saving scores.");
-   ofstream file ;
-   file.open(m_sRecordPath.c_str()) ;
-
-   iterate_templates(file<<,;)
-
+   ofstream file(m_sRecordPath.c_str());
+   iterate_templates(file<<,;);
    file.close();
    TRACE("Done");
 }
@@ -96,8 +76,9 @@ void CWeight::saveScores() {
 
 void CWeight::computeAverageFeatureWeights(int round) {
    TRACE("adding total feature vector.");
-   iterate_templates(,.computeAverage(round);) ;
-   
+   iterate_templates(,.computeAverage(round););
    TRACE("Done");
 }
+
+
 

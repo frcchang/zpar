@@ -1,6 +1,8 @@
 #ifndef _CONPARSER_IMPL_INCLUDE_H
 #define _CONPARSER_IMPL_INCLUDE_H
 
+#define SIMPLE_HASH
+
 namespace TARGET_LANGUAGE {
 #ifdef NO_TEMP_CONSTITUENTT
 typedef CConstituentLabel CConstituent;
@@ -40,7 +42,7 @@ namespace conparser {
 
 typedef double SCORE_TYPE ;
 
-#include "macros.h" 
+//#include "conparser_macros.h" 
 #include "stateitem.h" 
 #include "context.h"
 

@@ -13,7 +13,7 @@
 
 #include "depparser_base_include.h"
 
-#include "weight_base.h"
+#include "depparser_weight_base.h"
 
 namespace TARGET_LANGUAGE {
 

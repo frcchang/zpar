@@ -1,15 +1,19 @@
 #ifndef _GENERAL_CONPARSER_MACROS_H
 #define _GENERAL_CONPARSER_MACROS_H
 
+#define SIMPLE_HASH
+
 // early update? 
-#define EARLY_UPDATE 1
+#ifndef EARLY_UPDATE
+#define EARLY_UPDATE
+#endif
 
 // The size of agenda
-const unsigned long AGENDA_SIZE = 16;
+static const unsigned long AGENDA_SIZE = 16;
 
 // The size of a sentence and the words
-const int MAX_SENTENCE_SIZE = 256 ; 
-const int MAX_SENTENCE_SIZE_BITS = 8 ; 
+static const int MAX_SENTENCE_SIZE = 256 ; 
+static const int MAX_SENTENCE_SIZE_BITS = 8 ; 
 
 inline unsigned long normalize3(const unsigned long &x) {
    assert(x!=0); return x>2 ? 2 : x==2 ? 1 : 0;

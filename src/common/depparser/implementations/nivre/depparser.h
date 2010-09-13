@@ -28,7 +28,7 @@ namespace depparser {
 }; // namespace depparser
 };
 
-#include "weight.h"
+#include "depparser_weight.h"
 
 namespace TARGET_LANGUAGE {
 

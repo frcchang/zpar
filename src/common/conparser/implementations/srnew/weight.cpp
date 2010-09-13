@@ -239,7 +239,7 @@ const CScore<SCORE_TYPE> g_zeroScore;
  *
  *--------------------------------------------------------------*/
 
-void CWeight::loadScores(ifstream &file) {
+void TARGET_LANGUAGE::conparser::CWeight::loadScores(ifstream &file) {
    clock_t time_start = clock();
    cout<<"Loading scores..."; cout.flush();
 //   ifstream file ; 
@@ -277,7 +277,7 @@ void CWeight::loadScores(ifstream &file) {
  *
  *--------------------------------------------------------------*/
 
-void CWeight::saveScores(ofstream &file) {
+void TARGET_LANGUAGE::conparser::CWeight::saveScores(ofstream &file) {
    cout<<"Saving scores..."; cout.flush();
 //   ofstream file ;
 //   file.open(m_sRecordPath.c_str()) ;
@@ -299,7 +299,7 @@ void CWeight::saveScores(ofstream &file) {
  *
  *-------------------------------------------------------------*/
 
-void CWeight::computeAverageFeatureWeights(int round) {
+void TARGET_LANGUAGE::conparser::CWeight::computeAverageFeatureWeights(int round) {
    cout<<"Computing averaged (total) feature vector..."; cout.flush();
    
    iterate_templates(,.computeAverage(round);) ;

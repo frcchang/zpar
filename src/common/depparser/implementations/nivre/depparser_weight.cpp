@@ -9,7 +9,7 @@
  *                                                              *
  ****************************************************************/
 
-#include "weight.h"
+#include "depparser_weight.h"
 
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
@@ -142,7 +142,7 @@ using namespace TARGET_LANGUAGE::depparser;
  *
  *--------------------------------------------------------------*/
 
-void CWeight::loadScores() {
+void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
    clock_t time_start = clock();
    cout<<"Loading scores..."; cout.flush();
    ifstream file ; 
@@ -168,7 +168,7 @@ void CWeight::loadScores() {
  *
  *--------------------------------------------------------------*/
 
-void CWeight::saveScores() {
+void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
    cout<<"Saving scores..."; cout.flush();
    ofstream file ;
    file.open(m_sRecordPath.c_str()) ;
@@ -188,7 +188,7 @@ void CWeight::saveScores() {
  *
  *-------------------------------------------------------------*/
 
-void CWeight::computeAverageFeatureWeights(int round) {
+void TARGET_LANGUAGE::depparser::CWeight::computeAverageFeatureWeights(int round) {
    cout<<"Computing averaged (total) feature vector..."; cout.flush();
    iterate_templates(,.computeAverage(round);) ;
 

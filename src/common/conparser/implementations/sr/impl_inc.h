@@ -41,7 +41,7 @@ namespace conparser {
 typedef double SCORE_TYPE ;
 
 #include "stateitem.h" 
-#include "macros.h" 
+//#include "conparser_macros.h" 
 #include "context.h"
 
 }

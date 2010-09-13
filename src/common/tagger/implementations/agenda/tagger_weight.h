@@ -11,7 +11,7 @@
 
 #include "tagger_include.h"
 
-#include "weight_base.h"
+#include "tagger_weight_base.h"
 
 namespace TARGET_LANGUAGE {
 namespace tagger {
