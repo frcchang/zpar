@@ -21,9 +21,9 @@ class CStateItem;
 
 class CTaggerImpl {
    protected:
-      CAgendaBeam<CStateItem> *m_Agenda;
+      CAgendaSimple<CStateItem> *m_Agenda;
    public:
-      CTaggerImpl() { m_Agenda = new CAgendaBeam<CStateItem>(AGENDA_SIZE); }
+      CTaggerImpl() { m_Agenda = new CAgendaSimple<CStateItem>(AGENDA_SIZE); }
       virtual ~CTaggerImpl() { 
          delete m_Agenda;
       }

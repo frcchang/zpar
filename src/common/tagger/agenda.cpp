@@ -20,12 +20,12 @@ using namespace TARGET_LANGUAGE::tagger;
  *
  *--------------------------------------------------------------*/
 
-TARGET_LANGUAGE::tagger::SCORE_TYPE TARGET_LANGUAGE::CTagger::getGlobalScore(CStringVector* sentence, CStateItem* item){
-   SCORE_TYPE nReturn = 0;
-   for (int i=0; i<item->m_nLength; ++i)
-      nReturn += getLocalScore(sentence, item, i);
-   return nReturn;
-}
+//TARGET_LANGUAGE::tagger::SCORE_TYPE TARGET_LANGUAGE::CTagger::getGlobalScore(CStringVector* sentence, CStateItem* item){
+//   SCORE_TYPE nReturn = 0;
+//   for (int i=0; i<item->m_nLength; ++i)
+//      nReturn += getLocalScore(sentence, item, i);
+//   return nReturn;
+//}
 
 /*---------------------------------------------------------------
  *
@@ -47,9 +47,9 @@ TARGET_LANGUAGE::tagger::SCORE_TYPE TARGET_LANGUAGE::CTagger::getLocalScore( CSt
    const CWord &second_prev_word = index>1 ? m_Cache[index-2] : g_emptyWord;
    const CWord &next_word = index<m_Cache.size()-1 ? m_Cache[index+1] : g_emptyWord;
    const CWord &second_next_word = index<m_Cache.size()-2 ? m_Cache[index+2] : g_emptyWord;
-   CTag tag = item->getTag(index);
-   CTag prev_tag = index>0 ? item->getTag(index-1) : CTag::SENTENCE_BEGIN;
-   CTag second_prev_tag = index>1 ? item->getTag(index-2) : CTag::SENTENCE_BEGIN;
+   CTag tag = item->tag;
+   CTag prev_tag = item->prev ? item->prev->tag : CTag::SENTENCE_BEGIN;
+   CTag second_prev_tag = (item->prev && item->prev->prev) ?  item->prev->prev->tag : CTag::SENTENCE_BEGIN;
 
    static int i;
    static int word_size;
@@ -258,7 +258,7 @@ void TARGET_LANGUAGE::CTagger::finishTraining() {
 unsigned long long TARGET_LANGUAGE::CTagger::getPossibleTagsForWord( const CWord &word ) {
    static unsigned long long possible_tags;
    possible_tags = m_TagDict.lookup(word);
-   if (possible_tags==0) possible_tags = static_cast<unsigned long>(static_cast<long int>(-1));
+   if (possible_tags==0) possible_tags = ~0L;
 #ifdef _ENGLISH_TAGS_H
    possible_tags |= getPossibleTagsBySuffix( word.str() );
    possible_tags |= PENN_TAG_MUST_SEE ;
@@ -280,9 +280,9 @@ void TARGET_LANGUAGE::CTagger::updateTagDict( const CTwoStringVector * correct )
    for (i=0; i<correct->size(); ++i) {
       static CWord word; word = correct->at(i).first;
       possible_tags = getPossibleTagsForWord(word);
-      current_tag = (static_cast<unsigned long long>(1)<<CTag(correct->at(i).second).code()) ;
+      current_tag = (1L<<CTag(correct->at(i).second).code()) ;
       if ( ( possible_tags & current_tag ) == 0 ) {
-         cout << "Warning: knowledge contradicts with annotation for the word " << correct->at(i).first << " with tag " << correct->at(i).second << endl;
+//         cout << "Warning: knowledge contradicts with annotation for the word " << correct->at(i).first << " with tag " << correct->at(i).second << endl;
          m_TagDict.add(word, CTag(correct->at(i).second).code());
       }
    }
@@ -328,96 +328,124 @@ bool TARGET_LANGUAGE::CTagger::train( const CTwoStringVector * correct ) {
 
 void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int nBest , SCORE_TYPE * out_scores ) {
    clock_t total_start_time = clock();;
+   // initialise the return value, the agenda and cache
+   TRACE("Initialising the tagging process...");
    const int length = sentence->size() ;
    static int index, temp_index, j;
    static unsigned tag, last_tag;
-   tagger::CStateItem *pGenerator;
-   tagger::CStateItem *pCandidate;
+   const CStateItem *pGenerator;
    static CStateItem best_bigram[1<<CTag::SIZE][1<<CTag::SIZE];
    static int done_bigram[1<<CTag::SIZE][1<<CTag::SIZE];
-   static SCORE_TYPE current_score;
    static unsigned long long possible_tags; // possible tags for a word
+   static CStateItem stateitems[AGENDA_SIZE*MAX_SENTENCE_SIZE];
+   static unsigned stateindice[MAX_SENTENCE_SIZE];
+   static CStateItem temp;
 
-   assert(length<MAX_SENTENCE_SIZE);
+   ASSERT(length<MAX_SENTENCE_SIZE, "The input sentence is longer than the maximum " << MAX_SENTENCE_SIZE << "supported by the current setting.");
    assert(vReturn!=NULL); 
 
-   // initialise the return value, the agenda and cache
-   TRACE("Initialising the tagging process...");
    vReturn->clear();
-
-   m_Agenda->clear();
-   pCandidate = m_Agenda->candidateItem();      // make the first item
-   pCandidate->clear();                         // restore state using clean
-   m_Agenda->pushCandidate();                   // and push it back
-   m_Agenda->nextRound();                       // as the generator item
+   if (length == 0) {
+      TRACE("Empty input.");
+      return;
+   }
 
    m_Cache.clear();
    for ( index=0; index<length; ++index )
       m_Cache.push_back(CWord(sentence->at(index)));
 
-   for ( tag=0; tag<CTag::COUNT; ++tag )
-      for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag )
-         done_bigram[last_tag][tag] = -1;
-
    // start tag
    TRACE("Tagging started"); 
+   m_Agenda->clear();
 
-   for ( index=0; index<length; index++ ) {
+   // the first step
+   stateindice[0] = 0;
+   stateindice[1] = 0;
+   temp.prev = 0;
+   possible_tags = getPossibleTagsForWord(m_Cache[0]);
+   for (tag=0; tag<CTag::COUNT; ++tag) {
+     if ( possible_tags & (1L<<tag) ) {
+        temp.tag = tag;
+        temp.m_nScore = getLocalScore(sentence, &temp, 0); 
+        m_Agenda->insertItem(&temp);
+     }
+   }
+   for (temp_index=0; temp_index<m_Agenda->size(); ++temp_index) {
+      stateitems[stateindice[1]] = *(m_Agenda->item(temp_index));
+      ++stateindice[1];
+   }
+   stateindice[2] = stateindice[1];
 
-      // generate new state itmes for each character
-      pGenerator = m_Agenda->generatorStart();
+   if (nBest == 1) {
+//      for ( tag=0; tag<CTag::COUNT; ++tag )
+//         for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag )
+//            done_bigram[last_tag][tag] = -1;
+      memset(done_bigram, 0, (1<<CTag::SIZE)*(1<<CTag::SIZE)*sizeof(int));
+   }
 
-      for ( j=0; j<m_Agenda->generatorSize(); ++j ) {
+   for ( index=1; index<length; index++ ) {
 
-         last_tag = index>0 ? pGenerator->getTag(index-1).code() : CTag::SENTENCE_BEGIN ;
+      m_Agenda->clear();
+      for ( j=stateindice[index-1]; j<stateindice[index]; ++j ) {
+
+         pGenerator = stateitems+j;
+         last_tag = pGenerator->tag;
 
          // lookup dictionary
          possible_tags = getPossibleTagsForWord(m_Cache[index]);
 
-         bool bDone = false;
          for ( tag=CTag::FIRST; tag<CTag::COUNT; ++tag ) {
-            if ( possible_tags & (static_cast<unsigned long long>(1)<<tag) ) {
-               bDone = true;
-               pGenerator->setTag( index, tag );
-               current_score = pGenerator->score() + getLocalScore(sentence, pGenerator, index); 
-               if ( done_bigram[last_tag][tag] != index || current_score > best_bigram[last_tag][tag].score() ) {
-                  done_bigram[last_tag][tag] = index;
-                  best_bigram[last_tag][tag].copy( pGenerator );
-                  best_bigram[last_tag][tag].append( tag );
-                  best_bigram[last_tag][tag].score() = current_score;
+            if ( possible_tags & (1L<<tag) ) {
+               temp.prev = pGenerator; temp.tag = tag;
+               temp.m_nScore = pGenerator->m_nScore + getLocalScore(sentence, &temp, index); 
+               if (nBest==1) {
+                  if ( done_bigram[last_tag][tag] != index || temp.m_nScore > best_bigram[last_tag][tag].m_nScore ) {
+                     done_bigram[last_tag][tag] = index;
+                     best_bigram[last_tag][tag] = temp ;
+                  }
+               }
+               else {
+                  m_Agenda->insertItem(&temp);
                }
             }
-         }assert(bDone);
+         }//assert(bDone);
 
-         pGenerator = m_Agenda->generatorNext();  // next generator
-      }
+      }//for pGenerator
 
-      for ( tag=CTag::FIRST; tag<CTag::COUNT; ++tag ) {
-         for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag ) {
-            if ( done_bigram[last_tag][tag]==index ) {
-               pCandidate = m_Agenda->candidateItem();
-               pCandidate->copy( &(best_bigram[last_tag][tag]) );
-               m_Agenda->pushCandidate();
+      if (nBest==1) {
+         for ( tag=CTag::FIRST; tag<CTag::COUNT; ++tag ) {
+            for ( last_tag=0; last_tag<CTag::COUNT; ++last_tag ) {
+               if ( done_bigram[last_tag][tag]==index ) {
+                  m_Agenda->insertItem(&best_bigram[last_tag][tag]);
+               }
             }
          }
       }
 
-      m_Agenda->nextRound(); // move round
+      for (temp_index=0; temp_index<m_Agenda->size(); ++temp_index) {
+         stateitems[stateindice[index+1]] = *(m_Agenda->item(temp_index));
+         ++stateindice[index+1];
+      }
+      stateindice[index+2] = stateindice[index+1];
+//      TRACE("The time for iteration" << index << ":was " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
    }
 
    // output 
    TRACE("Outputing sentence");
-   m_Agenda->sortGenerators();
-   for ( temp_index = 0 ; temp_index < nBest ; ++ temp_index ) {
-      vReturn[temp_index].clear(); 
-//    generate(m_Agenda->generator(temp_index), sentence, this, &(vReturn[temp_index])); 
-      for (int j=0; j<m_Agenda->generator(temp_index)->m_nLength; j++) { 
-         vReturn[temp_index].push_back(make_pair(sentence->at(j), CTag(m_Agenda->generator(temp_index)->getTag(j)).str()));
+   m_Agenda->sortItems();
+   for ( temp_index = 0 ; temp_index < min(nBest, m_Agenda->size()) ; ++ temp_index ) {
+      vReturn[temp_index].resize(length); 
+      pGenerator = m_Agenda->item(temp_index);
+      for (j=0; j<length; ++j) { 
+         vReturn[temp_index][length-j-1].first = sentence->at(length-j-1);
+         vReturn[temp_index][length-j-1].second = CTag(pGenerator->tag).str();
+         pGenerator = pGenerator->prev;
       }
+      assert(pGenerator==0);
+      if (out_scores)
+         out_scores[temp_index] = m_Agenda->item(temp_index)->m_nScore;
    }
-   if (out_scores)
-      out_scores[0] = m_Agenda->generator(0)->score();
-   TRACE("Done, the highest score is: " << m_Agenda->generator(0)->score());
+   TRACE("Done, the highest score is: " << m_Agenda->item(0)->m_nScore);
    TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
 }
 
