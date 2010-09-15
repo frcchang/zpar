@@ -28,7 +28,7 @@ public:
       ASSERT(table, "The table is not initialized when used.");
       const unsigned &index1 = ind1.find(k1, size1-1);
       const unsigned &index2 = ind2.find(k2, size2-1);
-      return table[index1*size1+index2];
+      return table[index1*size2+index2];
    }
 
    friend std::ostream &operator << (std::ostream &os, CTable2 &j) {
