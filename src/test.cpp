@@ -22,13 +22,13 @@ public:
 };
 
 void testtable2() {
-   CTable2<string, int, double> table2;
+   CTable2<string, string, double> table2;
    ifstream is("./input.txt");
    is >> table2;
-   cout << table2.lookup("One", 1) << endl;
-   cout << table2.lookup("Two", 3) << endl;
-   cout << table2.lookup("None", 1) << endl;
-   cout << table2;
+   cout << table2.lookup("'m", "!edge") << endl;
+   cout << table2.lookup("OOV", "OOV") << endl;
+   cout << table2.lookup("None", "1") << endl;
+//   cout << table2;
    is.close();
 }
 
