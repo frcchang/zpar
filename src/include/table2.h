@@ -67,14 +67,12 @@ TRACE("output");
       K2 key2;
       getline(is, line);
       istringstream is1(line);
-      while (is1) {
-         is1 >> key1;
+      while (is1>>key1) {
          keys1.push_back(key1);
       }
       getline(is, line);
       istringstream is2(line);
-      while(is2) {
-         is2 >> key2;
+      while(is2>>key2) {
          keys2.push_back(key2);
       }
       j.size1 = keys1.size();
@@ -85,7 +83,10 @@ TRACE("output");
       j.ind2.init();
       unsigned index1;
       unsigned index2;
-      for (index1=0
+      for (index1=0; index1<j.size1; ++index1)
+         j.ind1[keys1[index1]] = index1;
+      for (index2=0; index2<j.size2; ++index2)
+         j.ind2[keys2[index2]] = index2;
       j.table = new V[j.size1*j.size2];
       for (index2=0; index2<j.size2; ++index2) {
 //         ASSERT(is, "The file ends before its data retrieved.");
