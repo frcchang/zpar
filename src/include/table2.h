@@ -21,7 +21,7 @@ protected:
    V* table;
 
 public:
-   CTable2() : size1(0), size2(0), table(0), ind1(1), ind2(1) {}
+   CTable2() : size1(0), size2(0), table(0), ind1(1, false), ind2(1, false) {}
 
 public:
    const V& lookup(const K1&k1, const K2&k2) {
@@ -31,48 +31,51 @@ public:
       return table[index1*size1+index2];
    }
 
-   friend std::ostream &operator << <>(std::ostream &os, const CTable2 &j) {
+   friend std::ostream &operator << (std::ostream &os, CTable2 &j) {
+TRACE("output");
       vector<K1> keys1;
       vector<K2> keys2;
       keys1.resize(j.size1);
       typename CHashMap<K1, unsigned>::iterator it1;
       for (it1 = j.ind1.begin(); it1 != j.ind1.end(); ++it1)
-         keys1[it1->second] = it1->first;
+         keys1[it1.second()] = it1.first();
       keys2.resize(j.size2);
       typename CHashMap<K2, unsigned>::iterator it2;
       for (it2 = j.ind2.begin(); it2 != j.ind2.end(); ++it2)
-         keys2[it2->second] = it2->first;
+         keys2[it2.second()] = it2.first();
       unsigned index1;
       for (index1=0; index1<keys1.size(); ++index1)
-         os << keys1[index] << " ";
+         os << keys1[index1] << " ";
       os << endl;
       unsigned index2;
-      fo r(index2 = 0; index2 < keys2.size(); ++index2)
+      for (index2 = 0; index2 < keys2.size(); ++index2)
          os << keys2[index2] << " ";
       os << endl;
-      for (index2 = 0; index2 < j.size2;  ++index2)_ {
+      for (index2 = 0; index2 < j.size2;  ++index2) {
          for (index1 = 0; index1 < j.size1; ++index1) {
             cout << j.table[index1*j.size2+index2] << " ";
          }
          cout << endl;
       }
    }
-   friend std::istream &operator >> <>(std::istream &is, CTable2 &j) {
+   friend std::istream &operator >> (std::istream &is, CTable2 &j) {
+      ASSERT(is, "The input file is not ready");
       vector<K1> keys1;
       vector<K2> keys2;
       string line;
-      string key;
+      K1 key1;
+      K2 key2;
       getline(is, line);
       istringstream is1(line);
       while (is1) {
-         is1 >> key;
-         keys1.push_back(key);
+         is1 >> key1;
+         keys1.push_back(key1);
       }
       getline(is, line);
       istringstream is2(line);
       while(is2) {
-         is2 >> key;
-         keys2.push_back(key);
+         is2 >> key2;
+         keys2.push_back(key2);
       }
       j.size1 = keys1.size();
       j.size2 = keys2.size();
@@ -80,15 +83,16 @@ public:
       j.ind2.resize(j.size2);
       j.ind1.init();
       j.ind2.init();
-      j.table = new V[j.size1*j.size2];
+      unsigned index1;
       unsigned index2;
+      for (index1=0
+      j.table = new V[j.size1*j.size2];
       for (index2=0; index2<j.size2; ++index2) {
-         ASSERT(is, "The file ends before its data retrived.");
+//         ASSERT(is, "The file ends before its data retrieved.");
          getline(is, line);
          istringstream iss(line);
-         unsigned index1;
          for (index1=0; index1<j.size1; ++index1) {
-            ASSERT(iss, "The file ends before its data retrived.");
+//            ASSERT(iss, "The file ends before its data retrieved.");
             iss >> j.table[index1*j.size2+index2];
          }
       }
