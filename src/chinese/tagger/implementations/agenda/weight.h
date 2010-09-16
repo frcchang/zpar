@@ -204,7 +204,7 @@ public:
    void computeAverageFeatureWeights(unsigned long round);
 
    void newKnowledge() {
-      cout << "Set character knowledge" << endl;
+      cout << "set character knowledge... " << endl;
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
       m_Knowledge = new CCharCatDictionary();
    }

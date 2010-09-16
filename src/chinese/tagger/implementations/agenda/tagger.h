@@ -23,22 +23,22 @@ protected:
 public:
    void follow(const CSubStateItem &gold) {
       assert(size()<=gold.size());
-         if (size() == 0) {
-            append(0, gold.getTag(0).code());
-            return;
-         }
-         const unsigned &last_character = getWordEnd(size()-1);
-         const unsigned &gold_last = gold.getWordEnd(size()-1);
-         assert(last_character<=gold_last);
-         if (last_character<gold_last) {
-            replaceIndex(last_character+1);
-            return;
-         }
-         else {
-            assert (size() < gold.size());
-            append(last_character+1, gold.getTag(size()).code());
-            return;
-         }
+      if (size() == 0) {
+         append(0, gold.getTag(0).code());
+         return;
+      }
+      const unsigned &last_character = getWordEnd(size()-1);
+      const unsigned &gold_last = gold.getWordEnd(size()-1);
+      assert(last_character<=gold_last);
+      if (last_character<gold_last) {
+         replaceIndex(last_character+1);
+         return;
+      }
+      else {
+         assert (size() < gold.size());
+         append(last_character+1, gold.getTag(size()).code());
+         return;
+      }
 //      else { 
 //         const unsigned &last_character = getWordEnd(size()-1);
 //         const unsigned &gold_last = gold.getWordEnd(size()-1);

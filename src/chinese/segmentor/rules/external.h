@@ -47,11 +47,15 @@ public:
             sentence->push_back(current_char);
             // if input map for character types available then use
             if ( index_raw > 0 && m_char_categories != 0 &&
-                 ( ( m_char_categories->isFW( last_char ) &&
-                 m_char_categories->isFW( current_char ) ) ||
-                 ( m_char_categories->isCD( last_char ) &&
-                 m_char_categories->isCD( current_char ) ) )
+                 ( m_char_categories->isFWorCD( last_char ) &&
+                 m_char_categories->isFWorCD( current_char ) )
                ) 
+//            if ( index_raw > 0 && m_char_categories != 0 &&
+//                 ( ( m_char_categories->isFW( last_char ) &&
+//                 m_char_categories->isFW( current_char ) ) ||
+//                 ( m_char_categories->isCD( last_char ) &&
+//                 m_char_categories->isCD( current_char ) ) )
+//               ) 
                setSeparate(index_out, false); 
             // always process space 
             if ( index_raw > 0 && last_char == " ")
