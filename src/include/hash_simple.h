@@ -42,7 +42,7 @@ protected:
       CEntry *m_next;
 
    public:
-      CEntry() {}
+      CEntry() : m_next(0) {}
       CEntry(const K &key) : m_key(key), m_next(0) {}
       CEntry(const K &key, const V &value) : m_key(key), m_value(value), m_next(0){}
 //      virtual ~CEntry() {if(m_next) delete m_next;}
@@ -120,8 +120,9 @@ public:
    void init() {
       ASSERT(m_buckets==0, "Cannot initialize hashmap after initialization");
       m_buckets = new CEntry*[m_nTableSize] ;
-      for (int i=0; i<m_nTableSize; ++i) 
-         m_buckets[i]=0;
+//      for (int i=0; i<m_nTableSize; ++i) 
+//         m_buckets[i]=0;
+      memset(m_buckets, 0, m_nTableSize*sizeof(CEntry*));
    }
 
 protected:
@@ -200,8 +201,7 @@ public:
 
 public:
    iterator begin() { 
-      iterator it = iterator(this, 0, m_buckets[0]); 
-      return it; 
+      return iterator(this, 0, m_buckets[0]); 
    }
    iterator end() { 
       return iterator(this, m_nTableSize-1, 0); 

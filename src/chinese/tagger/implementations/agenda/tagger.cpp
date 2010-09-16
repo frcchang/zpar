@@ -126,7 +126,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       if (index>1) nReturn += m_weights->m_mapLastWordByWord.getOrUpdateScore( word_2_word_1 , m_nScoreIndex , amount , round ) ;
 
       if ( length_1 == 1 ) {
-         nReturn += m_weights->m_mapOneCharWord.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ;
+         nReturn += m_weights->m_mapOneCharWord.getOrUpdateScore( three_char , m_nScoreIndex , amount , round ) ;
       }
       else {
          nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_char_1_last_char_1 , m_nScoreIndex , amount , round ) ;
@@ -297,7 +297,7 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 //   refer_or_allocate(first_char_and_char, first_char, char_unigram);
 //  nReturn += m_weights->m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, m_nScoreIndex , amount , round ) ;
 
-//   nReturn += m_weights->m_mapPartialWord.getOrUpdateScore( find_or_replace_word_cache( start, char_index ), m_nScoreIndex, amount, round );
+   nReturn += m_weights->m_mapPartialWord.getOrUpdateScore( find_or_replace_word_cache( start, char_index ), m_nScoreIndex, amount, round );
 
    // character scores -- the middle character is char_index-1
 //   static int char_info;
@@ -335,13 +335,14 @@ inline void buildStateItem(const CStringVector *raw, const CTwoStringVector *tag
    item->clear();
    // add each output word
    rawlen = 0; ri = 0; // raw index
-   taggedlen = 0;
+//   taggedlen = 0;
    for (i=0; i<tagged->size(); ++i) {
-      taggedlen += tagged->at(i).first.size();
-      while ( rawlen < taggedlen ) {
-         rawlen += raw->at(ri).size();
-         ++ri;
-      }
+//      taggedlen += tagged->at(i).first.size();
+//      while ( rawlen < taggedlen ) {
+//         rawlen += raw->at(ri).size();
+//         ++ri;
+//      }
+      ri += getUTF8StringLength(tagged->at(i).first);
       item->append(ri-1, CTag(tagged->at(i).second).code());
    }
 }
@@ -466,6 +467,14 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
          if ( !bAnyCorrect ) {
             TRACE("Training error at character " << index);
             pGenerator = m_Agenda.bestGenerator();
+//            CTwoStringVector tmp;
+//            tmp.clear();
+//            generate( pGenerator , &sentence , this , &tmp ) ; 
+//            CSentenceWriter writer("");
+//            tmp.clear();
+//            writer.writeSentence(&tmp);
+//            generate( &m_goldState , &sentence , this , &tmp ) ; 
+//            writer.writeSentence(&tmp);
             updateScoreForState(&sentence, pGenerator, -1);
             updateScoreForState(&sentence, &goldState, 1);
             m_bTrainingError = true;
