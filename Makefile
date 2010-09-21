@@ -55,7 +55,7 @@ ENGLISH_TAGGER_IMPL = agenda
 
 # currently support eisner, covington, nivre, combined implementations 
 ENGLISH_DEPPARSER_IMPL = nivre
-ENGLISH_DEPPARSER_LABELED = false
+ENGLISH_DEPPARSER_LABELED = true
 ENGLISH_DEPLABELER_IMPL = naive
 # currently support sr implementations 
 ENGLISH_CONPARSER_IMPL = srnew

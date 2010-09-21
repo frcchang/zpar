@@ -147,23 +147,23 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const int &word_index , con
 inline SCORE_TYPE CDepParser::getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned long &label, SCORE_TYPE amount, int round) {
    const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = m_lCache[head_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &dep_word_tag = m_lCache[dep_index];
-   const CWord &head_word = static_cast<const CWord&>(head_word_tag);
-   const CWord &dep_word = static_cast<const CWord&>(dep_word_tag);
-   const unsigned long &head_tag = head_word_tag.tag.code();
-   const unsigned long &dep_tag = dep_word_tag.tag.code();
+   const CWord &head_word = head_word_tag.word;
+   const CWord &dep_word = dep_word_tag.word;
+   const CTag &head_tag = head_word_tag.tag;
+   const CTag &dep_tag = dep_word_tag.tag;
 
-   const unsigned long &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag.code() : CTag::SENTENCE_BEGIN ;
-   const unsigned long &head_tag_r = ( head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag.code() : CTag::SENTENCE_END ;
-   const unsigned long &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag.code() : CTag::SENTENCE_BEGIN ;
-   const unsigned long &dep_tag_r = ( dep_index+1 < m_lCache.size() ) ? m_lCache[ dep_index+1 ].tag.code() : CTag::SENTENCE_END ;
+   const CTag &head_tag_l = ( head_index > 0 ) ? m_lCache[ head_index-1 ].tag : CTag::SENTENCE_BEGIN ;
+   const CTag &head_tag_r = ( head_index+1 < m_lCache.size() ) ? m_lCache[ head_index+1 ].tag : CTag::SENTENCE_END ;
+   const CTag &dep_tag_l = ( dep_index > 0 ) ? m_lCache[ dep_index-1 ].tag : CTag::SENTENCE_BEGIN ;
+   const CTag &dep_tag_r = ( dep_index+1 < m_lCache.size() ) ? m_lCache[ dep_index+1 ].tag : CTag::SENTENCE_END ;
 
    static unsigned long head_tag_lm, head_tag_mr, head_tag_lmr, dep_tag_lm, dep_tag_mr, dep_tag_lmr;
 
-   head_tag_lm = encodeTags(head_tag_l, head_tag, CTag::NONE);
-   head_tag_mr = encodeTags(CTag::NONE, head_tag, head_tag_r);
+   head_tag_lm = encodeTags(head_tag_l, head_tag, g_noneTag);
+   head_tag_mr = encodeTags(g_noneTag, head_tag, head_tag_r);
    head_tag_lm = encodeTags(head_tag_l, head_tag, head_tag_r);
-   dep_tag_lm = encodeTags(dep_tag_l, dep_tag, CTag::NONE);
-   dep_tag_mr = encodeTags(CTag::NONE, dep_tag, dep_tag_r);
+   dep_tag_lm = encodeTags(dep_tag_l, dep_tag, g_noneTag);
+   dep_tag_mr = encodeTags(g_noneTag, dep_tag, dep_tag_r);
    dep_tag_lm = encodeTags(dep_tag_l, dep_tag, dep_tag_r);
 
 #include "templates/labeled.h"
