@@ -5,8 +5,8 @@
    retval += cast_weights->m_mapDepWordLabel.getOrUpdateScore( make_pair(dep_word, x) , m_nScoreIndex , amount , round ) ;\
    retval += cast_weights->m_mapHeadWordTagLabel.getOrUpdateScore( make_pair(head_word_tag, x) , m_nScoreIndex , amount , round ) ;\
    retval += cast_weights->m_mapDepWordTagLabel.getOrUpdateScore( make_pair(dep_word_tag, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapHeadTagLabel.getOrUpdateScore( make_pair(head_tag, x) , m_nScoreIndex , amount , round ) ;\
-   retval += cast_weights->m_mapDepTagLabel.getOrUpdateScore( make_pair(dep_tag, x) , m_nScoreIndex , amount , round ) ;\
+   retval += cast_weights->m_mapHeadTagLabel.getOrUpdateScore( make_pair(head_tag.code(), x) , m_nScoreIndex , amount , round ) ;\
+   retval += cast_weights->m_mapDepTagLabel.getOrUpdateScore( make_pair(dep_tag.code(), x) , m_nScoreIndex , amount , round ) ;\
    retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( make_pair(head_tag_lm, x) , m_nScoreIndex , amount , round ) ;\
    retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( make_pair(head_tag_mr, x) , m_nScoreIndex , amount , round ) ;\
    retval += cast_weights->m_mapHeadSurroundingTagsLabel.getOrUpdateScore( make_pair(head_tag_lmr, x) , m_nScoreIndex , amount , round ) ;\

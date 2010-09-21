@@ -108,7 +108,7 @@ inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2) {
 
 template<typename CTag>
 inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2, const CTag &tag3) {
-   return (tag1.code()<<CTag::SIZE*2) | (tag2.code()<<CTag::SIZE) | tag3.code() ;
+   return (tag1.code()<<(CTag::SIZE*2)) | (tag2.code()<<CTag::SIZE) | tag3.code() ;
 }
 
 template<typename CTag>

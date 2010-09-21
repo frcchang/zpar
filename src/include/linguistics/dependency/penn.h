@@ -8,6 +8,9 @@
  *                                                              *
  ****************************************************************/
 
+#ifndef _DEPENDENCY_L_PENN
+#define _DEPENDENCY_L_PENN
+
 const string PENN_DEP_STRINGS[] = {
    "-NONE-",
    "ROOT", 
@@ -103,4 +106,4 @@ public:
    }
 
 };
-
+#endif
