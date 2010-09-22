@@ -1,9 +1,5 @@
 #include "definitions.h"
 #include "utils.h"
-#ifdef LABELED
-#include "deplabel.h"
-#endif
-
 namespace TARGET_LANGUAGE { 
 namespace depparser { 
 #include "depparser_macros.h" 

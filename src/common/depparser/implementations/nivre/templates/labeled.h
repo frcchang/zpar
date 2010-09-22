@@ -1,3 +1,4 @@
+#define getLabelAndDirectionOrDistanceEncode(label, dod) ((dod<<CDependencyLabel::SIZE)|label)
 
 #define getOrUpdateLabeledScoreTemplate(x)\
    retval += cast_weights->m_mapLabel.getOrUpdateScore( x , m_nScoreIndex , amount , round ) ;\
