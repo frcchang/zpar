@@ -1,6 +1,6 @@
 namespace chinese {
 
-#include "linguistics/dependency/ctb.h"
+#include "dependency/ctb.h"
 
 }
 

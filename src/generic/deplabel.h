@@ -1,4 +1,4 @@
-#include "linguistics/dependency/generic.h"
+#include "dependency/generic.h"
 
 //=============================================================
 

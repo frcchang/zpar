@@ -33,6 +33,10 @@
  *
  *==============================================================*/
 
+#ifdef LABELED
+#include "deplabel.h"
+#endif
+
 class CStateItem {
 
 public:
