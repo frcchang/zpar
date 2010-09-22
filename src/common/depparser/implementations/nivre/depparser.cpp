@@ -698,7 +698,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    TRACE("Initialising the decoding process...") ;
    // initialise word cache
    m_lCache.clear();
-   for ( int index=0; index<length; index++ )
+   for ( int index=0; index<length; ++index )
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
    // initialise agenda
    m_Agenda->clear();
@@ -719,7 +719,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 
    TRACE("Decoding started"); 
    // loop with the next word to process in the sentence
-   for (int index=0; index<length*2; index++) {
+   for (int index=0; index<length*2; ++index) {
       
       if (bTrain) bCorrect = false ; 
 
