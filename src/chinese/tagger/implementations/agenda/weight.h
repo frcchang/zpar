@@ -46,6 +46,7 @@ public:
    unsigned long m_maxLengthByTag[CTag::COUNT+1];
    CCharCatDictionary *m_Knowledge;
    unsigned long m_nMaxWordFrequency;
+   CRule m_rules;
 
 public:
    unsigned long getMaxWordLength() const {return m_maxLengthByTag[CTag::COUNT];}
@@ -100,6 +101,8 @@ public:
 
    CWordTagSet2Map m_mapWordTagTag;
    CWordTagSet2Map m_mapTagWordTag;
+   CWordTagSet2Map m_mapFirstCharBy2Tags;
+   CWordTagSet3Map m_mapFirstCharBy3Tags;
    CTwoWordsMap m_mapFirstCharAndChar;
 
    CWordMap m_mapSepCharAndNextChar;
@@ -180,6 +183,8 @@ public:
 
             m_mapWordTagTag("WordByTheNextTwoTag", 65537),
             m_mapTagWordTag("TagByNextWordSecondNextTag", 65537),
+            m_mapFirstCharBy2Tags("FirstCharByTagAndLastTag", 65537),
+            m_mapFirstCharBy3Tags("FirstCharByTagLastTagAndSecondLastTag", 65537),
             m_mapFirstCharAndChar("FirstCharAndChar", 65537),
             m_mapSepCharAndNextChar("SeparatedCharAndNextChar", 65537),
             m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537),
@@ -207,6 +212,7 @@ public:
       cout << "set character knowledge... " << endl;
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
       m_Knowledge = new CCharCatDictionary();
+      m_rules.setKnowledge(m_Knowledge);
    }
 };
 

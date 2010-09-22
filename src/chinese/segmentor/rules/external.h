@@ -9,9 +9,9 @@
 
 class CRule : public CRuleBase {
 private:
-   CCharCatDictionary *m_char_categories; // use rules to segment foreign words?
+   const CCharCatDictionary *m_char_categories; // use rules to segment foreign words?
 public:
-   CRule(CCharCatDictionary *d=0) : CRuleBase(), m_char_categories(d) { 
+   CRule(const CCharCatDictionary *d=0) : CRuleBase(), m_char_categories(d) { 
    }
    virtual ~CRule() {
    }
@@ -63,6 +63,33 @@ public:
             ++index_out ; 
          }
       }
+   }
+
+   void record(const CTwoStringVector *sent, CStringVector *retval) {
+      assert(retval != 0);
+      retval->clear();
+      if (sent == 0)
+         return;
+      reset();
+      string temp;
+      CTwoStringVector::const_iterator it;
+      unsigned size = retval->size();
+      for (it=sent->begin(); it!=sent->end(); ++it) {
+         getCharactersFromUTF8String(it->first, retval); 
+         assert(retval->size() > size); // the new word must has characters
+         if (size>0 && m_char_categories && m_char_categories->isFWorCD(retval->at(size)) && m_char_categories->isFWorCD(retval->at(size-1)))
+            setSeparate(size, true);
+         for (int index=size; index<retval->size()-1; ++index) {
+            if (m_char_categories && m_char_categories->isFWorCD(retval->at(index)) && m_char_categories->isFWorCD(retval->at(index+1)))
+               setSeparate(index+1, false);
+         }
+         size = retval->size();
+      }
+   }
+
+public:
+   void setKnowledge(const CCharCatDictionary *d=0) {
+      m_char_categories = d; 
    }
 };
 

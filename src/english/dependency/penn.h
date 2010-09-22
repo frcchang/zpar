@@ -113,8 +113,8 @@ public:
  *
  *==============================================================*/
 
-bool canAssignLabel(const vector<CTaggedWord> &sent, const unsigned &head, const unsigned &dep, const CDependencyLabel&lab) {
-   switch (label.code()) {
+inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent, const unsigned &head, const unsigned &dep, const CDependencyLabel&lab) {
+   switch (lab.code()) {
    case PENN_DEP_ROOT:
       return true;
    case PENN_DEP_AMOD: 
@@ -130,7 +130,7 @@ bool canAssignLabel(const vector<CTaggedWord> &sent, const unsigned &head, const
    case PENN_DEP_VC: 
    case PENN_DEP_VMOD: 
    default:
-      THROW("Invalid label code in assign label: " << label.code());
+      THROW("Invalid label code in assign label: " << lab.code());
    }
 }
 
