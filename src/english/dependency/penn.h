@@ -106,4 +106,32 @@ public:
    }
 
 };
+
+/*==============================================================
+ *
+ * dependency constraints
+ *
+ *==============================================================*/
+
+bool canAssignLabel(const vector<CTaggedWord> &sent, const unsigned &head, const unsigned &dep, const CDependencyLabel&lab) {
+   switch (label.code()) {
+   case PENN_DEP_ROOT:
+      return true;
+   case PENN_DEP_AMOD: 
+      return false;
+   case PENN_DEP_DEP: 
+   case PENN_DEP_NMOD: 
+   case PENN_DEP_OBJ: 
+   case PENN_DEP_P: 
+   case PENN_DEP_PMOD: 
+   case PENN_DEP_PRD: 
+   case PENN_DEP_SBAR: 
+   case PENN_DEP_SUB: 
+   case PENN_DEP_VC: 
+   case PENN_DEP_VMOD: 
+   default:
+      THROW("Invalid label code in assign label: " << label.code());
+   }
+}
+
 #endif
