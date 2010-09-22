@@ -31,6 +31,6 @@ public:
       return m_chars[index] == eAppend;
    }
 
-   void reset() { for (unsigned i=0; i<MAX_SENTENCE_SIZE; ++i) m_chars[i] = 0; }
+   void reset() { memset(m_chars, 0, MAX_SENTENCE_SIZE*sizeof(char)); }//for (unsigned i=0; i<MAX_SENTENCE_SIZE; ++i) m_chars[i] = 0; }
 };
 

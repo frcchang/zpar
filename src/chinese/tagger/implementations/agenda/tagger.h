@@ -92,12 +92,13 @@ protected:
              m_weights->m_mapTagDictionary.lookup( word, tag );
    }
    inline bool canStartWord(const CStringVector &sentence, const unsigned long &tag, const unsigned long &index) {
-      if (PENN_TAG_CLOSED[ tag ]) {
+      if (PENN_TAG_CLOSED[ tag ] || tag == PENN_TAG_CD ) {
          static int tmp_i;
          // if the first character doesn't match, don't search
          if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index, &sentence ), tag ) == false) 
             return false;
          // if it matches, search from the next characters
+         if ( tag == PENN_TAG_CD ) return true; // don't search for CD assume correct
          for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
             if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, min(index+tmp_i, sentence.size()-1), &sentence ), tag ) ) 
                return true;
@@ -106,6 +107,9 @@ protected:
       }
       return true;
    }
+
+protected:
+   virtual void work(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
 
 public:
    enum SCORE_UPDATE {eSubtract=0, eAdd};
