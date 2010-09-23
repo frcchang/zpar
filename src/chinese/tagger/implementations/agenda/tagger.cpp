@@ -122,7 +122,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
 
    // adding scores with features for last word
    if (index>0) {
-      nReturn = m_weights->m_mapSeenWords.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ; 
+      nReturn = m_weights->m_mapSeenWords.getOrUpdateScore( word_1 , m_nScoreIndex , length_1*amount , round ) ; 
       if (index>1) nReturn += m_weights->m_mapLastWordByWord.getOrUpdateScore( word_2_word_1 , m_nScoreIndex , amount , round ) ;
 
       if ( length_1 == 1 ) {
@@ -194,6 +194,7 @@ if (index<item->size()) {
    nReturn += m_weights->m_mapTagByFirstCharCat.getOrUpdateScore( make_pair(first_char_cat_0, tag_0) , m_nScoreIndex , amount , round ) ; 
 
    nReturn += m_weights->m_mapFirstCharBy2Tags.getOrUpdateScore( make_pair(first_char_0, tag_0_tag_1) , m_nScoreIndex , amount , round ) ; 
+   if (index>0)nReturn += m_weights->m_mapFirstCharBy3Tags.getOrUpdateScore( make_pair(first_char_0, tag_0_tag_1_tag_2) , m_nScoreIndex , amount , round ) ; 
 
    nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( make_pair(first_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 

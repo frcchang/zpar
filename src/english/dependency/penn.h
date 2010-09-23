@@ -11,6 +11,10 @@
 #ifndef _DEPENDENCY_L_PENN
 #define _DEPENDENCY_L_PENN
 
+#include "tags.h"
+
+namespace english {
+
 const string PENN_DEP_STRINGS[] = {
    "-NONE-",
    "ROOT", 
@@ -130,48 +134,60 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
    case PENN_DEP_ROOT: // now head is not -1
       return false;
    case PENN_DEP_AMOD: 
-      if (head_tag == PENN_TAG_SYM || 
-          head_tag == PENN_TAG_UH || 
-          head_tag == PENN_TAG_COMMA || 
-          head_tag == PENN_TAG_SHART || 
-          head_tag == PENN_TAG_L_QUOTE || 
-          head_tag == PENN_TAG_COLUM || 
-          head_tag == PENN_TAG_PRP || 
-          head_tag == PENN_TAG_L_BRACKET || 
-          head_tag == PENN_TAG_PERIOD || 
-          head_tag == PENN_TAG_R_QUOTE || 
-          head_tag == PENN_TAG_WP_DOLLAR || 
-          head_tag == PENN_TAG_R_BRACKET || 
-          head_tag == PENN_TAG_PDT || 
-          head_tag == PENN_TAG_EX || 
-          head_tag == PENN_TAG_LS || 
-          head_tag == PENN_TAG_NOUN_PROPER_PLURAL || 
-          head_tag == PENN_TAG_POS)
-         return false;
-      return true;
+      if (head_tag == PENN_TAG_NOUN_PLURAL ||
+         head_tag == PENN_TAG_CD ||
+         head_tag == PENN_TAG_IN ||
+         head_tag == PENN_TAG_DOLLAR ||
+//         head_tag == PENN_TAG_FW ||
+         head_tag == PENN_TAG_DT ||
+         head_tag == PENN_TAG_WRB ||
+         head_tag == PENN_TAG_ADVERB_SUPERLATIVE ||
+         head_tag == PENN_TAG_ADVERB ||
+         head_tag == PENN_TAG_ADJECTIVE_SUPERLATIVE ||
+         head_tag == PENN_TAG_VERB_PAST_PARTICIPATE ||
+         head_tag == PENN_TAG_ADJECTIVE ||
+         head_tag == PENN_TAG_ADVERB_COMPARATIVE ||
+         head_tag == PENN_TAG_ADJECTIVE_COMPARATIVE ||
+         head_tag == PENN_TAG_NOUN)
+         return true;
+      return false;
    case PENN_DEP_DEP: 
       return true;
    case PENN_DEP_NMOD: 
-      if (head_tag == PENN_TAG_COMMA ||
-         head_tag == PENN_TAG_PRP_DOLLAR ||
-         head_tag == PENN_TAG_L_QUOTE ||
-         head_tag == PENN_TAG_CC ||
-         head_tag == PENN_TAG_SHART ||
-         head_tag == PENN_TAG_L_BRACKET ||
-         head_tag == PENN_TAG_PERIOD ||
-         head_tag == PENN_TAG_R_QUOTE ||
-         head_tag == PENN_TAG_R_BRACKET ||
-         head_tag == PENN_TAG_LS ||
-         head_tag == PENN_TAG_COLUM)
-         return false;
-      return true;
-   case PENN_DEP_OBJ: 
       if (head_tag == PENN_TAG_NOUN_PLURAL ||
+         head_tag == PENN_TAG_CD ||
+         head_tag == PENN_TAG_IN ||
+         head_tag == PENN_TAG_DOLLAR ||
+         head_tag == PENN_TAG_WDT ||
+         head_tag == PENN_TAG_FW ||
+         head_tag == PENN_TAG_DT ||
+//         head_tag == PENN_TAG_VERB ||
+         head_tag == PENN_TAG_WRB ||
+//         head_tag == PENN_TAG_VERB_THIRD_SINGLE ||
+//         head_tag == PENN_TAG_ADVERB_SUPERLATIVE ||
+         head_tag == PENN_TAG_ADVERB ||
+         head_tag == PENN_TAG_UH ||
+         head_tag == PENN_TAG_VERB_PROG ||
+         head_tag == PENN_TAG_ADJECTIVE_SUPERLATIVE ||
+         head_tag == PENN_TAG_PRP ||
+         head_tag == PENN_TAG_ADJECTIVE ||
+         head_tag == PENN_TAG_WP ||
+         head_tag == PENN_TAG_NOUN_PROPER_PLURAL ||
+         head_tag == PENN_TAG_POS ||
+//         head_tag == PENN_TAG_ADVERB_COMPARATIVE ||
+         head_tag == PENN_TAG_ADJECTIVE_COMPARATIVE ||
+         head_tag == PENN_TAG_NOUN_PROPER ||
+         head_tag == PENN_TAG_NOUN ||
+         head_tag == PENN_TAG_WP_DOLLAR)
+         return true;
+      return false;
+   case PENN_DEP_OBJ: 
+      if (
+//         head_tag == PENN_TAG_NOUN_PLURAL ||
          head_tag == PENN_TAG_VERB_PAST ||
-         head_tag == PENN_TAG_MD ||
          head_tag == PENN_TAG_VERB_PAST_PARTICIPATE ||
          head_tag == PENN_TAG_VERB ||
-         head_tag == PENN_TAG_NOUN ||
+/        head_tag == PENN_TAG_NOUN ||
          head_tag == PENN_TAG_VERB_PRES ||
          head_tag == PENN_TAG_VERB_THIRD_SINGLE ||
          head_tag == PENN_TAG_VERB_PROG)
@@ -179,103 +195,70 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
       return false;
    case PENN_DEP_P: 
       if (dep_tag == PENN_TAG_R_QUOTE ||
-         head_tag == PENN_TAG_SHART ||
-         head_tag == PENN_TAG_L_QUOTE ||
-         head_tag == PENN_TAG_L_BRACKET ||
-         head_tag == PENN_TAG_PERIOD ||
-         head_tag == PENN_TAG_COMMA ||
-         head_tag == PENN_TAG_R_BRACKET ||
-         head_tag == PENN_TAG_DOLLAR ||
-         head_tag == PENN_TAG_COLUM)
+         dep_tag == PENN_TAG_SHART ||
+         dep_tag == PENN_TAG_L_QUOTE ||
+         dep_tag == PENN_TAG_L_BRACKET ||
+         dep_tag == PENN_TAG_PERIOD ||
+         dep_tag == PENN_TAG_COMMA ||
+         dep_tag == PENN_TAG_R_BRACKET ||
+         dep_tag == PENN_TAG_DOLLAR ||
+         dep_tag == PENN_TAG_COLUM)
          return true;
       return false;
    case PENN_DEP_PMOD: 
       if (head_tag == PENN_TAG_ADVERB ||
-         head_tag == PENN_TAG_SYM ||
-         head_tag == PENN_TAG_ADVERB_COMPARATIVE ||
+//         head_tag == PENN_TAG_SYM ||
          head_tag == PENN_TAG_VERB_PROG ||
-         head_tag == PENN_TAG_NOUN_PROPER ||
          head_tag == PENN_TAG_TO ||
-         head_tag == PENN_TAG_NOUN_PLURAL ||
-         head_tag == PENN_TAG_DT ||
+//         head_tag == PENN_TAG_DT ||
          head_tag == PENN_TAG_CC ||
-         head_tag == PENN_TAG_PRP_DOLLAR ||
+//         head_tag == PENN_TAG_PRP_DOLLAR ||
          head_tag == PENN_TAG_VERB_PAST_PARTICIPATE ||
-         head_tag == PENN_TAG_VERB ||
-         head_tag == PENN_TAG_NOUN ||
-         head_tag == PENN_TAG_ADJECTIVE ||
+//         head_tag == PENN_TAG_ADJECTIVE ||
          head_tag == PENN_TAG_IN ||
-         head_tag == PENN_TAG_RP ||
-         head_tag == PENN_TAG_VERB_PAST ||
-         head_tag == PENN_TAG_DOLLAR ||
-         head_tag == PENN_TAG_VERB_THIRD_SINGLE ||
+ //        head_tag == PENN_TAG_RP ||
          head_tag == PENN_TAG_FW)
          return true;
       return false;
    case PENN_DEP_PRD: 
-      if (head_tag == PENN_TAG_NOUN_PLURAL ||
-         head_tag == PENN_TAG_MD ||
-         head_tag == PENN_TAG_CC ||
-         head_tag == PENN_TAG_CD ||
-         head_tag == PENN_TAG_IN ||
-         head_tag == PENN_TAG_WDT ||
+      if (
+//         head_tag == PENN_TAG_NOUN_PLURAL ||
+//         head_tag == PENN_TAG_IN ||
          head_tag == PENN_TAG_VERB_PROG ||
-         head_tag == PENN_TAG_DT ||
          head_tag == PENN_TAG_VERB ||
-         head_tag == PENN_TAG_WRB ||
+//         head_tag == PENN_TAG_WRB ||
          head_tag == PENN_TAG_VERB_THIRD_SINGLE ||
-         head_tag == PENN_TAG_ADVERB ||
          head_tag == PENN_TAG_VERB_PAST ||
-         head_tag == PENN_TAG_ADJECTIVE_SUPERLATIVE ||
-         head_tag == PENN_TAG_PRP ||
          head_tag == PENN_TAG_VERB_PAST_PARTICIPATE ||
-         head_tag == PENN_TAG_ADJECTIVE ||
-         head_tag == PENN_TAG_WP ||
-         head_tag == PENN_TAG_POS ||
-         head_tag == PENN_TAG_NOUN_PROPER ||
-         head_tag == PENN_TAG_NOUN ||
+//         head_tag == PENN_TAG_NOUN ||
          head_tag == PENN_TAG_VERB_PRES)
          return true;
       return false;
    case PENN_DEP_SBAR: 
-      if (head_tag == PENN_TAG_NOUN_PLURAL ||
-         head_tag == PENN_TAG_ADVERB ||
-         head_tag == PENN_TAG_TO ||
-         head_tag == PENN_TAG_NOUN_PROPER ||
-         head_tag == PENN_TAG_CC ||
-         head_tag == PENN_TAG_DT ||
-         head_tag == PENN_TAG_ADJECTIVE ||
-         head_tag == PENN_TAG_VERB_PRES ||
+      if (head_tag == PENN_TAG_DT ||
+//         head_tag == PENN_TAG_ADJECTIVE ||
+//         head_tag == PENN_TAG_VERB_PRES ||
          head_tag == PENN_TAG_IN ||
          head_tag == PENN_TAG_WRB ||
-         head_tag == PENN_TAG_NOUN ||
          head_tag == PENN_TAG_WP_DOLLAR ||
          head_tag == PENN_TAG_WP ||
          head_tag == PENN_TAG_WDT)
          return true;
       return false;
    case PENN_DEP_SUB: 
-      if (head_tag == PENN_TAG_NOUN_PLURAL ||
+      if (
+//         head_tag == PENN_TAG_NOUN_PLURAL ||
          head_tag == PENN_TAG_MD ||
-         head_tag == PENN_TAG_CD ||
          head_tag == PENN_TAG_IN ||
-         head_tag == PENN_TAG_DOLLAR ||
-         head_tag == PENN_TAG_WDT ||
          head_tag == PENN_TAG_VERB_PROG ||
-         head_tag == PENN_TAG_FW ||
-         head_tag == PENN_TAG_TO ||
+//         head_tag == PENN_TAG_FW ||
          head_tag == PENN_TAG_VERB ||
-         head_tag == PENN_TAG_WRB ||
          head_tag == PENN_TAG_VERB_THIRD_SINGLE ||
-         head_tag == PENN_TAG_ADVERB ||
          head_tag == PENN_TAG_VERB_PAST ||
          head_tag == PENN_TAG_VERB_PAST_PARTICIPATE ||
          head_tag == PENN_TAG_ADJECTIVE ||
-         head_tag == PENN_TAG_WP ||
-         head_tag == PENN_TAG_POS ||
-         head_tag == PENN_TAG_ADVERB_COMPARATIVE ||
-         head_tag == PENN_TAG_ADJECTIVE_COMPARATIVE ||
-         head_tag == PENN_TAG_NOUN_PROPER ||
+//         head_tag == PENN_TAG_ADJECTIVE_COMPARATIVE ||
+//         head_tag == PENN_TAG_NOUN_PROPER ||
          head_tag == PENN_TAG_NOUN ||
          head_tag == PENN_TAG_VERB_PRES)
          return true;
@@ -293,28 +276,16 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
    case PENN_DEP_VMOD:
       if (head_tag == PENN_TAG_NOUN_PLURAL ||
          head_tag == PENN_TAG_MD ||
-         head_tag == PENN_TAG_CD ||
          head_tag == PENN_TAG_IN ||
-         head_tag == PENN_TAG_DOLLAR ||
          head_tag == PENN_TAG_VERB_PROG ||
-         head_tag == PENN_TAG_FW ||
-         head_tag == PENN_TAG_TO ||
-         head_tag == PENN_TAG_DT ||
+//         head_tag == PENN_TAG_FW ||
          head_tag == PENN_TAG_VERB ||
          head_tag == PENN_TAG_VERB_THIRD_SINGLE ||
-         head_tag == PENN_TAG_ADVERB_SUPERLATIVE ||
-         head_tag == PENN_TAG_ADVERB ||
+//         head_tag == PENN_TAG_ADVERB ||
          head_tag == PENN_TAG_VERB_PAST ||
-         head_tag == PENN_TAG_ADJECTIVE_SUPERLATIVE ||
-         head_tag == PENN_TAG_PRP ||
          head_tag == PENN_TAG_VERB_PAST_PARTICIPATE ||
          head_tag == PENN_TAG_ADJECTIVE ||
-         head_tag == PENN_TAG_WP ||
-         head_tag == PENN_TAG_NOUN_PROPER_PLURAL ||
-         head_tag == PENN_TAG_POS ||
-         head_tag == PENN_TAG_ADVERB_COMPARATIVE ||
-         head_tag == PENN_TAG_ADJECTIVE_COMPARATIVE ||
-         head_tag == PENN_TAG_NOUN_PROPER ||
+//         head_tag == PENN_TAG_NOUN_PROPER ||
          head_tag == PENN_TAG_NOUN ||
          head_tag == PENN_TAG_VERB_PRES)
          return true;
@@ -323,5 +294,7 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
       THROW("Invalid label code in assign label: " << lab.code());
    }
 }
+
+};
 
 #endif

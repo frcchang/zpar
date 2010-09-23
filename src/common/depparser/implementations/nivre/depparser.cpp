@@ -328,14 +328,25 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
 
 SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
    static CStateItem item, temp;
+   static int index;
    // read cache
    m_lCache.clear();
-   for ( int index=0; index<parsed.size(); index++ ) 
+   for ( index=0; index<parsed.size(); ++index ) 
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word , CTag(parsed[index].tag)) );
+#ifdef LABELED
+   m_lCacheLabel.clear();
+   for (index=0; index<parsed.size(); ++index )
+      m_lCacheLabel.push_back( CDependencyLabel(parsed[index].label) );
+#endif
    // make an item from the parsed
    item.clear();
-   for (int index=0; index<parsed.size()*2; index++) {
-      item.StandardMoveStep(parsed); }
+   for (index=0; index<parsed.size()*2; ++index) {
+#ifdef LABELED
+      item.StandardMoveStep(parsed, m_lCacheLabel); 
+#else
+      item.StandardMoveStep(parsed); 
+#endif
+   }
    item.StandardFinish();
    // now follow item to make temp and update its scores
    static unsigned long action;
@@ -421,23 +432,46 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
       return;
 
    CStateItem state;
+   static int index;
 
+   assert(correct.size()==parsed.size());
    m_lCache.clear();
-   for ( int index=0; index<correct.size(); index++ ) 
+   for ( index=0; index<correct.size(); ++index ) {
+      assert(correct[index]==parsed[index]);
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(correct[index].word , CTag(correct[index].tag)) );
+   }
+#ifdef LABELED
+   m_lCacheLabel.clear();
+   for (index=0; index<correct.size(); ++index )
+      m_lCacheLabel.push_back( CDependencyLabel(correct[index].label) );
+#endif
    state.clear();
-   for (int index=0; index<correct.size()*2; index++) {
-      state.StandardMoveStep(correct); }
+   for (index=0; index<correct.size()*2; ++index) {
+#ifdef LABELED
+      state.StandardMoveStep(correct, m_lCacheLabel); 
+#else
+      state.StandardMoveStep(correct); 
+#endif
+}
 
    state.StandardFinish();
    updateScoreForState(&state, 1);
 
-   m_lCache.clear();
-   for ( int index=0; index<parsed.size(); index++ )
-      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word, CTag(parsed[index].tag)) );
+//   m_lCache.clear();
+//   for ( index=0; index<parsed.size(); ++index )
+//      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word, CTag(parsed[index].tag)) );
+#ifdef LABELED
+   m_lCacheLabel.clear();
+   for (index=0; index<parsed.size(); ++index )
+      m_lCacheLabel.push_back( CDependencyLabel(parsed[index].label) );
+#endif
    state.clear();
-   for (int index=0; index<parsed.size()*2; index++) {
+   for (index=0; index<parsed.size()*2; ++index) {
+#ifdef LABELED
+      state.StandardMoveStep(parsed, m_lCacheLabel); 
+#else
       state.StandardMoveStep(parsed);
+#endif
    }
    state.StandardFinish();
    updateScoreForState(&state, -1);
@@ -723,6 +757,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          if (!canAssignLabel(m_lCache, correct[index].head, index, m_lCacheLabel[index])) {
             cout << "Skipping training example because it contradicts the label rules..." <<endl;
             return;
+         }
       }
    }
 #endif
@@ -776,7 +811,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   ) { 
 #ifdef LABELED
                   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
-                     if ( canAssignLabel(m_lCache, pGenerator->stacktop(), pGenerator->m_nNextWord, label) ) {
+                     if ( canAssignLabel(m_lCache, pGenerator->stacktop(), pGenerator->size(), label) ) {
                         pCandidate = *pGenerator ;
                         arcright(&pCandidate, label);
                         m_Agenda->pushCandidate(&pCandidate);
@@ -799,7 +834,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   if ( m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop()) ) {
 #ifdef LABELED
                      for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
-                        if ( canAssignLabel(m_lCache, pGenerator->m_nNextWord, pGenerator->stacktop(), label) ) {
+                        if ( canAssignLabel(m_lCache, pGenerator->size(), pGenerator->stacktop(), label) ) {
                            pCandidate = *pGenerator ;
                            arcleft(&pCandidate, label);
                            m_Agenda->pushCandidate(&pCandidate);
@@ -830,7 +865,12 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
             return ;
          }
 #endif
+
+#ifdef LABELED
+         correctState.StandardMoveStep(correct, m_lCacheLabel);
+#else
          correctState.StandardMoveStep(correct);
+#endif
       } 
       
       m_Agenda->nextRound(); // move round
