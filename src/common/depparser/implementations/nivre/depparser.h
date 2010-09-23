@@ -44,6 +44,9 @@ private:
 
    CAgendaBeam<depparser::CStateItem> *m_Agenda;
    vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+#ifdef LABELED
+   vector< CDependencyLabel > m_lCacheLabel;
+#endif
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;

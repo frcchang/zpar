@@ -344,7 +344,8 @@ public:
          if ( tree[top].head == m_nNextWord ) {    // if a local head deps on nextword first
             if ( top == m_Stack.back() ) {
 #ifdef LABELED
-               ArcLeft(CDependencyLabel(tree[top].label).code()); // link it to the next word
+               assert(m_lCacheLabel[top].str() == tree[top].label);
+               ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
 #else
                ArcLeft();                          // link it to the next word
 #endif
@@ -368,7 +369,8 @@ public:
          top = m_Stack.back(); 
          if ( tree[m_nNextWord].head == top ) {     // the next word deps on stack top
 #ifdef LABELED
-            ArcRight(CDependencyLabel(tree[m_nNextWord].label).code());
+            assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
+            ArcRight(m_lCacheLabel[m_nNextWord].code());
 #else            
             ArcRight();
 #endif            
