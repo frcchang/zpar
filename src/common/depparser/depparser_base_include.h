@@ -7,7 +7,9 @@ namespace depparser {
 }
 
 #include "linguistics/dependency.h"
+#ifdef LABELED
 #include "linguistics/dependencylabel.h"
+#endif
 #include "depparser_impl_inc.h"
 #include "linguistics/tagset.h"
 #include "options.h"

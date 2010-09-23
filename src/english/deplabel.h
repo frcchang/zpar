@@ -5,14 +5,14 @@
 
 //=============================================================
 
-inline istream & operator >> (istream &is, CDependencyLabel &label) {
+inline istream & operator >> (istream &is, english::CDependencyLabel &label) {
    string s;
    is >> s;
    label.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const CDependencyLabel &label) {
+inline ostream & operator << (ostream &os, const english::CDependencyLabel &label) {
    os << label.str() ;
    return os;
 }

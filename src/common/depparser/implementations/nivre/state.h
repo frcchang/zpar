@@ -33,10 +33,6 @@
  *
  *==============================================================*/
 
-#ifdef LABELED
-#include "deplabel.h"
-#endif
-
 class CStateItem {
 
 public:
@@ -322,7 +318,11 @@ public:
 public:
 
    // returns true is the next word advances -- by shift or arcright. 
+#ifdef LABELED
+   bool StandardMoveStep( const CDependencyParse &tree, const vector<CDependencyLabel>&m_lCacheLabel ) {
+#else
    bool StandardMoveStep( const CDependencyParse &tree ) {
+#endif
       static int top;
       // when the next word is tree.size() it means that the sentence is done already
       if ( m_nNextWord == tree.size() ) {
