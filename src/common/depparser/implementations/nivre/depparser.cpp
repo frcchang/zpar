@@ -686,6 +686,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 #ifdef DEBUG
    clock_t total_start_time = clock();
 #endif
+   static int index;
    const int length = sentence.size() ; 
 
    const CStateItem *pGenerator ;
@@ -698,7 +699,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    TRACE("Initialising the decoding process...") ;
    // initialise word cache
    m_lCache.clear();
-   for ( int index=0; index<length; ++index )
+   for ( index=0; index<length; ++index )
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
    // initialise agenda
    m_Agenda->clear();
@@ -715,11 +716,20 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 
 #ifdef LABELED
    unsigned long label;
+   m_lCacheLabel.clear();
+   if (bTrain) {
+      for (index=0; index<length; ++index) {
+         m_lCacheLabel.push_back(CDependencyLabel(correct[index].label));
+         if (!canAssignLabel(m_lCache, correct[index].head, index, m_lCacheLabel[index])) {
+            cout << "Skipping training example because it contradicts the label rules..." <<endl;
+            return;
+      }
+   }
 #endif
 
    TRACE("Decoding started"); 
    // loop with the next word to process in the sentence
-   for (int index=0; index<length*2; ++index) {
+   for (index=0; index<length*2; ++index) {
       
       if (bTrain) bCorrect = false ; 
 
@@ -766,7 +776,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   ) { 
 #ifdef LABELED
                   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
-                     if (label != CDependencyLabel::ROOT) {
+                     if ( canAssignLabel(m_lCache, pGenerator->stacktop(), pGenerator->m_nNextWord, label) ) {
                         pCandidate = *pGenerator ;
                         arcright(&pCandidate, label);
                         m_Agenda->pushCandidate(&pCandidate);
@@ -789,7 +799,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   if ( m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop()) ) {
 #ifdef LABELED
                      for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
-                        if (label != CDependencyLabel::ROOT) {
+                        if ( canAssignLabel(m_lCache, pGenerator->m_nNextWord, pGenerator->stacktop(), label) ) {
                            pCandidate = *pGenerator ;
                            arcleft(&pCandidate, label);
                            m_Agenda->pushCandidate(&pCandidate);
