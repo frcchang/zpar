@@ -187,7 +187,7 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
          head_tag == PENN_TAG_VERB_PAST ||
          head_tag == PENN_TAG_VERB_PAST_PARTICIPATE ||
          head_tag == PENN_TAG_VERB ||
-/        head_tag == PENN_TAG_NOUN ||
+//        head_tag == PENN_TAG_NOUN ||
          head_tag == PENN_TAG_VERB_PRES ||
          head_tag == PENN_TAG_VERB_THIRD_SINGLE ||
          head_tag == PENN_TAG_VERB_PROG)
