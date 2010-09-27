@@ -16,11 +16,6 @@
 
 using namespace chinese;
 
-//
-// The following definitions must be consistent with the combined segmentor and tagger
-//
-#define MAX_SENTENCE_SIZE 512
-
 /*----------------------------------------------------------------
  *
  * recordSegmentation - record a segmented sentence with bitarr.
@@ -74,15 +69,17 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    else
       output_scores = NULL;
 
-   CBitArray prunes(MAX_SENTENCE_SIZE);
+   CBitArray prunes(tagger::MAX_SENTENCE_SIZE);
    CStringVector *unsegmented_sent;
    if (bSegmented) unsegmented_sent = new CStringVector;
 
-   bool bReadSuccessful; 
+   static bool bReadSuccessful; 
    if (bSegmented)
       bReadSuccessful = input_reader.readSegmentedSentence(input_sent);
    else
       bReadSuccessful = input_reader.readRawSentence(input_sent, true, false);
+
+   static int i;
 
    // If we read segmented sentence, we will ignore spaces from input. 
    while( bReadSuccessful ) {
@@ -94,15 +91,32 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       if (bSegmented) {
          DesegmentSentence(input_sent, unsegmented_sent);
          recordSegmentation( unsegmented_sent, input_sent, prunes );
-         tagger.tag(unsegmented_sent, output_sent, output_scores, nBest, &prunes);
+         // check sentence size
+         if ( unsegmented_sent->size() >= tagger::MAX_SENTENCE_SIZE ) {
+            cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << endl;
+            for (i=0; i<nBest; ++i) {
+               output_sent[i].clear();
+               if (bScores) output_scores[i]=0;
+            }
+         }
+         else
+            tagger.tag(unsegmented_sent, output_sent, output_scores, nBest, &prunes);
       }
       else {
-         tagger.tag(input_sent, output_sent, output_scores, nBest);
+         if ( input_sent->size() >= tagger::MAX_SENTENCE_SIZE ) {
+            cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << endl;
+            for (i=0; i<nBest; ++i) {
+               output_sent[i].clear();
+               if (bScores) output_scores[i]=0;
+            }
+         }
+         else
+            tagger.tag(input_sent, output_sent, output_scores, nBest);
       }
       //
       // Ouptut sent
       //
-      for (int i=0; i<nBest; ++i) {
+      for (i=0; i<nBest; ++i) {
          output_writer.writeSentence(output_sent+i); 
          if (bScores) (*score_writer)<<output_scores[i]<<endl;
       }

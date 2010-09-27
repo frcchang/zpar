@@ -97,8 +97,9 @@ public:
             m_mapTagBySeparateChars("TagBySeparateChars", 65537) ,
             m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", 65537) ,
             m_mapTaggedCharByLastChar("TaggedCharByLastChar", 65537) ,
-            m_mapTagByFirstCharCat("TagByFirstCharCat", 65531) ,
-            m_mapTagByLastCharCat("TagByLastCharCat", 65531) , 
+            m_mapTagByFirstCharCat("TagByFirstCharCat", 65537) ,
+            m_mapTagByLastCharCat("TagByLastCharCat", 65537) , 
+            m_mapWordFrequency(65537),
             m_mapTagDictionary(PENN_TAG_COUNT) ,
             m_mapCharTagDictionary(PENN_TAG_COUNT)
    { 
