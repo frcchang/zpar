@@ -18,11 +18,6 @@
 
 using namespace chinese;
 
-//
-// The following definitions must be consistent with the combined segmentor and tagger
-//
-#define MAX_SENTENCE_SIZE 512
-
 /*----------------------------------------------------------------
  *
  * recordSegmentation - record a segmented sentence with bitarr.
@@ -66,7 +61,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const uns
    unsigned nCount=0;
    unsigned nErrorCount=0;
 
-   CBitArray word_ends(MAX_SENTENCE_SIZE);
+   CBitArray word_ends(tagger::MAX_SENTENCE_SIZE);
 
 #ifdef DEBUG
    CSentenceWriter output_writer("");
@@ -119,7 +114,7 @@ void train(const string &sOutputFile, const string &sFeatureFile, const unsigned
    unsigned nErrorCount=0;
    unsigned nEarlyUpdateRepeat=0;
 
-   CBitArray word_ends(MAX_SENTENCE_SIZE);
+   CBitArray word_ends(tagger::MAX_SENTENCE_SIZE);
 
    //
    // Read the next sentence
