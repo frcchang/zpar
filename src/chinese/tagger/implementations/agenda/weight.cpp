@@ -60,7 +60,9 @@ using namespace chinese::tagger;
    left(m_mapPartialLengthByFirstChar)right \
    left(m_mapLengthByTagAndFirstChar)right \
    left(m_mapLengthByTagAndLastChar)right \
-   left(m_mapSizeAndLastTagByTag)right
+   left(m_mapTag0Tag1Size1)right\
+   left(m_mapTag1Tag2Size1)right\
+   left(m_mapTag0Tag1Tag2Size1)right
 
 /*---------------------------------------------------------------
  *

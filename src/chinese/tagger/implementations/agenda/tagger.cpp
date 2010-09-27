@@ -168,7 +168,9 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
 
    // all about the current word
    nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
-   if (index>0) nReturn += m_weights->m_mapSizeAndLastTagByTag.getOrUpdateScore( make_pair( tag_0_tag_1, length_1 ), m_nScoreIndex , amount , round ) ;
+   if (index>0) nReturn += m_weights->m_mapTag0Tag1Size1.getOrUpdateScore( make_pair( tag_0_tag_1, length_1 ), m_nScoreIndex , amount , round ) ;
+   if (index>0) nReturn += m_weights->m_mapTag1Tag2Size1.getOrUpdateScore( make_pair( tag_1_tag_2, length_1 ), m_nScoreIndex , amount , round ) ;
+   if (index>0) nReturn += m_weights->m_mapTag0Tag1Tag2Size1.getOrUpdateScore( make_pair( tag_0_tag_1_tag_2, length_1 ), m_nScoreIndex , amount , round ) ;
 
    if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( make_pair(word_1, tag_0) , m_nScoreIndex , amount , round ) ;
 
