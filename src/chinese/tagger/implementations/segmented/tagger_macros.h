@@ -12,6 +12,6 @@ const int AGENDA_SIZE = 16;
 //
 // General definitions for any method tagger.
 //
-const int MAX_SENTENCE_SIZE = 512; // restrict size of sentences 
+const int MAX_SENTENCE_SIZE = 4096; // restrict size of sentences 
 }} // namespaces
 #endif

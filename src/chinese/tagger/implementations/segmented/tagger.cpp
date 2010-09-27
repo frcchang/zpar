@@ -308,9 +308,10 @@ void CTagger::tag( const CStringVector * sentence , CTwoStringVector * vReturn ,
 
    m_WordCache.clear() ; 
 
-   for ( tag=0; tag<CTag::COUNT; tag++ )
-      for ( last_tag=0; last_tag<CTag::COUNT; last_tag++ )
-         done_bigram[last_tag][tag] = -1;
+//   for ( tag=0; tag<CTag::COUNT; tag++ )
+//      for ( last_tag=0; last_tag<CTag::COUNT; last_tag++ )
+//         done_bigram[last_tag][tag] = -1;
+   memset(done_bigram, 255, CTag::COUNT*CTag::COUNT*sizeof(done_bigram[0]));
 
    TRACE("Tagging started"); 
 
