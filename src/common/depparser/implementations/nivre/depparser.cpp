@@ -733,8 +733,12 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    TRACE("Initialising the decoding process...") ;
    // initialise word cache
    m_lCache.clear();
-   for ( index=0; index<length; ++index )
+   for ( index=0; index<length; ++index ) {
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
+      // filter out training examples with rules
+      if (bTrain) {
+      }
+   }
    // initialise agenda
    m_Agenda->clear();
 //   pCandidate = m_Agenda->candidateItem();      // make the first item
