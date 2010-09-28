@@ -316,14 +316,14 @@ inline const bool hasRightHead(const unsigned &tag) {
       case PENN_TAG_PERIOD:
       case PENN_TAG_WP_DOLLAR:
       case PENN_TAG_R_BRACKET:
-         return false
+         return false;
       default:
          return true;
    }
 }
 
 inline const bool canBeRoot(const unsigned &tag) {
-   if (!(tag==PENN_TAG_VBG || tag==PENN_TAG_VBD || tag==PENN_TAG_VBN || tag==PENN_TAG_VBP || tag==PENN_TAG_WDT || tag==PENN_TAG_JJ || tag==PENN_TAG_WP || tag==PENN_TAG_VBZ || tag==PENN_TAG_DT || tag==PENN_TAG_DOLLAR || tag==PENN_TAG_NN || tag==PENN_TAG_FW || tag==PENN_TAG_POS || tag==PENN_TAG_TO || tag==PENN_TAG_RB || tag==PENN_TAG_NNS || tag==PENN_TAG_NNP || tag==PENN_TAG_VB || tag==PENN_TAG_WRB || tag==PENN_TAG_CC || tag==PENN_TAG_RBR || tag==PENN_TAG_CD || tag==PENN_TAG_IN || tag==PENN_TAG_WP_DOLLAR || tag==PENN_TAG_MD || tag==PENN_TAG_NNPS || tag==PENN_TAG_JJR || tag==PENN_TAG_SYM || tag==PENN_TAG_UH))
+   if (!(tag==PENN_TAG_VERB_PROG || tag==PENN_TAG_VERB_PAST || tag==PENN_TAG_VERB_PAST_PARTICIPATE || tag==PENN_TAG_VERB_PRES || tag==PENN_TAG_WDT || tag==PENN_TAG_ADJECTIVE || tag==PENN_TAG_WP || tag==PENN_TAG_VERB_THIRD_SINGLE || tag==PENN_TAG_DT || tag==PENN_TAG_DOLLAR || tag==PENN_TAG_NOUN || tag==PENN_TAG_FW || tag==PENN_TAG_POS || tag==PENN_TAG_TO || tag==PENN_TAG_ADVERB || tag==PENN_TAG_NOUN_PLURAL || tag==PENN_TAG_NOUN_PROPER || tag==PENN_TAG_VERB || tag==PENN_TAG_WRB || tag==PENN_TAG_CC || tag==PENN_TAG_ADVERB_COMPARATIVE || tag==PENN_TAG_CD || tag==PENN_TAG_IN || tag==PENN_TAG_WP_DOLLAR || tag==PENN_TAG_MD || tag==PENN_TAG_NOUN_PROPER_PLURAL || tag==PENN_TAG_ADJECTIVE_COMPARATIVE || tag==PENN_TAG_SYM || tag==PENN_TAG_UH))
       return false;
    return true;
 }
