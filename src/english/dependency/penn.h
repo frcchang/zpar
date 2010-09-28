@@ -118,10 +118,10 @@ public:
  *==============================================================*/
 
 inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent, const int &head, const int &dep, const CDependencyLabel&lab) {
-   assert(head==-1||head>=0); // correct head
+   assert(head==DEPENDENCY_LINK_NO_HEAD||head>=0); // correct head
    assert(dep>=0);
    // if the head word is none, only ROOT
-   if (head==-1) {
+   if (head==DEPENDENCY_LINK_NO_HEAD) {
       if (lab.code()==PENN_DEP_ROOT) 
          return true;
       return false;
@@ -129,9 +129,9 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
    // for each case
    const unsigned &head_tag = sent[head].tag.code();
    const unsigned &dep_tag = sent[dep].tag.code();
-   assert(head!=-1);
+   assert(head!=DEPENDENCY_LINK_NO_HEAD);
    switch (lab.code()) {
-   case PENN_DEP_ROOT: // now head is not -1
+   case PENN_DEP_ROOT: // now head is not DEPENDENCY_LINK_NO_HEAD
       return false;
    case PENN_DEP_AMOD: 
       if (head_tag == PENN_TAG_NOUN_PLURAL ||
@@ -293,6 +293,39 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
    default:
       THROW("Invalid label code in assign label: " << lab.code());
    }
+}
+
+inline const bool hasLeftHead(const unsigned &tag) {
+   switch(tag){
+      case PENN_TAG_PRP_DOLLAR:
+      case PENN_TAG_DOLLAR:
+      case PENN_TAG_POS:
+      case PENN_TAG_L_BRACKET:
+      case PENN_TAG_LS:
+      case PENN_TAG_EX:
+         return false;
+      default:
+         return true;
+   }
+}
+
+inline const bool hasRightHead(const unsigned &tag) {
+   switch(tag){
+      case PENN_TAG_WDT:
+      case PENN_TAG_RP:
+      case PENN_TAG_PERIOD:
+      case PENN_TAG_WP_DOLLAR:
+      case PENN_TAG_R_BRACKET:
+         return false
+      default:
+         return true;
+   }
+}
+
+inline const bool canBeRoot(const unsigned &tag) {
+   if (!(tag==PENN_TAG_VBG || tag==PENN_TAG_VBD || tag==PENN_TAG_VBN || tag==PENN_TAG_VBP || tag==PENN_TAG_WDT || tag==PENN_TAG_JJ || tag==PENN_TAG_WP || tag==PENN_TAG_VBZ || tag==PENN_TAG_DT || tag==PENN_TAG_DOLLAR || tag==PENN_TAG_NN || tag==PENN_TAG_FW || tag==PENN_TAG_POS || tag==PENN_TAG_TO || tag==PENN_TAG_RB || tag==PENN_TAG_NNS || tag==PENN_TAG_NNP || tag==PENN_TAG_VB || tag==PENN_TAG_WRB || tag==PENN_TAG_CC || tag==PENN_TAG_RBR || tag==PENN_TAG_CD || tag==PENN_TAG_IN || tag==PENN_TAG_WP_DOLLAR || tag==PENN_TAG_MD || tag==PENN_TAG_NNPS || tag==PENN_TAG_JJR || tag==PENN_TAG_SYM || tag==PENN_TAG_UH))
+      return false;
+   return true;
 }
 
 };
