@@ -216,7 +216,8 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("k", "Path", "use knowledge from the given path", "");
-      configurations.defineConfiguration("m", "M", "maximum sentence size", "512");
+      ostringstream out; out << tagger::MAX_SENTENCE_SIZE;
+      configurations.defineConfiguration("m", "M", "maximum sentence size", out.str());
       configurations.defineConfiguration("n", "N", "N best list train", "1");
       configurations.defineConfiguration("u", "", "early update", "");
       configurations.defineConfiguration("r", "", "do not use rules to segment numbers and letters", "");
