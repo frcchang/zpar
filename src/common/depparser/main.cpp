@@ -63,18 +63,29 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       TRACE("Sentence " << nCount);
       ++ nCount;
 
-      // Find decoder output
-      if (supertags) {
-         supertags->setSentenceSize( input_sent.size() );
-         (*is_supertags) >> *supertags;
+      // check size
+      if (input_sent.size() > depparser::MAX_SENTENCE_SIZE) {
+         cerr << "The sentence is longer than system limitation, skipping it." << endl;
+         for (int i=0; i<nBest; ++i) {
+            output_sent[i].clear();
+            if (bScores) scores[i]=0;
+         }
       }
+      else {
 
-      parser.parse( input_sent , output_sent , nBest , scores ) ;
+         // Find decoder output
+         if (supertags) {
+            supertags->setSentenceSize( input_sent.size() );
+            (*is_supertags) >> *supertags;
+         }
 
-      if (supertags && output_sent->empty()) {
-         parser.setSuperTags(0);
          parser.parse( input_sent , output_sent , nBest , scores ) ;
-         parser.setSuperTags(supertags);
+
+//         if (supertags && output_sent->empty()) {
+//            parser.setSuperTags(0);
+//            parser.parse( input_sent , output_sent , nBest , scores ) ;
+//            parser.setSuperTags(supertags);
+//         }
       }
       
       // Ouptut sent

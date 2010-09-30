@@ -724,24 +724,43 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    const int length = sentence.size() ; 
 
    const CStateItem *pGenerator ;
-   CStateItem pCandidate ;
-   bool bCorrect ;  // used in learning for early update
+   static CStateItem pCandidate ;
+
+   // used only for training
+   static bool bCorrect ;  // used in learning for early update
+   static bool bContradictsRules;
    static CStateItem correctState ;
 
-   assert(length<MAX_SENTENCE_SIZE);
+   ASSERT(length<MAX_SENTENCE_SIZE, "The size of the sentence is larger than the system configuration.");
 
    TRACE("Initialising the decoding process...") ;
    // initialise word cache
+   bContradictsRules = false;
    m_lCache.clear();
    for ( index=0; index<length; ++index ) {
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
       // filter out training examples with rules
-      if (bTrain) {
+      if (bTrain && m_weights->rules()) {
+         // the root
+         if ( correct[index].head == DEPENDENCY_LINK_NO_HEAD && canBeRoot(m_lCache[index].tag.code())==false) {
+            TRACE("Rule contradiction: " << m_lCache[index].tag << " can be root.");
+            bContradictsRules = true;
+         }
+         // head left
+         if ( correct[index].head < index && hasLeftHead(m_lCache[index].tag.code())==false) {
+            TRACE("Rule contradiction: " << m_lCache[index].tag << " has left head.");
+            bContradictsRules = true;
+         }
+         // head right
+         if ( correct[index].head > index && hasRightHead(m_lCache[index].tag.code())==false) {
+            TRACE("Rule contradiction: " << m_lCache[index].tag << " has right head.");
+            bContradictsRules = true;
+         }
       }
    }
+
    // initialise agenda
    m_Agenda->clear();
-//   pCandidate = m_Agenda->candidateItem();      // make the first item
    pCandidate.clear();                          // restore state using clean
    m_Agenda->pushCandidate(&pCandidate);           // and push it back
    m_Agenda->nextRound();                       // as the generator item
@@ -758,13 +777,19 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    if (bTrain) {
       for (index=0; index<length; ++index) {
          m_lCacheLabel.push_back(CDependencyLabel(correct[index].label));
-         if (!canAssignLabel(m_lCache, correct[index].head, index, m_lCacheLabel[index])) {
-            cout << "Skipping training example because it contradicts the label rules..." <<endl;
-            return;
+         if (m_weights->rules() && !canAssignLabel(m_lCache, correct[index].head, index, m_lCacheLabel[index])) {
+            TRACE("Rule contradiction: " << correct[index].label << " on link head " << m_lCache[correct[index].head].tag << " dep " << m_lCache[index].tag);
+            bContradictsRules = true;
          }
       }
    }
 #endif
+
+   // skip the training example if contradicts
+   if (bTrain && m_weights->rules() && bContradictsRules) {
+      cout << "Skipping training example because it contradicts rules..." <<endl;
+      return;
+   }
 
    TRACE("Decoding started"); 
    // loop with the next word to process in the sentence
@@ -797,25 +822,24 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          }
          // for the state items that still need more words
          else {  
-            if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
+            if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.               
                if ( ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
-                    ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) )
-                  {
-                  //pCandidate = m_Agenda->candidateItem() ;
+                    ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) && // supertags
+                    ( pGenerator->stackempty() || !m_weights->rules() || canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
+                  ) {
                   pCandidate = *pGenerator ;
                   shift(&pCandidate) ;
                   m_Agenda->pushCandidate(&pCandidate) ;
                }
             }
             if ( !pGenerator->stackempty() ) {
-               if ( ( pGenerator->size() < length-1 || 
-                      pGenerator->numberoflocalheads() == 1 ) && // one root
-                    ( m_supertags == 0 ||
-                      m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) // supertags conform to this action
+               if ( ( pGenerator->size() < length-1 || pGenerator->numberoflocalheads() == 1 ) && // one root
+                    ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
+                    ( !m_weights->rules() || hasLeftHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
                   ) { 
 #ifdef LABELED
                   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
-                     if ( canAssignLabel(m_lCache, pGenerator->stacktop(), pGenerator->size(), label) ) {
+                     if ( !m_weights->rules() || canAssignLabel(m_lCache, pGenerator->stacktop(), pGenerator->size(), label) ) {
                         pCandidate = *pGenerator ;
                         arcright(&pCandidate, label);
                         m_Agenda->pushCandidate(&pCandidate);
@@ -835,10 +859,12 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   m_Agenda->pushCandidate(&pCandidate) ;
                }
                else {
-                  if ( m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop()) ) {
+                  if ( (m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop())) && // supertags
+                       (!m_weights->rules() || hasRightHead(m_lCache[pGenerator->stacktop()].tag.code())) // rules
+                     ) {
 #ifdef LABELED
                      for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
-                        if ( canAssignLabel(m_lCache, pGenerator->size(), pGenerator->stacktop(), label) ) {
+                        if ( !m_weights->rules() || canAssignLabel(m_lCache, pGenerator->size(), pGenerator->stacktop(), label) ) {
                            pCandidate = *pGenerator ;
                            arcleft(&pCandidate, label);
                            m_Agenda->pushCandidate(&pCandidate);

@@ -14,9 +14,9 @@
 #include "tags.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"
-#ifdef LABELED
+//#ifdef LABELED
 #include "deplabel.h"
-#endif
+//#endif
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 

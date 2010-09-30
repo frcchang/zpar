@@ -154,6 +154,16 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
 
    iterate_templates(file >>,;);
 
+   string s;
+   getline(file, s);
+   if (s=="Rules=1") {
+      setRules(true);
+   }
+   else {
+      ASSERT(s=="Rules=0", "Rules flag not found from the model file");
+      setRules(false);
+   }
+
    file.close() ;
    cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
 }
@@ -177,6 +187,8 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
 #ifdef DEBUG
    iterate_templates(,.trace(););
 #endif
+   if (m_bRules) file << "Rules=1" << endl;
+   else file << "Rules=0" << endl;
 
    file.close();
    cout<<" done."<<endl;

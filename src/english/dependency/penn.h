@@ -298,7 +298,7 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
 inline const bool hasLeftHead(const unsigned &tag) {
    switch(tag){
       case PENN_TAG_PRP_DOLLAR:
-      case PENN_TAG_DOLLAR:
+      case PENN_TAG_SHART:
       case PENN_TAG_POS:
       case PENN_TAG_L_BRACKET:
       case PENN_TAG_LS:

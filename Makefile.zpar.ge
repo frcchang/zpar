@@ -90,8 +90,8 @@ generic.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_GEN
 	@echo The generic dependency parser system is compiled successfully into $(DIST_GENERIC_DEPPARSER).
 
 # the weight module
-$(OBJECT_GENERIC_DEPPARSER)/weight.o: $(OBJECT_GENERIC_DEPPARSER) $(SRC_GENERIC_DEPPARSER)/weight_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/weight.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/weight.cpp ./Makefile
-	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/weight.cpp -o $(OBJECT_GENERIC_DEPPARSER)/weight.o
+$(OBJECT_GENERIC_DEPPARSER)/weight.o: $(OBJECT_GENERIC_DEPPARSER) $(SRC_GENERIC_DEPPARSER)/depparser_weight_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.cpp -o $(OBJECT_GENERIC_DEPPARSER)/weight.o
 
 # the depparser object
 $(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/templates/getorupdate.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
