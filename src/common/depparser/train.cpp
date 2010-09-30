@@ -23,11 +23,12 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const string &sSuperPath) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool &bRules, const string &sSuperPath) {
 
    cout << "Training iteration is started..." << endl ; cout.flush();
 
    CDepParser parser(sFeatureFile, true);
+   parser.setRules(bRules);
 
    ifstream is(sOutputFile.c_str());
    assert(is.is_open());
@@ -84,6 +85,7 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("p", "path", "supertags", "");
+      configurations.defineConfiguration("r", "", "use rules", "");
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
          return 1;
@@ -97,11 +99,12 @@ int main(int argc, char* argv[]) {
       }
    
       string sSuperPath = configurations.getConfiguration("p");
+      bool bRules = configurations.getConfiguration("r").empty() ? false : true;
 
       cout << "Training started" << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
-         auto_train(argv[1], argv[2], sSuperPath);
+         auto_train(argv[1], argv[2], bRules, sSuperPath);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    
       return 0;

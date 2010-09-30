@@ -47,6 +47,9 @@ public:
    }
 
 public:
+   void setRules(const bool &bRules) {
+      m_weights->setRules(bRules);
+   }
    void setSuperTags(const depparser::CSuperTag *supertags) {
       // set sueprtags to 0 if no supertags are to be used
       // set supertags before parsing

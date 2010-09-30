@@ -8,7 +8,8 @@ def labelanal(sent, dLabel, setPOS):
       label = word[3]
       setPOS.add(pos)
       if head == -1:
-         assert label == 'ROOT'
+         #assert label == 'ROOT'
+         pass
       else:
          head_pos = _ou(sent[head][1])
          setPOS.add(head_pos)
@@ -39,27 +40,35 @@ g_macroNamed = {
 }
 
 def _ou(s):
-   return s
-#   return g_macroNamed[s]
+#   return s
+   return g_macroNamed[s]
 
 if __name__ == "__main__":
    dLabel = {}
    setPOS = set([])
    for sent in depio.depread(sys.argv[1]):
       labelanal(sent, dLabel, setPOS)
+   print 'Set of labels'
+   print ' '.join(dLabel.keys())
    for label in dLabel:
       print label, '==='
       setDeps = set([])
       dPair = dLabel.get(label, {})
+      dDepCount={}
       for head in dPair:
          headCount = 0
          dDep = dPair.get(head, {})
          for key in dDep.keys():
             headCount += dDep[key]
+            if not key in dDepCount:
+               dDepCount[key] = 0
+            dDepCount[key]+=dDep[key]
          print head, '(', headCount, ')', ' : ', ' '.join([key+'('+str(dDep[key])+')' for key in dDep.keys()])
          setDeps = setDeps.union(dDep.keys())
       print
       print 'Set of heads: ', ' '.join(dPair.keys())
+      assert set(dDepCount.keys()) == setDeps
+      print 'Set of depcounts: ', ' '.join([key+'('+str(dDepCount[key])+')' for key in dDepCount.keys()])
       print 'Set of deps: ', ' '.join(setDeps)
       print
       print 'Set of nonheads: ', ' '.join(setPOS-set(dPair.keys()))
