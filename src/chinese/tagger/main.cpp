@@ -147,7 +147,9 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("m", "M", "maximum sentence size", "512");
+      std::stringstream out; out << tagger::MAX_SENTENCE_SIZE; 
+cout << out.str() << endl;
+      configurations.defineConfiguration("m", "M", "maximum sentence size", out.str());
       configurations.defineConfiguration("n", "N", "N best list output", "1");
       configurations.defineConfiguration("s", "", "output scores", "");
 

@@ -41,11 +41,13 @@ unsigned long int getUTF8StringLength(const string &s) {
          ++retval;
       }
       else {
-         THROW("string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
+         return retval;
       }
    }
    if (idx != s.length()) {
-      THROW("string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
+      return retval;
    }
    return retval;
 }
@@ -82,11 +84,13 @@ inline int getCharactersFromUTF8String(const string &s, CSentence *sentence) {
          idx += 3;
       }
       else {
-         THROW("string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("getCharactersFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+         return len;
       }
    }
    if (idx != s.length()) {
-      THROW("string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("getCharactersFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      return len;
    }
 
    return len;
@@ -114,7 +118,8 @@ inline string getFirstCharFromUTF8String(const string &s) {
       return s.substr(0, 3);
    }
    else {
-      THROW("string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("getFirstCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      return "?";
    }
 }
 
@@ -144,11 +149,13 @@ inline string getLastCharFromUTF8String(const string &s) {
          idx += 3;
       }
       else {
-         THROW("string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+         return "?";
       }
    }
    if (idx != s.length()) {
-      THROW("string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      return "?";
    }
    return retval;
 }
