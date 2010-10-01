@@ -46,8 +46,8 @@ g_macroNamed = {
 }
 
 def _ou(s):
-   return s
-#   return g_macroNamed[s]
+#   return s
+   return g_macroNamed[s]
 
 if __name__ == "__main__":
    dHead = {}
