@@ -1,13 +1,10 @@
 #ifndef _ENGLISH_DEPLABEL_H
 #define _ENGLISH_DEPLABEL_H
 
-#ifdef LABELED
-#include "dependency/label/penn.h"
-#endif
 #include "dependency/rules/penn.h"
 
-//=============================================================
-
+#ifdef LABELED
+#include "dependency/label/penn.h"
 inline istream & operator >> (istream &is, english::CDependencyLabel &label) {
    string s;
    is >> s;
@@ -19,4 +16,6 @@ inline ostream & operator << (ostream &os, const english::CDependencyLabel &labe
    os << label.str() ;
    return os;
 }
+#endif
+
 #endif
