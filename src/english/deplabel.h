@@ -1,7 +1,7 @@
 #ifndef _ENGLISH_DEPLABEL_H
 #define _ENGLISH_DEPLABEL_H
 
-#include "dependency/stanford.h"
+#include "dependency/penn.h"
 
 //=============================================================
 
