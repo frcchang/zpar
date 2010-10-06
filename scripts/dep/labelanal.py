@@ -4,14 +4,14 @@ import depio
 def labelanal(sent, dLabel, setPOS):
    for word in sent:
       head = int(word[2])
-      pos = _ou(word[1])
+      pos = word[1]
       label = word[3]
       setPOS.add(pos)
       if head == -1:
          #assert label == 'ROOT'
          pass
       else:
-         head_pos = _ou(sent[head][1])
+         head_pos = sent[head][1]
          setPOS.add(head_pos)
          if not label in dLabel:
             dLabel[label] = {}
@@ -39,14 +39,13 @@ g_macroNamed = {
    'WDT':'PENN_TAG_WDT', 'WP':'PENN_TAG_WP', 'WP$':'PENN_TAG_WP_DOLLAR', 'WRB':'PENN_TAG_WRB' 
 }
 
-def _ou(s):
-#   return s
-   return g_macroNamed[s]
-
-if __name__ == "__main__":
+def printStats(path):
+   def _ou(s):
+      return s
+   #   return g_macroNamed[s]
    dLabel = {}
    setPOS = set([])
-   for sent in depio.depread(sys.argv[1]):
+   for sent in depio.depread(path):
       labelanal(sent, dLabel, setPOS)
    print 'Set of labels'
    print ' '.join(dLabel.keys())
@@ -66,11 +65,21 @@ if __name__ == "__main__":
          print head, '(', headCount, ')', ' : ', ' '.join([key+'('+str(dDep[key])+')' for key in dDep.keys()])
          setDeps = setDeps.union(dDep.keys())
       print
-      print 'Set of heads: ', ' '.join(dPair.keys())
+      print 'Set of heads: ', ' '.join(map(_ou, dPair.keys()))
       assert set(dDepCount.keys()) == setDeps
-      print 'Set of depcounts: ', ' '.join([key+'('+str(dDepCount[key])+')' for key in dDepCount.keys()])
-      print 'Set of deps: ', ' '.join(setDeps)
+      print 'Set of depcounts: ', ' '.join([_ou(key)+'('+str(dDepCount[key])+')' for key in dDepCount.keys()])
+      print 'Set of deps: ', ' '.join(map(_ou, setDeps))
       print
-      print 'Set of nonheads: ', ' '.join(setPOS-set(dPair.keys()))
-      print 'Set of nondeps: ', ' '.join(setPOS-setDeps)
+      print 'Set of nonheads: ', ' '.join(map(_ou, (setPOS-set(dPair.keys()))))
+      print 'Set of nondeps: ', ' '.join(map(_ou, (setPOS-setDeps)))
       print
+
+if __name__ == "__main__":
+   import getopt
+   optlist, args = getopt.getopt(sys.argv[1:], 'c')
+   for opts in optlist:
+      if opts[0] == '-c':
+         print 'Write code'
+         sys.exit(0)
+   printStats(args[0])
+
