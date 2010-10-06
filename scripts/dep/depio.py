@@ -9,7 +9,7 @@ def depread(path):
          yield sent
          sent = []
       else:
-         line = line.split('\t')
+         line = line[:-1].split('\t')
          sent.append(line)
    file.close()
 

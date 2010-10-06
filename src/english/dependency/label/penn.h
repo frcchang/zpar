@@ -8,52 +8,47 @@
  *                                                              *
  ****************************************************************/
 
+#ifndef _DEPENDENCY_L_PENN
+#define _DEPENDENCY_L_PENN
+
+#include "tags.h"
+
+namespace english {
+
 const string PENN_DEP_STRINGS[] = {
    "-NONE-",
    "ROOT", 
    "AMOD",
+   "DEP", 
    "NMOD", 
-   "PMOD", 
-   "VMOD", 
-   "SBJ", 
    "OBJ", 
-   "POBJ", 
-   "VRD", 
-   "DEC", 
-   "DEG", 
-   "DEV", 
-   "LC", 
-   "M", 
-   "PRN", 
-   "VC", 
-   "COOR", 
-   "CS"
+   "P",
+   "PMOD", 
+   "PRD",
+   "SBAR",
+   "SUB",
+   "VC",
+   "VMOD"
 };
 
 enum PENN_DEP_LABELS {
    PENN_DEP_NONE=0,
    PENN_DEP_ROOT, 
-   PENN_DEP_AMOD,
+   PENN_DEP_AMOD, 
+   PENN_DEP_DEP, 
    PENN_DEP_NMOD, 
-   PENN_DEP_PMOD, 
-   PENN_DEP_VMOD, 
-   PENN_DEP_SBJ, 
    PENN_DEP_OBJ, 
-   PENN_DEP_POBJ, 
-   PENN_DEP_VRD, 
-   PENN_DEP_DEC, 
-   PENN_DEP_DEG, 
-   PENN_DEP_DEV, 
-   PENN_DEP_LC, 
-   PENN_DEP_M, 
-   PENN_DEP_PRN, 
+   PENN_DEP_P, 
+   PENN_DEP_PMOD, 
+   PENN_DEP_PRD, 
+   PENN_DEP_SBAR, 
+   PENN_DEP_SUB, 
    PENN_DEP_VC, 
-   PENN_DEP_COOR, 
-   PENN_DEP_CS, 
-   PENN_DEP_COUNT
+   PENN_DEP_VMOD, 
+   PENN_DEP_COUNT 
 };
 
-const unsigned long PENN_DEP_COUNT_BITS = 5;
+const unsigned long PENN_DEP_COUNT_BITS = 4;
 
 /*==============================================================
  *
@@ -116,14 +111,6 @@ public:
 
 };
 
-inline const bool hasLeftHead(const unsigned &tag) {
-   return true;
-}
+};
 
-inline const bool hasRightHead(const unsigned &tag) {
-   return true;
-}
-
-inline const bool canBeRoot(const unsigned &tag) {
-   return true;
-}
+#endif

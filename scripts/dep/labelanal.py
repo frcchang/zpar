@@ -1,7 +1,7 @@
 import sys
 import depio
 
-def labelanal(sent, dLabel, setPOS):
+def simplelabelanal(sent, dLabel, setPOS):
    for word in sent:
       head = int(word[2])
       pos = word[1]
@@ -21,7 +21,6 @@ def labelanal(sent, dLabel, setPOS):
             dLabel[label][head_pos][pos] = 0
          dLabel[label][head_pos][pos] += 1
 
-
 g_macroNamed = {
    "-NONE-" : 'PENN_TAG_NONE', 
    "-BEGIN-" : 'PENN_TAG_BEGIN',
@@ -39,6 +38,8 @@ g_macroNamed = {
    'WDT':'PENN_TAG_WDT', 'WP':'PENN_TAG_WP', 'WP$':'PENN_TAG_WP_DOLLAR', 'WRB':'PENN_TAG_WRB' 
 }
 
+#===================================================================
+
 def printStats(path):
    def _ou(s):
       return s
@@ -46,7 +47,7 @@ def printStats(path):
    dLabel = {}
    setPOS = set([])
    for sent in depio.depread(path):
-      labelanal(sent, dLabel, setPOS)
+      simplelabelanal(sent, dLabel, setPOS)
    print 'Set of labels'
    print ' '.join(dLabel.keys())
    for label in dLabel:
@@ -74,12 +75,88 @@ def printStats(path):
       print 'Set of nondeps: ', ' '.join(map(_ou, (setPOS-setDeps)))
       print
 
+#===================================================================
+
+g_freqCutoff = 0.01
+
+def labelanal(sent, dLabel, setPOS):
+   for word in sent:
+      head = int(word[2])
+      pos = word[1]
+      label = word[3]
+      setPOS.add(pos)
+      if head == -1:
+         pass
+      else:
+         head_pos = sent[head][1]
+         setPOS.add(head_pos)
+         if not label in dLabel:
+            dLabel[label] = {}
+         if not (head_pos, pos) in dLabel:
+            dLabel[label][(head_pos, pos)] = 0
+         dLabel[label][(head_pos, pos)] += 1
+
+def writeCppCode(path):
+   def _label(s):
+      return 'PENN_DEP_'+s.upper()
+   def _pos(s):
+      return g_macroNamed[s]
+   dLabel = {}
+   setPOS = set([])
+   for sent in depio.depread(path):
+      labelanal(sent, dLabel, setPOS)
+   nLabel=0
+   # for each label
+   for label in dLabel:
+      # print condition
+      if nLabel == 0:
+         print "   if (label==%s) {" % _label(label)
+      else:
+         print "   else if (label==%s) {" % _label(label)
+      nLabel +=1
+      # collect statistics
+      dHeadCount={} # head : count
+      dDepCount={} # dep : count
+      nTotalCount=0 # arc
+      dEntry = dLabel.get(label, {}) # head, dep : count
+      for key in dEntry:
+         head = key[0]
+         dep = key[1]
+         if not head in dHeadCount:
+            dHeadCount[head] = 0
+         dHeadCount[head] += dEntry[key]
+         if not dep in dDepCount:
+            dDepCount[dep] = 0
+         dDepCount[dep] += dEntry[key]
+         nTotalCount += dEntry[key]
+      # write head condition
+      threshold = g_freqCutoff * nTotalCount
+      nCount=0
+      for pos in setPOS:
+         if dHeadCount.get(pos, 0) < threshold:
+            if nCount == 0:
+               print "      if ( head_pos==%s" % _pos(pos)
+            else:
+               print "           || head_pos==%s" % _pos(pos)
+            nCount += 1
+      for pos in setPOS:
+         if dDepCount.get(pos, 0) < threshold:
+            if nCount == 0:
+               print "      if ( dep_pos==%s" % _pos(pos)
+            else:
+               print "           || dep_pos==%s" % _pos(pos)
+            nCount += 1
+      if nCount>0:
+         print '         ) return false;'
+      # finish condition
+      print "   }"
+
 if __name__ == "__main__":
    import getopt
    optlist, args = getopt.getopt(sys.argv[1:], 'c')
    for opts in optlist:
       if opts[0] == '-c':
-         print 'Write code'
+         writeCppCode(args[0])
          sys.exit(0)
    printStats(args[0])
 

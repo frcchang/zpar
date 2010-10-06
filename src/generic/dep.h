@@ -1,4 +1,8 @@
-#include "dependency/generic.h"
+#ifdef LABELED
+#include "dependency/label/generic.h"
+#endif
+
+#include "dependency/rules/generic.h"
 
 //=============================================================
 
