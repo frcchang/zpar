@@ -1,11 +1,7 @@
-#ifdef LABELED
-#include "dependency/label/generic.h"
-#endif
-
 #include "dependency/rules/generic.h"
 
-//=============================================================
-
+#ifdef LABELED
+#include "dependency/label/generic.h"
 inline istream & operator >> (istream &is, CDependencyLabel &label) {
    string s;
    is >> s;
@@ -17,4 +13,6 @@ inline ostream & operator << (ostream &os, const CDependencyLabel &label) {
    os << label.str() ;
    return os;
 }
+
+#endif
 

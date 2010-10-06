@@ -21,6 +21,7 @@ namespace english {
  *
  *==============================================================*/
 
+#ifdef LABELED
 inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent, const int &head, const int &dep, const CDependencyLabel&lab) {
    assert(head==DEPENDENCY_LINK_NO_HEAD||head>=0); // correct head
    assert(dep>=0);
@@ -198,6 +199,7 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
       THROW("Invalid label code in assign label: " << lab.code());
    }
 }
+#endif
 
 inline const bool hasLeftHead(const unsigned &tag) {
    switch(tag){

@@ -9,6 +9,7 @@ namespace chinese {
 
 //=============================================================
 
+#ifdef LABELED
 inline istream & operator >> (istream &is, chinese::CDependencyLabel &label) {
    string s;
    is >> s;
@@ -20,4 +21,5 @@ inline ostream & operator << (ostream &os, const chinese::CDependencyLabel &labe
    os << label.str() ;
    return os;
 }
+#endif
 

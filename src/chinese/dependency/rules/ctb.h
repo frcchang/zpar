@@ -6,9 +6,11 @@
  *                                                              *
  ****************************************************************/
 
+#ifdef LABELED
 inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent, const int &head, const int &dep, const CDependencyLabel&lab) {
    return true;
 }
+#endif
 
 inline const bool hasLeftHead(const unsigned &tag) {
    return true;
