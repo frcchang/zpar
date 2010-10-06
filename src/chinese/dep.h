@@ -1,6 +1,9 @@
 namespace chinese {
 
-#include "dependency/ctb.h"
+#ifdef LABELED
+#include "dependency/label/ctb.h"
+#endif
+#include "dependency/rules/ctb.h"
 
 }
 
