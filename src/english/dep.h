@@ -1,7 +1,7 @@
 #ifndef _ENGLISH_DEPLABEL_H
 #define _ENGLISH_DEPLABEL_H
 
-#include "dependency/rules/penn.h"
+#include "dependency/rules/tmp.h"
 
 #ifdef LABELED
 #include "dependency/label/penn.h"

@@ -105,8 +105,32 @@ def writeCppCode(path):
    setPOS = set([])
    for sent in depio.depread(path):
       labelanal(sent, dLabel, setPOS)
-   nLabel=0
+   # write header
+   print '#include "tags.h"'
+   print '#ifdef LABELED'
+   print '#include "dependency/label/penn.h"'
+   print '#endif'
+   print
+   print 'namespace english {'
+   print '#ifdef LABELED'
+   print 'inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent, const int &head, const int &dep, const CDependencyLabel&label) {'
+   print '   assert(head==DEPENDENCY_LINK_NO_HEAD||head>=0); // correct head'
+   print '   assert(dep>=0);'
+   print '   // if the head word is none, only ROOT'
+   print '   if (head==DEPENDENCY_LINK_NO_HEAD) {'
+   print '      if (label.code()==PENN_DEP_ROOT) '
+   print '         return true;'
+   print '      return false;'
+   print '   }'
+   print '      // for each case'
+   print '   const unsigned &head_pos = sent[head].tag.code();'
+   print '   const unsigned &dep_pos = sent[dep].tag.code();'
+   print '   assert(head!=DEPENDENCY_LINK_NO_HEAD);'
+   print '   if (label == PENN_DEP_ROOT) // now head is not DEPENDENCY_LINK_NO_HEAD'
+   print '      return false;'
    # for each label
+   nTotalRules=0
+   nLabel=0
    for label in dLabel:
       # print condition
       if nLabel == 0:
@@ -130,7 +154,7 @@ def writeCppCode(path):
          dDepCount[dep] += dEntry[key]
          nTotalCount += dEntry[key]
       # write head condition
-      threshold = g_freqCutoff * nTotalCount
+      threshold = 1 # g_freqCutoff * nTotalCount
       nCount=0
       for pos in setPOS:
          if dHeadCount.get(pos, 0) < threshold:
@@ -148,8 +172,26 @@ def writeCppCode(path):
             nCount += 1
       if nCount>0:
          print '         ) return false;'
+      nTotalRules+=nCount
       # finish condition
       print "   }"
+   # write footer
+   print "   // total number of rules are %d." % nTotalRules
+   print "   return true;"
+   print '}'
+   print '#endif'
+   print
+   print 'inline const bool hasLeftHead(const unsigned &tag) {'
+   print '   return true;'
+   print '}'
+   print
+   print 'inline const bool hasRightHead(const unsigned &tag) {'
+   print '   return true;'
+   print '}'
+   print 'inline const bool canBeRoot(const unsigned &tag) {'
+   print '   return true;'
+   print '}'
+   print '}'
 
 if __name__ == "__main__":
    import getopt

@@ -113,6 +113,19 @@ public:
    bool operator >= (const CTag &t1) const { return m_code >= t1.m_code; }
 };
 
+//===============================================================
+
+inline unsigned matchPunctuation(const CTag &tag) {
+   if (tag==PENN_TAG_L_QUOTE) return 1;
+   else if (tag == PENN_TAG_L_BRACKET) return 2;
+   else if (tag==PENN_TAG_R_BRACKET) return 4;
+   else if (tag == PENN_TAG_COMMA) return 8;
+   else if (tag == PENN_TAG_PERIOD) return 16;
+   else if (tag == PENN_TAG_COLUM) return 32;
+   else if (tag == PENN_TAG_R_QUOTE) return 64;
+   else return 0;
+}
+
 }; // namespace english
 
 #endif

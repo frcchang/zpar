@@ -12,6 +12,7 @@
 #define _DEPENDENCY_RUL_PENN
 
 #include "tags.h"
+#include "dependency/label/penn.h"
 
 namespace english {
 
