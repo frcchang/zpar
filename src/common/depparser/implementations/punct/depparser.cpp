@@ -315,6 +315,47 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
       retval += cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
    }
 
+#ifdef PUNCT
+   // punct
+   if (st_index!=-1) {
+      const unsigned punct = m_lRightPunct[item->rightbound(st_index)];
+      if (n0_index!=-1) { assert(punct ==m_lLeftPunct[item->leftbound(n0_index)] );
+      assert(item->rightbound(st_index)+1==item->leftbound(n0_index)); }
+
+      const unsigned npunct = item->rightinsidepunct(st_index);
+
+      retval += cast_weights->m_mapSTwtp.getOrUpdateScore( make_pair(st_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTwp.getOrUpdateScore( make_pair(st_word, (punct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTtp.getOrUpdateScore( make_pair(st_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+
+//      retval += cast_weights->m_mapSTwtn.getOrUpdateScore( make_pair(st_word_tag, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
+//      retval += cast_weights->m_mapSTwn.getOrUpdateScore( make_pair(st_word, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
+//      retval += cast_weights->m_mapSTtn.getOrUpdateScore( make_pair(st_tag, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
+   }
+
+   if (n0_index!=-1) {
+      const unsigned punct = m_lLeftPunct[item->leftbound(n0_index)];
+      const unsigned npunct = item->leftinsidepunct(n0_index);
+      retval += cast_weights->m_mapN0wtp.getOrUpdateScore( make_pair(n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapN0wp.getOrUpdateScore( make_pair(n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0tp.getOrUpdateScore( make_pair(n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+   }
+
+   if (st_index!=-1&&n0_index!=-1) {
+      const unsigned punct = m_lRightPunct[item->rightbound(st_index)];
+      if (n0_index!=-1) { assert(punct ==m_lLeftPunct[item->leftbound(n0_index)] );
+      assert(item->rightbound(st_index)+1==item->leftbound(n0_index)); }
+   
+      retval += cast_weights->m_mapSTwtN0wtp.getOrUpdateScore( make_pair(st_word_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ); 
+      retval += cast_weights->m_mapSTwtN0wp.getOrUpdateScore( make_pair(st_word_tag_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTwN0wtp.getOrUpdateScore( make_pair(st_word_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTwtN0tp.getOrUpdateScore( make_pair(st_word_tag_n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTtN0wtp.getOrUpdateScore( make_pair(st_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapSTwN0wp.getOrUpdateScore( make_pair(st_word_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTtN0tp.getOrUpdateScore( make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+   }
+#endif
+
    return retval;
 }
 
@@ -341,11 +382,19 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
    // make an item from the parsed
    item.clear();
    for (index=0; index<parsed.size()*2; ++index) {
+#ifdef PUNCT
+#ifdef LABELED
+      item.StandardMoveStep(parsed, m_lCacheLabel, m_lRightPunct); 
+#else
+      item.StandardMoveStep(parsed, m_lRightPunct); 
+#endif
+#else // PUNCT
 #ifdef LABELED
       item.StandardMoveStep(parsed, m_lCacheLabel); 
 #else
       item.StandardMoveStep(parsed); 
 #endif
+#endif // PUNCT
    }
    item.StandardFinish();
    // now follow item to make temp and update its scores
@@ -447,11 +496,19 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 #endif
    state.clear();
    for (index=0; index<correct.size()*2; ++index) {
+#ifdef PUNCT
+#ifdef LABELED
+      state.StandardMoveStep(correct, m_lCacheLabel, m_lRightPunct); 
+#else
+      state.StandardMoveStep(correct, m_lRightPunct); 
+#endif
+#else // PUNCT
 #ifdef LABELED
       state.StandardMoveStep(correct, m_lCacheLabel); 
 #else
       state.StandardMoveStep(correct); 
 #endif
+#endif // PUNCT
 }
 
    state.StandardFinish();
@@ -467,11 +524,19 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 #endif
    state.clear();
    for (index=0; index<parsed.size()*2; ++index) {
+#ifdef PUNCT
+#ifdef LABELED
+      state.StandardMoveStep(parsed, m_lCacheLabel, m_lRightPunct); 
+#else
+      state.StandardMoveStep(parsed, m_lRightPunct);
+#endif
+#else //PUNCT
 #ifdef LABELED
       state.StandardMoveStep(parsed, m_lCacheLabel); 
 #else
       state.StandardMoveStep(parsed);
 #endif
+#endif // PUNCT
    }
    state.StandardFinish();
    updateScoreForState(&state, -1);
@@ -539,7 +604,11 @@ inline void CDepParser::updateScoreForState( const CStateItem *output , const SC
             getOrUpdateStackScore( &item, CStateItem::removeLabelFromEncodedAction(action), amount, m_nTrainingRound );
 #endif
       }
+#ifdef PUNCT
+      item.Move( action, m_lRightPunct );
+#else
       item.Move( action );
+#endif
    }
 }
 
@@ -625,12 +694,20 @@ inline void CDepParser::arcleft( CStateItem *item ) {
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_LEFT, label) );
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_LEFT, CDependencyLabel::NONE) );
    // add score before doing arcleft action!
+#ifdef PUNCT
+   item->ArcLeft(label, m_lRightPunct) ;
+#else // PUNCT
    item->ArcLeft(label) ;
+#endif // PUNCT
 #else
    // update stack score
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::ARC_LEFT );
    // add score before doing arcleft action!
+#ifdef PUNCT
+   item->ArcLeft(m_lRightPunct) ;
+#else
    item->ArcLeft() ;
+#endif
 #endif
 }
 
@@ -668,12 +745,20 @@ inline void CDepParser::arcright( CStateItem *item ) {
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_RIGHT, label) );
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_RIGHT, CDependencyLabel::NONE) );
    // add score before doing arcright action!
+#ifdef PUNCT
+   item->ArcRight(label, m_lRightPunct) ;
+#else // PUNCT
    item->ArcRight(label) ;
+#endif // PUNCT
 #else
    // add stack score
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::ARC_RIGHT );
    // add score before doing arcright action!
+#ifdef PUNCT
+   item->ArcRight(m_lRightPunct) ;
+#else // PUNCT
    item->ArcRight() ;
+#endif // PUNCT
 #endif
 }
 
@@ -948,10 +1033,18 @@ static unsigned punct;
          }
 #endif
 
+#ifdef PUNCT
+#ifdef LABELED
+         correctState.StandardMoveStep(cachecorrect, m_lCacheLabel, m_lRightPunct);
+#else
+         correctState.StandardMoveStep(cachecorrect, m_lRightPunct);
+#endif
+#else // PUNCT
 #ifdef LABELED
          correctState.StandardMoveStep(cachecorrect, m_lCacheLabel);
 #else
          correctState.StandardMoveStep(cachecorrect);
+#endif
 #endif
       } 
       

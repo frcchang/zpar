@@ -14,39 +14,6 @@
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
 
-//const CScore<SCORE_TYPE> g_zeroScore;
-
-/*
-   left(m_mapHeadWord)right \
-   left(m_mapDepWord)right \
-   left(m_mapHeadWordTag)right \
-   left(m_mapDepWordTag)right \
-   left(m_mapHeadTag)right \
-   left(m_mapDepTag)right \
-   left(m_mapHeadWordTagDepWordTag)right \
-   left(m_mapHeadWordTagDepWord)right \
-   left(m_mapHeadWordTagDepTag)right \
-   left(m_mapHeadWordDepWordTag)right \
-   left(m_mapHeadTagDepWordTag)right \
-   left(m_mapHeadWordDepWord)right \
-   left(m_mapHeadTagDepTag)right \
-   left(m_mapBetweenTags)right \
-   left(m_mapSurroundingTagsLL)right \
-   left(m_mapSurroundingTagsLR)right \
-   left(m_mapSurroundingTagsRL)right \
-   left(m_mapSurroundingTagsRR)right \
-   left(m_mapSiblingWords)right \
-   left(m_mapSiblingWordTag)right \
-   left(m_mapSiblingTagWord)right \
-   left(m_mapSiblingTags)right \
-   left(m_mapSiblingAndParentTags)right \
-   left(m_mapTwoSiblingTags)right \
-   left(m_mapTwoSiblingAndParentTags)right \
-   left(m_mapGrandChildTags)right \
-   left(m_mapHeadWordTagArity)right \
-   left(m_mapHeadTagArity)right 
-*/
-
 #ifdef LABELED
    #define iterate_label_templates(left, right)\
       left(m_mapLabel)right\
@@ -130,6 +97,28 @@ using namespace TARGET_LANGUAGE::depparser;
    left(m_mapSTHtSTtN0w)right\
    left(m_mapSTtSTLDtN0w)right\
    left(m_mapSTtSTRDtN0w)right\
+\
+   left(m_mapSTwtp)right\
+   left(m_mapSTwp)right\
+   left(m_mapSTtp)right\
+   left(m_mapN0wtp)right\
+   left(m_mapN0wp)right\
+   left(m_mapN0tp)right\
+\
+   left(m_mapSTwtn)right\
+   left(m_mapSTwn)right\
+   left(m_mapSTtn)right\
+   left(m_mapN0wtn)right\
+   left(m_mapN0wn)right\
+   left(m_mapN0tn)right\
+\
+   left(m_mapSTwtN0wtp)right\
+   left(m_mapSTwtN0wp)right\
+   left(m_mapSTwN0wtp)right\
+   left(m_mapSTtN0wtp)right\
+   left(m_mapSTwtN0tp)right\
+   left(m_mapSTwN0wp)right\
+   left(m_mapSTtN0tp)right\
 \
    iterate_label_templates(left, right)
 

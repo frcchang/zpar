@@ -65,6 +65,12 @@ protected:
 #ifdef LABELED
    unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
 #endif
+#ifdef PUNCT
+   unsigned m_lLeftBound[MAX_SENTENCE_SIZE];
+   unsigned m_lRightBound[MAX_SENTENCE_SIZE];
+   unsigned m_lLeftInsidePunct[MAX_SENTENCE_SIZE];
+   unsigned m_lRightInsidePunct[MAX_SENTENCE_SIZE];
+#endif
    unsigned long m_nLastAction;                  // the last stack action
    int m_nLocalHeads;                       // the local heads for the moment, or the sub trees
    SCORE_TYPE m_nLinkScore;                 // score of item
@@ -141,6 +147,14 @@ public:
    inline int leftarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumL[index]; }
    inline int rightarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumR[index]; }
 
+#ifdef PUNCT
+   inline unsigned leftbound( const int &index ) const { assert(index<=m_nNextWord); return m_lLeftBound[index]; }
+   inline unsigned rightbound( const int &index ) const { assert(index<=m_nNextWord); return m_lRightBound[index]; }
+
+   inline unsigned leftinsidepunct( const int &index ) const { assert(index<=m_nNextWord); return m_lLeftInsidePunct[index]; }
+   inline unsigned rightinsidepunct( const int &index ) const { assert(index<=m_nNextWord); return m_lRightInsidePunct[index]; }
+#endif
+
    inline SCORE_TYPE &linkscore() { return m_nLinkScore; }
    inline SCORE_TYPE &stackscore() { return m_nStackScore; }
    inline SCORE_TYPE score() const { return m_nStackScore + m_nLinkScore; }
@@ -169,6 +183,12 @@ public:
 #ifdef LABELED
          m_lLabels[i] = item.m_lLabels[i];
 #endif
+#ifdef PUNCT
+         m_lLeftBound[i] = item.m_lLeftBound[i];
+         m_lRightBound[i] = item.m_lRightBound[i];
+         m_lLeftInsidePunct[i] = item.m_lLeftInsidePunct[i];
+         m_lRightInsidePunct[i] = item.m_lRightInsidePunct[i];
+#endif
       }
    }
 
@@ -176,11 +196,19 @@ public:
 
 public:
    // the arc left action links the current stack top to the next word with popping
+#ifdef PUNCT //-----//
+#ifdef LABELED
+   void ArcLeft(unsigned long lab, const vector<unsigned> &lPunct) {
+#else
+   void ArcLeft(const vector<unsigned> &lPunct) { 
+#endif
+#else // PUNCT
 #ifdef LABELED
    void ArcLeft(unsigned long lab) {
 #else
    void ArcLeft() { 
 #endif
+#endif // PUNCT
       assert( m_Stack.size() > 0 ) ;
       assert( m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ;
       static int left ;
@@ -199,14 +227,28 @@ public:
 #else
       m_nLastAction=ARC_LEFT;
 #endif
+#ifdef PUNCT
+      m_lLeftBound[m_nNextWord] = m_lLeftBound[left];
+      m_lLeftInsidePunct[m_nNextWord] |= m_lLeftInsidePunct[left];
+      m_lLeftInsidePunct[m_nNextWord] |= m_lRightInsidePunct[left];
+      m_lLeftInsidePunct[m_nNextWord] |= lPunct[m_lRightBound[left]];
+#endif
    }
 
    // the arc right action links the next word to the current stack top with pushing
+#ifdef PUNCT //-----//
+#ifdef LABELED
+   void ArcRight(unsigned long lab, const vector<unsigned> &lPunct) {
+#else
+   void ArcRight(const vector<unsigned> &lPunct) { 
+#endif
+#else // PUNCT
 #ifdef LABELED
    void ArcRight(unsigned long lab) {
 #else
    void ArcRight() { 
 #endif
+#endif // PUNCT
       assert( m_Stack.size() > 0 ) ;
       static int left ;
       left = m_Stack.back() ;
@@ -214,6 +256,13 @@ public:
       m_lHeads[m_nNextWord] = left ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = lab ;
+#endif
+#ifdef PUNCT
+      m_lRightBound[left] = m_lRightBound[m_nNextWord];
+      m_lRightInsidePunct[left] |= lPunct[m_lRightBound[left]];
+      m_lRightInsidePunct[left] |= m_lLeftInsidePunct[m_nNextWord];
+      assert(m_lRightBound[m_nNextWord] == m_nNextWord);
+      assert(m_lRightInsidePunct[m_nNextWord] == 0);
 #endif
       m_lSibling[m_nNextWord] = m_lDepsR[left];
       m_lDepsR[left] = m_nNextWord ;
@@ -243,6 +292,9 @@ public:
    // the reduce action does popping
    void Reduce() {
       assert( m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD ) ;
+#ifdef PUNCT
+      m_lRightBound[m_lHeads[m_Stack.back()]] = m_lRightBound[m_Stack.back()];
+#endif
       m_Stack.pop_back() ;
 #ifdef LABELED
       m_nLastAction=encodeAction(REDUCE, CDependencyLabel::NONE);
@@ -274,10 +326,20 @@ public:
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
 #endif
+#ifdef PUNCT
+      m_lLeftBound[m_nNextWord] = m_nNextWord;
+      m_lRightBound[m_nNextWord] = m_nNextWord;
+      m_lLeftInsidePunct[m_nNextWord] = 0;
+      m_lRightInsidePunct[m_nNextWord] = 0;
+#endif
    }
 
    // the move action is a simple call to do action according to the action code
+#ifdef PUNCT
+   void Move ( const unsigned long &ac, const vector<unsigned> &lPunct ) {
+#else
    void Move ( const unsigned long &ac ) {
+#endif
 #ifdef LABELED
       switch (getAction(ac)) {
 #else
@@ -292,18 +354,34 @@ public:
          Reduce();
          return;
       case ARC_LEFT:
+#ifdef PUNCT
+#ifdef LABELED
+         ArcLeft(getLabel(ac), lPunct);
+#else
+         ArcLeft(lPunct);
+#endif
+#else // PUNCT
 #ifdef LABELED
          ArcLeft(getLabel(ac));
 #else
          ArcLeft();
 #endif
+#endif
          return;
       case ARC_RIGHT:
+#ifdef PUNCT
+#ifdef LABELED
+         ArcRight(getLabel(ac), lPunct);
+#else
+         ArcRight(lPunct);
+#endif
+#else // PUNCT
 #ifdef LABELED
          ArcRight(getLabel(ac));
 #else
          ArcRight();
 #endif
+#endif // PUNCT
          return;
       case POP_ROOT:
          PopRoot();
@@ -318,10 +396,18 @@ public:
 public:
 
    // returns true is the next word advances -- by shift or arcright. 
+#ifdef PUNCT
+#ifdef LABELED
+   bool StandardMoveStep( const CDependencyParse &tree, const vector<CDependencyLabel>&m_lCacheLabel, const vector<unsigned> &lPunct ) {
+#else
+   bool StandardMoveStep( const CDependencyParse &tree, const vector<unsigned> &lPunct ) {
+#endif
+ #else // PUNCT
 #ifdef LABELED
    bool StandardMoveStep( const CDependencyParse &tree, const vector<CDependencyLabel>&m_lCacheLabel ) {
 #else
    bool StandardMoveStep( const CDependencyParse &tree ) {
+#endif
 #endif
       static int top;
       // when the next word is tree.size() it means that the sentence is done already
@@ -343,12 +429,21 @@ public:
             top = m_lHeads[top];
          if ( tree[top].head == m_nNextWord ) {    // if a local head deps on nextword first
             if ( top == m_Stack.back() ) {
+#ifdef PUNCT
+#ifdef LABELED
+               assert(m_lCacheLabel[top].str() == tree[top].label);
+               ArcLeft(m_lCacheLabel[top].code(), lPunct); // link it to the next word
+#else
+               ArcLeft(lPunct);                          // link it to the next word
+#endif
+#else // PUNCT
 #ifdef LABELED
                assert(m_lCacheLabel[top].str() == tree[top].label);
                ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
 #else
                ArcLeft();                          // link it to the next word
 #endif
+#endif // PUNCT
                return false;
             }
             else {
@@ -368,12 +463,21 @@ public:
          assert( m_Stack.size() > 0 );
          top = m_Stack.back(); 
          if ( tree[m_nNextWord].head == top ) {     // the next word deps on stack top
+#ifdef PUNCT
+#ifdef LABELED
+            assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
+            ArcRight(m_lCacheLabel[m_nNextWord].code(), lPunct);
+#else            
+            ArcRight(lPunct);
+#endif            
+#else // PUNCT
 #ifdef LABELED
             assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
             ArcRight(m_lCacheLabel[m_nNextWord].code());
 #else            
             ArcRight();
 #endif            
+#endif // PUNCT
             return true;
          }
          else {                                     // must depend on non-immediate h
