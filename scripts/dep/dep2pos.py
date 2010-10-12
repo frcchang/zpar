@@ -11,7 +11,7 @@ line=file_reference.readline()
 while line:
    wordls = line.split("\t")
    if len(wordls)>1 :
-      file_input.write("_".join([wordls[0], wordls[1]]))
+      file_input.write("/".join([wordls[0], wordls[1]]))
    else:
       file_input.write(wordls[0])
    if line.strip():

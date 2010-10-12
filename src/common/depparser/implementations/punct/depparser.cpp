@@ -328,9 +328,9 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
       retval += cast_weights->m_mapSTwp.getOrUpdateScore( make_pair(st_word, (punct<<3)|action), m_nScoreIndex, amount, round) ;
       retval += cast_weights->m_mapSTtp.getOrUpdateScore( make_pair(st_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
 
-//      retval += cast_weights->m_mapSTwtn.getOrUpdateScore( make_pair(st_word_tag, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
-//      retval += cast_weights->m_mapSTwn.getOrUpdateScore( make_pair(st_word, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
-//      retval += cast_weights->m_mapSTtn.getOrUpdateScore( make_pair(st_tag, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapSTwtn.getOrUpdateScore( make_pair(st_word_tag, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTwn.getOrUpdateScore( make_pair(st_word, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTtn.getOrUpdateScore( make_pair(st_tag, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
    }
 
    if (n0_index!=-1) {
@@ -339,6 +339,10 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
       retval += cast_weights->m_mapN0wtp.getOrUpdateScore( make_pair(n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round) ;
       retval += cast_weights->m_mapN0wp.getOrUpdateScore( make_pair(n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
       retval += cast_weights->m_mapN0tp.getOrUpdateScore( make_pair(n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+
+      retval += cast_weights->m_mapN0wtn.getOrUpdateScore( make_pair(n0_word_tag, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapN0wn.getOrUpdateScore( make_pair(n0_word, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0tn.getOrUpdateScore( make_pair(n0_tag, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
    }
 
    if (st_index!=-1&&n0_index!=-1) {
