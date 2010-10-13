@@ -13,6 +13,14 @@ def depread(path):
          sent.append(line)
    file.close()
 
+def depstring(sent):
+   retval = ''
+   for line in sent:
+      retval += "\t".join(line)
+      retval += '\n'
+   retval += '\n'
+   return retval
+
 def depprint(sent):
    for line in sent:
       print "\t".join(line)

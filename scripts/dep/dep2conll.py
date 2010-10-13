@@ -4,7 +4,11 @@ import depio
 def conll(dep):
    index = 1
    for word in dep:
-      print '\t'.join([str(index), word[0], '_', word[1], word[1], '_', str(int(word[2])+1), word[3], '_', '_'])
+      if len(word) == 4:
+         label = word[3]
+      else:
+         label = '_'
+      print '\t'.join([str(index), word[0], '_', word[1], word[1], '_', str(int(word[2])+1), label, '_', '_'])
       index += 1
    print
 

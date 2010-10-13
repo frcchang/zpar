@@ -260,17 +260,20 @@ inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent
          return true;
       return false; 
    case STANFORD_DEP_NUM:
-      if (head_tag == PENN_TAG_NOUN_PLURAL ||
-//         head_tag == PENN_TAG_ADVERB ||
-//         head_tag == PENN_TAG_ADVERB_COMPARATIVE ||
+      if ((head_tag == PENN_TAG_NOUN_PLURAL ||
 //         head_tag == PENN_TAG_ADJECTIVE_COMPARATIVE ||
-//         head_tag == PENN_TAG_DT ||
+         head_tag == PENN_TAG_NOUN_PROPER ||
          head_tag == PENN_TAG_CD ||
-         head_tag == PENN_TAG_ADJECTIVE ||
-//         head_tag == PENN_TAG_IN ||
          head_tag == PENN_TAG_NOUN ||
-//         head_tag == PENN_TAG_PDT ||
-         head_tag == PENN_TAG_DOLLAR)
+//         head_tag == PENN_TAG_ADJECTIVE ||
+         head_tag == PENN_TAG_DOLLAR ||
+         head_tag == PENN_TAG_NOUN_PROPER_PLURAL) &&
+         (dep_tag == PENN_TAG_NOUN_PLURAL ||
+         dep_tag == PENN_TAG_ADJECTIVE ||
+         dep_tag == PENN_TAG_DT ||
+         dep_tag == PENN_TAG_CD ||
+         dep_tag == PENN_TAG_NOUN ||
+         dep_tag == PENN_TAG_DOLLAR))
          return true;
       return false; 
    case STANFORD_DEP_NSUBJPASS:
