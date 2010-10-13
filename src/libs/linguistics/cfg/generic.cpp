@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #include "linguistics/cfg/generic.h"
 
 using namespace TARGET_LANGUAGE;

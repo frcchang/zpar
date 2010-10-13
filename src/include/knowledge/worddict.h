@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * worddict.h - the dictionary from word to unsigned long int.       *

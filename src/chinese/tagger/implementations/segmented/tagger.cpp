@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * segmented.cpp - the Chinese segmented sentence tagger impls. *

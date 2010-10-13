@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _TAGGER_MACROS_H
 #define _TAGGER_MACROS_H
 #define SIMPLE_HASH

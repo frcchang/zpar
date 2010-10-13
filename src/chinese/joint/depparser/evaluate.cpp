@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /**************************************************************** 
  *                                                              * 
  * evaluate.cpp - the evalfor the joint depparser.              * 

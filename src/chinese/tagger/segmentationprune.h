@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 
 #ifndef _CHINESE_TAGGER_SEGMENTATIONPRUNE_H
 #define _CHINESE_TAGGER_SEGMENTATIONPRUNE_H

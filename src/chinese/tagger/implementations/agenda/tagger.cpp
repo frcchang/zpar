@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * agendachart.cpp - the agendachart tagger implementation.     *

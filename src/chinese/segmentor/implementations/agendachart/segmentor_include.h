@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #include "agendachart.h"
 #include "linguistics/word_tokenized.h"
 #include "learning/perceptron/hashmap_score.h"

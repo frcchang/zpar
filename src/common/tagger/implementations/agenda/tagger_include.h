@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _COMMON_TAGGER_INCLUDE
 #define _COMMON_TAGGER_INCLUDE
 #define SIMPLE_HASH

@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /***************************************************************
  *
  * The tagger's agenda n chart implementation 

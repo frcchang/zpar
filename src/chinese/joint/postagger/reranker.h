@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * reranker.h - the reranker for segmented and tagged outputs   *

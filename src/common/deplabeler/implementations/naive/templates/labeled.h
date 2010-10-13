@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 
 #define getOrUpdateLabeledScoreTemplate(x)\
    retval += cast_weights->m_mapLabel.getOrUpdateScore( make_pair(label, x) , m_nScoreIndex , amount , round ) ;\

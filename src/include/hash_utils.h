@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _HASH_FUNCTION_UTIL_H
 #define _HASH_FUNCTION_UTIL_H
 

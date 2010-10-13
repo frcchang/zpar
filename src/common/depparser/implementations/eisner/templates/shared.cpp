@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 
    const CTaggedWord<CTag, TAG_SEPARATOR> &head = m_lCache[head_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &dep = m_lCache[dep_index];

@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _ENGLISH_DEPENDENCY_PARSER_STATEITEM
 #define _ENGLISH_DEPENDENCY_PARSER_STATEITEM
 

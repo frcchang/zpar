@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #include "linguistics/dependency/generic.h"
 
 unsigned long CDependencyLabel::COUNT = 2;

@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * hashmap_weighted_score.h - the map itself has a weight to adjust. *

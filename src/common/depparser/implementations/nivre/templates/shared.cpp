@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 
    static int index;
    static int temp_index;
