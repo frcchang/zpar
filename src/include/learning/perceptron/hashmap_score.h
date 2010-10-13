@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * hashmap_score.h - the definitions for hash map with score v. *

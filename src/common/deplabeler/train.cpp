@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * train.cpp - the training of the general dependency labeler.  *

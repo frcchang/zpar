@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * dependency_utils.h - the utils for the dependency tree def   *

@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * tagset.h - the definitions for general tag set.              *

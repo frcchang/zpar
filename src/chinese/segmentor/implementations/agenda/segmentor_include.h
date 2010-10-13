@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifdef NO_NEG_FEATURE
 #define CScoreMapType CScoreMapNoNegFeatures
 #else

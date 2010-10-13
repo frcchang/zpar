@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 
 #ifndef _COMMON_TAGGER_STATEITEM_H
 #define _COMMON_TAGGER_STATEITEM_H

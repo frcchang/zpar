@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * doc2snt.cpp - the chinese document to sentence converter     *

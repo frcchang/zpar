@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 namespace chinese {
 
 #ifdef LABELED

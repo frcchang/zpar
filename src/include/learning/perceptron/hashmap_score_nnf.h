@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * hashmap_score_nnf.h - the definition with no negative scores *

@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * reranker.cpp - the reranker for tagged and depparsed outputs *

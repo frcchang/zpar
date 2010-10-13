@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #include "dependency/rules/generic.h"
 
 #ifdef LABELED

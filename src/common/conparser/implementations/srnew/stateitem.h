@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _COMMON_CON_PARSER_STATEITEM
 #define _COMMON_CON_PARSER_STATEITEM
 

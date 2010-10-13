@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 
    /*----------------------word bigram----------------------*/
    head_word_tag_dep_word_tag.allocate( head_word_tag, dep_word_tag ) ;

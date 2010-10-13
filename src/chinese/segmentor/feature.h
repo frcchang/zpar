@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _CHINESE_SEGMENTOR_FEAT_H
 #define _CHINESE_SEGMENTOR_FEAT_H
 

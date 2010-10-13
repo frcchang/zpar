@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /**************************************************************** 
  *                                                              * 
  * tagger.cpp - the combined method for segmentor and a tagger. * 

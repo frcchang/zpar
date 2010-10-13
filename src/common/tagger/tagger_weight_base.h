@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /***************************************************************
  *
  * weight_base.h - the base weight definition for the pos

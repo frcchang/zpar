@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #include "agenda.h"
 #include "pair_stream.h"
 #include "linguistics/word_tokenized.h"

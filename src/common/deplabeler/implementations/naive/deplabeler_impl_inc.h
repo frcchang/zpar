@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _DEPLABELER_IMPL_INCLUDE_H
 #define _DEPLABELER_IMPL_INCLUDE_H
 

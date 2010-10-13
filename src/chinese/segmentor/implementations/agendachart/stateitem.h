@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * stateitem.h - the state items for the Chinese segmentor.     *

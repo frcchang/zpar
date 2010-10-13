@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * sentence_multicon.h - a sentence with multiple constituents  *

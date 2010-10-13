@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #define getLabelAndDirectionOrDistanceEncode(label, dod) ((dod<<CDependencyLabel::SIZE)|label)
 
 #define getOrUpdateLabeledScoreTemplate(x)\

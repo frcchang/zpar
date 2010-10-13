@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * lexicon.h - the lexicon dictionary equals to a set of words. *

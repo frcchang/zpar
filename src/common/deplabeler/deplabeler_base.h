@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * deplabeler_base.h - the definition for the dependency labeler.*

@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _GENERAL_DEPPARSER_MACROS_H
 #define _GENERAL_DEPPARSER_MACROS_H
 

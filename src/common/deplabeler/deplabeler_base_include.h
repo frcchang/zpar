@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #include "definitions.h"
 #include "utils.h"
 #include "linguistics/dependency.h"

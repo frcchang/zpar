@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 #ifndef _CONPARSER_IMPL_INCLUDE_H
 #define _CONPARSER_IMPL_INCLUDE_H
 

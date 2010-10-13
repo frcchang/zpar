@@ -1,3 +1,4 @@
+// Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
  * zpar.cpp - main app; a convenience wrapper for all algorithms*
