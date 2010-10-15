@@ -21,6 +21,7 @@
  *
  *==============================================================*/
 
+namespace generic {
 class CDependencyLabel {
 private:
    /*===============================================================
@@ -85,5 +86,6 @@ public:
 
    void clear() { m_code=NONE; }
 }; 
+} // namespace generic
 
 #endif
