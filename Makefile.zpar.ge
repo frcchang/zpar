@@ -3,7 +3,7 @@
 GENERIC_TAGGER_IMPL = agenda
 
 # currently support nivre, combined implementations (other implementations are not generalized)
-GENERIC_DEPPARSER_IMPL = combined
+GENERIC_DEPPARSER_IMPL = nivre
 GENERIC_DEPPARSER_LABELED = false
 # current naive
 GENERIC_DEPLABELER_IMPL = naive

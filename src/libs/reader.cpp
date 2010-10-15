@@ -197,8 +197,16 @@ bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEm
             bCurrentTag = false;
          }
       }
-      else if ( cTemp == separator && sWord[sWord.size()-1] != '\\') { // otherwise, if we meet the separator char 
-         bCurrentTag = true;
+//      else if ( cTemp == separator && sWord[sWord.size()-1] != '\\') { // otherwise, if we meet the separator char 
+      else if ( cTemp == separator ) { // otherwise, if we meet the separator char 
+         if (!bCurrentTag) { // current word
+            bCurrentTag = true; 
+         }
+         else { // already currently processing tag
+            sWord += separator; 
+            sWord += sTag;
+            sTag = "";
+         }
       }
       else                                      // otherwise
          if (bCurrentTag)

@@ -4,13 +4,14 @@
  * test.cpp 
  *                                                          
  * Author: Yue Zhang                                         
- *                                                        
- * Computing Laboratory, Oxford. 2006.10                 
  *                                                      
  ****************************************************************/
+
 #define SIMPLE_HASH
 #include "definitions.h"
 #include "table2.h"
+#include "reader.h"
+#include "writer.h"
 
 class A {
 public:
@@ -33,11 +34,21 @@ void testtable2() {
    is.close();
 }
 
+void testreader() {
+   CSentenceReader reader("tmp.txt");
+   CTwoStringVector sent;
+   CSentenceWriter writer;
+   while (reader.readTaggedSentence(&sent, false, '/')) {
+      writer.writeSentence(&sent);
+   }
+}
+
 int main(int argc, char**argv){
    try {
-   cout << B::C << B::D << endl;
-   cout << ~0UL << endl;
-   testtable2();
+//   cout << B::C << B::D << endl;
+//   cout << ~0UL << endl;
+//   testtable2();
+      testreader();
    }catch(const string &s) { cout << s << endl; }
 };
 
