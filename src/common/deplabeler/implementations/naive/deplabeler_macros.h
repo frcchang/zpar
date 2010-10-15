@@ -4,6 +4,8 @@
 
 #define SIMPLE_HASH
 
+#define LABELED
+
 typedef double SCORE_TYPE ;
 
 // The size of a sentence and the words
