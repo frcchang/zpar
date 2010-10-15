@@ -46,8 +46,8 @@ $(OBJECT_DIR)/pos.ge.o: $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/pos/ge
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/pos/generic.cpp -o $@
 
 # the dependency label
-$(OBJECT_DIR)/deplabel.ge.o: $(SRC_GENERIC)/dependency/generic.h $(SRC_GENERIC)/dependency/generic.cpp
-	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_GENERIC)/dependency/generic.cpp -o $@
+$(OBJECT_DIR)/deplabel.ge.o: $(SRC_GENERIC)/dependency/label/generic.h $(SRC_GENERIC)/dependency/label/generic.cpp
+	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_GENERIC)/dependency/label/generic.cpp -o $@
 
 # the constituent label
 $(OBJECT_DIR)/cfg.ge.o: $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/cfg/generic.h $(SRC_LIBS)/linguistics/cfg/generic.cpp

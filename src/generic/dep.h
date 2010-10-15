@@ -1,8 +1,8 @@
 // Copyright (C) University of Oxford 2010
-namespace generic {
 #ifdef LABELED
 #include "dependency/label/generic.h"
 #endif
+namespace generic {
 #include "dependency/rules/generic.h"
 }
 
