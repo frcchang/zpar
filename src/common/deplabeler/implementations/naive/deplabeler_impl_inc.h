@@ -8,7 +8,7 @@
 #include "tuple3.h"
 #include "tuple4.h"
 #include "linguistics/taggedword.h"
-#include "deplabel.h"
+#include "dep.h"
 #include "agenda.h"
 #include "pair_stream.h"
 

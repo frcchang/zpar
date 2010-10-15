@@ -86,16 +86,4 @@ public:
    void clear() { m_code=NONE; }
 }; 
 
-inline const bool hasLeftHead(const unsigned &tag) {
-   return true;
-}
-
-inline const bool hasRightHead(const unsigned &tag) {
-   return true;
-}
-
-inline const bool canBeRoot(const unsigned &tag) {
-   return true;
-}
-
 #endif
