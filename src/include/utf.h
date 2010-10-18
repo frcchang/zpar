@@ -42,12 +42,12 @@ unsigned long int getUTF8StringLength(const string &s) {
          ++retval;
       }
       else {
-         WARNING("getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("in utf.h getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
          return retval;
       }
    }
    if (idx != s.length()) {
-      WARNING("getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("in utf.h getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
       return retval;
    }
    return retval;
@@ -85,12 +85,14 @@ inline int getCharactersFromUTF8String(const string &s, CSentence *sentence) {
          idx += 3;
       }
       else {
-         WARNING("getCharactersFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
-         return len;
+         WARNING("in utf.h getCharactersFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+         sentence->push_back("?");
+         ++len;
+         ++idx;
       }
    }
    if (idx != s.length()) {
-      WARNING("getCharactersFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("in utf.h getCharactersFromUTF8String: string '" << s << "' not encoded in utf-8"); 
       return len;
    }
 
@@ -119,7 +121,7 @@ inline string getFirstCharFromUTF8String(const string &s) {
       return s.substr(0, 3);
    }
    else {
-      WARNING("getFirstCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("in utf.h getFirstCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
       return "?";
    }
 }
@@ -150,12 +152,12 @@ inline string getLastCharFromUTF8String(const string &s) {
          idx += 3;
       }
       else {
-         WARNING("getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("in utf.h getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
          return "?";
       }
    }
    if (idx != s.length()) {
-      WARNING("getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("in utf.h getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
       return "?";
    }
    return retval;
