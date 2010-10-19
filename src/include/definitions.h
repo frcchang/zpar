@@ -1,4 +1,5 @@
 // Copyright (C) University of Oxford 2010
+
 /****************************************************************
  *                                                              *
  * definitions.h - the general definitions                      *
@@ -55,8 +56,10 @@ using namespace std;
 // trace tool
 #ifdef DEBUG 
 #define TRACE(x) { cout << x << endl; cout.flush(); }
+#define TRACE_WORD(x) { cout << x; cout.flush(); }
 #else
 #define TRACE(x) 
+#define TRACE_WORD(x)
 #endif
 
 // conditional compiling
@@ -75,3 +78,4 @@ using namespace std;
 #include "linguistics/sentence_string.h"
 
 #endif
+

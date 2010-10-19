@@ -38,6 +38,24 @@ class CStateItem {
 
 public:
    enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT };
+   static string printAction(const unsigned &action) {
+      switch (action) {
+      case NO_ACTION:
+         return "NA";
+      case SHIFT:
+         return "SH";
+      case REDUCE:
+         return "RE";
+      case ARC_LEFT:
+         return "AL";
+      case ARC_RIGHT:
+         return "AR";
+      case POP_ROOT:
+         return "PO";
+      default:
+         return "Unrecognized action";
+      }
+   }
 #ifdef LABELED
    static unsigned long encodeAction(const STACK_ACTION &action, const unsigned long &label) {
       return (action<<CDependencyLabel::SIZE) | label;
