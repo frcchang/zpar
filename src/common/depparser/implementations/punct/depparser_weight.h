@@ -123,16 +123,29 @@ public:
    CWordIntMap m_mapSTwp;
    CTagIntMap m_mapSTtp;
    CTaggedWordIntMap m_mapSTwtp;
+
    CWordIntMap m_mapN0wp;
    CTagIntMap m_mapN0tp;
    CTaggedWordIntMap m_mapN0wtp;
 
-   CWordIntMap m_mapSTwn;
-   CTagIntMap m_mapSTtn;
-   CTaggedWordIntMap m_mapSTwtn;
-   CWordIntMap m_mapN0wn;
-   CTagIntMap m_mapN0tn;
-   CTaggedWordIntMap m_mapN0wtn;
+   CWordIntMap m_mapSTwln;
+   CTagIntMap m_mapSTtln;
+   CTaggedWordIntMap m_mapSTwtln;
+
+   CWordIntMap m_mapSTwrn;
+   CTagIntMap m_mapSTtrn;
+   CTaggedWordIntMap m_mapSTwtrn;
+
+   CWordIntMap m_mapN0wln;
+   CTagIntMap m_mapN0tln;
+   CTaggedWordIntMap m_mapN0wtln;
+
+   CWordIntMap m_mapSTwlp;
+   CTagIntMap m_mapSTtlp;
+   CTaggedWordIntMap m_mapSTwtlp;
+   CWordIntMap m_mapN0wrp;
+   CTagIntMap m_mapN0trp;
+   CTaggedWordIntMap m_mapN0wtrp;
 
    CTwoTaggedWordsIntMap m_mapSTwtN0wtp;
    CTwoTaggedWordsIntMap m_mapSTwtN0wp;
@@ -246,13 +259,24 @@ public:
                                                m_mapN0wp("NextWordPunct", DEP_TABLE_SIZE),
                                                m_mapN0tp("NextTagPunct", DEP_TABLE_SIZE), 
 
-                                               m_mapSTwtn("StackWordTagInnerPunct", DEP_TABLE_SIZE),
-                                               m_mapSTwn("StackWordInnerPunct", DEP_TABLE_SIZE),
-                                               m_mapSTtn("StackTagInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapSTwtln("StackWordTagLeftInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapSTwln("StackWordLeftInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapSTtln("StackTagLeftInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapSTwtrn("StackWordTagRightInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapSTwrn("StackWordRightInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapSTtrn("StackTagRightInnerPunct", DEP_TABLE_SIZE),
 
-                                               m_mapN0wtn("NextWordTagInnerPunct", DEP_TABLE_SIZE),
-                                               m_mapN0wn("NextWordInnerPunct", DEP_TABLE_SIZE),
-                                               m_mapN0tn("NextTagInnerPunct", DEP_TABLE_SIZE), 
+                                               m_mapN0wtln("NextWordTagInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapN0wln("NextWordInnerPunct", DEP_TABLE_SIZE),
+                                               m_mapN0tln("NextTagInnerPunct", DEP_TABLE_SIZE), 
+
+                                               m_mapSTwtlp("StackWordTagLeftPunct", DEP_TABLE_SIZE),
+                                               m_mapSTwlp("StackWordLeftPunct", DEP_TABLE_SIZE),
+                                               m_mapSTtlp("StackTagLeftPunct", DEP_TABLE_SIZE),
+
+                                               m_mapN0wtrp("NextWordTagRightPunct", DEP_TABLE_SIZE),
+                                               m_mapN0wrp("NextWordRightPunct", DEP_TABLE_SIZE),
+                                               m_mapN0trp("NextTagRightPunct", DEP_TABLE_SIZE), 
 
                                                m_mapSTwtN0wtp("StackWordTagNextWordTagPunct", DEP_TABLE_SIZE),
                                                m_mapSTwtN0wp("StackWordTagNextWordPunct", DEP_TABLE_SIZE),

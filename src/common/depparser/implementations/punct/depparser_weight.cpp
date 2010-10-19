@@ -106,12 +106,22 @@ using namespace TARGET_LANGUAGE::depparser;
    left(m_mapN0wp)right\
    left(m_mapN0tp)right\
 \
-   left(m_mapSTwtn)right\
-   left(m_mapSTwn)right\
-   left(m_mapSTtn)right\
-   left(m_mapN0wtn)right\
-   left(m_mapN0wn)right\
-   left(m_mapN0tn)right\
+   left(m_mapSTwtln)right\
+   left(m_mapSTwln)right\
+   left(m_mapSTtln)right\
+   left(m_mapSTwtrn)right\
+   left(m_mapSTwrn)right\
+   left(m_mapSTtrn)right\
+   left(m_mapN0wtln)right\
+   left(m_mapN0wln)right\
+   left(m_mapN0tln)right\
+\
+   left(m_mapSTwtlp)right\
+   left(m_mapSTwlp)right\
+   left(m_mapSTtlp)right\
+   left(m_mapN0wtrp)right\
+   left(m_mapN0wrp)right\
+   left(m_mapN0trp)right\
 \
    left(m_mapSTwtN0wtp)right\
    left(m_mapSTwtN0wp)right\
