@@ -24,40 +24,40 @@ namespace conparser {
 //
 // TYPE DEFINITIONS
 //
-typedef CScoreMapType<CWord, SCORE_TYPE> CWordMap;
-typedef CScoreMapType<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
-typedef CScoreMapType<pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
-typedef CScoreMapType<CTuple3<CWord, unsigned long, CAction>,  SCORE_TYPE> CWordIntActionMap;
-typedef CScoreMapType<pair<CWord, CAction>,  SCORE_TYPE> CWordActionMap;
-typedef CScoreMapType<pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE> CTaggedWordActionMap;
-typedef CScoreMapType<unsigned long, SCORE_TYPE> CIntMap;
-typedef CScoreMapType<pair<unsigned long, CAction>, SCORE_TYPE> CIntActionMap;
-typedef CScoreMapType<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
-typedef CScoreMapType<CTwoWords, SCORE_TYPE> CTwoWordsMap;
-typedef CScoreMapType<pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
-typedef CScoreMapType<pair<CTwoWords, CActionType>, SCORE_TYPE> CTwoWordsActionTypeMap;
-typedef CScoreMapType<CTuple3<CTwoWords, CTag, CAction>, SCORE_TYPE> CTwoWordsTagActionMap;
-typedef CScoreMapType<CTuple3<CTwoWords, CTag, CActionType>, SCORE_TYPE> CTwoWordsTagActionTypeMap;
-typedef CScoreMapType<CTuple3<CTwoWords, CCFGSet, CAction>, SCORE_TYPE>
+typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
+typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
+typedef CScoreMap<pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
+typedef CScoreMap<CTuple3<CWord, unsigned long, CAction>,  SCORE_TYPE> CWordIntActionMap;
+typedef CScoreMap<pair<CWord, CAction>,  SCORE_TYPE> CWordActionMap;
+typedef CScoreMap<pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE> CTaggedWordActionMap;
+typedef CScoreMap<unsigned long, SCORE_TYPE> CIntMap;
+typedef CScoreMap<pair<unsigned long, CAction>, SCORE_TYPE> CIntActionMap;
+typedef CScoreMap<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
+typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
+typedef CScoreMap<pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
+typedef CScoreMap<pair<CTwoWords, CActionType>, SCORE_TYPE> CTwoWordsActionTypeMap;
+typedef CScoreMap<CTuple3<CTwoWords, CTag, CAction>, SCORE_TYPE> CTwoWordsTagActionMap;
+typedef CScoreMap<CTuple3<CTwoWords, CTag, CActionType>, SCORE_TYPE> CTwoWordsTagActionTypeMap;
+typedef CScoreMap<CTuple3<CTwoWords, CCFGSet, CAction>, SCORE_TYPE>
 CTwoWordsCFGSetActionMap;
-typedef CScoreMapType<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
-typedef CScoreMapType<pair<CTwoTaggedWords, CAction>, SCORE_TYPE> CTwoTaggedWordsActionMap;
-typedef CScoreMapType<pair<CTwoTaggedWords, CActionType>, SCORE_TYPE> CTwoTaggedWordsActionTypeMap;
-typedef CScoreMapType<CCFGSet, SCORE_TYPE> CCFGSetMap;
-typedef CScoreMapType<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
-typedef CScoreMapType<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
-typedef CScoreMapType<CTuple3<CWord, CCFGSet, CAction>, SCORE_TYPE> CWordCFGSetActionMap;
-typedef CScoreMapType<CTuple3<CWord, CCFGSet, CActionType>, SCORE_TYPE> CWordCFGSetActionTypeMap;
-typedef CScoreMapType<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
-typedef CScoreMapType<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
-typedef CScoreMapType<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
-typedef CScoreMapType<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
-typedef CScoreMapType<pair<CCFGSet, CActionType>, SCORE_TYPE> CCFGSetActionTypeMap;
-typedef CScoreMapType<CTuple3<CWord, CConstituent, CAction>, SCORE_TYPE>
+typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
+typedef CScoreMap<pair<CTwoTaggedWords, CAction>, SCORE_TYPE> CTwoTaggedWordsActionMap;
+typedef CScoreMap<pair<CTwoTaggedWords, CActionType>, SCORE_TYPE> CTwoTaggedWordsActionTypeMap;
+typedef CScoreMap<CCFGSet, SCORE_TYPE> CCFGSetMap;
+typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
+typedef CScoreMap<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
+typedef CScoreMap<CTuple3<CWord, CCFGSet, CAction>, SCORE_TYPE> CWordCFGSetActionMap;
+typedef CScoreMap<CTuple3<CWord, CCFGSet, CActionType>, SCORE_TYPE> CWordCFGSetActionTypeMap;
+typedef CScoreMap<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
+typedef CScoreMap<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
+typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
+typedef CScoreMap<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
+typedef CScoreMap<pair<CCFGSet, CActionType>, SCORE_TYPE> CCFGSetActionTypeMap;
+typedef CScoreMap<CTuple3<CWord, CConstituent, CAction>, SCORE_TYPE>
 CWordConstituentActionMap;
-typedef CScoreMapType<CTuple3<CTag, CConstituent, CAction>, SCORE_TYPE> CTagConstituentActionMap;
-typedef CScoreMapType<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
-typedef CScoreMapType<pair<CConstituent, CAction>, SCORE_TYPE> CConstituentActionMap;
+typedef CScoreMap<CTuple3<CTag, CConstituent, CAction>, SCORE_TYPE> CTagConstituentActionMap;
+typedef CScoreMap<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
+typedef CScoreMap<pair<CConstituent, CAction>, SCORE_TYPE> CConstituentActionMap;
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
