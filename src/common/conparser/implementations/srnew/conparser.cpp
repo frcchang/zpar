@@ -837,6 +837,9 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
    while (count>0) {
       m_Context.load(states[count], m_lCache, m_lWordLen, true);
       // update action
+#ifdef NO_NEG_FEATURE
+      if (amount==1) getOrUpdateStackScore(states[count], states[count-1]->action, 0, -1 ); // add feature
+#endif
       getOrUpdateStackScore(states[count], states[count-1]->action, amount, m_nTrainingRound );
       --count;
    }
@@ -852,8 +855,8 @@ void CConParser::updateScoresForStates( const CStateItem *output , const CStateI
 
    cout << "updating parameters ... " ; 
 
-   updateScoresForState( output, eSubtract );
    updateScoresForState( correct, eAdd );
+   updateScoresForState( output, eSubtract );
 
    m_nTotalErrors++;
 }
