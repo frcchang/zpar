@@ -838,7 +838,7 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
       m_Context.load(states[count], m_lCache, m_lWordLen, true);
       // update action
 #ifdef NO_NEG_FEATURE
-      if (amount==1) getOrUpdateStackScore(states[count], states[count-1]->action, 0, -1 ); // add feature
+      if (amount==1) getOrUpdateStackScore(states[count], states[count-1]->action, 1, -1 ); // add feature; the amount 1 is skipped by scoremap, but used here to make sure that the word is allocated...
 #endif
       getOrUpdateStackScore(states[count], states[count-1]->action, amount, m_nTrainingRound );
       --count;

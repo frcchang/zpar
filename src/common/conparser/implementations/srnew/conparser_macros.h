@@ -4,6 +4,8 @@
 
 #define SIMPLE_HASH
 
+#define NO_NEG_FEATURE
+
 // early update? 
 #ifndef EARLY_UPDATE
 #define EARLY_UPDATE
