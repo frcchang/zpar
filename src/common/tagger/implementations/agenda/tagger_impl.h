@@ -10,8 +10,6 @@
 #ifndef TAGGER_IMPL_H
 #define TAGGER_IMPL_H
 
-#include "macros.h"
-
 class CStateItem;
 
 /*===============================================================

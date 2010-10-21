@@ -25,6 +25,9 @@ void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
    cout << "Loading model..."; cout.flush();
    ifstream is(m_sFeatureDB.c_str());
    iterate_templates(is>>,;);
+#ifdef DEBUG
+   iterate_templates(,.trace(););
+#endif
    is.close();
    cout << " done." << endl ;
 }

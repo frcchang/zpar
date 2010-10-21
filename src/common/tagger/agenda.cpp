@@ -41,8 +41,8 @@ using namespace TARGET_LANGUAGE::tagger;
  *--------------------------------------------------------------*/
 
 TARGET_LANGUAGE::tagger::SCORE_TYPE TARGET_LANGUAGE::CTagger::getLocalScore( CStringVector * sentence, CStateItem * item , unsigned long int index ) {
-   const CWord g_emptyWord("");
-   const CScore<SCORE_TYPE> g_zeroScore;
+   const static CWord g_emptyWord("");
+   const static CScore<SCORE_TYPE> g_zeroScore;
    const CWord &word = m_Cache[index]; 
    const CWord &prev_word = index>0 ? m_Cache[index-1] : g_emptyWord; 
    const CWord &second_prev_word = index>1 ? m_Cache[index-2] : g_emptyWord;
