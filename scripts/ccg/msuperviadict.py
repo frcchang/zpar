@@ -3,9 +3,11 @@ import getopt
 
 def readinput(path):
    file = open(path)
+   bStarted = False
    for line in file:
       line = line[:-1]
-      if not line or line.startswith('#'): continue
+      if bStarted == False and (not line or line.startswith('#')): continue
+      bStarted = True
       yield [word.split('|') for word in line.split()]
    file.close()
 
