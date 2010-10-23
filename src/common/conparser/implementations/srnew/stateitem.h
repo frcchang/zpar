@@ -289,7 +289,7 @@ public:
       out.clear();
 #ifdef FRAGMENTED_TREE
       if (stacksize()>1) {
-         static CStateItem *item;
+         static const CStateItem *item;
          item = statePtr;
          assert(item==stackPtr);
          static CStateItem *tmp;
