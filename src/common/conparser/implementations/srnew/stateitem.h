@@ -304,10 +304,11 @@ public:
             item = current;
             ++ current;
          }
-         item->terminate(current);
+         action.encodeReduceRoot();
+         item->Move(current, action);
          item = current;
          item->GenerateTree(tagged, out);
-         delete tmp;
+         delete [] tmp;
          return;
       }
 #else
