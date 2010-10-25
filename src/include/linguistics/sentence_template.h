@@ -23,9 +23,8 @@ template<typename CSentenceNode>
 class CSentenceTemplate : public vector<CSentenceNode> {
 
 public:
-   CSentenceTemplate() {};
-   virtual ~CSentenceTemplate() {};
-
+   CSentenceTemplate() {}
+   virtual ~CSentenceTemplate() {}
 };
 
 //==============================================================
