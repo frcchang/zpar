@@ -12,6 +12,7 @@
 #include "table2.h"
 #include "reader.h"
 #include "writer.h"
+#include "linguistics/conll.h"
 
 class A {
 public:
@@ -43,12 +44,24 @@ void testreader() {
    }
 }
 
+void testconll() {
+//   CSentenceReader reader("tmp.txt");
+   CCoNLLInput input;
+   CCoNLLOutput output;
+//   while (cin >> input)
+//      cout << input;
+   while (cin >> output) {
+      cout << output;
+   }
+}
+
 int main(int argc, char**argv){
    try {
 //   cout << B::C << B::D << endl;
 //   cout << ~0UL << endl;
 //   testtable2();
-      testreader();
+//   testreader();
+      testconll();
    }catch(const string &s) { cout << s << endl; }
 };
 
