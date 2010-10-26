@@ -24,7 +24,7 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool &bRules, const string &sSuperPath) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool &bRules, const string &sSuperPath, const bool bCoNLL) {
 
    cout << "Training iteration is started..." << endl ; cout.flush();
 
@@ -35,6 +35,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
    assert(is.is_open());
 
    CDependencyParse ref_sent; 
+   CCoNLLOutput ref_conll; 
 
    depparser::CSuperTag *supertags;
    ifstream *is_supertags;
@@ -47,19 +48,28 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
    }
 
    int nCount=0;
-   
-   is >> ref_sent;
-   while( ! ref_sent.empty() ) {
+ 
+   // read input  
+   if (bCoNLL) is >> ref_conll; else is >> ref_sent;
+
+   while( (bCoNLL && !ref_conll.empty()) || (!bCoNLL && ! ref_sent.empty()) ) {
       TRACE("Sentence " << nCount);
       ++ nCount ; 
 
       if (supertags) {
-         supertags->setSentenceSize( ref_sent.size() );
+         supertags->setSentenceSize( bCoNLL ? ref_conll.size() : ref_sent.size() );
          (*is_supertags) >> *supertags;
       }
 
-      parser.train( ref_sent, nCount );
-      is >> ref_sent;
+      // example
+      if (bCoNLL)
+         parser.train_conll( ref_conll, nCount );
+      else
+         parser.train( ref_sent, nCount );
+
+      // read input  
+      if (bCoNLL) is >> ref_conll; else is >> ref_sent;
+ 
    }
 
    parser.finishtraining();
@@ -85,6 +95,7 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
+      configurations.defineConfiguration("c", "", "process CoNLL format", "");
       configurations.defineConfiguration("p", "path", "supertags", "");
       configurations.defineConfiguration("r", "", "use rules", "");
       if (options.args.size() != 4) {
@@ -99,13 +110,14 @@ int main(int argc, char* argv[]) {
          return 1;
       }
    
+      bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
       string sSuperPath = configurations.getConfiguration("p");
       bool bRules = configurations.getConfiguration("r").empty() ? false : true;
 
       cout << "Training started" << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
-         auto_train(argv[1], argv[2], bRules, sSuperPath);
+         auto_train(argv[1], argv[2], bRules, sSuperPath, bCoNLL);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    
       return 0;

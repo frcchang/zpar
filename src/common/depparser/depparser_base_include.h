@@ -8,6 +8,7 @@ namespace depparser {
 }
 
 #include "linguistics/dependency.h"
+#include "linguistics/conll.h"
 #ifdef LABELED
 #include "linguistics/dependencylabel.h"
 #endif
