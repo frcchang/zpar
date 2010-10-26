@@ -100,6 +100,7 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("r", "", "use rules", "");
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
+         cout << configurations.message() << endl;
          return 1;
       } 
       configurations.loadConfigurations(options.opts);
@@ -117,12 +118,12 @@ int main(int argc, char* argv[]) {
       cout << "Training started" << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
-         auto_train(argv[1], argv[2], bRules, sSuperPath, bCoNLL);
+         auto_train(options.args[1], options.args[2], bRules, sSuperPath, bCoNLL);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    
       return 0;
    } catch (const string &e) {
-      cerr << "Error: " << e << endl;
+      cerr << endl << "Error: " << e << endl;
       return 1;
    }
 
