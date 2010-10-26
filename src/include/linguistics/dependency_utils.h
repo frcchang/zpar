@@ -60,7 +60,7 @@ bool IsProjectiveDependencyTree(const CLabeledOrUnlabeledDependencyTree &tree) {
    for ( int i=0; i<tree.size(); ++i ) {
       int mini = min(i, tree.at(i).head);
       int maxi = max(i, tree.at(i).head);
-      for ( int j=mini+1; j<maxi; j++ ) 
+      for ( int j=mini+1; j<maxi; ++j ) 
          if (tree.at(j).head<mini||tree.at(j).head>maxi) return false;
    }
    return true;
