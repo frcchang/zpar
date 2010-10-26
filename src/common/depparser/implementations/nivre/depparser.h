@@ -74,6 +74,9 @@ public:
    void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
    void train( const CDependencyParse &correct , int round ) ;
 
+   void parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) ;
+   void train_conll( const CCoNLLOutput &correct , int round ) ;
+
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
