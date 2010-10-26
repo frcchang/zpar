@@ -982,7 +982,27 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
  *--------------------------------------------------------------*/
 
 void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval , int nBest, depparser::SCORE_TYPE *scores ) {
-   THROW("To become implemented")
+
+   static CDependencyParse empty ;
+   static CTwoStringVector input ;
+   static CDependencyParse output[AGENDA_SIZE] ;
+
+   sentence.toTwoStringVector(input);
+
+   for (int i=0; i<nBest; ++i) {
+      // clear the output sentences
+      retval[i].clear();
+      if (scores) scores[i] = 0; //pGenerator->score();
+   }
+
+   work(false, input, output, empty, nBest, scores ) ;
+
+   for (int i=0; i<min(nBest, AGENDA_SIZE); ++i) {
+      // now make the conll format stype output
+      retval[i].fromCoNLLInput(sentence);
+      retval[i].copyDependencyHeads(output[i]);
+   }
+
 }
 
 /*---------------------------------------------------------------
@@ -992,5 +1012,17 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
  *---------------------------------------------------------------*/
 
 void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
-   THROW("To become implemented")
+
+   static CTwoStringVector sentence ;
+   static CDependencyParse output ; 
+   static CDependencyParser reference ;
+
+   assert( IsProjectiveDependencyTree(correct) ) ;
+   correct.toDependencyTree( reference );
+   UnparseSentence( &reference, &sentence ) ;
+
+   // The following code does update for each processing stage
+   m_nTrainingRound = round ;
+   work( true , sentence , &output , correct , 1 , 0 ) ; 
+
 }
