@@ -151,6 +151,13 @@ public:
       vector<CCoNLLInputNode>::clear();
       push_back(CCoNLLInputNode(0, "", "", "", "", ""));
    }
+
+   void toTwoStringVector(CTwoStringVector &out) const {
+      out.clear();
+      for (int i=1; i<size(); ++i) {
+         out.push_back(make_pair(at(i).word, at(i).tag));
+      }
+   }
 };
 
 inline std::istream & operator >> (std::istream &is, CCoNLLInput &sent) {
@@ -191,6 +198,25 @@ public:
    void clear() {
       vector<CCoNLLOutputNode>::clear();
       push_back(CCoNLLOutputNode(0, "", "", "", "", "", DEPENDENCY_LINK_NO_HEAD, "", DEPENDENCY_LINK_NO_HEAD, ""));
+   }
+
+   void fromCoNLLInput(const CCoNLLInput &input) {
+      for (int i=0; i<input.size(); ++i) {
+         static_cast<CCoNLLInputNode>(at(i)) = input.at(i);
+      }
+   }
+
+   void copyDependencyHeads(const CDependencyTree &input) {
+      for (int i=0; i<input.size(); ++i) {
+         at(i).head = input.at(i).head;
+      }
+   }
+
+   void toDependencyTree(CDependencyTree &out) const {
+      out.clear();
+      for (int i=1; i<size(); ++i) {
+         out.push_back(CDependencyTreeNode(at(i).word, at(i).tag, at(i).head-1));
+      }
    }
 };
 
