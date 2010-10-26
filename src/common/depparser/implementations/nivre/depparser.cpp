@@ -1015,7 +1015,7 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
    static CTwoStringVector sentence ;
    static CDependencyParse output ; 
-   static CDependencyParser reference ;
+   static CDependencyParse reference ;
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    correct.toDependencyTree( reference );
@@ -1023,6 +1023,6 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-   work( true , sentence , &output , correct , 1 , 0 ) ; 
+   work( true , sentence , &output , reference , 1 , 0 ) ; 
 
 }
