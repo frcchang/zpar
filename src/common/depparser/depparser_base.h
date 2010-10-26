@@ -62,6 +62,13 @@ public:
    virtual void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) = 0 ;
    virtual void train( const CDependencyParse &correct , int round ) = 0 ;
 
+   virtual void parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) {
+      THROW("depparser_base.h: the method parse_conll is not implemented");
+   }
+   virtual void train_conll( const CCoNLLOutput &correct , int round ) {
+      THROW("depparser_base.h: the method train_conll is not implemented");
+   }
+
    virtual void finishtraining() = 0 ;  
 
 };
