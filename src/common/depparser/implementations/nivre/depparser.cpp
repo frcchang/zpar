@@ -973,3 +973,24 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
 };
 
 
+/*---------------------------------------------------------------
+ *
+ * parse_conll - do dependency parsing to a sentence
+ *
+ * Returns: makes a new instance of CDependencyParse 
+ *
+ *--------------------------------------------------------------*/
+
+void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval , int nBest, depparser::SCORE_TYPE *scores ) {
+   THROW("To become implemented")
+}
+
+/*---------------------------------------------------------------
+ *
+ * train_conll - train the models with an example
+ *
+ *---------------------------------------------------------------*/
+
+void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
+   THROW("To become implemented")
+}
