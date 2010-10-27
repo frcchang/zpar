@@ -62,28 +62,29 @@ inline istream & operator >> (istream &is, CCoNLLInputNode &node) {
    string line;
 
    getline(is, line, '\t');
-   ASSERT(is && !line.empty(), "Not well formatted CoNLL data");
+cout << line << endl;
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (id not found)");
    istringstream iss_id(line);
    iss_id >> node.id;
 
-   getline(is, line, '\t');
-   ASSERT(is && !line.empty(), "Not well formatted CoNLL data");
+   getline(is, line, '\t'); cout << line <<endl;
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (word not found); id="<<node.id);
    node.word = line;
 
    getline(is, line, '\t');
-   ASSERT(is && !line.empty(), "Not well formatted CoNLL data");
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (lemma not found)");
    node.lemma = line;
 
    getline(is, line, '\t');
-   ASSERT(is && !line.empty(), "Not well formatted CoNLL data");
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (cpos not found)");
    node.ctag = line;
 
    getline(is, line, '\t');
-   ASSERT(is && !line.empty(), "Not well formatted CoNLL data");
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (pos not found(");
    node.tag = line;
 
    getline(is, line, '\t');
-   ASSERT(is && !line.empty(), "Not well formatted CoNLL data");
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (features not found)");
    node.feats = line;
    return is ;
 }
@@ -149,7 +150,7 @@ public:
 public:
    void clear() {
       vector<CCoNLLInputNode>::clear();
-      push_back(CCoNLLInputNode(0, "", "", "", "", ""));
+      push_back(CCoNLLInputNode(0, "", "", "-BEGIN-", "-BEGIN-", ""));
    }
 
    void toTwoStringVector(CTwoStringVector &out) const {
@@ -197,7 +198,7 @@ public:
 public:
    void clear() {
       vector<CCoNLLOutputNode>::clear();
-      push_back(CCoNLLOutputNode(0, "", "", "", "", "", DEPENDENCY_LINK_NO_HEAD, "", DEPENDENCY_LINK_NO_HEAD, ""));
+      push_back(CCoNLLOutputNode(0, "", "", "-BEGIN-", "-BEGIN-", "", DEPENDENCY_LINK_NO_HEAD, "", DEPENDENCY_LINK_NO_HEAD, ""));
    }
 
    void fromCoNLLInput(const CCoNLLInput &input) {
@@ -215,8 +216,8 @@ public:
 
    void toDependencyTree(CDependencyTree &out) const {
       out.clear();
-      for (int i=1; i<size(); ++i) {
-         out.push_back(CDependencyTreeNode(at(i).word, at(i).tag, at(i).head-1));
+      for (int i=0; i<size(); ++i) {
+         out.push_back(CDependencyTreeNode(at(i).word, at(i).tag, at(i).head));
       }
    }
 };
