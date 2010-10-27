@@ -201,8 +201,9 @@ public:
    }
 
    void fromCoNLLInput(const CCoNLLInput &input) {
+      resize(input.size());
       for (int i=0; i<input.size(); ++i) {
-         static_cast<CCoNLLInputNode>(at(i)) = input.at(i);
+         static_cast<CCoNLLInputNode&>(at(i)) = input.at(i);
       }
    }
 

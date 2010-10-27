@@ -50,9 +50,10 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
    int nCount=0;
  
    // read input  
-   if (bCoNLL) is >> ref_conll; else is >> ref_sent;
+//   if (bCoNLL) is >> ref_conll; else is >> ref_sent;
 
-   while( (bCoNLL && !ref_conll.empty()) || (!bCoNLL && ! ref_sent.empty()) ) {
+   while( bCoNLL ? is>>ref_conll : is>>ref_sent ) {
+//   while( (bCoNLL && !ref_conll.empty()) || (!bCoNLL && ! ref_sent.empty()) ) {
       TRACE("Sentence " << nCount);
       ++ nCount ; 
 
@@ -68,7 +69,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
          parser.train( ref_sent, nCount );
 
       // read input  
-      if (bCoNLL) is >> ref_conll; else is >> ref_sent;
+//      if (bCoNLL) is >> ref_conll; else is >> ref_sent;
  
    }
 
