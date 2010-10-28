@@ -10,6 +10,7 @@
 #ifndef _DEPENDENCY_CONLL_H
 #define _DEPENDENCY_CONLL_H
 
+#include "utils.h"
 #include "dependency.h"
 
 /*==============================================================
@@ -62,13 +63,12 @@ inline istream & operator >> (istream &is, CCoNLLInputNode &node) {
    string line;
 
    getline(is, line, '\t');
-cout << line << endl;
    ASSERT(is && !line.empty(), "Not well formatted CoNLL data (id not found)");
    istringstream iss_id(line);
    iss_id >> node.id;
 
-   getline(is, line, '\t'); cout << line <<endl;
-   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (word not found); id="<<node.id);
+   getline(is, line, '\t'); 
+   ASSERT(is && !line.empty(), "Not well formatted CoNLL data (word not found);");
    node.word = line;
 
    getline(is, line, '\t');
@@ -155,7 +155,7 @@ public:
 
    void toTwoStringVector(CTwoStringVector &out) const {
       out.clear();
-      for (int i=1; i<size(); ++i) {
+      for (int i=0; i<size(); ++i) {
          out.push_back(make_pair(at(i).word, at(i).tag));
       }
    }
@@ -166,7 +166,7 @@ inline std::istream & operator >> (std::istream &is, CCoNLLInput &sent) {
    string line;
    getline(is, line);
 
-   while(is && !line.empty())
+   while(is && !lstrip(line).empty())
    {
       CCoNLLInputNode node;
       istringstream iss(line);

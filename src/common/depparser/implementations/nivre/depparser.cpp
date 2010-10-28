@@ -919,7 +919,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 
    TRACE("Outputing sentence");
    m_Agenda->sortGenerators();
-   for (int i=0; i<nBest; ++i) {
+   for (int i=0; i<min(m_Agenda->generatorSize(), nBest); ++i) {
       pGenerator = m_Agenda->generator(i) ; 
       if (pGenerator) {
          pGenerator->GenerateTree( sentence , retval[i] ) ; 
@@ -992,12 +992,13 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
    for (int i=0; i<nBest; ++i) {
       // clear the output sentences
       retval[i].clear();
+      output[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score();
    }
 
    work(false, input, output, empty, nBest, scores ) ;
 
-   for (int i=0; i<min(nBest, AGENDA_SIZE); ++i) {
+   for (int i=0; i<min(nBest, m_Agenda->generatorSize()); ++i) {
       // now make the conll format stype output
       retval[i].fromCoNLLInput(sentence);
       retval[i].copyDependencyHeads(output[i]);

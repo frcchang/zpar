@@ -109,4 +109,11 @@ bool fromString(T& t,
   return !(iss >> f >> t).fail();
 }
 
+inline string lstrip(const string &s) {
+   int index=0;
+   while (index<s.size() && (s[index]==' ' || s[index]=='\n' || s[index]=='\r' || s[index]=='\t'))
+      ++index;
+   return s.substr(index);
+}
+
 #endif
