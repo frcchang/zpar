@@ -51,7 +51,7 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const string &sFeatureDBPath , bool bTrain ) : CDepParserBase(sFeatureDBPath, bTrain) { 
+   CDepParser( const string &sFeatureDBPath , bool bTrain , bool bCoNLL ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;

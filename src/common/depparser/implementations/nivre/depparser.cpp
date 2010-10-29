@@ -942,6 +942,8 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 
    static CDependencyParse empty ;
 
+   assert( !m_bCoNLL );
+
    for (int i=0; i<nBest; ++i) {
       // clear the output sentences
       retval[i].clear();
@@ -963,6 +965,7 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
    static CTwoStringVector sentence ;
    static CDependencyParse output ; 
 
+   assert( !m_bCoNLL );
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;
 
@@ -986,6 +989,8 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
    static CDependencyParse empty ;
    static CTwoStringVector input ;
    static CDependencyParse output[AGENDA_SIZE] ;
+
+   assert( m_bCoNLL ) ;
 
    sentence.toTwoStringVector(input);
 
@@ -1018,6 +1023,7 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
    static CDependencyParse output ; 
    static CDependencyParse reference ;
 
+   assert( m_bCoNLL ) ;
    assert( IsProjectiveDependencyTree(correct) ) ;
    correct.toDependencyTree( reference );
    UnparseSentence( &reference, &sentence ) ;

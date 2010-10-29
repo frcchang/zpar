@@ -28,7 +28,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
 
    cout << "Training iteration is started..." << endl ; cout.flush();
 
-   CDepParser parser(sFeatureFile, true);
+   CDepParser parser(sFeatureFile, true, bCoNLL);
    parser.setRules(bRules);
 
    ifstream is(sOutputFile.c_str());
