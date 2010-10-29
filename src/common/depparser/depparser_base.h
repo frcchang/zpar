@@ -31,12 +31,13 @@ protected:
    depparser::CWeightBase *m_weights;
 
    bool m_bTrain ; // the system runs either at training mode or decoding mode
+   bool m_bCoNLL ;
 
    const depparser::CSuperTag *m_supertags;
 
 public:
    // constructor and destructor
-   CDepParserBase( string sFeatureDBPath , bool bTrain ) : m_bTrain(bTrain) , m_supertags(0) { 
+   CDepParserBase( string sFeatureDBPath , bool bTrain , bool bCoNLL ) : m_bTrain(bTrain) , m_bCoNLL(bCoNLL) , m_supertags(0) { 
       // do nothing
    }
    virtual ~CDepParserBase() {

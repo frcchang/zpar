@@ -44,10 +44,14 @@ class CDepParser : public CDepParserBase {
 private:
 
    CAgendaBeam<depparser::CStateItem> *m_Agenda;
+
+   // caches for input
    vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
 #ifdef LABELED
    vector< CDependencyLabel > m_lCacheLabel;
 #endif
+   vector< CWord > m_lCacheCoNLLLemma; // conll
+
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -55,7 +59,7 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const string &sFeatureDBPath , bool bTrain ) : CDepParserBase(sFeatureDBPath, bTrain) { 
+   CDepParser( const string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(depparser::AGENDA_SIZE);
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 

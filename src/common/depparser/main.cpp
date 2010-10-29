@@ -125,7 +125,7 @@ void process_conll(const string sInputFile, const string sOutputFile, const stri
 
    int time_start = clock();
 
-   CDepParser parser(sFeatureFile, false) ;
+   CDepParser parser(sFeatureFile, false, true) ;
    ifstream is(sInputFile.c_str());
    ofstream os(sOutputFile.c_str());
    ofstream *os_scores=0;
