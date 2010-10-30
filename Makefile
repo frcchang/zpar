@@ -38,7 +38,7 @@ SEGMENTOR_IMPL = agenda
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = segmented
+CHINESE_TAGGER_IMPL = agenda
 
 # Chinese dependency parser
 #
@@ -59,6 +59,7 @@ ENGLISH_DEPPARSER_LABELED = false
 ENGLISH_DEPLABELER_IMPL = naive
 # currently support sr implementations 
 ENGLISH_CONPARSER_IMPL = srnew
+
 #================================================================
 #
 # Debug mode or the run mode (empty)

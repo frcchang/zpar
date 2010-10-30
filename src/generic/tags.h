@@ -12,7 +12,7 @@
 #ifndef _GENERIC_TAGS_H
 #define _GENERIC_TAGS_H 1
 
-#include "linguistics/pos/generic.h"
+#include "pos/generic.h"
 
 namespace generic {
 
