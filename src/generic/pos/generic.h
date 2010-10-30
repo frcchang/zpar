@@ -9,8 +9,8 @@
  *                                                              *
  ****************************************************************/
 
-#ifndef _GENERIC_TAG_H
-#define _GENERIC_TAG_H
+#ifndef _GENERIC_POS_H
+#define _GENERIC_POS_H
 
 #include "tokenizer.h"
 
