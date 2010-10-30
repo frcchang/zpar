@@ -42,8 +42,8 @@ OBJECT_GENERIC_CONPARSER = $(OBJECT_DIR)/generic.conparser
 #===================================================================
 
 # the partofspeech
-$(OBJECT_DIR)/pos.ge.o: $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/pos/generic.h $(SRC_LIBS)/linguistics/pos/generic.cpp
-	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/pos/generic.cpp -o $@
+$(OBJECT_DIR)/pos.ge.o: $(SRC_GENERIC)/tags.h $(SRC_GENERIC)/pos/generic.h $(SRC_GENERIC)/pos/generic.cpp
+	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_GENERIC)/pos/generic.cpp -o $@
 
 # the dependency label
 $(OBJECT_DIR)/deplabel.ge.o: $(SRC_GENERIC)/dependency/label/generic.h $(SRC_GENERIC)/dependency/label/generic.cpp
