@@ -49,11 +49,12 @@ public:
    static unsigned long LAST;
 
 protected:
+   static CTagTokenizer m_tokenizer;
    unsigned long m_code;
 
 protected:
    // static method assigns tokenizer as global dictionary of words
-   CTagTokenizer &getTokenizer() const {static CTagTokenizer tokenizer; return tokenizer;}
+   CTagTokenizer &getTokenizer() const { return m_tokenizer;}
 
 public:
    CTag() : m_code(NONE) { }

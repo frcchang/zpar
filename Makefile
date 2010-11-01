@@ -104,6 +104,10 @@ OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 $(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# the conll format
+$(OBJECT_DIR)/conll.o: $(SRC_INCLUDES)/linguistics/conll.h $(SRC_LIBS)/linguistics/conll.cpp
+	$(CXX) $(CXXFLAGS) -c $(SRC_LIBS)/linguistics/conll.cpp -o $@
+
 all: zpar
 
 # the directories
