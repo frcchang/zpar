@@ -46,14 +46,28 @@ void testreader() {
 }
 
 void testconll() {
-//   CSentenceReader reader("tmp.txt");
-   CCoNLLInput input;
-   CCoNLLOutput output;
+//   // io
+//   CCoNLLInput input;
+//   CCoNLLOutput output;
 //   while (cin >> input)
 //      cout << input;
-   while (cin >> output) {
-      cout << output;
-   }
+//   while (cin >> output) {
+//      cout << output;
+//   }
+   // tag
+   CCoNLLCPOS pos;
+   pos.load("CPOS a");
+   pos.load("CPOS b");
+   pos.load("CPOS c");
+   for (int i=0; i<pos.getTagset().count(); ++i)
+      cout << CCoNLLCPOS(i) << ' ';
+   CCoNLLFeats feats;
+   feats.load("Feats a");
+   feats.load("Feats b");
+   feats.load("Feats c");
+   for (int i=0; i<feats.getTagset().count(); ++i)
+      cout << CCoNLLFeats(i) << ' ';
+   cout << endl;
 }
 
 void testgenerictags() {
@@ -91,8 +105,8 @@ int main(int argc, char**argv){
 //   cout << ~0UL << endl;
 //   testtable2();
 //   testreader();
-//   testconll();
-     testgenerictags();
+   testconll();
+//   testgenerictags();
    }catch(const string &s) { cout << s << endl; }
 };
 

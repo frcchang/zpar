@@ -12,6 +12,7 @@
 
 #include "utils.h"
 #include "dependency.h"
+#include "generictag.h"
 
 /*==============================================================
  *
@@ -244,5 +245,41 @@ inline std::ostream & operator << (std::ostream &os, const CCoNLLOutput &sent) {
    os << endl ;
    return os ;
 }
+
+/*==============================================================
+ *
+ * CCoNLLCPOS
+ *
+ *==============================================================*/
+
+class CCoNLLCPOS : public CGenericTag {
+protected:
+   static CGenericTagset tagset;
+public:
+   CCoNLLCPOS() : CGenericTag() {}
+   CCoNLLCPOS(const string &s) : CGenericTag(s) {}
+   CCoNLLCPOS(const unsigned long &i) : CGenericTag(i) {}
+   CCoNLLCPOS(const CCoNLLCPOS &c) : CGenericTag(c) {}
+public:
+   CGenericTagset &getTagset() const { return tagset; }
+};
+
+/*==============================================================
+ *
+ * CCoNLLFeats
+ *
+ *==============================================================*/
+
+class CCoNLLFeats : public CGenericTag {
+protected:
+   static CGenericTagset tagset;
+public:
+   CCoNLLFeats() : CGenericTag() {}
+   CCoNLLFeats(const string &s) : CGenericTag(s) {}
+   CCoNLLFeats(const unsigned long &i) : CGenericTag(i) {}
+   CCoNLLFeats(const CCoNLLFeats &c) : CGenericTag(c) {}
+public:
+   CGenericTagset &getTagset() const { return tagset; }
+};
 
 #endif

@@ -31,9 +31,9 @@ $(DIST_JOINT)/postagger/train: $(OBJECT_JOINT)/postagger.o $(OBJECT_DIR)/segment
 #
 #----------------------------------------------------------------
 
-test: $(SRC_DIR)/test.cpp $(OBJECT_DIR) $(DIST_DIR) $(SRC_INCLUDES)/bitarray.h $(OBJECTS) 
+test: $(SRC_DIR)/test.cpp $(OBJECT_DIR) $(DIST_DIR) $(SRC_INCLUDES)/bitarray.h $(OBJECTS) $(OBJECT_DIR)/conll.o
 	$(CXX) $(CXXFLAGS) -DDEBUG -c $(SRC_DIR)/test.cpp -o $(OBJECT_DIR)/test.o
-	$(LD) $(LDFLAGS) -o $(DIST_DIR)/test $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/test.o 
+	$(LD) $(LDFLAGS) -o $(DIST_DIR)/test $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/test.o $(OBJECT_DIR)/conll.o
 
 #----------------------------------------------------------------
 #
