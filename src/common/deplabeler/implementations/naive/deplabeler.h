@@ -60,6 +60,9 @@ public:
    void label( const CDependencyTree &sentence , CLabeledDependencyTree *retval ) ;
    void train( const CLabeledDependencyTree &correct ) ;
 
+   void label_conll( const CCoNLLOutput &sentence , CCoNLLOutput *retval ) ;
+   void train_conll( const CCoNLLOutput &correct ) ;
+
    void finishtraining() {
       static_cast<deplabeler::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<deplabeler::CWeight*>(m_weights)->saveScores();
@@ -69,7 +72,7 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void initCaches( const CDependencyTree *sentence );
+   void initCaches( const CLabeledDependencyTree *sentence );
    void work( CLabeledDependencyTree *retval, const CLabeledDependencyTree *correct, const unsigned long &index ) ; 
 
    inline deplabeler::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const CDependencyLabel &label, deplabeler::SCORE_TYPE amount=0, int round=0 );

@@ -23,7 +23,7 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile) {
+void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, bool bCoNLL) {
 
    cout << "Labeling started" << endl;
 
@@ -36,21 +36,28 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    assert(os.is_open());
    CDependencyTree input_sent;
    CLabeledDependencyTree output_sent; 
+   CCoNLLOutput input_conll;
+   CCoNLLOutput output_conll;
 
    int nCount=0;
-   bool bReadSuccessful;
 
    // Read the next example
-   while( is >> input_sent ) {
+   while( (bCoNLL ? (is >> input_conll) : (is >> input_sent)) ) {
 
       TRACE("Sentence " << nCount);
       ++ nCount;
 
       // Find decoder output
-      labeler.label( input_sent , &output_sent ) ;
+      if (bCoNLL) {
+         labeler.label_conll( input_conll , &output_conll ) ;
+         os << output_conll; 
+      }
+      else {
+         labeler.label( input_sent , &output_sent ) ;
+	 os << output_sent ;
+      }
       
       // Ouptut sent
-      os << output_sent ;
    }
 
    is.close();
@@ -69,6 +76,7 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
+      configurations.defineConfiguration("c", "", "process CoNLL format", "");
       // check arguments
       if (options.args.size() != 4) {
          cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
@@ -76,8 +84,10 @@ int main(int argc, char* argv[]) {
          return 1;
       }
       configurations.loadConfigurations(options.opts);
+
+      bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
    
-      process(argv[1], argv[2], argv[3]);
+      process(options.args[1], options.args[2], options.args[3], bCoNLL);
       return 0;
    } catch (const string &e) {
       cerr << "Error: " << e << endl;

@@ -49,6 +49,9 @@ public:
    virtual void label( const CDependencyTree &sentence , CLabeledDependencyTree *retval ) = 0 ;
    virtual void train( const CLabeledDependencyTree &correct ) = 0 ;
 
+   virtual void label_conll( const CCoNLLOutput &sentence , CCoNLLOutput *retval ) = 0 ;
+   virtual void train_conll( const CCoNLLOutput &correct ) = 0 ;
+
    virtual void finishtraining() = 0 ;  
 
 };
