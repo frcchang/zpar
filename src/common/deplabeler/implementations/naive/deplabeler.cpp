@@ -85,7 +85,7 @@ inline SCORE_TYPE CDepLabeler::getOrUpdateArcLabelScore( const int &head_index, 
  *
  *--------------------------------------------------------------*/
 
-void CDepLabeler::initCaches( const CDependencyTree *sentence ) {
+void CDepLabeler::initCaches( const CLabeledDependencyTree *sentence ) {
    // initialise word cache
    const unsigned &length = sentence->size() ; 
    assert(length<MAX_SENTENCE_SIZE);
@@ -145,10 +145,10 @@ void CDepLabeler::work( CLabeledDependencyTree *retval , const CLabeledDependenc
 
 void CDepLabeler::label( const CDependencyTree &sentence , CLabeledDependencyTree *retval ) {
 
-   initCaches( &sentence );
    retval->clear();
    for (unsigned long i=0; i<sentence.size(); ++i)
       retval->push_back(CLabeledDependencyTreeNode(sentence[i].word, sentence[i].tag, sentence[i].head, ""));
+   initCaches( retval );
    for (unsigned long i=0; i<sentence.size(); ++i)
       work( retval, 0, i ) ;
 
@@ -175,11 +175,9 @@ inline void UnlabelSentence(const CLabeledDependencyTree &labeled, CDependencyTr
 
 void CDepLabeler::train( const CLabeledDependencyTree &correct ) {
 
-   static CDependencyTree parse ;
    static CLabeledDependencyTree label ; 
 
-   UnlabelSentence(correct, parse);
-   initCaches( &parse );
+   initCaches( &correct );
    for (unsigned long i=0; i<correct.size(); ++i) {
       ++m_nTrainingRound ;
       work( &label , &correct , i ) ; 
@@ -188,3 +186,43 @@ void CDepLabeler::train( const CLabeledDependencyTree &correct ) {
 };
 
 
+/*---------------------------------------------------------------
+ *
+ * label_conll - do dependency parsing to a sentence
+ *
+ *--------------------------------------------------------------*/
+
+void CDepLabeler::label_conll( const CCoNLLOutput &sentence , CCoNLLOutput *retval ) {
+
+   static CLabeledDependencyTree output ;
+
+   sentence.toLabeledDependencyTree( output );
+   initCaches( &output );
+   retval->clear();
+   for (unsigned long i=0; i<output.size(); ++i)
+      work( &output, 0, i ) ;
+   retval->copy(sentence);
+   retval->copyDependencyLabels( output );
+
+}
+
+/*---------------------------------------------------------------
+ *
+ * train_conll - train the models with an example
+ *
+ *---------------------------------------------------------------*/
+
+void CDepLabeler::train_conll( const CCoNLLOutput &sentence ) {
+
+   static CLabeledDependencyTree label ; 
+   static CLabeledDependencyTree correct ; 
+
+   sentence.toLabeledDependencyTree( correct );
+
+   initCaches( &correct );
+   for (unsigned long i=0; i<correct.size(); ++i) {
+      ++m_nTrainingRound ;
+      work( &label , &correct , i ) ; 
+   }
+
+}

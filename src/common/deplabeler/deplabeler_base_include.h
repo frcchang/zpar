@@ -8,6 +8,7 @@ namespace deplabeler {
 } 
 } 
 
+#include "linguistics/conll.h"
 #include "linguistics/dependencylabel.h"
 #include "linguistics/tagset.h"
 #include "options.h"

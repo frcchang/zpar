@@ -24,7 +24,7 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile) {
+void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool bCoNLL) {
 
    cout << "Training iteration is started..." << endl ; cout.flush();
 
@@ -34,15 +34,19 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile) {
    assert(is.is_open());
 
    CLabeledDependencyTree ref_sent; 
+   CCoNLLOutput ref_conll;
 
    unsigned long nCount=0;
    
-   is >> ref_sent;
-   while( ! ref_sent.empty() ) {
+//   if (bCoNLL) is >> ref_conll; else is >> ref_sent;
+   while( (bCoNLL?(is>>ref_conll):(is>>ref_sent)) ) {
       TRACE("Sentence " << nCount);
       ++ nCount ; 
-      labeler.train( ref_sent );
-      is >> ref_sent;
+      if (bCoNLL)
+         labeler.train_conll( ref_conll );
+      else
+         labeler.train( ref_sent );
+//      if (bCoNLL) is >> ref_conll; else is >> ref_sent;
    }
 
    labeler.finishtraining();
@@ -61,10 +65,14 @@ int main(int argc, char* argv[]) {
 
    try {
       COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("c", "", "process CoNLL format", "");
       if (options.args.size() != 4) {
          cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
+         cout << configurations.message() << endl;
          return 1;
       } 
+      configurations.loadConfigurations(options.opts);
    
       unsigned long training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
@@ -72,10 +80,12 @@ int main(int argc, char* argv[]) {
          return 1;
       }
    
+      bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
+
       cout << "Training started" << endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
-         auto_train(argv[1], argv[2]);
+         auto_train(options.args[1], options.args[2], bCoNLL);
       cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
    
       return 0;

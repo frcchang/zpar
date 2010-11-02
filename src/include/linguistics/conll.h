@@ -12,6 +12,7 @@
 
 #include "utils.h"
 #include "dependency.h"
+#include "dependencylabel.h"
 #include "generictag.h"
 
 /*==============================================================
@@ -133,7 +134,7 @@ inline ostream & operator << (ostream &os, const CCoNLLOutputNode &node) {
    else
       oss << node.phead;
    
-   os << static_cast<const CCoNLLInputNode&>(node) << "\t" << node.head << '\t' << node.label << '\t' << oss.str() << '\t' << node.plabel;
+   os << static_cast<const CCoNLLInputNode&>(node) << "\t" << node.head << '\t' << (node.label.empty()?"_":node.label) << '\t' << oss.str() << '\t' << (node.plabel.empty()?"_":node.plabel);
    return os ;
 }
 
@@ -202,6 +203,13 @@ public:
       push_back(CCoNLLOutputNode(0, "", "", "-BEGIN-", "-BEGIN-", "", DEPENDENCY_LINK_NO_HEAD, "", DEPENDENCY_LINK_NO_HEAD, ""));
    }
 
+   void copy(const CCoNLLOutput &input) {
+      resize(input.size());
+      for (int i=0; i<input.size(); ++i) {
+         at(i) = input.at(i);
+      }
+   }
+
    void fromCoNLLInput(const CCoNLLInput &input) {
       resize(input.size());
       for (int i=0; i<input.size(); ++i) {
@@ -215,10 +223,23 @@ public:
       }
    }
 
+   void copyDependencyLabels(const CLabeledDependencyTree &input) {
+      for (int i=0; i<input.size(); ++i) {
+         at(i).label = input.at(i).label;
+      }
+   }
+
    void toDependencyTree(CDependencyTree &out) const {
       out.clear();
       for (int i=0; i<size(); ++i) {
          out.push_back(CDependencyTreeNode(at(i).word, at(i).tag, at(i).head));
+      }
+   }
+
+   void toLabeledDependencyTree(CLabeledDependencyTree &out) const {
+      out.clear();
+      for (int i=0; i<size(); ++i) {
+         out.push_back(CLabeledDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).label));
       }
    }
 };
