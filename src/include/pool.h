@@ -12,36 +12,61 @@
 
 /*===============================================================
  *
+ * Memory pool entry
+ *
+ *==============================================================*/
+
+template <typename T, unsigned BLOCK_SIZE>
+class CMemoryPoolEntry {
+public:
+   T blocks[BLOCK_SIZE];
+   CMemoryPoolEntry *prev;
+};
+/*===============================================================
+ *
  * Memory pool
  *
  *==============================================================*/
 
-template <typename T>
+template <typename T, unsigned BLOCK_SIZE>
 class CMemoryPool {
 protected:
-   vector<T*> blocks;
+   CMemoryPoolEntry<T, BLOCK_SIZE> *current;
    unsigned long nItem;
-   unsigned long block_size;
 public:
-   CMemoryPool(const unsigned long &block_size): block_size(block_size), nItem(0) {
+   CMemoryPool(): nItem(0), current(0) {
       newblock();
+      assert(current!=0);
    }
    virtual ~CMemoryPool() {
-      for (unsigned i=0; i<blocks.size(); ++i) { delete [] (blocks[i]); }
+      CMemoryPoolEntry<T, BLOCK_SIZE> *iter = current;
+      while (iter) {
+         CMemoryPoolEntry<T, BLOCK_SIZE> *prev = iter->prev;
+//         if (BLOCK_INIT) delete iter; else std::free(iter);
+         delete iter;
+         iter = prev;
+      }
    }
 protected:
    void newblock() {
-      T* block = new T[block_size];
-      blocks.push_back(block);
+      CMemoryPoolEntry<T, BLOCK_SIZE> *iter = current;
+//      if (BLOCK_INIT) {
+         current = new CMemoryPoolEntry<T, BLOCK_SIZE>();
+//      }
+//      else {
+//         current = static_cast<CMemoryPoolEntry<T, BLOCK_SIZE>*>(std::malloc(sizeof(CMemoryPoolEntry<T, BLOCK_SIZE>)));
+//      }
+      assert(current!=0);
+      current->prev = iter;
    }
 public:
    T* allocate() { 
-      if (nItem==block_size) {
+      assert(current!=0);
+      if (nItem==BLOCK_SIZE) {
          newblock();
          nItem = 0;
       }
-      ++nItem;
-      return blocks.back() + nItem - 1 ;
+      return &(current->blocks[nItem++]) ;
    }
 };
 
