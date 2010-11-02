@@ -102,12 +102,12 @@ public:
 
 protected:
    CEntry **m_buckets;
-   CMemoryPool<CEntry> pool;
+   CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool;
 public:
-   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), pool(POOL_BLOCK_SIZE), m_buckets(0) { 
+   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), pool(), m_buckets(0) { 
       if (initialize) init();
    }
-   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0), pool(1) { 
+   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0), pool() { 
       cerr << "CHashMap does not support copy constructor!"; 
       assert(1==0);
    }
