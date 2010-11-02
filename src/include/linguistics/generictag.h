@@ -51,7 +51,7 @@ public:
    CGenericTag() : m_code(NONE) { }
    CGenericTag(const string &s) { load(s); }
    CGenericTag(const CGenericTag &t) : m_code(t.m_code) { }
-   CGenericTag(const unsigned long &u) { assert(getTagset()->count()>u); m_code=u; }
+   CGenericTag(const unsigned long &u) : m_code(u) { }
    virtual ~CGenericTag() {}
 
 public:
