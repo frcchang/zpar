@@ -253,15 +253,13 @@ inline std::ostream & operator << (std::ostream &os, const CCoNLLOutput &sent) {
  *==============================================================*/
 
 class CCoNLLCPOS : public CGenericTag {
-protected:
-   static CGenericTagset tagset;
 public:
    CCoNLLCPOS() : CGenericTag() {}
    CCoNLLCPOS(const string &s) : CGenericTag(s) {}
    CCoNLLCPOS(const unsigned long &i) : CGenericTag(i) {}
    CCoNLLCPOS(const CCoNLLCPOS &c) : CGenericTag(c) {}
 public:
-   CGenericTagset &getTagset() const { return tagset; }
+   CGenericTagset &getTagset() const { static CGenericTagset tagset; return tagset; }
 };
 
 /*==============================================================
@@ -271,15 +269,13 @@ public:
  *==============================================================*/
 
 class CCoNLLFeats : public CGenericTag {
-protected:
-   static CGenericTagset tagset;
 public:
    CCoNLLFeats() : CGenericTag() {}
    CCoNLLFeats(const string &s) : CGenericTag(s) {}
    CCoNLLFeats(const unsigned long &i) : CGenericTag(i) {}
    CCoNLLFeats(const CCoNLLFeats &c) : CGenericTag(c) {}
 public:
-   CGenericTagset &getTagset() const { return tagset; }
+   CGenericTagset &getTagset() const { static CGenericTagset tagset; return tagset; }
 };
 
 #endif
