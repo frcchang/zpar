@@ -171,7 +171,7 @@ inline std::istream & operator >> (std::istream &is, CCoNLLInput &sent) {
    while(is && !lstrip(line).empty())
    {
       CCoNLLInputNode node;
-      istringstream iss(line);
+      istringstream iss(rstrip(line));
       iss >> node ;
       sent.push_back( node );
       getline(is, line);
@@ -249,10 +249,10 @@ inline std::istream & operator >> (std::istream &is, CCoNLLOutput &sent) {
    string line;
    getline(is, line);
 
-   while(is && !line.empty())
+   while(is && !lstrip(line).empty())
    {
       CCoNLLOutputNode node;
-      istringstream iss(line);
+      istringstream iss(rstrip(line));
       iss >> node ;
       sent.push_back( node );
       getline(is, line);
