@@ -109,11 +109,30 @@ bool fromString(T& t,
   return !(iss >> f >> t).fail();
 }
 
+/*--------------------------------------------------------------
+ *
+ * lstrip
+ *
+ *--------------------------------------------------------------*/
+
 inline string lstrip(const string &s) {
    int index=0;
    while (index<s.size() && (s[index]==' ' || s[index]=='\n' || s[index]=='\r' || s[index]=='\t'))
       ++index;
    return s.substr(index);
+}
+
+/*--------------------------------------------------------------
+ *
+ * rstrip
+ *
+ *--------------------------------------------------------------*/
+
+inline string rstrip(const string &s) {
+   int index=s.size()-1;
+   while (index>=0 && (s[index]==' ' || s[index]=='\n' || s[index]=='\r' || s[index]=='\t'))
+      --index;
+   return s.substr(0, index+1);
 }
 
 #endif
