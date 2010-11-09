@@ -157,7 +157,7 @@ public:
 
    void toTwoStringVector(CTwoStringVector &out) const {
       out.clear();
-      for (int i=0; i<size(); ++i) {
+      for (unsigned i=0; i<size(); ++i) {
          out.push_back(make_pair(at(i).word, at(i).tag));
       }
    }
@@ -180,7 +180,7 @@ inline std::istream & operator >> (std::istream &is, CCoNLLInput &sent) {
 }
 
 inline std::ostream & operator << (std::ostream &os, const CCoNLLInput &sent) {
-   for (int i=1; i<sent.size(); ++i)
+   for (unsigned i=1; i<sent.size(); ++i)
       os << sent.at(i) << endl ;
    os << endl ;
    return os ;
@@ -205,40 +205,40 @@ public:
 
    void copy(const CCoNLLOutput &input) {
       resize(input.size());
-      for (int i=0; i<input.size(); ++i) {
+      for (unsigned i=0; i<input.size(); ++i) {
          at(i) = input.at(i);
       }
    }
 
    void fromCoNLLInput(const CCoNLLInput &input) {
       resize(input.size());
-      for (int i=0; i<input.size(); ++i) {
+      for (unsigned i=0; i<input.size(); ++i) {
          static_cast<CCoNLLInputNode&>(at(i)) = input.at(i);
       }
    }
 
    void copyDependencyHeads(const CDependencyTree &input) {
-      for (int i=0; i<input.size(); ++i) {
+      for (unsigned i=0; i<input.size(); ++i) {
          at(i).head = input.at(i).head;
       }
    }
 
    void copyDependencyLabels(const CLabeledDependencyTree &input) {
-      for (int i=0; i<input.size(); ++i) {
+      for (unsigned i=0; i<input.size(); ++i) {
          at(i).label = input.at(i).label;
       }
    }
 
    void toDependencyTree(CDependencyTree &out) const {
       out.clear();
-      for (int i=0; i<size(); ++i) {
+      for (unsigned i=0; i<size(); ++i) {
          out.push_back(CDependencyTreeNode(at(i).word, at(i).tag, at(i).head));
       }
    }
 
    void toLabeledDependencyTree(CLabeledDependencyTree &out) const {
       out.clear();
-      for (int i=0; i<size(); ++i) {
+      for (unsigned i=0; i<size(); ++i) {
          out.push_back(CLabeledDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).label));
       }
    }
@@ -261,7 +261,7 @@ inline std::istream & operator >> (std::istream &is, CCoNLLOutput &sent) {
 }
 
 inline std::ostream & operator << (std::ostream &os, const CCoNLLOutput &sent) {
-   for (int i=1; i<sent.size(); ++i)
+   for (unsigned i=1; i<sent.size(); ++i)
       os << sent.at(i) << endl ;
    os << endl ;
    return os ;
@@ -276,7 +276,7 @@ inline std::ostream & operator << (std::ostream &os, const CCoNLLOutput &sent) {
 class CCoNLLCPOS : public CGenericTag {
 public:
    CCoNLLCPOS() : CGenericTag() {}
-   CCoNLLCPOS(const string &s) : CGenericTag(s) {}
+   CCoNLLCPOS(const string &s) {load(s);}
    CCoNLLCPOS(const unsigned long &i) : CGenericTag(i) {}
    CCoNLLCPOS(const CCoNLLCPOS &c) : CGenericTag(c) {}
 public:
@@ -292,11 +292,13 @@ public:
 class CCoNLLFeats : public CGenericTag {
 public:
    CCoNLLFeats() : CGenericTag() {}
-   CCoNLLFeats(const string &s) : CGenericTag(s) {}
+   CCoNLLFeats(const string &s) {load(s);}
    CCoNLLFeats(const unsigned long &i) : CGenericTag(i) {}
    CCoNLLFeats(const CCoNLLFeats &c) : CGenericTag(c) {}
 public:
    CGenericTagset &getTagset() const { static CGenericTagset tagset; return tagset; }
 };
+
+void readCoNLLFeats(vector<CCoNLLFeats> &output, const string &input);
 
 #endif

@@ -38,6 +38,10 @@ typedef CScoreMap<pair<CTwoWords, int>, SCORE_TYPE> CTwoWordsIntMap;
 typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
 typedef CScoreMap<pair<CTwoTaggedWords, int>, SCORE_TYPE> CTwoTaggedWordsIntMap;
 
+typedef CScoreMap<pair<CLemma, int>,  SCORE_TYPE> CLemmaIntMap;
+typedef CScoreMap<pair<CCoNLLCPOS, int>,  SCORE_TYPE> CCoNLLCPOSIntMap;
+typedef CScoreMap<pair<CCoNLLFeats, int>,  SCORE_TYPE> CCoNLLFeatsIntMap;
+
 /*===============================================================
  *
  * CWeight - the definition of weights, in feature
@@ -131,6 +135,18 @@ public:
    CTwoIntMap m_mapDepSurroundingTagsLabel;
 #endif
 
+   CLemmaIntMap m_mapSTl;
+   CCoNLLCPOSIntMap m_mapSTc;
+   CCoNLLFeatsIntMap m_mapSTf;
+
+   CLemmaIntMap m_mapN0l;
+   CCoNLLCPOSIntMap m_mapN0c;
+   CCoNLLFeatsIntMap m_mapN0f;
+
+   CLemmaIntMap m_mapN1l;
+   CCoNLLCPOSIntMap m_mapN1c;
+   CCoNLLFeatsIntMap m_mapN1f;
+
 public:
 
    CWeight(const string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
@@ -213,7 +229,19 @@ public:
                                                m_mapSTtN0wN0LDt("StackTagNextWordNextLDTag", DEP_TABLE_SIZE),
                                                m_mapSTHtSTtN0w("StackHeadTagStackTagNextWord", DEP_TABLE_SIZE),
                                                m_mapSTtSTLDtN0w("StackTagStackLDTagNextWord", DEP_TABLE_SIZE),
-                                               m_mapSTtSTRDtN0w("StackTagStackRDTagNextWord", DEP_TABLE_SIZE)
+                                               m_mapSTtSTRDtN0w("StackTagStackRDTagNextWord", DEP_TABLE_SIZE), 
+
+                                               m_mapSTl("StackLemma", DEP_TABLE_SIZE),
+                                               m_mapSTc("StackCPOS", DEP_TABLE_SIZE),
+                                               m_mapSTf("StackFeats", DEP_TABLE_SIZE),
+
+                                               m_mapN0l("NextLemma", DEP_TABLE_SIZE),
+                                               m_mapN0c("NextCPOS", DEP_TABLE_SIZE),
+                                               m_mapN0f("NextFeats", DEP_TABLE_SIZE),
+
+                                               m_mapN1l("Next+1Lemma", DEP_TABLE_SIZE),
+                                               m_mapN1c("Next+1CPOS", DEP_TABLE_SIZE),
+                                               m_mapN1f("Next+1Feats", DEP_TABLE_SIZE)
    { loadScores(); }
 
 

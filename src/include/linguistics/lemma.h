@@ -56,11 +56,12 @@ public:
    bool operator == (const CLemma &w) const { return m_nHash == w.m_nHash; }
    bool operator != (const CLemma &w) const { return m_nHash != w.m_nHash; }
    bool operator < (const CLemma &w) const { return m_nHash < w.m_nHash; }
-   bool operator = (const CLemma &w) { m_nHash =  w.m_nHash; }
+   void operator = (const CLemma &w) { m_nHash =  w.m_nHash; }
    void copy(const CLemma &w) { m_nHash = w.m_nHash; }
    void setString(const string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
    // do not use str() for unknown lemmas!!
    const string &str() const { ASSERT(m_nHash<getTokenizer().count(), "lemma.h: str() called for an unknown lemma"); return getTokenizer().key(m_nHash); }
+   void load(const string &s) { m_nHash = getTokenizer().lookup(s); }
    bool empty() { return m_nHash==EMPTY; }
    bool unknown() { return m_nHash==UNKNOWN; }
    void clear() { m_nHash=EMPTY; }
@@ -71,13 +72,12 @@ public:
 inline istream & operator >> (istream &is, CLemma &w) {
    string s ;
    is >> s ;
-   assert( s[0]=='[' && s[s.size()-1] == ']') ;
-   w = s.substr(1,s.size()-2) ;
+   w.load(s) ;
    return is ;
 }
 
-inline ostream & operator << (ostream &os, const CLemma &w) {
-   os << '[' << w.str() << ']' ;
+inline std::ostream & operator << (ostream &os, const CLemma &w) {
+   os << w.str();
    return os ;
 }
 

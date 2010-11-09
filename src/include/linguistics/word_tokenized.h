@@ -71,7 +71,7 @@ public:
    bool operator != (const CWord &w) const { return m_nHash != w.m_nHash; }
    bool operator < (const CWord &w) const { return m_nHash < w.m_nHash; }
 //   void operator = (const string &s) { m_nHash = getTokenizer().lookup(s); }
-   bool operator = (const CWord &w) { m_nHash =  w.m_nHash; }
+   void operator = (const CWord &w) { m_nHash =  w.m_nHash; }
    void copy(const CWord &w) { m_nHash = w.m_nHash; }
    void setString(const string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
    // do not use str() for unknown words!!

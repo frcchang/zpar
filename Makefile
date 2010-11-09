@@ -66,8 +66,8 @@ ENGLISH_CONPARSER_IMPL = srnew
 #
 #================================================================
 
-#DEBUG = -DDEBUG -g
-DEBUG = -DNDEBUG
+DEBUG = -DDEBUG -g
+#DEBUG = -DNDEBUG
 
 #================================================================
 #
@@ -87,7 +87,7 @@ include Makefile.common
 INCLUDES = -I$(SRC_INCLUDES)
 
 CXX = g++
-CXXFLAGS = $(INCLUDES) $(DEBUG)
+CXXFLAGS = -Wall $(INCLUDES) $(DEBUG)
 
 LD=$(CXX)
 LDFLAGS =
@@ -103,6 +103,7 @@ LINGUISTICS_OBJECTS = $(OBJECT_DIR)/linguistics/lemma.o $(OBJECT_DIR)/linguistic
 OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS)
 
 $(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
+	mkdir -p $(OBJECT_DIR)
 	mkdir -p $(OBJECT_DIR)/linguistics
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -110,9 +111,9 @@ all: zpar
 
 # the directories
 $(OBJECT_DIR):
-	mkdir $(OBJECT_DIR)
+	mkdir -p $(OBJECT_DIR)
 $(DIST_DIR):
-	mkdir $(DIST_DIR)
+	mkdir -p $(DIST_DIR)
 
 #  tagger
 SRC_TAGGER = $(SRC_CHINESE)/tagger

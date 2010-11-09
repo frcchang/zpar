@@ -34,7 +34,7 @@ protected:
    CMemoryPoolEntry<T, BLOCK_SIZE> *current;
    unsigned long nItem;
 public:
-   CMemoryPool(): nItem(0), current(0) {
+   CMemoryPool(): current(0), nItem(0) {
       newblock();
       assert(current!=0);
    }

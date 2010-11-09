@@ -15,6 +15,7 @@
 #include "tags.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"
+#include "linguistics/lemma.h"
 #include "dep.h"
 
 #ifdef PUNCT

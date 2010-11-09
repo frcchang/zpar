@@ -104,7 +104,7 @@ protected:
    CEntry **m_buckets;
    CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool;
 public:
-   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), pool(), m_buckets(0) { 
+   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0), pool() { 
       if (initialize) init();
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0), pool() { 
