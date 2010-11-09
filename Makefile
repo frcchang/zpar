@@ -99,14 +99,12 @@ LDFLAGS =
 #================================================================
 
 # the objects
-OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o 
+LINGUISTICS_OBJECTS = $(OBJECT_DIR)/linguistics/lemma.o $(OBJECT_DIR)/linguistics/conll.o
+OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS)
 
 $(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
+	mkdir -p $(OBJECT_DIR)/linguistics
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# the conll format
-$(OBJECT_DIR)/conll.o: $(SRC_INCLUDES)/linguistics/conll.h $(SRC_LIBS)/linguistics/conll.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRC_LIBS)/linguistics/conll.cpp -o $@
 
 all: zpar
 
