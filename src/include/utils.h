@@ -116,7 +116,7 @@ bool fromString(T& t,
  *--------------------------------------------------------------*/
 
 inline string lstrip(const string &s) {
-   int index=0;
+   unsigned index=0;
    while (index<s.size() && (s[index]==' ' || s[index]=='\n' || s[index]=='\r' || s[index]=='\t'))
       ++index;
    return s.substr(index);

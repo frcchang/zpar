@@ -975,6 +975,16 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
 
 };
 
+void CDepParser::initCoNLLCache( const CCoNLLInput &sentence ) {
+   m_lCacheCoNLLLemma.resize(sentence.size());
+   m_lCacheCoNLLCPOS.resize(sentence.size());
+   m_lCacheCoNLLFeats.resize(sentence.size());
+   for (int i=0; i<sentence.size(); ++i) {
+      m_lCacheCoNLLLemma[i].load(sentence.at(i).lemma);
+      m_lCacheCoNLLCPOS[i].load(sentence.at(i).cpos);
+      m_lCacheCoNLLFeats[i].clear();
+   }
+}
 
 /*---------------------------------------------------------------
  *

@@ -30,7 +30,7 @@ class CTokenizer {
       unsigned long m_nWaterMark;
       unsigned long m_nStartingToken;
    public:
-      CTokenizer(unsigned nTokenStartsFrom=0) : m_nStartingToken(nTokenStartsFrom), m_nWaterMark(nTokenStartsFrom), m_mapTokens(TOKENIZER_SIZE) {}
+      CTokenizer(unsigned nTokenStartsFrom=0) : m_mapTokens(TOKENIZER_SIZE), m_nWaterMark(nTokenStartsFrom), m_nStartingToken(nTokenStartsFrom) {}
       virtual ~CTokenizer() {}
       unsigned long lookup(const K &key) {
          unsigned long retval; 

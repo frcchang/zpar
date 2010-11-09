@@ -100,12 +100,12 @@ $(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSE
 # the main executable
 $(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/pos.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/main.cpp -o $(OBJECT_GENERIC_DEPPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECTS)
 
 # the trainer for depparser
 $(DIST_GENERIC_DEPPARSER)/train: $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/train.cpp -o $(OBJECT_GENERIC_DEPPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECTS)
 
 #===================================================================
 

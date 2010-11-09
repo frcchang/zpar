@@ -22,7 +22,7 @@ protected:
    V* table;
 
 public:
-   CTable2() : size1(0), size2(0), table(0), ind1(1, false), ind2(1, false) {}
+   CTable2() : size1(0), size2(0), ind1(1, false), ind2(1, false), table(0) {}
 
 public:
    const V& lookup(const K1&k1, const K2&k2) {
@@ -58,6 +58,7 @@ TRACE("output");
          }
          cout << endl;
       }
+      return os;
    }
    friend std::istream &operator >> (std::istream &is, CTable2 &j) {
       ASSERT(is, "The input file is not ready");
@@ -98,6 +99,7 @@ TRACE("output");
             iss >> j.table[index1*j.size2+index2];
          }
       }
+      return is;
    }
 };
 

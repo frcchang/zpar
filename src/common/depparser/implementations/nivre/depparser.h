@@ -50,7 +50,9 @@ private:
 #ifdef LABELED
    vector< CDependencyLabel > m_lCacheLabel;
 #endif
-   vector< CWord > m_lCacheCoNLLLemma; // conll
+   vector< CLemma > m_lCacheCoNLLLemma; // conll
+   vector< CCoNLLCPOS > m_lCacheCoNLLCPOS; // conll
+   vector< vector<CCoNLLFeats> > m_lCacheCoNLLFeats; // conll
 
    int m_nTrainingRound;
    int m_nTotalErrors;
@@ -91,6 +93,8 @@ public:
 
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
+
+   void initCoNLLCache( const CCoNLLInput &sentence ) ; 
 
    void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
 
