@@ -28,13 +28,13 @@ protected:
    const CScore<SCORE_TYPE> m_zero ;
 
 public:
-   const string name ;
+   const std::string name ;
    bool initialized ;
    unsigned count ;
 
 public:
-//   CScoreMap(string input_name) : name(input_name) , m_zero() {}
-   CScoreMap(string input_name, int TABLE_SIZE, bool bInitMap=true) : CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) , m_zero() , name(input_name) , initialized(bInitMap) , count(0) { }
+//   CScoreMap(std::string input_name) : name(input_name) , m_zero() {}
+   CScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) , m_zero() , name(input_name) , initialized(bInitMap) , count(0) { }
 
 public:
    virtual inline void init() {
@@ -104,7 +104,7 @@ public:
 #ifdef DEBUG
 public:
    void trace() {
-      cout << name << ": ";
+      std::cout << name << ": ";
       CHashMap< K , CScore<SCORE_TYPE> >::trace();
    }
 #endif
@@ -114,9 +114,9 @@ public:
 
 template<typename K, typename SCORE_TYPE>
 inline
-istream & operator >> (istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
+std::istream & operator >> (std::istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
    if (!is) return is ;
-   string s ;
+   std::string s ;
    getline(is, s) ;
    // match name
    const unsigned &size = score_map.name.size();
@@ -125,7 +125,7 @@ istream & operator >> (istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
       // match size
       if ( s.size()>size ) {
          unsigned table_size = 0;
-         istringstream buffer(s.substr(size));
+         std::istringstream buffer(s.substr(size));
          buffer >> table_size;
          if (table_size) {
             unsigned hash_size = 1;
@@ -142,21 +142,21 @@ istream & operator >> (istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
 
 template<typename K, typename SCORE_TYPE>
 inline
-ostream & operator << (ostream &os, CScoreMap<K, SCORE_TYPE> &score_map) {
+std::ostream & operator << (std::ostream &os, CScoreMap<K, SCORE_TYPE> &score_map) {
    assert(os);
    if (score_map.count)
-      os << score_map.name << ' ' << score_map.count << endl ;
+      os << score_map.name << ' ' << score_map.count << std::endl ;
    else
-      os << score_map.name << endl ;
+      os << score_map.name << std::endl ;
 
    typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
       if ( it.second().score(CScore<SCORE_TYPE>::eNonAverage)!=0 ||
            it.second().score(CScore<SCORE_TYPE>::eAverage)!=0 )
-         os << it.first() << "\t:\t" << it.second() << endl ;
+         os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;
    }
-   os << endl ;
+   os << std::endl ;
    return os ;
 }
 

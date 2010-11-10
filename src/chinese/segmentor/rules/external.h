@@ -28,22 +28,22 @@ public:
     *           letters and arabic numbers, the function
     *           also takes an input word map to recognise
     *           foreign letters and arabic numbers, so 
-    *           that they will be joined in the output
+    *           that they will be joined in the outout
     *           sentence by using the rules. 
     *
-    * parameters: sentence - output sentence without spaces
+    * parameters: sentence - outout sentence withstd::cout spaces
     *                     
     *----------------------------------------------------------------*/
    void segment(const CStringVector *sentence_raw, CStringVector *sentence) {
    
-      // clear output
+      // clear outout
       sentence->clear();
       reset();
    
       int index_out = 0;
       for ( int index_raw = 0; index_raw < sentence_raw->size(); index_raw++ ) {
-         const string& current_char = sentence_raw->at(index_raw) ; 
-         const string& last_char = index_raw>0 ? sentence_raw->at(index_raw-1) : "" ; 
+         const std::string& current_char = sentence_raw->at(index_raw) ; 
+         const std::string& last_char = index_raw>0 ? sentence_raw->at(index_raw-1) : "" ; 
          if (current_char!=" ") {
             sentence->push_back(current_char);
             // if input map for character types available then use
@@ -72,7 +72,7 @@ public:
       if (sent == 0)
          return;
       reset();
-      string temp;
+      std::string temp;
       CTwoStringVector::const_iterator it;
       unsigned size = retval->size();
       for (it=sent->begin(); it!=sent->end(); ++it) {

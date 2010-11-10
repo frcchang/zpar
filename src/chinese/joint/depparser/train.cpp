@@ -3,7 +3,7 @@
  *                                                              * 
  * train.cpp - the training for the joint depparser.            * 
  *                                                              * 
- * The module does decoding via combining the best output for a * 
+ * The module does decoding via combining the best outout for a * 
  * tagger with a depparser.                                     * 
  *                                                              *
  * Author: Yue Zhang                                            *
@@ -25,14 +25,14 @@ using namespace chinese;
  * 
  *---------------------------------------------------------------*/
 
-void train(string sInputFile, string sReferenceFile, string sFeatureDB) {
+void train(std::string sInputFile, std::string sReferenceFile, std::string sFeatureDB) {
    TRACE("Training started");
    int time_start = clock();
    CReranker reranker(sFeatureDB, true);
-   ifstream input_file(sInputFile.c_str());
-   ifstream reference_file(sReferenceFile.c_str());
-   ifstream tagging_score_file(string(sInputFile+".scores.tagging").c_str());
-   ifstream parsing_score_file(string(sInputFile+".scores.parsing").c_str());
+   std::ifstream input_file(sInputFile.c_str());
+   std::ifstream reference_file(sReferenceFile.c_str());
+   std::ifstream tagging_score_file(std::string(sInputFile+".scores.tagging").c_str());
+   std::ifstream parsing_score_file(std::string(sInputFile+".scores.parsing").c_str());
 
    int nTagAll, nParseAll;
    int nTagNeeded, nParseNeeded;
@@ -44,7 +44,7 @@ void train(string sInputFile, string sReferenceFile, string sFeatureDB) {
    
    input_file >> nTagAll >> nParseAll;
    input_file >> nTagNeeded >> nParseNeeded;
-   string line;
+   std::string line;
    getline(input_file, line);
    TRACE("Reranking "<<nTagNeeded<<"/"<<nParseNeeded<<" from "<<nTagAll<<"/"<<nParseAll);
 
@@ -61,7 +61,7 @@ void train(string sInputFile, string sReferenceFile, string sFeatureDB) {
    nCount = 0;
    reference_file >> correct;
    while( !(correct.empty()) ) {
-      cout << "Sentence " << ++nCount << endl;
+      std::cout << "Sentence " << ++nCount << std::endl;
       int index=0;
       for (int i=0; i<nTagAll; ++i) {
          for (int j=0; j<nParseAll; j++) {
@@ -72,7 +72,7 @@ void train(string sInputFile, string sReferenceFile, string sFeatureDB) {
                nbest[index] = tmp_sent;
                prior_scores[index*2] = tmp_priors[0] / (8003*9) / 1000;
                prior_scores[index*2+1] = tmp_priors[1] / (8003*15) / 1000;
-               //cout << prior_scores[index*2] << "\t" << prior_scores[index*2+1] << endl;
+               //std::cout << prior_scores[index*2] << "\t" << prior_scores[index*2+1] << std::endl;
                index++;
             }
          }
@@ -96,19 +96,19 @@ void train(string sInputFile, string sReferenceFile, string sFeatureDB) {
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " n_best_file reference_file feature_file numer_of_iterations\n\n\
+   const std::string hint = " n_best_file reference_file feature_file numer_of_iterations\n\n\
 The N-best file must contain two header lines, the first specifying how\n\
-many tagging and parsing outputs are contained in the file, and the \n\
-second specifying how many tagging and parsing outputs are used in the \n\
+many tagging and parsing outouts are contained in the file, and the \n\
+second specifying how many tagging and parsing outouts are used in the \n\
 reranking system. \n\
 For example, the file might start with the heading\n\
 10 10\n\
 5 5\n\
-which means that there are 100 outputs per input, organised by 10 tag \n\
-outputs, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
+which means that there are 100 outouts per input, organised by 10 tag \n\
+outouts, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
 ";
    if (argc < 5) {
-      cout << "Usage: " << argv[0] << hint << endl;
+      std::cout << "Usage: " << argv[0] << hint << std::endl;
       return 1;
    }
 

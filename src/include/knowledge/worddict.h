@@ -33,7 +33,7 @@ public:
 
 public:
 
-   // whether the word and tag pair is in the dictionary
+   // whether the word and tag std::pair is in the dictionary
    CWordCat lookup(const CWord &word) const {
       return find(word, 0);
    }
@@ -43,14 +43,14 @@ public:
 //==============================================================*/
 
 inline
-istream & operator >> (istream &is, CWordDictionary &dict) {
+std::istream & operator >> (std::istream &is, CWordDictionary &dict) {
    if (!is) return is;
-   string s ;
+   std::string s ;
    unsigned long int i ;
-   string ln ; 
+   std::string ln ; 
    getline(is, ln);
    while (is && !(ln.empty())) {
-      istringstream iss(ln) ; 
+      std::istringstream iss(ln) ; 
       iss >> s >> i ;
       dict[s] = i ;
       getline(is, ln);
@@ -59,14 +59,14 @@ istream & operator >> (istream &is, CWordDictionary &dict) {
 }
 
 inline
-ostream & operator << (ostream &os, CWordDictionary &dic) {
+std::ostream & operator << (std::ostream &os, CWordDictionary &dic) {
    CWordDictionary::iterator it;
    it = dic.begin() ;
    while (it != dic.end()) {
-      os << it.first().str() << "\t" << it.second() << endl ;
+      os << it.first().str() << "\t" << it.second() << std::endl ;
       ++it ; 
    }
-   os << endl;
+   os << std::endl;
    return os ;
 }
 

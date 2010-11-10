@@ -18,7 +18,7 @@ private:
    // PRIVATE MEMBER VARIABLES
    //
    bool m_bScoreModified; // scores modified in memory but has not been committed to database
-   string m_sFeatureDB;   // the name of the feature database, currently sqlitedb
+   std::string m_sFeatureDB;   // the name of the feature database, currently sqlitedb
    CWeight m_weights;
    const CScore<SCORE_TYPE> m_zeroScore;
    CSegmentor* m_parent;
@@ -26,7 +26,7 @@ public:
    //
    // CONSTRUCTOR AND DESTRUCTOR METHODS
    // 
-   CFeatureHandle(CSegmentor* pSegmentor, string sFileName, bool bTrain, bool bRules) : m_parent(pSegmentor), m_sFeatureDB(sFileName), m_bTrain(bTrain), m_CharCat(0), m_WordLst(0), m_zeroScore(), m_bRule(bRules) { loadScores(); } 
+   CFeatureHandle(CSegmentor* pSegmentor, std::string sFileName, bool bTrain, bool bRules) : m_parent(pSegmentor), m_sFeatureDB(sFileName), m_bTrain(bTrain), m_CharCat(0), m_WordLst(0), m_zeroScore(), m_bRule(bRules) { loadScores(); } 
    ~CFeatureHandle() { 
       if (m_bScoreModified) saveScores(); 
       if (m_CharCat) { delete m_CharCat; }
@@ -45,33 +45,33 @@ public:
    // collect the set of features from data
    void extractPosFeatures(const CStringVector *sent);
 #endif
-   // update the built-in weight vector for this feature object specifically
-   void updateScoreVector(const CStringVector* output, const CStringVector* correct, int round=0);
-   // compute the total or average feature vector after update
+   // update the built-in weight std::vector for this feature object specifically
+   void updateScoreVector(const CStringVector* outout, const CStringVector* correct, int round=0);
+   // compute the total or average feature std::vector after update
    void computeAverageFeatureWeights(int round=0) {
-      cout << "Computing averaged feature scores ... ";
+      std::cout << "Computing averaged feature scores ... ";
       iterate_templates(,.computeAverage(round););
-      cout << "done" << endl;
+      std::cout << "done" << std::endl;
    }
 
-   // load the weight vectors from the database
+   // load the weight std::vectors from the database
    void loadScores() {
       // initialize
       clock_t time_start = clock();
-      string line;
-      cout << "Loading model ... "; cout.flush();
-      ifstream is(m_sFeatureDB.c_str());
+      std::string line;
+      std::cout << "Loading model ... "; std::cout.flush();
+      std::ifstream is(m_sFeatureDB.c_str());
       if (!is.is_open()) { 
-         cout << "empty."<<endl; 
+         std::cout << "empty."<<std::endl; 
          iterate_templates(,.init(););
          return; 
       }
       // use char cat information?
       bool bCharCat; 
       getline(is, line);
-      istringstream(line) >> bCharCat;
+      std::istringstream(line) >> bCharCat;
       if (bCharCat) {
-         cout << "loading charcat ... "; cout.flush();
+         std::cout << "loading charcat ... "; std::cout.flush();
          if (m_CharCat==0) {
             m_CharCat = new CWordDictionary(2719);
             is >> static_cast<CWordDictionary&>(*m_CharCat); //is
@@ -81,9 +81,9 @@ public:
       // use lexicon?
       bool bLexicon;
       getline(is, line);
-      istringstream(line) >> bLexicon;
+      std::istringstream(line) >> bLexicon;
       if (bLexicon) {
-         cout << "loading lexicon ... "; cout.flush();
+         std::cout << "loading lexicon ... "; std::cout.flush();
          if (m_WordLst==0) {
             m_WordLst = new CLexiconSet;
             is >> (*m_WordLst); //is
@@ -92,29 +92,29 @@ public:
       }
       // use rules?
       getline(is, line);
-      istringstream(line) >> m_bRule;
+      std::istringstream(line) >> m_bRule;
       // load features by iterating templates defined by implementation
       iterate_templates(is>>,;);
       // finalize
       is.close();
       m_bScoreModified = false;
-      cout << "done (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)." << endl ;
+      std::cout << "done (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)." << std::endl ;
    }
 
-   // save the weight vectors into the database
+   // save the weight std::vectors into the database
    void saveScores() {
       // initialization
-      cout << "Saving model ... "; cout.flush();
-      ofstream os(m_sFeatureDB.c_str());
+      std::cout << "Saving model ... "; std::cout.flush();
+      std::ofstream os(m_sFeatureDB.c_str());
       assert(os.is_open());
       // save charcat
-      os << (m_CharCat?1:0) << endl;
+      os << (m_CharCat?1:0) << std::endl;
       if (m_CharCat) os << static_cast<CWordDictionary &>(*m_CharCat);
       // save lexicon
-      os << (m_WordLst?1:0) << endl; 
+      os << (m_WordLst?1:0) << std::endl; 
       if (m_WordLst) os << (*m_WordLst);
       // save rule
-      os << m_bRule << endl;
+      os << m_bRule << std::endl;
       // save features
 #ifdef DEBUG
       iterate_templates(,.trace(););
@@ -123,7 +123,7 @@ public:
       // finalization
       os.close();
       m_bScoreModified = false;
-      cout << "done." << endl ;
+      std::cout << "done." << std::endl ;
    }
 
    // cached words and tags
@@ -135,8 +135,8 @@ private:
    //
    // PRIVATE METHODS
    //
-   // add local features to a global feature vector (first param)
-   void updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* output, int index, int round=0);
+   // add local features to a global feature std::vector (first param)
+   void updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* outout, int index, int round=0);
 };
 
 #endif

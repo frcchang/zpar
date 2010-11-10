@@ -22,7 +22,7 @@ using namespace chinese;
  *--------------------------------------------------------------*/
 
 bool CDoc2Snt::fillBuffer() {
-   string chr;
+   std::string chr;
    bool retval = false;
    // keep on reading
    while (!m_buffer.full() && m_reader->readRawCharacter(&chr)) {

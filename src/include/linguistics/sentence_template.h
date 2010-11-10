@@ -20,7 +20,7 @@
  *==============================================================*/
 
 template<typename CSentenceNode>
-class CSentenceTemplate : public vector<CSentenceNode> {
+class CSentenceTemplate : public std::vector<CSentenceNode> {
 
 public:
    CSentenceTemplate() {}
@@ -32,7 +32,7 @@ public:
 template <typename CSentenceNode>
 inline std::istream & operator >> (std::istream &is, CSentenceTemplate<CSentenceNode> &sent) {
    sent.clear();
-   string line;
+   std::string line;
 //   while(is && line.empty())
 //      getline(is, line);
    getline(is, line);
@@ -40,7 +40,7 @@ inline std::istream & operator >> (std::istream &is, CSentenceTemplate<CSentence
    while(is && !line.empty())
    {
       CSentenceNode node;
-      istringstream iss(line);
+      std::istringstream iss(line);
       iss >> node ;
       sent.push_back( node );
       getline(is, line);
@@ -51,8 +51,8 @@ inline std::istream & operator >> (std::istream &is, CSentenceTemplate<CSentence
 template <typename CSentenceNode>
 inline std::ostream & operator << (std::ostream &os, const CSentenceTemplate<CSentenceNode> &sent) {
    for (unsigned i=0; i<sent.size(); ++i)
-      os << sent.at(i) << endl ;
-   os << endl ;
+      os << sent.at(i) << std::endl ;
+   os << std::endl ;
    return os ;
 }
 

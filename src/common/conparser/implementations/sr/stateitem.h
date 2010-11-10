@@ -106,12 +106,12 @@ class CContext;
 class CStateItem {
 public:
    SCORE_TYPE score;
-   vector<CStateNode> nodes;
-   vector<int> stack;
+   std::vector<CStateNode> nodes;
+   std::vector<int> stack;
    int current_word;
    int unary_reduce; // unary_reduce stores two things: non-negative value is the number of unary_reduces consecutively, -1 means that the state item is finished.
    const CContext *context;
-   const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
+   const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
    
 public:
    CStateItem() : current_word(0), score(0), unary_reduce(0), context(0), sent(0), stack(), nodes() {}
@@ -381,12 +381,12 @@ public:
       return unary_reduce == -1; 
    }
 
-   void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &out) const {
+   void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &std::cout) const {
       // parsing done?
       //assert(IsComplete());
       assert(IsTerminated());
       assert(tagged.size()==sent->size());
-      out.clear();
+      std::cout.clear();
 #ifdef FRAGMENTED_TREE
       if (stack.size()>1) {
          static CStateItem item;
@@ -397,29 +397,29 @@ public:
             item.reduce(CConstituent::NONE, false, false, false); 
          }
          item.terminate();
-         item.GenerateTree(tagged, out);
+         item.GenerateTree(tagged, std::cout);
          return;
       }
 #else
       //assert(stack.size()==1);
       if (stack.size()>1) { WARNING("Parser failed.");return; }
 #endif
-      // generate nodes for out
+      // generate nodes for std::cout
       int i,j;
       // first words
       for (i=0; i<tagged.size(); ++i) 
-         out.newWord(tagged[i].first, tagged[i].second);
+         std::cout.newWord(tagged[i].first, tagged[i].second);
       // second constituents
       for (i=0; i<nodes.size(); ++i) {
-         j = out.newNode();
+         j = std::cout.newNode();
          // copy node
-         nodes[j].toCCFGTreeNode(out.nodes[j]);
+         nodes[j].toCCFGTreeNode(std::cout.nodes[j]);
          // update words ; use the constituent label for leaf nodes if any
 //         if (!nodes[j].is_constituent() && nodes[j].constituent.code()!=CConstituent::NONE) {
-//            out.words[nodes[j].lexical_head].second = nodes[j].constituent.str();
+//            std::cout.words[nodes[j].lexical_head].second = nodes[j].constituent.str();
 //         }
       }
-      out.root = stack.back();
+      std::cout.root = stack.back();
    }
 
    //===============================================================================

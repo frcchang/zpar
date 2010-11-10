@@ -43,7 +43,7 @@ class CDepParser : public CDepParserBase {
 
 private:
 
-   vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -51,7 +51,7 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const string &sFeatureDBPath , bool bTrain , bool bCoNLL ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
+   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
@@ -72,7 +72,7 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      cout << "Total number of training errors are: " << m_nTotalErrors << endl;
+      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
 
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
@@ -85,7 +85,7 @@ private:
    inline depparser::SCORE_TYPE getCrossLinkScore(const depparser::CSpan *span);
    inline depparser::SCORE_TYPE getCrossLinkScore(const int head, const int dep);
 
-   // update the built-in weight vector for this feature object specifically
+   // update the built-in weight std::vector for this feature object specifically
    void updateScoreVector(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
    void updateCrossLinkScore(int left_index, int right_index, const CDependencyParse &tree, SCORE_UPDATE method, int round=0);
 

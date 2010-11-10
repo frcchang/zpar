@@ -45,7 +45,7 @@ protected:
    unsigned m_nTrainingRound;
 
 public:
-   CTaggerBase(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize, const string &sKnowledgePath, bool bSegmentationRules) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) , m_nTrainingRound(0) { 
+   CTaggerBase(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) , m_nTrainingRound(0) { 
       // load features
       m_weights = new tagger::CWeight(sFeatureDBPath, bTrain, bSegmentationRules); 
       // load knowledge
@@ -70,7 +70,7 @@ public:
    CTaggerBase(CTaggerBase& tagger) : m_nMaxSentSize(0)  { THROW("CTagger does not support copy constructor!"); }
 
 protected:
-   virtual void loadKnowledge(const string &sKnowledgePath) {
+   virtual void loadKnowledge(const std::string &sKnowledgePath) {
       THROW("CTaggerBase: the tagger class didn't override loadKnowledge."); // load knowledge should be implemented by sub class
    }
 

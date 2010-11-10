@@ -37,7 +37,7 @@ public:
 
    public:
       iterator() {}
-      iterator(CHashMap<K, V> *parent, const unsigned long &bucket, const typename map<K, V>::iterator &it) {
+      iterator(CHashMap<K, V> *parent, const unsigned long &bucket, const typename std::map<K, V>::iterator &it) {
          m_parent = parent; 
          m_nBucket = bucket; 
          m_it=it; 
@@ -87,7 +87,7 @@ public:
    //===============================================================
 
 protected:
-   map<K, V> *m_mapBuckets;
+   std::map<K, V> *m_mapBuckets;
 
    //===============================================================
 
@@ -96,7 +96,7 @@ public:
       if (bInit) init();
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0) { 
-      cerr << "CHashMap does not support copy constructor!"; 
+      std::cerr << "CHashMap does not support copy constructor!"; 
       assert(1==0);
    }
    virtual ~CHashMap() { delete[] m_mapBuckets;}
@@ -108,38 +108,38 @@ public:
 
    void init() {
       ASSERT(m_mapBuckets==0, "Cannot reinit table");
-      m_mapBuckets = new map<K, V>[m_nTableSize]; 
+      m_mapBuckets = new std::map<K, V>[m_nTableSize]; 
    }
 
    V &operator[] (const K &key) { return m_mapBuckets[hash(key)%m_nTableSize][key]; }
 
-   void insert (const K &key, const V &val) { m_mapBuckets[hash(key)%m_nTableSize].insert(make_pair(key, val)); }
-   void insert (const pair<K,V> &par) { m_mapBuckets[hash(par.first)%m_nTableSize].insert(par); }
+   void insert (const K &key, const V &val) { m_mapBuckets[hash(key)%m_nTableSize].insert(std::make_pair(key, val)); }
+   void insert (const std::pair<K,V> &par) { m_mapBuckets[hash(par.first)%m_nTableSize].insert(par); }
 
    const V &find (const K &key, const V &val) const { 
-      map<K, V>&m=m_mapBuckets[hash(key)%m_nTableSize]; 
-      typename map<K,V>::iterator it=m.find(key); 
+      std::map<K, V>&m=m_mapBuckets[hash(key)%m_nTableSize]; 
+      typename std::map<K,V>::iterator it=m.find(key); 
       if (it != m.end()) 
          return it->second; 
       else return val; 
    }
 
    bool findorinsert (const K &key, const V &val, V &retvalue) { 
-      map<K, V>&m=m_mapBuckets[hash(key)%m_nTableSize]; 
-      typename map<K,V>::iterator it=m.find(key); 
+      std::map<K, V>&m=m_mapBuckets[hash(key)%m_nTableSize]; 
+      typename std::map<K,V>::iterator it=m.find(key); 
       if (it != m.end()) {
          retvalue = it->second; 
          return false;
       } else {
-         m.insert(it, make_pair(key, val)); 
+         m.insert(it, std::make_pair(key, val)); 
          retvalue = val; 
          return true;
       } 
    }
 
    bool element (const K &key) const { 
-      map<K, V>&m=m_mapBuckets[hash(key)%m_nTableSize]; 
-      typename map<K,V>::iterator it=m.find(key); 
+      std::map<K, V>&m=m_mapBuckets[hash(key)%m_nTableSize]; 
+      typename std::map<K,V>::iterator it=m.find(key); 
       if(it == m.end()) 
          return false; 
       return true; 
@@ -157,7 +157,7 @@ public:
 public:
 
 #ifdef DEBUG 
-   void trace() { for (unsigned i=0; i<m_nTableSize; ++i) cout<<m_mapBuckets[i].size()<<' ';}
+   void trace() { for (unsigned i=0; i<m_nTableSize; ++i) std::cout<<m_mapBuckets[i].size()<<' ';}
 #endif
 
 };

@@ -54,18 +54,18 @@ return 0;
    nReturn += cast_weights->m_mapHtMt.getOrUpdateScore(cf, m_nScoreIndex, amount, round);
 
    cf.clear(); cf+=mt; cf+=0; cf+=0;
-   nReturn += cast_weights->m_mapHwMt.getOrUpdateScore(make_pair(hw, cf), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwMt.getOrUpdateScore(std::make_pair(hw, cf), m_nScoreIndex, amount, round);
    cf.clear(); cf+=mt; cf+=direction; cf+=0;
-   nReturn += cast_weights->m_mapHwMt.getOrUpdateScore(make_pair(hw, cf), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwMt.getOrUpdateScore(std::make_pair(hw, cf), m_nScoreIndex, amount, round);
    cf.clear(); cf+=mt; cf+=direction; cf+=dist;
-   nReturn += cast_weights->m_mapHwMt.getOrUpdateScore(make_pair(hw, cf), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwMt.getOrUpdateScore(std::make_pair(hw, cf), m_nScoreIndex, amount, round);
 
    cf.clear(); cf+=ht; cf+=0; cf+=0;
-   nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(make_pair(mw, cf), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(std::make_pair(mw, cf), m_nScoreIndex, amount, round);
    cf.clear(); cf+=ht; cf+=direction; cf+=0;
-   nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(make_pair(mw, cf), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(std::make_pair(mw, cf), m_nScoreIndex, amount, round);
    cf.clear(); cf+=ht; cf+=direction;cf+=dist;
-   nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(make_pair(mw, cf), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHtMw.getOrUpdateScore(std::make_pair(mw, cf), m_nScoreIndex, amount, round);
 */
    return nReturn;
 
@@ -97,14 +97,14 @@ return 0;
    nReturn += cast_weights->m_mapSiblingTags.getOrUpdateScore(k | (dist<<(CTag::SIZE*3)), m_nScoreIndex, amount, round);
 
    k = encodeTags(ht, mt);
-   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k|(direction<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(make_pair(sw, k|(dist<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(std::make_pair(sw, k), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(std::make_pair(sw, k|(direction<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingWordTag.getOrUpdateScore(std::make_pair(sw, k|(dist<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
 
    k = encodeTags(ht, st);
-   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k|(direction<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(make_pair(mw, k|(dist<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(std::make_pair(mw, k), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(std::make_pair(mw, k|(direction<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapSiblingTagWord.getOrUpdateScore(std::make_pair(mw, k|(dist<<(CTag::SIZE*2))), m_nScoreIndex, amount, round);
 
    return nReturn;
 }
@@ -122,10 +122,10 @@ SCORE_TYPE CConParser::getOrUpdateArityScore( const unsigned long &head, const u
    const CWord &w = m_lCache[head].word;
    const CTag &t = m_lCache[head].tag;
 
-   nReturn += cast_weights->m_mapHwArityL.getOrUpdateScore(make_pair(w, arityleft), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHtArityL.getOrUpdateScore(make_pair(t.code(), arityleft), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHwArityR.getOrUpdateScore(make_pair(w, arityright), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHtArityR.getOrUpdateScore(make_pair(t.code(), arityright), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwArityL.getOrUpdateScore(std::make_pair(w, arityleft), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHtArityL.getOrUpdateScore(std::make_pair(t.code(), arityleft), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwArityR.getOrUpdateScore(std::make_pair(w, arityright), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHtArityR.getOrUpdateScore(std::make_pair(t.code(), arityright), m_nScoreIndex, amount, round);
 
    return nReturn;
 }
@@ -145,10 +145,10 @@ return 0;
    static CCFGSet cs; cs.clear();
    cs += parent; cs += child;
 
-   nReturn += cast_weights->m_mapHw.getOrUpdateScore(make_pair(w, parent), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHt.getOrUpdateScore(make_pair(t.code(), parent), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHw.getOrUpdateScore(std::make_pair(w, parent), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHt.getOrUpdateScore(std::make_pair(t.code(), parent), m_nScoreIndex, amount, round);
    nReturn += cast_weights->m_mapHc.getOrUpdateScore(cs, m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHwc.getOrUpdateScore(make_pair(w, cs), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwc.getOrUpdateScore(std::make_pair(w, cs), m_nScoreIndex, amount, round);
    
    return nReturn;
 }
@@ -193,9 +193,9 @@ return 0;
    
    cs.clear(); cs += parent; cs += child; cs += child1; cs += pos;
    nReturn += cast_weights->m_mapHcMc.getOrUpdateScore(cs, m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHcMw.getOrUpdateScore(make_pair(mw, cs), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHwMc.getOrUpdateScore(make_pair(hw, cs), m_nScoreIndex, amount, round);
-   nReturn += cast_weights->m_mapHwMw.getOrUpdateScore(make_pair(hwmw, cs), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHcMw.getOrUpdateScore(std::make_pair(mw, cs), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwMc.getOrUpdateScore(std::make_pair(hw, cs), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapHwMw.getOrUpdateScore(std::make_pair(hwmw, cs), m_nScoreIndex, amount, round);
 
    return nReturn;
 }
@@ -253,7 +253,7 @@ SCORE_TYPE CConParser::getOrUpdateGraphScore( const CStateItem *item, SCORE_TYPE
    //      ct += m_Context.s0_unbinarized_cs[i];
    //   }
    //   nReturn += cast_weights->m_mapRules.getOrUpdateScore(ct, m_nScoreIndex, amount, round);
-      //if (nd.norv) nReturn += cast_weights->m_mapRulesWithSizes.getOrUpdateScore(make_pair(ct, j), m_nScoreIndex, amount, round);
+      //if (nd.norv) nReturn += cast_weights->m_mapRulesWithSizes.getOrUpdateScore(std::make_pair(ct, j), m_nScoreIndex, amount, round);
    //}
 
    return nReturn;
@@ -314,7 +314,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    // action type features
 //   if (m_Context.s1!=-1) {
 //      nReturn +=
-//      cast_weights->m_mapS0wtS1wt.getOrUpdateScore(make_pair(m_Context.s0wts1wt, actionType), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wtS1wt.getOrUpdateScore(std::make_pair(m_Context.s0wts1wt, actionType), m_nScoreIndex, amount, round);
 //      refer_or_allocate_tuple3(twoword_tag_actiontype, &(m_Context.s0ws1w),
 //      &(m_Context.s0t), &actionType); 
 //      nReturn += cast_weights->m_mapS0wtS1w.getOrUpdateScore(twoword_tag_actiontype, m_nScoreIndex, amount, round);
@@ -322,7 +322,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 //      &(m_Context.s1t), &actionType); 
 //      nReturn += cast_weights->m_mapS0wS1wt.getOrUpdateScore(twoword_tag_actiontype, m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1w.getOrUpdateScore(make_pair(m_Context.s0ws1w, actionType), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1w.getOrUpdateScore(std::make_pair(m_Context.s0ws1w, actionType), m_nScoreIndex, amount, round);
 //      refer_or_allocate_tuple3(word_cfgset_actiontype, m_Context.s0w,
 //      &(m_Context.s0ts1t), &actionType);
 //      nReturn += cast_weights->m_mapS0wtS1t.getOrUpdateScore(word_cfgset_actiontype, m_nScoreIndex, amount, round);
@@ -330,17 +330,17 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 //      &(m_Context.s0ts1t), &actionType); 
 //      nReturn += cast_weights->m_mapS0tS1wt.getOrUpdateScore(word_cfgset_actiontype, m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0tS1t.getOrUpdateScore(make_pair(m_Context.s0ts1t, actionType), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0tS1t.getOrUpdateScore(std::make_pair(m_Context.s0ts1t, actionType), m_nScoreIndex, amount, round);
 //
 //      for (j=0; j<m_Context.between_tag.size(); j++) {
 //         s0ts1tbt.setLast(m_Context.between_tag[j]);
-//         nReturn += cast_weights->m_mapBetweenTags.getOrUpdateScore(make_pair(s0ts1tbt, actiontype), m_nScoreIndex, amount, round);
+//         nReturn += cast_weights->m_mapBetweenTags.getOrUpdateScore(std::make_pair(s0ts1tbt, actiontype), m_nScoreIndex, amount, round);
 //      }
 //   }
 
    // S0
-   nReturn += cast_weights->m_mapS0w.getOrUpdateScore(make_pair(*(m_Context.s0wt), action), m_nScoreIndex, amount, round);
-   if (!m_Context.s0c.empty()) nReturn += cast_weights->m_mapS0c.getOrUpdateScore(make_pair(m_Context.s0c, action), m_nScoreIndex, amount, round);
+   nReturn += cast_weights->m_mapS0w.getOrUpdateScore(std::make_pair(*(m_Context.s0wt), action), m_nScoreIndex, amount, round);
+   if (!m_Context.s0c.empty()) nReturn += cast_weights->m_mapS0c.getOrUpdateScore(std::make_pair(m_Context.s0c, action), m_nScoreIndex, amount, round);
    refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s0t), &(m_Context.s0c), &action); 
    nReturn += cast_weights->m_mapS0tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
    refer_or_allocate_tuple3(word_constituent_action, m_Context.s0w, &(m_Context.s0c), &action); 
@@ -348,8 +348,8 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S1
    if (m_Context.s1!=0) {
-      nReturn += cast_weights->m_mapS1w.getOrUpdateScore(make_pair(*(m_Context.s1wt), action), m_nScoreIndex, amount, round);
-      if (!m_Context.s1c.empty()) nReturn += cast_weights->m_mapS1c.getOrUpdateScore(make_pair(m_Context.s1c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS1w.getOrUpdateScore(std::make_pair(*(m_Context.s1wt), action), m_nScoreIndex, amount, round);
+      if (!m_Context.s1c.empty()) nReturn += cast_weights->m_mapS1c.getOrUpdateScore(std::make_pair(m_Context.s1c, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s1t), &(m_Context.s1c), &action); 
       nReturn += cast_weights->m_mapS1tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_constituent_action, m_Context.s1w, &(m_Context.s1c), &action); 
@@ -358,7 +358,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S2
    if (m_Context.s2!=0) {
-//      nReturn += cast_weights->m_mapS2w.getOrUpdateScore(make_pair(*(m_Context.s2w), action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapS2w.getOrUpdateScore(std::make_pair(*(m_Context.s2w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS2c.getOrUpdateScore(s2c_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s2t), &(m_Context.s2c), &action); 
       nReturn += cast_weights->m_mapS2tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
@@ -368,7 +368,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // S3
    if (m_Context.s3!=0) {
-//      nReturn += cast_weights->m_mapS3w.getOrUpdateScore(make_pair(*(m_Context.s3w), action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapS3w.getOrUpdateScore(std::make_pair(*(m_Context.s3w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS3c.getOrUpdateScore(s3c_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(tag_constituent_action, &(m_Context.s3t), &(m_Context.s3c), &action); 
       nReturn += cast_weights->m_mapS3tc.getOrUpdateScore(tag_constituent_action, m_nScoreIndex, amount, round);
@@ -378,30 +378,30 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 
    // N0
    if (m_Context.n0!=-1) {
-//      nReturn += cast_weights->m_mapN0w.getOrUpdateScore(make_pair(*(m_Context.n0w), action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapN0w.getOrUpdateScore(std::make_pair(*(m_Context.n0w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN0t.getOrUpdateScore(n0t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN0wt.getOrUpdateScore(make_pair(*(m_Context.n0wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN0wt.getOrUpdateScore(std::make_pair(*(m_Context.n0wt), action), m_nScoreIndex, amount, round);
    }
 
    // N1
    if (m_Context.n1!=-1) {
-//      nReturn += cast_weights->m_mapN1w.getOrUpdateScore(make_pair(*(m_Context.n1w), action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapN1w.getOrUpdateScore(std::make_pair(*(m_Context.n1w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN1t.getOrUpdateScore(n1t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN1wt.getOrUpdateScore(make_pair(*(m_Context.n1wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN1wt.getOrUpdateScore(std::make_pair(*(m_Context.n1wt), action), m_nScoreIndex, amount, round);
    }
 
    // N2
    if (m_Context.n2!=-1) {
-//      nReturn += cast_weights->m_mapN2w.getOrUpdateScore(make_pair(*(m_Context.n2w), action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapN2w.getOrUpdateScore(std::make_pair(*(m_Context.n2w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN2t.getOrUpdateScore(n2t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN2wt.getOrUpdateScore(make_pair(*(m_Context.n2wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN2wt.getOrUpdateScore(std::make_pair(*(m_Context.n2wt), action), m_nScoreIndex, amount, round);
    }
 
    // N3
    if (m_Context.n3!=-1) {
-//      nReturn += cast_weights->m_mapN3w.getOrUpdateScore(make_pair(*(m_Context.n3w), action), m_nScoreIndex, amount, round);
+//      nReturn += cast_weights->m_mapN3w.getOrUpdateScore(std::make_pair(*(m_Context.n3w), action), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapN3t.getOrUpdateScore(n3t_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapN3wt.getOrUpdateScore(make_pair(*(m_Context.n3wt), action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapN3wt.getOrUpdateScore(std::make_pair(*(m_Context.n3wt), action), m_nScoreIndex, amount, round);
    }
 
    // S0L
@@ -461,7 +461,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0cS1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s0cs1c), &action); 
       nReturn += cast_weights->m_mapS0wS1c.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(make_pair(m_Context.s0cs1c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS1c.getOrUpdateScore(std::make_pair(m_Context.s0cs1c, action), m_nScoreIndex, amount, round);
 
    }
 
@@ -473,9 +473,9 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS0cN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s0cn0t), &action); 
       nReturn += cast_weights->m_mapS0wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0cN0t.getOrUpdateScore(make_pair(m_Context.s0cn0t, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cN0t.getOrUpdateScore(std::make_pair(m_Context.s0cn0t, action), m_nScoreIndex, amount, round);
       //if (item->nodes[m_Context.s0].norv&&m_Context.n0norv) nReturn +=
-      //cast_weights->m_mapS0cmN0tm.getOrUpdateScore(make_pair(s0cn0t_action,
+      //cast_weights->m_mapS0cmN0tm.getOrUpdateScore(std::make_pair(s0cn0t_action,
       //encodeRhythms(m_Context.s0c, m_Context.n0m)), m_nScoreIndex, amount, round);
    }
 
@@ -487,7 +487,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
       nReturn += cast_weights->m_mapS1cN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, m_Context.s1w, &(m_Context.s1cn0t), &action); 
       nReturn += cast_weights->m_mapS1wN0t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS1cN0t.getOrUpdateScore(make_pair(m_Context.s1cn0t, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS1cN0t.getOrUpdateScore(std::make_pair(m_Context.s1cn0t, action), m_nScoreIndex, amount, round);
    }
 
    // N0 N1
@@ -500,7 +500,7 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
 //      refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.n0tn1t), &action); 
 //      nReturn += cast_weights->m_mapN0wN1t.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapN0tN1t.getOrUpdateScore(make_pair(m_Context.n0tn1t, action), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapN0tN1t.getOrUpdateScore(std::make_pair(m_Context.n0tn1t, action), m_nScoreIndex, amount, round);
 //   }
 //   
 #ifdef _CHINESE_CFG_H
@@ -508,18 +508,18 @@ inline SCORE_TYPE CConParser::getOrUpdateStackScore( const CStateItem *item, con
    if (m_Context.open_bracket_match_type!=0) {
 if (!m_Context.s0c.empty() && !m_Context.s1c.empty()) {
       nReturn += cast_weights->m_mapBracketS0c.getOrUpdateScore(s0c_bracket_action, m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapBracketS0w.getOrUpdateScore(make_pair(*(m_Context.s0w), encodeAction(action, m_Context.open_bracket_match_type)), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapBracketS0w.getOrUpdateScore(std::make_pair(*(m_Context.s0w), encodeAction(action, m_Context.open_bracket_match_type)), m_nScoreIndex, amount, round);
       if (m_Context.s1!=0) {
-         nReturn += cast_weights->m_mapBracketS0wS1c.getOrUpdateScore(make_pair(*(m_Context.s0w), s1c_bracket_action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapBracketS0wS1c.getOrUpdateScore(std::make_pair(*(m_Context.s0w), s1c_bracket_action), m_nScoreIndex, amount, round);
          nReturn +=
-cast_weights->m_mapBracketS0cS1w.getOrUpdateScore(make_pair(*(m_Context.s1w), s0c_bracket_action), m_nScoreIndex, amount, round);
+cast_weights->m_mapBracketS0cS1w.getOrUpdateScore(std::make_pair(*(m_Context.s1w), s0c_bracket_action), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapBracketS0cS1c.getOrUpdateScore(s0cs1c_bracket_action, m_nScoreIndex, amount, round);
       }
       if (m_Context.n0!=-1) {
          nReturn +=
-cast_weights->m_mapBracketS0cN0w.getOrUpdateScore(make_pair(*(m_Context.n0w), s0c_bracket_action), m_nScoreIndex, amount, round);
+cast_weights->m_mapBracketS0cN0w.getOrUpdateScore(std::make_pair(*(m_Context.n0w), s0c_bracket_action), m_nScoreIndex, amount, round);
          nReturn +=
-cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0t_bracket_action), m_nScoreIndex, amount, round);
+cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(std::make_pair(*(m_Context.s0w), n0t_bracket_action), m_nScoreIndex, amount, round);
          nReturn += cast_weights->m_mapBracketS0cN0t.getOrUpdateScore(s0cn0t_bracket_action, m_nScoreIndex, amount, round);
       }
 }
@@ -528,24 +528,24 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
       if (!m_Context.s0c.empty() && !m_Context.s1c.empty()) {
          static unsigned long i;
          for (i=0; i<m_Context.s0c_separator.size(); ++i) {
-            nReturn += cast_weights->m_mapS0cSeparator.getOrUpdateScore(make_pair(m_Context.s0c_separator[i], action), m_nScoreIndex, amount, round);
+            nReturn += cast_weights->m_mapS0cSeparator.getOrUpdateScore(std::make_pair(m_Context.s0c_separator[i], action), m_nScoreIndex, amount, round);
             refer_or_allocate_tuple3(word_int_action, m_Context.s0w, &(m_Context.s0c_separator[i]), &action); 
             nReturn += cast_weights->m_mapS0wcSeparator.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
          }
-         nReturn += cast_weights->m_mapS0cSepCount.getOrUpdateScore(make_pair(m_Context.s0c_sepcount, action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS0cSepCount.getOrUpdateScore(std::make_pair(m_Context.s0c_sepcount, action), m_nScoreIndex, amount, round);
          refer_or_allocate_tuple3(word_int_action, m_Context.s0w, &(m_Context.s0c_sepcount), &action); 
          nReturn += cast_weights->m_mapS0wcSepCount.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
          for (i=0; i<m_Context.s1c_separator.size(); ++i) {
-            nReturn += cast_weights->m_mapS1cSeparator.getOrUpdateScore(make_pair(m_Context.s1c_separator[i], action), m_nScoreIndex, amount, round);
+            nReturn += cast_weights->m_mapS1cSeparator.getOrUpdateScore(std::make_pair(m_Context.s1c_separator[i], action), m_nScoreIndex, amount, round);
             refer_or_allocate_tuple3(word_int_action, m_Context.s1w, &(m_Context.s1c_separator[i]), &action); 
             nReturn += cast_weights->m_mapS1wcSeparator.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
          }
-         nReturn += cast_weights->m_mapS1cSepCount.getOrUpdateScore(make_pair(m_Context.s1c_sepcount, action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS1cSepCount.getOrUpdateScore(std::make_pair(m_Context.s1c_sepcount, action), m_nScoreIndex, amount, round);
          refer_or_allocate_tuple3(word_int_action, m_Context.s1w, &(m_Context.s1c_sepcount), &action); 
          nReturn += cast_weights->m_mapS1wcSepCount.getOrUpdateScore(word_int_action, m_nScoreIndex, amount, round);
          for (i=0; i<m_Context.s0cs1c_separator.size(); ++i)
-            nReturn += cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(make_pair(m_Context.s0cs1c_separator[i], action), m_nScoreIndex, amount, round);
-         nReturn += cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(make_pair(m_Context.s0cs1c_sepcount, action), m_nScoreIndex, amount, round);
+            nReturn += cast_weights->m_mapS0cS1cSeparator.getOrUpdateScore(std::make_pair(m_Context.s0cs1c_separator[i], action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS0cS1cSepCount.getOrUpdateScore(std::make_pair(m_Context.s0cs1c_sepcount, action), m_nScoreIndex, amount, round);
       }
    }
 */
@@ -554,23 +554,23 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 
 //   if (m_Context.s1!=0){
 //      nReturn +=
-//      cast_weights->m_mapS0wS1Dist.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS1Dist.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, m_Context.s0s1_dist)), m_nScoreIndex, amount, round);
 //      nReturn +=
 //      cast_weights->m_mapS0cS1Dist.getOrUpdateScore(encodeAction(action,
 //      m_Context.s0cs1_dist), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0S1wDist.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      cast_weights->m_mapS0S1wDist.getOrUpdateScore(std::make_pair(*(m_Context.s1w),
 //      encodeAction(action, m_Context.s0s1_dist)), m_nScoreIndex, amount, round);
 //      nReturn +=
 //      cast_weights->m_mapS0S1cDist.getOrUpdateScore(encodeAction(action,
 //      m_Context.s0s1c_dist), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1wDist.getOrUpdateScore(make_pair(m_Context.s0ws1w, s0cs1c_distaction), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1wDist.getOrUpdateScore(std::make_pair(m_Context.s0ws1w, s0cs1c_distaction), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1cDist.getOrUpdateScore(make_pair(*(m_Context.s0w), s0cs1c_distaction), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0wS1cDist.getOrUpdateScore(std::make_pair(*(m_Context.s0w), s0cs1c_distaction), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wDist.getOrUpdateScore(make_pair(*(m_Context.s1w), s0cs1c_distaction), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0cS1wDist.getOrUpdateScore(std::make_pair(*(m_Context.s1w), s0cs1c_distaction), m_nScoreIndex, amount, round);
 //      nReturn += cast_weights->m_mapS0cS1cDist.getOrUpdateScore(s0cs1c_distaction, m_nScoreIndex, amount, round);
 //   }
 
@@ -585,11 +585,11 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
       refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.s0cs1cn0t), &action); 
       nReturn += cast_weights->m_mapS0cS1cN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
-   nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(make_pair(m_Context.s0cs1cn0t, action), m_nScoreIndex, amount, round); 
+   nReturn += cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(std::make_pair(m_Context.s0cs1cn0t, action), m_nScoreIndex, amount, round); 
 
-   nReturn += cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(make_pair(m_Context.s0ts1tn0t, action), m_nScoreIndex, amount, round); 
+   nReturn += cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(std::make_pair(m_Context.s0ts1tn0t, action), m_nScoreIndex, amount, round); 
 //   nReturn +=
-//   cast_weights->m_mapS0jS1jN0t.getOrUpdateScore(make_pair(m_Context.s0js1jn0t, action), m_nScoreIndex, amount, round); 
+//   cast_weights->m_mapS0jS1jN0t.getOrUpdateScore(std::make_pair(m_Context.s0js1jn0t, action), m_nScoreIndex, amount, round); 
 
    // S0 N0 N1
    if (m_Context.n0!=-1) {
@@ -601,11 +601,11 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
          refer_or_allocate_tuple3(word_cfgset_action, m_Context.n1w, &(m_Context.s0cn0tn1t), &action); 
          nReturn += cast_weights->m_mapS0cN0tN1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
-      nReturn += cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(make_pair(m_Context.s0cn0tn1t, action), m_nScoreIndex, amount, round); // m_Context.n0
+      nReturn += cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(std::make_pair(m_Context.s0cn0tn1t, action), m_nScoreIndex, amount, round); // m_Context.n0
 
-      nReturn += cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(make_pair(m_Context.s0tn0tn1t, action), m_nScoreIndex, amount, round); // m_Context.n0
+      nReturn += cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(std::make_pair(m_Context.s0tn0tn1t, action), m_nScoreIndex, amount, round); // m_Context.n0
 //      nReturn +=
-//      cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(make_pair(m_Context.s0jn0tn1t,
+//      cast_weights->m_mapS0jN0tN1t.getOrUpdateScore(std::make_pair(m_Context.s0jn0tn1t,
 //      action), m_nScoreIndex, amount, round); // m_Context.n0
    }
 
@@ -619,11 +619,11 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
          refer_or_allocate_tuple3(word_cfgset_action, m_Context.s2w, &(m_Context.s0cs1cs2c), &action); 
          nReturn += cast_weights->m_mapS0cS1cS2w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
-      nReturn += cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(make_pair(m_Context.s0cs1cs2c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(std::make_pair(m_Context.s0cs1cs2c, action), m_nScoreIndex, amount, round);
 
-      nReturn += cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(make_pair(m_Context.s0ts1ts2t, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(std::make_pair(m_Context.s0ts1ts2t, action), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(make_pair(m_Context.s0js1js2j, action), m_nScoreIndex, amount, round);
+//      cast_weights->m_mapS0jS1jS2j.getOrUpdateScore(std::make_pair(m_Context.s0js1js2j, action), m_nScoreIndex, amount, round);
    }
 
    // Tag bigrams
@@ -655,21 +655,21 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 //      cast_weights->m_mapS0cS0LcN0t.getOrUpdateScore(encodeAction(action,
 //      encodeTorCs(m_Context.s0cn0t, m_Context.s0lc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0LcN0t.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS0LcN0t.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.n0t, m_Context.s0lc))), m_nScoreIndex, amount, round);
 //      if (m_Context.n0!=0) nReturn +=
-//      cast_weights->m_mapS0cS0LcN0w.getOrUpdateScore(make_pair(*(m_Context.n0w),
+//      cast_weights->m_mapS0cS0LcN0w.getOrUpdateScore(std::make_pair(*(m_Context.n0w),
 //      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0lc))), m_nScoreIndex, amount, round);
 //      }
 //      if (item->nodes[m_Context.s0].head_left()) {
       if (m_Context.n0!=-1 && m_Context.s0r!=0) {
-         nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(make_pair(m_Context.s0cs0rcn0t, action), m_nScoreIndex, amount, round);
-         nReturn += cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(make_pair(m_Context.s0cs0rjn0t, action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(std::make_pair(m_Context.s0cs0rcn0t, action), m_nScoreIndex, amount, round);
+         nReturn += cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(std::make_pair(m_Context.s0cs0rjn0t, action), m_nScoreIndex, amount, round);
          refer_or_allocate_tuple3(word_cfgset_action, m_Context.n0w, &(m_Context.s0cs0rc), &action); 
          nReturn += cast_weights->m_mapS0cS0RcN0w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
       }
 //      nReturn +=
-//      cast_weights->m_mapS0wS0RcN0t.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS0RcN0t.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.n0t, m_Context.s0rc))), m_nScoreIndex, amount, round);
 //      }
 //   }
@@ -680,23 +680,23 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 //      cast_weights->m_mapS0cS0UcN0t.getOrUpdateScore(encodeAction(action,
 //      encodeTorCs(m_Context.s0cn0t, m_Context.s0uc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0UcN0t.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS0UcN0t.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.s0uc, m_Context.n0t))), m_nScoreIndex, amount, round);
 //      if (m_Context.n0!=-1) nReturn +=
-//      cast_weights->m_mapS0cS0UcN0w.getOrUpdateScore(make_pair(*(m_Context.n0w),
+//      cast_weights->m_mapS0cS0UcN0w.getOrUpdateScore(std::make_pair(*(m_Context.n0w),
 //      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0uc))), m_nScoreIndex, amount, round);
 //   }
 
    // S0 S0LRUS1
    if (m_Context.s1!=0 && m_Context.s0l!=0) {
-      nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(make_pair(m_Context.s0cs0lcs1c, action), m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0cS0LjS1j.getOrUpdateScore(make_pair(m_Context.s0cs0ljs1j, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(std::make_pair(m_Context.s0cs0lcs1c, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS0LjS1j.getOrUpdateScore(std::make_pair(m_Context.s0cs0ljs1j, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, m_Context.s1w, &(m_Context.s0cs0lc), &action); 
       nReturn += cast_weights->m_mapS0cS0LcS1w.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
    if (m_Context.s1 != 0 && m_Context.s1r != 0) {
-      nReturn += cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(make_pair(m_Context.s0cs1cs1rc, action), m_nScoreIndex, amount, round);
-      nReturn += cast_weights->m_mapS0jS1cS1Rj.getOrUpdateScore(make_pair(m_Context.s0js1cs1rj, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(std::make_pair(m_Context.s0cs1cs1rc, action), m_nScoreIndex, amount, round);
+      nReturn += cast_weights->m_mapS0jS1cS1Rj.getOrUpdateScore(std::make_pair(m_Context.s0js1cs1rj, action), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple3(word_cfgset_action, m_Context.s0w, &(m_Context.s1cs1rc), &action); 
       nReturn += cast_weights->m_mapS0wS1cS1Rc.getOrUpdateScore(word_cfgset_action, m_nScoreIndex, amount, round);
    }
@@ -706,7 +706,7 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 //      cast_weights->m_mapS0cS0LcS1c.getOrUpdateScore(encodeAction(action,
 //      encodeTorCs(m_Context.s0cs1c, m_Context.s0lc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0LcS1c.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS0LcS1c.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.s0lc, m_Context.s1c))), m_nScoreIndex, amount, round);
 //      }
 //      if (!item->nodes[m_Context.s0].temp||item->nodes[m_Context.s0].head_left()) {
@@ -714,10 +714,10 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 //         cast_weights->m_mapS0cS0RcS1c.getOrUpdateScore(encodeAction(action,
 //         encodeTorCs(m_Context.s0cs1c, m_Context.s0rc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0RcS1c.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS0RcS1c.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.s0rc, m_Context.s1c))), m_nScoreIndex, amount, round);
 //      if (m_Context.s1!=0) nReturn +=
-//      cast_weights->m_mapS0cS0RcS1w.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      cast_weights->m_mapS0cS0RcS1w.getOrUpdateScore(std::make_pair(*(m_Context.s1w),
 //      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0rc))), m_nScoreIndex, amount, round);
 //      }
 //   }
@@ -726,10 +726,10 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 //      cast_weights->m_mapS0cS0UcS1c.getOrUpdateScore(encodeAction(action,
 //      encodeTorCs(m_Context.s0cs1c, m_Context.s0uc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS0UcS1c.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS0UcS1c.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.s0uc, m_Context.s1c))), m_nScoreIndex, amount, round);
 //      if (m_Context.s1!=) nReturn +=
-//      cast_weights->m_mapS0cS0UcS1w.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      cast_weights->m_mapS0cS0UcS1w.getOrUpdateScore(std::make_pair(*(m_Context.s1w),
 //      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s0uc))), m_nScoreIndex, amount, round);
 //   }
 
@@ -747,17 +747,17 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 //         cast_weights->m_mapS0cS1cS1Lc.getOrUpdateScore(encodeAction(action,
 //         encodeTorCs(m_Context.s0cs1c, m_Context.s1lc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1cS1Lc.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS1cS1Lc.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.s1c, m_Context.s1lc))), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wS1Lc.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      cast_weights->m_mapS0cS1wS1Lc.getOrUpdateScore(std::make_pair(*(m_Context.s1w),
 //      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s1lc))), m_nScoreIndex, amount, round);
 //      }
 //      nReturn +=
 //      cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(encodeAction(action,
 //      encodeTorCs(m_Context.s0cs1c, m_Context.s1rc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wS1Rc.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      cast_weights->m_mapS0cS1wS1Rc.getOrUpdateScore(std::make_pair(*(m_Context.s1w),
 //      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s1rc))), m_nScoreIndex, amount, round);
 //   }
 //   if (m_Context.s1u!=-1) {
@@ -765,10 +765,10 @@ cast_weights->m_mapBracketS0wN0t.getOrUpdateScore(make_pair(*(m_Context.s0w), n0
 //      cast_weights->m_mapS0cS1cS1Uc.getOrUpdateScore(encodeAction(action,
 //      encodeTorCs(m_Context.s0cs1c, m_Context.s1uc)), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0wS1cS1Uc.getOrUpdateScore(make_pair(*(m_Context.s0w),
+//      cast_weights->m_mapS0wS1cS1Uc.getOrUpdateScore(std::make_pair(*(m_Context.s0w),
 //      encodeAction(action, encodeTorCs(m_Context.s1c, m_Context.s1uc))), m_nScoreIndex, amount, round);
 //      nReturn +=
-//      cast_weights->m_mapS0cS1wS1Uc.getOrUpdateScore(make_pair(*(m_Context.s1w),
+//      cast_weights->m_mapS0cS1wS1Uc.getOrUpdateScore(std::make_pair(*(m_Context.s1w),
 //      encodeAction(action, encodeTorCs(m_Context.s0c, m_Context.s1uc))), m_nScoreIndex, amount, round);
 //   }
    return nReturn;
@@ -787,7 +787,7 @@ SCORE_TYPE CConParser::getGlobalScore(const CSentenceParsed &parsed) {
 
 /*---------------------------------------------------------------
  *
- * updateScores - update the score vector 
+ * updateScores - update the score std::vector 
  *
  * This method is different from updateScoreVector in that
  * 1. It is for external call
@@ -851,12 +851,12 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForStates( const CStateItem *output , const CStateItem *correct ) {
+void CConParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct ) {
 
-   cout << "updating parameters ... " ; 
+   std::cout << "updating parameters ... " ; 
 
    updateScoresForState( correct, eAdd );
-   updateScoresForState( output, eSubtract );
+   updateScoresForState( outout, eSubtract );
 
    m_nTotalErrors++;
 }
@@ -895,12 +895,12 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    static bool bCorrect ;  // used in learning for early update
    static int tmp_i, tmp_j;
    static CAction action;
-   static vector<CAction> actions; // actions to apply for a candidate
+   static std::vector<CAction> actions; // actions to apply for a candidate
    static CAgendaSimple<CScoredStateAction> beam(AGENDA_SIZE);
    static CScoredStateAction scored_action; // used rank actions
    ASSERT(nBest=1, "currently only do 1 best parse");
-   // TODO: it is easy to extend this into N-best; just use a vector for candidate_output. during train maybe use the best to adjust
-   const static CStateItem *candidate_output;
+   // TODO: it is easy to extend this into N-best; just use a std::vector for candidate_outout. during train maybe use the best to adjust
+   const static CStateItem *candidate_outout;
    static unsigned index;
 
    assert(length<MAX_SENTENCE_SIZE);
@@ -909,7 +909,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    // initialise word cache
    m_lCache.clear();
    m_lWordLen.clear();
-   candidate_output = 0;
+   candidate_outout = 0;
    for ( tmp_i=0; tmp_i<length; tmp_i++ ) {
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[tmp_i].first , sentence[tmp_i].second) );
       m_lWordLen.push_back( getUTF8StringLength(sentence[tmp_i].first) );
@@ -928,7 +928,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
       ++index;
       if (lattice_index[index] == lattice_index[index-1]) { // no more generators
-         if (candidate_output==0) {
+         if (candidate_outout==0) {
              WARNING("Parser failed: cannot find a parse for the sentence.");
              ASSERT(retval, "Internal error: parser failed during training");
              retval->clear();
@@ -942,10 +942,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
       for (pGenerator=lattice_index[index-1]; pGenerator!=lattice_index[index]; ++pGenerator) { // for each generator
 
-         // when an item is terminated, move it to potential outputs.
+         // when an item is terminated, move it to potential outouts.
          if (pGenerator->IsTerminated()) { 
-            if (candidate_output==0 || pGenerator->score > candidate_output->score )
-              candidate_output = pGenerator;
+            if (candidate_outout==0 || pGenerator->score > candidate_outout->score )
+              candidate_outout = pGenerator;
          }
          else {
             // load context
@@ -990,16 +990,16 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          ++lattice_index[index+1];
       }
 
-      // update items if correct item jump out of the agenda
+      // update items if correct item jump std::cout of the agenda
       if (bTrain) { 
 #ifdef EARLY_UPDATE
-         if (!bCorrect && candidate_output!=correctState) {
+         if (!bCorrect && candidate_outout!=correctState) {
             if (!correctState->IsTerminated()) {
                correctState->Move(lattice_index[index+1], action); 
                correctState = lattice_index[index+1];
             }
-            if (pBestGen == 0 || candidate_output && candidate_output->score > pBestGen->score )
-               pBestGen = candidate_output;
+            if (pBestGen == 0 || candidate_outout && candidate_outout->score > pBestGen->score )
+               pBestGen = candidate_outout;
             // trace
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
@@ -1014,11 +1014,11 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
    if (bTrain) {
       // make sure that the correct item is stack top finally
-      if ( candidate_output != correctState ) {
+      if ( candidate_outout != correctState ) {
          correctState->trace(&sentence);
-         candidate_output->trace(&sentence);
+         candidate_outout->trace(&sentence);
          TRACE("The best item is not the correct one")
-         updateScoresForStates(candidate_output, correctState) ; 
+         updateScoresForStates(candidate_outout, correctState) ; 
          return ;
       }
    } 
@@ -1027,10 +1027,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       return;
 
    TRACE("Outputing sentence");
-   candidate_output->GenerateTree( sentence, retval[0] );
-   if (scores) scores[0] = candidate_output->score;
+   candidate_outout->GenerateTree( sentence, retval[0] );
+   if (scores) scores[0] = candidate_outout->score;
 
-   TRACE("Done, the highest score is: " << candidate_output->score ) ;
+   TRACE("Done, the highest score is: " << candidate_outout->score ) ;
    TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
 }
 
@@ -1077,13 +1077,13 @@ void CConParser::parse( const CSentenceMultiCon<CConstituent> &sentence , CSente
 void CConParser::train( const CSentenceParsed &correct , int round ) {
 
    static CTwoStringVector sentence ;
-//   static CSentenceParsed output ; 
+//   static CSentenceParsed outout ; 
 
    UnparseSentence( &correct, &sentence ) ;
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-//   work( true , sentence , &output , correct , 1 , 0 ) ; 
+//   work( true , sentence , &outout , correct , 1 , 0 ) ; 
    work( true , sentence , 0 , correct , 1 , 0 ) ; 
 
 };

@@ -49,14 +49,14 @@ inline unsigned long int encodeConstituents(const CConstituentLabel &con1, const
 
 //===============================================================
 
-inline istream & operator >> (istream &is, generic::CConstituentLabel &con) {
-   string s;
+inline std::istream & operator >> (std::istream &is, generic::CConstituentLabel &con) {
+   std::string s;
    is >> s;
    con.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const generic::CConstituentLabel &con) {
+inline std::ostream & operator << (std::ostream &os, const generic::CConstituentLabel &con) {
    os << con.str() ;
    return os;
 }

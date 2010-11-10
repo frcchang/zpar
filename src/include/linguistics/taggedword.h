@@ -20,7 +20,7 @@
 
 /*===============================================================
  *
- * definitions about tagged word 
+ * definitions abstd::cout tagged word 
  *
  *==============================================================*/
 
@@ -37,8 +37,8 @@ public:
 
 public:
    CTaggedWord() {}
-//   CTaggedWord(const string &s, const CTag t) : word(s), tag(t) { }
-   CTaggedWord(const string &s, const string &t) : word(s), tag(t) { }
+//   CTaggedWord(const std::string &s, const CTag t) : word(s), tag(t) { }
+   CTaggedWord(const std::string &s, const std::string &t) : word(s), tag(t) { }
    CTaggedWord(const CWord &w, const CTag t) : word(w), tag(t) { }
    CTaggedWord(const CTaggedWord &w) : word(w.word), tag(w.tag) { }
    virtual ~CTaggedWord() {}
@@ -73,8 +73,8 @@ public:
 //===============================================================
 
 template <typename CTag, char sTagSep>
-istream & operator >> (istream &is, CTaggedWord<CTag, sTagSep> &tw) {
-   string s;
+std::istream & operator >> (std::istream &is, CTaggedWord<CTag, sTagSep> &tw) {
+   std::string s;
    is >> s;
    int middle;
    middle = s.rfind(sTagSep, s.size()-1);
@@ -85,7 +85,7 @@ istream & operator >> (istream &is, CTaggedWord<CTag, sTagSep> &tw) {
 }
 
 template <typename CTag, char sTagSep>
-ostream & operator << (ostream &os, const CTaggedWord<CTag, sTagSep> &tw) {
+std::ostream & operator << (std::ostream &os, const CTaggedWord<CTag, sTagSep> &tw) {
    os << tw.word.str() ;
    os << sTagSep ;
    os << tw.tag.str() ; 

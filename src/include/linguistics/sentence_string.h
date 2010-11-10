@@ -23,9 +23,9 @@
  *
  *==============================================================*/
 
-typedef vector< string > CStringVector ;
+typedef std::vector< std::string > CStringVector ;
 
-typedef vector< pair< string , string > > CTwoStringVector ;
+typedef std::vector< std::pair< std::string , std::string > > CTwoStringVector ;
 
 /*===============================================================
  *
@@ -103,7 +103,7 @@ void UntagAndDesegmentSentence(const CTwoStringVector *tagged, CStringVector *re
    retval->clear();
    if (tagged == 0)
       return;
-   string temp;
+   std::string temp;
    CTwoStringVector::const_iterator it;
    for (it = tagged->begin(); it != tagged->end(); ++it) {
       getCharactersFromUTF8String(it->first, retval);
@@ -125,12 +125,12 @@ void DesegmentSentence(const CStringVector *sent, CStringVector *retval, CCharCa
    retval->clear();
    if (sent == 0)
       return;
-   string temp;
+   std::string temp;
    CStringVector::const_iterator it;
    for (it=sent->begin(); it!=sent->end(); ++it) {
       if ( retval->size() > 0 ) {
          temp = getFirstCharFromUTF8String( *it ) ; 
-         string &last = retval->at( retval->size()-1 ) ; 
+         std::string &last = retval->at( retval->size()-1 ) ; 
          if ( char_categories.isFWorCD( last ) &&
               char_categories.isFWorCD( temp ) )
             retval->push_back(" ");
@@ -156,14 +156,14 @@ void UntagAndDesegmentSentence(const CTwoStringVector *tagged, CStringVector *re
    retval->clear();
    if (tagged == 0)
       return;
-   string temp;
+   std::string temp;
    CTwoStringVector::const_iterator it;
    for (it = tagged->begin(); it != tagged->end(); ++it) {
       // special process!! if the two words are numbers or foreign words, 
       // we need to separate them manually by adding a space
       if (retval->size()>0) {
          temp = getFirstCharFromUTF8String(it->first);
-         string &last = retval->at( retval->size()-1 );
+         std::string &last = retval->at( retval->size()-1 );
          if ( ( dict.isFWorCD( last ) )  &&
               ( dict.isFWorCD( temp ) )
             ) {

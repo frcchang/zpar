@@ -22,14 +22,14 @@ using namespace TARGET_LANGUAGE::tagger;
  *------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
-   cout << "Loading model..."; cout.flush();
-   ifstream is(m_sFeatureDB.c_str());
+   std::cout << "Loading model..."; std::cout.flush();
+   std::ifstream is(m_sFeatureDB.c_str());
    iterate_templates(is>>,;);
 #ifdef DEBUG
    iterate_templates(,.trace(););
 #endif
    is.close();
-   cout << " done." << endl ;
+   std::cout << " done." << std::endl ;
 }
 
 /*--------------------------------------------------------------
@@ -39,12 +39,12 @@ void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::tagger::CWeight::saveScores() {
-   cout << "Saving model..."; cout.flush();
-   ofstream os(m_sFeatureDB.c_str());
+   std::cout << "Saving model..."; std::cout.flush();
+   std::ofstream os(m_sFeatureDB.c_str());
    assert(os.is_open());
    iterate_templates(os<<,;);
    os.close();
-   cout << " done." << endl ;
+   std::cout << " done." << std::endl ;
 }
 
 /*--------------------------------------------------------------
@@ -54,9 +54,9 @@ void TARGET_LANGUAGE::tagger::CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::tagger::CWeight::computeAverageFeatureWeights(int round) {
-   cout << "Computing averaged feature scores...";
+   std::cout << "Computing averaged feature scores...";
    iterate_templates(,.computeAverage(round););
-   cout << " Done" << endl;
+   std::cout << " Done" << std::endl;
 }
 
 

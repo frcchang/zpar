@@ -13,9 +13,9 @@
 
 using namespace TARGET_LANGUAGE;
 
-int CCFGTree::readNode(istream &is) {
+int CCFGTree::readNode(std::istream &is) {
       int node;
-      string s, name;
+      std::string s, name;
       is >> s;
       assert(s == "(");
       is >> name;
@@ -77,7 +77,7 @@ int CCFGTree::readNode(istream &is) {
       }
       else {
          ASSERT(s[0]=='t' || s[0]=='c', "A leaf node must be tagged t or c, not "<<s[0]);
-         string token;
+         std::string token;
          node = newNode();
          nodes[node].is_constituent = false;
          nodes[node].single_child = false;
@@ -97,11 +97,11 @@ int CCFGTree::readNode(istream &is) {
       return node;
 }
 
-string CCFGTree::writeNode(int node) const {
+std::string CCFGTree::writeNode(int node) const {
       const CCFGTreeNode &nd = nodes[node] ;
-      string name;
-      string type;
-      string cont;
+      std::string name;
+      std::string type;
+      std::string cont;
       if (nd.is_constituent) { // [1]node type cons
          if (nd.constituent==CConstituentLabel::NONE) {
             type = "e";
@@ -141,10 +141,10 @@ string CCFGTree::writeNode(int node) const {
       return "( " + name + " " + type + " " + cont + " )";
 }
 
-string CCFGTree::writeNodeUnbin(int node) const {
+std::string CCFGTree::writeNodeUnbin(int node) const {
    const CCFGTreeNode &nd = nodes[node] ;
-   string name;
-   string cont;
+   std::string name;
+   std::string cont;
    if (nd.is_constituent) { // [1] constituent
       // do not write node label for temp nodes and NONE nodes (fragmented tree)
       if (nd.temp || nd.constituent==CConstituentLabel::NONE) {

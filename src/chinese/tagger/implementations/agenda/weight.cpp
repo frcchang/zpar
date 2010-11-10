@@ -73,14 +73,14 @@ using namespace chinese::tagger;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
-   cout << "Loading scores ..."; cout.flush();
+   std::cout << "Loading scores ..."; std::cout.flush();
    clock_t time_start = clock();
-   string st;
-   ifstream is(m_sFeatureDB.c_str());
-   istringstream iss;
+   std::string st;
+   std::ifstream is(m_sFeatureDB.c_str());
+   std::istringstream iss;
 
    if (!is.is_open()) {
-      cout << " empty." << endl; return;
+      std::cout << " empty." << std::endl; return;
    }
    // load feature weights
    iterate_templates(is>>,;);
@@ -123,9 +123,9 @@ void CWeight::loadScores() {
    getline(is, st);
    getline(is, st);
    ASSERT(st=="Maximum wordlen by tag", "Maximum word length by tag not found from model.");
-   string ts;
+   std::string ts;
    for (int i=0; i<CTag::COUNT; ++i) {
-      istringstream iss;
+      std::istringstream iss;
       getline(is, st);
       iss.str(st);
       int j;
@@ -134,14 +134,14 @@ void CWeight::loadScores() {
       ASSERT(CTag(ts).code()==i, "Maximum word size record loading failed.");
    }
    {
-      istringstream iss;
+      std::istringstream iss;
       getline(is, st);
       iss.str(st);
       iss >> ts >> m_maxLengthByTag[CTag::COUNT];
       ASSERT(ts=="All", "Maximum word size record failed loading.");
    }
 
-   cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
+   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -151,38 +151,38 @@ void CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
-   cout << "Saving scores ..."; cout.flush();
+   std::cout << "Saving scores ..."; std::cout.flush();
 
-   ofstream os(m_sFeatureDB.c_str());
+   std::ofstream os(m_sFeatureDB.c_str());
    ASSERT(os.is_open(), "Can't open "<<m_sFeatureDB<<" for saving model.");
    iterate_templates(os<<,;);
 
-   if (m_Knowledge) os << "Segmentation rules" << endl;
-   else os << "Segmentation rules=0" << endl;
+   if (m_Knowledge) os << "Segmentation rules" << std::endl;
+   else os << "Segmentation rules=0" << std::endl;
 
 //   if (m_Knowledge==0) {
-//      os << "Knowledge=0" << endl;
+//      os << "Knowledge=0" << std::endl;
 //   }
 //   else {
-//      os << "Knowledge" << endl;
+//      os << "Knowledge" << std::endl;
 //      os << (*m_Knowledge);
 //   }
 
-   os << "Tag dictionary" << endl;
+   os << "Tag dictionary" << std::endl;
    os << m_mapTagDictionary;
-   os << "Char tag dictionary" << endl;
+   os << "Char tag dictionary" << std::endl;
    os << m_mapCharTagDictionary;
-   os << "Can start" << endl;
+   os << "Can start" << std::endl;
    os << m_mapCanStart;
-   os << "Word frequency" << endl;
+   os << "Word frequency" << std::endl;
    os << m_mapWordFrequency;
-   os << "Maximum frequency" << endl;
-   os << m_nMaxWordFrequency << endl;
-   os << endl << "Maximum wordlen by tag" << endl;
+   os << "Maximum frequency" << std::endl;
+   os << m_nMaxWordFrequency << std::endl;
+   os << std::endl << "Maximum wordlen by tag" << std::endl;
    for (int i=0; i<CTag::COUNT; ++i)
-      os << CTag(i).str() << "\t" << m_maxLengthByTag[i] << endl;
-   os << "All\t" << m_maxLengthByTag[CTag::COUNT] << endl;
-   cout << " done." << endl;
+      os << CTag(i).str() << "\t" << m_maxLengthByTag[i] << std::endl;
+   os << "All\t" << m_maxLengthByTag[CTag::COUNT] << std::endl;
+   std::cout << " done." << std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -192,9 +192,9 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(unsigned long round) {
-   cout << "Comuting averaged feature vector ..."; cout.flush();
+   std::cout << "Comuting averaged feature std::vector ..."; std::cout.flush();
    iterate_templates(,.computeAverage(round););
-   cout << " done." << endl;
+   std::cout << " done." << std::endl;
 }
 
 

@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * morphology.h - the knowledge about word morph.               *
+ * morphology.h - the knowledge abstd::cout word morph.               *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -26,7 +26,7 @@ namespace english {
  *
  *--------------------------------------------------------------*/
 /*
-unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tagdict , const string &word ) {
+unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tagdict , const std::string &word ) {
 
    const int length = word.size();
    unsigned long long retval = 0;
@@ -157,7 +157,7 @@ unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tag
  *
  *--------------------------------------------------------------*/
 
-inline unsigned long long getPossibleTagsBySuffix( const string &word ) {
+inline unsigned long long getPossibleTagsBySuffix( const std::string &word ) {
 
    unsigned long long retval=0;
    const int length=word.size();

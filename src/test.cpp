@@ -27,13 +27,13 @@ public:
 };
 
 void testtable2() {
-   CTable2<string, string, double> table2;
-   ifstream is("./input.txt");
+   CTable2<std::string, std::string, double> table2;
+   std::ifstream is("./input.txt");
    is >> table2;
-   cout << table2.lookup("'m", "!edge") << endl;
-   cout << table2.lookup("OOV", "OOV") << endl;
-   cout << table2.lookup("None", "1") << endl;
-//   cout << table2;
+   std::cout << table2.lookup("'m", "!edge") << std::endl;
+   std::cout << table2.lookup("OOV", "OOV") << std::endl;
+   std::cout << table2.lookup("None", "1") << std::endl;
+//   std::cout << table2;
    is.close();
 }
 
@@ -49,11 +49,11 @@ void testreader() {
 void testconllio() {
    // io
    CCoNLLInput input;
-   CCoNLLOutput output;
-   while (cin >> input)
-      cout << input;
-   while (cin >> output) {
-      cout << output;
+   CCoNLLOutput outout;
+   while (std::cin >> input)
+      std::cout << input;
+   while (std::cin >> outout) {
+      std::cout << outout;
    }
 }
 
@@ -64,24 +64,24 @@ void testconlltag() {
    pos.load("CPOS b");
    pos.load("CPOS c");
    for (unsigned i=0; i<pos.getTagset().count(); ++i)
-      cout << CCoNLLCPOS(i) << ' ';
+      std::cout << CCoNLLCPOS(i) << ' ';
    CCoNLLFeats feats;
    feats.load("Feats a");
    feats.load("Feats b");
    feats.load("Feats c");
    for (unsigned i=0; i<feats.getTagset().count(); ++i)
-      cout << CCoNLLFeats(i) << ' ';
-   cout << endl;
+      std::cout << CCoNLLFeats(i) << ' ';
+   std::cout << std::endl;
 }
 
 void testconllfeats() {
-   vector<CCoNLLFeats> feats;
-   string s;
-   cin >> s;
+   std::vector<CCoNLLFeats> feats;
+   std::string s;
+   std::cin >> s;
    readCoNLLFeats(feats, s);
    for (unsigned i=0; i<feats.size(); ++i)
-      cout << feats[i] << ' '; 
-   cout << endl;
+      std::cout << feats[i] << ' '; 
+   std::cout << std::endl;
    return;
 
 }
@@ -90,7 +90,7 @@ void testgenerictags() {
    class CTag1 : public CGenericTag {
    public:
       CTag1() : CGenericTag() { }
-      CTag1(const string &s) : CGenericTag() { load(s); }
+      CTag1(const std::string &s) : CGenericTag() { load(s); }
       CTag1(const CTag1 &t) : CGenericTag(t) { }
       CTag1(const unsigned long &u) : CGenericTag() { assert(getTagset().count()>u); m_code=u; }
       CGenericTagset &getTagset() const { static CGenericTagset tagset; return tagset; }
@@ -98,7 +98,7 @@ void testgenerictags() {
    class CTag2 : public CGenericTag {
    public:
       CTag2() : CGenericTag() { }
-      CTag2(const string &s) : CGenericTag() { load(s); }
+      CTag2(const std::string &s) : CGenericTag() { load(s); }
       CTag2(const CTag2 &t) : CGenericTag(t) { }
       CTag2(const unsigned long &u) : CGenericTag() { assert(getTagset().count()>u); m_code=u; }
       CGenericTagset &getTagset() const { static CGenericTagset tagset; return tagset; }
@@ -108,29 +108,29 @@ void testgenerictags() {
    CTag1 tag3("1b");
    tag3.load("1c");
    for (unsigned i=0; i<tag1.getTagset().count(); ++i)
-      cout << CTag1(i) << ' ';
-   cout << endl;
+      std::cout << CTag1(i) << ' ';
+   std::cout << std::endl;
    for (unsigned i=0; i<tag2.getTagset().count(); ++i)
-      cout << CTag2(i) << ' ';
-   cout << endl;
+      std::cout << CTag2(i) << ' ';
+   std::cout << std::endl;
 }
 
 void testlemma() {
    CLemma lemma1("abc");
    CLemma lemma2;
-   cin >> lemma2;
-   cout << lemma1 << " " << lemma2 << endl;
+   std::cin >> lemma2;
+   std::cout << lemma1 << " " << lemma2 << std::endl;
 }
 
 int main(int argc, char**argv){
    try {
-//   cout << B::C << B::D << endl;
-//   cout << ~0UL << endl;
+//   std::cout << B::C << B::D << std::endl;
+//   std::cout << ~0UL << std::endl;
 //   testtable2();
 //   testreader();
 //   testconllfeats();
 //   testgenerictags();
  testlemma();
-   }catch(const string &s) { cout << s << endl; }
+   }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 

@@ -8,14 +8,14 @@
 #ifdef LABELED
 #include "dependency/label/penn.h"
 //#include "dependency/label/stanford.h"
-inline istream & operator >> (istream &is, english::CDependencyLabel &label) {
-   string s;
+inline std::istream & operator >> (std::istream &is, english::CDependencyLabel &label) {
+   std::string s;
    is >> s;
    label.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const english::CDependencyLabel &label) {
+inline std::ostream & operator << (std::ostream &os, const english::CDependencyLabel &label) {
    os << label.str() ;
    return os;
 }

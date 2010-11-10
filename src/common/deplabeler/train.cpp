@@ -14,7 +14,7 @@
 #include "reader.h"
 #include "writer.h"
 
-#include <cstring>
+#include <cstd::string>
 
 using namespace TARGET_LANGUAGE;
 
@@ -24,13 +24,13 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool bCoNLL) {
+void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const bool bCoNLL) {
 
-   cout << "Training iteration is started..." << endl ; cout.flush();
+   std::cout << "Training iteration is started..." << std::endl ; std::cout.flush();
 
    CDepLabeler labeler(sFeatureFile, true);
 
-   ifstream is(sOutputFile.c_str());
+   std::ifstream is(sOutputFile.c_str());
    assert(is.is_open());
 
    CLabeledDependencyTree ref_sent; 
@@ -51,7 +51,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
 
    labeler.finishtraining();
 
-   cout << "Done. " << endl;
+   std::cout << "Done. " << std::endl;
 
 }
 
@@ -68,29 +68,29 @@ int main(int argc, char* argv[]) {
       CConfigurations configurations;
       configurations.defineConfiguration("c", "", "process CoNLL format", "");
       if (options.args.size() != 4) {
-         cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
-         cout << configurations.message() << endl;
+         std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
+         std::cout << configurations.message() << std::endl;
          return 1;
       } 
       configurations.loadConfigurations(options.opts);
    
       unsigned long training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
-         cerr << "Error: the number of training iterations must be an integer." << endl;
+         std::cerr << "Error: the number of training iterations must be an integer." << std::endl;
          return 1;
       }
    
       bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
 
-      cout << "Training started" << endl;
+      std::cout << "Training started" << std::endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
          auto_train(options.args[1], options.args[2], bCoNLL);
-      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+      std::cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
    
       return 0;
-   } catch (const string &e) {
-      cerr << "Error: " << e << endl;
+   } catch (const std::string &e) {
+      std::cerr << "Error: " << e << std::endl;
       return 1;
    }
 

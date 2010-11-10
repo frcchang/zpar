@@ -41,11 +41,11 @@ namespace tagger {
 typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 //typedef CScoreMap< unsigned long, SCORE_TYPE > CIntMap;
-//typedef CScoreMap< pair<unsigned long, unsigned long>, SCORE_TYPE > CTwoIntMap;
-//typedef CScoreMap< pair<CWord, unsigned long>, SCORE_TYPE > CWordIntMap;
+//typedef CScoreMap< std::pair<unsigned long, unsigned long>, SCORE_TYPE > CTwoIntMap;
+//typedef CScoreMap< std::pair<CWord, unsigned long>, SCORE_TYPE > CWordIntMap;
 typedef CScoreMap< CTagSet<CTag, 2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
-typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
+typedef CScoreMap< std::pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
 typedef CScoreMap< CTag, SCORE_TYPE > CTagMap;
 
 /*===============================================================
@@ -74,7 +74,7 @@ public:
    CWordTagMap m_mapTagBySuffix;
 
    // CONSTRUCTOR 
-   CWeight(const string &sFeatureDB, bool bTrain) : CWeightBase(sFeatureDB, bTrain) , 
+   CWeight(const std::string &sFeatureDB, bool bTrain) : CWeightBase(sFeatureDB, bTrain) , 
                                                     m_mapLastTagByTag("TagBigram", 65537),
                                                     m_mapLastTwoTagsByTag("TagTrigram", 65537),
                                                     m_mapCurrentTag("TagUnigram", 65537),

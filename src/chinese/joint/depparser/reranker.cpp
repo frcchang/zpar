@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * reranker.cpp - the reranker for tagged and depparsed outputs *
+ * reranker.cpp - the reranker for tagged and depparsed outouts *
  *                                                              *
  * It updates the tagger and depparser in a unified manner      *
  *                                                              *
@@ -27,7 +27,7 @@ using namespace chinese;
  *---------------------------------------------------------------*/
 
 void RecordSegmentation(const CStringVector *raw, const CSentenceParsed* parsed, int *retval) {
-   vector<int> indice;
+   std::vector<int> indice;
    indice.clear(); 
    for (int i=0; i<raw->size(); ++i) {
       for (int j=0; j<raw->at(i).size(); ++j)
@@ -48,7 +48,7 @@ void RecordSegmentation(const CStringVector *raw, const CSentenceParsed* parsed,
  *
  *----------------------------------------------------------------*/
 
-void getFScore(const CSentenceParsed &output, const CSentenceParsed &correct, double &fSeg, double &fTag, double &fPar, double &fParUnlabeled, double &fParIncPunc) {
+void getFScore(const CSentenceParsed &outout, const CSentenceParsed &correct, double &fSeg, double &fTag, double &fPar, double &fParUnlabeled, double &fParIncPunc) {
 
    static CStringVector raw;
 
@@ -79,15 +79,15 @@ void getFScore(const CSentenceParsed &output, const CSentenceParsed &correct, do
 
    UnparseAndDesegmentSentence(&correct, &raw);
    RecordSegmentation(&raw, &correct, lReferenceWords);
-   RecordSegmentation(&raw, &output, lCandidateWords);
+   RecordSegmentation(&raw, &outout, lCandidateWords);
 
    // get the corresponding index for candidate and reference words
    // lCandidateIndexForReference[indexReferenceWord] {-1 no match}
-   while (indexCandidateWord<output.size() && indexReferenceWord<correct.size()) {
+   while (indexCandidateWord<outout.size() && indexReferenceWord<correct.size()) {
       if (lCandidateWords[indexCandidateWord] == lReferenceWords[(indexReferenceWord)] && 
           lCandidateWords[indexCandidateWord-1] == lReferenceWords[(indexReferenceWord-1)] ) { // words right
          nCorrectWords++ ;
-         if (output.at(indexCandidateWord).tag == correct.at(indexReferenceWord).tag)  //: # tags 
+         if (outout.at(indexCandidateWord).tag == correct.at(indexReferenceWord).tag)  //: # tags 
             nCorrectTags++ ;
          lReferenceIndexForCandidate[indexCandidateWord] = (indexReferenceWord);
          lCandidateIndexForReference[indexReferenceWord] = indexCandidateWord;
@@ -112,31 +112,31 @@ void getFScore(const CSentenceParsed &output, const CSentenceParsed &correct, do
       }
    }
 
-   while (indexCandidateWord<output.size()) {
+   while (indexCandidateWord<outout.size()) {
       assert (indexReferenceWord==correct.size());
       lReferenceIndexForCandidate[indexCandidateWord] = -1;
       indexCandidateWord ++ ;
    }
    while (indexReferenceWord<correct.size()) {
-      assert (indexCandidateWord==output.size());
+      assert (indexCandidateWord==outout.size());
       lCandidateIndexForReference[indexReferenceWord] = -1;
       indexReferenceWord ++ ;
    }
 
    // now compute precision recall
    int referenceHead;
-   for (indexCandidateWord = 0; indexCandidateWord<output.size(); indexCandidateWord++) {
+   for (indexCandidateWord = 0; indexCandidateWord<outout.size(); indexCandidateWord++) {
       indexReferenceWord = lReferenceIndexForCandidate[indexCandidateWord];
       nCandidateWords ++ ;
-      if (output[indexCandidateWord].tag != "PU")
+      if (outout[indexCandidateWord].tag != "PU")
          nCandidateWordsExcPunc ++ ;
       if (indexReferenceWord != -1) {
          referenceHead = correct[indexReferenceWord].head;
          if (referenceHead != -1) referenceHead = lCandidateIndexForReference[referenceHead];
-         if ( (output[indexCandidateWord].head == referenceHead) ) {
+         if ( (outout[indexCandidateWord].head == referenceHead) ) {
             if (correct[indexReferenceWord].tag != "PU")
                nCorrectLinksUnlabeled ++ ;
-            if (output[indexCandidateWord].tag == correct[indexReferenceWord].tag)  {
+            if (outout[indexCandidateWord].tag == correct[indexReferenceWord].tag)  {
                nCorrectLinks ++ ;
                if (correct[indexReferenceWord].tag != "PU")
                   nCorrectLinksExcPunc ++ ;
@@ -222,10 +222,10 @@ int CReranker::findBest(const CSentenceParsed *nbest, int nBest, double *prior_s
  * 
  *---------------------------------------------------------------*/
 
-void CReranker::rerank(const CSentenceParsed *nbest, CSentenceParsed *out, int nBest, double *prior_scores) {
+void CReranker::rerank(const CSentenceParsed *nbest, CSentenceParsed *std::cout, int nBest, double *prior_scores) {
    assert(!m_bTrain);
    int best_index = findBest(nbest, nBest, prior_scores);
-   *out = nbest[best_index];
+   *std::cout = nbest[best_index];
 }
 
 /*----------------------------------------------------------------
@@ -247,7 +247,7 @@ void CReranker::train(const CSentenceParsed *nbest, const CSentenceParsed *corre
    for (int i=0; i<nBest; ++i) {
       getFScore(nbest[i], *correct, fSeg, fTag, fPar, fParUnlabeled, fParIncPunc);
       if (i!=0&&fPar==bestFPar&&fParIncPunc==bestFParIncPunc&&fParUnlabeled==bestFParUnlabeled&&fTag==bestFTag&&fSeg==bestFSeg) 
-         TRACE("equal"<<endl<<nbest[best_idx]<<nbest[i]);
+         TRACE("equal"<<std::endl<<nbest[best_idx]<<nbest[i]);
       if (i==0 || fPar>bestFPar || 
                  (fPar==bestFPar&&fParIncPunc>bestFParIncPunc) || 
                  (fPar==bestFPar&&fParIncPunc==bestFParIncPunc&&fParUnlabeled>bestFParUnlabeled) || 
@@ -262,24 +262,24 @@ void CReranker::train(const CSentenceParsed *nbest, const CSentenceParsed *corre
    CTwoStringVector tagged, best_tagged;
    UnparseSentence(nbest+best_idx, &best_tagged);
 
-   // find the reranking output 
-   int output_idx = findBest(nbest, nBest, prior_scores);
-   assert(nbest[output_idx].empty()==false);
-   UnparseSentence(nbest+output_idx, &tagged);
+   // find the reranking outout 
+   int outout_idx = findBest(nbest, nBest, prior_scores);
+   assert(nbest[outout_idx].empty()==false);
+   UnparseSentence(nbest+outout_idx, &tagged);
 
    // update scores
    m_tagger->updateScores(&tagged, &best_tagged, m_nTrainingRound);
-   if ( nbest[output_idx] != nbest[best_idx] ) {
+   if ( nbest[outout_idx] != nbest[best_idx] ) {
       TRACE(nbest[best_idx]);
-      TRACE(nbest[output_idx])
+      TRACE(nbest[outout_idx])
       ++m_nErrors;
    }
-   m_depparser->updateScores(nbest[output_idx], nbest[best_idx], m_nTrainingRound);
+   m_depparser->updateScores(nbest[outout_idx], nbest[best_idx], m_nTrainingRound);
 
    // update prior
-   if (output_idx!=best_idx) {
+   if (outout_idx!=best_idx) {
       getOrUpdatePriorScores(prior_scores + best_idx*2, 1.0);
-      getOrUpdatePriorScores(prior_scores + output_idx*2, -1.0);
+      getOrUpdatePriorScores(prior_scores + outout_idx*2, -1.0);
    }
 }
 
@@ -295,6 +295,6 @@ void CReranker::finishTraining() {
    m_weights->computeAverageFeatureWeights(m_nTrainingRound);
    m_weights->saveScores();
    assert(m_bTrain);
-   cout << m_nTrainingRound << " training sentences in total have been processed; " << m_nErrors << " mistakes made."<< endl;
+   std::cout << m_nTrainingRound << " training sentences in total have been processed; " << m_nErrors << " mistakes made."<< std::endl;
 }
 

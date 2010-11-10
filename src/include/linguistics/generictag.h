@@ -18,9 +18,9 @@
  *
  *==============================================================*/
 
-class CGenericTagset : public CTokenizer<string, 251> {
+class CGenericTagset : public CTokenizer<std::string, 251> {
    public: 
-      CGenericTagset() : CTokenizer<string, 251>(0) {
+      CGenericTagset() : CTokenizer<std::string, 251>(0) {
          lookup("-NONE-");
       } 
       virtual ~CGenericTagset() {}
@@ -28,7 +28,7 @@ class CGenericTagset : public CTokenizer<string, 251> {
 
 /*===============================================================
  *
- * definitions about tag 
+ * definitions abstd::cout tag 
  *
  * Each tag is associated with a tagset. 
  * This is different from the concept of POS tags, which are 
@@ -49,7 +49,7 @@ protected:
 
 public:
    CGenericTag() : m_code(NONE) { }
-   CGenericTag(const string &s) { load(s); }
+   CGenericTag(const std::string &s) { load(s); }
    CGenericTag(const CGenericTag &t) : m_code(t.m_code) { }
    CGenericTag(const unsigned long &u) : m_code(u) { }
    virtual ~CGenericTag() {}
@@ -89,10 +89,10 @@ public:
       return m_code >= w.m_code; 
    }
 
-   void load(const string &s) {
+   void load(const std::string &s) {
       m_code=getTagset().lookup(s); 
    }
-   const string &str() const { 
+   const std::string &str() const { 
       return getTagset().key(m_code); 
    }
 
@@ -103,14 +103,14 @@ public:
 
 //===============================================================
 
-inline istream & operator >> (istream &is, CGenericTag &tag) {
-   string s;
+inline std::istream & operator >> (std::istream &is, CGenericTag &tag) {
+   std::string s;
    is >> s;
    tag.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const CGenericTag &tag) {
+inline std::ostream & operator << (std::ostream &os, const CGenericTag &tag) {
    os << tag.str() ;
    return os;
 }

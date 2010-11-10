@@ -14,7 +14,7 @@
 
 /*===============================================================
  *
- * definitions about lemma 
+ * definitions abstd::cout lemma 
  *
  *==============================================================*/
 
@@ -27,9 +27,9 @@ private:
     *
     *==============================================================*/
    
-   class CStringTokenizer : public CTokenizer<string, 65537> {
+   class CStringTokenizer : public CTokenizer<std::string, 65537> {
       public: 
-         CStringTokenizer() : CTokenizer<string, 65537>(1/*reserve for the other unknown */) {lookup("");} 
+         CStringTokenizer() : CTokenizer<std::string, 65537>(1/*reserve for the other unknown */) {lookup("");} 
          virtual ~CStringTokenizer() {}
    };
    
@@ -45,7 +45,7 @@ public:
 
 public:
    CLemma() { clear(); }
-   CLemma(const string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, UNKNOWN)) { }
+   CLemma(const std::string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, UNKNOWN)) { }
    CLemma(const CLemma &w) : m_nHash(w.m_nHash) { }
    CLemma(const unsigned long &n) : m_nHash(n) { }
    virtual ~CLemma() {}
@@ -58,10 +58,10 @@ public:
    bool operator < (const CLemma &w) const { return m_nHash < w.m_nHash; }
    void operator = (const CLemma &w) { m_nHash =  w.m_nHash; }
    void copy(const CLemma &w) { m_nHash = w.m_nHash; }
-   void setString(const string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
+   void setString(const std::string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
    // do not use str() for unknown lemmas!!
-   const string &str() const { ASSERT(m_nHash<getTokenizer().count(), "lemma.h: str() called for an unknown lemma"); return getTokenizer().key(m_nHash); }
-   void load(const string &s) { m_nHash = getTokenizer().lookup(s); }
+   const std::string &str() const { ASSERT(m_nHash<getTokenizer().count(), "lemma.h: str() called for an unknown lemma"); return getTokenizer().key(m_nHash); }
+   void load(const std::string &s) { m_nHash = getTokenizer().lookup(s); }
    bool empty() { return m_nHash==EMPTY; }
    bool unknown() { return m_nHash==UNKNOWN; }
    void clear() { m_nHash=EMPTY; }
@@ -69,14 +69,14 @@ public:
 
 //===============================================================
 
-inline istream & operator >> (istream &is, CLemma &w) {
-   string s ;
+inline std::istream & operator >> (std::istream &is, CLemma &w) {
+   std::string s ;
    is >> s ;
    w.load(s) ;
    return is ;
 }
 
-inline std::ostream & operator << (ostream &os, const CLemma &w) {
+inline std::ostream & operator << (std::ostream &os, const CLemma &w) {
    os << w.str();
    return os ;
 }

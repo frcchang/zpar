@@ -43,12 +43,12 @@ public:
       return m_mapItems.find(word, 0);
    }
 
-   // whether the word and tag pair is in the dictionary
+   // whether the word and tag std::pair is in the dictionary
    bool lookup(const CWord &word, const CTag &tag) const {
       return m_mapItems.find(word, 0) & (static_cast<unsigned long long>(1)<<tag.code()) ;
    }
 
-   // add a word and tag pair into entries
+   // add a word and tag std::pair into entries
    void add(const CWord &word, const CTag &tag) {
       m_mapItems[word] |= (static_cast<unsigned long long>(1)<<tag.code());
    }
@@ -56,12 +56,12 @@ public:
 public:
 
    // load tag dictionary from a stream
-   void load(istream &is) {
-      string s, word, tag ;
+   void load(std::istream &is) {
+      std::string s, word, tag ;
       unsigned long long i ;
       getline(is, s);
       while( is && !(s.empty()) ) {
-         istringstream iss(s);
+         std::istringstream iss(s);
          iss >> word >> tag ;
          i = CTag(tag).code() ; 
 //         if ( i==0 ) {
@@ -73,8 +73,8 @@ public:
    }
 
    // load tag dictionary from a file
-   void load(const string &sFileName) {
-      ifstream ifs ;
+   void load(const std::string &sFileName) {
+      std::ifstream ifs ;
 
       ifs.open( sFileName.c_str() ) ;
       assert( ifs.is_open() ) ;
@@ -83,7 +83,7 @@ public:
    }
 
    // save tag dictionary to a stream
-   void save(ostream &os) {
+   void save(std::ostream &os) {
       typename CHashMap<CWord, unsigned long long>::iterator it;
       unsigned long long i, j ; 
       it = m_mapItems.begin() ;
@@ -91,16 +91,16 @@ public:
          j = it.second();
          for (i = 0; i < m_nTotalNumberOfTags; ++i) {
             if ( j & (static_cast<unsigned long long>(1)<<i) ) 
-               os << it.first().str() << "\t" << CTag(i).str() << endl ;
+               os << it.first().str() << "\t" << CTag(i).str() << std::endl ;
          }
          ++it ; 
       }
-      os << endl;
+      os << std::endl;
    }
 
    // save tag dictionary to a file
-   void save(const string &sFileName) {
-      ofstream ofs ;
+   void save(const std::string &sFileName) {
+      std::ofstream ofs ;
       ofs.open( sFileName.c_str() ) ;
       assert( ofs.is_open() ) ;
       save(ofs);
@@ -112,13 +112,13 @@ public:
 //================================================================
 
 template<typename CWord, typename CTag>
-istream & operator >> (istream &is, CTagDict<CWord, CTag> &dict) {
+std::istream & operator >> (std::istream &is, CTagDict<CWord, CTag> &dict) {
    dict.load(is);
    return is;
 }
 
 template<typename CWord, typename CTag>
-ostream & operator << (ostream &os, CTagDict<CWord, CTag> &dict) {
+std::ostream & operator << (std::ostream &os, CTagDict<CWord, CTag> &dict) {
    dict.save(os);
    return os;
 }

@@ -14,8 +14,6 @@
 #include "reader.h"
 #include "writer.h"
 
-#include <cstring>
-
 using namespace english;
 
 /*===============================================================
@@ -24,15 +22,15 @@ using namespace english;
  *
  *===============================================================*/
 
-void test_weight(const string &sFeatureFile) {
+void test_weight(const std::string &sFeatureFile) {
 
-   cout << "Testing weights..." << endl ; cout.flush();
+   std::cout << "Testing weights..." << std::endl ; std::cout.flush();
 
    CDepParser parser(sFeatureFile, true);
 
    parser.finishtraining();
 
-   cout << "Done. " << endl;
+   std::cout << "Done. " << std::endl;
 
 }
 
@@ -44,9 +42,9 @@ void test_weight(const string &sFeatureFile) {
 
 int main(int argc, char* argv[]) {
 
-   const string hint = " feature_file";
+   const std::string hint = " feature_file";
    if (argc < 2) {
-      cout << "\nUsage: " << argv[0] << hint << endl;
+      std::cout << "\nUsage: " << argv[0] << hint << std::endl;
       return 1;
    }
 

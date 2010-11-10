@@ -148,7 +148,7 @@ std::istream & operator >> (std::istream &is, CTuple3<CClass1, CClass2, CClass3>
 }
 
 template <class CClass1, class CClass2, class CClass3>
-ostream & operator << (ostream &os, const CTuple3<CClass1, CClass2, CClass3> &tuple3) {
+std::ostream & operator << (std::ostream &os, const CTuple3<CClass1, CClass2, CClass3> &tuple3) {
    os << *(tuple3.first()) << " , " << *(tuple3.second()) << " , " << *(tuple3.third());
    return os ;
 }

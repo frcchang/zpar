@@ -27,11 +27,11 @@ protected:
    bool m_bTrain;
    bool m_bModified;
  
-   string m_sRecordPath;
+   std::string m_sRecordPath;
 
 public:
    // CONSTRUCTOR 
-   CWeightBase(const string &sFile, bool bTrain) : m_bTrain(bTrain) , m_sRecordPath(sFile) { }
+   CWeightBase(const std::string &sFile, bool bTrain) : m_bTrain(bTrain) , m_sRecordPath(sFile) { }
    virtual ~CWeightBase() { }
 
    virtual void loadScores() = 0 ;

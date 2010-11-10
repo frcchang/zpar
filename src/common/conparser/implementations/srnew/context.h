@@ -67,14 +67,14 @@ public:
    CTwoWords s0ws1w, s0wn0w, n0wn1w, s1wn0w;
    CTwoTaggedWords s0wts1wt;
 
-   vector<CTag> between_tag;
+   std::vector<CTag> between_tag;
    CCFGSet s0ts1tbt;
 
    // sub nodes unbinarized for the binarized 
-//   vector<unsigned long> s0_unbinarized;
-//   vector<unsigned long> s1_unbinarized;
-//   vector<CConstituent> s0_unbinarized_cs;
-//   vector<CConstituent> s1_unbinarized_cs;
+//   std::vector<unsigned long> s0_unbinarized;
+//   std::vector<unsigned long> s1_unbinarized;
+//   std::vector<CConstituent> s0_unbinarized_cs;
+//   std::vector<CConstituent> s1_unbinarized_cs;
    // the head child
    CConstituent s0hc, s1hc;
    // the constituent, its head child, and the left/right two ones
@@ -91,9 +91,9 @@ public:
 #ifdef _CHINESE_CFG_H
    unsigned long s0c_bracket, s1c_bracket, n0t_bracket, s0cs1c_bracket, s0cn0t_bracket;
 
-   vector<unsigned long> s0cs1c_separator; // one particular separator punctuation
-   vector<unsigned long> s0c_separator;
-   vector<unsigned long> s1c_separator;
+   std::vector<unsigned long> s0cs1c_separator; // one particular separator punctuation
+   std::vector<unsigned long> s0c_separator;
+   std::vector<unsigned long> s1c_separator;
    unsigned long s0cs1c_sepcount; // the count of separator pus between them
    unsigned long s0c_sepcount; // unigram backup
    unsigned long s1c_sepcount;
@@ -109,7 +109,7 @@ public:
 //   CContext() {}
 //   ~CContext() {}
 public:
-//   unsigned long unbinarize(const vector<CStateNode> &nodes, const unsigned long &curr, vector<unsigned long> &rval) {
+//   unsigned long unbinarize(const std::vector<CStateNode> &nodes, const unsigned long &curr, std::vector<unsigned long> &rval) {
 //      unsigned long head;
 //      head = curr;
 //      if (nodes[curr].temp) {
@@ -130,7 +130,7 @@ public:
 //      }
 //      return head;
 //   }
-//   void countleftdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
+//   void countleftdependents(const std::vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
 //      if (!nodes[i].is_constituent()) {
 //         last = -1;
 //         count = 0;
@@ -151,7 +151,7 @@ public:
 //         }
 //      }
 //   }
-//   void countrightdependents(const vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
+//   void countrightdependents(const std::vector<CStateNode> &nodes, const unsigned long &i, int &last, unsigned long &count) {
 //      if (!nodes[i].is_constituent()) {
 //         last = -1;
 //         count = 0;
@@ -172,7 +172,7 @@ public:
 //         }
 //      }
 //   }
-   void load(const CStateItem *item, const vector<CTaggedWord<CTag, TAG_SEPARATOR> > &wrds, const vector<unsigned long> &wordlen, const bool &modify) {
+   void load(const CStateItem *item, const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> > &wrds, const std::vector<unsigned long> &wordlen, const bool &modify) {
       stacksize = item->stacksize();
       if (stacksize==0) return; // must shift; no feature updates, no comparisons for different actions
       assert(!item->IsTerminated());

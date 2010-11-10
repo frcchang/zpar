@@ -7,18 +7,18 @@
  * CStateItem - the search state item, representing a partial
  *              candidate with shift reduce. 
  *
- * Note about members: there are two types of item properties;
+ * Note abstd::cout members: there are two types of item properties;
  * The first is the stack, which changes during the process; 
  * The second is the incoming sentence, including m_lHeads, 
  * m_lDepsL and m_lDepsR, m_lDepNumL, m_lDepNumR etc, which 
  * records the properties of each input word so far.
  *
- * A state item is partial and do not include information about
+ * A state item is partial and do not include information abstd::cout
  * all words from the input sentence. Though m_lHeads, m_lDepsL 
  * and m_lDepsR are fixed arrays with MAX_SENTENCE_SIZE length, 
  * not all the elements from the arrays are used. The ACTIVE 
  * elements are from the input index 0 to m_nNextWord, inclusive. 
- * And a state item only captures information about the active 
+ * And a state item only captures information abstd::cout the active 
  * sub section from input.
  *
  * The property for each input word need to be initialised. 
@@ -38,7 +38,7 @@ class CStateItem {
 
 public:
    enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT };
-   static string printAction(const unsigned &action) {
+   static std::string printAction(const unsigned &action) {
       switch (action) {
       case NO_ACTION:
          return "NA";
@@ -73,7 +73,7 @@ public:
    enum STACK_STATUS { OFF_STACK=0, ON_STACK_SHIFT, ON_STACK_ARCRIGHT } ;
 
 protected:
-   vector<int> m_Stack;                     // stack of words that are currently processed
+   std::vector<int> m_Stack;                     // stack of words that are currently processed
    int m_nNextWord;                         // index for the next word
    int m_lHeads[MAX_SENTENCE_SIZE];         // the lexical head for each word
    int m_lDepsL[MAX_SENTENCE_SIZE];         // the leftmost dependency for each word (just for cache, temporary info)
@@ -99,7 +99,7 @@ public:
    // constructors and destructor
    CStateItem() { clear(); }
    ~CStateItem() { }
-   CStateItem(CStateItem& item) { cerr<<"CStateItem does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CStateItem(CStateItem& item) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
 public:
    // comparison
@@ -217,9 +217,9 @@ public:
    // the arc left action links the current stack top to the next word with popping
 #ifdef PUNCT //-----//
 #ifdef LABELED
-   void ArcLeft(unsigned long lab, const vector<unsigned> &lPunct) {
+   void ArcLeft(unsigned long lab, const std::vector<unsigned> &lPunct) {
 #else
-   void ArcLeft(const vector<unsigned> &lPunct) { 
+   void ArcLeft(const std::vector<unsigned> &lPunct) { 
 #endif
 #else // PUNCT
 #ifdef LABELED
@@ -257,9 +257,9 @@ public:
    // the arc right action links the next word to the current stack top with pushing
 #ifdef PUNCT //-----//
 #ifdef LABELED
-   void ArcRight(unsigned long lab, const vector<unsigned> &lPunct) {
+   void ArcRight(unsigned long lab, const std::vector<unsigned> &lPunct) {
 #else
-   void ArcRight(const vector<unsigned> &lPunct) { 
+   void ArcRight(const std::vector<unsigned> &lPunct) { 
 #endif
 #else // PUNCT
 #ifdef LABELED
@@ -355,7 +355,7 @@ public:
 
    // the move action is a simple call to do action according to the action code
 #ifdef PUNCT
-   void Move ( const unsigned long &ac, const vector<unsigned> &lPunct ) {
+   void Move ( const unsigned long &ac, const std::vector<unsigned> &lPunct ) {
 #else
    void Move ( const unsigned long &ac ) {
 #endif
@@ -417,13 +417,13 @@ public:
    // returns true is the next word advances -- by shift or arcright. 
 #ifdef PUNCT
 #ifdef LABELED
-   bool StandardMoveStep( const CDependencyParse &tree, const vector<CDependencyLabel>&m_lCacheLabel, const vector<unsigned> &lPunct ) {
+   bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel, const std::vector<unsigned> &lPunct ) {
 #else
-   bool StandardMoveStep( const CDependencyParse &tree, const vector<unsigned> &lPunct ) {
+   bool StandardMoveStep( const CDependencyParse &tree, const std::vector<unsigned> &lPunct ) {
 #endif
  #else // PUNCT
 #ifdef LABELED
-   bool StandardMoveStep( const CDependencyParse &tree, const vector<CDependencyLabel>&m_lCacheLabel ) {
+   bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel ) {
 #else
    bool StandardMoveStep( const CDependencyParse &tree ) {
 #endif
@@ -517,8 +517,8 @@ public:
       static int top;
       // if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
       if ( m_nNextWord == item->m_nNextWord ) {
-//for (int i=0; i<m_Stack.size(); ++i) cout << m_Stack[i] << " "; cout << endl;
-//for (int i=0; i<item->m_Stack.size(); ++i) cout << item->m_Stack[i] << " "; cout << endl;
+//for (int i=0; i<m_Stack.size(); ++i) std::cout << m_Stack[i] << " "; std::cout << std::endl;
+//for (int i=0; i<item->m_Stack.size(); ++i) std::cout << item->m_Stack[i] << " "; std::cout << std::endl;
          assert( m_Stack.size() > item->m_Stack.size() );
          top = m_Stack.back();
          if ( item->m_lHeads[top] == m_nNextWord ) 
@@ -593,42 +593,42 @@ public:
    }
 
 #ifdef PUNCT
-   void GenerateTree( const CTwoStringVector &input, const vector<unsigned> &lOriginalIndex, CDependencyParse &output ) const {
+   void GenerateTree( const CTwoStringVector &input, const std::vector<unsigned> &lOriginalIndex, CDependencyParse &outout ) const {
 #else
-   void GenerateTree( const CTwoStringVector &input, CDependencyParse &output ) const {
+   void GenerateTree( const CTwoStringVector &input, CDependencyParse &outout ) const {
 #endif
 #ifdef PUNCT
-      unsigned outindex=0;
+      unsigned std::coutindex=0;
 #endif
       unsigned nextindex;
-      output.clear();
+      outout.clear();
       for ( int i=0; i<size(); ++i ) {
 #ifdef PUNCT
          nextindex=lOriginalIndex[i];
-         outindex = output.size();
-         assert(nextindex>=outindex);
+         std::coutindex = outout.size();
+         assert(nextindex>=std::coutindex);
          // append punctuations
-         for (int j=outindex; j<nextindex; ++j)
+         for (int j=std::coutindex; j<nextindex; ++j)
 #ifdef LABELED
-            output.push_back( CLabeledDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
+            outout.push_back( CLabeledDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
 #else
-            output.push_back( CDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
+            outout.push_back( CDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
 #endif
 #else
          nextindex=i;
 #endif
          // append
 #ifdef LABELED
-         output.push_back( CLabeledDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i] == DEPENDENCY_LINK_NO_HEAD?DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
+         outout.push_back( CLabeledDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i] == DEPENDENCY_LINK_NO_HEAD?DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
 #else
-         output.push_back( CDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i]==DEPENDENCY_LINK_NO_HEAD ? DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] ) ) ;
+         outout.push_back( CDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i]==DEPENDENCY_LINK_NO_HEAD ? DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] ) ) ;
 #endif
       }
-      for (int i=output.size(); i<input.size(); ++i) {
+      for (int i=outout.size(); i<input.size(); ++i) {
 #ifdef LABELED
-         output.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
+         outout.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
 #else
-         output.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
+         outout.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
 #endif
       }
    }

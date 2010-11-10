@@ -14,8 +14,6 @@
 #include "reader.h"
 #include "writer.h"
 
-#include <cstring>
-
 using namespace TARGET_LANGUAGE;
 
 /*===============================================================
@@ -24,9 +22,9 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const string &sBinaryRulePath, const string &sUnaryRulePath, const string &sConInputPath) {
+void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const std::string &sBinaryRulePath, const std::string &sUnaryRulePath, const std::string &sConInputPath) {
 
-   cout << "Training iteration is started ... " << endl ; cout.flush();
+   std::cout << "Training iteration is started ... " << std::endl ; std::cout.flush();
 
    CConParser parser(sFeatureFile, true);
    if (!sBinaryRulePath.empty()) 
@@ -34,11 +32,11 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const str
    if (!sUnaryRulePath.empty())
       parser.LoadUnaryRules(sUnaryRulePath);
 
-   ifstream is(sOutputFile.c_str());
+   std::ifstream is(sOutputFile.c_str());
    ASSERT(is.is_open(), "The training file is unaccessible.");
 
-   ifstream *cis;
-   if (!sConInputPath.empty()) cis=new ifstream(sConInputPath.c_str());
+   std::ifstream *cis;
+   if (!sConInputPath.empty()) cis=new std::ifstream(sConInputPath.c_str());
 
    static CSentenceMultiCon<CConstituent> con_input;
    static CSentenceParsed ref_sent; 
@@ -47,7 +45,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const str
    
    is >> ref_sent;
    while( ! ref_sent.empty() ) {
-      cout << "Sentence " << nCount << " ... ";
+      std::cout << "Sentence " << nCount << " ... ";
       nCount ++;
       if (!sConInputPath.empty()) {
          ASSERT((*cis) >> con_input, "No input provided for the sentence, though the input data is provided.");
@@ -56,13 +54,13 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const str
       else {
          parser.train( ref_sent, nCount );
       }
-      cout << "done." << endl;
+      std::cout << "done." << std::endl;
       is >> ref_sent;
    }
 
    parser.finishtraining();
 
-   cout << "Done. " << endl;
+   std::cout << "Done. " << std::endl;
 
 }
 
@@ -81,26 +79,26 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("u", "Path", "use only the unary rules from the given path", "");
       configurations.defineConfiguration("c", "Path", "input with multiple constituents for terminal tokens", "");
       if (options.args.size() != 4) {
-         cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
-         cout << configurations.message() << endl;
+         std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
+         std::cout << configurations.message() << std::endl;
          return 1;
       } 
    
       int training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
-         cerr << "Error: the number of training iterations must be an integer." << endl;
+         std::cerr << "Error: the number of training iterations must be an integer." << std::endl;
          return 1;
       }
-      string warning = configurations.loadConfigurations(options.opts);
+      std::string warning = configurations.loadConfigurations(options.opts);
       if (!warning.empty()) {
-         cout << "Warning: " << warning << endl;
+         std::cout << "Warning: " << warning << std::endl;
       }
 
-      string sBinaryRulePath = configurations.getConfiguration("b");
-      string sUnaryRulePath = configurations.getConfiguration("u");
-      string sConInputPath = configurations.getConfiguration("c");
+      std::string sBinaryRulePath = configurations.getConfiguration("b");
+      std::string sUnaryRulePath = configurations.getConfiguration("u");
+      std::string sConInputPath = configurations.getConfiguration("c");
    
-      cout << "Training started." << endl;
+      std::cout << "Training started." << std::endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) {
          auto_train(argv[1], argv[2], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
@@ -109,10 +107,10 @@ int main(int argc, char* argv[]) {
             sUnaryRulePath.clear();
          }
       }
-      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+      std::cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
    
-   } catch (const string &e) {
-      cerr << "Error: " << e << endl;
+   } catch (const std::string &e) {
+      std::cerr << "Error: " << e << std::endl;
       exit(1);
    }
 

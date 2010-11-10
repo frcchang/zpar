@@ -7,18 +7,18 @@
  * CStateItem - the search state item, representing a partial
  *              candidate with shift reduce. 
  *
- * Note about members: there are two types of item properties;
+ * Note abstd::cout members: there are two types of item properties;
  * The first is the stack, which changes during the process; 
  * The second is the incoming sentence, including m_lHeads, 
  * m_lDepsL and m_lDepsR, m_lDepNumL, m_lDepNumR etc, which 
  * records the properties of each input word so far.
  *
- * A state item is partial and do not include information about
+ * A state item is partial and do not include information abstd::cout
  * all words from the input sentence. Though m_lHeads, m_lDepsL 
  * and m_lDepsR are fixed arrays with MAX_SENTENCE_SIZE length, 
  * not all the elements from the arrays are used. The ACTIVE 
  * elements are from the input index 0 to m_nNextWord, inclusive. 
- * And a state item only captures information about the active 
+ * And a state item only captures information abstd::cout the active 
  * sub section from input.
  *
  * The property for each input word need to be initialised. 
@@ -55,7 +55,7 @@ public:
    enum STACK_STATUS { OFF_STACK=0, ON_STACK_SHIFT, ON_STACK_ARCRIGHT } ;
 
 protected:
-   vector<int> m_Stack;                     // stack of words that are currently processed
+   std::vector<int> m_Stack;                     // stack of words that are currently processed
    int m_nNextWord;                         // index for the next word
    int m_lHeads[MAX_SENTENCE_SIZE];         // the lexical head for each word
    int m_lDepsL[MAX_SENTENCE_SIZE];         // the leftmost dependency for each word (just for cache, temporary info)
@@ -75,7 +75,7 @@ public:
    // constructors and destructor
    CStateItem() { clear(); }
    ~CStateItem() { }
-   CStateItem(CStateItem& item) { cerr<<"CStateItem does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CStateItem(CStateItem& item) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
 public:
    // comparison
@@ -319,7 +319,7 @@ public:
 
    // returns true is the next word advances -- by shift or arcright. 
 #ifdef LABELED
-   bool StandardMoveStep( const CDependencyParse &tree, const vector<CDependencyLabel>&m_lCacheLabel ) {
+   bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel ) {
 #else
    bool StandardMoveStep( const CDependencyParse &tree ) {
 #endif
@@ -394,8 +394,8 @@ public:
       static int top;
       // if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
       if ( m_nNextWord == item->m_nNextWord ) {
-//for (int i=0; i<m_Stack.size(); ++i) cout << m_Stack[i] << " "; cout << endl;
-//for (int i=0; i<item->m_Stack.size(); ++i) cout << item->m_Stack[i] << " "; cout << endl;
+//for (int i=0; i<m_Stack.size(); ++i) std::cout << m_Stack[i] << " "; std::cout << std::endl;
+//for (int i=0; i<item->m_Stack.size(); ++i) std::cout << item->m_Stack[i] << " "; std::cout << std::endl;
          assert( m_Stack.size() > item->m_Stack.size() );
          top = m_Stack.back();
          if ( item->m_lHeads[top] == m_nNextWord ) 

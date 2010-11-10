@@ -16,21 +16,19 @@ namespace TARGET_LANGUAGE {
 
 namespace depparser {
 
-#include "macros.h"
-
 //
 // TYPE DEFINITIONS
 //
 typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
 typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
-typedef CScoreMap<pair<CWord, int>,  SCORE_TYPE> CWordIntMap;
-typedef CScoreMap<pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE> CTaggedWordIntMap;
+typedef CScoreMap<std::pair<CWord, int>,  SCORE_TYPE> CWordIntMap;
+typedef CScoreMap<std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE> CTaggedWordIntMap;
 typedef CScoreMap<int, SCORE_TYPE> CIntMap;
-typedef CScoreMap<pair<int, int>, SCORE_TYPE> CTwoIntMap;
+typedef CScoreMap<std::pair<int, int>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
-typedef CScoreMap<pair<CTwoWords, int>, SCORE_TYPE> CTwoWordsIntMap;
+typedef CScoreMap<std::pair<CTwoWords, int>, SCORE_TYPE> CTwoWordsIntMap;
 typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
-typedef CScoreMap<pair<CTwoTaggedWords, int>, SCORE_TYPE> CTwoTaggedWordsIntMap;
+typedef CScoreMap<std::pair<CTwoTaggedWords, int>, SCORE_TYPE> CTwoTaggedWordsIntMap;
 
 /*===============================================================
  *
@@ -83,7 +81,7 @@ public:
 
 public:
 
-   CWeight(const string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
+   CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
                                                m_mapHeadWord("HeadWord", 122651),
                                                m_mapDepWord("DepWord", 122651),
                                                m_mapHeadTag("HeadTag", 122651),

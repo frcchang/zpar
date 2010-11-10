@@ -17,13 +17,13 @@ namespace conparser {
 class CRule {
 
 protected:
-   CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> > *m_mapBinaryRules;
-   CHashMap< CConstituent, vector<CAction> > *m_mapUnaryRules;
-   const vector< vector<CConstituent> > *m_LexConstituents;
-   const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *m_sent;
+   CHashMap< CTuple2<CConstituent, CConstituent>, std::vector<CAction> > *m_mapBinaryRules;
+   CHashMap< CConstituent, std::vector<CAction> > *m_mapUnaryRules;
+   const std::vector< std::vector<CConstituent> > *m_LexConstituents;
+   const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > *m_sent;
 
 public:
-   CRule(const vector< CTaggedWord<CTag, TAG_SEPARATOR> >*sent) : m_mapBinaryRules(0), m_mapUnaryRules(0), m_LexConstituents(0), m_sent(sent) {}
+   CRule(const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> >*sent) : m_mapBinaryRules(0), m_mapUnaryRules(0), m_LexConstituents(0), m_sent(sent) {}
    virtual ~CRule() {
       if (m_mapBinaryRules) 
          delete m_mapBinaryRules; 
@@ -32,7 +32,7 @@ public:
    }
 
 public:
-   void getActions(const CStateItem &item, vector<CAction> &actions) {
+   void getActions(const CStateItem &item, std::vector<CAction> &actions) {
       assert(!item.IsTerminated());
       actions.clear();
 
@@ -73,7 +73,7 @@ public:
    }
 
 protected:
-   void getShiftRules(const CStateItem &item, vector<CAction> &actions) {
+   void getShiftRules(const CStateItem &item, std::vector<CAction> &actions) {
       static CAction action;
       // the rules onto lexical item constituents
       if (m_LexConstituents) {
@@ -89,7 +89,7 @@ protected:
       action.encodeShift();
       actions.push_back(action);
    }
-   void getBinaryRules(const CStateItem &item,  vector<CAction> &actions) {
+   void getBinaryRules(const CStateItem &item,  std::vector<CAction> &actions) {
       static CAction action;
       const unsigned stack_size = item.stacksize();
       ASSERT(stack_size>0, "Binary reduce required for stack containing one node");
@@ -99,7 +99,7 @@ protected:
       if (m_mapBinaryRules) {
          static CTuple2<CConstituent, CConstituent> tuple2;
          tuple2.refer(&(left.constituent), &(right.constituent));
-         const vector<CAction> &result = m_mapBinaryRules->find(tuple2, vector<CAction>());
+         const std::vector<CAction> &result = m_mapBinaryRules->find(tuple2, std::vector<CAction>());
          actions.insert(actions.end(), result.begin(), result.end());
          return;
       }
@@ -136,11 +136,11 @@ protected:
          } // for constituent
    }
 
-   void getUnaryRules(const CStateItem &item,  vector<CAction> &actions) {
+   void getUnaryRules(const CStateItem &item,  std::vector<CAction> &actions) {
       const CStateNode &child = item.node;
       // input rule list
       if (m_mapUnaryRules) {
-         const vector<CAction> &result = m_mapUnaryRules->find(child.constituent, vector<CAction>());
+         const std::vector<CAction> &result = m_mapUnaryRules->find(child.constituent, std::vector<CAction>());
          for (int i=0; i<result.size(); ++i) {
             if (result.at(i).getConstituent() != child.constituent.code()) {
                actions.push_back( result.at(i) );
@@ -160,19 +160,19 @@ protected:
    }
 
 public:
-   void loadRules(ifstream &is) {
+   void loadRules(std::ifstream &is) {
       // initialization
       if (!is.is_open()) {
          return;
       }
-      static string s;
+      static std::string s;
       getline(is, s);
       // binary rules
       ASSERT(s=="Binary rules" or s=="Free binary rules", "Binary rules not found from model.");
       if (s=="Free binary rules")
          return;
       ASSERT(!m_mapBinaryRules, "Binary rules already loaded");
-      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> >(257);
+      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, std::vector<CAction> >(257);
       is >> (*m_mapBinaryRules);
       // unary rules
       getline(is, s);
@@ -180,44 +180,44 @@ public:
       if (s=="Free unary rules")
          return;
       ASSERT(!m_mapUnaryRules, "Unary rules already loaded");
-      m_mapUnaryRules = new CHashMap< CConstituent, vector<CAction> >(257);
+      m_mapUnaryRules = new CHashMap< CConstituent, std::vector<CAction> >(257);
       is >> (*m_mapUnaryRules);
    }
 
-   void saveRules(ofstream &os) {
-      ASSERT(os.is_open(), "Cannot save rules possibly because the output file is not accessible.");
+   void saveRules(std::ofstream &os) {
+      ASSERT(os.is_open(), "Cannot save rules possibly because the outout file is not accessible.");
       if (m_mapBinaryRules) {
-         os << "Binary rules" << endl;
+         os << "Binary rules" << std::endl;
          os << (*m_mapBinaryRules);
       }
       else {
-         os << "Free binary rules" << endl;
+         os << "Free binary rules" << std::endl;
        }
       if (m_mapUnaryRules) {
-         os << "Unary rules" << endl;
+         os << "Unary rules" << std::endl;
          os << (*m_mapUnaryRules);
       }
-      else { os << "Free unary rules" << endl; }
-      os << endl;
+      else { os << "Free unary rules" << std::endl; }
+      os << std::endl;
    }
 
-   void LoadBinaryRules(ifstream &is) {
+   void LoadBinaryRules(std::ifstream &is) {
       if (!is.is_open()) {
          THROW("Loading binary rules failed possibly becaues file not exists.");
       }
-      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, vector<CAction> >(257);
+      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, std::vector<CAction> >(257);
       is >> (*m_mapBinaryRules);
    }
 
-   void LoadUnaryRules(ifstream &is) {
+   void LoadUnaryRules(std::ifstream &is) {
       if (!is.is_open()) {
          THROW("Loading unary rules failed possibly becaues file not exists.");
       }
-      m_mapUnaryRules = new CHashMap< CConstituent, vector<CAction> >(257);
+      m_mapUnaryRules = new CHashMap< CConstituent, std::vector<CAction> >(257);
       is >> (*m_mapUnaryRules);
    }
 
-   void SetLexConstituents(const vector<vector<CConstituent> > &con_input) {
+   void SetLexConstituents(const std::vector<std::vector<CConstituent> > &con_input) {
       m_LexConstituents = &con_input;
    }
    void UnsetLexConstituents() {

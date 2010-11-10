@@ -14,8 +14,6 @@
 #include "reader.h"
 #include "writer.h"
 
-#include <cstring>
-
 using namespace TARGET_LANGUAGE;
 
 /*===============================================================
@@ -24,26 +22,26 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool &bRules, const string &sSuperPath, const bool bCoNLL) {
+void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const bool &bRules, const std::string &sSuperPath, const bool bCoNLL) {
 
-   cout << "Training iteration is started..." << endl ; cout.flush();
+   std::cout << "Training iteration is started..." << std::endl ; std::cout.flush();
 
    CDepParser parser(sFeatureFile, true, bCoNLL);
    parser.setRules(bRules);
 
-   ifstream is(sOutputFile.c_str());
+   std::ifstream is(sOutputFile.c_str());
    assert(is.is_open());
 
    CDependencyParse ref_sent; 
    CCoNLLOutput ref_conll; 
 
    depparser::CSuperTag *supertags;
-   ifstream *is_supertags;
+   std::ifstream *is_supertags;
 
    supertags = 0;
    if (!sSuperPath.empty()) {
       supertags = new depparser::CSuperTag();
-      is_supertags = new ifstream(sSuperPath.c_str());
+      is_supertags = new std::ifstream(sSuperPath.c_str());
       parser.setSuperTags(supertags);
    }
 
@@ -81,7 +79,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
       delete is_supertags;
    }
 
-   cout << "Done. " << endl;
+   std::cout << "Done. " << std::endl;
 
 }
 
@@ -100,31 +98,31 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("p", "path", "supertags", "");
       configurations.defineConfiguration("r", "", "use rules", "");
       if (options.args.size() != 4) {
-         cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << endl ;
-         cout << configurations.message() << endl;
+         std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
+         std::cout << configurations.message() << std::endl;
          return 1;
       } 
       configurations.loadConfigurations(options.opts);
    
       int training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
-         cerr << "Error: the number of training iterations must be an integer." << endl;
+         std::cerr << "Error: the number of training iterations must be an integer." << std::endl;
          return 1;
       }
    
       bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
-      string sSuperPath = configurations.getConfiguration("p");
+      std::string sSuperPath = configurations.getConfiguration("p");
       bool bRules = configurations.getConfiguration("r").empty() ? false : true;
 
-      cout << "Training started" << endl;
+      std::cout << "Training started" << std::endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
          auto_train(options.args[1], options.args[2], bRules, sSuperPath, bCoNLL);
-      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+      std::cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
    
       return 0;
-   } catch (const string &e) {
-      cerr << endl << "Error: " << e << endl;
+   } catch (const std::string &e) {
+      std::cerr << std::endl << "Error: " << e << std::endl;
       return 1;
    }
 

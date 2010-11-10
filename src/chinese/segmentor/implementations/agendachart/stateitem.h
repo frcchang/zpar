@@ -40,7 +40,7 @@ struct CStateItem {
    SCORE_TYPE m_nScore;
    CStateItem() { m_lWords = new unsigned long int[MAX_SENTENCE_SIZE]; clear(); }
    ~CStateItem() { delete[] m_lWords; }
-   CStateItem(CStateItem& item) { cerr<<"CStateItem does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CStateItem(CStateItem& item) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
    //inline bool operator < (const CStateItem &item) const { return this->m_nScore < item.m_nScore ? true : this->m_nScore == item.m_nScore && this->m_nLength < item.m_nLength; }
    //inline bool operator > (const CStateItem &item) const { return this->m_nScore > item.m_nScore ? true : this->m_nScore == item.m_nScore && this->m_nLength > item.m_nLength; }
    // These definitions are better for the agenda segmentor. 
@@ -87,7 +87,7 @@ struct CStateItem {
 //   }
 //   bool isCompatibleWith(const CStateItem *item) const {
 //      if (item->m_nLength==0) return true;
-//      unsigned long int length = min(m_nLength, item->m_nLength);
+//      unsigned long int length = std::min(m_nLength, item->m_nLength);
 //      for (int i=0; i<length-1; ++i)
 //         if (m_lWords[i] != item->m_lWords[i]) return false;
 //      if (m_lWords[length-1]<item->m_lWords[length-1])

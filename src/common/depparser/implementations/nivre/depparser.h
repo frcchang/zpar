@@ -46,13 +46,13 @@ private:
    CAgendaBeam<depparser::CStateItem> *m_Agenda;
 
    // caches for input
-   vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
 #ifdef LABELED
-   vector< CDependencyLabel > m_lCacheLabel;
+   std::vector< CDependencyLabel > m_lCacheLabel;
 #endif
-   vector< CLemma > m_lCacheCoNLLLemma; // conll
-   vector< CCoNLLCPOS > m_lCacheCoNLLCPOS; // conll
-   vector< vector<CCoNLLFeats> > m_lCacheCoNLLFeats; // conll
+   std::vector< CLemma > m_lCacheCoNLLLemma; // conll
+   std::vector< CCoNLLCPOS > m_lCacheCoNLLCPOS; // conll
+   std::vector< std::vector<CCoNLLFeats> > m_lCacheCoNLLFeats; // conll
 
    int m_nTrainingRound;
    int m_nTotalErrors;
@@ -61,7 +61,7 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
+   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(depparser::AGENDA_SIZE);
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 
@@ -86,7 +86,7 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      cout << "Total number of training errors are: " << m_nTotalErrors << endl;
+      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
    void updateScores(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
@@ -108,10 +108,10 @@ private:
    inline depparser::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned long &label, depparser::SCORE_TYPE amount=0, int round=0 );
 #endif
 
-   // update the built-in weight vector for this feature object specifically
-   void updateScoresForStates( const depparser::CStateItem *output , const depparser::CStateItem *correct , 
+   // update the built-in weight std::vector for this feature object specifically
+   void updateScoresForStates( const depparser::CStateItem *outout , const depparser::CStateItem *correct , 
                                depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;
-   inline void updateScoreForState( const depparser::CStateItem *output , const depparser::SCORE_TYPE &amount ) ;
+   inline void updateScoreForState( const depparser::CStateItem *outout , const depparser::SCORE_TYPE &amount ) ;
 
 
    // helper method

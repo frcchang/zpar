@@ -160,11 +160,11 @@ void CDepLabeler::label( const CDependencyTree &sentence , CLabeledDependencyTre
  *
  *---------------------------------------------------------------*/
 
-inline void UnlabelSentence(const CLabeledDependencyTree &labeled, CDependencyTree &output) {
+inline void UnlabelSentence(const CLabeledDependencyTree &labeled, CDependencyTree &outout) {
    static int i;
-   output.clear();
+   outout.clear();
    for (i=0;i<labeled.size();++i)
-      output.push_back(CDependencyTreeNode(labeled[i].word, labeled[i].tag, labeled[i].head));
+      outout.push_back(CDependencyTreeNode(labeled[i].word, labeled[i].tag, labeled[i].head));
 }
 
 /*---------------------------------------------------------------
@@ -194,15 +194,15 @@ void CDepLabeler::train( const CLabeledDependencyTree &correct ) {
 
 void CDepLabeler::label_conll( const CCoNLLOutput &sentence , CCoNLLOutput *retval ) {
 
-   static CLabeledDependencyTree output ;
+   static CLabeledDependencyTree outout ;
 
-   sentence.toLabeledDependencyTree( output );
-   initCaches( &output );
+   sentence.toLabeledDependencyTree( outout );
+   initCaches( &outout );
    retval->clear();
-   for (unsigned long i=0; i<output.size(); ++i)
-      work( &output, 0, i ) ;
+   for (unsigned long i=0; i<outout.size(); ++i)
+      work( &outout, 0, i ) ;
    retval->copy(sentence);
-   retval->copyDependencyLabels( output );
+   retval->copyDependencyLabels( outout );
 
 }
 

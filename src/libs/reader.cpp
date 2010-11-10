@@ -23,9 +23,9 @@
  *
  *---------------------------------------------------------------*/
 
-bool CSentenceReader::readRawCharacter(string *retval) {
+bool CSentenceReader::readRawCharacter(std::string *retval) {
    char cTemp;
-   string sWord;                                // string for next word
+   std::string sWord;                                // std::string for next word
    bool bReadSomething = false;                 // did we read anything?
    while (m_iStream->get(cTemp)) {              // still have something there
       bReadSomething = true;
@@ -50,7 +50,7 @@ bool CSentenceReader::readRawCharacter(string *retval) {
  *
  * bIgnoreSpace indicates whether spaces should be also included
  * into the returned sentence. If they are not included, they will
- * simply be dropped out. 
+ * simply be dropped std::cout. 
  *
  * The return value shows if anything was read from the file
  *
@@ -60,13 +60,13 @@ bool CSentenceReader::readRawSentence(CStringVector *vReturn, bool bSkipEmptyLin
    assert(vReturn != NULL);
    vReturn->clear();
    char cTemp;
-   string sWord;                                // string for next word
+   std::string sWord;                                // std::string for next word
    bool bReadSomething = false;                 // did we read anything?
    while (m_iStream->get(cTemp)) {              // still have something there
       bReadSomething = true;
       if (cTemp == '\r')
          continue;
-      if (cTemp == '\n') {                      // if we meet EOL, return string
+      if (cTemp == '\n') {                      // if we meet EOL, return std::string
          m_nLine++;                             // new line
          if (!sWord.empty()) {                  // we have found another word
             getCharactersFromUTF8String(sWord, vReturn); 
@@ -111,13 +111,13 @@ bool CSentenceReader::readSegmentedSentence(CStringVector *vReturn, bool bSkipEm
    assert(vReturn != NULL);
    vReturn->clear();
    char cTemp;
-   string sWord;                                // string for next word
+   std::string sWord;                                // std::string for next word
    bool bReadSomething = false;
    while (m_iStream->get(cTemp)) {              // still have something there
       bReadSomething = true;
       if (cTemp == '\r')
          continue;
-      if (cTemp == '\n') {                      // if we meet EOL, return string
+      if (cTemp == '\n') {                      // if we meet EOL, return std::string
          m_nLine++;                             // new line
          if (!sWord.empty()) {                  // we have found another word
             vReturn->push_back(sWord); 
@@ -162,13 +162,13 @@ bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEm
    char cTemp;
    bool bCurrentTag = false;
    bool bReadSomething = false;
-   string sWord;                                // string for next word
-   string sTag;                                 // string for next tag
+   std::string sWord;                                // std::string for next word
+   std::string sTag;                                 // std::string for next tag
    while (m_iStream->get(cTemp)) {              // still have something there
       bReadSomething = true;
       if (cTemp == '\r')                        // ignore the windows \r
          continue;                              // and continue read in
-      if (cTemp == '\n') {                      // if we meet EOL, return string
+      if (cTemp == '\n') {                      // if we meet EOL, return std::string
          m_nLine++;                             // next line
          if (!sWord.empty() || !sTag.empty()) { // we have found another word
             if (sTag.empty()) {
@@ -176,7 +176,7 @@ bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEm
                vReturn->clear();
                return bReadSomething;
             }
-            vReturn->push_back(make_pair(sWord, sTag));
+            vReturn->push_back(std::make_pair(sWord, sTag));
          }
          if (vReturn->empty()) {
             if (bSkipEmptyLines)
@@ -191,7 +191,7 @@ bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEm
                vReturn->clear();
                return bReadSomething;
             }
-            vReturn->push_back(make_pair(sWord, sTag));
+            vReturn->push_back(std::make_pair(sWord, sTag));
             sWord = "";
             sTag = "";
             bCurrentTag = false;
@@ -220,7 +220,7 @@ bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEm
          vReturn->clear();
          return bReadSomething;
       }
-      vReturn->push_back(make_pair(sWord, sTag));
+      vReturn->push_back(std::make_pair(sWord, sTag));
       sWord = "";
    } 
    return bReadSomething;

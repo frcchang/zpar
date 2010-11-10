@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * reranker.h - the reranker for tagged and depparsed outputs   *
+ * reranker.h - the reranker for tagged and depparsed outouts   *
  *                                                              *
  * It updates the tagger and deppraser in a unified manner      *
  *                                                              *
@@ -33,7 +33,7 @@ protected:
    int m_nScoreIndex;
 
 public:
-   CReranker(const string &sFeatureDB, const bool &bTrain) {
+   CReranker(const std::string &sFeatureDB, const bool &bTrain) {
       m_depparser = new CDepParser(sFeatureDB+".depparser", bTrain);
       m_tagger = new CTagger(sFeatureDB+".tagger", bTrain);
       m_bTrain = bTrain;  
@@ -53,7 +53,7 @@ protected:
    double getOrUpdatePriorScores(double *prior_scores, int amount);
 
 public:
-   void rerank(const CSentenceParsed *parsed, CSentenceParsed *out, int nBest, double *prior_scores) ;
+   void rerank(const CSentenceParsed *parsed, CSentenceParsed *std::cout, int nBest, double *prior_scores) ;
    void train(const CSentenceParsed *parsed, const CSentenceParsed *correct, int nBest, double *prior_scores) ;
    void finishTraining();
 
@@ -61,7 +61,7 @@ public:
 
 }
 
-void getFScore(const CSentenceParsed &output, const CSentenceParsed &correct, double &fSeg, double &fTag, double &fPar, double &fParUnlabeled, double &fParIncPunc);
+void getFScore(const CSentenceParsed &outout, const CSentenceParsed &correct, double &fSeg, double &fTag, double &fPar, double &fParUnlabeled, double &fParIncPunc);
 
 
 

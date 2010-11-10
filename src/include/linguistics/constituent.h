@@ -56,8 +56,8 @@ public:
       throw("Can't compare directly because the contents are flexible indice. Compare trees!");
    }
    
-   string str() const {
-     ostringstream os;
+   std::string str() const {
+     std::ostringstream os;
      if (is_constituent)
         os << "Constituent(left=" << left_child << ", right=" << right_child << ")";
      else os << "Token";
@@ -82,7 +82,7 @@ public:
 class CCFGTree {
 
 public:
-   vector<CCFGTreeNode> nodes;
+   std::vector<CCFGTreeNode> nodes;
    CTwoStringVector words;
    int root;
 
@@ -92,20 +92,20 @@ public:
 
 public:
    int newNode() { nodes.push_back(CCFGTreeNode()); return nodes.size()-1; }
-   int newWord(const string &word, const string &pos) { words.push_back(make_pair(word, pos)); return(words.size()-1); }
+   int newWord(const std::string &word, const std::string &pos) { words.push_back(std::make_pair(word, pos)); return(words.size()-1); }
 
    bool empty() const {return nodes.empty()&&words.empty();}
    void clear() {root=-1;nodes.clear(); words.clear();}
-   int readNode(istream &is);
-   string writeNode(int node) const;
-   string writeNodeUnbin(int node) const;
+   int readNode(std::istream &is);
+   std::string writeNode(int node) const;
+   std::string writeNodeUnbin(int node) const;
    bool nodesEqual(const CCFGTree &tree, int i, int tree_i) const ;
-   string str() const {
+   std::string str() const {
       if (root == -1)
          return "";
       return writeNode(root);
    }
-   string str_unbinarized() const {
+   std::string str_unbinarized() const {
       if (root == -1)
          return ""; 
       return writeNodeUnbin(root);
@@ -127,23 +127,23 @@ public:
 
 //==============================================================
 
-inline istream & operator >> (istream &is, CCFGTree &tree) {
+inline std::istream & operator >> (std::istream &is, CCFGTree &tree) {
    tree.clear();
-   string line;
+   std::string line;
 //   while(is && line.empty())
 //      getline(is, line);
    getline(is, line);
 
    if(is && !line.empty())
    {
-      istringstream iss(line);
+      std::istringstream iss(line);
          tree.root=tree.readNode(iss);
    }
    return is ;
 }
 
-inline ostream & operator << (ostream &os, const CCFGTree &tree) {
-   os << tree.str() << endl;
+inline std::ostream & operator << (std::ostream &os, const CCFGTree &tree) {
+   os << tree.str() << std::endl;
    return os ;
 }
 

@@ -14,7 +14,7 @@
 
 namespace english {
 
-const string STANFORD_DEP_STRINGS[] = {
+const std::string STANFORD_DEP_STRINGS[] = {
    "-none-",
    "null",
    "cc", 
@@ -147,7 +147,7 @@ public:
 
    CDependencyLabel() : m_code(NONE) {}
    CDependencyLabel(const unsigned long &code) : m_code(code) { }
-   CDependencyLabel(const string &str) { load(str); }
+   CDependencyLabel(const std::string &str) { load(str); }
    virtual ~CDependencyLabel() {}
 
 public:
@@ -160,7 +160,7 @@ public:
    bool operator <= (const CDependencyLabel &l) const { return m_code <= l.m_code; }
    bool operator >= (const CDependencyLabel &l) const { return m_code >= l.m_code; }
 
-   void load(const string &str) { 
+   void load(const std::string &str) { 
       m_code = STANFORD_DEP_NONE;
       for (int i=FIRST; i<COUNT; ++i) {
          if (STANFORD_DEP_STRINGS[i]==str) {
@@ -174,7 +174,7 @@ public:
       m_code = u;
    }
 
-   const string &str() const { 
+   const std::string &str() const { 
       return STANFORD_DEP_STRINGS[ m_code ]; 
    }
 

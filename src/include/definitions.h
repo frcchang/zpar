@@ -20,7 +20,7 @@
  *==============================================================*/
 
 #include <cstdlib>                              // define NULL
-#include <utility>                              // define pair
+#include <utility>                              // define std::pair
 #include <cassert>                              // assert
 #include <ctime>                                // clock(); CLK_TCK
 #include <vector>
@@ -35,7 +35,7 @@
 #include <exception>
 #include <algorithm>
 
-using namespace std;
+//using namespace std;
 
 /*===============================================================
  *
@@ -44,19 +44,19 @@ using namespace std;
  *==============================================================*/
 
 // throw
-#define THROW(x) { ostringstream __tmp_os; __tmp_os << x; throw(__tmp_os.str()); }
+#define THROW(x) { std::ostringstream __tmp_os; __tmp_os << x; throw(__tmp_os.str()); }
 
 // assert
 #define ASSERT(x,y) { if (!(x)) THROW(y); }
 
 // error report tool
-#define REPORT(x) { cerr << endl << "In " << __FILE__ << ", line " << __LINE__ << ": " << endl << x << endl; cerr.flush(); }
-#define WARNING(x) { cerr << "Warning:" << " " << x << endl; cerr.flush(); }
+#define REPORT(x) { std::cerr << std::endl << "In " << __FILE__ << ", line " << __LINE__ << ": " << std::endl << x << std::endl; std::cerr.flush(); }
+#define WARNING(x) { std::cerr << "Warning:" << " " << x << std::endl; std::cerr.flush(); }
 
 // trace tool
 #ifdef DEBUG 
-#define TRACE(x) { cout << x << endl; cout.flush(); }
-#define TRACE_WORD(x) { cout << x; cout.flush(); }
+#define TRACE(x) { std::cout << x << std::endl; std::cout.flush(); }
+#define TRACE_WORD(x) { std::cout << x; std::cout.flush(); }
 #else
 #define TRACE(x) 
 #define TRACE_WORD(x)
@@ -71,7 +71,7 @@ using namespace std;
 
 /*===============================================================
  *
- * definitions about sentence structures 
+ * definitions abstd::cout sentence structures 
  *  
  *==============================================================*/
 

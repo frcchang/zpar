@@ -23,27 +23,27 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, unsigned long nBest, const bool bScores, const string &sSuperPath) {
+void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, unsigned long nBest, const bool bScores, const std::string &sSuperPath) {
 
-   cout << "Parsing started" << endl;
+   std::cout << "Parsing started" << std::endl;
 
    int time_start = clock();
 
    CDepParser parser(sFeatureFile, false) ;
    CSentenceReader input_reader(sInputFile);
-   ofstream os(sOutputFile.c_str());
-   ofstream *os_scores=0;
+   std::ofstream os(sOutputFile.c_str());
+   std::ofstream *os_scores=0;
    depparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
    CTwoStringVector input_sent;
-   CDependencyParse *output_sent; 
+   CDependencyParse *outout_sent; 
    depparser::CSuperTag *supertags;
-   ifstream *is_supertags;
+   std::ifstream *is_supertags;
 
    supertags = 0;
    if (!sSuperPath.empty()) {
       supertags = new depparser::CSuperTag();
-      is_supertags = new ifstream(sSuperPath.c_str());
+      is_supertags = new std::ifstream(sSuperPath.c_str());
       parser.setSuperTags(supertags);
    }
 
@@ -52,10 +52,10 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
 
    if (bScores) {
       scores = new depparser::SCORE_TYPE[nBest];
-      os_scores = new ofstream(string(sOutputFile+".scores").c_str());
+      os_scores = new std::ofstream(std::string(sOutputFile+".scores").c_str());
    }
 
-   output_sent = new CDependencyParse[nBest];
+   outout_sent = new CDependencyParse[nBest];
  
    // Read the next example
    bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
@@ -68,38 +68,38 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       if (input_sent.size() > depparser::MAX_SENTENCE_SIZE) {
          WARNING("The sentence is longer than system limitation, skipping it.");
          for (unsigned i=0; i<nBest; ++i) {
-            output_sent[i].clear();
+            outout_sent[i].clear();
             if (bScores) scores[i]=0;
          }
       }
       else {
 
-         // Find decoder output
+         // Find decoder outout
          if (supertags) {
             supertags->setSentenceSize( input_sent.size() );
             (*is_supertags) >> *supertags;
          }
 
-         parser.parse( input_sent , output_sent , nBest , scores ) ;
+         parser.parse( input_sent , outout_sent , nBest , scores ) ;
 
-//         if (supertags && output_sent->empty()) {
+//         if (supertags && outout_sent->empty()) {
 //            parser.setSuperTags(0);
-//            parser.parse( input_sent , output_sent , nBest , scores ) ;
+//            parser.parse( input_sent , outout_sent , nBest , scores ) ;
 //            parser.setSuperTags(supertags);
 //         }
       }
       
       // Ouptut sent
       for (unsigned i=0; i<nBest; ++i) {
-         os << output_sent[i] ;
-         if (bScores) *os_scores << scores[i] << endl;
+         os << outout_sent[i] ;
+         if (bScores) *os_scores << scores[i] << std::endl;
       }
       
       // Read the next example
       bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
    }
 
-   delete [] output_sent ;
+   delete [] outout_sent ;
    os.close();
 
    if (bScores) {
@@ -114,32 +114,32 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       delete is_supertags;
    }
 
-   cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 //====================================================
 
-void process_conll(const string sInputFile, const string sOutputFile, const string sFeatureFile, unsigned long nBest, const bool bScores, const string &sSuperPath) {
+void process_conll(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, unsigned long nBest, const bool bScores, const std::string &sSuperPath) {
 
-   cout << "Parsing started" << endl;
+   std::cout << "Parsing started" << std::endl;
 
    int time_start = clock();
 
    CDepParser parser(sFeatureFile, false, true) ;
-   ifstream is(sInputFile.c_str());
-   ofstream os(sOutputFile.c_str());
-   ofstream *os_scores=0;
+   std::ifstream is(sInputFile.c_str());
+   std::ofstream os(sOutputFile.c_str());
+   std::ofstream *os_scores=0;
    depparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
    CCoNLLInput input_sent;
-   CCoNLLOutput *output_sent; 
+   CCoNLLOutput *outout_sent; 
    depparser::CSuperTag *supertags;
-   ifstream *is_supertags;
+   std::ifstream *is_supertags;
 
    supertags = 0;
    if (!sSuperPath.empty()) {
       supertags = new depparser::CSuperTag();
-      is_supertags = new ifstream(sSuperPath.c_str());
+      is_supertags = new std::ifstream(sSuperPath.c_str());
       parser.setSuperTags(supertags);
    }
 
@@ -147,10 +147,10 @@ void process_conll(const string sInputFile, const string sOutputFile, const stri
 
    if (bScores) {
       scores = new depparser::SCORE_TYPE[nBest];
-      os_scores = new ofstream(string(sOutputFile+".scores").c_str());
+      os_scores = new std::ofstream(std::string(sOutputFile+".scores").c_str());
    }
 
-   output_sent = new CCoNLLOutput[nBest];
+   outout_sent = new CCoNLLOutput[nBest];
  
    // Read the next example
    while( is >> input_sent ) {
@@ -162,35 +162,35 @@ void process_conll(const string sInputFile, const string sOutputFile, const stri
       if (input_sent.size() > depparser::MAX_SENTENCE_SIZE) {
          WARNING("main.cpp: the sentence is longer than system limitation, skipping it.");
          for (unsigned i=0; i<nBest; ++i) {
-            output_sent[i].clear();
+            outout_sent[i].clear();
             if (bScores) scores[i]=0;
          }
       }
       else {
 
-         // Find decoder output
+         // Find decoder outout
          if (supertags) {
             supertags->setSentenceSize( input_sent.size() );
             (*is_supertags) >> *supertags;
          }
 
-         parser.parse_conll( input_sent , output_sent , nBest , scores ) ;
+         parser.parse_conll( input_sent , outout_sent , nBest , scores ) ;
 
-//         if (supertags && output_sent->empty()) {
+//         if (supertags && outout_sent->empty()) {
 //            parser.setSuperTags(0);
-//            parser.parse( input_sent , output_sent , nBest , scores ) ;
+//            parser.parse( input_sent , outout_sent , nBest , scores ) ;
 //            parser.setSuperTags(supertags);
 //         }
       }
       
       // Ouptut sent
       for (unsigned i=0; i<nBest; ++i) {
-         os << output_sent[i] ;
-         if (bScores) *os_scores << scores[i] << endl;
+         os << outout_sent[i] ;
+         if (bScores) *os_scores << scores[i] << std::endl;
       }
    }
 
-   delete [] output_sent ;
+   delete [] outout_sent ;
    os.close();
 
    if (bScores) {
@@ -205,7 +205,7 @@ void process_conll(const string sInputFile, const string sOutputFile, const stri
       delete is_supertags;
    }
 
-   cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -219,33 +219,33 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("c", "", "process CoNLL format", "");
-      configurations.defineConfiguration("n", "N", "N best list output", "1");
-      configurations.defineConfiguration("s", "", "output scores to output_file.scores", "");
+      configurations.defineConfiguration("n", "N", "N best list outout", "1");
+      configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
       configurations.defineConfiguration("p", "path", "supertags", "");
       // check arguments
       if (options.args.size() != 4) {
-         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
-         cout << configurations.message() << endl;
+         std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
       configurations.loadConfigurations(options.opts);
    
       unsigned long nBest = 1;
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
-         cout << "The N best specification must be an integer." << endl;
+         std::cout << "The N best specification must be an integer." << std::endl;
          return 1;
       }
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
-      string sSuperPath = configurations.getConfiguration("p");
+      std::string sSuperPath = configurations.getConfiguration("p");
    
       if (bCoNLL)
          process_conll(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
       else
          process(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
       return 0;
-   } catch (const string &e) {
-      cerr << "Error: " << e << endl;
+   } catch (const std::string &e) {
+      std::cerr << "Error: " << e << std::endl;
       return 1;
    }
 }

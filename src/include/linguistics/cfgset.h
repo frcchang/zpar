@@ -37,7 +37,7 @@ inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long 
 
 /*===============================================================
  *
- * definitions about constituent set 
+ * definitions abstd::cout constituent set 
  *
  *==============================================================*/
 
@@ -89,8 +89,8 @@ public:
    virtual bool operator < (const CCFGSet &set) const { return m_nHash < set.m_nHash; }
    void operator = (const CCFGSet &set) { m_nHash = set.m_nHash; }
    void operator = (const unsigned long long &uint) { m_nHash = uint; }
-   const string str() const { 
-      string retval = "";
+   const std::string str() const { 
+      std::string retval = "";
       unsigned long long hs = m_nHash;
       unsigned long tc;
       while (hs) {
@@ -104,10 +104,10 @@ public:
       }
       return retval; 
    }
-   void load(const string &s) {
+   void load(const std::string &s) {
       m_nHash = 0;
-      istringstream iss(s);
-      static string t;
+      std::istringstream iss(s);
+      static std::string t;
       iss >> t;
       while (iss.good()) {
          if (t[0]=='.') 
@@ -144,10 +144,10 @@ public:
 
 //===============================================================
 
-inline istream & operator >> (istream &is, CCFGSet &c) {
+inline std::istream & operator >> (std::istream &is, CCFGSet &c) {
 
-   string s;
-   string t;
+   std::string s;
+   std::string t;
    is >> t;
    assert(t=="[");
 
@@ -164,7 +164,7 @@ inline istream & operator >> (istream &is, CCFGSet &c) {
    return is;
 }
 
-inline ostream & operator << (ostream &os, const CCFGSet &c) {
+inline std::ostream & operator << (std::ostream &os, const CCFGSet &c) {
 
    os << "[ ";
    os << c.str();

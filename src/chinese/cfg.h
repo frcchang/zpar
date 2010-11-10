@@ -47,14 +47,14 @@
 
 //===============================================================
 
-inline istream & operator >> (istream &is, chinese::CConstituentLabel &con) {
-   string s;
+inline std::istream & operator >> (std::istream &is, chinese::CConstituentLabel &con) {
+   std::string s;
    is >> s;
    con.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const chinese::CConstituentLabel &con) {
+inline std::ostream & operator << (std::ostream &os, const chinese::CConstituentLabel &con) {
    os << con.str() ;
    return os;
 }

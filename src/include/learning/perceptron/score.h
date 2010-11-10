@@ -16,14 +16,14 @@ template<typename SCORE_TYPE>
 class CScore;
 
 template<typename SCORE_TYPE>
-istream & operator >> (istream &is, CScore<SCORE_TYPE> &score) {
+std::istream & operator >> (std::istream &is, CScore<SCORE_TYPE> &score) {
    char c ;
    is >> score[0] >> c >> score[1] ;
    return is ;
 }
 
 template<typename SCORE_TYPE>
-ostream & operator << (ostream &os, CScore<SCORE_TYPE> &score) {
+std::ostream & operator << (std::ostream &os, CScore<SCORE_TYPE> &score) {
    return os << score[0] << " / " << score[1] ;
 }
 
@@ -58,7 +58,7 @@ public:
    void updateCurrent(const SCORE_TYPE &added, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added; }
    //void updateCurrent(SCORE_TYPE added, int round=0) {if (round>=lastupdate){updateAverage(round);total+=added;lastupdate=round;}current+=added; }
    void updateAverage(const int &round=0) {if (round>lastupdate)total += current*(round-lastupdate);
-   else if (round<lastupdate) cout << "Round is: "<<round<<"<"<<lastupdate<<endl;}
+   else if (round<lastupdate) std::cout << "Round is: "<<round<<"<"<<lastupdate<<std::endl;}
 };
 
 #endif

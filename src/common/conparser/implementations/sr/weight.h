@@ -26,36 +26,36 @@ namespace conparser {
 //
 typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
 typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
-typedef CScoreMap<pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
-typedef CScoreMap<pair<CWord, CAction>,  SCORE_TYPE> CWordActionMap;
-typedef CScoreMap<pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE> CTaggedWordActionMap;
+typedef CScoreMap<std::pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
+typedef CScoreMap<std::pair<CWord, CAction>,  SCORE_TYPE> CWordActionMap;
+typedef CScoreMap<std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE> CTaggedWordActionMap;
 typedef CScoreMap<unsigned long, SCORE_TYPE> CIntMap;
-typedef CScoreMap<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
+typedef CScoreMap<std::pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
-typedef CScoreMap<pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
-typedef CScoreMap<pair<CTwoWords, CActionType>, SCORE_TYPE> CTwoWordsActionTypeMap;
+typedef CScoreMap<std::pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
+typedef CScoreMap<std::pair<CTwoWords, CActionType>, SCORE_TYPE> CTwoWordsActionTypeMap;
 typedef CScoreMap<CTuple3<CTwoWords, CTag, CAction>, SCORE_TYPE> CTwoWordsTagActionMap;
 typedef CScoreMap<CTuple3<CTwoWords, CTag, CActionType>, SCORE_TYPE> CTwoWordsTagActionTypeMap;
 typedef CScoreMap<CTuple3<CTwoWords, CCFGSet, CAction>, SCORE_TYPE>
 CTwoWordsCFGSetActionMap;
 typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
-typedef CScoreMap<pair<CTwoTaggedWords, CAction>, SCORE_TYPE> CTwoTaggedWordsActionMap;
-typedef CScoreMap<pair<CTwoTaggedWords, CActionType>, SCORE_TYPE> CTwoTaggedWordsActionTypeMap;
+typedef CScoreMap<std::pair<CTwoTaggedWords, CAction>, SCORE_TYPE> CTwoTaggedWordsActionMap;
+typedef CScoreMap<std::pair<CTwoTaggedWords, CActionType>, SCORE_TYPE> CTwoTaggedWordsActionTypeMap;
 typedef CScoreMap<CCFGSet, SCORE_TYPE> CCFGSetMap;
-typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
-typedef CScoreMap<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
+typedef CScoreMap<std::pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
+typedef CScoreMap<std::pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
 typedef CScoreMap<CTuple3<CWord, CCFGSet, CAction>, SCORE_TYPE> CWordCFGSetActionMap;
 typedef CScoreMap<CTuple3<CWord, CCFGSet, CActionType>, SCORE_TYPE> CWordCFGSetActionTypeMap;
-typedef CScoreMap<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
-typedef CScoreMap<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
-typedef CScoreMap<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
-typedef CScoreMap<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
-typedef CScoreMap<pair<CCFGSet, CActionType>, SCORE_TYPE> CCFGSetActionTypeMap;
+typedef CScoreMap<std::pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
+typedef CScoreMap<std::pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
+typedef CScoreMap<std::pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
+typedef CScoreMap<std::pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
+typedef CScoreMap<std::pair<CCFGSet, CActionType>, SCORE_TYPE> CCFGSetActionTypeMap;
 typedef CScoreMap<CTuple3<CWord, CConstituent, CAction>, SCORE_TYPE>
 CWordConstituentActionMap;
 typedef CScoreMap<CTuple3<CTag, CConstituent, CAction>, SCORE_TYPE> CTagConstituentActionMap;
 typedef CScoreMap<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
-typedef CScoreMap<pair<CConstituent, CAction>, SCORE_TYPE> CConstituentActionMap;
+typedef CScoreMap<std::pair<CConstituent, CAction>, SCORE_TYPE> CConstituentActionMap;
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
@@ -567,8 +567,8 @@ public:
 
 
    // MEHTODS
-   virtual void loadScores(ifstream &is);
-   virtual void saveScores(ofstream &os);
+   virtual void loadScores(std::ifstream &is);
+   virtual void saveScores(std::ofstream &os);
    void computeAverageFeatureWeights(int round);
    SCORE_TYPE dotProduct(const CWeight &w);
  

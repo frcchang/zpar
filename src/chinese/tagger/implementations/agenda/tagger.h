@@ -69,22 +69,22 @@ protected:
    bool m_bTrainingError;
 
 public:
-   CTagger(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
+   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
       ASSERT(sizeof(unsigned long long)>=CTag::SIZE, "The tagger requires the size of unsigned-long greater than" << CTag::SIZE); // tag dict
    }
    virtual ~CTagger() {}
    
 protected:
-   void loadKnowledge(const string &sKnowledgePath) {
-      cout << "Knowledge is provided but not used." << endl;
-//      cout << "Loading knowledge ... ";
+   void loadKnowledge(const std::string &sKnowledgePath) {
+      std::cout << "Knowledge is provided but not used." << std::endl;
+//      std::cout << "Loading knowledge ... ";
 //      m_weights->newKnowledge();
-//      ifstream ifs(sKnowledgePath.c_str());
+//      std::ifstream ifs(sKnowledgePath.c_str());
 //      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
 //      ifs >> (*m_weights->m_Knowledge); 
 //      ifs.close();
-//      cout << "done." << endl;
+//      std::cout << "done." << std::endl;
    }
    inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
       return ( m_weights->m_mapWordFrequency.find( word, 0 ) < 
@@ -101,7 +101,7 @@ protected:
          // if it matches, search from the next characters
          if ( tag == PENN_TAG_CD ) return true; // don't search for CD assume correct
          for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
-            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, min(index+tmp_i, sentence.size()-1), &sentence ), tag ) ) 
+            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, std::min(index+tmp_i, sentence.size()-1), &sentence ), tag ) ) 
                return true;
          }
          return false;

@@ -30,7 +30,7 @@ class CWeight {
 
 protected:
 
-   string m_sRecordPath;
+   std::string m_sRecordPath;
 
 public:
 
@@ -38,7 +38,7 @@ public:
 
 public:
 
-   CWeight(const string &sPath, bool bTrain) : m_mapPriors("Priors", 2)
+   CWeight(const std::string &sPath, bool bTrain) : m_mapPriors("Priors", 2)
    { 
       m_sRecordPath = sPath;
       loadScores(); 

@@ -35,9 +35,9 @@ namespace segmentor {
  * CSegmentor - the segmentor for Chinese 
  *
  * Segment a sentence character by character, generating possible
- * output sentences into a beam agenda. 
+ * outout sentences into a beam agenda. 
  *
- * Given an input sentence, m_lWordCache caches the string words
+ * Given an input sentence, m_lWordCache caches the std::string words
  * in certain positions. 
  * For example: suppose that a sentence is
  *              A B C D E F
@@ -59,7 +59,7 @@ private:
 //-------------------------------------------------------------
 // Constructor destructor
 public:
-   CSegmentor(const string &sFeatureDBPath, bool bTrain=false, const string &sCharCatFile="", const string &sLexiconFile="", bool bRule=false) : segmentor::CSegmentorImpl(), m_bTrain(bTrain) { 
+   CSegmentor(const std::string &sFeatureDBPath, bool bTrain=false, const std::string &sCharCatFile="", const std::string &sLexiconFile="", bool bRule=false) : segmentor::CSegmentorImpl(), m_bTrain(bTrain) { 
       // load features
       m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain, bRule); 
       // initialize word cache
@@ -108,8 +108,8 @@ public:
 
 #endif
 
-   void updateScores(const CStringVector* output, const CStringVector* correct, int round) {
-      m_Feature->updateScoreVector(output, correct, round);
+   void updateScores(const CStringVector* outout, const CStringVector* correct, int round) {
+      m_Feature->updateScoreVector(outout, correct, round);
    }
    void finishTraining(int round) {
       m_Feature->computeAverageFeatureWeights(round);
@@ -121,9 +121,9 @@ public:
 //-------------------------------------------------------------
 // Knowledge related 
 public:
-   void loadCharCat(const string &sFile) {
+   void loadCharCat(const std::string &sFile) {
       if (m_Feature->m_CharCat==0) {
-         ifstream is(sFile.c_str());
+         std::ifstream is(sFile.c_str());
          if (!is.is_open())
             THROW("the file " << sFile << " is unavailable.");
          m_Feature->m_CharCat = new CWordDictionary(2719);
@@ -133,10 +133,10 @@ public:
       }
       THROW("CSegmentor: loadCharCat called multiple times.");
    }
-   void loadLexiconDict(const string &sFile) {
+   void loadLexiconDict(const std::string &sFile) {
       if (m_Feature->m_WordLst==0) {
          m_Feature->m_WordLst = new CLexiconSet;
-         ifstream is(sFile.c_str());
+         std::ifstream is(sFile.c_str());
          if (!is.is_open()) THROW("the file " << sFile << " is unavailable.");
          is >> (*m_Feature->m_WordLst);
          is.close();
@@ -161,8 +161,8 @@ public:
 // Word cache
 public:
    const unsigned long& findWordFromCache(const int &start, const int &length, const CStringVector* sentence) {
-      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L) { // empty string
-         static string temp; 
+      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L) { // empty std::string
+         static std::string temp; 
          static unsigned long int i; 
          temp.clear();
          for ( i = start; i < start+length ; ++i ) 
@@ -173,8 +173,8 @@ public:
    }
    const unsigned long& replaceWordToCache(const int &start, const int &length, const CStringVector* sentence) {
       assert(start+length<=sentence->size());
-      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L || m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == CWord::UNKNOWN) { // empty string
-         static string temp; 
+      if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L || m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == CWord::UNKNOWN) { // empty std::string
+         static std::string temp; 
          static unsigned long int i; 
          temp.clear();
          for ( i = start; i < start+length ; ++i ) 

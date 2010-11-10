@@ -43,8 +43,8 @@ template<typename T>
 inline
 void printArray(T *array, const int &size) {
    for (int i=0; i<size; ++i)
-      cout<<array[i]<<"\t";
-   cout<<endl;
+      std::cout<<array[i]<<"\t";
+   std::cout<<std::endl;
 }
 
 /*===============================================================
@@ -55,8 +55,8 @@ void printArray(T *array, const int &size) {
 
 /*---------------------------------------------------------------
  *
- * insertNoduplicateIntoVector - insert a value into vector
- *                               if the value is in the vector, no change
+ * insertNoduplicateIntoVector - insert a value into std::vector
+ *                               if the value is in the std::vector, no change
  *
  *--------------------------------------------------------------*/
 
@@ -72,14 +72,14 @@ void insertNoduplicateIntoVector(VE &vector, const V &value) {
 
 /*--------------------------------------------------------------
  *
- * toString - print each element vector
+ * toString - print each element std::vector
  *
  *-------------------------------------------------------------*/
 
 template<typename VE>
 inline
-string toString(const vector<VE> &v) {
-   ostringstream os;
+std::string toString(const std::vector<VE> &v) {
+   std::ostringstream os;
    os << "[ ";
    for( unsigned long i=0; i<v.size(); ++i ) {
       os << v[i] << " ";
@@ -90,7 +90,7 @@ string toString(const vector<VE> &v) {
 
 /*===============================================================
  *
- * string utilities
+ * std::string utilities
  *
  *==============================================================*/
 
@@ -115,7 +115,7 @@ bool fromString(T& t,
  *
  *--------------------------------------------------------------*/
 
-inline string lstrip(const string &s) {
+inline std::string lstrip(const std::string &s) {
    unsigned index=0;
    while (index<s.size() && (s[index]==' ' || s[index]=='\n' || s[index]=='\r' || s[index]=='\t'))
       ++index;
@@ -128,7 +128,7 @@ inline string lstrip(const string &s) {
  *
  *--------------------------------------------------------------*/
 
-inline string rstrip(const string &s) {
+inline std::string rstrip(const std::string &s) {
    int index=s.size()-1;
    while (index>=0 && (s[index]==' ' || s[index]=='\n' || s[index]=='\r' || s[index]=='\t'))
       --index;

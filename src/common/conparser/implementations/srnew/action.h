@@ -27,7 +27,7 @@ public:
 };
 
 inline std::istream & operator >> (std::istream &is, CActionType &action) {
-   string s;
+   std::string s;
    is >> s;
    if (s=="SHIFT")
       action.code = CActionType::SHIFT;
@@ -142,9 +142,9 @@ public:
    }
  
 public:
-   inline string str() const {
+   inline std::string str() const {
       if (isReduceRoot()) { return "REDUCE ROOT"; }
-      string retval;
+      std::string retval;
       if (isShift()) {
          retval =  "SHIFT";
       }
@@ -162,9 +162,9 @@ public:
       retval += " "; retval += CConstituent(getConstituent()).str();
       return retval;
    }
-   inline void load(const string &s) {
-      istringstream iss(s);
-      string tmp;
+   inline void load(const std::string &s) {
+      std::istringstream iss(s);
+      std::string tmp;
       CConstituent c;
       CAction t;
       bool head_left, temporary;
@@ -221,7 +221,7 @@ public:
 //=================================================================================
 
 inline std::istream & operator >> (std::istream &is, CAction &action) {
-   string tmp;
+   std::string tmp;
    CConstituent c;
    CAction t;
    bool head_left, temporary;

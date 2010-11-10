@@ -58,18 +58,18 @@ TARGET_LANGUAGE::tagger::SCORE_TYPE TARGET_LANGUAGE::CTagger::getLocalScore( CSt
    static bool bContainHyphen;
    static bool bContainNumber;
    static bool bContainCapitalLetter;
-   static string prefix, suffix;
+   static std::string prefix, suffix;
 
    static SCORE_TYPE nReturn;
 
-   nReturn = m_weights->m_mapCurrentTag.find( make_pair(word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
+   nReturn = m_weights->m_mapCurrentTag.find( std::make_pair(word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
    nReturn += m_weights->m_mapLastTagByTag.find( CTagSet<CTag,2>(encodeTags(tag, prev_tag)), g_zeroScore ).score(m_nScoreIndex) ; 
    nReturn += m_weights->m_mapLastTwoTagsByTag.find( CTagSet<CTag, 3>(encodeTags(tag, prev_tag, second_prev_tag)), g_zeroScore ).score(m_nScoreIndex) ; 
 
-   if (index>0) nReturn += m_weights->m_mapTagByPrevWord.find( make_pair(prev_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
-   if (index<m_Cache.size()-1) nReturn += m_weights->m_mapTagByNextWord.find( make_pair(next_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
-   if (index>1) nReturn += m_weights->m_mapTagBySecondPrevWord.find( make_pair(second_prev_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
-   if (index<m_Cache.size()-2) nReturn += m_weights->m_mapTagBySecondNextWord.find( make_pair(second_next_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
+   if (index>0) nReturn += m_weights->m_mapTagByPrevWord.find( std::make_pair(prev_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
+   if (index<m_Cache.size()-1) nReturn += m_weights->m_mapTagByNextWord.find( std::make_pair(next_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
+   if (index>1) nReturn += m_weights->m_mapTagBySecondPrevWord.find( std::make_pair(second_prev_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
+   if (index<m_Cache.size()-2) nReturn += m_weights->m_mapTagBySecondNextWord.find( std::make_pair(second_next_word, tag) , g_zeroScore ).score(m_nScoreIndex) ; 
 
    bContainHyphen = false;
    bContainNumber = false;
@@ -86,24 +86,24 @@ TARGET_LANGUAGE::tagger::SCORE_TYPE TARGET_LANGUAGE::CTagger::getLocalScore( CSt
    if (bContainCapitalLetter) nReturn += m_weights->m_mapContainCapitalLetter.find( tag, g_zeroScore ).score(m_nScoreIndex);
 
    prefix.clear();
-   prefix += sentence->at(index)[0]; nReturn += m_weights->m_mapTagByPrefix.find( make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
-   if ( word_size>1 ) prefix += sentence->at(index)[1]; nReturn += m_weights->m_mapTagByPrefix.find( make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
-   if ( word_size>2 ) prefix += sentence->at(index)[2]; nReturn += m_weights->m_mapTagByPrefix.find( make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
-   if ( word_size>3 ) prefix += sentence->at(index)[3]; nReturn += m_weights->m_mapTagByPrefix.find( make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   prefix += sentence->at(index)[0]; nReturn += m_weights->m_mapTagByPrefix.find( std::make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   if ( word_size>1 ) prefix += sentence->at(index)[1]; nReturn += m_weights->m_mapTagByPrefix.find( std::make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   if ( word_size>2 ) prefix += sentence->at(index)[2]; nReturn += m_weights->m_mapTagByPrefix.find( std::make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   if ( word_size>3 ) prefix += sentence->at(index)[3]; nReturn += m_weights->m_mapTagByPrefix.find( std::make_pair( prefix, tag ), g_zeroScore ).score(m_nScoreIndex);
 
    // the processing of suffix is tricky - we are storing the revert of suffix!
    suffix.clear();
-   suffix += sentence->at(index)[word_size-1]; nReturn += m_weights->m_mapTagBySuffix.find( make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
-   if ( word_size>1 ) suffix += sentence->at(index)[word_size-2]; nReturn += m_weights->m_mapTagBySuffix.find( make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
-   if ( word_size>2 ) suffix += sentence->at(index)[word_size-3]; nReturn += m_weights->m_mapTagBySuffix.find( make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
-   if ( word_size>3 ) suffix += sentence->at(index)[word_size-4]; nReturn += m_weights->m_mapTagBySuffix.find( make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   suffix += sentence->at(index)[word_size-1]; nReturn += m_weights->m_mapTagBySuffix.find( std::make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   if ( word_size>1 ) suffix += sentence->at(index)[word_size-2]; nReturn += m_weights->m_mapTagBySuffix.find( std::make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   if ( word_size>2 ) suffix += sentence->at(index)[word_size-3]; nReturn += m_weights->m_mapTagBySuffix.find( std::make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
+   if ( word_size>3 ) suffix += sentence->at(index)[word_size-4]; nReturn += m_weights->m_mapTagBySuffix.find( std::make_pair( suffix, tag ), g_zeroScore ).score(m_nScoreIndex);
 
    return nReturn;
 }
 
 /*---------------------------------------------------------------
  *
- * updateScoreVector - update the score vector by input
+ * updateScoreVector - update the score std::vector by input
  *                     this is used in training to adjust params
  *
  * Inputs: the tagged and the correct example
@@ -136,8 +136,8 @@ void TARGET_LANGUAGE::CTagger::updateScoreVector(const CTwoStringVector* tagged,
 
 /*---------------------------------------------------------------
  *
- * updateLocalFeatureVector - update the given feature vector with
- *                            the local feature vector for a given
+ * updateLocalFeatureVector - update the given feature std::vector with
+ *                            the local feature std::vector for a given
  *                            sentence. This is a private member only 
  *                            used by updateGlobalFeatureVector and is
  *                            only used for training. 
@@ -162,18 +162,18 @@ void TARGET_LANGUAGE::CTagger :: updateLocalFeatureVector( SCORE_UPDATE method ,
    static bool bContainHyphen;
    static bool bContainNumber;
    static bool bContainCapitalLetter;
-   static string prefix, suffix;
+   static std::string prefix, suffix;
 
    SCORE_TYPE amount = method==eAdd ? 1 : -1;
 
-   m_weights->m_mapCurrentTag[ make_pair(word, tag) ].updateCurrent( amount , round ) ;
+   m_weights->m_mapCurrentTag[ std::make_pair(word, tag) ].updateCurrent( amount , round ) ;
    m_weights->m_mapLastTagByTag[ CTagSet<CTag,2>(encodeTags(tag, prev_tag)) ].updateCurrent( amount , round ) ;
    m_weights->m_mapLastTwoTagsByTag[ CTagSet<CTag,3>(encodeTags(tag, prev_tag, second_prev_tag)) ].updateCurrent( amount , round ) ;
 
-   if (index>0) m_weights->m_mapTagByPrevWord[ make_pair(prev_word, tag) ].updateCurrent( amount , round ) ;
-   if (index<m_Cache.size()-1) m_weights->m_mapTagByNextWord[ make_pair(next_word, tag) ].updateCurrent( amount , round ) ;
-   if (index>1) m_weights->m_mapTagBySecondPrevWord[ make_pair(second_prev_word, tag) ].updateCurrent( amount , round ) ;
-   if (index<m_Cache.size()-2) m_weights->m_mapTagBySecondNextWord[ make_pair(second_next_word, tag) ].updateCurrent( amount , round ) ;
+   if (index>0) m_weights->m_mapTagByPrevWord[ std::make_pair(prev_word, tag) ].updateCurrent( amount , round ) ;
+   if (index<m_Cache.size()-1) m_weights->m_mapTagByNextWord[ std::make_pair(next_word, tag) ].updateCurrent( amount , round ) ;
+   if (index>1) m_weights->m_mapTagBySecondPrevWord[ std::make_pair(second_prev_word, tag) ].updateCurrent( amount , round ) ;
+   if (index<m_Cache.size()-2) m_weights->m_mapTagBySecondNextWord[ std::make_pair(second_next_word, tag) ].updateCurrent( amount , round ) ;
 
    bContainHyphen = false;
    bContainNumber = false;
@@ -190,17 +190,17 @@ void TARGET_LANGUAGE::CTagger :: updateLocalFeatureVector( SCORE_UPDATE method ,
    if (bContainCapitalLetter) m_weights->m_mapContainCapitalLetter[ tag ].updateCurrent( amount , round );
 
    prefix.clear();
-   prefix += sentence->at(index).first[0]; m_weights->m_mapTagByPrefix[ make_pair(prefix, tag) ].updateCurrent( amount , round );
-   if ( word_size>1 ) prefix += sentence->at(index).first[1]; m_weights->m_mapTagByPrefix[ make_pair(prefix, tag) ].updateCurrent( amount , round );
-   if ( word_size>2 ) prefix += sentence->at(index).first[2]; m_weights->m_mapTagByPrefix[ make_pair(prefix, tag) ].updateCurrent( amount , round );
-   if ( word_size>3 ) prefix += sentence->at(index).first[3]; m_weights->m_mapTagByPrefix[ make_pair(prefix, tag) ].updateCurrent( amount , round );
+   prefix += sentence->at(index).first[0]; m_weights->m_mapTagByPrefix[ std::make_pair(prefix, tag) ].updateCurrent( amount , round );
+   if ( word_size>1 ) prefix += sentence->at(index).first[1]; m_weights->m_mapTagByPrefix[ std::make_pair(prefix, tag) ].updateCurrent( amount , round );
+   if ( word_size>2 ) prefix += sentence->at(index).first[2]; m_weights->m_mapTagByPrefix[ std::make_pair(prefix, tag) ].updateCurrent( amount , round );
+   if ( word_size>3 ) prefix += sentence->at(index).first[3]; m_weights->m_mapTagByPrefix[ std::make_pair(prefix, tag) ].updateCurrent( amount , round );
 
    // the processing of suffix is tricky - we are storing the revert of suffix!
    suffix.clear();
-   suffix += sentence->at(index).first[word_size-1]; m_weights->m_mapTagBySuffix[ make_pair(suffix, tag) ].updateCurrent( amount , round );
-   if ( word_size>1 ) suffix += sentence->at(index).first[word_size-2]; m_weights->m_mapTagBySuffix[ make_pair(suffix, tag) ].updateCurrent( amount , round );
-   if ( word_size>2 ) suffix += sentence->at(index).first[word_size-3]; m_weights->m_mapTagBySuffix[ make_pair(suffix, tag) ].updateCurrent( amount , round );
-   if ( word_size>3 ) suffix += sentence->at(index).first[word_size-4]; m_weights->m_mapTagBySuffix[ make_pair(suffix, tag) ].updateCurrent( amount , round );
+   suffix += sentence->at(index).first[word_size-1]; m_weights->m_mapTagBySuffix[ std::make_pair(suffix, tag) ].updateCurrent( amount , round );
+   if ( word_size>1 ) suffix += sentence->at(index).first[word_size-2]; m_weights->m_mapTagBySuffix[ std::make_pair(suffix, tag) ].updateCurrent( amount , round );
+   if ( word_size>2 ) suffix += sentence->at(index).first[word_size-3]; m_weights->m_mapTagBySuffix[ std::make_pair(suffix, tag) ].updateCurrent( amount , round );
+   if ( word_size>3 ) suffix += sentence->at(index).first[word_size-4]; m_weights->m_mapTagBySuffix[ std::make_pair(suffix, tag) ].updateCurrent( amount , round );
 
 }
 
@@ -283,7 +283,7 @@ void TARGET_LANGUAGE::CTagger::updateTagDict( const CTwoStringVector * correct )
       possible_tags = getPossibleTagsForWord(word);
       current_tag = (1L<<CTag(correct->at(i).second).code()) ;
       if ( ( possible_tags & current_tag ) == 0 ) {
-//         cout << "Warning: knowledge contradicts with annotation for the word " << correct->at(i).first << " with tag " << correct->at(i).second << endl;
+//         std::cout << "Warning: knowledge contradicts with annotation for the word " << correct->at(i).first << " with tag " << correct->at(i).second << std::endl;
          m_TagDict.add(word, CTag(correct->at(i).second).code());
       }
    }
@@ -431,10 +431,10 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
 //      TRACE("The time for iteration" << index << ":was " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
    }
 
-   // output 
+   // outout 
    TRACE("Outputing sentence");
    m_Agenda->sortItems();
-   for ( temp_index = 0 ; temp_index < min(nBest, m_Agenda->size()) ; ++ temp_index ) {
+   for ( temp_index = 0 ; temp_index < std::min(nBest, m_Agenda->size()) ; ++ temp_index ) {
       vReturn[temp_index].resize(length); 
       pGenerator = m_Agenda->item(temp_index);
       for (j=0; j<length; ++j) { 

@@ -15,8 +15,6 @@
 #include "file_utils.h"
 #include "options.h"
 
-#include <cstring>
-
 using namespace chinese;
 
 const int TRAINING_ROUND = 1;
@@ -29,10 +27,10 @@ const int TRAINING_ROUND = 1;
  *
  *===============================================================*/
 
-void extract_features(const string &sTextFile, const string &sFeatureFile) {
+void extract_features(const std::string &sTextFile, const std::string &sFeatureFile) {
    if (FileExists(sFeatureFile))
       return;
-   cout << "Extracting features...";
+   std::cout << "Extracting features...";
    CSegmentor *segmentor;
    segmentor = new CSegmentor(sFeatureFile, true);
    CStringVector *ref_sent = new CStringVector; 
@@ -44,7 +42,7 @@ void extract_features(const string &sTextFile, const string &sFeatureFile) {
    segmentor->finishTraining(0);
    delete segmentor;
    delete ref_sent;
-   cout << "done" << endl;
+   std::cout << "done" << std::endl;
 }
 
 #endif
@@ -55,7 +53,7 @@ void extract_features(const string &sTextFile, const string &sFeatureFile) {
  *
  *===============================================================*/
 
-void auto_train(const string &sOutputFile, const string &sFeatureFile, const bool &bNoFWAndCD, const string &sCharCatFile, const string &sLexiconDict) {
+void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const bool &bNoFWAndCD, const std::string &sCharCatFile, const std::string &sLexiconDict) {
    CSegmentor *segmentor;
    segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict, !bNoFWAndCD);
    CSentenceReader ref_reader(sOutputFile);
@@ -80,7 +78,7 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
    delete input_sent;
    delete ref_sent;
    delete segmentor;
-   cout << "Done. " << endl;
+   std::cout << "Done. " << std::endl;
 }
 
 /*===============================================================
@@ -89,17 +87,17 @@ void auto_train(const string &sOutputFile, const string &sFeatureFile, const boo
  *
  *==============================================================*/
 
-void train(const string &sOutputFile, const string &sFeatureFile, const bool &bAggressive, const bool &bNoFWAndCD, const string &sCharCatFile, const string &sLexiconDict) {
+void train(const std::string &sOutputFile, const std::string &sFeatureFile, const bool &bAggressive, const bool &bNoFWAndCD, const std::string &sCharCatFile, const std::string &sLexiconDict) {
    CSegmentor *segmentor ; 
    segmentor = new CSegmentor(sFeatureFile, true, sCharCatFile, sLexiconDict, !bNoFWAndCD);
    CSentenceReader ref_reader(sOutputFile);
 #ifdef DEBUG
    CSentenceWriter ref_writer("");
-   CSentenceWriter output_writer("");
+   CSentenceWriter outout_writer("");
 #endif
    CStringVector *input_sent = new CStringVector;
    CStringVector *ref_sent = new CStringVector; 
-   CStringVector *output_sent = new CStringVector;
+   CStringVector *outout_sent = new CStringVector;
    CCharCatDictionary char_information;
 
    int nCount=0;
@@ -113,24 +111,24 @@ void train(const string &sOutputFile, const string &sFeatureFile, const bool &bA
          DesegmentSentence( ref_sent, input_sent, char_information );
       TRACE("Sentence " << nCount);
       ++nCount;
-      segmentor->segment( input_sent, output_sent );
-      if (output_sent->empty()) continue;
+      segmentor->segment( input_sent, outout_sent );
+      if (outout_sent->empty()) continue;
 #ifdef DEBUG
-      if ( *output_sent != *ref_sent ) {
-         cout << "correct" << endl;
+      if ( *outout_sent != *ref_sent ) {
+         std::cout << "correct" << std::endl;
          ref_writer.writeSentence(ref_sent);
-         cout << "output" << endl;
-         output_writer.writeSentence(output_sent);
+         std::cout << "outout" << std::endl;
+         outout_writer.writeSentence(outout_sent);
       }
 #endif
-      segmentor->updateScores( output_sent, ref_sent, nCount );
-      if ( *output_sent != *ref_sent ) {
+      segmentor->updateScores( outout_sent, ref_sent, nCount );
+      if ( *outout_sent != *ref_sent ) {
          ++nErrorCount;
          if (bAggressive) {
             while (true) {
-               segmentor->segment(input_sent, output_sent);
-               if (*output_sent != *ref_sent) {
-                  segmentor->updateScores(output_sent, ref_sent, nCount); continue;
+               segmentor->segment(input_sent, outout_sent);
+               if (*outout_sent != *ref_sent) {
+                  segmentor->updateScores(outout_sent, ref_sent, nCount); continue;
                }
                break;
             }
@@ -139,10 +137,10 @@ void train(const string &sOutputFile, const string &sFeatureFile, const bool &bA
    }
    delete input_sent;
    delete ref_sent;
-   delete output_sent;
+   delete outout_sent;
 
    segmentor->finishTraining(nCount);
-   cout << "Done. Total errors: " << nErrorCount << endl;
+   std::cout << "Done. Total errors: " << nErrorCount << std::endl;
 
    delete segmentor;
 }
@@ -161,26 +159,26 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("w", "Path", "privide word list in Path", "");
       configurations.defineConfiguration("r", "", "use rules to segment English letters and Arabic numbers", "");
       if (options.args.size() != 4) {
-         cout << "Usage: " << argv[0] << " training_data model_file iterations" << endl;
-         cout << configurations.message() << endl;
+         std::cout << "Usage: " << argv[0] << " training_data model_file iterations" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
       unsigned long training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
-         cout << "The number of training iterations must be an integer." << endl;
+         std::cout << "The number of training iterations must be an integer." << std::endl;
          return 1;
       }
 
-      string warning = configurations.loadConfigurations(options.opts);
+      std::string warning = configurations.loadConfigurations(options.opts);
       if (!warning.empty()) {
-         cout << "Warning: " << warning << endl;
+         std::cout << "Warning: " << warning << std::endl;
       }
 
       bool bNoFWAndCD = configurations.getConfiguration("r").empty() ? true : false;
-      string sCharCatFile = configurations.getConfiguration("c");
-      string sLexiconDict = configurations.getConfiguration("w");
+      std::string sCharCatFile = configurations.getConfiguration("c");
+      std::string sLexiconDict = configurations.getConfiguration("w");
 
-      cout << "Training started ..." << endl;
+      std::cout << "Training started ..." << std::endl;
       int time_start = clock();
 
 #ifdef NO_NEG_FEATURE
@@ -198,11 +196,11 @@ int main(int argc, char* argv[]) {
             sLexiconDict = "";
          }
       }
-      cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+      std::cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
       return 0;
    }
-   catch(const string &e) {
-      cerr << "Error: " << e << " Stop." << endl;
+   catch(const std::string &e) {
+      std::cerr << "Error: " << e << " Stop." << std::endl;
       exit(1);
    }
 }

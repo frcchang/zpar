@@ -23,13 +23,13 @@ typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 typedef CHashMap< CWord, int > CWordIntMap;
 typedef CScoreMap< int, SCORE_TYPE > CIntMap;
-typedef CScoreMap< pair<CWord, int>, SCORE_TYPE > CWordIntPairMap;
-typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagPairMap;
-typedef CScoreMap< pair<int, int>, SCORE_TYPE > CIntPairMap;
+typedef CScoreMap< std::pair<CWord, int>, SCORE_TYPE > CWordIntPairMap;
+typedef CScoreMap< std::pair<CWord, CTag>, SCORE_TYPE > CWordTagPairMap;
+typedef CScoreMap< std::pair<int, int>, SCORE_TYPE > CIntPairMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 typedef CScoreMap< CTagSet<CTag, 2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
-typedef CScoreMap< pair<long int, CTag>, SCORE_TYPE > CIntTagPairMap;
+typedef CScoreMap< std::pair<long int, CTag>, SCORE_TYPE > CIntTagPairMap;
 
 /*===============================================================
  *
@@ -77,7 +77,7 @@ public:
 public:
 
    // note that bSegmentationRules is ignored because segmented
-   CWeight(const string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
+   CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
             CWeightBase(sFeatureDB, bTrain) , 
             m_mapLastTagByTag("LastTagByTag", 1627) ,
             m_mapLastTwoTagsByTag("LastTwoTagsByTag", 16381) ,

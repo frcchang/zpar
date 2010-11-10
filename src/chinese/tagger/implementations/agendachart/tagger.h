@@ -28,20 +28,20 @@ protected:
    unsigned m_nScoreIndex;
 
 public:
-   CTagger(const string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const string &sKnowledgePath, bool bSegmentationRules) : m_Chart(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
+   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Chart(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
    virtual ~CTagger() {}
    
 protected:
-   void loadKnowledge(const string &sKnowledgePath) {
-      cout << "Loading knowledge ... ";
+   void loadKnowledge(const std::string &sKnowledgePath) {
+      std::cout << "Loading knowledge ... ";
       m_weights->newKnowledge();
-      ifstream ifs(sKnowledgePath.c_str());
+      std::ifstream ifs(sKnowledgePath.c_str());
       if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
       ifs >> (*m_weights->m_Knowledge); 
       ifs.close();
-      cout << "done." << endl;
+      std::cout << "done." << std::endl;
    }
 
 public:

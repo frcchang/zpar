@@ -47,10 +47,10 @@ class CTagger : public tagger::CTaggerImpl {
 
 private:
 
-   string m_sFeatureDB;        // the path of the feature database
+   std::string m_sFeatureDB;        // the path of the feature database
    tagger::CWeight *m_weights; // weight object
 
-   string m_sTagDictPath;      // path for tag dict
+   std::string m_sTagDictPath;      // path for tag dict
    CTagDict<CWord, CTag> m_TagDict;   // the dictionary object
 
    bool m_bUpdateKnowledgeBase; // update knowledge base when the training example contradicts knowledge base ?
@@ -62,20 +62,20 @@ private:
 
    int m_nScoreIndex;
 
-   vector<CWord> m_Cache;      // word cache for decoding
+   std::vector<CWord> m_Cache;      // word cache for decoding
 
 public:
-   CTagger(const string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(CTag::COUNT) { 
+   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(CTag::COUNT) { 
       m_weights = new tagger::CWeight(m_sFeatureDB, bTrain); 
       loadScores();
       if (m_bTrain) m_nTrainingRound = 0;
       if (m_bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
    ~CTagger() { delete m_weights; }
-   CTagger(CTagger& tagger) : m_TagDict(CTag::COUNT) { cerr<<"CTagger does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CTagger(CTagger& tagger) : m_TagDict(CTag::COUNT) { std::cerr<<"CTagger does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
 public:
-   void loadTagDictionary(const string &sTagDictPath, bool bUpdateKnowledgeBase=false) {
+   void loadTagDictionary(const std::string &sTagDictPath, bool bUpdateKnowledgeBase=false) {
       m_sTagDictPath = sTagDictPath;
       m_TagDict.load(sTagDictPath);
       m_bUpdateKnowledgeBase = bUpdateKnowledgeBase;
@@ -94,16 +94,16 @@ protected:
 
 public:
   enum SCORE_UPDATE {eAdd=0, eSubtract};
-  // update the built-in weight vector for this feature object specifically
+  // update the built-in weight std::vector for this feature object specifically
   void updateScoreVector(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round=0);
-  // compute the total or average feature vector after update
+  // compute the total or average feature std::vector after update
   void finishTraining();
 
   inline unsigned long long getPossibleTagsForWord(const CWord &word);
   void updateTagDict(const CTwoStringVector* correct);
 protected:
 
-   // add local features to a global feature vector (first param)
+   // add local features to a global feature std::vector (first param)
    void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* tagged, int index, int round=0);
 };
 }; // namespace TARGET_LANGUAGE

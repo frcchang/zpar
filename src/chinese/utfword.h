@@ -4,9 +4,9 @@
  * utfword.h - the definitions for utf chinese words            *
  *                                                              *
  * This module provides the facility of recording the Chinese   *
- * word and information about its characters.                   *
+ * word and information abstd::cout its characters.                   *
  *                                                              *
- * A utf word is a vector of CWord, while each item in the list *
+ * A utf word is a std::vector of CWord, while each item in the list *
  * represents a character in the word. Since the definition of  *
  * CWord can be implemented in different ways, a proper file    *
  * that defines CWord must be included before using this file.  *
@@ -28,7 +28,7 @@
 
 /*===============================================================
  *
- * definitions about UTF word 
+ * definitions abstd::cout UTF word 
  *
  *==============================================================*/
 
@@ -37,11 +37,11 @@ class CUTFWord : virtual public CWord {
 
 protected:
 
-   vector<CWord> m_characters;
+   std::vector<CWord> m_characters;
 
 public:
 
-   CUTFWord( const string &word ) : CWord(word) {
+   CUTFWord( const std::string &word ) : CWord(word) {
       m_characters.clear();
       getCharactersFromUTF8String( word , &m_characters );
    }
@@ -62,7 +62,7 @@ public:
 
 /*===============================================================
  *
- * definitions about tagged UTF word 
+ * definitions abstd::cout tagged UTF word 
  *
  *==============================================================*/
 
@@ -71,7 +71,7 @@ class CUTFTaggedWord : public CUTFWord, public CTaggedWord {
 
 public:
 
-   CUTFTaggedWord( const string &word , const CTag t ) : CWord(word) , CUTFWord(word) , CTaggedWord(word, t) {
+   CUTFTaggedWord( const std::string &word , const CTag t ) : CWord(word) , CUTFWord(word) , CTaggedWord(word, t) {
    }
    CUTFTaggedWord( const CWord &word , const CTag t ) : CWord(word) , CUTFWord(word) , CTaggedWord(word, t) {
    }

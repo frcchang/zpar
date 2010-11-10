@@ -34,7 +34,7 @@ protected:
 
 public:
    // constructor and destructor
-   CDepLabelerBase( string sFeatureDBPath , bool bTrain ) : m_bTrain(bTrain) { 
+   CDepLabelerBase( std::string sFeatureDBPath , bool bTrain ) : m_bTrain(bTrain) { 
       // do nothing
    }
    virtual ~CDepLabelerBase() {

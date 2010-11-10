@@ -26,7 +26,7 @@ template <typename K, unsigned TOKENIZER_SIZE>
 class CTokenizer {
    protected:
       CHashMap<K, unsigned long> m_mapTokens;
-      vector<K> m_vecKeys;
+      std::vector<K> m_vecKeys;
       unsigned long m_nWaterMark;
       unsigned long m_nStartingToken;
    public:

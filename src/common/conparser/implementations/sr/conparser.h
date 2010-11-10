@@ -44,8 +44,8 @@ class CConParser : public CConParserBase {
 private:
 
    CAgendaBeam<conparser::CStateItem> *m_Agenda;
-   vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
-   vector<unsigned long> m_lWordLen;
+   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   std::vector<unsigned long> m_lWordLen;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -54,12 +54,12 @@ private:
 
 public:
    // constructor and destructor
-   CConParser( const string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain) { 
+   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain) { 
       // initialize agenda
       m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
       m_weights = new conparser :: CWeight( bTrain );
-      ifstream file;
+      std::ifstream file;
       file.open(sFeatureDBPath.c_str());
       m_weights->loadScores(file);
       // load rules
@@ -83,24 +83,24 @@ public:
    }
 
 public:
-   void LoadBinaryRules(const string &sBinaryRulePath) {
+   void LoadBinaryRules(const std::string &sBinaryRulePath) {
       ASSERT(m_bTrain, "Rules can only be loaded during training!");
       if (!m_weights->empty() || m_nTrainingRound !=0 ) {
          WARNING("Ignored binary rules from " << sBinaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
       }
       // load rule from the specified file 
-      ifstream file ; 
+      std::ifstream file ; 
       file.open(sBinaryRulePath.c_str()) ;
       m_rule.LoadBinaryRules(file);
       file.close();
    }
-   void LoadUnaryRules(const string &sUnaryRulePath) {
+   void LoadUnaryRules(const std::string &sUnaryRulePath) {
       ASSERT(m_bTrain, "Rules can only be loaded during training!");
       if (!m_weights->empty() || m_nTrainingRound !=0 ) {
          WARNING("Ignored unary rules from " << sUnaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
       }
       // load rule from the file specified
-      ifstream file;
+      std::ifstream file;
       file.open(sUnaryRulePath.c_str());
       m_rule.LoadUnaryRules(file);
       file.close();
@@ -116,13 +116,13 @@ public:
       // compute average
       static_cast<conparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       // save scores
-      ofstream file ;
+      std::ofstream file ;
       file.open(m_sFeatureDB.c_str()) ;
       static_cast<conparser::CWeight*>(m_weights)->saveScores(file);
       // save rules
       m_rule.saveRules(file);
       file.close();
-      cout << "Total number of training errors are: " << m_nTotalErrors << endl;
+      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    conparser::SCORE_TYPE getGlobalScore(const CSentenceParsed &parsed);
    void updateScores(const CSentenceParsed &parse, const CSentenceParsed &correct, int round=0);
@@ -144,9 +144,9 @@ private:
    inline conparser::SCORE_TYPE getOrUpdateStackScore( const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
    inline conparser::SCORE_TYPE getOrUpdateScore( const conparser::CStateItem &item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
 
-   // update the built-in weight vector for this feature object specifically
-   void updateScoresForStates( const conparser::CStateItem *output , const conparser::CStateItem *correct ) ;
-   void updateScoresForState( const conparser::CStateItem *output , SCORE_UPDATE update ) ;
+   // update the built-in weight std::vector for this feature object specifically
+   void updateScoresForStates( const conparser::CStateItem *outout , const conparser::CStateItem *correct ) ;
+   void updateScoresForState( const conparser::CStateItem *outout , SCORE_UPDATE update ) ;
 
 };
 

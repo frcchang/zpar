@@ -36,8 +36,8 @@ public:
 
       int index_out = 0; 
       for ( int index_in = 0; index_in < sentence_input.size(); index_in++ ) {
-         const string &current_char = sentence_input[index_in];
-         const string &last_char = index_in>0 ? sentence_input[index_in-1] : "" ;
+         const std::string &current_char = sentence_input[index_in];
+         const std::string &last_char = index_in>0 ? sentence_input[index_in-1] : "" ;
          if ( current_char != " " ) {
             sentence.push_back( current_char );
             if ( index_in>0 && last_char == " " )

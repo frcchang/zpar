@@ -12,7 +12,7 @@
 
 /*===============================================================
  *
- * definitions about tmp 
+ * definitions abstd::cout tmp 
  *
  *==============================================================*/
 
@@ -25,7 +25,7 @@ public:
    CTemporary() : CConstituentLabel() {}
    CTemporary(const CTemporary &t) { CConstituentLabel::m_code=t.CConstituentLabel::m_code; }
    CTemporary(const unsigned long &u) { CConstituentLabel::m_code=u; }
-   CTemporary(const string &s) { load(s); }
+   CTemporary(const std::string &s) { load(s); }
 
 public:
    const unsigned long &code() const { return CConstituentLabel::m_code; }
@@ -39,7 +39,7 @@ public:
    bool operator <= (const CTemporary &w) const { return CConstituentLabel::m_code <= w.CConstituentLabel::m_code; }
    bool operator >= (const CTemporary &w) const { return CConstituentLabel::m_code >= w.CConstituentLabel::m_code; }
 
-   void load(const string &s) {
+   void load(const std::string &s) {
       if (s[s.size()-1] == '*') {
          CConstituentLabel::load(s.substr(0, s.size()-1));
          setTemporary(true);
@@ -50,8 +50,8 @@ public:
       }
    }
    void load(const unsigned long &code) {CConstituentLabel::m_code=code;}
-   const string &str() const { 
-      static string tmp;
+   const std::string &str() const { 
+      static std::string tmp;
       tmp = CConstituentLabel(clearTmp(CConstituentLabel::m_code)).str();
       if (getTemporary()) {
          tmp += "*";
@@ -85,7 +85,7 @@ public:
 
 template<typename CConstituentLabel>
 inline std::istream & operator >> (std::istream &is, CTemporary<CConstituentLabel> &con) {
-   string s;
+   std::string s;
    is >> s;
    con.load(s);
    return is;

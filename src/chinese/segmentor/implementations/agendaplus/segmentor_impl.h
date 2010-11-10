@@ -48,9 +48,9 @@ class CWeight {
 public:
    typedef CScoreMapType< CWord, SCORE_TYPE > CWordMap;
    typedef CScoreMapType< CTwoWords, SCORE_TYPE > CTwoWordsMap;
-   typedef CScoreMapType< pair<int, int>, SCORE_TYPE > CPairIntMap;
-   typedef CScoreMapType< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
-   typedef CScoreMapType< pair<CTwoWords, int>, SCORE_TYPE > CTwoWordsIntMap;
+   typedef CScoreMapType< std::pair<int, int>, SCORE_TYPE > CPairIntMap;
+   typedef CScoreMapType< std::pair<CWord, int>, SCORE_TYPE > CWordIntMap;
+   typedef CScoreMapType< std::pair<CTwoWords, int>, SCORE_TYPE > CTwoWordsIntMap;
    typedef CScoreMapType< unsigned long int, SCORE_TYPE > CIntMap;
 
    // char based features

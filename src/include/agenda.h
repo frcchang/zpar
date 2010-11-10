@@ -59,32 +59,32 @@ class CAgendaSimple {
 //      CNode* newItem() {
 //         assert( !m_bItemSorted ); 
 //         if (m_nBeamSize == m_nMaxSize) { 
-//            pop_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more); 
+//            std::pop_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more); 
 //            return m_lBeamPointer[m_nMaxSize-1]; 
 //         }
 //         return m_lBeamPointer[m_nBeamSize++];
 //      }
 //      void insertNewItem() { 
 //         assert( !m_bItemSorted );
-//         push_heap(m_lBeamPointer, m_lBeamPointer+m_nBeamSize, more ); 
+//         std::push_heap(m_lBeamPointer, m_lBeamPointer+m_nBeamSize, more ); 
 //      }
       void insertItem(const CNode *item) {
          assert( !m_bItemSorted );
          if (m_nBeamSize == m_nMaxSize) {
             if (*item > *(m_lBeamPointer[0])) {
-               pop_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more);
+               std::pop_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more);
                *(m_lBeamPointer[m_nMaxSize-1]) = *item;
-               push_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more);
+               std::push_heap(m_lBeamPointer, m_lBeamPointer+m_nMaxSize, more);
             }
             return;
          }
          *(m_lBeamPointer[m_nBeamSize]) = *item;
          ++ m_nBeamSize;
-         push_heap(m_lBeamPointer, m_lBeamPointer+m_nBeamSize, more);
+         std::push_heap(m_lBeamPointer, m_lBeamPointer+m_nBeamSize, more);
       }
       void sortItems() { 
          assert(!m_bItemSorted); 
-         sort_heap( m_lBeamPointer, m_lBeamPointer + m_nBeamSize , more ) ; 
+         std::sort_heap( m_lBeamPointer, m_lBeamPointer + m_nBeamSize , more ) ; 
          m_bItemSorted = true;
       }
       const CNode* bestItem( int index=0 ) { if (!m_bItemSorted) sortItems(); return m_lBeamPointer[ index ] ; }
@@ -172,32 +172,32 @@ class CAgendaBeam {
       int candidateSize() { return m_nBeamSize[m_nGenerated]; }
       CNode* candidateItem() {
          if (m_nBeamSize[m_nGenerated] == m_nMaxSize) { // if reach beam limits
-            pop_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nMaxSize, more); // pop the smallest item
+            std::pop_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nMaxSize, more); // pop the smallest item
             return m_lBeamPointer[m_nGenerated][m_nMaxSize-1]; // and reuse it.
          }
          // increase the beam size, then return pointer
          return m_lBeamPointer[m_nGenerated][m_nBeamSize[m_nGenerated]++];
       }
       void pushCandidate() { 
-         push_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], more ); 
+         std::push_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], more ); 
       }
       void pushCandidate(const CNode *node) { 
          if (m_nBeamSize[m_nGenerated] == m_nMaxSize) { // if reach beam limits
             if ( ! ( *node > *(m_lBeamPointer[m_nGenerated][0]) ) )
                return;
-            pop_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nMaxSize, more); // pop the smallest item
+            std::pop_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nMaxSize, more); // pop the smallest item
          }
          else {
             m_nBeamSize[m_nGenerated]++;
          }
          *(m_lBeamPointer[m_nGenerated][m_nBeamSize[m_nGenerated]-1]) = *node;
          //e[m_nGenerated]++;
-         push_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], more ); 
+         std::push_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], more ); 
       }
       void nextRound() { m_nGenerator = 1-m_nGenerator; m_nGenerated = 1-m_nGenerated; clear(m_nGenerated); }
-      CNode* bestGenerator() { assert(m_nBeamSize[m_nGenerator]!=0); return * max_element(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], less); }
+      CNode* bestGenerator() { assert(m_nBeamSize[m_nGenerator]!=0); return * std::max_element(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], less); }
       CNode* generator(int n) { if (n>=m_nBeamSize[m_nGenerator]) return 0; return m_lBeamPointer[m_nGenerator][n]; }
-      void sortGenerators() { sort_heap(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], more); }
+      void sortGenerators() { std::sort_heap(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], more); }
 
       inline static bool more(CNode *x, CNode *y) {return *x > *y;}
       inline static bool less(CNode *x, CNode *y) {return *x < *y;}
@@ -263,7 +263,7 @@ class CAgendaBeamDoubleIndice {
       int generatorSize() { return m_nBeamSize[m_nGenerator]; }
       CNode* candidateItem() {
          if (m_nBeamSize[m_nGenerated] == m_nMaxSize) { // if reach beam limits
-            pop_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nMaxSize, more); // pop the smallest item
+            std::pop_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nMaxSize, more); // pop the smallest item
             return m_lBeamPointer[m_nGenerated][m_nMaxSize-1]; // and reuse it.
          }
          // increase the beam size, then return pointer
@@ -271,15 +271,15 @@ class CAgendaBeamDoubleIndice {
          return m_lBeamPointer[m_nGenerated][m_nBeamSize[m_nGenerated]++];
       }
       void pushCandidate() { 
-         push_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], more ); 
+         std::push_heap(m_lBeamPointer[m_nGenerated], m_lBeamPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], more ); 
          if (m_nBeamSize[m_nGenerated] == m_nMaxSize)
             make_heap(m_lMaxPointer[m_nGenerated], m_lMaxPointer[m_nGenerated]+m_nMaxSize, less);
          else
-            push_heap(m_lMaxPointer[m_nGenerated], m_lMaxPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], less);
+            std::push_heap(m_lMaxPointer[m_nGenerated], m_lMaxPointer[m_nGenerated]+m_nBeamSize[m_nGenerated], less);
       }
       void nextRound() { m_nGenerator = 1-m_nGenerator; m_nGenerated = 1-m_nGenerated; clear(m_nGenerated); }
-      CNode* bestGenerator() { return m_lMaxPointer[m_nGenerator][0]; }//return * max_element(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], less); }
-      CNode* generator(int n) { return m_lMaxPointer[m_nGenerator][n]; }//return * max_element(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], less); }
+      CNode* bestGenerator() { return m_lMaxPointer[m_nGenerator][0]; }//return * std::max_element(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], less); }
+      CNode* generator(int n) { return m_lMaxPointer[m_nGenerator][n]; }//return * std::max_element(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], less); }
 
       inline static bool more(CNode *x, CNode *y) {return *x > *y;}
       inline static bool less(CNode *x, CNode *y) {return *x < *y;}
@@ -292,9 +292,9 @@ template <typename CNode>
 class CAgendaBeam1 {
    private:
       const int m_nMaxSize;
-      vector<CNode> m_lBeam[2];
+      std::vector<CNode> m_lBeam[2];
       unsigned m_nGenerator, m_nGenerated;
-      typename vector<CNode>::iterator m_it, m_itemp;
+      typename std::vector<CNode>::iterator m_it, m_itemp;
    public:
       // constructor and destructor method
       CAgendaBeam1(int nBeamSize): m_nMaxSize(nBeamSize) { 
@@ -329,7 +329,7 @@ class CAgendaBeam1 {
          }
          clear(m_nGenerated); 
       }
-      CNode* bestGenerator() { return &*max_element(m_lBeam[m_nGenerator].begin(), m_lBeam[m_nGenerator].end()); }
+      CNode* bestGenerator() { return &*std::max_element(m_lBeam[m_nGenerator].begin(), m_lBeam[m_nGenerator].end()); }
 
       static bool more(CNode x, CNode y) {return x > y;}
 

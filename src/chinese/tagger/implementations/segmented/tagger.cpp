@@ -40,7 +40,7 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
    static unsigned long int last_start , last_length ;
    static unsigned long int start , end , length ; 
 
-   // about the words
+   // abstd::cout the words
    start = item->getWordStart( index ) ;
    end = item->getWordEnd( index ) ;
    length = item->getWordLength( index ) ; 
@@ -49,7 +49,7 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
    const CWord &word = m_WordCache.find( start , end , sentence ) ; 
    const CWord &last_word = index > 0 ? m_WordCache.find( last_start , start-1 , sentence ) : g_emptyWord ; 
 
-   // about the chars
+   // abstd::cout the chars
    const CWord &first_char = m_WordCache.find( start , start , sentence ) ;
    const CWord &last_char = m_WordCache.find( end , end , sentence ) ;
    const CWord &first_char_last_word = index > 0 ? m_WordCache.find( last_start , last_start , sentence ) : g_emptyWord ;
@@ -66,7 +66,7 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
 
    CTwoWords two_word;
 
-   // about the tags 
+   // abstd::cout the tags 
    const CTag tag = item->getTag(index);
    const CTag last_tag = index>0 ? item->getTag(index-1) : CTag::SENTENCE_BEGIN;
    const CTag second_last_tag = index>1 ? item->getTag(index-2) : CTag::SENTENCE_BEGIN;
@@ -78,33 +78,33 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
    long int first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (1<<tag.code()) ;
    long int last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (1<<tag.code()) ;
 
-   nReturn = m_weights->m_mapCurrentTag.getScore( make_pair(word, tag) , m_nScoreIndex ) ; 
+   nReturn = m_weights->m_mapCurrentTag.getScore( std::make_pair(word, tag) , m_nScoreIndex ) ; 
    nReturn += m_weights->m_mapLastTagByTag.getScore( tag_bigram , m_nScoreIndex ) ;
    nReturn += m_weights->m_mapLastTwoTagsByTag.getScore( tag_trigram , m_nScoreIndex ) ;
    if ( start > 0 ) {
-      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getScore( make_pair(last_word, tag) , m_nScoreIndex ) ;
-      if ( length <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getScore( make_pair(word, last_tag) , m_nScoreIndex ) ;
-      if ( length <= 2 ) nReturn += m_weights->m_mapTagByWordAndPrevChar.getScore( make_pair(currentword_lastchar, tag) , m_nScoreIndex ) ;
-      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getScore( make_pair(lastword_firstchar, last_tag) , m_nScoreIndex) ;
+      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getScore( std::make_pair(last_word, tag) , m_nScoreIndex ) ;
+      if ( length <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getScore( std::make_pair(word, last_tag) , m_nScoreIndex ) ;
+      if ( length <= 2 ) nReturn += m_weights->m_mapTagByWordAndPrevChar.getScore( std::make_pair(currentword_lastchar, tag) , m_nScoreIndex ) ;
+      if ( last_length <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getScore( std::make_pair(lastword_firstchar, last_tag) , m_nScoreIndex) ;
 
    }
    if ( length == 1 ) {
       if ( start > 0 && end < sentence->size()-1 )
-         nReturn += m_weights->m_mapTagOfOneCharWord.getScore( make_pair(three_char, tag) , m_nScoreIndex ) ;
+         nReturn += m_weights->m_mapTagOfOneCharWord.getScore( std::make_pair(three_char, tag) , m_nScoreIndex ) ;
    }
    else {
-      nReturn += m_weights->m_mapTagByFirstChar.getScore( make_pair(first_char, tag) , m_nScoreIndex ) ; 
-      nReturn += m_weights->m_mapTagByLastChar.getScore( make_pair(last_char, tag) , m_nScoreIndex ) ;
-      nReturn += m_weights->m_mapTagByFirstCharCat.getScore( make_pair(first_char_cat, tag) , m_nScoreIndex ) ; 
-      nReturn += m_weights->m_mapTagByLastCharCat.getScore( make_pair(last_char_cat, tag) , m_nScoreIndex ) ;
+      nReturn += m_weights->m_mapTagByFirstChar.getScore( std::make_pair(first_char, tag) , m_nScoreIndex ) ; 
+      nReturn += m_weights->m_mapTagByLastChar.getScore( std::make_pair(last_char, tag) , m_nScoreIndex ) ;
+      nReturn += m_weights->m_mapTagByFirstCharCat.getScore( std::make_pair(first_char_cat, tag) , m_nScoreIndex ) ; 
+      nReturn += m_weights->m_mapTagByLastCharCat.getScore( std::make_pair(last_char_cat, tag) , m_nScoreIndex ) ;
 
       for ( int j = 0 ; j < item->getWordLength( index ) ; ++ j ) {
          if ( j > 0 && j < item->getWordLength( index )-1 )
-            nReturn += m_weights->m_mapTagByChar.getScore( make_pair(m_WordCache.find(start+j, start+j, sentence), tag) , m_nScoreIndex );
+            nReturn += m_weights->m_mapTagByChar.getScore( std::make_pair(m_WordCache.find(start+j, start+j, sentence), tag) , m_nScoreIndex );
          if ( j > 0 ) {
             wt1.load( m_WordCache.find(start+j, start+j, sentence), tag ); wt2.load( first_char ); wt12.refer(&wt1, &wt2); nReturn += m_weights->m_mapTaggedCharByFirstChar.getScore( wt12, m_nScoreIndex );
             if ( m_WordCache.find(start+j, start+j, sentence) == m_WordCache.find(start+j-1, start+j-1, sentence)) 
-               nReturn += m_weights->m_mapRepeatedCharByTag.getScore( make_pair(m_WordCache.find(start+j, start+j, sentence), tag) , m_nScoreIndex );
+               nReturn += m_weights->m_mapRepeatedCharByTag.getScore( std::make_pair(m_WordCache.find(start+j, start+j, sentence), tag) , m_nScoreIndex );
          }
          if ( j < item->getWordLength( index )-1 ) {
             wt1.load( m_WordCache.find(start+j, start+j, sentence), tag ); wt2.load( last_char ); wt12.refer(&wt1, &wt2); nReturn += m_weights->m_mapTaggedCharByLastChar.getScore( wt12 , m_nScoreIndex );
@@ -117,7 +117,7 @@ SCORE_TYPE CTagger::getLocalScore( const CStringVector * sentence, CStateItem * 
 
 /*---------------------------------------------------------------
  *
- * updateScores - update the score vector by input
+ * updateScores - update the score std::vector by input
  *                this is used in training to adjust params
  *
  * Inputs: the tagged and the correct example
@@ -157,8 +157,8 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
 
 /*---------------------------------------------------------------
  *
- * updateLocalFeatureVector - update the given feature vector with
- *                            the local feature vector for a given
+ * updateLocalFeatureVector - update the given feature std::vector with
+ *                            the local feature std::vector for a given
  *                            sentence. This is a private member only 
  *                            used by updateGlobalFeatureVector and is
  *                            only used for training. 
@@ -166,17 +166,17 @@ void CTagger::updateScores(const CTwoStringVector* tagged, const CTwoStringVecto
  *--------------------------------------------------------------*/
 
 void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoStringVector * sentence , unsigned long index , unsigned long round ) { 
-   // about words              
+   // abstd::cout words              
    CWord word = sentence->at( index ).first ;
    CWord last_word = index > 0 ? sentence->at( index - 1 ).first : g_emptyWord ;
    CWord next_word = index < sentence->size() - 1 ? sentence->at( index + 1 ).first : g_emptyWord ;
    CStringVector chars , last_chars ;
    chars.clear() ; getCharactersFromUTF8String( sentence->at(index).first , &chars ) ;
    last_chars.clear() ; if ( index > 0 ) getCharactersFromUTF8String( sentence->at( index - 1 ).first , &last_chars ) ;
-   // about length
+   // abstd::cout length
    int length = chars.size() ; //if ( length > LENGTH_MAX-1 ) length = LENGTH_MAX-1 ;
    int last_length = last_chars.size() ; //if ( last_length > LENGTH_MAX-1 ) last_length = LENGTH_MAX-1 ;
-   // about chars  
+   // abstd::cout chars  
    CWord first_char = chars[ 0 ];
    CWord last_char = chars[ chars.size() - 1 ];
    CWord first_char_last_word = index > 0 ? last_chars[ 0 ] : g_emptyWord;
@@ -195,7 +195,7 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
 
    CTwoWords two_word ; 
 
-   // about tags
+   // abstd::cout tags
    const CTag tag( sentence->at(index).second ) ; 
    const CTag last_tag = index > 0 ? CTag( sentence->at( index-1 ).second) : CTag::SENTENCE_BEGIN ;
    const CTag second_last_tag = index > 1 ? CTag( sentence->at( index-2 ).second) : CTag::SENTENCE_BEGIN ;
@@ -204,35 +204,35 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
    CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
    CTwoTaggedWords wt12;
    
-   // about the char categories 
+   // abstd::cout the char categories 
    long int first_char_cat = m_weights->m_mapCharTagDictionary.lookup(first_char) | (1<<tag.code()) ; 
    long int last_char_cat = m_weights->m_mapCharTagDictionary.lookup(last_char) | (1<<tag.code()) ; 
    SCORE_TYPE amount = method == eAdd ? 1 : -1 ; 
 
-   m_weights->m_mapCurrentTag[ make_pair(word, tag) ].updateCurrent( amount , round ) ;
+   m_weights->m_mapCurrentTag[ std::make_pair(word, tag) ].updateCurrent( amount , round ) ;
    m_weights->m_mapLastTagByTag[ tag_bigram ].updateCurrent( amount , round ) ;
    m_weights->m_mapLastTwoTagsByTag[ tag_trigram ].updateCurrent( amount , round ) ;
    if ( index > 0 ) {
-      if ( last_length <= 2 ) m_weights->m_mapTagByLastWord[ make_pair(last_word, tag) ].updateCurrent( amount , round ) ;
-      if ( length <= 2 ) m_weights->m_mapLastTagByWord[ make_pair(word, last_tag) ].updateCurrent( amount , round ) ;
-      if ( length <= 2 ) m_weights->m_mapTagByWordAndPrevChar[ make_pair(currentword_lastchar, tag) ].updateCurrent( amount , round ) ;
-      if ( last_length <= 2 ) m_weights->m_mapTagByWordAndNextChar[ make_pair(lastword_firstchar, last_tag) ].updateCurrent( amount , round ) ;
+      if ( last_length <= 2 ) m_weights->m_mapTagByLastWord[ std::make_pair(last_word, tag) ].updateCurrent( amount , round ) ;
+      if ( length <= 2 ) m_weights->m_mapLastTagByWord[ std::make_pair(word, last_tag) ].updateCurrent( amount , round ) ;
+      if ( length <= 2 ) m_weights->m_mapTagByWordAndPrevChar[ std::make_pair(currentword_lastchar, tag) ].updateCurrent( amount , round ) ;
+      if ( last_length <= 2 ) m_weights->m_mapTagByWordAndNextChar[ std::make_pair(lastword_firstchar, last_tag) ].updateCurrent( amount , round ) ;
    }
    if ( length == 1 ) {
       if ( index > 0 && index < sentence->size() - 1 )
-         m_weights->m_mapTagOfOneCharWord[ make_pair(three_char, tag) ].updateCurrent( amount , round ) ; 
+         m_weights->m_mapTagOfOneCharWord[ std::make_pair(three_char, tag) ].updateCurrent( amount , round ) ; 
    }
    else {
-      m_weights->m_mapTagByFirstChar[ make_pair(first_char, tag) ].updateCurrent( amount , round ) ; 
-      m_weights->m_mapTagByLastChar[ make_pair(last_char, tag) ].updateCurrent( amount , round ) ;                    //
-      m_weights->m_mapTagByFirstCharCat[ make_pair(first_char_cat, tag) ].updateCurrent( amount , round ) ; 
-      m_weights->m_mapTagByLastCharCat[ make_pair(last_char_cat, tag) ].updateCurrent( amount , round ) ;
+      m_weights->m_mapTagByFirstChar[ std::make_pair(first_char, tag) ].updateCurrent( amount , round ) ; 
+      m_weights->m_mapTagByLastChar[ std::make_pair(last_char, tag) ].updateCurrent( amount , round ) ;                    //
+      m_weights->m_mapTagByFirstCharCat[ std::make_pair(first_char_cat, tag) ].updateCurrent( amount , round ) ; 
+      m_weights->m_mapTagByLastCharCat[ std::make_pair(last_char_cat, tag) ].updateCurrent( amount , round ) ;
       for ( int j = 0 ; j < chars.size() ; ++ j ) {
          if ( j > 0 && j < chars.size() - 1 )                                                                
-            m_weights->m_mapTagByChar[ make_pair(CWord(chars[j]), tag) ].updateCurrent( amount , round ) ;
+            m_weights->m_mapTagByChar[ std::make_pair(CWord(chars[j]), tag) ].updateCurrent( amount , round ) ;
          if ( j > 0 ) {
             wt1.load(chars[j], tag); wt2.load(first_char); wt12.allocate(wt1, wt2); m_weights->m_mapTaggedCharByFirstChar[ wt12 ].updateCurrent( amount , round ) ;
-            if ( chars[j] == chars[j-1] ) m_weights->m_mapRepeatedCharByTag[ make_pair(CWord(chars[j]), tag) ].updateCurrent( amount , round ) ; //
+            if ( chars[j] == chars[j-1] ) m_weights->m_mapRepeatedCharByTag[ std::make_pair(CWord(chars[j]), tag) ].updateCurrent( amount , round ) ; //
          }
          if (j<chars.size()-1) {
             wt1.load(chars[j], tag); wt2.load(last_char); wt12.allocate(wt1, wt2); m_weights->m_mapTaggedCharByLastChar[ wt12 ].updateCurrent(amount, round);
@@ -251,23 +251,23 @@ void CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoString
  *--------------------------------------------------------------*/
 
 bool CTagger::train( const CStringVector * sentence , const CTwoStringVector * correct) {
-   cerr << "Not implemented" << endl;
+   std::cerr << "Not implemented" << std::endl;
    assert( 0 == 1 );
 }
 
 /*---------------------------------------------------------------
  *
- * generate - helper function that generates tagged output
+ * generate - helper function that generates tagged outout
  *
  *--------------------------------------------------------------*/
 
 void generate(const CStateItem *stateItem, CStringVector *sentence, CTwoStringVector *vReturn) {
-   string s;
+   std::string s;
    for (int j=0; j<stateItem->size(); ++j) { 
       s.clear();
       for (int k=stateItem->getWordStart(j); k<stateItem->getWordEnd(j)+1; k++)
          s += sentence->at(k);
-      vReturn->push_back(make_pair(s, CTag(stateItem->getTag(j)).str()));
+      vReturn->push_back(std::make_pair(s, CTag(stateItem->getTag(j)).str()));
    }
 }
 
@@ -371,7 +371,7 @@ void CTagger::tag( const CStringVector * sentence , CTwoStringVector * vReturn ,
       while ( end_index<length && word_ends->isset(end_index)==false ) ++end_index ;
    }
 
-   // now generate output sentence
+   // now generate outout sentence
    // n-best list will be stored in array
    // from the addr vReturn
    TRACE("Outputing sentence");
@@ -385,12 +385,12 @@ void CTagger::tag( const CStringVector * sentence , CTwoStringVector * vReturn ,
       if (k<m_Agenda.generatorSize()) {
          pGenerator = m_Agenda.generator(k);
          for (j=0; j<pGenerator->size(); ++j) {
-            string temp = "";
+            std::string temp = "";
             for (int l = pGenerator->getWordStart(j); l <= pGenerator->getWordEnd(j); ++l) {
                assert(sentence->at(l)!=" "); // [SPACE]
                temp += sentence->at(l);
             }
-            vReturn[k].push_back( make_pair(temp, pGenerator->getTag(j).str()) );
+            vReturn[k].push_back( std::make_pair(temp, pGenerator->getTag(j).str()) );
          }
          if (out_scores!=0)
             out_scores[k] = pGenerator->score;

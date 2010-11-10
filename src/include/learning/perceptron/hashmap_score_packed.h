@@ -48,9 +48,9 @@ public:
 };
 
 template <typename SCORE_TYPE, unsigned PACKED_SIZE>
-istream & operator >> (istream &is, CPackedScore<SCORE_TYPE, PACKED_SIZE> &score) {
+std::istream & operator >> (std::istream &is, CPackedScore<SCORE_TYPE, PACKED_SIZE> &score) {
    assert(PACKED_SIZE>0);
-   string s;
+   std::string s;
    is >> s;
    ASSERT(s=="[", "hashmap_score_packed.h: not well formatted CPackedScore");
    is >> score[0];
@@ -65,7 +65,7 @@ istream & operator >> (istream &is, CPackedScore<SCORE_TYPE, PACKED_SIZE> &score
 }
 
 template <typename SCORE_TYPE, unsigned PACKED_SIZE>
-ostream & operator << (ostream &os, CPackedScore<SCORE_TYPE, PACKED_SIZE> &score) {
+std::ostream & operator << (std::ostream &os, CPackedScore<SCORE_TYPE, PACKED_SIZE> &score) {
    assert(PACKED_SIZE>0);
    os << " [ "
    os << score[0];
@@ -123,12 +123,12 @@ protected:
    const CPackedScore<SCORE_TYPE, PACKED_SIZE> m_zero ;
 
 public:
-   const string name ;
+   const std::string name ;
    bool initialized ;
    unsigned count ;
 
 public:
-   CPackedScoreMap(string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CPackedScore<SCORE_TYPE, PACKED_SIZE> >(TABLE_SIZE, bInitMap) {
+   CPackedScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CPackedScore<SCORE_TYPE, PACKED_SIZE> >(TABLE_SIZE, bInitMap) {
       assert(m_zero.empty());
    }
 
@@ -146,9 +146,9 @@ public:
       (*this)[ key ].updateCurrent( index , amount , round );
    }
 
-   virtual inline void getOrUpdateScore( CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &out , const K &key , const unsigned &index , const int &which , const SCORE_TYPE &amount=0 , const int &round=0 ) {
+   virtual inline void getOrUpdateScore( CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &std::cout , const K &key , const unsigned &index , const int &which , const SCORE_TYPE &amount=0 , const int &round=0 ) {
       if ( amount == 0 ) {
-         out.add(this->find(key, m_zero), which) ;
+         std::cout.add(this->find(key, m_zero), which) ;
       }
       else {
          assert( round != 0 );
@@ -178,7 +178,7 @@ public:
 #ifdef DEBUG
 public:
    void trace() {
-      cout << name << ": ";
+      std::cout << name << ": ";
       CHashMap< K , CPackedScore<SCORE_TYPE, PACKED_SIZE> >::trace();
    }
 #endif
@@ -188,9 +188,9 @@ public:
 
 template<typename K, typename SCORE_TYPE, unsigned PACKED_SIZE>
 inline
-istream & operator >> (istream &is, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> &score_map) {
+std::istream & operator >> (std::istream &is, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> &score_map) {
    if (!is) return is ;
-   string s ;
+   std::string s ;
    getline(is, s) ;
    // match name
    const unsigned &size = score_map.name.size();
@@ -199,7 +199,7 @@ istream & operator >> (istream &is, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> 
       // match size
       if ( s.size()>size ) {
          unsigned table_size = 0;
-         istringstream buffer(s.substr(size));
+         std::istringstream buffer(s.substr(size));
          buffer >> table_size;
          if (table_size) {
             unsigned hash_size = 1;
@@ -216,21 +216,21 @@ istream & operator >> (istream &is, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> 
 
 template<typename K, typename SCORE_TYPE, unsigned PACKED_SIZE>
 inline
-ostream & operator << (ostream &os, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> &score_map) {
+std::ostream & operator << (std::ostream &os, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> &score_map) {
    assert(os);
    if (score_map.count)
-      os << score_map.name << ' ' << score_map.count << endl ;
+      os << score_map.name << ' ' << score_map.count << std::endl ;
    else
-      os << score_map.name << endl ;
+      os << score_map.name << std::endl ;
 
    typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
       if ( it.second().score(CScore<SCORE_TYPE>::eNonAverage)!=0 ||
            it.second().score(CScore<SCORE_TYPE>::eAverage)!=0 )
-         os << it.first() << "\t:\t" << it.second() << endl ;
+         os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;
    }
-   os << endl ;
+   os << std::endl ;
    return os ;
 }
 

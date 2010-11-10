@@ -51,8 +51,8 @@ public:
    void operator = (const CTagSet &set) { 
       m_nHash = set.m_nHash; 
    }
-   const string str() const { 
-      string retval = "";
+   const std::string str() const { 
+      std::string retval = "";
       unsigned long hs = m_nHash;
       unsigned long tc;
       for (unsigned long i=0; i<size; ++i) {
@@ -63,10 +63,10 @@ public:
       }
       return retval; 
    }
-   void load(const string &s) {
+   void load(const std::string &s) {
       clear();
-      istringstream iss(s);
-      static string t;
+      std::istringstream iss(s);
+      static std::string t;
       iss >> t;
       for (unsigned long i=0; i<size; ++i) {
          assert(iss.good());
@@ -122,10 +122,10 @@ inline unsigned long encodeTags(const CTag &tag1, const CTag &tag2, const CTag &
 //===============================================================
 
 template<typename CTag, unsigned long size>
-inline istream & operator >> (istream &is, CTagSet<CTag, size> &c) {
+inline std::istream & operator >> (std::istream &is, CTagSet<CTag, size> &c) {
 
-   string s;
-   string t;
+   std::string s;
+   std::string t;
    is >> t;
    assert(t=="[");
 
@@ -143,7 +143,7 @@ inline istream & operator >> (istream &is, CTagSet<CTag, size> &c) {
 }
 
 template<typename CTag, unsigned long size>
-inline ostream & operator << (ostream &os, const CTagSet<CTag, size> &c) {
+inline std::ostream & operator << (std::ostream &os, const CTagSet<CTag, size> &c) {
 
    os << "[ ";
    os << c.str();

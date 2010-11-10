@@ -21,14 +21,14 @@
 
 //===============================================================
 
-inline istream & operator >> (istream &is, english::CConstituentLabel &con) {
-   string s;
+inline std::istream & operator >> (std::istream &is, english::CConstituentLabel &con) {
+   std::string s;
    is >> s;
    con.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const english::CConstituentLabel &con) {
+inline std::ostream & operator << (std::ostream &os, const english::CConstituentLabel &con) {
    os << con.str() ;
    return os;
 }

@@ -62,12 +62,12 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
    last_end = index>0 ? item->getWordEnd(index-1) : 0; // make sure that this is only used when index>0
    last_length = index>0 ? item->getWordLength(index-1) : 0;  // similar to the above
    word_length = length ; 
-   // about the words
+   // abstd::cout the words
    const CWord &word=m_parent->findWordFromCache(start, length, sentence); 
    const CWord &last_word = index>0 ? m_parent->findWordFromCache(last_start, last_length, sentence) : g_emptyWord; // use empty word for sentence beginners. 
    static CTwoWords two_word;
    two_word.refer(&word, &last_word);
-   // about the chars
+   // abstd::cout the chars
    const CWord &first_char=m_parent->findWordFromCache(start, 1, sentence);
    const CWord &last_char=m_parent->findWordFromCache(end, 1, sentence);
    const CWord &first_char_last_word = index>0 ? m_parent->findWordFromCache(last_start, 1, sentence) : g_emptyWord;
@@ -81,7 +81,7 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
       firstcharlastword_word.refer(&first_char_last_word, &first_char);
       lastword_lastchar.refer(&last_char_last_word, &last_char);
    }
-   // about the length
+   // abstd::cout the length
    if(length>LENGTH_MAX-1)length=LENGTH_MAX-1;
    if(last_length>LENGTH_MAX-1)last_length=LENGTH_MAX-1;
    //
@@ -96,8 +96,8 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
       for (int j=0; j<word_length-1; j++) 
          nReturn += m_weights.m_mapConsecutiveChars.getScore(m_parent->findWordFromCache(start+j, 2, sentence), score_index);
 
-      nReturn += m_weights.m_mapLengthByFirstChar.getScore(make_pair(first_char, length), score_index);
-      nReturn += m_weights.m_mapLengthByLastChar.getScore(make_pair(last_char, length), score_index);
+      nReturn += m_weights.m_mapLengthByFirstChar.getScore(std::make_pair(first_char, length), score_index);
+      nReturn += m_weights.m_mapLengthByLastChar.getScore(std::make_pair(last_char, length), score_index);
    }
    if (index>0) {
       nReturn += m_weights.m_mapSeparateChars.getScore(two_char, score_index); 
@@ -107,8 +107,8 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
       nReturn += m_weights.m_mapFirstCharLastWordByWord.getScore(firstcharlastword_word, score_index);
       nReturn += m_weights.m_mapLastWordByLastChar.getScore(lastword_lastchar, score_index);
       
-      nReturn += m_weights.m_mapLengthByLastWord.getScore(make_pair(last_word, length), score_index);
-      nReturn += m_weights.m_mapLastLengthByWord.getScore(make_pair(word, last_length), score_index);
+      nReturn += m_weights.m_mapLengthByLastWord.getScore(std::make_pair(last_word, length), score_index);
+      nReturn += m_weights.m_mapLastLengthByWord.getScore(std::make_pair(word, last_length), score_index);
    }
 
    return nReturn;
@@ -116,19 +116,19 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
 
 /*---------------------------------------------------------------
  *
- * updateScoreVector - update the score vector by input
+ * updateScoreVector - update the score std::vector by input
  *                     this is used in training to adjust params
  *
- * Inputs: the output and the correct examples
+ * Inputs: the outout and the correct examples
  *
  * Affects: m_bScoreModified, which leads to saveScores on destructor
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStringVector* correct, int round) {
-   if ( *output == *correct ) return;
-   for (int i=0; i<output->size(); ++i)
-      updateLocalFeatureVector(eSubtract, output, i, round);
+void CFeatureHandle::updateScoreVector(const CStringVector* outout, const CStringVector* correct, int round) {
+   if ( *outout == *correct ) return;
+   for (int i=0; i<outout->size(); ++i)
+      updateLocalFeatureVector(eSubtract, outout, i, round);
    for (int j=0; j<correct->size(); ++j)
       updateLocalFeatureVector(eAdd, correct, j, round);
    m_bScoreModified = true;
@@ -136,26 +136,26 @@ void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStrin
 
 /*---------------------------------------------------------------
  *
- * updateLocalFeatureVector - update the given feature vector with
- *                            the local feature vector for a given
+ * updateLocalFeatureVector - update the given feature std::vector with
+ *                            the local feature std::vector for a given
  *                            sentence. This is a private member only 
  *                            used by updateGlobalFeatureVector and is
  *                            only used for training. 
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* output, int index, int round) { 
-   // about words              
-   CWord word = output->at(index);
-   CWord last_word = index>0 ? output->at(index-1) : g_emptyWord;
+void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* outout, int index, int round) { 
+   // abstd::cout words              
+   CWord word = outout->at(index);
+   CWord last_word = index>0 ? outout->at(index-1) : g_emptyWord;
    CTwoWords two_word;
    two_word.allocate(word.str(), last_word.str());
    CStringVector chars;
    chars.clear(); getCharactersFromUTF8String(word.str(), &chars);
-   // about length
+   // abstd::cout length
    int length = getUTF8StringLength(word.str()); if (length > LENGTH_MAX-1) length = LENGTH_MAX-1;
    int last_length = getUTF8StringLength(last_word.str()); if (last_length > LENGTH_MAX-1) last_length = LENGTH_MAX-1;
-   // about chars  
+   // abstd::cout chars  
    CWord first_char = getFirstCharFromUTF8String(word.str());
    CWord last_char = getLastCharFromUTF8String(word.str());
    CWord first_char_last_word = index>0 ? getFirstCharFromUTF8String(last_word.str()) : g_emptyWord;
@@ -180,8 +180,8 @@ void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CString
       for (int j=0; j<chars.size()-1; j++) {
          m_weights.m_mapConsecutiveChars.updateScore(chars[j]+chars[j+1], amount, round);
       }
-      m_weights.m_mapLengthByFirstChar.updateScore(make_pair(first_char, length), amount, round);
-      m_weights.m_mapLengthByLastChar.updateScore(make_pair(last_char, length), amount, round);
+      m_weights.m_mapLengthByFirstChar.updateScore(std::make_pair(first_char, length), amount, round);
+      m_weights.m_mapLengthByLastChar.updateScore(std::make_pair(last_char, length), amount, round);
    } 
    if (index>0) {
       m_weights.m_mapSeparateChars.updateScore(two_char, amount, round);
@@ -192,8 +192,8 @@ void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CString
       m_weights.m_mapFirstCharLastWordByWord.updateScore(firstcharlastword_word, amount, round);
       m_weights.m_mapLastWordByLastChar.updateScore(lastword_lastchar, amount, round);
 
-      m_weights.m_mapLengthByLastWord.updateScore(make_pair(last_word, length), amount, round);
-      m_weights.m_mapLastLengthByWord.updateScore(make_pair(word, last_length), amount, round);
+      m_weights.m_mapLengthByLastWord.updateScore(std::make_pair(last_word, length), amount, round);
+      m_weights.m_mapLastLengthByWord.updateScore(std::make_pair(word, last_length), amount, round);
    }
 }
 
@@ -302,7 +302,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
 
       }//start_index
    }
-   // now generate output sentence
+   // now generate outout sentence
    // n-best list will be stored in array
    // from the addr vReturn
    TRACE("Outputing sentence");
@@ -315,7 +315,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
       if (k<m_Chart[length]->size()) {
          pGenerator = m_Chart[length]->bestItem(k);
          for (j=0; j<pGenerator->m_nLength; j++) {
-            string temp = "";
+            std::string temp = "";
             for (unsigned l = pGenerator->getWordStart(j); l <= pGenerator->getWordEnd(j); ++l) {
                assert(sentence.at(l)!=" "); // [SPACE]
                temp += sentence.at(l);

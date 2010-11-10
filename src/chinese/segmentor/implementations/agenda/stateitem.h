@@ -36,7 +36,7 @@ public:
 public:
    // constructors and destructors
    CStateItem() : m_nIndex(-1), m_prev(0), m_bAppend(false) { }
-   CStateItem(CStateItem& item) { cerr<<"CStateItem does not support copy constructor!"; cerr.flush(); assert(1==0); }
+   CStateItem(CStateItem& item) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
 public:
    inline void clear() {

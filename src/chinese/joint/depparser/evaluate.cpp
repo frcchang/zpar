@@ -22,29 +22,29 @@ using namespace chinese;
  * 
  *---------------------------------------------------------------*/
 
-void process(string sOutputFile, string sReferenceFile) {
-   ifstream output_file(sOutputFile.c_str());
-   ifstream reference_file(sReferenceFile.c_str());
+void process(std::string sOutputFile, std::string sReferenceFile) {
+   std::ifstream outout_file(sOutputFile.c_str());
+   std::ifstream reference_file(sReferenceFile.c_str());
 
    double fSeg, fTag, fPar, fParUnlabeled, fParIncPunc;
 
-   CSentenceParsed output;
+   CSentenceParsed outout;
    CSentenceParsed reference;
    
    int nCount;
 
    nCount = 0;
-   while( output_file ) {
-      cout << "Sentence " << ++ nCount << endl;
-      output_file >> output;
+   while( outout_file ) {
+      std::cout << "Sentence " << ++ nCount << std::endl;
+      outout_file >> outout;
       reference_file >> reference;
-      getFScore(output, reference, fSeg, fTag, fPar, fParUnlabeled, fParIncPunc);
-      cout << "Segmentation F-score: " << fSeg << endl;
-      cout << "Tag F-score: " << fTag << endl;
-      cout << "Parse F-score: " << fPar << endl;
-      cout << "Prase F-score excl tag: " << fParUnlabeled << endl;
+      getFScore(outout, reference, fSeg, fTag, fPar, fParUnlabeled, fParIncPunc);
+      std::cout << "Segmentation F-score: " << fSeg << std::endl;
+      std::cout << "Tag F-score: " << fTag << std::endl;
+      std::cout << "Parse F-score: " << fPar << std::endl;
+      std::cout << "Prase F-score excl tag: " << fParUnlabeled << std::endl;
    }
-   output_file.close();
+   outout_file.close();
    reference_file.close();
 }
 
@@ -55,10 +55,10 @@ void process(string sOutputFile, string sReferenceFile) {
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " output_file rererence_file\n\n\
+   const std::string hint = " outout_file rererence_file\n\n\
 ";
    if (argc < 3) {
-      cout << "Usage: " << argv[0] << hint << endl;
+      std::cout << "Usage: " << argv[0] << hint << std::endl;
       return 1;
    }
 

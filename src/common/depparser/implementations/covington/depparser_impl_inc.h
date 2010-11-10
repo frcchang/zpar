@@ -16,14 +16,4 @@ typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARAT
 
 typedef CDependencyTree CDependencyParse;
 
-namespace chinese {
-
-namespace depparser {
-
-#include "macros.h"
-
-}
-
-}
-
 #endif

@@ -12,7 +12,7 @@
 namespace english {
 
 // the penn constituent set
-const string PENN_CON_STRINGS[] = {
+const std::string PENN_CON_STRINGS[] = {
    "-NONE-",
    "-BEGIN-",
    "S", "SBAR", "SBARQ", "SINV", "SQ", 
@@ -95,7 +95,7 @@ public:
    CConstituentLabel(const unsigned long &t) { 
       m_code=t; 
    }
-   CConstituentLabel(const string &s) { load(s); }
+   CConstituentLabel(const std::string &s) { load(s); }
    virtual ~CConstituentLabel() {}
 
 public:
@@ -104,8 +104,8 @@ public:
    void copy(const CConstituentLabel &c) {m_code = c.m_code; }
    const void clear() { m_code=NONE; }
    const bool empty() const { return m_code==NONE; }
-   string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
-   void load(const string &s) {
+   std::string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
+   void load(const std::string &s) {
       m_code = PENN_CON_NONE ;
       bool bFound = false;
       for (int i=0; i<PENN_CON_COUNT; ++i) {

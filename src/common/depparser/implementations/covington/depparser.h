@@ -44,7 +44,7 @@ class CDepParser : public CDepParserBase {
 private:
 
    CAgendaBeam<depparser::CStateItem> *m_Agenda;
-   vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -52,7 +52,7 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
+   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(depparser::AGENDA_SIZE);
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 
@@ -75,7 +75,7 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      cout << "Total number of training errors are: " << m_nTotalErrors << endl;
+      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
 
 private:
@@ -93,9 +93,9 @@ private:
    inline depparser::SCORE_TYPE getOrUpdateArityScore(const depparser::CStateItem *item, const int &word_index, const int &arity_direction, depparser::SCORE_TYPE amount=0, int round=0 ) ;
    inline depparser::SCORE_TYPE getOrUpdateTwoArcScore(const int &head_index, const int &dep_index, const int &parent_index, depparser::SCORE_TYPE amount=0, int round=0);
 
-   void updateScoresForStates(const depparser::CStateItem *output , const depparser::CStateItem *correct , 
+   void updateScoresForStates(const depparser::CStateItem *outout , const depparser::CStateItem *correct , 
                               const bool &bCompleteSentence ) ;
-   inline void updateScoreForState(const depparser::CStateItem *output , const bool &bCompleteSentence , 
+   inline void updateScoreForState(const depparser::CStateItem *outout , const bool &bCompleteSentence , 
                                    const depparser::SCORE_TYPE &amount) ;
 
 };
