@@ -316,6 +316,28 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
       retval += cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
    }
 
+   if (m_bCoNLL) {
+      static unsigned i;
+      if (st_index!=-1) {
+         retval += cast_weights->m_mapSTl.getOrUpdateScore( make_pair(m_lCacheCoNLLLemma[st_index], action), m_nScoreIndex, amount, round) ;
+         retval += cast_weights->m_mapSTc.getOrUpdateScore( make_pair(m_lCacheCoNLLCPOS[st_index], action), m_nScoreIndex, amount, round) ;
+         for (i=0; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
+            retval += cast_weights->m_mapSTf.getOrUpdateScore( make_pair(m_lCacheCoNLLFeats[st_index][i], action), m_nScoreIndex, amount, round) ;
+      } // if (st_index!=-1)
+      if (n0_index!=-1) {
+         retval += cast_weights->m_mapSTl.getOrUpdateScore( make_pair(m_lCacheCoNLLLemma[n0_index], action), m_nScoreIndex, amount, round) ;
+         retval += cast_weights->m_mapSTc.getOrUpdateScore( make_pair(m_lCacheCoNLLCPOS[n0_index], action), m_nScoreIndex, amount, round) ;
+         for (i=0; i<m_lCacheCoNLLFeats[n0_index].size(); ++i)
+            retval += cast_weights->m_mapSTf.getOrUpdateScore( make_pair(m_lCacheCoNLLFeats[n0_index][i], action), m_nScoreIndex, amount, round) ;
+      } // if (n0_index!=-1)
+      if (n1_index!=-1) {
+         retval += cast_weights->m_mapSTl.getOrUpdateScore( make_pair(m_lCacheCoNLLLemma[n1_index], action), m_nScoreIndex, amount, round) ;
+         retval += cast_weights->m_mapSTc.getOrUpdateScore( make_pair(m_lCacheCoNLLCPOS[n1_index], action), m_nScoreIndex, amount, round) ;
+         for (i=0; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
+            retval += cast_weights->m_mapSTf.getOrUpdateScore( make_pair(m_lCacheCoNLLFeats[n1_index][i], action), m_nScoreIndex, amount, round) ;
+      } // if (n1_index!=-1)
+   }
+
    return retval;
 }
 
@@ -396,7 +418,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
  *
  *---------------------------------------------------------------*/
 
-inline int find_information( const CStateItem *item, int *stack ) {
+inline void find_information( const CStateItem *item, int *stack ) {
    // initialise the arrays
    for ( int i=0; i<item->size(); ++i ) {
       stack[i] = CStateItem::OFF_STACK;
@@ -975,14 +997,22 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
 
 };
 
-void CDepParser::initCoNLLCache( const CCoNLLInput &sentence ) {
+/*---------------------------------------------------------------
+ *
+ * initCoNLLCache
+ *
+ *---------------------------------------------------------------*/
+
+template<typename CCoNLLInputOrOutput>
+void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
    m_lCacheCoNLLLemma.resize(sentence.size());
    m_lCacheCoNLLCPOS.resize(sentence.size());
    m_lCacheCoNLLFeats.resize(sentence.size());
-   for (int i=0; i<sentence.size(); ++i) {
+   for (unsigned i=0; i<sentence.size(); ++i) {
       m_lCacheCoNLLLemma[i].load(sentence.at(i).lemma);
-      m_lCacheCoNLLCPOS[i].load(sentence.at(i).cpos);
+      m_lCacheCoNLLCPOS[i].load(sentence.at(i).ctag);
       m_lCacheCoNLLFeats[i].clear();
+      readCoNLLFeats(m_lCacheCoNLLFeats[i], sentence.at(i).feats);
    }
 }
 
@@ -1001,6 +1031,8 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
    static CDependencyParse output[AGENDA_SIZE] ;
 
    assert( m_bCoNLL ) ;
+
+   initCoNLLCache(sentence);
 
    sentence.toTwoStringVector(input);
 
@@ -1035,6 +1067,9 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
    assert( m_bCoNLL ) ;
    assert( IsProjectiveDependencyTree(correct) ) ;
+
+   initCoNLLCache(correct);
+
    correct.toDependencyTree( reference );
    UnparseSentence( &reference, &sentence ) ;
 

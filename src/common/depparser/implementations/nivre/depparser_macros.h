@@ -14,11 +14,11 @@
 typedef double SCORE_TYPE ;
 
 // The size of agenda
-const int AGENDA_SIZE = 64 ;
+const unsigned AGENDA_SIZE = 64 ;
 
 // The size of a sentence and the words
-const int MAX_SENTENCE_SIZE = 256 ; 
-const int MAX_SENTENCE_SIZE_BITS = 8 ; 
+const unsigned MAX_SENTENCE_SIZE = 256 ; 
+const unsigned MAX_SENTENCE_SIZE_BITS = 8 ; 
 
 // link size and direction are combined
 const int LINK_DIRECTION_HEAD_LEFT = -7 ; // head on the left

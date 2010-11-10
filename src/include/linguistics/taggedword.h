@@ -57,7 +57,7 @@ public:
       return word == w.word ? tag < w.tag : word < w.word ; 
    }
    inline bool empty() { return word.empty() && tag.empty(); }
-   inline bool clear() { CWord::clear(); tag.clear(); }
+   inline void clear() { CWord::clear(); tag.clear(); }
    inline unsigned long hash() const { return (word.code()<<CTag::SIZE)|tag.code(); }
    // assign value
    inline void operator = (const CTaggedWord &tw) {
@@ -79,7 +79,7 @@ istream & operator >> (istream &is, CTaggedWord<CTag, sTagSep> &tw) {
    int middle;
    middle = s.rfind(sTagSep, s.size()-1);
    assert(middle>=0);
-   assert(middle<s.size()-1);
+   assert(middle<static_cast<int>(s.size())-1);
    tw.load(CWord(s.substr(0,middle)), CTag(s.substr(middle+1)));
    return is ;
 }

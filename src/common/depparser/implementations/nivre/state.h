@@ -82,7 +82,6 @@ public:
    inline bool operator < (const CStateItem &item) const { return score() < item.score(); }
    inline bool operator > (const CStateItem &item) const { return score() > item.score(); }
    inline bool operator == (const CStateItem &item) const {
-      bool retval = true;
       int i;
       if ( m_nNextWord != item.m_nNextWord )
          return false;
@@ -113,7 +112,7 @@ public:
    inline bool stackempty() const { return m_Stack.empty(); }
    inline int stacktop() const { assert(!m_Stack.empty()); return m_Stack.back(); }
    inline int stackbottom() const { assert(!m_Stack.empty()); return m_Stack.front(); }
-   inline int stackitem( const int &index ) const { assert(index<m_Stack.size()); return m_Stack[index]; }
+   inline int stackitem( const unsigned &index ) const { assert(index<m_Stack.size()); return m_Stack[index]; }
 
    inline int numberoflocalheads() const { return m_nLocalHeads; }
    inline int lastlocalhead() const { 
@@ -130,13 +129,13 @@ public:
 #endif
 }
 
-   inline int head( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lHeads[index]; }
-   inline int leftdep( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lDepsL[index]; }
-   inline int rightdep( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lDepsR[index]; }
-   inline int sibling( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lSibling[index]; }
+   inline int head( const int &index ) const { assert(index<=m_nNextWord); return m_lHeads[index]; }
+   inline int leftdep( const int &index ) const { assert(index<=m_nNextWord); return m_lDepsL[index]; }
+   inline int rightdep( const int &index ) const { assert(index<=m_nNextWord); return m_lDepsR[index]; }
+   inline int sibling( const int &index ) const { assert(index<=m_nNextWord); return m_lSibling[index]; }
    inline int size( ) const { return m_nNextWord ; }
 #ifdef LABELED
-   inline int label( const unsigned long &index ) const { assert(index<=m_nNextWord); return m_lLabels[index]; }
+   inline int label( const int &index ) const { assert(index<=m_nNextWord); return m_lLabels[index]; }
 #endif
 
    inline int leftarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumL[index]; }
@@ -326,7 +325,7 @@ public:
 #endif
       static int top;
       // when the next word is tree.size() it means that the sentence is done already
-      if ( m_nNextWord == tree.size() ) {
+      if ( m_nNextWord == static_cast<int>(tree.size()) ) {
          assert( m_Stack.size() > 0 );
          if ( m_Stack.size() > 1 ) {
             Reduce();

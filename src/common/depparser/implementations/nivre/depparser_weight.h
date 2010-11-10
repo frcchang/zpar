@@ -178,11 +178,11 @@ public:
                                                m_mapSiblingTags("SiblingTags", DEP_TABLE_SIZE),
                                                m_mapSiblingAndParentTags("SiblingAndParentTags", DEP_TABLE_SIZE),
 
-                                               m_mapTwoSiblingTags("TwoSiblingTags", DEP_TABLE_SIZE),
-                                               m_mapTwoSiblingAndParentTags("TwoSiblingAndParentTags", DEP_TABLE_SIZE),
                                                m_mapGrandChildTags("GrandChildTags", DEP_TABLE_SIZE), 
                                                m_mapHeadWordTagArity("HeadWordTagArity", DEP_TABLE_SIZE),
                                                m_mapHeadTagArity("HeadTagArity", DEP_TABLE_SIZE),
+                                               m_mapTwoSiblingTags("TwoSiblingTags", DEP_TABLE_SIZE),
+                                               m_mapTwoSiblingAndParentTags("TwoSiblingAndParentTags", DEP_TABLE_SIZE),
 
 #ifdef LABELED
                                                m_mapLabel("Label", DEP_TABLE_SIZE),
@@ -195,23 +195,23 @@ public:
                                                m_mapHeadSurroundingTagsLabel("HeadSurroundingTagsLabel", DEP_TABLE_SIZE),
                                                m_mapDepSurroundingTagsLabel("DepSurroundingTagsLabel", DEP_TABLE_SIZE),
 #endif
-                                               m_mapSTwt("StackWordTag", DEP_TABLE_SIZE),
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
                                                m_mapSTt("StackTag", DEP_TABLE_SIZE),
+                                               m_mapSTwt("StackWordTag", DEP_TABLE_SIZE),
 
-                                               m_mapN0wt("NextWordTag", DEP_TABLE_SIZE),
                                                m_mapN0w("NextWord", DEP_TABLE_SIZE),
                                                m_mapN0t("NextTag", DEP_TABLE_SIZE),
+                                               m_mapN0wt("NextWordTag", DEP_TABLE_SIZE),
 
-                                               m_mapN1wt("Next+1WordTag", DEP_TABLE_SIZE),
                                                m_mapN1w("Next+1Word", DEP_TABLE_SIZE),
                                                m_mapN1t("Next+1Tag", DEP_TABLE_SIZE),
+                                               m_mapN1wt("Next+1WordTag", DEP_TABLE_SIZE),
 
                                                m_mapSTwtN0wt("StackWordTagNextWordTag", DEP_TABLE_SIZE),
                                                m_mapSTwtN0w("StackWordTagNextWord", DEP_TABLE_SIZE),
                                                m_mapSTwN0wt("StackWordNextWordTag", DEP_TABLE_SIZE),
-                                               m_mapSTwtN0t("StackWordTagNextTag", DEP_TABLE_SIZE),
                                                m_mapSTtN0wt("StackTagNextWordTag", DEP_TABLE_SIZE),
+                                               m_mapSTwtN0t("StackWordTagNextTag", DEP_TABLE_SIZE),
                                                m_mapSTwN0w("StackWordNextWord", DEP_TABLE_SIZE),
                                                m_mapSTtN0t("StackTagNextTag", DEP_TABLE_SIZE),
 
