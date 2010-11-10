@@ -80,7 +80,7 @@ public:
 
    public:
       iterator() {}
-      iterator(CHashMap<K, V> *parent, int bucket, CEntry *entry) : m_parent(parent), m_entry(entry), m_nBucket(bucket) {
+      iterator(CHashMap<K, V> *parent, int bucket, CEntry *entry) : m_nBucket(bucket), m_parent(parent), m_entry(entry) {
          validate();
       }
       iterator(const iterator &it) { m_parent = it.m_parent; m_nBucket = it.m_nBucket; m_entry = it.m_entry; }
@@ -213,7 +213,7 @@ public:
    void trace() { 
       cout << "tracing size:amount" << endl;
       map<unsigned, unsigned> statistic;
-      for (int i=0; i<m_nTableSize; ++i) {
+      for (unsigned i=0; i<m_nTableSize; ++i) {
          unsigned size = 0;
          CEntry* entry = m_buckets[i];
          while (entry) {

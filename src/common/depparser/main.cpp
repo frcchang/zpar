@@ -67,7 +67,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       // check size
       if (input_sent.size() > depparser::MAX_SENTENCE_SIZE) {
          WARNING("The sentence is longer than system limitation, skipping it.");
-         for (int i=0; i<nBest; ++i) {
+         for (unsigned i=0; i<nBest; ++i) {
             output_sent[i].clear();
             if (bScores) scores[i]=0;
          }
@@ -90,7 +90,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       }
       
       // Ouptut sent
-      for (int i=0; i<nBest; ++i) {
+      for (unsigned i=0; i<nBest; ++i) {
          os << output_sent[i] ;
          if (bScores) *os_scores << scores[i] << endl;
       }
@@ -144,7 +144,6 @@ void process_conll(const string sInputFile, const string sOutputFile, const stri
    }
 
    int nCount=0;
-   bool bReadSuccessful;
 
    if (bScores) {
       scores = new depparser::SCORE_TYPE[nBest];
@@ -162,7 +161,7 @@ void process_conll(const string sInputFile, const string sOutputFile, const stri
       // check size
       if (input_sent.size() > depparser::MAX_SENTENCE_SIZE) {
          WARNING("main.cpp: the sentence is longer than system limitation, skipping it.");
-         for (int i=0; i<nBest; ++i) {
+         for (unsigned i=0; i<nBest; ++i) {
             output_sent[i].clear();
             if (bScores) scores[i]=0;
          }
@@ -185,7 +184,7 @@ void process_conll(const string sInputFile, const string sOutputFile, const stri
       }
       
       // Ouptut sent
-      for (int i=0; i<nBest; ++i) {
+      for (unsigned i=0; i<nBest; ++i) {
          os << output_sent[i] ;
          if (bScores) *os_scores << scores[i] << endl;
       }

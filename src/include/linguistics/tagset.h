@@ -75,7 +75,7 @@ public:
       }
    }
    void load(const unsigned long &i) { m_nHash = i; }
-   bool clear() { m_nHash = 0; }
+   void clear() { m_nHash = 0; }
 };
 
 //===============================================================

@@ -50,7 +50,7 @@ inline std::istream & operator >> (std::istream &is, CSentenceTemplate<CSentence
 
 template <typename CSentenceNode>
 inline std::ostream & operator << (std::ostream &os, const CSentenceTemplate<CSentenceNode> &sent) {
-   for (int i=0; i<sent.size(); ++i)
+   for (unsigned i=0; i<sent.size(); ++i)
       os << sent.at(i) << endl ;
    os << endl ;
    return os ;

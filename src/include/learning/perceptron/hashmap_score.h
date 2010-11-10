@@ -34,7 +34,7 @@ public:
 
 public:
 //   CScoreMap(string input_name) : name(input_name) , m_zero() {}
-   CScoreMap(string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) { }
+   CScoreMap(string input_name, int TABLE_SIZE, bool bInitMap=true) : CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) , m_zero() , name(input_name) , initialized(bInitMap) , count(0) { }
 
 public:
    virtual inline void init() {

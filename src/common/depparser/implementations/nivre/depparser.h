@@ -94,7 +94,8 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void initCoNLLCache( const CCoNLLInput &sentence ) ; 
+   template<typename CCoNLLInputOrOutput>
+   void initCoNLLCache( const CCoNLLInputOrOutput &sentence ) ; 
 
    void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
 
