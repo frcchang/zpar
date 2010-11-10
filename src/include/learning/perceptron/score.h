@@ -53,7 +53,7 @@ public:
    bool empty() const { return current==0 && total==0 && lastupdate==0; }
    void operator ++ (int) {current++;}
    void operator -- (int) {current--;}
-   SCORE_TYPE &operator [] (const int &n) {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { REPORT("SCore only has two component, " << n << " required."); assert(1==0);}}
+   SCORE_TYPE &operator [] (const int &n) {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }}
    const SCORE_TYPE score(const int &n=eNonAverage) const {if (n==eNonAverage) return current; return total;}
    void updateCurrent(const SCORE_TYPE &added, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added; }
    //void updateCurrent(SCORE_TYPE added, int round=0) {if (round>=lastupdate){updateAverage(round);total+=added;lastupdate=round;}current+=added; }

@@ -87,7 +87,7 @@ include Makefile.common
 INCLUDES = -I$(SRC_INCLUDES)
 
 CXX = g++
-CXXFLAGS = -Wall $(INCLUDES) $(DEBUG)
+CXXFLAGS = $(INCLUDES) $(DEBUG)
 
 LD=$(CXX)
 LDFLAGS =
