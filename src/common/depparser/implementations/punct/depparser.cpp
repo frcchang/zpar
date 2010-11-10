@@ -100,7 +100,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateTwoArcScore( const int &head_index , co
           m_lCache[dep_index].tag.code() ;
    dir = (getLinkDirection(parent_index, head_index)<<1) + getLinkDirection(head_index, dep_index) ;
 
-   return cast_weights->m_mapGrandChildTags.getOrUpdateScore( make_pair(tags, dir) , m_nScoreIndex , amount , round ) ;
+   return cast_weights->m_mapGrandChildTags.getOrUpdateScore( std::make_pair(tags, dir) , m_nScoreIndex , amount , round ) ;
 
 #else
 
@@ -121,10 +121,10 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const int &word_index , con
    static int arity_combined ;
    arity_combined = arity_direction == ARITY_DIRECTION_LEFT ? arity : -arity-1 ; // -1 for arity=0 right
 
-   pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity = 
-      make_pair( static_cast<const CTaggedWord<CTag, TAG_SEPARATOR>&>(m_lCache[word_index]) , arity_combined );
-   pair<CTag, int> tag_arity = 
-      make_pair( m_lCache[word_index].tag , arity_combined );
+   std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity = 
+      std::make_pair( static_cast<const CTaggedWord<CTag, TAG_SEPARATOR>&>(m_lCache[word_index]) , arity_combined );
+   std::pair<CTag, int> tag_arity = 
+      std::make_pair( m_lCache[word_index].tag , arity_combined );
 
    static SCORE_TYPE retval;
    retval=0;
@@ -261,33 +261,33 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
    static SCORE_TYPE retval;
    retval=0;
 
-   retval += cast_weights->m_mapSTwt.getOrUpdateScore( make_pair(st_word_tag, action), m_nScoreIndex, amount, round) ;
-   retval += cast_weights->m_mapSTw.getOrUpdateScore( make_pair(st_word, action), m_nScoreIndex, amount, round) ;
-   retval += cast_weights->m_mapSTt.getOrUpdateScore( make_pair(st_tag, action), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapSTwt.getOrUpdateScore( std::make_pair(st_word_tag, action), m_nScoreIndex, amount, round) ;
+   retval += cast_weights->m_mapSTw.getOrUpdateScore( std::make_pair(st_word, action), m_nScoreIndex, amount, round) ;
+   retval += cast_weights->m_mapSTt.getOrUpdateScore( std::make_pair(st_tag, action), m_nScoreIndex, amount, round ) ;
 
-   retval += cast_weights->m_mapN0wt.getOrUpdateScore( make_pair(n0_word_tag, action), m_nScoreIndex, amount, round) ;
-   retval += cast_weights->m_mapN0w.getOrUpdateScore( make_pair(n0_word, action), m_nScoreIndex, amount, round ) ;
-   retval += cast_weights->m_mapN0t.getOrUpdateScore( make_pair(n0_tag, action), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapN0wt.getOrUpdateScore( std::make_pair(n0_word_tag, action), m_nScoreIndex, amount, round) ;
+   retval += cast_weights->m_mapN0w.getOrUpdateScore( std::make_pair(n0_word, action), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapN0t.getOrUpdateScore( std::make_pair(n0_tag, action), m_nScoreIndex, amount, round ) ;
 
-   if (n1_index > -1) retval += cast_weights->m_mapN1wt.getOrUpdateScore( make_pair(n1_word_tag, action), m_nScoreIndex, amount, round) ;
-   if (n1_index > -1) retval += cast_weights->m_mapN1w.getOrUpdateScore( make_pair(n1_word, action), m_nScoreIndex, amount, round ) ;
-   if (n1_index > -1) retval += cast_weights->m_mapN1t.getOrUpdateScore( make_pair(n1_tag, action), m_nScoreIndex, amount, round ) ;
+   if (n1_index > -1) retval += cast_weights->m_mapN1wt.getOrUpdateScore( std::make_pair(n1_word_tag, action), m_nScoreIndex, amount, round) ;
+   if (n1_index > -1) retval += cast_weights->m_mapN1w.getOrUpdateScore( std::make_pair(n1_word, action), m_nScoreIndex, amount, round ) ;
+   if (n1_index > -1) retval += cast_weights->m_mapN1t.getOrUpdateScore( std::make_pair(n1_tag, action), m_nScoreIndex, amount, round ) ;
 
-   retval += cast_weights->m_mapSTwtN0wt.getOrUpdateScore( make_pair(st_word_tag_n0_word_tag,action), m_nScoreIndex, amount, round ); 
-   retval += cast_weights->m_mapSTwtN0w.getOrUpdateScore( make_pair(st_word_tag_n0_word,action), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTwN0wt.getOrUpdateScore( make_pair(st_word_n0_word_tag,action), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTwtN0t.getOrUpdateScore( make_pair(st_word_tag_n0_tag,action), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTtN0wt.getOrUpdateScore( make_pair(st_tag_n0_word_tag,action), m_nScoreIndex, amount, round ) ;
-   retval += cast_weights->m_mapSTwN0w.getOrUpdateScore( make_pair(st_word_n0_word,action), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTtN0t.getOrUpdateScore( make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTwtN0wt.getOrUpdateScore( std::make_pair(st_word_tag_n0_word_tag,action), m_nScoreIndex, amount, round ); 
+   retval += cast_weights->m_mapSTwtN0w.getOrUpdateScore( std::make_pair(st_word_tag_n0_word,action), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTwN0wt.getOrUpdateScore( std::make_pair(st_word_n0_word_tag,action), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTwtN0t.getOrUpdateScore( std::make_pair(st_word_tag_n0_tag,action), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTtN0wt.getOrUpdateScore( std::make_pair(st_tag_n0_word_tag,action), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapSTwN0w.getOrUpdateScore( std::make_pair(st_word_n0_word,action), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
 
-   if (n1_index>-1) retval += cast_weights->m_mapN0tN1t.getOrUpdateScore( make_pair(CTagSet<CTag, 2>(encodeTags(n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (n2_index>-1) retval += cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (n1_index>-1) retval += cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (n0ld_index!=-1) retval += cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (sth_index!=-1) retval += cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (stld_index!=-1) retval += cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (strd_index!=-1) retval += cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (n1_index>-1) retval += cast_weights->m_mapN0tN1t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (n2_index>-1) retval += cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (n1_index>-1) retval += cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (n0ld_index!=-1) retval += cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (sth_index!=-1) retval += cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (stld_index!=-1) retval += cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (strd_index!=-1) retval += cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
 
    if (n1_index!=-1) {
       refer_or_allocate_tuple3(word_tag_int, &n0_word, &n1_tag, &action);
@@ -328,38 +328,38 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
 
       const unsigned lpunct = m_lLeftPunct[item->leftbound(st_index)];
 
-      retval += cast_weights->m_mapSTwtp.getOrUpdateScore( make_pair(st_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTwp.getOrUpdateScore( make_pair(st_word, (punct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTtp.getOrUpdateScore( make_pair(st_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapSTwtp.getOrUpdateScore( std::make_pair(st_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTwp.getOrUpdateScore( std::make_pair(st_word, (punct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTtp.getOrUpdateScore( std::make_pair(st_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
 
-      retval += cast_weights->m_mapSTwtln.getOrUpdateScore( make_pair(st_word_tag, (lnpunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTwln.getOrUpdateScore( make_pair(st_word, (lnpunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTtln.getOrUpdateScore( make_pair(st_tag, (lnpunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapSTwtln.getOrUpdateScore( std::make_pair(st_word_tag, (lnpunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTwln.getOrUpdateScore( std::make_pair(st_word, (lnpunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTtln.getOrUpdateScore( std::make_pair(st_tag, (lnpunct<<3)|action), m_nScoreIndex, amount, round ) ;
 
-      retval += cast_weights->m_mapSTwtrn.getOrUpdateScore( make_pair(st_word_tag, (rnpunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTwrn.getOrUpdateScore( make_pair(st_word, (rnpunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTtrn.getOrUpdateScore( make_pair(st_tag, (rnpunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapSTwtrn.getOrUpdateScore( std::make_pair(st_word_tag, (rnpunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTwrn.getOrUpdateScore( std::make_pair(st_word, (rnpunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTtrn.getOrUpdateScore( std::make_pair(st_tag, (rnpunct<<3)|action), m_nScoreIndex, amount, round ) ;
 
-      retval += cast_weights->m_mapSTwtlp.getOrUpdateScore( make_pair(st_word_tag, (lpunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTwlp.getOrUpdateScore( make_pair(st_word, (lpunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapSTtlp.getOrUpdateScore( make_pair(st_tag, (lpunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapSTwtlp.getOrUpdateScore( std::make_pair(st_word_tag, (lpunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTwlp.getOrUpdateScore( std::make_pair(st_word, (lpunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapSTtlp.getOrUpdateScore( std::make_pair(st_tag, (lpunct<<3)|action), m_nScoreIndex, amount, round ) ;
    }
 
    if (n0_index!=-1) {
       const unsigned punct = m_lLeftPunct[item->leftbound(n0_index)];
       const unsigned npunct = item->leftinsidepunct(n0_index);
       const unsigned rpunct = m_lRightPunct[item->rightbound(n0_index)];
-      retval += cast_weights->m_mapN0wtp.getOrUpdateScore( make_pair(n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapN0wp.getOrUpdateScore( make_pair(n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
-      retval += cast_weights->m_mapN0tp.getOrUpdateScore( make_pair(n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0wtp.getOrUpdateScore( std::make_pair(n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapN0wp.getOrUpdateScore( std::make_pair(n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0tp.getOrUpdateScore( std::make_pair(n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
 
-      retval += cast_weights->m_mapN0wtln.getOrUpdateScore( make_pair(n0_word_tag, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapN0wln.getOrUpdateScore( make_pair(n0_word, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
-      retval += cast_weights->m_mapN0tln.getOrUpdateScore( make_pair(n0_tag, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0wtln.getOrUpdateScore( std::make_pair(n0_word_tag, (npunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapN0wln.getOrUpdateScore( std::make_pair(n0_word, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0tln.getOrUpdateScore( std::make_pair(n0_tag, (npunct<<3)|action), m_nScoreIndex, amount, round ) ;
 
-      retval += cast_weights->m_mapN0wtrp.getOrUpdateScore( make_pair(n0_word_tag, (rpunct<<3)|action), m_nScoreIndex, amount, round) ;
-      retval += cast_weights->m_mapN0wrp.getOrUpdateScore( make_pair(n0_word, (rpunct<<3)|action), m_nScoreIndex, amount, round ) ;
-      retval += cast_weights->m_mapN0trp.getOrUpdateScore( make_pair(n0_tag, (rpunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0wtrp.getOrUpdateScore( std::make_pair(n0_word_tag, (rpunct<<3)|action), m_nScoreIndex, amount, round) ;
+      retval += cast_weights->m_mapN0wrp.getOrUpdateScore( std::make_pair(n0_word, (rpunct<<3)|action), m_nScoreIndex, amount, round ) ;
+      retval += cast_weights->m_mapN0trp.getOrUpdateScore( std::make_pair(n0_tag, (rpunct<<3)|action), m_nScoreIndex, amount, round ) ;
    }
 
 //   if (st_index!=-1&&n0_index!=-1) {
@@ -367,13 +367,13 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
 //      if (n0_index!=-1) { assert(punct ==m_lLeftPunct[item->leftbound(n0_index)] );
 //      assert(item->rightbound(st_index)+1==item->leftbound(n0_index)); }
 //   
-//      retval += cast_weights->m_mapSTwtN0wtp.getOrUpdateScore( make_pair(st_word_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ); 
-//      retval += cast_weights->m_mapSTwtN0wp.getOrUpdateScore( make_pair(st_word_tag_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
-//      retval += cast_weights->m_mapSTwN0wtp.getOrUpdateScore( make_pair(st_word_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
-//      retval += cast_weights->m_mapSTwtN0tp.getOrUpdateScore( make_pair(st_word_tag_n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
-//      retval += cast_weights->m_mapSTtN0wtp.getOrUpdateScore( make_pair(st_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
-//      retval += cast_weights->m_mapSTwN0wp.getOrUpdateScore( make_pair(st_word_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
-//      retval += cast_weights->m_mapSTtN0tp.getOrUpdateScore( make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+//      retval += cast_weights->m_mapSTwtN0wtp.getOrUpdateScore( std::make_pair(st_word_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ); 
+//      retval += cast_weights->m_mapSTwtN0wp.getOrUpdateScore( std::make_pair(st_word_tag_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+//      retval += cast_weights->m_mapSTwN0wtp.getOrUpdateScore( std::make_pair(st_word_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+//      retval += cast_weights->m_mapSTwtN0tp.getOrUpdateScore( std::make_pair(st_word_tag_n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+//      retval += cast_weights->m_mapSTtN0wtp.getOrUpdateScore( std::make_pair(st_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+//      retval += cast_weights->m_mapSTwN0wp.getOrUpdateScore( std::make_pair(st_word_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+//      retval += cast_weights->m_mapSTtN0tp.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
 //   }
 #endif
 
@@ -481,7 +481,7 @@ inline int find_information( const CStateItem *item, int *stack ) {
 
 /*---------------------------------------------------------------
  *
- * updateScores - update the score vector 
+ * updateScores - update the score std::vector 
  *
  * This method is different from updateScoreVector in that
  * 1. It is for external call
@@ -495,7 +495,7 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
    
    assert( m_bTrain );
 #ifdef LABELED
-   vector<CDependencyLabel> lCacheLabel;
+   std::vector<CDependencyLabel> lCacheLabel;
 #endif
 
    if ( round > m_nTrainingRound )
@@ -575,52 +575,52 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
 /*---------------------------------------------------------------
  *
- * updateScoreForState - update a single positive or negative output
+ * updateScoreForState - update a single positive or negative outout
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::updateScoreForState( const CStateItem *output , const SCORE_TYPE &amount ) {
-   static int output_stackstatus[MAX_SENTENCE_SIZE] ;
+inline void CDepParser::updateScoreForState( const CStateItem *outout , const SCORE_TYPE &amount ) {
+   static int outout_stackstatus[MAX_SENTENCE_SIZE] ;
    static int child_index ;
 
-   find_information( output, output_stackstatus ) ;
-   // update scores for the outputs parsetree
-   for ( int i=0; i<output->size(); ++i ) {
-      if ( output->head(i) != DEPENDENCY_LINK_NO_HEAD ) {
+   find_information( outout, outout_stackstatus ) ;
+   // update scores for the outouts parsetree
+   for ( int i=0; i<outout->size(); ++i ) {
+      if ( outout->head(i) != DEPENDENCY_LINK_NO_HEAD ) {
          // link score
-         getOrUpdateArcScore( output->head(i), i, output->sibling(i), amount, m_nTrainingRound ) ;
+         getOrUpdateArcScore( outout->head(i), i, outout->sibling(i), amount, m_nTrainingRound ) ;
 #ifdef LABELED
-         getOrUpdateArcLabelScore( output->head(i), i, output->label(i), amount, m_nTrainingRound );
+         getOrUpdateArcLabelScore( outout->head(i), i, outout->label(i), amount, m_nTrainingRound );
 #endif
          // left dependencies are available when the word is off stack or on stack by arc right
-         child_index = output->leftdep(i) ;
+         child_index = outout->leftdep(i) ;
          while ( child_index != DEPENDENCY_LINK_NO_HEAD ) {
-            getOrUpdateTwoArcScore( i , child_index , output->head(i) , amount , m_nTrainingRound ) ; break;
-            child_index = output->sibling(child_index) ;
+            getOrUpdateTwoArcScore( i , child_index , outout->head(i) , amount , m_nTrainingRound ) ; break;
+            child_index = outout->sibling(child_index) ;
          }
          // right dependencies are fixed only after the item is popped off stack
-         if ( output_stackstatus[i] == CStateItem::OFF_STACK ) {
-            child_index = output->rightdep(i) ;
+         if ( outout_stackstatus[i] == CStateItem::OFF_STACK ) {
+            child_index = outout->rightdep(i) ;
             while ( child_index != DEPENDENCY_LINK_NO_HEAD ) {
-               getOrUpdateTwoArcScore( i , child_index , output->head(i) , amount , m_nTrainingRound ) ; break;
-               child_index = output->sibling(child_index) ;
+               getOrUpdateTwoArcScore( i , child_index , outout->head(i) , amount , m_nTrainingRound ) ; break;
+               child_index = outout->sibling(child_index) ;
                 
             }
          }
       }
       // left arity have been fixed for any word that is pushed on
-      getOrUpdateArityScore( i , output->leftarity(i) , ARITY_DIRECTION_LEFT , amount , m_nTrainingRound ) ;
+      getOrUpdateArityScore( i , outout->leftarity(i) , ARITY_DIRECTION_LEFT , amount , m_nTrainingRound ) ;
       // right arity are fixed only when the item is popped off stack
-      if ( output_stackstatus[i] == CStateItem::OFF_STACK ) {
-         getOrUpdateArityScore( i , output->rightarity(i) , ARITY_DIRECTION_RIGHT , amount , m_nTrainingRound ) ;
+      if ( outout_stackstatus[i] == CStateItem::OFF_STACK ) {
+         getOrUpdateArityScore( i , outout->rightarity(i) , ARITY_DIRECTION_RIGHT , amount , m_nTrainingRound ) ;
       }
    }
 
    static CStateItem item;
    static unsigned long action;
    item.clear();
-   while ( item != *output ) {
-      action = item.FollowMove( output );
+   while ( item != *outout ) {
+      action = item.FollowMove( outout );
       TRACE_WORD(CStateItem::printAction(action));
 #ifdef LABELED
       if ( CStateItem::getAction(action) != CStateItem::POP_ROOT ) {
@@ -647,14 +647,14 @@ inline void CDepParser::updateScoreForState( const CStateItem *output , const SC
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::updateScoresForStates( const CStateItem *output , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
+void CDepParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
 
-   //assert( output->size() == correct->size() );
-   // for the necessary information for the correct and output parsetree
+   //assert( outout->size() == correct->size() );
+   // for the necessary information for the correct and outout parsetree
    TRACE("the correct state");
    updateScoreForState( correct , amount_add ) ;
    TRACE("\nthe correct state");
-   updateScoreForState( output , amount_subtract ) ;
+   updateScoreForState( outout , amount_subtract ) ;
    TRACE("\n");
 
    m_nTotalErrors++;
@@ -758,7 +758,7 @@ inline void CDepParser::arcright( CStateItem *item ) {
    const int &next_index = item->size() ;
    static int child_index ;
    static int sibling_index ; 
-   // add score about the dependency
+   // add score abstd::cout the dependency
    sibling_index = item->rightdep(word_index) ;
    item->linkscore() += getOrUpdateArcScore( word_index, next_index, sibling_index ) ; 
 #ifdef LABELED
@@ -903,10 +903,10 @@ static unsigned punct;
 #endif
       }
    }
-   //for (index=0; index<m_lCache.size(); ++index) cout << m_lCache[index] << ' '; cout << endl;
-  // cout << cachecorrect << endl;
+   //for (index=0; index<m_lCache.size(); ++index) std::cout << m_lCache[index] << ' '; std::cout << std::endl;
+  // std::cout << cachecorrect << std::endl;
    for ( index=0; index<m_lCache.size(); ++index ) {
-      // filter out training examples with rules
+      // filter std::cout training examples with rules
       if (bTrain && m_weights->rules()) {
          // the root
          if ( cachecorrect[index].head == DEPENDENCY_LINK_NO_HEAD && canBeRoot(m_lCache[index].tag.code())==false) {
@@ -956,7 +956,7 @@ static unsigned punct;
 
    // skip the training example if contradicts
    if (bTrain && m_weights->rules() && bContradictsRules) {
-      cout << "Skipping training example because it contradicts rules..." <<endl;
+      std::cout << "Skipping training example because it contradicts rules..." <<std::endl;
       return;
    }
 
@@ -1123,7 +1123,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
    static CDependencyParse empty ;
 
    for (int i=0; i<nBest; ++i) {
-      // clear the output sentences
+      // clear the outout sentences
       retval[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score();
    }
@@ -1141,14 +1141,14 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CDependencyParse output ; 
+   static CDependencyParse outout ; 
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-   work( true , sentence , &output , correct , 1 , 0 ) ; 
+   work( true , sentence , &outout , correct , 1 , 0 ) ; 
 
 };
 

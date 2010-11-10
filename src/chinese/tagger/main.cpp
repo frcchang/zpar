@@ -27,7 +27,7 @@ using namespace chinese;
  *---------------------------------------------------------------*/
 
 void recordSegmentation(const CStringVector *raw, const CStringVector* segmented, CBitArray &retval) {
-   vector<int> indice;
+   std::vector<int> indice;
    indice.clear(); 
    for (int i=0; i<raw->size(); ++i) {
       for (int j=0; j<raw->at(i).size(); ++j)
@@ -49,26 +49,26 @@ void recordSegmentation(const CStringVector *raw, const CStringVector* segmented
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, const unsigned long nBest, const unsigned long nMaxSentSize, const bool bSegmented, bool bScores) {
-   cout << "Tagging started" << endl;
+void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, const unsigned long nBest, const unsigned long nMaxSentSize, const bool bSegmented, bool bScores) {
+   std::cout << "Tagging started" << std::endl;
    int time_start = clock();
    CTagger tagger(sFeatureFile, false, nMaxSentSize, "", false);
    CSentenceReader input_reader(sInputFile);
-   CSentenceWriter output_writer(sOutputFile);
-   ofstream *score_writer;
+   CSentenceWriter outout_writer(sOutputFile);
+   std::ofstream *score_writer;
    CStringVector *input_sent = new CStringVector;
-   CTwoStringVector *output_sent; 
-   tagger::SCORE_TYPE *output_scores;
+   CTwoStringVector *outout_sent; 
+   tagger::SCORE_TYPE *outout_scores;
 
    int nCount=0;
    
-   output_sent = new CTwoStringVector[nBest];
+   outout_sent = new CTwoStringVector[nBest];
    if (bScores) {
-      output_scores = new tagger::SCORE_TYPE[nBest];
-      score_writer = new ofstream(string(sOutputFile+".scores").c_str());
+      outout_scores = new tagger::SCORE_TYPE[nBest];
+      score_writer = new std::ofstream(std::string(sOutputFile+".scores").c_str());
    }
    else
-      output_scores = NULL;
+      outout_scores = NULL;
 
    CBitArray prunes(tagger::MAX_SENTENCE_SIZE);
    CStringVector *unsegmented_sent;
@@ -87,39 +87,39 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       TRACE("Sentence " << nCount);
       ++ nCount;
       //
-      // Find decoder output
+      // Find decoder outout
       //
       if (bSegmented) {
          DesegmentSentence(input_sent, unsegmented_sent);
          recordSegmentation( unsegmented_sent, input_sent, prunes );
          // check sentence size
          if ( unsegmented_sent->size() >= tagger::MAX_SENTENCE_SIZE ) {
-            cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << endl;
+            std::cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << std::endl;
             for (i=0; i<nBest; ++i) {
-               output_sent[i].clear();
-               if (bScores) output_scores[i]=0;
+               outout_sent[i].clear();
+               if (bScores) outout_scores[i]=0;
             }
          }
          else
-            tagger.tag(unsegmented_sent, output_sent, output_scores, nBest, &prunes);
+            tagger.tag(unsegmented_sent, outout_sent, outout_scores, nBest, &prunes);
       }
       else {
          if ( input_sent->size() >= tagger::MAX_SENTENCE_SIZE ) {
-            cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << endl;
+            std::cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << std::endl;
             for (i=0; i<nBest; ++i) {
-               output_sent[i].clear();
-               if (bScores) output_scores[i]=0;
+               outout_sent[i].clear();
+               if (bScores) outout_scores[i]=0;
             }
          }
          else
-            tagger.tag(input_sent, output_sent, output_scores, nBest);
+            tagger.tag(input_sent, outout_sent, outout_scores, nBest);
       }
       //
       // Ouptut sent
       //
       for (i=0; i<nBest; ++i) {
-         output_writer.writeSentence(output_sent+i); 
-         if (bScores) (*score_writer)<<output_scores[i]<<endl;
+         outout_writer.writeSentence(outout_sent+i); 
+         if (bScores) (*score_writer)<<outout_scores[i]<<std::endl;
       }
       if (bSegmented)
          bReadSuccessful = input_reader.readSegmentedSentence(input_sent);
@@ -127,15 +127,15 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
          bReadSuccessful = input_reader.readRawSentence(input_sent, true, false);
    }
    delete input_sent;
-   delete [] output_sent;
+   delete [] outout_sent;
    if (bScores) {
-      delete [] output_scores;
+      delete [] outout_scores;
       score_writer->close(); delete score_writer; // remove file
    }
 
    if (bSegmented) delete unsegmented_sent;
 
-   cout << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   std::cout << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -149,27 +149,27 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       std::stringstream out; out << tagger::MAX_SENTENCE_SIZE; 
-cout << out.str() << endl;
+//std::cout << out.str() << std::endl;
       configurations.defineConfiguration("m", "M", "maximum sentence size", out.str());
-      configurations.defineConfiguration("n", "N", "N best list output", "1");
-      configurations.defineConfiguration("s", "", "output scores", "");
+      configurations.defineConfiguration("n", "N", "N best list outout", "1");
+      configurations.defineConfiguration("s", "", "outout scores", "");
 
       if (options.args.size() < 2 || options.args.size() > 4) {
-         cout << "\nUsage: " << argv[0] << " feature_file [input_file [output_file]]" << endl;
-         cout << configurations.message() << endl;
+         std::cout << "\nUsage: " << argv[0] << " feature_file [input_file [outout_file]]" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
-      string warning = configurations.loadConfigurations(options.opts);
+      std::string warning = configurations.loadConfigurations(options.opts);
       if (!warning.empty()) {
-         cout << "Warning: " << warning << endl;
+         std::cout << "Warning: " << warning << std::endl;
       }
    
       unsigned long nBest, nMaxSentSize;
       if (!fromString(nMaxSentSize, configurations.getConfiguration("m"))) {
-         cerr<<"Error: the size of largest sentence is not integer." << endl; return 1;
+         std::cerr<<"Error: the size of largest sentence is not integer." << std::endl; return 1;
       }  
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
-         cerr<<"Error: the number of N best is not integer." << endl; return 1;
+         std::cerr<<"Error: the number of N best is not integer." << std::endl; return 1;
       }  
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
 #ifdef SEGMENTED
@@ -178,10 +178,10 @@ cout << out.str() << endl;
       bool bSegmented = false;
 #endif
    
-      string sInputFile = options.args.size() > 2 ? options.args[2] : "";
-      string sToFile = options.args.size() > 3 ? options.args[3] : "";
+      std::string sInputFile = options.args.size() > 2 ? options.args[2] : "";
+      std::string sToFile = options.args.size() > 3 ? options.args[3] : "";
       process(sInputFile, sToFile, options.args[1], nBest, nMaxSentSize, bSegmented, bScores);
       return 0;
-   } catch(const string&e) {cerr<<"Error: "<<e<<endl;return 1;}
+   } catch(const std::string&e) {std::cerr<<"Error: "<<e<<std::endl;return 1;}
 }
 

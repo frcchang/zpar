@@ -23,36 +23,36 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const string &sInputFile, const string &sOutputFile, const string &sFeatureFile, const char cInputFormat, int nBest, const bool bScores, const bool bBinary) {
+void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, const char cInputFormat, int nBest, const bool bScores, const bool bBinary) {
 
-   cout << "Parsing started" << endl;
+   std::cout << "Parsing started" << std::endl;
 
    int time_start = clock();
 
    CConParser parser(sFeatureFile, false) ;
    CSentenceReader *input_reader=0;
-   ifstream *is=0;
+   std::ifstream *is=0;
    if (cInputFormat=='c')
-      is = new ifstream(sInputFile.c_str());
+      is = new std::ifstream(sInputFile.c_str());
    else
       input_reader = new CSentenceReader(sInputFile);
-   ofstream os(sOutputFile.c_str());
-   ofstream *os_scores=0;
+   std::ofstream os(sOutputFile.c_str());
+   std::ofstream *os_scores=0;
    conparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
    static CTwoStringVector raw_input;
    static CSentenceMultiCon<CConstituent> con_input;
-   CSentenceParsed *output_sent; 
+   CSentenceParsed *outout_sent; 
 
    int nCount=0;
    bool bReadSuccessful;
 
    if (bScores) {
       scores = new conparser::SCORE_TYPE[nBest];
-      os_scores = new ofstream(string(sOutputFile+".scores").c_str());
+      os_scores = new std::ofstream(std::string(sOutputFile+".scores").c_str());
    }
 
-   output_sent = new CSentenceParsed[nBest];
+   outout_sent = new CSentenceParsed[nBest];
  
    // Read the next example
    if (cInputFormat=='c')
@@ -61,25 +61,25 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
       bReadSuccessful = input_reader->readTaggedSentence(&raw_input, false, TAG_SEPARATOR);
    while( bReadSuccessful ) {
 
-      cout << "Sentence " << nCount << "...";
+      std::cout << "Sentence " << nCount << "...";
       ++ nCount;
 
-      // Find decoder output
+      // Find decoder outout
       if (cInputFormat=='c')
-         parser.parse( con_input , output_sent , nBest , scores ) ;
+         parser.parse( con_input , outout_sent , nBest , scores ) ;
       else
-         parser.parse( raw_input , output_sent , nBest , scores ) ;
+         parser.parse( raw_input , outout_sent , nBest , scores ) ;
       
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
          if (bBinary)
-            os << output_sent[i] ;
+            os << outout_sent[i] ;
          else
-            os << output_sent[i].str_unbinarized() << endl;
-         if (bScores) *os_scores << scores[i] << endl;
+            os << outout_sent[i].str_unbinarized() << std::endl;
+         if (bScores) *os_scores << scores[i] << std::endl;
       }
 
-      cout << "done. " << endl; 
+      std::cout << "done. " << std::endl; 
       
       // Read the next example
       if (cInputFormat=='c')
@@ -88,7 +88,7 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
          bReadSuccessful = input_reader->readTaggedSentence(&raw_input, false, TAG_SEPARATOR);
    }
 
-   delete [] output_sent ;
+   delete [] outout_sent ;
    if (input_reader) delete input_reader;
    if (is) {is->close(); delete is;}
    os.close();
@@ -99,7 +99,7 @@ void process(const string &sInputFile, const string &sOutputFile, const string &
       delete []scores;
    }
 
-   cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -113,20 +113,20 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("i", "r/c", "input format: r - pos-tagged sentence; c - pos-tagged and a lit of constituents for each word", "r");
-      configurations.defineConfiguration("b", "", "output binarized parse trees", "");
-      configurations.defineConfiguration("n", "N", "N best list output", "1");
-      configurations.defineConfiguration("s", "", "output scores to output_file.scores", "");
+      configurations.defineConfiguration("b", "", "outout binarized parse trees", "");
+      configurations.defineConfiguration("n", "N", "N best list outout", "1");
+      configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
       // check arguments
       if (options.args.size() != 4) {
-         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
-         cout << configurations.message() << endl;
+         std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
       configurations.loadConfigurations(options.opts);
    
       unsigned long nBest = 1;
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
-         cout << "The N best specification must be an integer." << endl;
+         std::cout << "The N best specification must be an integer." << std::endl;
          return 1;
       }
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
@@ -134,8 +134,8 @@ int main(int argc, char* argv[]) {
       char cInputFormat = configurations.getConfiguration("i") == "c" ? 'c' : 'r';
       process(argv[1], argv[2], argv[3], cInputFormat, nBest, bScores, bBinary);
    } 
-   catch (const string &e) {
-      cerr << "Error: " << e << endl;
+   catch (const std::string &e) {
+      std::cerr << "Error: " << e << std::endl;
       exit(1);
    }
 

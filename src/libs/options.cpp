@@ -11,11 +11,11 @@
 
 #include "options.h"
 
-COptions::COptions(int argc, char* args[], const string& char_options, const vector<string>& str_options) {
+COptions::COptions(int argc, char* args[], const std::string& char_options, const std::vector<std::string>& str_options) {
    for ( unsigned long i=0; i<argc; ++i ) {
-      string arg( args[i] );
-      string name;
-      string value;
+      std::string arg( args[i] );
+      std::string name;
+      std::string value;
       if ( arg[0] == '-' ) {
          if ( arg.size() == 1 ) {
             valid = false;
@@ -35,7 +35,7 @@ COptions::COptions(int argc, char* args[], const string& char_options, const vec
             name = arg[1];
             value = arg.substr(2);
          }
-         opts.push_back(make_pair(name, value));
+         opts.push_back(std::make_pair(name, value));
       }
       else {
          (*this).args.push_back(arg);
@@ -44,7 +44,7 @@ COptions::COptions(int argc, char* args[], const string& char_options, const vec
    valid = true;
 }
       
-void CConfigurations::defineConfiguration(const string &name, const string &argument, const string &type, const string &message) {
+void CConfigurations::defineConfiguration(const std::string &name, const std::string &argument, const std::string &type, const std::string &message) {
    // check for duplication
    for (int i=0; i<configurations.size(); ++i) {
       if (configurations[i].name == name)
@@ -57,8 +57,8 @@ void CConfigurations::defineConfiguration(const string &name, const string &argu
    configurations.push_back(CCon(name, argument, type, message));
 }
 
-string CConfigurations::loadConfigurations(const vector< pair< string, string > > &options) {
-   vector< string > ignored;
+std::string CConfigurations::loadConfigurations(const std::vector< std::pair< std::string, std::string > > &options) {
+   std::vector< std::string > ignored;
    bool bFound;
    // insert define
    for (int i=0; i<options.size(); ++i) {
@@ -79,7 +79,7 @@ string CConfigurations::loadConfigurations(const vector< pair< string, string > 
       }
    }
    // report 
-   ostringstream os;
+   std::ostringstream os;
    if (ignored.size()) {
       os << "The following options are ignored: ";
       for (int i=0; i<ignored.size(); ++i) 
@@ -88,7 +88,7 @@ string CConfigurations::loadConfigurations(const vector< pair< string, string > 
    return os.str();
 }
 
-string CConfigurations::getConfiguration(const string &name) {
+std::string CConfigurations::getConfiguration(const std::string &name) {
    for (int i=0; i<configurations.size(); ++i) {
       if (configurations[i].name == name)
          return configurations[i].value;
@@ -96,9 +96,9 @@ string CConfigurations::getConfiguration(const string &name) {
    THROW("configuration required but not defined: " << name);
 }
 
-string CConfigurations::message() {
-   ostringstream os;
-   os << "Options: " << endl;
+std::string CConfigurations::message() {
+   std::ostringstream os;
+   os << "Options: " << std::endl;
    for (int i=0; i<configurations.size(); ++i) {
       os << " ";
       if (configurations[i].name.size()==1) {
@@ -108,7 +108,7 @@ string CConfigurations::message() {
          assert(configurations[i].name.size() > 1);
          os << "--" << configurations[i].name << " " << configurations[i].argument;
       }
-      os << ": " << configurations[i].message << ". Default: " << (!configurations[i].value.empty()?configurations[i].value:"unset")<<";" << endl;
+      os << ": " << configurations[i].message << ". Default: " << (!configurations[i].value.empty()?configurations[i].value:"unset")<<";" << std::endl;
    }
    return os.str();
 }

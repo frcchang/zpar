@@ -30,7 +30,7 @@ class CAgendaChartException {};
 template <typename CNode>
 class CAgendaChart {
    private:
-      vector< CAgendaSimple<CNode>* > m_vNodes;
+      std::vector< CAgendaSimple<CNode>* > m_vNodes;
       unsigned long int m_nSize;
       const unsigned long int m_nAgendaSize;
    public:

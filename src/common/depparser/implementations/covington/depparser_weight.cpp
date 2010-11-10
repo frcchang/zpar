@@ -60,7 +60,7 @@ using namespace TARGET_LANGUAGE::depparser;
 
 void CWeight::loadScores() {
    TRACE("Loading scores...");
-   ifstream file ; 
+   std::ifstream file ; 
    file.open(m_sRecordPath.c_str()) ;
 
    iterate_templates(file >>,;);
@@ -80,7 +80,7 @@ void CWeight::loadScores() {
 
 void CWeight::saveScores() {
    TRACE("saving scores.");
-   ofstream file ;
+   std::ofstream file ;
    file.open(m_sRecordPath.c_str()) ;
 
    iterate_templates(file<<,;)
@@ -96,7 +96,7 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(int round) {
-   TRACE("adding total feature vector.");
+   TRACE("adding total feature std::vector.");
    iterate_templates(,.computeAverage(round);) ;
    
    TRACE("Done");

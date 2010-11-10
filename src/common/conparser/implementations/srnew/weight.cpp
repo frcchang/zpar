@@ -240,25 +240,25 @@ const CScore<SCORE_TYPE> g_zeroScore;
  *
  *--------------------------------------------------------------*/
 
-void TARGET_LANGUAGE::conparser::CWeight::loadScores(ifstream &file) {
+void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
    clock_t time_start = clock();
-   cout<<"Loading scores..."; cout.flush();
-//   ifstream file ; 
+   std::cout<<"Loading scores..."; std::cout.flush();
+//   std::ifstream file ; 
 //   file.open(m_sRecordPath.c_str()) ;
 
    if (!file.is_open()) {
-      cout << " empty." << endl; return;
+      std::cout << " empty." << std::endl; return;
    }
    m_bEmpty = false;
 
    iterate_templates(file >>,;);
 
-   static string s;
+   static std::string s;
    getline(file, s);
    ASSERT(s=="Word frequency", "Word frequency not found from model.");
    file >> m_mapWordFrequency;
 
-   static istringstream iss;
+   static std::istringstream iss;
    getline(file, s);
    ASSERT(s=="Maximum frequency", "Maximum frequency not found from model.");
    getline(file, s);
@@ -266,7 +266,7 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(ifstream &file) {
    iss >> m_nMaxWordFrequency;
 
 //   file.close() ;
-   cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
+   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -278,20 +278,20 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(ifstream &file) {
  *
  *--------------------------------------------------------------*/
 
-void TARGET_LANGUAGE::conparser::CWeight::saveScores(ofstream &file) {
-   cout<<"Saving scores..."; cout.flush();
-//   ofstream file ;
+void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
+   std::cout<<"Saving scores..."; std::cout.flush();
+//   std::ofstream file ;
 //   file.open(m_sRecordPath.c_str()) ;
 
    iterate_templates(file<<,;)
 
-   file << "Word frequency" << endl; 
+   file << "Word frequency" << std::endl; 
    file << m_mapWordFrequency;
-   file << "Maximum frequency" << endl; 
-   file << m_nMaxWordFrequency << endl;
+   file << "Maximum frequency" << std::endl; 
+   file << m_nMaxWordFrequency << std::endl;
 
 //   file.close();
-   cout<<" done."<<endl;
+   std::cout<<" done."<<std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -301,10 +301,10 @@ void TARGET_LANGUAGE::conparser::CWeight::saveScores(ofstream &file) {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::conparser::CWeight::computeAverageFeatureWeights(int round) {
-   cout<<"Computing averaged (total) feature vector..."; cout.flush();
+   std::cout<<"Computing averaged (total) feature std::vector..."; std::cout.flush();
    
    iterate_templates(,.computeAverage(round);) ;
    
-   cout<<"done."<<endl;
+   std::cout<<"done."<<std::endl;
 }
 

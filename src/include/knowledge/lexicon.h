@@ -24,13 +24,13 @@ public:
 };
 
 inline
-istream & operator >> (istream &is, CLexiconSet &dict) {
+std::istream & operator >> (std::istream &is, CLexiconSet &dict) {
    if (!is) return is;
-   string s ;
-   string ln;
+   std::string s ;
+   std::string ln;
    getline(is, ln);
    while (is && !(ln.empty())) {
-      istringstream iss(ln);
+      std::istringstream iss(ln);
       iss >> s; 
       dict.add(CWord(s));
       getline(is, ln);
@@ -39,13 +39,13 @@ istream & operator >> (istream &is, CLexiconSet &dict) {
 }
 
 inline
-ostream & operator << (ostream &os, CLexiconSet &dict) {
+std::ostream & operator << (std::ostream &os, CLexiconSet &dict) {
    CLexiconSet::iterator it = dict.begin();
    while (it != dict.end()) {
-      os << it.first().str() << endl;
+      os << it.first().str() << std::endl;
       ++it;
    }
-   os << endl;
+   os << std::endl;
    return os;
 }
 

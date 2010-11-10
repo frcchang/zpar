@@ -25,7 +25,7 @@
 template <typename CNode>
 class CChart {
    private:
-      vector<CNode*> m_vNodes;
+      std::vector<CNode*> m_vNodes;
       int m_nSize;
    public:
       // constructor and destructor method
@@ -33,7 +33,7 @@ class CChart {
       ~CChart() { for(int i=0; i<m_vNodes.size(); ++i) delete m_vNodes[i]; }
       // public methods for manipulation
       void clear() { m_nSize = 0; }
-      void updateItem(int index, const CNode &item) { if ( index < m_nSize ) { if ( item > *(m_vNodes[index]) ) m_vNodes[index]->copy(&item); else return; } else { if (index==m_nSize) { if (index>=m_vNodes.size()) m_vNodes.push_back(new CNode()); ++m_nSize; m_vNodes[index]->copy(&item); } else throw("Index out of range in addItem method call. You can only add item to existing chart or append to the end."); } }//
+      void updateItem(int index, const CNode &item) { if ( index < m_nSize ) { if ( item > *(m_vNodes[index]) ) m_vNodes[index]->copy(&item); else return; } else { if (index==m_nSize) { if (index>=m_vNodes.size()) m_vNodes.push_back(new CNode()); ++m_nSize; m_vNodes[index]->copy(&item); } else throw("Index std::cout of range in addItem method call. You can only add item to existing chart or append to the end."); } }//
       const CNode * operator [] (int index) { return m_vNodes[index]; }
 };
 

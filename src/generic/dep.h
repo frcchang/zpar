@@ -7,14 +7,14 @@ namespace generic {
 }
 
 #ifdef LABELED
-inline istream & operator >> (istream &is, generic::CDependencyLabel &label) {
-   string s;
+inline std::istream & operator >> (std::istream &is, generic::CDependencyLabel &label) {
+   std::string s;
    is >> s;
    label.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const generic::CDependencyLabel &label) {
+inline std::ostream & operator << (std::ostream &os, const generic::CDependencyLabel &label) {
    os << label.str() ;
    return os;
 }

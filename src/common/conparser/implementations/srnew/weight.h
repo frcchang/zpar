@@ -26,38 +26,38 @@ namespace conparser {
 //
 typedef CScoreMapType<CWord, SCORE_TYPE> CWordMap;
 typedef CScoreMapType<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
-typedef CScoreMapType<pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
+typedef CScoreMapType<std::pair<CWord, unsigned long>,  SCORE_TYPE> CWordIntMap;
 typedef CScoreMapType<CTuple3<CWord, unsigned long, CAction>,  SCORE_TYPE> CWordIntActionMap;
-typedef CScoreMapType<pair<CWord, CAction>,  SCORE_TYPE> CWordActionMap;
-typedef CScoreMapType<pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE> CTaggedWordActionMap;
+typedef CScoreMapType<std::pair<CWord, CAction>,  SCORE_TYPE> CWordActionMap;
+typedef CScoreMapType<std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE> CTaggedWordActionMap;
 typedef CScoreMapType<unsigned long, SCORE_TYPE> CIntMap;
-typedef CScoreMapType<pair<unsigned long, CAction>, SCORE_TYPE> CIntActionMap;
-typedef CScoreMapType<pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
+typedef CScoreMapType<std::pair<unsigned long, CAction>, SCORE_TYPE> CIntActionMap;
+typedef CScoreMapType<std::pair<unsigned long, unsigned long>, SCORE_TYPE> CTwoIntMap;
 typedef CScoreMapType<CTwoWords, SCORE_TYPE> CTwoWordsMap;
-typedef CScoreMapType<pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
-typedef CScoreMapType<pair<CTwoWords, CActionType>, SCORE_TYPE> CTwoWordsActionTypeMap;
+typedef CScoreMapType<std::pair<CTwoWords, CAction>, SCORE_TYPE> CTwoWordsActionMap;
+typedef CScoreMapType<std::pair<CTwoWords, CActionType>, SCORE_TYPE> CTwoWordsActionTypeMap;
 typedef CScoreMapType<CTuple3<CTwoWords, CTag, CAction>, SCORE_TYPE> CTwoWordsTagActionMap;
 typedef CScoreMapType<CTuple3<CTwoWords, CTag, CActionType>, SCORE_TYPE> CTwoWordsTagActionTypeMap;
 typedef CScoreMapType<CTuple3<CTwoWords, CCFGSet, CAction>, SCORE_TYPE>
 CTwoWordsCFGSetActionMap;
 typedef CScoreMapType<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
-typedef CScoreMapType<pair<CTwoTaggedWords, CAction>, SCORE_TYPE> CTwoTaggedWordsActionMap;
-typedef CScoreMapType<pair<CTwoTaggedWords, CActionType>, SCORE_TYPE> CTwoTaggedWordsActionTypeMap;
+typedef CScoreMapType<std::pair<CTwoTaggedWords, CAction>, SCORE_TYPE> CTwoTaggedWordsActionMap;
+typedef CScoreMapType<std::pair<CTwoTaggedWords, CActionType>, SCORE_TYPE> CTwoTaggedWordsActionTypeMap;
 typedef CScoreMapType<CCFGSet, SCORE_TYPE> CCFGSetMap;
-typedef CScoreMapType<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
-typedef CScoreMapType<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
+typedef CScoreMapType<std::pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
+typedef CScoreMapType<std::pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
 typedef CScoreMapType<CTuple3<CWord, CCFGSet, CAction>, SCORE_TYPE> CWordCFGSetActionMap;
 typedef CScoreMapType<CTuple3<CWord, CCFGSet, CActionType>, SCORE_TYPE> CWordCFGSetActionTypeMap;
-typedef CScoreMapType<pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
-typedef CScoreMapType<pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
-typedef CScoreMapType<pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
-typedef CScoreMapType<pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
-typedef CScoreMapType<pair<CCFGSet, CActionType>, SCORE_TYPE> CCFGSetActionTypeMap;
+typedef CScoreMapType<std::pair<CWord, CCFGSet>, SCORE_TYPE> CWordCFGRuleMap;
+typedef CScoreMapType<std::pair<CTwoWords, CCFGSet>, SCORE_TYPE> CTwoWordsCFGRuleMap;
+typedef CScoreMapType<std::pair<CCFGSet, unsigned long>, SCORE_TYPE> CCFGSetIntMap;
+typedef CScoreMapType<std::pair<CCFGSet, CAction>, SCORE_TYPE> CCFGSetActionMap;
+typedef CScoreMapType<std::pair<CCFGSet, CActionType>, SCORE_TYPE> CCFGSetActionTypeMap;
 typedef CScoreMapType<CTuple3<CWord, CConstituent, CAction>, SCORE_TYPE>
 CWordConstituentActionMap;
 typedef CScoreMapType<CTuple3<CTag, CConstituent, CAction>, SCORE_TYPE> CTagConstituentActionMap;
 typedef CScoreMapType<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
-typedef CScoreMapType<pair<CConstituent, CAction>, SCORE_TYPE> CConstituentActionMap;
+typedef CScoreMapType<std::pair<CConstituent, CAction>, SCORE_TYPE> CConstituentActionMap;
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
@@ -571,8 +571,8 @@ TABLE_SIZE),
 
 
    // MEHTODS
-   virtual void loadScores(ifstream &is);
-   virtual void saveScores(ofstream &os);
+   virtual void loadScores(std::ifstream &is);
+   virtual void saveScores(std::ofstream &os);
    void computeAverageFeatureWeights(int round);
    SCORE_TYPE dotProduct(const CWeight &w);
  

@@ -40,7 +40,7 @@ bool IsValidDependencyTree(const CLabeledOrUnlabeledDependencyTree &tree) {
          nLoop &= (1<<j); // mark to avoid duplicate checking for head
          j = tree.at(i).head;  // move to head
          if (j==DEPENDENCY_LINK_NO_HEAD) break; // head found
-         if (j>=static_cast<int>(tree.size())) return false; // out of the boundary of sentence
+         if (j>=static_cast<int>(tree.size())) return false; // std::cout of the boundary of sentence
          if (j==i) return false; // loop found
       }
    }
@@ -58,8 +58,8 @@ inline
 bool IsProjectiveDependencyTree(const CLabeledOrUnlabeledDependencyTree &tree) {
    if (!IsValidDependencyTree(tree)) return false;
    for ( int i=0; i<static_cast<int>(tree.size()); ++i ) {
-      int mini = min(i, tree.at(i).head);
-      int maxi = max(i, tree.at(i).head);
+      int mini = std::min(i, tree.at(i).head);
+      int maxi = std::max(i, tree.at(i).head);
       for ( int j=mini+1; j<maxi; ++j ) 
          if (tree.at(j).head<mini||tree.at(j).head>maxi) return false;
    }
@@ -99,7 +99,7 @@ void UnparseSentence(const CLabeledOrUnlabeledDependencyTree *parsed, CTwoString
       return;
    typename CLabeledOrUnlabeledDependencyTree::const_iterator it;
    for (it=parsed->begin(); it!=parsed->end(); ++it)
-      retval->push_back(make_pair(it->word, it->tag));
+      retval->push_back(std::make_pair(it->word, it->tag));
 }
 
 /*---------------------------------------------------------------

@@ -24,8 +24,8 @@ template <typename K, typename SCORE_TYPE>
 class CScoreMapNoNegFeatures : public CScoreMap< K , SCORE_TYPE > {
 
 public:
-   CScoreMapNoNegFeatures(string input_name) : CScoreMap< K, SCORE_TYPE >(input_name) {}
-   CScoreMapNoNegFeatures(string input_name, int TABLE_SIZE) : CScoreMap< K, SCORE_TYPE >(input_name, TABLE_SIZE) {}
+   CScoreMapNoNegFeatures(std::string input_name) : CScoreMap< K, SCORE_TYPE >(input_name) {}
+   CScoreMapNoNegFeatures(std::string input_name, int TABLE_SIZE) : CScoreMap< K, SCORE_TYPE >(input_name, TABLE_SIZE) {}
 
 public:
    inline void addPositiveFeature( const K &key ) {
@@ -53,9 +53,9 @@ public:
 
 template<typename K, typename SCORE_TYPE>
 inline
-istream & operator >> (istream &is, CScoreMapNoNegFeatures<K, SCORE_TYPE> &score_map) {
+std::istream & operator >> (std::istream &is, CScoreMapNoNegFeatures<K, SCORE_TYPE> &score_map) {
    if (!is) return is ;
-   string s ;
+   std::string s ;
    getline(is, s) ;
    assert( s==score_map.name );
    is >> static_cast< CHashMap< K, CScore<SCORE_TYPE> > &>(score_map) ;
@@ -64,16 +64,16 @@ istream & operator >> (istream &is, CScoreMapNoNegFeatures<K, SCORE_TYPE> &score
 
 template<typename K, typename SCORE_TYPE>
 inline
-ostream & operator << (ostream &os, CScoreMapNoNegFeatures<K, SCORE_TYPE> &score_map) {
+std::ostream & operator << (std::ostream &os, CScoreMapNoNegFeatures<K, SCORE_TYPE> &score_map) {
    assert(os);
-   os << score_map.name << endl ;
+   os << score_map.name << std::endl ;
 
    typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
-      os << it.first() << "\t:\t" << it.second() << endl ;
+      os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;
    }
-   os << endl ;
+   os << std::endl ;
    return os ;
 }
 

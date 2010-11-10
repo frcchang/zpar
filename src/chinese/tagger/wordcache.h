@@ -16,7 +16,7 @@
  *
  * CWordCache - the definition .
  *
- * Given an input sentence, m_lWordCache caches the string words
+ * Given an input sentence, m_lWordCache caches the std::string words
  * in certain positions. 
  * For example: suppose that a sentence is
  *              A B C D E F
@@ -44,8 +44,8 @@ public:
 
    // find a word from the cache
    const unsigned& find(const int &start, const int &end, const CStringVector* sentence) {
-      static string temp;
-      if (m_lWordCache[start*m_nMaxSentenceSize+end] == ~0 ) { // empty string
+      static std::string temp;
+      if (m_lWordCache[start*m_nMaxSentenceSize+end] == ~0 ) { // empty std::string
          temp.clear();
          for (int i=start; i<=end; ++i) // append the corresponding characters
             temp += sentence->at(i);
@@ -56,9 +56,9 @@ public:
 
    // find a word from the cache, if it is unknown then add into dictionary (tokenized word)
    const unsigned& replace(const int &start, const int &end, const CStringVector* sentence) {
-      static string temp;
+      static std::string temp;
       if (m_lWordCache[start*m_nMaxSentenceSize+end] == ~0 ||
-          m_lWordCache[start*m_nMaxSentenceSize+end] == CWord::UNKNOWN ) { // empty string
+          m_lWordCache[start*m_nMaxSentenceSize+end] == CWord::UNKNOWN ) { // empty std::string
          temp.clear();
          for (int i=start; i<=end; ++i) // append the corresponding characters
             temp += sentence->at(i);

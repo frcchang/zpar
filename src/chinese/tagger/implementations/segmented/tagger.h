@@ -28,13 +28,13 @@ protected:
    int m_nScoreIndex;
 
 public:
-   CTagger(string sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, string sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , m_WordCache(nMaxSentSize) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) { 
+   CTagger(std::string sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, std::string sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , m_WordCache(nMaxSentSize) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) { 
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
    virtual ~CTagger() {}
    
 protected:
-   void loadKnowledge(const string &sKnowledgePath) {
+   void loadKnowledge(const std::string &sKnowledgePath) {
       THROW("The segmented pos tagger does not support knowledges.");
    }
 
@@ -47,7 +47,7 @@ public:
    tagger::SCORE_TYPE getLocalScore(const CStringVector*, tagger::CStateItem*, unsigned long);
 
    void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round);
-   void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* output, unsigned long index, unsigned long round);
+   void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* outout, unsigned long index, unsigned long round);
 
    void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);

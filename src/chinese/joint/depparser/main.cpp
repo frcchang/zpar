@@ -22,26 +22,26 @@ using namespace chinese;
  * 
  *---------------------------------------------------------------*/
 
-void process(string sInputFile, string sOutputFile, string sFeatureDB) {
+void process(std::string sInputFile, std::string sOutputFile, std::string sFeatureDB) {
    TRACE("Decoding started");
    int time_start = clock();
    CReranker reranker(sFeatureDB, false);
-   ifstream input_file(sInputFile.c_str());
-   ofstream output_file(sOutputFile.c_str());
-   ifstream tagging_prior_file(string(sInputFile+".scores.tagging").c_str());
-   ifstream parsing_prior_file(string(sInputFile+".scores.parsing").c_str());
+   std::ifstream input_file(sInputFile.c_str());
+   std::ofstream outout_file(sOutputFile.c_str());
+   std::ifstream tagging_prior_file(std::string(sInputFile+".scores.tagging").c_str());
+   std::ifstream parsing_prior_file(std::string(sInputFile+".scores.parsing").c_str());
 
    int nTagAll, nParseAll;
    int nTagNeeded, nParseNeeded;
 
    CSentenceParsed *nbest;
-   CSentenceParsed output;
+   CSentenceParsed outout;
 
    double *prior_scores;
    
    input_file >> nTagAll >> nParseAll;
    input_file >> nTagNeeded >> nParseNeeded; 
-   string line; getline(input_file, line);
+   std::string line; getline(input_file, line);
    TRACE("Reranking "<<nTagNeeded<<"/"<<nParseNeeded<<" from "<<nTagAll<<"/"<<nParseAll);
 
    int nCount;
@@ -55,13 +55,13 @@ void process(string sInputFile, string sOutputFile, string sFeatureDB) {
 
    nCount = 0;
    while( input_file ) {
-      cout << "Sentence " << ++nCount << endl;
+      std::cout << "Sentence " << ++nCount << std::endl;
       int index=0;
       for (int i=0; i<nTagAll; ++i) {
          for (int j=0; j<nParseAll; j++) {
             input_file >> tmp_sent;
             tagging_prior_file >> tmp_score[0];
-//cout << "re" << tmp_score[0] << endl;
+//std::cout << "re" << tmp_score[0] << std::endl;
             parsing_prior_file >> tmp_score[1];
             if (i<nTagNeeded && j<nParseNeeded) {
                nbest[index] = tmp_sent;
@@ -71,13 +71,13 @@ void process(string sInputFile, string sOutputFile, string sFeatureDB) {
             }
          }
       }
-      reranker.rerank(nbest, &output, nBest, prior_scores);
-      output_file << output;
+      reranker.rerank(nbest, &outout, nBest, prior_scores);
+      outout_file << outout;
    }
    delete[] nbest;
    delete[] prior_scores;
    input_file.close();
-   output_file.close();
+   outout_file.close();
    tagging_prior_file.close();
    parsing_prior_file.close();
    TRACE("Decoding has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC);
@@ -90,19 +90,19 @@ void process(string sInputFile, string sOutputFile, string sFeatureDB) {
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const string hint = " n_best_file output_file feature_file\n\n\
+   const std::string hint = " n_best_file outout_file feature_file\n\n\
 The N-best file must contain two header lines, the first specifying how\n\
-many tagging and parsing outputs are contained in the file, and the \n\
-second specifying how many tagging and parsing outputs are used in the \n\
+many tagging and parsing outouts are contained in the file, and the \n\
+second specifying how many tagging and parsing outouts are used in the \n\
 reranking system. \n\
 For example, the file might start with the heading\n\
 10 10\n\
 5 5\n\
-which means that there are 100 outputs per input, organised by 10 tag \n\
-outputs, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
+which means that there are 100 outouts per input, organised by 10 tag \n\
+outouts, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
 ";
    if (argc < 4) {
-      cout << "Usage: " << argv[0] << hint << endl;
+      std::cout << "Usage: " << argv[0] << hint << std::endl;
       return 1;
    }
 

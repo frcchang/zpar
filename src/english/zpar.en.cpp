@@ -31,43 +31,43 @@ using namespace english;
  *
  *==============================================================*/
 
-void tag(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
-   cout << "Tagging started" << endl;
+void tag(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
+   std::cout << "Tagging started" << std::endl;
    int time_start = clock();
-   string sTaggerFeatureFile = sFeaturePath + "/tagger";
+   std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
    CTagger *tagger;
    tagger = new CTagger(sTaggerFeatureFile, false);
 //   if (sKnowledgeBase.size())
 //      tagger.loadTagDictionary(sKnowledgeBase);
    CSentenceReader input_reader(sInputFile);
-   CSentenceWriter output_writer(sOutputFile);
+   CSentenceWriter outout_writer(sOutputFile);
    CStringVector *input_sent = new CStringVector;
-   CTwoStringVector *output_sent; 
+   CTwoStringVector *outout_sent; 
 
    int nCount=0;
    
    const unsigned nBest = 1;
-   output_sent = new CTwoStringVector[nBest];
+   outout_sent = new CTwoStringVector[nBest];
 
    while( input_reader.readSegmentedSentence(input_sent) ) {
       TRACE("Sentence " << nCount);
       ++ nCount;
       //
-      // Find decoder output
+      // Find decoder outout
       //
-      tagger->tag(input_sent, output_sent, nBest, NULL);
+      tagger->tag(input_sent, outout_sent, nBest, NULL);
       //
       // Ouptut sent
       //
       for (int i=0; i<nBest; ++i)
-         output_writer.writeSentence(output_sent+i, '/');
+         outout_writer.writeSentence(outout_sent+i, '/');
    }
    delete input_sent;
-   delete [] output_sent;
+   delete [] outout_sent;
 
    delete tagger;
 
-   cout << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   std::cout << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -76,24 +76,24 @@ void tag(const string sInputFile, const string sOutputFile, const string sFeatur
  *
  *==============================================================*/
 
-void parse(const string sInputFile, const string sOutputFile, const string sFeaturePath) {
-   cout << "Parsing started" << endl;
+void parse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
+   std::cout << "Parsing started" << std::endl;
    int time_start = clock();
-   ostream *outs; if (sOutputFile=="") outs=&cout; else outs = new ofstream(sOutputFile.c_str()); 
-   string sTaggerFeatureFile = sFeaturePath + "/tagger";
-   string sParserFeatureFile = sFeaturePath + "/conparser";
+   std::ostream *std::couts; if (sOutputFile=="") std::couts=&std::cout; else std::couts = new std::ofstream(sOutputFile.c_str()); 
+   std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
+   std::string sParserFeatureFile = sFeaturePath + "/conparser";
    if (!FileExists(sTaggerFeatureFile))
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/conparser");
-   cout << "[tagger] ";
+   std::cout << "[tagger] ";
    CTagger tagger(sTaggerFeatureFile, false);
-   cout << "[parser] ";
+   std::cout << "[parser] ";
    CConParser conparser(sParserFeatureFile, false);
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *tagged_sent = new CTwoStringVector; 
-   english::CCFGTree *output_sent = new english::CCFGTree; 
+   english::CCFGTree *outout_sent = new english::CCFGTree; 
 
    unsigned nCount=0;
    
@@ -107,16 +107,16 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
          input_sent->pop_back();
       }
       tagger.tag(input_sent, tagged_sent, 1, NULL);
-      conparser.parse(*tagged_sent, output_sent);
+      conparser.parse(*tagged_sent, outout_sent);
       // Ouptut sent
-      (*outs) << output_sent->str_unbinarized() << endl;
+      (*std::couts) << outout_sent->str_unbinarized() << std::endl;
    }
    delete input_sent;
    delete tagged_sent;
-   delete output_sent;
+   delete outout_sent;
 
-   if (sOutputFile!="") delete outs;
-   cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   if (sOutputFile!="") delete std::couts;
+   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -125,27 +125,27 @@ void parse(const string sInputFile, const string sOutputFile, const string sFeat
  *
  *==============================================================*/
 
-void depparse(const string sInputFile, const string sOutputFile, const string sFeaturePath, const bool bLabel) {
-   cout << "Parsing started" << endl;
+void depparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath, const bool bLabel) {
+   std::cout << "Parsing started" << std::endl;
    int time_start = clock();
    int time_one;
-   ostream *outs; if (sOutputFile=="") outs=&cout; else outs = new ofstream(sOutputFile.c_str()); 
-   string sTaggerFeatureFile = sFeaturePath + "/tagger";
-   string sParserFeatureFile = sFeaturePath + "/depparser";
-   string sLabelerFeatureFile = sFeaturePath + "/deplabeler";
+   std::ostream *std::couts; if (sOutputFile=="") std::couts=&std::cout; else std::couts = new std::ofstream(sOutputFile.c_str()); 
+   std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
+   std::string sParserFeatureFile = sFeaturePath + "/depparser";
+   std::string sLabelerFeatureFile = sFeaturePath + "/deplabeler";
    if (!FileExists(sTaggerFeatureFile))
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/depparser");
    if (bLabel && !FileExists(sLabelerFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/deplabeler");
-   cout << "[tagger] ";
+   std::cout << "[tagger] ";
    CTagger tagger(sTaggerFeatureFile, false);
-   cout << "[parser] ";
+   std::cout << "[parser] ";
    CDepParser depparser(sParserFeatureFile, false);
    CDepLabeler *deplabeler = 0;
    if (bLabel) {
-      cout << "[labeler] ";
+      std::cout << "[labeler] ";
       deplabeler = new CDepLabeler(sLabelerFeatureFile, false);
    }
    CSentenceReader input_reader(sInputFile);
@@ -174,13 +174,13 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
       if (bLabel) deplabeler->label(*parsed_sent, labeled_sent);
       // Ouptut sent
       if (bLabel) {
-         (*outs) << *labeled_sent;
+         (*std::couts) << *labeled_sent;
       }
       else {
         // unlabeled
-        (*outs) << *parsed_sent; 
+        (*std::couts) << *parsed_sent; 
       }
-      cout << "Sentence " << nCount << " processed in " << double(clock()-time_one)/CLOCKS_PER_SEC << " sec." << endl;
+      std::cout << "Sentence " << nCount << " processed in " << double(clock()-time_one)/CLOCKS_PER_SEC << " sec." << std::endl;
    }
    delete input_sent;
    delete tagged_sent;
@@ -190,8 +190,8 @@ void depparse(const string sInputFile, const string sOutputFile, const string sF
       delete deplabeler;
    }
 
-   if (sOutputFile!="") delete outs;
-   cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   if (sOutputFile!="") delete std::couts;
+   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -204,21 +204,21 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("o", "{t|d|u|c}", "output format; 't' pos-tagged format in sentences, 'u' refers to unlabeled dependency parse tree format, 'd' refers to dependency parse tree format, and 'c' refers to constituent parse tree format", "d");
+      configurations.defineConfiguration("o", "{t|d|u|c}", "outout format; 't' pos-tagged format in sentences, 'u' refers to unlabeled dependency parse tree format, 'd' refers to dependency parse tree format, and 'c' refers to constituent parse tree format", "d");
 
       if (options.args.size() < 2 || options.args.size() > 4) {
-         cout << "\nUsage: " << argv[0] << " feature_path [input_file [output_file]]" << endl;
-         cout << configurations.message() << endl;
+         std::cout << "\nUsage: " << argv[0] << " feature_path [input_file [outout_file]]" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
-      string warning = configurations.loadConfigurations(options.opts);
+      std::string warning = configurations.loadConfigurations(options.opts);
       if (!warning.empty()) {
-         cout << "Warning: " << warning << endl;
+         std::cout << "Warning: " << warning << std::endl;
       }
 
-      string sInputFile = options.args.size() > 2 ? options.args[2] : "";
-      string sToFile = options.args.size() > 3 ? options.args[3] : "";
-      string sOutFormat = configurations.getConfiguration("o");
+      std::string sInputFile = options.args.size() > 2 ? options.args[2] : "";
+      std::string sToFile = options.args.size() > 3 ? options.args[3] : "";
+      std::string sOutFormat = configurations.getConfiguration("o");
       if (sOutFormat == "t")
          tag(sInputFile, sToFile, options.args[1]);//
       else if (sOutFormat == "c" )
@@ -228,9 +228,9 @@ int main(int argc, char* argv[]) {
       else if (sOutFormat == "u" )
          depparse(sInputFile, sToFile, options.args[1], false);//
       return 0;
-   } catch(const string&e) {
-      cerr<<"Error: "<<e;
-      cerr<<endl;
+   } catch(const std::string&e) {
+      std::cerr<<"Error: "<<e;
+      std::cerr<<std::endl;
       return 1;
    }
 }

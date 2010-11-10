@@ -25,10 +25,10 @@
 
 class CWriter {
    protected:
-      ostream *m_oStream;
+      std::ostream *m_oStream;
    public:
-      CWriter(string sFileName="") { if (sFileName=="") m_oStream=&cout; else {m_oStream = new ofstream(sFileName.c_str());} };
-      virtual ~CWriter() { if (m_oStream != &cout) {((ofstream*)m_oStream)->close(); delete m_oStream;} };
+      CWriter(std::string sFileName="") { if (sFileName=="") m_oStream=&std::cout; else {m_oStream = new std::ofstream(sFileName.c_str());} };
+      virtual ~CWriter() { if (m_oStream != &std::cout) {((std::ofstream*)m_oStream)->close(); delete m_oStream;} };
 };
 
 /*===============================================================
@@ -39,9 +39,9 @@ class CWriter {
 
 class CSentenceWriter : public CWriter {
 public:
-   CSentenceWriter(string sFileName="") : CWriter(sFileName) {};
+   CSentenceWriter(std::string sFileName="") : CWriter(sFileName) {};
    void writeLine();
-   void writeSentence(const CStringVector * sentence, const string &separator=" ", const bool newline=true);
+   void writeSentence(const CStringVector * sentence, const std::string &separator=" ", const bool newline=true);
    void writeSentence(const CTwoStringVector * sentence, const char separator='_', const bool newline=true);
 };
 

@@ -13,7 +13,7 @@
 #define _PAIR_STREAM_UTILITIES_H 
 
 template<typename T1, typename T2>
-istream & operator >> (istream &is, pair<T1, T2> &p) {
+std::istream & operator >> (std::istream &is, std::pair<T1, T2> &p) {
    char c ;
    is >> p.first >> c >> p.second ;
    assert(c==',');
@@ -21,7 +21,7 @@ istream & operator >> (istream &is, pair<T1, T2> &p) {
 }
 
 template<typename T1, typename T2>
-ostream & operator << (ostream &os, const pair<T1, T2> &p) {
+std::ostream & operator << (std::ostream &os, const std::pair<T1, T2> &p) {
    os << p.first << " , " << p.second ;
    return os ;
 }

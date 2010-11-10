@@ -118,7 +118,7 @@ protected:
 
 
 template <class CClass1, class CClass2>
-istream & operator >> (istream &is, CTuple2<CClass1, CClass2> &tuple2) {
+std::istream & operator >> (std::istream &is, CTuple2<CClass1, CClass2> &tuple2) {
    char c;
    CClass1 object1; 
    CClass2 object2;
@@ -131,7 +131,7 @@ istream & operator >> (istream &is, CTuple2<CClass1, CClass2> &tuple2) {
 }
 
 template <class CClass1, class CClass2>
-ostream & operator << (ostream &os, const CTuple2<CClass1, CClass2> &tuple2) {
+std::ostream & operator << (std::ostream &os, const CTuple2<CClass1, CClass2> &tuple2) {
    os << *(tuple2.first()) << " , " << *(tuple2.second());
    return os ;
 }

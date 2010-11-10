@@ -19,8 +19,8 @@ unsigned long joinTwoTags(const CTag& tag1, const CTag& tag2) {
 };
 
 inline
-unsigned long stringToTags(const string& s) {
-   string sTemp="";
+unsigned long std::stringToTags(const std::string& s) {
+   std::string sTemp="";
    unsigned long nRetval = 0;
    for (int i=0; i<s.size(); ++i) {
       if (s[i]==' ') {
@@ -42,8 +42,8 @@ unsigned long stringToTags(const string& s) {
 }
 
 inline
-string tagsToString(const unsigned long& tags, int len=2) {
-   string sRetval;
+std::string tagsToString(const unsigned long& tags, int len=2) {
+   std::string sRetval;
    unsigned long temp = tags;
    while (len-->0) {
       if (!sRetval.empty())

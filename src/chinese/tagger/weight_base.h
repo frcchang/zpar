@@ -27,11 +27,11 @@ class CWeightBase {
 
 protected:
    bool m_bTrain;
-   string m_sFeatureDB;
+   std::string m_sFeatureDB;
 
 public:
 
-   CWeightBase(const string &sFeatureDB, bool bTrain) : m_sFeatureDB(sFeatureDB), m_bTrain(bTrain) { }
+   CWeightBase(const std::string &sFeatureDB, bool bTrain) : m_sFeatureDB(sFeatureDB), m_bTrain(bTrain) { }
    CWeightBase(const CWeightBase &weightbase) { THROW("CWeightBase cannot be copied by constructor"); }
    virtual ~CWeightBase() { }
 

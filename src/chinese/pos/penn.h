@@ -12,13 +12,11 @@
 #ifndef _CHINESE_TAG_PENN_H
 #define _CHINESE_TAG_PENN_H 
 
-#include <string>
-
 namespace chinese {
 
 // the penn tag set
 // Modify the following three constants together, keeping consistency!
-const string PENN_TAG_STRINGS[] = {
+const std::string PENN_TAG_STRINGS[] = {
    "-NONE-",
    "-BEGIN-",
    "-END-",
@@ -90,16 +88,16 @@ public:
    CTag() : m_code(NONE) {}
    CTag(PENN_TAG_CONSTANTS t) : m_code(t) { }
    CTag(int t) : m_code(t) { assert(t<PENN_TAG_COUNT); }
-   CTag(const string &s) { load(s); }
+   CTag(const std::string &s) { load(s); }
    virtual ~CTag() {}
 
 public:
    const unsigned long &code() const { return m_code; }
    const unsigned long &hash() const { return m_code; }
-   string str() const { 
+   std::string str() const { 
       assert(m_code<(1<<PENN_TAG_COUNT_BITS)) ; 
       if (m_code>=PENN_TAG_COUNT) {
-         stringstream ss; 
+         std::stringstream ss; 
          ss << "EXTRA(";
          ss << m_code;
          ss << ")";
@@ -107,7 +105,7 @@ public:
       }
       return PENN_TAG_STRINGS[m_code]; 
    }
-   void load(const string &s) {
+   void load(const std::string &s) {
       //m_code = PENN_TAG_NONE ;
       for (int i=0; i<PENN_TAG_COUNT; ++i)
          if (PENN_TAG_STRINGS[i] == s) {

@@ -21,7 +21,7 @@ namespace deplabeler {
 //
 // TYPE DEFINITIONS
 //
-typedef CScoreMap<pair<CDependencyLabel, int>, SCORE_TYPE> CLabelIntMap;
+typedef CScoreMap<std::pair<CDependencyLabel, int>, SCORE_TYPE> CLabelIntMap;
 typedef CScoreMap<CTuple3<CWord, CDependencyLabel, int>,  SCORE_TYPE> CWordLabelIntMap;
 typedef CScoreMap<CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>, CDependencyLabel, int>,  SCORE_TYPE> CTaggedWordLabelIntMap;
 typedef CScoreMap<CTuple3<CTag, CDependencyLabel, int>, SCORE_TYPE> CTagLabelIntMap;
@@ -50,7 +50,7 @@ public:
 //Int
 public:
 
-   CWeight(const string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
+   CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
 
                                                m_mapLabel("Label", 122651),
                                                m_mapHeadWordLabel("HeadWordLabel", 122651),

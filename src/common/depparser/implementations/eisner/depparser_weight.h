@@ -21,14 +21,14 @@ namespace depparser {
 //
 typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE > CTaggedWordMap;
-typedef CScoreMap< pair<CWord, int>,  SCORE_TYPE > CWordIntMap;
-typedef CScoreMap< pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE > CTaggedWordIntMap;
+typedef CScoreMap< std::pair<CWord, int>,  SCORE_TYPE > CWordIntMap;
+typedef CScoreMap< std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE > CTaggedWordIntMap;
 typedef CScoreMap< int, SCORE_TYPE > CIntMap;
-typedef CScoreMap< pair<int, int>, SCORE_TYPE > CTwoIntMap;
+typedef CScoreMap< std::pair<int, int>, SCORE_TYPE > CTwoIntMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
-typedef CScoreMap< pair<CTwoWords, int>, SCORE_TYPE > CTwoWordsIntMap;
+typedef CScoreMap< std::pair<CTwoWords, int>, SCORE_TYPE > CTwoWordsIntMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
-typedef CScoreMap< pair<CTwoTaggedWords, int>, SCORE_TYPE > CTwoTaggedWordsIntMap;
+typedef CScoreMap< std::pair<CTwoTaggedWords, int>, SCORE_TYPE > CTwoTaggedWordsIntMap;
 
 /*===============================================================
  *
@@ -64,7 +64,7 @@ public:
 
 public:
 
-   CWeight(const string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
+   CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
                                                m_mapHeadWord("HeadWord", 122651) ,
                                                m_mapDepWord("DepWord", 122651) ,
                                                m_mapHeadTag("HeadTag", 122651) ,
@@ -96,11 +96,11 @@ public:
 };
 
 inline long int hash(const int &i) {return i;}
-inline long int hash(const pair<int, int> &pi) {return pi.first*31+pi.second;}
-inline long int hash(const pair<CWord, int> &pwi) {return pwi.first.hash()+pwi.second*37;}
-inline long int hash(const pair<CTwoWords, int> &ptw) {return ptw.first.hash()+ptw.second*37;}
-inline long int hash(const pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> &pwi) {return pwi.first.hash()+pwi.second*37;}
-inline long int hash(const pair<CTwoTaggedWords, int> &ptwi) {return ptwi.first.hash()+ptwi.second*37;}
+inline long int hash(const std::pair<int, int> &pi) {return pi.first*31+pi.second;}
+inline long int hash(const std::pair<CWord, int> &pwi) {return pwi.first.hash()+pwi.second*37;}
+inline long int hash(const std::pair<CTwoWords, int> &ptw) {return ptw.first.hash()+ptw.second*37;}
+inline long int hash(const std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> &pwi) {return pwi.first.hash()+pwi.second*37;}
+inline long int hash(const std::pair<CTwoTaggedWords, int> &ptwi) {return ptwi.first.hash()+ptwi.second*37;}
 
 };
 };

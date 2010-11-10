@@ -23,11 +23,11 @@
 class CLabeledDependencyTreeNode : public CDependencyTreeNode {
 
 public:
-   string label;
+   std::string label;
 
 public:
    CLabeledDependencyTreeNode( ) : CDependencyTreeNode(), label("") { }
-   CLabeledDependencyTreeNode( const string &w, const string &t, const int &h, const string &l) : CDependencyTreeNode(w, t, h), label(l) { }
+   CLabeledDependencyTreeNode( const std::string &w, const std::string &t, const int &h, const std::string &l) : CDependencyTreeNode(w, t, h), label(l) { }
    virtual ~CLabeledDependencyTreeNode() {}
 
 public:
@@ -39,13 +39,13 @@ public:
 
 //==============================================================
 
-inline istream & operator >> (istream &is, CLabeledDependencyTreeNode &node) {
+inline std::istream & operator >> (std::istream &is, CLabeledDependencyTreeNode &node) {
    (is) >> static_cast<CDependencyTreeNode&>(node) >> node.label ;
    if (node.label.empty()) THROW("dependency label is unavailable for the input: " << node.word);
    return is ;
 }
 
-inline ostream & operator << (ostream &os, const CLabeledDependencyTreeNode &node) {
+inline std::ostream & operator << (std::ostream &os, const CLabeledDependencyTreeNode &node) {
    os << static_cast<const CDependencyTreeNode&>(node) << "\t" << node.label ;
    return os ;
 }

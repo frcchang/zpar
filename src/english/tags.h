@@ -26,14 +26,14 @@ inline unsigned long hash(const english::CTag &tag) { return tag.code();}
 
 //===============================================================
 
-inline istream & operator >> (istream &is, english::CTag &tag) {
-   string s;
+inline std::istream & operator >> (std::istream &is, english::CTag &tag) {
+   std::string s;
    is >> s;
    tag.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const english::CTag &tag) {
+inline std::ostream & operator << (std::ostream &os, const english::CTag &tag) {
    os << tag.str() ;
    return os;
 }

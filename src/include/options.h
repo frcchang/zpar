@@ -23,14 +23,14 @@
 class COptions {
 
 public:
-   vector< string > args;
-   vector< pair< string, string > > opts;
+   std::vector< std::string > args;
+   std::vector< std::pair< std::string, std::string > > opts;
 
    bool valid;
-   string err;
+   std::string err;
 
 public:
-   COptions(int argc, char* args[], const string& char_options="", const vector<string>& str_options=vector<string>());
+   COptions(int argc, char* args[], const std::string& char_options="", const std::vector<std::string>& str_options=std::vector<std::string>());
 
 };
 
@@ -44,21 +44,21 @@ class CConfigurations {
 
 public:
    struct CCon {
-      string name;
-      string argument;
-      string message;
-      string value;
-      CCon(const string &name, const string &argument, const string &message, const string &value) : name(name), argument(argument), message(message), value(value) {};
+      std::string name;
+      std::string argument;
+      std::string message;
+      std::string value;
+      CCon(const std::string &name, const std::string &argument, const std::string &message, const std::string &value) : name(name), argument(argument), message(message), value(value) {};
    };
-   vector< CCon > configurations;
+   std::vector< CCon > configurations;
 
 public:
    CConfigurations() {};
-   void defineConfiguration(const string &name, const string &argument, const string &type, const string &message);
+   void defineConfiguration(const std::string &name, const std::string &argument, const std::string &type, const std::string &message);
    // retval: error message
-   string loadConfigurations(const vector< pair< string, string > > &options);
-   string getConfiguration(const string &name);
-   string message();
+   std::string loadConfigurations(const std::vector< std::pair< std::string, std::string > > &options);
+   std::string getConfiguration(const std::string &name);
+   std::string message();
 
 };
 

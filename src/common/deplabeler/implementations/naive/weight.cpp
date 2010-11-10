@@ -37,18 +37,18 @@ using namespace TARGET_LANGUAGE::deplabeler;
 
 void CWeight::loadScores() {
    clock_t time_start = clock();
-   cout<<"Loading scores..."; cout.flush();
-   ifstream file ; 
+   std::cout<<"Loading scores..."; std::cout.flush();
+   std::ifstream file ; 
    file.open(m_sRecordPath.c_str()) ;
 
    if (!file.is_open()) {
-      cout << " empty." << endl; return;
+      std::cout << " empty." << std::endl; return;
    }
 
    iterate_templates(file >>,;);
 
    file.close() ;
-   cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
+   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -57,19 +57,19 @@ void CWeight::loadScores() {
  *
  * This method is called by the destructor is m_bScoreModified
  * is true.
-   cout<<"done."<<endl;
+   std::cout<<"done."<<std::endl;
  *
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
-   cout<<"Saving scores..."; cout.flush();
-   ofstream file ;
+   std::cout<<"Saving scores..."; std::cout.flush();
+   std::ofstream file ;
    file.open(m_sRecordPath.c_str()) ;
 
    iterate_templates(file<<,;)
 
    file.close();
-   cout<<" done."<<endl;
+   std::cout<<" done."<<std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -79,9 +79,9 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(int round) {
-   cout<<"Computing averaged (total) feature vector..."; cout.flush();
+   std::cout<<"Computing averaged (total) feature std::vector..."; std::cout.flush();
    iterate_templates(,.computeAverage(round);) ;
 
-   cout<<"done."<<endl;
+   std::cout<<"done."<<std::endl;
 }
 

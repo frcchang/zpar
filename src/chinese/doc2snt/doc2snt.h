@@ -33,12 +33,12 @@ class CDoc2Snt {
 protected:
 
    const unsigned long m_nMaxSentSize;
-   CBufferCycle<string> m_buffer;
+   CBufferCycle<std::string> m_buffer;
    CSentenceReader *m_reader;
 
 public:
 
-   CDoc2Snt(const string &sFile, unsigned long nMaxSentSize) : m_nMaxSentSize(nMaxSentSize), m_buffer(nMaxSentSize){
+   CDoc2Snt(const std::string &sFile, unsigned long nMaxSentSize) : m_nMaxSentSize(nMaxSentSize), m_buffer(nMaxSentSize){
       m_reader = new CSentenceReader(sFile);
    };
 

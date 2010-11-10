@@ -25,13 +25,13 @@ const int DEPENDENCY_LINK_NO_HEAD = -1;
 class CDependencyTreeNode {
 
 public:
-   string word;
-   string tag;
+   std::string word;
+   std::string tag;
    int head;
 
 public:
    CDependencyTreeNode() : word(""), tag(""), head(DEPENDENCY_LINK_NO_HEAD) { }
-   CDependencyTreeNode( const string &w, const string &t, const int &h) : word(w), tag(t), head(h) { }
+   CDependencyTreeNode( const std::string &w, const std::string &t, const int &h) : word(w), tag(t), head(h) { }
    virtual ~CDependencyTreeNode() {}
 
 public:
@@ -43,12 +43,12 @@ public:
 
 //==============================================================
 
-inline istream & operator >> (istream &is, CDependencyTreeNode &node) {
+inline std::istream & operator >> (std::istream &is, CDependencyTreeNode &node) {
    (is) >> node.word >> node.tag >> node.head ;
    return is ;
 }
 
-inline ostream & operator << (ostream &os, const CDependencyTreeNode &node) {
+inline std::ostream & operator << (std::ostream &os, const CDependencyTreeNode &node) {
    os << node.word << "\t" << node.tag << "\t" << node.head ;
    return os ;
 }

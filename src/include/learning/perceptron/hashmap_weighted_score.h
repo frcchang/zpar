@@ -21,13 +21,13 @@ class CWeightedScoreMap;
 
 template<typename K, typename SCORE_TYPE>
 inline
-istream & operator >> (istream &is, CWeightedScoreMap<K, SCORE_TYPE> &score_map) {
+std::istream & operator >> (std::istream &is, CWeightedScoreMap<K, SCORE_TYPE> &score_map) {
    if (!is) return is ;
-   string s ;
+   std::string s ;
    getline(is, s) ;
    assert( s==score_map.name );
    getline(is, s) ;
-   istringstream iss;
+   std::istringstream iss;
    iss.str(s);
    iss >> score_map.m_weight;
    is >> static_cast< CHashMap< K, CScore<SCORE_TYPE> > &>(score_map) ;
@@ -36,19 +36,19 @@ istream & operator >> (istream &is, CWeightedScoreMap<K, SCORE_TYPE> &score_map)
 
 template<typename K, typename SCORE_TYPE>
 inline
-ostream & operator << (ostream &os, CWeightedScoreMap<K, SCORE_TYPE> &score_map) {
+std::ostream & operator << (std::ostream &os, CWeightedScoreMap<K, SCORE_TYPE> &score_map) {
    assert(os);
-   os << score_map.name << endl ;
-   os << score_map.m_weight << endl ;
+   os << score_map.name << std::endl ;
+   os << score_map.m_weight << std::endl ;
 
    typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
       if ( it.second().score(CScore<SCORE_TYPE>::eNonAverage)!=0 ||
            it.second().score(CScore<SCORE_TYPE>::eAverage)!=0 )
-         os << it.first() << "\t:\t" << it.second() << endl ;
+         os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;
    }
-   os << endl ;
+   os << std::endl ;
    return os ;
 }
 
@@ -65,8 +65,8 @@ protected:
    CScore<SCORE_TYPE> m_weight ;
 
 public:
-   CWeightedScoreMap(string input_name) : CScoreMap<K, SCORE_TYPE>(input_name) {}
-   CWeightedScoreMap(string input_name, int TABLE_SIZE) : CScoreMap<K, SCORE_TYPE>(input_name, TABLE_SIZE) { }
+   CWeightedScoreMap(std::string input_name) : CScoreMap<K, SCORE_TYPE>(input_name) {}
+   CWeightedScoreMap(std::string input_name, int TABLE_SIZE) : CScoreMap<K, SCORE_TYPE>(input_name, TABLE_SIZE) { }
 
 public:
    inline SCORE_TYPE getScore( const K &key , const int &which ) {
@@ -83,8 +83,8 @@ public:
       CScoreMap<K, SCORE_TYPE>::computeAverage(round);
    }
 
-   friend istream & operator >> <> (istream &is, CWeightedScoreMap &score_map) ;
-   friend ostream & operator << <> (ostream &os, CWeightedScoreMap &score_map) ;
+   friend std::istream & operator >> <> (std::istream &is, CWeightedScoreMap &score_map) ;
+   friend std::ostream & operator << <> (std::ostream &os, CWeightedScoreMap &score_map) ;
 };
 
 #endif

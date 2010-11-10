@@ -15,7 +15,7 @@
 #include <sys/stat.h>
 
 inline
-bool FileExists(const string &strFilename) {
+bool FileExists(const std::string &strFilename) {
   struct stat stFileInfo;
   bool blnReturn;
   int intStat;

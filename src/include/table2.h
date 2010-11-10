@@ -33,8 +33,8 @@ public:
    }
 
    friend std::ostream &operator << (std::ostream &os, CTable2 &j) {
-      vector<K1> keys1;
-      vector<K2> keys2;
+      std::vector<K1> keys1;
+      std::vector<K2> keys2;
       keys1.resize(j.size1);
       typename CHashMap<K1, unsigned>::iterator it1;
       for (it1 = j.ind1.begin(); it1 != j.ind1.end(); ++it1)
@@ -46,33 +46,33 @@ public:
       unsigned index1;
       for (index1=0; index1<keys1.size(); ++index1)
          os << keys1[index1] << " ";
-      os << endl;
+      os << std::endl;
       unsigned index2;
       for (index2 = 0; index2 < keys2.size(); ++index2)
          os << keys2[index2] << " ";
-      os << endl;
+      os << std::endl;
       for (index2 = 0; index2 < j.size2;  ++index2) {
          for (index1 = 0; index1 < j.size1; ++index1) {
-            cout << j.table[index1*j.size2+index2] << " ";
+            std::cout << j.table[index1*j.size2+index2] << " ";
          }
-         cout << endl;
+         std::cout << std::endl;
       }
       return os;
    }
    friend std::istream &operator >> (std::istream &is, CTable2 &j) {
       ASSERT(is, "The input file is not ready");
-      vector<K1> keys1;
-      vector<K2> keys2;
-      string line;
+      std::vector<K1> keys1;
+      std::vector<K2> keys2;
+      std::string line;
       K1 key1;
       K2 key2;
       getline(is, line);
-      istringstream is1(line);
+      std::istringstream is1(line);
       while (is1>>key1) {
          keys1.push_back(key1);
       }
       getline(is, line);
-      istringstream is2(line);
+      std::istringstream is2(line);
       while(is2>>key2) {
          keys2.push_back(key2);
       }
@@ -92,7 +92,7 @@ public:
       for (index2=0; index2<j.size2; ++index2) {
 //         ASSERT(is, "The file ends before its data retrieved.");
          getline(is, line);
-         istringstream iss(line);
+         std::istringstream iss(line);
          for (index1=0; index1<j.size1; ++index1) {
 //            ASSERT(iss, "The file ends before its data retrieved.");
             iss >> j.table[index1*j.size2+index2];

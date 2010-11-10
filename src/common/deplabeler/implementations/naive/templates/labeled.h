@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 
 #define getOrUpdateLabeledScoreTemplate(x)\
-   retval += cast_weights->m_mapLabel.getOrUpdateScore( make_pair(label, x) , m_nScoreIndex , amount , round ) ;\
+   retval += cast_weights->m_mapLabel.getOrUpdateScore( std::make_pair(label, x) , m_nScoreIndex , amount , round ) ;\
    refer_or_allocate_tuple3(word_label_int, &head_word, &label, &x);\
    retval += cast_weights->m_mapHeadWordLabel.getOrUpdateScore( word_label_int , m_nScoreIndex , amount , round ) ;\
    refer_or_allocate_tuple3(word_label_int, &dep_word, &label, &x);\

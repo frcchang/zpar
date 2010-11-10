@@ -145,7 +145,7 @@ protected:
 //===============================================================
 
 template <class CClass1, class CClass2, class CClass3, class CClass4>
-istream & operator >> (istream &is, CTuple4<CClass1, CClass2, CClass3, CClass4> &tuple4) {
+std::istream & operator >> (std::istream &is, CTuple4<CClass1, CClass2, CClass3, CClass4> &tuple4) {
    char c, d, e ;
    CClass1 object1; 
    CClass2 object2;
@@ -165,7 +165,7 @@ istream & operator >> (istream &is, CTuple4<CClass1, CClass2, CClass3, CClass4> 
 }
 
 template <class CClass1, class CClass2, class CClass3, class CClass4>
-ostream & operator << (ostream &os, const CTuple4<CClass1, CClass2, CClass3, CClass4> &tuple4) {
+std::ostream & operator << (std::ostream &os, const CTuple4<CClass1, CClass2, CClass3, CClass4> &tuple4) {
    os << *(tuple4.first()) << " , " << *(tuple4.second()) << " , " << *(tuple4.third()) << " , " << *(tuple4.fourth());
    return os ;
 }

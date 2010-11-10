@@ -12,13 +12,13 @@
 #ifndef _ENGLISH_PENN_POS_H
 #define _ENGLISH_PENN_POS_H 1
 
-//#include <string>
+//#include <std::string>
 
 namespace english {
 
 /*===============================================================
  *
- * definitions about tags 
+ * definitions abstd::cout tags 
  *
  * CTag is defined as unsigned long integer, which is easier to store.
  * The value of CTag is defined by the index in PENN_TAG_STRINGS + 1.
@@ -27,7 +27,7 @@ namespace english {
 
 // the penn tag set
 // Modify the following three constants together, keeping consistency!
-const string PENN_TAG_STRINGS[] = {
+const std::string PENN_TAG_STRINGS[] = {
    "-NONE-",
    "-BEGIN-",
    "-END-",
@@ -91,15 +91,15 @@ public:
    CTag() : m_code(NONE) {}
    CTag(PENN_TAG_CONSTANTS t) : m_code(t) { }
    CTag(int t) : m_code(t) { }
-   CTag(const string &s) { load(s); }
+   CTag(const std::string &s) { load(s); }
    virtual ~CTag() {}
 
 public:
    unsigned long code() const { return m_code; }
    unsigned long hash() const { return m_code; }
    void copy(const CTag &t) { m_code = t.m_code; }
-   string str() const { assert(m_code<PENN_TAG_COUNT) ; return PENN_TAG_STRINGS[m_code]; }
-   void load(const string &s) {
+   std::string str() const { assert(m_code<PENN_TAG_COUNT) ; return PENN_TAG_STRINGS[m_code]; }
+   void load(const std::string &s) {
       m_code = PENN_TAG_NONE ;
       for (int i=1; i<PENN_TAG_COUNT; ++i)
          if (PENN_TAG_STRINGS[i] == s)

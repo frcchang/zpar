@@ -11,14 +11,14 @@ namespace chinese {
 //=============================================================
 
 #ifdef LABELED
-inline istream & operator >> (istream &is, chinese::CDependencyLabel &label) {
-   string s;
+inline std::istream & operator >> (std::istream &is, chinese::CDependencyLabel &label) {
+   std::string s;
    is >> s;
    label.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const chinese::CDependencyLabel &label) {
+inline std::ostream & operator << (std::ostream &os, const chinese::CDependencyLabel &label) {
    os << label.str() ;
    return os;
 }

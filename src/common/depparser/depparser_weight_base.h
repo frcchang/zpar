@@ -26,13 +26,13 @@ class CWeightBase {
 protected:
    bool m_bTrain;
    bool m_bModified;
-   string m_sRecordPath;
+   std::string m_sRecordPath;
 
    bool m_bRules;
 
 public:
    // CONSTRUCTOR 
-   CWeightBase(const string &sFile, bool bTrain) : m_bTrain(bTrain) , m_sRecordPath(sFile) , m_bRules(false) { }
+   CWeightBase(const std::string &sFile, bool bTrain) : m_bTrain(bTrain) , m_sRecordPath(sFile) , m_bRules(false) { }
    virtual ~CWeightBase() { }
 
    void setRules(const bool &bRules) {

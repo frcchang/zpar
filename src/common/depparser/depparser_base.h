@@ -37,7 +37,7 @@ protected:
 
 public:
    // constructor and destructor
-   CDepParserBase( string sFeatureDBPath , bool bTrain , bool bCoNLL ) : m_bTrain(bTrain) , m_bCoNLL(bCoNLL) , m_supertags(0) { 
+   CDepParserBase( std::string sFeatureDBPath , bool bTrain , bool bCoNLL ) : m_bTrain(bTrain) , m_bCoNLL(bCoNLL) , m_supertags(0) { 
       // do nothing
    }
    virtual ~CDepParserBase() {

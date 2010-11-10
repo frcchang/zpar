@@ -29,9 +29,9 @@
  *
  *==============================================================*/
 
-class CStringTokenizer : public CTokenizer<string, 65537> {
+class CStringTokenizer : public CTokenizer<std::string, 65537> {
    public: 
-      CStringTokenizer() : CTokenizer<string, 65537>(1/*reserve for the other unknown */) {lookup("");} 
+      CStringTokenizer() : CTokenizer<std::string, 65537>(1/*reserve for the other unknown */) {lookup("");} 
       virtual ~CStringTokenizer() {}
 };
 
@@ -40,7 +40,7 @@ class CStringTokenizer : public CTokenizer<string, 65537> {
 
 /*===============================================================
  *
- * definitions about word 
+ * definitions abstd::cout word 
  *
  *==============================================================*/
 
@@ -58,7 +58,7 @@ public:
 
 public:
    CWord() { clear(); }
-   CWord(const string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, UNKNOWN)) { }
+   CWord(const std::string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, UNKNOWN)) { }
    CWord(const CWord &w) : m_nHash(w.m_nHash) { }
    CWord(const unsigned long &n) : m_nHash(n) { }
 //   CWord(const CWord *w) : m_nHash(w->m_nHash) { }
@@ -70,12 +70,12 @@ public:
    bool operator == (const CWord &w) const { return m_nHash == w.m_nHash; }
    bool operator != (const CWord &w) const { return m_nHash != w.m_nHash; }
    bool operator < (const CWord &w) const { return m_nHash < w.m_nHash; }
-//   void operator = (const string &s) { m_nHash = getTokenizer().lookup(s); }
+//   void operator = (const std::string &s) { m_nHash = getTokenizer().lookup(s); }
    void operator = (const CWord &w) { m_nHash =  w.m_nHash; }
    void copy(const CWord &w) { m_nHash = w.m_nHash; }
-   void setString(const string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
+   void setString(const std::string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
    // do not use str() for unknown words!!
-   const string &str() const { return getTokenizer().key(m_nHash); }
+   const std::string &str() const { return getTokenizer().key(m_nHash); }
    bool empty() { return m_nHash==EMPTY; }
    bool unknown() { return m_nHash==UNKNOWN; }
    void clear() { m_nHash=EMPTY; }

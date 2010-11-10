@@ -48,10 +48,10 @@ public:
 
 inline std::istream & operator >> (std::istream &is, CSuperTag &p) {
    unsigned long index ;
-   string s ; 
+   std::string s ; 
    getline(is, s);
    if (is && !(s.empty())) {
-      istringstream iss(s) ; 
+      std::istringstream iss(s) ; 
       index = 0;
       while ( iss >> p.m_tags[index] ) {
          ++index;
@@ -64,12 +64,12 @@ inline std::istream & operator >> (std::istream &is, CSuperTag &p) {
    return is;
 }
 
-//ostream & operator << (ostream &os, const TARGET_LANGUAGE::depparser::CSuperTag &p) {
+//std::ostream & operator << (std::ostream &os, const TARGET_LANGUAGE::depparser::CSuperTag &p) {
 inline std::ostream & operator << (std::ostream &os, const CSuperTag &p) {
    for (unsigned long i=0; i<p.m_size; ++i) {
       os << p.m_tags[i] << ' ';
    }
-   os << endl;
+   os << std::endl;
    return os ;
 }
 
@@ -105,10 +105,10 @@ public:
 
 inline std::istream & operator >> (std::istream &is, CSuperTag &p) {
    unsigned long index ;
-   string s ; 
+   std::string s ; 
    getline(is, s);
    if (is && !(s.empty())) {
-      istringstream iss(s) ; 
+      std::istringstream iss(s) ; 
       index = 0;
       while ( iss >> p.m_tags[index] ) {
          ++index;
@@ -122,12 +122,12 @@ inline std::istream & operator >> (std::istream &is, CSuperTag &p) {
    return is;
 }
 
-//ostream & operator << (ostream &os, const TARGET_LANGUAGE::depparser::CSuperTag &p) {
+//std::ostream & operator << (std::ostream &os, const TARGET_LANGUAGE::depparser::CSuperTag &p) {
 inline std::ostream & operator << (std::ostream &os, const CSuperTag &p) {
    for (unsigned long i=0; i<p.m_size*p.m_size; ++i) {
       os << p.m_tags[i] << ' ';
    }
-   os << endl;
+   os << std::endl;
    return os ;
 }
 

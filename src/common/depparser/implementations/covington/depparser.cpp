@@ -68,21 +68,21 @@ SCORE_TYPE CDepParser::getOrUpdateArcScore( const CStateItem *item, const int &h
       between_tags = (dep_tag.code()<<CTag::SIZE*2) + 
                      (sibling_tag.code()<<CTag::SIZE) + 
                      next_sibling_tag.code() ;
-      retval += cast_weights->m_mapTwoSiblingTags.getScore(make_pair(between_tags,sibling_distance_encode), m_nScoreIndex);
-      retval += cast_weights->m_mapTwoSiblingTags.getScore(make_pair(between_tags,sibling_direction_encode), m_nScoreIndex);
+      retval += cast_weights->m_mapTwoSiblingTags.getScore(std::make_pair(between_tags,sibling_distance_encode), m_nScoreIndex);
+      retval += cast_weights->m_mapTwoSiblingTags.getScore(std::make_pair(between_tags,sibling_direction_encode), m_nScoreIndex);
 
       between_tags += (head_tag.code()<<CTag::SIZE*3) ;
-      retval += cast_weights->m_mapTwoSiblingAndParentTags.getScore(make_pair(between_tags,sibling_distance_encode), m_nScoreIndex);
-      retval += cast_weights->m_mapTwoSiblingAndParentTags.getScore(make_pair(between_tags,sibling_direction_encode), m_nScoreIndex);
+      retval += cast_weights->m_mapTwoSiblingAndParentTags.getScore(std::make_pair(between_tags,sibling_distance_encode), m_nScoreIndex);
+      retval += cast_weights->m_mapTwoSiblingAndParentTags.getScore(std::make_pair(between_tags,sibling_direction_encode), m_nScoreIndex);
 */
    }
 
    //--------------------- The two link features ----------------------
 /*
    between_tags = (head_tag.code()<<CTag::SIZE*2)+(dep_tag.code()<<CTag::SIZE); 
-   retval += cast_weights->m_mapGrandChildTags.getScore( make_pair(between_tags+dep_lmd_tag, (link_direction<<1)+0), m_nScoreIndex );
+   retval += cast_weights->m_mapGrandChildTags.getScore( std::make_pair(between_tags+dep_lmd_tag, (link_direction<<1)+0), m_nScoreIndex );
    if (head_index>dep_index)
-      retval += cast_weights->m_mapGrandChildTags.getScore( make_pair(between_tags+dep_rmd_tag, (link_direction<<1)+1), m_nScoreIndex );
+      retval += cast_weights->m_mapGrandChildTags.getScore( std::make_pair(between_tags+dep_rmd_tag, (link_direction<<1)+1), m_nScoreIndex );
 */
    return retval ;
 }
@@ -113,8 +113,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const CStateItem *item, con
    if ( arity_direction == ARITY_DIRECTION_RIGHT ) 
       arity = -arity-1; // -1 to avoid collision with arity=0 left
 
-   pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity = make_pair( m_lCache[word_index] , arity );
-   pair<unsigned long int, int> tag_arity = make_pair( m_lCache[word_index].tag.code() , arity );
+   std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity = std::make_pair( m_lCache[word_index] , arity );
+   std::pair<unsigned long int, int> tag_arity = std::make_pair( m_lCache[word_index].tag.code() , arity );
 
    // compute score
    static SCORE_TYPE retval;
@@ -128,8 +128,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const CStateItem *item, con
    for ( it = arity_by_tag.begin(); it != arity_by_tag.end(); it++ ) {
       sub_arity = (arity_direction==ARITY_DIRECTION_LEFT ? it->second : -(it->second)-1) ;
       sub_arity <<= CTag::SIZE;
-      retval += cast_weights->m_mapHeadWordTagArityByTag.getOrUpdateScore( make_pair(m_lCache[word_index], sub_arity+it->first) , m_nScoreIndex , amount , round ) ;
-      retval += cast_weights->m_mapHeadTagArityByTag.getOrUpdateScore( make_pair(m_lCache[word_index].tag.code(), sub_arity+it->first) , m_nScoreIndex , amount , round ) ;
+      retval += cast_weights->m_mapHeadWordTagArityByTag.getOrUpdateScore( std::make_pair(m_lCache[word_index], sub_arity+it->first) , m_nScoreIndex , amount , round ) ;
+      retval += cast_weights->m_mapHeadTagArityByTag.getOrUpdateScore( std::make_pair(m_lCache[word_index].tag.code(), sub_arity+it->first) , m_nScoreIndex , amount , round ) ;
    }
 */
    return retval;
@@ -153,25 +153,25 @@ inline SCORE_TYPE CDepParser::getOrUpdateTwoArcScore( const int &head_index , co
           m_lCache[dep_index].tag.code() ;
    dir = (getLinkDirection(parent_index, head_index)<<1) + getLinkDirection(head_index, dep_index) ;
 
-   return cast_weights->m_mapGrandChildTags.getOrUpdateScore( make_pair(tags, dir) , m_nScoreIndex , amount , round ) ;
+   return cast_weights->m_mapGrandChildTags.getOrUpdateScore( std::make_pair(tags, dir) , m_nScoreIndex , amount , round ) ;
 }
 
 /*---------------------------------------------------------------
  *
- * updateScoreForState - update a single positive or negative output
+ * updateScoreForState - update a single positive or negative outout
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::updateScoreForState( const CStateItem *output , const bool &bCompleteSentence , 
+inline void CDepParser::updateScoreForState( const CStateItem *outout , const bool &bCompleteSentence , 
                                              const SCORE_TYPE &amount ) {
    static CStateItem item;
    static int index, prev, rmd;
    item.clear();
    // rebuild parsetrees
-   for ( index=0; index<output->size(); index++ ) {
+   for ( index=0; index<outout->size(); index++ ) {
       prev = index-1;
       while ( prev != -1 ) {
-         if ( output->head( index ) == prev ) {
+         if ( outout->head( index ) == prev ) {
             // finish all words that are the rightmost deps of prev -- they are crossed over
             rmd = item.rightmostdep( prev );
             while ( rmd != DEPENDENCY_LINK_NO_HEAD ) {
@@ -186,7 +186,7 @@ inline void CDepParser::updateScoreForState( const CStateItem *output , const bo
             // break to finish index
             break;
          }
-         else if ( output->head( prev ) == index ) {
+         else if ( outout->head( prev ) == index ) {
             // add link from prev to index
             item.addLink( index, prev ) ;
             getOrUpdateArcScore( &item, index, prev, amount, m_nTrainingRound );
@@ -228,11 +228,11 @@ inline void CDepParser::updateScoreForState( const CStateItem *output , const bo
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::updateScoresForStates( const CStateItem *output, const CStateItem *correct, const bool &bCompleteSentence ) {
-   assert( output->size() == correct->size() );
+void CDepParser::updateScoresForStates( const CStateItem *outout, const CStateItem *correct, const bool &bCompleteSentence ) {
+   assert( outout->size() == correct->size() );
 
    updateScoreForState( correct, bCompleteSentence, 1 ) ;
-   updateScoreForState( output, bCompleteSentence, -1 ) ;
+   updateScoreForState( outout, bCompleteSentence, -1 ) ;
 
    m_nTotalErrors++;
 }
@@ -498,14 +498,14 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CDependencyParse output ; 
+   static CDependencyParse outout ; 
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-   work( sentence , &output , correct , 1 , 0 ) ; 
+   work( sentence , &outout , correct , 1 , 0 ) ; 
 
 };
 

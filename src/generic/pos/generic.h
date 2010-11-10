@@ -22,9 +22,9 @@ namespace TARGET_LANGUAGE {
  *
  *==============================================================*/
 
-class CTagTokenizer : public CTokenizer<string, 251> {
+class CTagTokenizer : public CTokenizer<std::string, 251> {
    public: 
-      CTagTokenizer() : CTokenizer<string, 251>(0/*reserve for NONE BEGIN END*/) {
+      CTagTokenizer() : CTokenizer<std::string, 251>(0/*reserve for NONE BEGIN END*/) {
          lookup("-NONE-");
          lookup("-BEGIN-");
          lookup("-END-");
@@ -34,7 +34,7 @@ class CTagTokenizer : public CTokenizer<string, 251> {
 
 /*===============================================================
  *
- * definitions about tag 
+ * definitions abstd::cout tag 
  *
  *==============================================================*/
 
@@ -61,7 +61,7 @@ protected:
 
 public:
    CTag() : m_code(NONE) { }
-   CTag(const string &s) { load(s); }
+   CTag(const std::string &s) { load(s); }
    CTag(const CTag &t) : m_code(t.m_code) { }
    CTag(const unsigned &u) { assert(getTokenizer().count()>u); m_code=u; }
    virtual ~CTag() {}
@@ -77,13 +77,13 @@ public:
    bool operator <= (const CTag &w) const { return m_code <= w.m_code; }
    bool operator >= (const CTag &w) const { return m_code >= w.m_code; }
 
-   void load(const string &s) {
+   void load(const std::string &s) {
       m_code=getTokenizer().lookup(s); 
       COUNT = getTokenizer().count();
       LAST = COUNT-1;
       assert((1<<SIZE)>COUNT);
    }
-   const string &str() const { 
+   const std::string &str() const { 
       return getTokenizer().key(m_code); 
    }
 

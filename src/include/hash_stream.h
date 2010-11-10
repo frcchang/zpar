@@ -4,14 +4,14 @@
 
 template <typename K, typename V>
 inline
-istream & operator >> (istream &is, CHashMap<K, V> &table) {
+std::istream & operator >> (std::istream &is, CHashMap<K, V> &table) {
    K key ;
    V value ;
    char c ;
-   string s ; 
+   std::string s ; 
    getline(is, s);
    while (is && !(s.empty())) {
-      istringstream iss(s) ; 
+      std::istringstream iss(s) ; 
       iss >> key >> c >> value ;
       ASSERT( c == ':' , "Hash map does not match key : value format") ;
       table.insert(key,value);
@@ -22,13 +22,13 @@ istream & operator >> (istream &is, CHashMap<K, V> &table) {
 
 template <typename K, typename V>
 inline
-ostream & operator << (ostream &os, CHashMap<K, V> &table) {
+std::ostream & operator << (std::ostream &os, CHashMap<K, V> &table) {
    typename CHashMap<K, V>::iterator it = table.begin() ;
    while (it != table.end()) {
-      os << it.first() << "\t:\t" << it.second() << endl ;
+      os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;
    }
-   os << endl ;
+   os << std::endl ;
    return os ;
 }
 

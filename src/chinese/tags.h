@@ -12,7 +12,7 @@
 #ifndef _CHINESE_TAGS_H
 #define _CHINESE_TAGS_H 1
 
-//#include <string>
+//#include <std::string>
 #include "pos/penn.h"
 
 namespace chinese {
@@ -27,14 +27,14 @@ const char TAG_SEPARATOR = '_';
 
 //===============================================================
 
-inline istream & operator >> (istream &is, chinese::CTag &tag) {
-   string s;
+inline std::istream & operator >> (std::istream &is, chinese::CTag &tag) {
+   std::string s;
    is >> s;
    tag.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const chinese::CTag &tag) {
+inline std::ostream & operator << (std::ostream &os, const chinese::CTag &tag) {
    os << tag.str() ;
    return os;
 }

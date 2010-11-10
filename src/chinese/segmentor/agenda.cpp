@@ -30,7 +30,7 @@ static CWord g_emptyWord("");
  *--------------------------------------------------------------*/
 
 SCORE_TYPE CFeatureHandle::getGlobalScore(const CStringVector* sentence, const CStateItem* item){
-   cerr << "Not implemented" << endl;
+   std::cerr << "Not implemented" << std::endl;
    assert(0==1);
 }
 
@@ -46,7 +46,7 @@ SCORE_TYPE CFeatureHandle::getGlobalScore(const CStringVector* sentence, const C
  *--------------------------------------------------------------*/
 
 SCORE_TYPE CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateItem* item, int index){
-   cerr << "Not implemented" << endl;
+   std::cerr << "Not implemented" << std::endl;
    assert(0==1);
 }
 
@@ -80,7 +80,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    assert(item->prev()); // non-empty items have
 
    static SCORE_TYPE nReturn; 
-   // about score
+   // abstd::cout score
    static int which_score;
    which_score = segmentor->isTraining() ? CScore<SCORE_TYPE>::eNonAverage : CScore<SCORE_TYPE>::eAverage ;
    // abbreviation weight
@@ -98,7 +98,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    last_length = item->prev()->getWordLength();  // similar to the above
    word_length = length ; 
 
-   // about the words
+   // abstd::cout the words
    const CWord &word=_cache_word(start, length);
    const CWord &last_word = item->prev()->empty() ? g_emptyWord : _cache_word(last_start, last_length); // use empty word for sentence beginners. 
    static CTwoWords two_word;
@@ -107,7 +107,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    else
       two_word.allocate(word, last_word);
 
-   // about the chars
+   // abstd::cout the chars
    static bool bWordStart; // whether the last char starts new word
    static int char_info; // start, middle, end or standalone
    bWordStart = (start==end);
@@ -144,7 +144,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
       }
    }
 
-   // about the length
+   // abstd::cout the length
    length = normalizeLength(length);
    last_length = normalizeLength(last_length);
    
@@ -152,19 +152,19 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
 
    // ===================================================================================
    // character scores -- with end-1 middled
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size()), end+2); ++tmp_i) {
-      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
-      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatUnigram.getOrUpdateScore( make_pair( groupCharTypes(segmentor, sentence, tmp_i, 1, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = std::max(0, static_cast<int>(end)-1); tmp_i < std::min(static_cast<int>(sentence->size()), end+2); ++tmp_i) {
+      nReturn += weight.m_mapCharUnigram.getOrUpdateScore( std::make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatUnigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, tmp_i, 1, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
    }
 
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) {
-      nReturn += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
-      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatBigram.getOrUpdateScore( make_pair( groupCharTypes(segmentor, sentence, tmp_i, 2, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = std::max(0, static_cast<int>(end)-1); tmp_i < std::min(static_cast<int>(sentence->size())-1, end+1); ++tmp_i) {
+      nReturn += weight.m_mapCharBigram.getOrUpdateScore( std::make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatBigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, tmp_i, 2, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
    }
 
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<int>(sentence->size())-2, end); ++tmp_i) {
-      nReturn += weight.m_mapCharTrigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
-      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatTrigram.getOrUpdateScore( make_pair( groupCharTypes(segmentor, sentence, tmp_i, 3, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = std::max(0, static_cast<int>(end)-1); tmp_i < std::min(static_cast<int>(sentence->size())-2, end); ++tmp_i) {
+      nReturn += weight.m_mapCharTrigram.getOrUpdateScore( std::make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) nReturn += weight.m_mapCharCatTrigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, tmp_i, 3, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
    }
 
    // ===================================================================================
@@ -175,8 +175,8 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    if (length>1) {
       nReturn += weight.m_mapFirstAndLastChars.getOrUpdateScore(first_and_last_char, which_score, amount, round);
 
-      nReturn += weight.m_mapLengthByFirstChar.getOrUpdateScore(make_pair(first_char, length), which_score, amount, round);
-      nReturn += weight.m_mapLengthByLastChar.getOrUpdateScore(make_pair(last_char, length), which_score, amount, round);
+      nReturn += weight.m_mapLengthByFirstChar.getOrUpdateScore(std::make_pair(first_char, length), which_score, amount, round);
+      nReturn += weight.m_mapLengthByLastChar.getOrUpdateScore(std::make_pair(last_char, length), which_score, amount, round);
    }
 
    if (!item->prev()->empty()) {
@@ -185,8 +185,8 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
       nReturn += weight.m_mapWordAndPrevChar.getOrUpdateScore(word_lastchar, which_score, amount, round);
       nReturn += weight.m_mapLastWordByLastChar.getOrUpdateScore(lastword_lastchar, which_score, amount, round);
     
-      nReturn += weight.m_mapLengthByLastWord.getOrUpdateScore(make_pair(last_word, length), which_score, amount, round);
-      nReturn += weight.m_mapLastLengthByWord.getOrUpdateScore(make_pair(word, last_length), which_score, amount, round);
+      nReturn += weight.m_mapLengthByLastWord.getOrUpdateScore(std::make_pair(last_word, length), which_score, amount, round);
+      nReturn += weight.m_mapLastLengthByWord.getOrUpdateScore(std::make_pair(word, last_length), which_score, amount, round);
    }
    if ( end < sentence->size()-1 ) {
       nReturn += weight.m_mapSeparateChars.getOrUpdateScore(two_char, which_score, amount, round); 
@@ -216,7 +216,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
 SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* item, int index, SCORE_TYPE amount=0, int round=0){
 
    static SCORE_TYPE retval;
-   // about score
+   // abstd::cout score
    static int which_score;
    which_score = segmentor->isTraining() ? CScore<SCORE_TYPE>::eNonAverage : CScore<SCORE_TYPE>::eAverage ;
    // abbreviation weight
@@ -224,7 +224,7 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    // temporary vals
    static int tmp_i;
 
-   // about the chars
+   // abstd::cout the chars
    const unsigned long start = item->getWordStart();
    const unsigned long end = index;
    assert( start>=0 && start<sentence->size() && end<sentence->size() );
@@ -247,19 +247,19 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    retval = 0;
    // ===================================================================================
    // character scores -- the middle character is end-1
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) {
-      retval += weight.m_mapCharUnigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
-      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatUnigram.getOrUpdateScore( make_pair( groupCharTypes(segmentor, sentence, tmp_i, 1, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = std::max(0, static_cast<int>(end)-1); tmp_i < std::min(static_cast<unsigned long>(sentence->size()), end+2); ++tmp_i) {
+      retval += weight.m_mapCharUnigram.getOrUpdateScore( std::make_pair( _cache_word(tmp_i, 1), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatUnigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, tmp_i, 1, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
    }
 
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) {
-      retval += weight.m_mapCharBigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
-      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatBigram.getOrUpdateScore( make_pair( groupCharTypes(segmentor, sentence, tmp_i, 2, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = std::max(0, static_cast<int>(end)-1); tmp_i < std::min(static_cast<unsigned long>(sentence->size())-1, end+1); ++tmp_i) {
+      retval += weight.m_mapCharBigram.getOrUpdateScore( std::make_pair( _cache_word(tmp_i, 2), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatBigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, tmp_i, 2, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
    }
 
-   for (tmp_i = max(0, static_cast<int>(end)-1); tmp_i < min(static_cast<unsigned long>(sentence->size())-2, end); ++tmp_i) {
-      retval += weight.m_mapCharTrigram.getOrUpdateScore( make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
-      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatTrigram.getOrUpdateScore( make_pair( groupCharTypes(segmentor, sentence, tmp_i, 3, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+   for (tmp_i = std::max(0, static_cast<int>(end)-1); tmp_i < std::min(static_cast<unsigned long>(sentence->size())-2, end); ++tmp_i) {
+      retval += weight.m_mapCharTrigram.getOrUpdateScore( std::make_pair( _cache_word(tmp_i, 3), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
+      if (segmentor->hasCharTypeKnowledge()) retval += weight.m_mapCharCatTrigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, tmp_i, 3, amount), encodeCharInfoAndPosition(char_info, tmp_i-end) ), which_score, amount, round);
    }
 
    retval += weight.m_mapConsecutiveChars.getOrUpdateScore( _cache_word(end, 2), which_score, amount, round); 
@@ -310,16 +310,16 @@ void CFeatureHandle::extractPosFeatures(const CStringVector *sent) {
 
 /*---------------------------------------------------------------
  *
- * updateScoreVector - update the score vector 
+ * updateScoreVector - update the score std::vector 
  *                     this is standard training 
  *
- * Inputs: the output and the correct examples
+ * Inputs: the outout and the correct examples
  *
  * Affects: m_bScoreModified, which leads to saveScores on destructor
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStringVector* correct, int round) {
+void CFeatureHandle::updateScoreVector(const CStringVector* outout, const CStringVector* correct, int round) {
    THROW("This version of the segmentor does not support updating model with sentences directly; it uses early-update.");
 }
 
@@ -353,8 +353,8 @@ inline void updateScoreVectorForState(CSegmentor *segmentor, const CStringVector
  *
  *--------------------------------------------------------------*/
 
-void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* output, const CStateItem* correct, int round) {
-   updateScoreVectorForState(segmentor, sentence, output, -1, round);
+void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* outout, const CStateItem* correct, int round) {
+   updateScoreVectorForState(segmentor, sentence, outout, -1, round);
    updateScoreVectorForState(segmentor, sentence, correct, 1, round);
 }
 
@@ -373,7 +373,7 @@ void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sent
  *
  *--------------------------------------------------------------*/
 
-bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *vReturn, double *out_scores, CRule &rules, vector<unsigned> *correct_starts, unsigned nBest, int round) {
+bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *vReturn, double *out_scores, CRule &rules, std::vector<unsigned> *correct_starts, unsigned nBest, int round) {
    static CStateItem lattice[(MAX_SENTENCE_SIZE+2)*BEAM_SIZE];
    static CStateItem *lattice_index[MAX_SENTENCE_SIZE+2];
    static const CStateItem *pGenerator, *pBestGen;
@@ -493,7 +493,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
          
       // update scores if none from the agenda is correct state.
       if (correct_starts && !bCompatible) {
-         TRACE("Decoding error, updating the weight vector");
+         TRACE("Decoding error, updating the weight std::vector");
          if (correct_append)
             correct->append(lattice_index[index+2]);
          else
@@ -519,7 +519,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
    if (correct_starts) {
       assert(bCompatible);
       if (correct!=best[0]) {
-         TRACE("Decoding error, updating the weight vector");
+         TRACE("Decoding error, updating the weight std::vector");
          updateScoreVectorForStates(segmentor, &sentence, best[0], correct, round);
          return false;
       }
@@ -527,11 +527,11 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
 
    TRACE("Decoding finished");
 
-   // now generate output sentence
+   // now generate outout sentence
    // n-best list will be stored in array
    if (!correct_starts){
       TRACE("Outputing sentence");
-      for ( index=0; index<min(nBest, nBestGen); ++index ) {
+      for ( index=0; index<std::min(nBest, nBestGen); ++index ) {
          // clear
          vReturn[index].clear();
          if ( out_scores ) out_scores[index] = 0;
@@ -579,7 +579,7 @@ void CSegmentor::train(const CStringVector* sentence_input, const CStringVector*
 
    assert(length<MAX_SENTENCE_SIZE);
 
-   static vector<unsigned> correct_starts;
+   static std::vector<unsigned> correct_starts;
    static int word_length, word_index, char_length, char_index; // word_xxx are from correct, char_xxx from sentence
 
    char_index = 0;
@@ -628,8 +628,8 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    assert(vReturn!=NULL);
    vReturn->clear();
 
-   // try to work out the best item with the
-   // correct output reference param as NULL
+   // try to work std::cout the best item with the
+   // correct outout reference param as NULL
    work(this, sentence, vReturn, out_scores, rules, NULL, nBest, -1);
 
    TRACE("Done, the best score: " << pGenerator->score);

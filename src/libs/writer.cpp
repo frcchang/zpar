@@ -18,13 +18,13 @@
  *==============================================================*/
 
 void CSentenceWriter::writeLine() {
-   (*m_oStream) << endl;
+   (*m_oStream) << std::endl;
 };
 
-void CSentenceWriter::writeSentence(const CStringVector* sentence, const string &separator, const bool newline) {
+void CSentenceWriter::writeSentence(const CStringVector* sentence, const std::string &separator, const bool newline) {
    for (int i=0; i<sentence->size(); ++i)
       (*m_oStream) << sentence->at(i) << separator;
-   if (newline) (*m_oStream) << endl;
+   if (newline) (*m_oStream) << std::endl;
 };
 
 void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char separator, const bool newline) {
@@ -37,6 +37,6 @@ void CSentenceWriter::writeSentence(const CTwoStringVector* sentence, const char
       for (int j=0; j<sentence->at(i).second.length(); j++)
          m_oStream->put(sentence->at(i).second[j]);
    }
-   if (newline) (*m_oStream) << endl;
+   if (newline) (*m_oStream) << std::endl;
 };
  

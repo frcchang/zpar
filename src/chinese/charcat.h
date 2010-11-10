@@ -17,7 +17,7 @@
 
 #include "knowledge/worddict.h"
 
-static const string letters[] = {
+static const std::string letters[] = {
                     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", 
                     "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", 
                     "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", 
@@ -30,7 +30,7 @@ static const string letters[] = {
                     "ｋ", "ｌ", "ｍ", "ｎ", "ｏ", "ｐ", "ｑ", "ｒ", "ｓ", 
                     "ｔ", "ｕ", "ｖ", "ｗ", "ｘ", "ｙ", "ｚ"};
 
-static const string numbers[] = {
+static const std::string numbers[] = {
    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
    "０", "１", "２", "３", "４", "５", "６", "７", "８", "９"}; 
 
@@ -125,16 +125,16 @@ class CCharCatDictionary : public CWordDictionary {
 
 public:
    CCharCatDictionary() : CWordDictionary(199) { 
-      for (unsigned i=0; i<sizeof(letters)/sizeof(string); ++i) 
+      for (unsigned i=0; i<sizeof(letters)/sizeof(std::string); ++i) 
          (*this)[CWord(letters[i])] = eFW ;
-      for (unsigned i=0; i<sizeof(numbers)/sizeof(string); ++i) 
+      for (unsigned i=0; i<sizeof(numbers)/sizeof(std::string); ++i) 
          (*this)[CWord(numbers[i])] = eCD ;
    }
 
 public:
    enum CHAR_TYPE { eUnknown=0, eFW, eCD } ;
 
-   bool isFWorCD( const string &s ) const {
+   bool isFWorCD( const std::string &s ) const {
       unsigned long int type = find( s, 0 );
       return type==eFW || type==eCD;
    }

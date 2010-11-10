@@ -32,7 +32,7 @@
 
 inline
 char base64Encode(int input) {
-static string base64Str = BASE64_STR;
+static std::string base64Str = BASE64_STR;
 return base64Str[input];
 }
 
@@ -48,7 +48,7 @@ return base64Str[input];
 
 inline
 int base64Decode(char input) {
-static string base64Str = BASE64_STR;
+static std::string base64Str = BASE64_STR;
 for (int i=0; i<64; ++i)
    if (base64Str[i]==input) return i;
 return -1;

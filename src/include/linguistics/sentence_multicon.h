@@ -25,7 +25,7 @@ class CSentenceMultiCon {
 
 public:
    CTwoStringVector words; 
-   vector< vector<CConstituent> > constituents;
+   std::vector< std::vector<CConstituent> > constituents;
 
 public:
    void clear() {
@@ -40,21 +40,21 @@ public:
 template<typename CConstituent>
 inline std::istream & operator >> (std::istream &is, CSentenceMultiCon<CConstituent> &sent) {
    sent.clear();
-   string line;
-   string word;
-   string pos;
-   string constituent;
+   std::string line;
+   std::string word;
+   std::string pos;
+   std::string constituent;
 //   while(is && line.empty())
 //      getline(is, line);
    getline(is, line);
 
    while(is && !line.empty())
    {
-      istringstream iss(line);
+      std::istringstream iss(line);
       iss >> word >> pos >> constituent;
       ASSERT(!pos.empty() && !constituent.empty(), "A line must contain at least one POS and one constituent");
-      sent.words.push_back( make_pair(word, pos) );
-      sent.constituents.push_back(vector<CConstituent>());
+      sent.words.push_back( std::make_pair(word, pos) );
+      sent.constituents.push_back(std::vector<CConstituent>());
       sent.constituents.back().push_back( constituent );
       while ( iss >> constituent )
          sent.constituents.back().push_back( constituent );
@@ -70,9 +70,9 @@ inline std::ostream & operator << (std::ostream &os, const CSentenceMultiCon<CCo
       os << sent.words.at(i).first << " " << sent.words.at(i).second;
       for (int j=0; j<sent.constituents.at(i).size(); ++j)
          os << " " << sent.constituents.at(i).at(j);
-      os << endl ;
+      os << std::endl ;
    }
-   os << endl ;
+   os << std::endl ;
    return os ;
 }
 

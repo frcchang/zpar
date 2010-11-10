@@ -28,15 +28,15 @@ protected:
 //   bool m_bModified;
    bool m_bEmpty;
  
-//   string m_sRecordPath;
+//   std::string m_sRecordPath;
 
 public:
    // CONSTRUCTOR 
    CWeightBase(bool bTrain) : m_bTrain(bTrain) , m_bEmpty(true) {}
    virtual ~CWeightBase() { }
 
-   virtual void loadScores(ifstream &is) = 0 ;
-   virtual void saveScores(ofstream &os) = 0 ; 
+   virtual void loadScores(std::ifstream &is) = 0 ;
+   virtual void saveScores(std::ofstream &os) = 0 ; 
 
    bool empty() const {return m_bEmpty;}
 };

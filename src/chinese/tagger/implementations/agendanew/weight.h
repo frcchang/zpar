@@ -21,18 +21,18 @@ namespace tagger {
 //
 typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
-typedef CScoreMap< pair<CWord, int>, SCORE_TYPE > CWordIntMap;
-typedef CScoreMap< pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
+typedef CScoreMap< std::pair<CWord, int>, SCORE_TYPE > CWordIntMap;
+typedef CScoreMap< std::pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
 //typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
-typedef CScoreMap< pair<unsigned long long, CTag>, SCORE_TYPE > CIntTagMap;
+typedef CScoreMap< std::pair<unsigned long long, CTag>, SCORE_TYPE > CIntTagMap;
 typedef CScoreMap< CTagSet<CTag, 2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
-typedef CScoreMap< pair<CWord, CTagSet<CTag, 2> >, SCORE_TYPE > CWordTagSet2Map;
-typedef CScoreMap< pair<CWord, CTagSet<CTag, 3> >, SCORE_TYPE > CWordTagSet3Map;
+typedef CScoreMap< std::pair<CWord, CTagSet<CTag, 2> >, SCORE_TYPE > CWordTagSet2Map;
+typedef CScoreMap< std::pair<CWord, CTagSet<CTag, 3> >, SCORE_TYPE > CWordTagSet3Map;
 typedef CHashMap< CWord, int > CWordToIntMap;
-//typedef CHashMap< pair<CWord, int>, int > CWordIntToIntMap;
-//typedef CScoreMap< pair<long int, long int>, SCORE_TYPE > CIntPairMap;
+//typedef CHashMap< std::pair<CWord, int>, int > CWordIntToIntMap;
+//typedef CScoreMap< std::pair<long int, long int>, SCORE_TYPE > CIntPairMap;
 
 /*===============================================================
  *
@@ -58,7 +58,7 @@ public:
          m_maxLengthByTag[CTag::COUNT]=length;
    }
 
-   // feature templates about words
+   // feature templates abstd::cout words
    CWordMap m_mapSeenWords;
    CTwoWordsMap m_mapLastWordByWord;
    CWordMap m_mapCurrentWordLastChar;
@@ -114,7 +114,7 @@ public:
    // note that m_bSegmentation rules will be covered by load()
    // if there is a model file to load
    // therefore this argument only used first time training
-   CWeight(const string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
+   CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
             CWeightBase(sFeatureDB, bTrain) ,
             m_Knowledge(0) ,
             m_bSegmentationRules(bSegmentationRules) ,

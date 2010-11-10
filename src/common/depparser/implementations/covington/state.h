@@ -125,7 +125,7 @@ public:
       static int retval;
       retval = 0;
       while ( m_lHeads[retval] != DEPENDENCY_LINK_NO_HEAD ) {
-         retval = max( retval+1, max(m_lHeads[retval], m_lDepsR[retval]) );
+         retval = std::max( retval+1, std::max(m_lHeads[retval], m_lDepsR[retval]) );
          assert(retval <= m_nNextWord);
       }
       return retval;
@@ -187,20 +187,20 @@ public:
 
 public:
 
-   void GenerateTree( const CTwoStringVector &input, CDependencyParse &output ) const {
-      output.clear();
+   void GenerateTree( const CTwoStringVector &input, CDependencyParse &outout ) const {
+      outout.clear();
       for ( int i=0; i<size(); ++i ) 
-         output.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] ) ) ;
+         outout.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] ) ) ;
    }
 
 };
 
-inline ostream & operator << (ostream &os, const CStateItem &item) {
-   os << "index\thead\tlmd\trmd\tla\tra" << endl;
+inline std::ostream & operator << (std::ostream &os, const CStateItem &item) {
+   os << "index\thead\tlmd\trmd\tla\tra" << std::endl;
    for (int i=0; i<item.size(); ++i) {
-      os << i << "\t" << item.head(i) << "\t" << item.leftmostdep(i) << "\t" << item.rightmostdep(i) << "\t" << item.leftarity(i) << "\t" << item.rightarity(i) << endl;
+      os << i << "\t" << item.head(i) << "\t" << item.leftmostdep(i) << "\t" << item.rightmostdep(i) << "\t" << item.leftarity(i) << "\t" << item.rightarity(i) << std::endl;
    }
-   os << endl;
+   os << std::endl;
    return os;
 }
 

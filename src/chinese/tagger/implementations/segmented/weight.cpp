@@ -44,14 +44,14 @@ using namespace chinese::tagger;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
-   cout << "Loading scores...";
+   std::cout << "Loading scores...";
    clock_t time_start = clock();
-   string st;
-   ifstream is(m_sFeatureDB.c_str());
-   istringstream iss;
+   std::string st;
+   std::ifstream is(m_sFeatureDB.c_str());
+   std::istringstream iss;
 
    if (!is.is_open()) {
-      cout << " empty." << endl; return;
+      std::cout << " empty." << std::endl; return;
    }
    // load feature weights
    iterate_templates(is>>,;);
@@ -72,7 +72,7 @@ void CWeight::loadScores() {
    iss.str(st);
    iss >> m_nMaxWordFrequency;
 
-   cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << endl;
+   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -82,19 +82,19 @@ void CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
-   cout << "Saving scores...";
-   ofstream os(m_sFeatureDB.c_str());
+   std::cout << "Saving scores...";
+   std::ofstream os(m_sFeatureDB.c_str());
    assert(os.is_open());
    iterate_templates(os<<,;);
-   os << "Tag dictionary" << endl;
+   os << "Tag dictionary" << std::endl;
    os << m_mapTagDictionary;
-   os << "Char tag dictionary" << endl;
+   os << "Char tag dictionary" << std::endl;
    os << m_mapCharTagDictionary;
-   os << "Word frequency" << endl;
+   os << "Word frequency" << std::endl;
    os << m_mapWordFrequency;
-   os << "Maximum frequency" << endl;
-   os << m_nMaxWordFrequency << endl;
-   cout << " done." << endl;
+   os << "Maximum frequency" << std::endl;
+   os << m_nMaxWordFrequency << std::endl;
+   std::cout << " done." << std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -104,9 +104,9 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(const unsigned long round) {
-   cout << ("Adding total feature vector... ");
+   std::cout << ("Adding total feature std::vector... ");
    iterate_templates(,.computeAverage(round););
-   cout <<("Done") << endl;
+   std::cout <<("Done") << std::endl;
 }
 
 

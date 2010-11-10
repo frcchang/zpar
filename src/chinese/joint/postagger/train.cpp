@@ -3,7 +3,7 @@
  *                                                              * 
  * tagger_train.cpp - the training for the joint tagger.        * 
  *                                                              * 
- * The module does decoding via combining the best output for a * 
+ * The module does decoding via combining the best outout for a * 
  * segmentor with a tagger.                                     * 
  *                                                              *
  * Author: Yue Zhang                                            *
@@ -25,7 +25,7 @@ using namespace chinese;
  * 
  *---------------------------------------------------------------*/
 
-void train(string sInputFile, string sFeatureDB, int nBest, bool bSeparateTrain) {
+void train(std::string sInputFile, std::string sFeatureDB, int nBest, bool bSeparateTrain) {
    TRACE("Training started");
    int time_start = clock();
    CReranker reranker(sFeatureDB, nBest, true);
@@ -37,7 +37,7 @@ void train(string sInputFile, string sFeatureDB, int nBest, bool bSeparateTrain)
    
    input_reader.readTaggedSentence(&correct_sent);
    while( !(correct_sent.empty()) ) {
-      cout << "Sentence " << ++nCount << endl;
+      std::cout << "Sentence " << ++nCount << std::endl;
       if (bSeparateTrain)
          reranker.train_separate(correct_sent);
       else
@@ -62,23 +62,23 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("s", "", "train segmentor and postagger independently", "");
       // check arguments
       if (options.args.size() != 4) {
-         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
-         cout << configurations.message() << endl;
+         std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
       configurations.loadConfigurations(options.opts);
    
       int nBest;
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
-         cerr<<"Error: N must be integer."<<endl; return 1;
+         std::cerr<<"Error: N must be integer."<<std::endl; return 1;
       }
       bool bSeparateTrain = configurations.getConfiguration("s").empty() ? false: true;
    
       for (int i=0; i<atoi(argv[3]); ++i)
          train(argv[1], argv[2], nBest, bSeparateTrain);
       return 0;
-   } catch (const string &e) {
-      cerr << e << endl;
+   } catch (const std::string &e) {
+      std::cerr << e << std::endl;
       return 1;
    }
 }

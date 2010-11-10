@@ -21,7 +21,7 @@ namespace english {
  *
  *==============================================================*/
 
-inline bool canAssignLabel(const vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent, const int &head, const int &dep, const CDependencyLabel&lab) {
+inline bool canAssignLabel(const std::vector< CTaggedWord<CTag,TAG_SEPARATOR> > &sent, const int &head, const int &dep, const CDependencyLabel&lab) {
    assert(head==DEPENDENCY_LINK_NO_HEAD||head>=0); // correct head
    assert(dep>=0);
    // if the head word is none, only ROOT

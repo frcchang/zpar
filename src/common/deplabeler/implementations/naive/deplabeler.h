@@ -34,8 +34,8 @@ class CDepLabeler : public CDepLabelerBase {
 
 private:
 
-   vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
-   vector< int > m_lLinks;
+   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   std::vector< int > m_lLinks;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -43,7 +43,7 @@ private:
 
 public:
    // constructor and destructor
-   CDepLabeler( const string &sFeatureDBPath , bool bTrain ) : CDepLabelerBase(sFeatureDBPath, bTrain) { 
+   CDepLabeler( const std::string &sFeatureDBPath , bool bTrain ) : CDepLabelerBase(sFeatureDBPath, bTrain) { 
       m_weights = new deplabeler :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
@@ -66,7 +66,7 @@ public:
    void finishtraining() {
       static_cast<deplabeler::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<deplabeler::CWeight*>(m_weights)->saveScores();
-      cout << "Total number of training errors are: " << m_nTotalErrors << endl;
+      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
 
 private:

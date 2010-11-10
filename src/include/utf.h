@@ -14,18 +14,18 @@
 
 /*===============================================================
  *
- * Unicode string and character utils
+ * Unicode std::string and character utils
  *
  *==============================================================*/
 
 /*---------------------------------------------------------------
  *
- * getUTF8StringLength - get how many characters are in a UTF8 string
+ * getUTF8StringLength - get how many characters are in a UTF8 std::string
  *
  *--------------------------------------------------------------*/
 
 inline
-unsigned long int getUTF8StringLength(const string &s) {
+unsigned long int getUTF8StringLength(const std::string &s) {
    unsigned long int retval=0;
    unsigned long int idx=0;
    while (idx<s.length()) {
@@ -42,12 +42,12 @@ unsigned long int getUTF8StringLength(const string &s) {
          ++retval;
       }
       else {
-         WARNING("in utf.h getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("in utf.h getUTF8StringLength: std::string '" << s << "' not encoded in unicode utf-8"); 
          return retval;
       }
    }
    if (idx != s.length()) {
-      WARNING("in utf.h getUTF8StringLength: string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("in utf.h getUTF8StringLength: std::string '" << s << "' not encoded in unicode utf-8"); 
       return retval;
    }
    return retval;
@@ -56,14 +56,14 @@ unsigned long int getUTF8StringLength(const string &s) {
 /*----------------------------------------------------------------
  *
  * getCharactersFromUTF8String - get the characters from 
- *                               utf string. The characters from 
- *                               this string are appended
+ *                               utf std::string. The characters from 
+ *                               this std::string are appended
  *                               to a given sentence. 
  *
  *----------------------------------------------------------------*/
 
 template<class CSentence>
-inline int getCharactersFromUTF8String(const string &s, CSentence *sentence) {
+inline int getCharactersFromUTF8String(const std::string &s, CSentence *sentence) {
    if (sentence==NULL)
       return 0;
    unsigned long int idx=0;
@@ -85,14 +85,14 @@ inline int getCharactersFromUTF8String(const string &s, CSentence *sentence) {
          idx += 3;
       }
       else {
-         WARNING("in utf.h getCharactersFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("in utf.h getCharactersFromUTF8String: std::string '" << s << "' not encoded in unicode utf-8"); 
          sentence->push_back("?");
          ++len;
          ++idx;
       }
    }
    if (idx != s.length()) {
-      WARNING("in utf.h getCharactersFromUTF8String: string '" << s << "' not encoded in utf-8"); 
+      WARNING("in utf.h getCharactersFromUTF8String: std::string '" << s << "' not encoded in utf-8"); 
       return len;
    }
 
@@ -102,11 +102,11 @@ inline int getCharactersFromUTF8String(const string &s, CSentence *sentence) {
 /*----------------------------------------------------------------
  *
  * getFirstCharFromUTF8String - get the first character from 
- *                              utf string. 
+ *                              utf std::string. 
  *
  *----------------------------------------------------------------*/
 
-inline string getFirstCharFromUTF8String(const string &s) {
+inline std::string getFirstCharFromUTF8String(const std::string &s) {
    if (s=="")
       return "";
    if ((s[0]&0x80)==0) {
@@ -121,7 +121,7 @@ inline string getFirstCharFromUTF8String(const string &s) {
       return s.substr(0, 3);
    }
    else {
-      WARNING("in utf.h getFirstCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("in utf.h getFirstCharFromUTF8String: std::string '" << s << "' not encoded in unicode utf-8"); 
       return "?";
    }
 }
@@ -129,15 +129,15 @@ inline string getFirstCharFromUTF8String(const string &s) {
 /*----------------------------------------------------------------
  *
  * getLastCharFromUTF8String - get the last character from 
- *                             utf string.  
+ *                             utf std::string.  
  *
  *----------------------------------------------------------------*/
 
-inline string getLastCharFromUTF8String(const string &s) {
+inline std::string getLastCharFromUTF8String(const std::string &s) {
    if (s=="")
       return "";
    unsigned long int idx=0;
-   string retval;
+   std::string retval;
    while (idx<s.length()) {
       if ((s[idx]&0x80)==0) {
          retval = s.substr(idx, 1);
@@ -152,12 +152,12 @@ inline string getLastCharFromUTF8String(const string &s) {
          idx += 3;
       }
       else {
-         WARNING("in utf.h getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+         WARNING("in utf.h getLastCharFromUTF8String: std::string '" << s << "' not encoded in unicode utf-8"); 
          return "?";
       }
    }
    if (idx != s.length()) {
-      WARNING("in utf.h getLastCharFromUTF8String: string '" << s << "' not encoded in unicode utf-8"); 
+      WARNING("in utf.h getLastCharFromUTF8String: std::string '" << s << "' not encoded in unicode utf-8"); 
       return "?";
    }
    return retval;
@@ -165,11 +165,11 @@ inline string getLastCharFromUTF8String(const string &s) {
 
 /*----------------------------------------------------------------
  *
- * isOneUTF8Character - whether a string is one utf8 character
+ * isOneUTF8Character - whether a std::string is one utf8 character
  *
  *----------------------------------------------------------------*/
 
-inline bool isOneUTF8Character(const string &s) {
+inline bool isOneUTF8Character(const std::string &s) {
    if (s=="") return false; // is no utf character
    if (s.size()>3) return false; // is more than one utf character
    if ((s[0]&0x80)==0) {

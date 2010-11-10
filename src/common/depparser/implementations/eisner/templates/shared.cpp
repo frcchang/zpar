@@ -27,8 +27,8 @@
    link_distance_encode = getLinkSizeAndDirection(head_index, dep_index) ;
    link_direction = getLinkDirection(head_index, dep_index) ; 
    link_direction_encode = head_index-dep_index>0 ? LINK_DIRECTION_HEAD_RIGHT : LINK_DIRECTION_HEAD_LEFT ;
-   const CWord &head_word = static_cast<const CWord&>(head);
-   const CWord &dep_word = static_cast<const CWord&>(dep);
+   const CWord &head_word = head.word;
+   const CWord &dep_word = dep.word;
    const CTag &head_tag = head.tag;
    const CTag &dep_tag = dep.tag;
    const CTaggedWord<CTag, TAG_SEPARATOR> &head_word_tag = static_cast<const CTaggedWord<CTag, TAG_SEPARATOR> &>(head);

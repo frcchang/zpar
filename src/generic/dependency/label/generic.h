@@ -17,7 +17,7 @@
 
 /*===============================================================
  *
- * definitions about tag 
+ * definitions abstd::cout tag 
  *
  *==============================================================*/
 
@@ -30,9 +30,9 @@ private:
     *
     *==============================================================*/
    
-   class CDependencyLabelTokenizer : public CTokenizer<string, 251> {
+   class CDependencyLabelTokenizer : public CTokenizer<std::string, 251> {
       public: 
-         CDependencyLabelTokenizer() : CTokenizer<string, 251>(0/*reserve for NONE BEGIN END*/) {
+         CDependencyLabelTokenizer() : CTokenizer<std::string, 251>(0/*reserve for NONE BEGIN END*/) {
             lookup("-NONE-");
             lookup("-ROOT-");
          } 
@@ -56,7 +56,7 @@ protected:
 
 public:
    CDependencyLabel() : m_code(NONE) { }
-   CDependencyLabel(const string &s) { load(s); }
+   CDependencyLabel(const std::string &s) { load(s); }
    CDependencyLabel(const CDependencyLabel &t) : m_code(t.m_code) { }
    CDependencyLabel(const unsigned &u) { assert(getTokenizer().count()>u); m_code=u; }
    virtual ~CDependencyLabel() {}
@@ -71,7 +71,7 @@ public:
    bool operator <= (const CDependencyLabel &l) const { return m_code <= l.m_code; }
    bool operator >= (const CDependencyLabel &l) const { return m_code >= l.m_code; }
 
-   void load(const string &s) {
+   void load(const std::string &s) {
       m_code=getTokenizer().lookup(s); 
       COUNT = getTokenizer().count();
       LAST = COUNT-1;
@@ -80,7 +80,7 @@ public:
    void load(const unsigned long &u) {
       m_code = u;
    }
-   const string &str() const { 
+   const std::string &str() const { 
       return getTokenizer().key(m_code); 
    }
 

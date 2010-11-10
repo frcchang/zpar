@@ -22,14 +22,14 @@ const char TAG_SEPARATOR = '/';
 
 //===============================================================
 
-inline istream & operator >> (istream &is, generic::CTag &tag) {
-   string s;
+inline std::istream & operator >> (std::istream &is, generic::CTag &tag) {
+   std::string s;
    is >> s;
    tag.load(s);
    return is;
 }
 
-inline ostream & operator << (ostream &os, const generic::CTag &tag) {
+inline std::ostream & operator << (std::ostream &os, const generic::CTag &tag) {
    os << tag.str() ;
    return os;
 }

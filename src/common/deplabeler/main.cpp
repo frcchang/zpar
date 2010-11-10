@@ -23,21 +23,21 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const string sInputFile, const string sOutputFile, const string sFeatureFile, bool bCoNLL) {
+void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, bool bCoNLL) {
 
-   cout << "Labeling started" << endl;
+   std::cout << "Labeling started" << std::endl;
 
    clock_t time_start = clock();
 
    CDepLabeler labeler(sFeatureFile, false) ;
-   ifstream is(sInputFile.c_str());
+   std::ifstream is(sInputFile.c_str());
    assert(is.is_open());
-   ofstream os(sOutputFile.c_str());
+   std::ofstream os(sOutputFile.c_str());
    assert(os.is_open());
    CDependencyTree input_sent;
-   CLabeledDependencyTree output_sent; 
+   CLabeledDependencyTree outout_sent; 
    CCoNLLOutput input_conll;
-   CCoNLLOutput output_conll;
+   CCoNLLOutput outout_conll;
 
    int nCount=0;
 
@@ -47,14 +47,14 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
       TRACE("Sentence " << nCount);
       ++ nCount;
 
-      // Find decoder output
+      // Find decoder outout
       if (bCoNLL) {
-         labeler.label_conll( input_conll , &output_conll ) ;
-         os << output_conll; 
+         labeler.label_conll( input_conll , &outout_conll ) ;
+         os << outout_conll; 
       }
       else {
-         labeler.label( input_sent , &output_sent ) ;
-	 os << output_sent ;
+         labeler.label( input_sent , &outout_sent ) ;
+	 os << outout_sent ;
       }
       
       // Ouptut sent
@@ -63,7 +63,7 @@ void process(const string sInputFile, const string sOutputFile, const string sFe
    is.close();
    os.close();
 
-   cout << "Labeling has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << endl;
+   std::cout << "Labeling has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -79,8 +79,8 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("c", "", "process CoNLL format", "");
       // check arguments
       if (options.args.size() != 4) {
-         cout << "Usage: " << argv[0] << " input_file output_file model_file" << endl;
-         cout << configurations.message() << endl;
+         std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
       configurations.loadConfigurations(options.opts);
@@ -89,8 +89,8 @@ int main(int argc, char* argv[]) {
    
       process(options.args[1], options.args[2], options.args[3], bCoNLL);
       return 0;
-   } catch (const string &e) {
-      cerr << "Error: " << e << endl;
+   } catch (const std::string &e) {
+      std::cerr << "Error: " << e << std::endl;
       return 1;
    }
 }

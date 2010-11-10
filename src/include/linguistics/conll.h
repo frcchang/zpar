@@ -25,15 +25,15 @@ class CCoNLLInputNode : public CDependencyTreeNode {
 
 public:
    int id;
-   string word; // same as dependency
-   string lemma;
-   string ctag;
-   string tag;  // same as dependency
-   string feats;
+   std::string word; // same as dependency
+   std::string lemma;
+   std::string ctag;
+   std::string tag;  // same as dependency
+   std::string feats;
 
 public:
    CCoNLLInputNode( ) : id(-1) { }
-   CCoNLLInputNode( const int &d, const string &w, const string &l, const string &c, const string &t, const string &f) : id(d), word(w), lemma(l), ctag(c), tag(t), feats(f) { }
+   CCoNLLInputNode( const int &d, const std::string &w, const std::string &l, const std::string &c, const std::string &t, const std::string &f) : id(d), word(w), lemma(l), ctag(c), tag(t), feats(f) { }
    virtual ~CCoNLLInputNode() {}
 
 };
@@ -48,25 +48,25 @@ class CCoNLLOutputNode : public CCoNLLInputNode {
 
 public:
    int head;     // same as dependency
-   string label;
+   std::string label;
    int phead;
-   string plabel;
+   std::string plabel;
 
 public:
    CCoNLLOutputNode( ) : head(DEPENDENCY_LINK_NO_HEAD), phead(DEPENDENCY_LINK_NO_HEAD) { }
-   CCoNLLOutputNode( const int &d, const string &w, const string &l, const string &c, const string &t, const string &f, const int &h, const string &la, const int &p, const string &pl ) : CCoNLLInputNode(d, w, l, c, t, f), head(h), label(la), phead(p), plabel(pl) { }
+   CCoNLLOutputNode( const int &d, const std::string &w, const std::string &l, const std::string &c, const std::string &t, const std::string &f, const int &h, const std::string &la, const int &p, const std::string &pl ) : CCoNLLInputNode(d, w, l, c, t, f), head(h), label(la), phead(p), plabel(pl) { }
    virtual ~CCoNLLOutputNode() {}
 
 };
 
 //==============================================================
 
-inline istream & operator >> (istream &is, CCoNLLInputNode &node) {
-   string line;
+inline std::istream & operator >> (std::istream &is, CCoNLLInputNode &node) {
+   std::string line;
 
    getline(is, line, '\t');
    ASSERT(is && !line.empty(), "Not well formatted CoNLL data (id not found)");
-   istringstream iss_id(line);
+   std::istringstream iss_id(line);
    iss_id >> node.id;
 
    getline(is, line, '\t'); 
@@ -91,19 +91,19 @@ inline istream & operator >> (istream &is, CCoNLLInputNode &node) {
    return is ;
 }
 
-inline ostream & operator << (ostream &os, const CCoNLLInputNode &node) {
+inline std::ostream & operator << (std::ostream &os, const CCoNLLInputNode &node) {
    os << node.id << '\t' << node.word << '\t' << node.lemma << "\t" << node.ctag << '\t' << node.tag << '\t' << node.feats;
    return os ;
 }
 
-inline istream & operator >> (istream &is, CCoNLLOutputNode &node) {
-   string line;
+inline std::istream & operator >> (std::istream &is, CCoNLLOutputNode &node) {
+   std::string line;
 
    is >> static_cast<CCoNLLInputNode&>(node);
 
    getline(is, line, '\t');
    ASSERT(is && !line.empty(), "Not well formatted CoNLL data");
-   istringstream iss_head(line);
+   std::istringstream iss_head(line);
    iss_head >> node.head;
 
    getline(is, line, '\t');
@@ -116,7 +116,7 @@ inline istream & operator >> (istream &is, CCoNLLOutputNode &node) {
       node.phead = DEPENDENCY_LINK_NO_HEAD;
    }
    else {
-      istringstream iss_phead(line);
+      std::istringstream iss_phead(line);
       iss_phead >> node.phead;
    }
 
@@ -126,9 +126,9 @@ inline istream & operator >> (istream &is, CCoNLLOutputNode &node) {
    return is ;
 }
 
-inline ostream & operator << (ostream &os, const CCoNLLOutputNode &node) {
+inline std::ostream & operator << (std::ostream &os, const CCoNLLOutputNode &node) {
    // get phead formatted correct by inserting underscore
-   ostringstream oss;
+   std::ostringstream oss;
    if (node.phead==DEPENDENCY_LINK_NO_HEAD)
       oss << '_';
    else
@@ -144,34 +144,34 @@ inline ostream & operator << (ostream &os, const CCoNLLOutputNode &node) {
  *
  *==============================================================*/
 
-class CCoNLLInput : public vector<CCoNLLInputNode>{
+class CCoNLLInput : public std::vector<CCoNLLInputNode>{
 
 public:
    CCoNLLInput() {clear();}
 
 public:
    void clear() {
-      vector<CCoNLLInputNode>::clear();
+      std::vector<CCoNLLInputNode>::clear();
       push_back(CCoNLLInputNode(0, "", "", "-BEGIN-", "-BEGIN-", ""));
    }
 
    void toTwoStringVector(CTwoStringVector &out) const {
       out.clear();
       for (unsigned i=0; i<size(); ++i) {
-         out.push_back(make_pair(at(i).word, at(i).tag));
+         out.push_back(std::make_pair(at(i).word, at(i).tag));
       }
    }
 };
 
 inline std::istream & operator >> (std::istream &is, CCoNLLInput &sent) {
    sent.clear();
-   string line;
+   std::string line;
    getline(is, line);
 
    while(is && !lstrip(line).empty())
    {
       CCoNLLInputNode node;
-      istringstream iss(rstrip(line));
+      std::istringstream iss(rstrip(line));
       iss >> node ;
       sent.push_back( node );
       getline(is, line);
@@ -181,8 +181,8 @@ inline std::istream & operator >> (std::istream &is, CCoNLLInput &sent) {
 
 inline std::ostream & operator << (std::ostream &os, const CCoNLLInput &sent) {
    for (unsigned i=1; i<sent.size(); ++i)
-      os << sent.at(i) << endl ;
-   os << endl ;
+      os << sent.at(i) << std::endl ;
+   os << std::endl ;
    return os ;
 }
 
@@ -192,14 +192,14 @@ inline std::ostream & operator << (std::ostream &os, const CCoNLLInput &sent) {
  *
  *==============================================================*/
 
-class CCoNLLOutput : public vector<CCoNLLOutputNode> {
+class CCoNLLOutput : public std::vector<CCoNLLOutputNode> {
 
 public:
    CCoNLLOutput() {clear();}
 
 public:
    void clear() {
-      vector<CCoNLLOutputNode>::clear();
+      std::vector<CCoNLLOutputNode>::clear();
       push_back(CCoNLLOutputNode(0, "", "", "-BEGIN-", "-BEGIN-", "", DEPENDENCY_LINK_NO_HEAD, "", DEPENDENCY_LINK_NO_HEAD, ""));
    }
 
@@ -246,13 +246,13 @@ public:
 
 inline std::istream & operator >> (std::istream &is, CCoNLLOutput &sent) {
    sent.clear();
-   string line;
+   std::string line;
    getline(is, line);
 
    while(is && !lstrip(line).empty())
    {
       CCoNLLOutputNode node;
-      istringstream iss(rstrip(line));
+      std::istringstream iss(rstrip(line));
       iss >> node ;
       sent.push_back( node );
       getline(is, line);
@@ -262,8 +262,8 @@ inline std::istream & operator >> (std::istream &is, CCoNLLOutput &sent) {
 
 inline std::ostream & operator << (std::ostream &os, const CCoNLLOutput &sent) {
    for (unsigned i=1; i<sent.size(); ++i)
-      os << sent.at(i) << endl ;
-   os << endl ;
+      os << sent.at(i) << std::endl ;
+   os << std::endl ;
    return os ;
 }
 
@@ -276,7 +276,7 @@ inline std::ostream & operator << (std::ostream &os, const CCoNLLOutput &sent) {
 class CCoNLLCPOS : public CGenericTag {
 public:
    CCoNLLCPOS() : CGenericTag() {}
-   CCoNLLCPOS(const string &s) {load(s);}
+   CCoNLLCPOS(const std::string &s) {load(s);}
    CCoNLLCPOS(const unsigned long &i) : CGenericTag(i) {}
    CCoNLLCPOS(const CCoNLLCPOS &c) : CGenericTag(c) {}
 public:
@@ -292,13 +292,13 @@ public:
 class CCoNLLFeats : public CGenericTag {
 public:
    CCoNLLFeats() : CGenericTag() {}
-   CCoNLLFeats(const string &s) {load(s);}
+   CCoNLLFeats(const std::string &s) {load(s);}
    CCoNLLFeats(const unsigned long &i) : CGenericTag(i) {}
    CCoNLLFeats(const CCoNLLFeats &c) : CGenericTag(c) {}
 public:
    CGenericTagset &getTagset() const { static CGenericTagset tagset; return tagset; }
 };
 
-void readCoNLLFeats(vector<CCoNLLFeats> &output, const string &input);
+void readCoNLLFeats(std::vector<CCoNLLFeats> &output, const std::string &input);
 
 #endif

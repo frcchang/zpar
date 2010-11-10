@@ -108,7 +108,7 @@ public:
       if (initialize) init();
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0), pool() { 
-      cerr << "CHashMap does not support copy constructor!"; 
+      std::cerr << "CHashMap does not support copy constructor!"; 
       assert(1==0);
    }
    virtual ~CHashMap() { 
@@ -211,7 +211,7 @@ public:
 public:
 #ifdef DEBUG 
    void trace() { 
-      cout << "tracing size:amount" << endl;
+      std::cout << "tracing size:amount" << std::endl;
       map<unsigned, unsigned> statistic;
       for (unsigned i=0; i<m_nTableSize; ++i) {
          unsigned size = 0;
@@ -225,8 +225,8 @@ public:
       map<unsigned, unsigned>::iterator it;
       for (it=statistic.begin(); it!=statistic.end(); ++it)
          if (it->second != 0)
-            cout << it->first << ':' << it->second << " (" << float(it->second)/m_nTableSize << ")" << endl;
-      cout << "done" << endl;
+            std::cout << it->first << ':' << it->second << " (" << float(it->second)/m_nTableSize << ")" << std::endl;
+      std::cout << "done" << std::endl;
    }
 #endif
 

@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * reranker.h - the reranker for segmented and tagged outputs   *
+ * reranker.h - the reranker for segmented and tagged outouts   *
  *                                                              *
  * It updates the segmentor and tagger in a unified manner      *
  *                                                              *
@@ -36,7 +36,7 @@ protected:
    bool m_bRankIncludeSeg;
 
 public:
-   CReranker(const string &sFeatureDB, const int &nBest, const bool &bTrain, const bool ranking_segmentor=false) : m_nBest(nBest), m_bTrain(bTrain), m_nTrainingRound(0), m_nTrainingErrors(0), m_nTrainingErrort(0), m_bRankIncludeSeg(false) {
+   CReranker(const std::string &sFeatureDB, const int &nBest, const bool &bTrain, const bool ranking_segmentor=false) : m_nBest(nBest), m_bTrain(bTrain), m_nTrainingRound(0), m_nTrainingErrors(0), m_nTrainingErrort(0), m_bRankIncludeSeg(false) {
       m_segmentor = new CSegmentor(sFeatureDB+".segmentor", bTrain);
       m_tagger = new CTagger(sFeatureDB+".tagger", bTrain);
       m_scores_seg = new double[nBest];

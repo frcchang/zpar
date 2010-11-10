@@ -22,7 +22,7 @@ namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
- * definitions about tag 
+ * definitions abstd::cout tag 
  *
  *==============================================================*/
 
@@ -34,9 +34,9 @@ protected:
     *
     *==============================================================*/
    
-   class CConstituentLabelTokenizer : public CTokenizer<string, 251> {
+   class CConstituentLabelTokenizer : public CTokenizer<std::string, 251> {
       public: 
-         CConstituentLabelTokenizer() : CTokenizer<string, 251>(0/*reserve for NONE BEGIN END*/) {
+         CConstituentLabelTokenizer() : CTokenizer<std::string, 251>(0/*reserve for NONE BEGIN END*/) {
             lookup("-NONE-");
             lookup("-BEGIN-");
          } 
@@ -62,7 +62,7 @@ public:
    CConstituentLabel() : m_code(NONE) { }
    CConstituentLabel(const CConstituentLabel &t) { m_code=t.m_code; }
    CConstituentLabel(const unsigned long &u) { assert(getTokenizer().count()>u); m_code=u; }
-   CConstituentLabel(const string &s) { load(s); }
+   CConstituentLabel(const std::string &s) { load(s); }
    virtual ~CConstituentLabel() {}
 
 public:
@@ -78,7 +78,7 @@ public:
    bool operator <= (const CConstituentLabel &w) const { return m_code <= w.m_code; }
    bool operator >= (const CConstituentLabel &w) const { return m_code >= w.m_code; }
 
-   void load(const string &s) {
+   void load(const std::string &s) {
       m_code=getTokenizer().lookup(s); 
 //      if (getTokenizer().count()>COUNT) TRACE(s);
       COUNT = getTokenizer().count();
@@ -86,7 +86,7 @@ public:
       assert((1<<SIZE)>COUNT);
    }
    void load(const unsigned long &code) {m_code=code;}
-   const string &str() const { 
+   const std::string &str() const { 
       return getTokenizer().key(m_code); 
    }
 

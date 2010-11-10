@@ -109,7 +109,7 @@ public:
    const CStateItem *stackPtr;
    int current_word;
    CAction action;
-//   const vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
+//   const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
    
 public:
    CStateItem() : current_word(0), score(0), action(), /*sent(0),*/ stackPtr(0), statePtr(0), node() {}

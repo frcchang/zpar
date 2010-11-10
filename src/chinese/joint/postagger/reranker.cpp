@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * reranker.cpp - the reranker for segmented and tagged outputs *
+ * reranker.cpp - the reranker for segmented and tagged outouts *
  *                                                              *
  * It updates the segmentor and tagger in a unified manner      *
  *                                                              *
@@ -22,7 +22,7 @@ using namespace chinese;
  *---------------------------------------------------------------*/
 
 void recordSegmentation(const CStringVector* raw, const CStringVector* segmented, CBitArray &retval) {
-   vector<int> indice;
+   std::vector<int> indice;
    for (int i=0; i<raw->size(); ++i) {
       for (int j=0; j<raw->at(i).size(); ++j)
          indice.push_back(i);
@@ -88,7 +88,7 @@ void CReranker::train(const CTwoStringVector &correct) {
    assert(m_scratch_seg[best_index].empty()==false);
    assert(m_scratch_tag[best_index].empty()==false);
    if ( m_scratch_seg[best_index] != segmented ) {
-      cout << "Segmentation error" << endl;
+      std::cout << "Segmentation error" << std::endl;
       m_segmentor->updateScores(m_scratch_seg+best_index, &segmented, m_nTrainingRound);
       ++m_nTrainingErrors;
    }
@@ -118,7 +118,7 @@ void CReranker::train_separate(const CTwoStringVector &correct) {
 
    m_segmentor->segment(&raw, m_scratch_seg);
    if ( m_scratch_seg[0] != segmented ) {
-      cout << "Segmentation error" << endl;
+      std::cout << "Segmentation error" << std::endl;
       m_segmentor->updateScores(m_scratch_seg, &segmented, m_nTrainingRound);
       ++m_nTrainingErrors;
    }
@@ -126,7 +126,7 @@ void CReranker::train_separate(const CTwoStringVector &correct) {
    recordSegmentation(&raw, &segmented, wds);
    m_tagger->tag(&raw, m_scratch_tag, NULL, 1, &wds); 
    if ( m_scratch_tag[0] != correct ) {
-      cout << "Tagging error" << endl;
+      std::cout << "Tagging error" << std::endl;
       ++m_nTrainingErrort;
    }
    // have to update the tagger anyway because it maintains useful info
@@ -142,6 +142,6 @@ void CReranker::train_separate(const CTwoStringVector &correct) {
 void CReranker::finishTraining() {
    m_segmentor->finishTraining(m_nTrainingRound);
    m_tagger->finishTraining(m_nTrainingRound);
-   cout << m_nTrainingRound << " training sentences in total have been processed; " << m_nTrainingErrors << " segmentation mistakes and  " << m_nTrainingErrort << " tagging mistakes." << endl;
+   std::cout << m_nTrainingRound << " training sentences in total have been processed; " << m_nTrainingErrors << " segmentation mistakes and  " << m_nTrainingErrort << " tagging mistakes." << std::endl;
 }
 
