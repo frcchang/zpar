@@ -33,7 +33,6 @@ public:
    }
 
    friend std::ostream &operator << (std::ostream &os, CTable2 &j) {
-TRACE("output");
       vector<K1> keys1;
       vector<K2> keys2;
       keys1.resize(j.size1);
