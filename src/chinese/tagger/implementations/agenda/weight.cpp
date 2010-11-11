@@ -192,7 +192,7 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(unsigned long round) {
-   std::cout << "Comuting averaged feature std::vector ..."; std::cout.flush();
+   std::cout << "Comuting averaged feature vector ..."; std::cout.flush();
    iterate_templates(,.computeAverage(round););
    std::cout << " done." << std::endl;
 }

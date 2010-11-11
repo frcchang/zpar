@@ -54,6 +54,7 @@ private:
    std::vector< CCoNLLCPOS > m_lCacheCoNLLCPOS; // conll
    std::vector< std::vector<CCoNLLFeats> > m_lCacheCoNLLFeats; // conll
 
+
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;

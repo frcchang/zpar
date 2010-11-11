@@ -60,7 +60,7 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(int round) {
-   TRACE("adding total feature std::vector.");
+   TRACE("adding total feature vector.");
    iterate_templates(,.computeAverage(round););
    TRACE("Done");
 }
