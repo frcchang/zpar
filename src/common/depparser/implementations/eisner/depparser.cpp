@@ -455,7 +455,7 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;
 
-   // now update the feature std::vector when the outout doesn't match
+   // now update the feature vector when the outout doesn't match
    parse( sentence , &outout ) ; 
    updateScoreVector( outout, correct , round ) ;
 

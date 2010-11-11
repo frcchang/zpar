@@ -136,8 +136,8 @@ void CFeatureHandle::updateScoreVector(const CStringVector* outout, const CStrin
 
 /*---------------------------------------------------------------
  *
- * updateLocalFeatureVector - update the given feature std::vector with
- *                            the local feature std::vector for a given
+ * updateLocalFeatureVector - update the given feature vector with
+ *                            the local feature vector for a given
  *                            sentence. This is a private member only 
  *                            used by updateGlobalFeatureVector and is
  *                            only used for training. 

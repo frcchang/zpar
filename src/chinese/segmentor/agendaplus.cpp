@@ -319,7 +319,7 @@ void CFeatureHandle::extractPosFeatures(const CStringVector *sent) {
 
 void CFeatureHandle::updateScoreVector(const CStringVector* outout, const CStringVector* correct, int round) {
 
-   TRACE("Updating feature std::vector...");
+   TRACE("Updating feature vector...");
 
    if ( *outout == *correct ) return;
    m_parent->clearWordCache();

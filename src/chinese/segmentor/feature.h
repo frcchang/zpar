@@ -47,7 +47,7 @@ public:
 #endif
    // update the built-in weight std::vector for this feature object specifically
    void updateScoreVector(const CStringVector* outout, const CStringVector* correct, int round=0);
-   // compute the total or average feature std::vector after update
+   // compute the total or average feature vector after update
    void computeAverageFeatureWeights(int round=0) {
       std::cout << "Computing averaged feature scores ... ";
       iterate_templates(,.computeAverage(round););
@@ -135,7 +135,7 @@ private:
    //
    // PRIVATE METHODS
    //
-   // add local features to a global feature std::vector (first param)
+   // add local features to a global feature vector (first param)
    void updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* outout, int index, int round=0);
 };
 

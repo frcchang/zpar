@@ -79,7 +79,7 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(int round) {
-   std::cout<<"Computing averaged (total) feature std::vector..."; std::cout.flush();
+   std::cout<<"Computing averaged (total) feature vector..."; std::cout.flush();
    iterate_templates(,.computeAverage(round);) ;
 
    std::cout<<"done."<<std::endl;
