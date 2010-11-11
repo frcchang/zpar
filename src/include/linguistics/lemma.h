@@ -72,12 +72,13 @@ public:
 inline std::istream & operator >> (std::istream &is, CLemma &w) {
    std::string s ;
    is >> s ;
-   w.load(s) ;
+   assert( s[0]=='[' && s[s.size()-1] == ']') ; // [] avoids empty
+   w = s.substr(1,s.size()-2) ;
    return is ;
 }
 
 inline std::ostream & operator << (std::ostream &os, const CLemma &w) {
-   os << w.str();
+   os << '[' << w.str() << ']' ;
    return os ;
 }
 
