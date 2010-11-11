@@ -325,16 +325,16 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
             retval += cast_weights->m_mapSTf.getOrUpdateScore( std::make_pair(m_lCacheCoNLLFeats[st_index][i], action), m_nScoreIndex, amount, round) ;
       } // if (st_index!=-1)
       if (n0_index!=-1) {
-         retval += cast_weights->m_mapSTl.getOrUpdateScore( std::make_pair(m_lCacheCoNLLLemma[n0_index], action), m_nScoreIndex, amount, round) ;
-         retval += cast_weights->m_mapSTc.getOrUpdateScore( std::make_pair(m_lCacheCoNLLCPOS[n0_index], action), m_nScoreIndex, amount, round) ;
+         retval += cast_weights->m_mapN0l.getOrUpdateScore( std::make_pair(m_lCacheCoNLLLemma[n0_index], action), m_nScoreIndex, amount, round) ;
+         retval += cast_weights->m_mapN0c.getOrUpdateScore( std::make_pair(m_lCacheCoNLLCPOS[n0_index], action), m_nScoreIndex, amount, round) ;
          for (i=0; i<m_lCacheCoNLLFeats[n0_index].size(); ++i)
-            retval += cast_weights->m_mapSTf.getOrUpdateScore( std::make_pair(m_lCacheCoNLLFeats[n0_index][i], action), m_nScoreIndex, amount, round) ;
+            retval += cast_weights->m_mapN0f.getOrUpdateScore( std::make_pair(m_lCacheCoNLLFeats[n0_index][i], action), m_nScoreIndex, amount, round) ;
       } // if (n0_index!=-1)
       if (n1_index!=-1) {
-         retval += cast_weights->m_mapSTl.getOrUpdateScore( std::make_pair(m_lCacheCoNLLLemma[n1_index], action), m_nScoreIndex, amount, round) ;
-         retval += cast_weights->m_mapSTc.getOrUpdateScore( std::make_pair(m_lCacheCoNLLCPOS[n1_index], action), m_nScoreIndex, amount, round) ;
+         retval += cast_weights->m_mapN1l.getOrUpdateScore( std::make_pair(m_lCacheCoNLLLemma[n1_index], action), m_nScoreIndex, amount, round) ;
+         retval += cast_weights->m_mapN1c.getOrUpdateScore( std::make_pair(m_lCacheCoNLLCPOS[n1_index], action), m_nScoreIndex, amount, round) ;
          for (i=0; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
-            retval += cast_weights->m_mapSTf.getOrUpdateScore( std::make_pair(m_lCacheCoNLLFeats[n1_index][i], action), m_nScoreIndex, amount, round) ;
+            retval += cast_weights->m_mapN1f.getOrUpdateScore( std::make_pair(m_lCacheCoNLLFeats[n1_index][i], action), m_nScoreIndex, amount, round) ;
       } // if (n1_index!=-1)
    }
 
