@@ -101,18 +101,6 @@ using namespace TARGET_LANGUAGE::depparser;
    left(m_mapSTtSTLDtN0w)right\
    left(m_mapSTtSTRDtN0w)right\
 \
-   left(m_mapSTl)right\
-   left(m_mapSTc)right\
-   left(m_mapSTf)right\
-\
-   left(m_mapN0l)right\
-   left(m_mapN0c)right\
-   left(m_mapN0f)right\
-\
-   left(m_mapN1l)right\
-   left(m_mapN1c)right\
-   left(m_mapN1f)right\
-\
    iterate_label_templates(left, right)
 
 /*---------------------------------------------------------------
