@@ -212,7 +212,7 @@ public:
 #ifdef DEBUG 
    void trace() { 
       std::cout << "tracing size:amount" << std::endl;
-      map<unsigned, unsigned> statistic;
+      std::map<unsigned, unsigned> statistic;
       for (unsigned i=0; i<m_nTableSize; ++i) {
          unsigned size = 0;
          CEntry* entry = m_buckets[i];
@@ -222,7 +222,7 @@ public:
          }
          ++statistic[size];
       }
-      map<unsigned, unsigned>::iterator it;
+      std::map<unsigned, unsigned>::iterator it;
       for (it=statistic.begin(); it!=statistic.end(); ++it)
          if (it->second != 0)
             std::cout << it->first << ':' << it->second << " (" << float(it->second)/m_nTableSize << ")" << std::endl;
