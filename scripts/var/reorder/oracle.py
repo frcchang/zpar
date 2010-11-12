@@ -15,8 +15,8 @@ def readAlign(path):
    file = gzip.open(path)
    for line in file:
       if line.startswith('SENT:'):
-         number = int(line[6:-1])
-         assert number == n # make sure of sentence index
+#         number = int(line[6:-1])
+#         assert number == n # make sure of sentence index
          if n>0:
             yield retval
             retval = {}
