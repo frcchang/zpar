@@ -67,13 +67,13 @@ def reorderNode(node):
       left_children = []
       while node.left_children:
          left_child = node.left_children.pop(-1) # for each left
-         if left_child.pos == 'DEC' or (left_child.pos == 'DEG' and reorderDEG(left_child)):
+         if left_child.size > 3 and left_child.pos == 'DEC' or (left_child.pos == 'DEG' and reorderDEG(left_child)):
             node.right_children.insert(0, left_child)
          else:
             left_children.insert(0, left_child)
       node.left_children = left_children
    # dec
-   elif node.pos == 'DEC' or node.pos == 'DEG' and reorderDEG(node) or node.pos == 'LC':
+   elif ( node.size > 3 and node.pos == 'DEC' or node.pos == 'DEG' and reorderDEG(node) ) or node.pos == 'LC':
       while node.left_children:
          left_child = node.left_children.pop(0)
          node.right_children.insert(0, left_child)
@@ -85,7 +85,7 @@ def reorder(tree):
 #========================================
 
 def posCompare(pos1, pos2):
-   order = {'PU':-1, 'NN':10, 'AS':11}
+   order = {'PU':-1, 'NT':0, 'NN':10, 'AS':11}
    return cmp(order.get(pos1, 0), order.get(pos2, 0))
 
 def sizeCompare(node1, node2):
@@ -96,15 +96,17 @@ def sizeCompare(node1, node2):
    return 0
 
 def compare(node1, node2):
-   retval = posCompare(node1.pos,node2.pos)
+   retval = sizeCompare(node1, node2)
    if retval:
       return retval
-   retval = sizeCompare(node1, node2)
+   retval = posCompare(node1.pos,node2.pos)
    return retval
 
 def reorderDEG(node):
    assert node.pos == 'DEG'
    for left_child in node.left_children:
+      if left_child.pos == 'PN':
+         return False
       if left_child.pos == 'JJ':
          return False
    return True
