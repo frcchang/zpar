@@ -15,6 +15,7 @@
 #include "linguistics/conll.h"
 #include "linguistics/generictag.h"
 #include "linguistics/lemma.h"
+#include "learning/perceptron/hashmap_score_packed.h"
 
 class A {
 public:
@@ -122,6 +123,27 @@ void testlemma() {
    std::cout << lemma1 << " " << lemma2 << std::endl;
 }
 
+void testpackedscores() {
+   CPackedScoreMap<std::string, double, 10> map("test", 65536);
+   CPackedScoreType<double, 10> score;
+   for (unsigned i=0; i<10; ++i) {
+      map.getOrUpdateScore( score , "a1" , i , CScore<double>::eNonAverage , i , 1 );
+      score[i] = 1;
+   }
+   map.getOrUpdateScore( score , "a1" , 0 , CScore<double>::eNonAverage , 1 , 2 );
+   map.getOrUpdateScore( score , "a2" , 0 , CScore<double>::eNonAverage , 1 , 2 );
+   map.computeAverage(2);
+   std::cout << map << std::endl;
+
+   map.getOrUpdateScore( score , "a1" , 0 , CScore<double>::eNonAverage , 0 , 0 );
+   std::cout << score << std::endl;
+
+   std::istringstream iss("test 2\na1	:	 [ 1 / 1 , 1 / 2 , 2 / 4 , 3 / 6 , 4 / 8 , 5 / 10 , 6 / 12 , 7 / 14 , 8 / 16 , 9 / 18 ]\na2	:	 [ 1 / 1 , 0 / 0 , 0 / 0 , 0 / 0 , 0 / 0 , 0 / 0 , 0 / 0 , 0 / 0 , 0 / 0 , 0 / 0 ]\n\n");
+   iss >> map;
+   map.getOrUpdateScore( score , "a2" , 0 , CScore<double>::eAverage , 0 , 0 );
+   std::cout << score << std::endl;
+}
+
 int main(int argc, char**argv){
    try {
 //   std::cout << B::C << B::D << std::endl;
@@ -130,7 +152,8 @@ int main(int argc, char**argv){
 //   testreader();
 //   testconllfeats();
 //   testgenerictags();
- testlemma();
+//   testlemma();
+   testpackedscores();
    }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 
