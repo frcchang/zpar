@@ -45,6 +45,7 @@ public:
    }
 public:
    CScore<SCORE_TYPE> & operator [](const unsigned &index) { return scores[index]; }
+   const CScore<SCORE_TYPE> & operator [](const unsigned &index) const { return scores[index]; }
 };
 
 template <typename SCORE_TYPE, unsigned PACKED_SIZE>
@@ -97,6 +98,10 @@ public:
    }
 public:
    SCORE_TYPE &operator [](const unsigned &index) {
+      assert(index<PACKED_SIZE);
+      return scores[index];
+   }
+   const SCORE_TYPE &operator [](const unsigned &index) const {
       assert(index<PACKED_SIZE);
       return scores[index];
    }

@@ -17,56 +17,7 @@ using namespace TARGET_LANGUAGE::depparser;
 
 //const CScore<SCORE_TYPE> g_zeroScore;
 
-#ifdef LABELED
-   #define iterate_label_templates(left, right)\
-      left(m_mapLabel)right\
-      left(m_mapHeadWordLabel)right\
-      left(m_mapDepWordLabel)right\
-      left(m_mapHeadWordTagLabel)right\
-      left(m_mapDepWordTagLabel)right\
-      left(m_mapHeadTagLabel)right\
-      left(m_mapDepTagLabel)right\
-      left(m_mapHeadSurroundingTagsLabel)right\
-      left(m_mapDepSurroundingTagsLabel)right
-#else
-   #define iterate_label_templates(left, right)\
-
-#endif
-
 #define iterate_templates(left, right) \
-   left(m_mapHeadWord)right \
-   left(m_mapDepWord)right \
-   left(m_mapHeadWordTag)right \
-   left(m_mapDepWordTag)right \
-   left(m_mapHeadTag)right \
-   left(m_mapDepTag)right \
-\
-   left(m_mapHeadWordTagDepWordTag)right \
-   left(m_mapHeadWordTagDepWord)right \
-   left(m_mapHeadWordTagDepTag)right \
-   left(m_mapHeadWordDepWordTag)right \
-   left(m_mapHeadTagDepWordTag)right \
-   left(m_mapHeadWordDepWord)right \
-   left(m_mapHeadTagDepTag)right \
-\
-   left(m_mapBetweenTags)right \
-   left(m_mapSurroundingTagsLL)right \
-   left(m_mapSurroundingTagsLR)right \
-   left(m_mapSurroundingTagsRL)right \
-   left(m_mapSurroundingTagsRR)right \
-\
-   left(m_mapSiblingWords)right \
-   left(m_mapSiblingWordTag)right \
-   left(m_mapSiblingTagWord)right \
-   left(m_mapSiblingTags)right \
-   left(m_mapSiblingAndParentTags)right \
-\
-   left(m_mapTwoSiblingTags)right \
-   left(m_mapTwoSiblingAndParentTags)right \
-   left(m_mapGrandChildTags)right \
-   left(m_mapHeadWordTagArity)right \
-   left(m_mapHeadTagArity)right \
-\
    left(m_mapSTwt)right\
    left(m_mapSTw)right\
    left(m_mapSTt)right\
@@ -112,8 +63,6 @@ using namespace TARGET_LANGUAGE::depparser;
    left(m_mapN1l)right\
    left(m_mapN1c)right\
    left(m_mapN1f)right\
-\
-   iterate_label_templates(left, right)
 
 /*---------------------------------------------------------------
  *

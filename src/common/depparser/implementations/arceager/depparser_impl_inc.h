@@ -5,10 +5,10 @@
 #include "agenda.h"
 #include "pair_stream.h"
 
-#include "learning/perceptron/score.h"
-#include "learning/perceptron/hashmap_score.h"
+#include "learning/perceptron/hashmap_score_packed.h"
 
 #include "bigram.h"
+#include "tuple2.h"
 #include "tuple3.h"
 #include "tuple4.h"
 

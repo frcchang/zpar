@@ -21,26 +21,19 @@ const static unsigned DEP_TABLE_SIZE = (1<<17);//1000121;
 //
 // TYPE DEFINITIONS
 //
-typedef CScoreMap<CWord, SCORE_TYPE> CWordMap;
-typedef CScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE> CTaggedWordMap;
-typedef CScoreMap<std::pair<CWord, int>,  SCORE_TYPE> CWordIntMap;
-typedef CScoreMap<std::pair<CTag, int>,  SCORE_TYPE> CTagIntMap;
-typedef CScoreMap<std::pair<CTagSet<CTag, 2>, int>,  SCORE_TYPE> CTagSet2IntMap;
-typedef CScoreMap<std::pair<CTagSet<CTag, 3>, int>,  SCORE_TYPE> CTagSet3IntMap;
-typedef CScoreMap<std::pair<CTagSet<CTag, 4>, int>,  SCORE_TYPE> CTagSet4IntMap;
-typedef CScoreMap<CTuple3<CWord, CTag, unsigned long>, SCORE_TYPE> CWordTagIntMap;
-typedef CScoreMap<CTuple4<CWord, CTag, CTag, unsigned long>, SCORE_TYPE> CWordTagTagIntMap;
-typedef CScoreMap<std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int>,  SCORE_TYPE> CTaggedWordIntMap;
-typedef CScoreMap<int, SCORE_TYPE> CIntMap;
-typedef CScoreMap<std::pair<int, int>, SCORE_TYPE> CTwoIntMap;
-typedef CScoreMap<CTwoWords, SCORE_TYPE> CTwoWordsMap;
-typedef CScoreMap<std::pair<CTwoWords, int>, SCORE_TYPE> CTwoWordsIntMap;
-typedef CScoreMap<CTwoTaggedWords, SCORE_TYPE> CTwoTaggedWordsMap;
-typedef CScoreMap<std::pair<CTwoTaggedWords, int>, SCORE_TYPE> CTwoTaggedWordsIntMap;
+typedef CPackedScoreMap<CWord, SCORE_TYPE, action::MAX> CWordIntMap;
+typedef CPackedScoreMap<CTag, SCORE_TYPE, action::MAX> CTagIntMap;
+typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2IntMap;
+typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3IntMap;
+typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagIntMap;
+typedef CPackedScoreMap<CTuple3<CWord, CTag, CTag>, SCORE_TYPE, action::MAX> CWordTagTagIntMap;
+typedef CPackedScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, action::MAX> CTaggedWordIntMap;
+typedef CPackedScoreMap<CTwoWords, SCORE_TYPE, action::MAX> CTwoWordsIntMap;
+typedef CPackedScoreMap<CTwoTaggedWords, SCORE_TYPE, action::MAX> CTwoTaggedWordsIntMap;
 
-typedef CScoreMap<std::pair<CLemma, int>,  SCORE_TYPE> CLemmaIntMap;
-typedef CScoreMap<std::pair<CCoNLLCPOS, int>,  SCORE_TYPE> CCoNLLCPOSIntMap;
-typedef CScoreMap<std::pair<CCoNLLFeats, int>,  SCORE_TYPE> CCoNLLFeatsIntMap;
+typedef CPackedScoreMap<CLemma, SCORE_TYPE, action::MAX> CLemmaIntMap;
+typedef CPackedScoreMap<CCoNLLCPOS, SCORE_TYPE, action::MAX> CCoNLLCPOSIntMap;
+typedef CPackedScoreMap<CCoNLLFeats, SCORE_TYPE, action::MAX> CCoNLLFeatsIntMap;
 
 /*===============================================================
  *
@@ -52,43 +45,6 @@ class CWeight : public CWeightBase {
 
 public:
 
-   // feature templates from mcdonald
-   CWordIntMap m_mapHeadWord;
-   CWordIntMap m_mapDepWord;
-   CTagIntMap m_mapHeadTag;
-   CTagIntMap m_mapDepTag;
-   CTaggedWordIntMap m_mapHeadWordTag;
-   CTaggedWordIntMap m_mapDepWordTag;
-
-   CTwoTaggedWordsIntMap m_mapHeadWordTagDepWordTag;
-   CTwoTaggedWordsIntMap m_mapHeadWordTagDepWord;
-   CTwoTaggedWordsIntMap m_mapHeadWordDepWordTag;
-   CTwoTaggedWordsIntMap m_mapHeadTagDepWordTag;
-   CTwoTaggedWordsIntMap m_mapHeadWordTagDepTag;
-   CTwoWordsIntMap m_mapHeadWordDepWord;
-   CTagSet2IntMap m_mapHeadTagDepTag;
-
-   CTagSet3IntMap m_mapBetweenTags;
-   CTagSet4IntMap m_mapSurroundingTagsLL;
-   CTagSet4IntMap m_mapSurroundingTagsLR;
-   CTagSet4IntMap m_mapSurroundingTagsRL;
-   CTagSet4IntMap m_mapSurroundingTagsRR;
-
-   // second order feature templates from mcdonald
-   CTwoWordsIntMap m_mapSiblingWords;
-   CTaggedWordIntMap m_mapSiblingWordTag;
-   CTaggedWordIntMap m_mapSiblingTagWord;
-   CTagSet2IntMap m_mapSiblingTags;
-   CTagSet3IntMap m_mapSiblingAndParentTags;
-
-   // new features
-   CTagSet3IntMap m_mapGrandChildTags; 
-   CTaggedWordIntMap m_mapHeadWordTagArity;
-   CTagIntMap m_mapHeadTagArity;
-   CTagSet3IntMap m_mapTwoSiblingTags;
-   CTagSet4IntMap m_mapTwoSiblingAndParentTags;
-
-   // feature templates from mcdonald
    CWordIntMap m_mapSTw;
    CTagIntMap m_mapSTt;
    CTaggedWordIntMap m_mapSTwt;
@@ -123,18 +79,6 @@ public:
    CWordTagTagIntMap m_mapSTtSTLDtN0w;
    CWordTagTagIntMap m_mapSTtSTRDtN0w;
 
-#ifdef LABELED
-   CIntMap m_mapLabel;
-   CWordIntMap m_mapHeadWordLabel;
-   CWordIntMap m_mapDepWordLabel;
-   CTaggedWordIntMap m_mapHeadWordTagLabel;
-   CTaggedWordIntMap m_mapDepWordTagLabel;
-   CTwoIntMap m_mapHeadTagLabel;
-   CTwoIntMap m_mapDepTagLabel;
-   CTwoIntMap m_mapHeadSurroundingTagsLabel;
-   CTwoIntMap m_mapDepSurroundingTagsLabel;
-#endif
-
    CLemmaIntMap m_mapSTl;
    CCoNLLCPOSIntMap m_mapSTc;
    CCoNLLFeatsIntMap m_mapSTf;
@@ -151,50 +95,6 @@ public:
 
    CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
 
-                                               m_mapHeadWord("HeadWord", DEP_TABLE_SIZE),
-                                               m_mapDepWord("DepWord", DEP_TABLE_SIZE),
-                                               m_mapHeadTag("HeadTag", DEP_TABLE_SIZE),
-                                               m_mapDepTag("DepTag", DEP_TABLE_SIZE),
-                                               m_mapHeadWordTag("HeadWordTag", DEP_TABLE_SIZE),
-                                               m_mapDepWordTag("DepWordTag", DEP_TABLE_SIZE),
-
-                                               m_mapHeadWordTagDepWordTag("HeadWordTagDepWordTag", DEP_TABLE_SIZE),
-                                               m_mapHeadWordTagDepWord("HeadWordTagDepWord", DEP_TABLE_SIZE),
-                                               m_mapHeadWordDepWordTag("HeadWordDepWordTag", DEP_TABLE_SIZE),
-                                               m_mapHeadTagDepWordTag("HeadTagDepWordTag", DEP_TABLE_SIZE),
-                                               m_mapHeadWordTagDepTag("HeadWordTagDepTag", DEP_TABLE_SIZE),
-                                               m_mapHeadWordDepWord("HeadWordDepWord", DEP_TABLE_SIZE),
-                                               m_mapHeadTagDepTag("HeadTagDepTag", DEP_TABLE_SIZE),
-
-                                               m_mapBetweenTags("BetweenTags", DEP_TABLE_SIZE),
-                                               m_mapSurroundingTagsLL("SurroundingTagsLL", DEP_TABLE_SIZE),
-                                               m_mapSurroundingTagsLR("SurroundingTagsLR", DEP_TABLE_SIZE),
-                                               m_mapSurroundingTagsRL("SurroundingTagsRL", DEP_TABLE_SIZE),
-                                               m_mapSurroundingTagsRR("SurroundingTagsRR", DEP_TABLE_SIZE),
-
-                                               m_mapSiblingWords("SiblingWords", DEP_TABLE_SIZE),
-                                               m_mapSiblingWordTag("SiblingWordTag", DEP_TABLE_SIZE),
-                                               m_mapSiblingTagWord("SiblingTagWord", DEP_TABLE_SIZE),
-                                               m_mapSiblingTags("SiblingTags", DEP_TABLE_SIZE),
-                                               m_mapSiblingAndParentTags("SiblingAndParentTags", DEP_TABLE_SIZE),
-
-                                               m_mapGrandChildTags("GrandChildTags", DEP_TABLE_SIZE), 
-                                               m_mapHeadWordTagArity("HeadWordTagArity", DEP_TABLE_SIZE),
-                                               m_mapHeadTagArity("HeadTagArity", DEP_TABLE_SIZE),
-                                               m_mapTwoSiblingTags("TwoSiblingTags", DEP_TABLE_SIZE),
-                                               m_mapTwoSiblingAndParentTags("TwoSiblingAndParentTags", DEP_TABLE_SIZE),
-
-#ifdef LABELED
-                                               m_mapLabel("Label", DEP_TABLE_SIZE),
-                                               m_mapHeadWordLabel("HeadWordLabel", DEP_TABLE_SIZE),
-                                               m_mapDepWordLabel("DepWordLabel", DEP_TABLE_SIZE),
-                                               m_mapHeadWordTagLabel("HeadWordTagLabel", DEP_TABLE_SIZE),
-                                               m_mapDepWordTagLabel("DepWordTagLabel", DEP_TABLE_SIZE),
-                                               m_mapHeadTagLabel("HeadTagLabel", DEP_TABLE_SIZE),
-                                               m_mapDepTagLabel("DepTagLabel", DEP_TABLE_SIZE),
-                                               m_mapHeadSurroundingTagsLabel("HeadSurroundingTagsLabel", DEP_TABLE_SIZE),
-                                               m_mapDepSurroundingTagsLabel("DepSurroundingTagsLabel", DEP_TABLE_SIZE),
-#endif
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
                                                m_mapSTt("StackTag", DEP_TABLE_SIZE),
                                                m_mapSTwt("StackWordTag", DEP_TABLE_SIZE),

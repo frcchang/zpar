@@ -24,8 +24,6 @@ namespace TARGET_LANGUAGE {
 
 namespace depparser {
 
-#include "action.h"
-
 #include "state.h"
 
 }; // namespace depparser
@@ -105,27 +103,19 @@ private:
 
    void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
 
-   // get the global score for a parsed sentence or section
-   inline depparser::SCORE_TYPE getOrUpdateArcScore( const int &head_index, const int &dep_index, const int &sibling_index, depparser::SCORE_TYPE amount=0, int round=0 );
-   inline depparser::SCORE_TYPE getOrUpdateTwoArcScore(const int &head_index, const int &dep_index, const int &parent_index, depparser::SCORE_TYPE amount=0, int round=0);
-   inline depparser::SCORE_TYPE getOrUpdateArityScore(const int &word_index, const int &arity, const int &arity_direction, depparser::SCORE_TYPE amount=0, int round=0);
-   inline depparser::SCORE_TYPE getOrUpdateStackScore( const depparser::CStateItem *item, const unsigned long &action, depparser::SCORE_TYPE amount=0, int round=0 );
-#ifdef LABELED
-   inline depparser::SCORE_TYPE getOrUpdateArcLabelScore( const int &head_index, const int &dep_index, const unsigned long &label, depparser::SCORE_TYPE amount=0, int round=0 );
-#endif
+   inline void getOrUpdateStackScore( const depparser::CStateItem *item, CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &retval, const unsigned &action, depparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight std::vector for this feature object specifically
-   void updateScoresForStates( const depparser::CStateItem *outout , const depparser::CStateItem *correct , 
-                               depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;
+   void updateScoresForStates( const depparser::CStateItem *outout , const depparser::CStateItem *correct , depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;
    inline void updateScoreForState( const depparser::CStateItem *outout , const depparser::SCORE_TYPE &amount ) ;
 
 
    // helper method
-   inline void reduce( const depparser::CStateItem *item ) ;
-   inline void shift( const depparser::CStateItem *item ) ;
-   inline void arcleft( const depparser::CStateItem *item ) ;
-   inline void arcright( const depparser::CStateItem *item ) ;
-   inline void poproot( const depparser::CStateItem *item ) ;  
+   inline void reduce( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores ) ;
+   inline void shift( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
+   inline void arcleft( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
+   inline void arcright( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
+   inline void poproot( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;  
 
 };
 
