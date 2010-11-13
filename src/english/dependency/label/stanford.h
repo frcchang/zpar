@@ -137,6 +137,7 @@ public:
    enum {ROOT=1};
    enum {FIRST=1};
    enum {COUNT=STANFORD_DEP_COUNT};
+   enum {MAX_COUNT=COUNT};
    enum {SIZE=STANFORD_DEP_COUNT_BITS};
 
 protected:
