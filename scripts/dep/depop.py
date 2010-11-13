@@ -27,11 +27,19 @@ def headdepcount(path, counts):
       for index in range(len(deptree)):
          headindex = int(deptree[index][2])
          if headindex != -1:
-            dep = deptree[index][0]
-            head = deptree[headindex][0]
-            if not (head, dep) in counts:
-               counts[(head, dep)] = 0
-            counts[(head, dep)] += 1
+            dep_word = deptree[index]
+            head_word = deptree[headindex]
+            dep = dep_word[0]
+            dep_pos = dep_word[1]
+            head = head_word[0]
+            head_pos = head_word[1]
+            head_direction = 'L'
+            if headindex > index:
+               head_direction = 'R'
+            key = (head, dep, head_pos, dep_pos, head_direction)
+            if not key in counts:
+               counts[key] = 0
+            counts[key] += 1
 
 if __name__ == "__main__":
    if len(sys.argv) != 3:
@@ -48,5 +56,5 @@ if __name__ == "__main__":
    if option == "headdepcount":
       counts = {}
       headdepcount(input, counts)
-      for head, dep in counts:
-         print head, dep, counts[(head, dep)]
+      for head, dep, head_pos, dep_pos, head_direction in counts:
+         print head, head_pos, dep, dep_pos, head_direction, counts[(head, dep, head_pos, dep_pos, head_direction)]
