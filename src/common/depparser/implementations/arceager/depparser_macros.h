@@ -16,9 +16,11 @@ const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
 const unsigned DEP_LABEL_COUNT = 1;
 #endif
 
+typedef double SCORE_TYPE ;
+#include "action.h"
+
 // supertag
 #define SR_SUPERTAG 1
-typedef double SCORE_TYPE ;
 
 // The size of agenda
 const unsigned AGENDA_SIZE = 64 ;

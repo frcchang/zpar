@@ -371,7 +371,7 @@ public:
       assert( m_Stack.size() == 0 );
    }
 
-   unsigned long FollowMove( const CStateItem *item ) {
+   unsigned FollowMove( const CStateItem *item ) {
       static int top;
       // if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
       if ( m_nNextWord == item->m_nNextWord ) {
