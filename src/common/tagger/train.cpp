@@ -14,8 +14,6 @@
 #include "reader.h"
 #include "writer.h"
 
-#include <cstd::string>
-
 using namespace TARGET_LANGUAGE;
 
 const int TRAINING_ROUND = 1;
