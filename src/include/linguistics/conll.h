@@ -223,6 +223,12 @@ public:
       }
    }
 
+   void copyDependencyHeads(const CLabeledDependencyTree &input) {
+      for (unsigned i=0; i<input.size(); ++i) {
+         at(i).head = input.at(i).head;
+      }
+   }
+
    void copyDependencyLabels(const CLabeledDependencyTree &input) {
       for (unsigned i=0; i<input.size(); ++i) {
          at(i).label = input.at(i).label;
@@ -233,6 +239,13 @@ public:
       out.clear();
       for (unsigned i=0; i<size(); ++i) {
          out.push_back(CDependencyTreeNode(at(i).word, at(i).tag, at(i).head));
+      }
+   }
+
+   void toDependencyTree(CLabeledDependencyTree &out) const {
+      out.clear();
+      for (unsigned i=0; i<size(); ++i) {
+         out.push_back(CLabeledDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).label));
       }
    }
 
