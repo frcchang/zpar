@@ -16,7 +16,7 @@ const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
 const unsigned DEP_LABEL_COUNT = 1;
 #endif
 
-typedef double SCORE_TYPE ;
+typedef long SCORE_TYPE ;
 #include "action.h"
 
 // supertag

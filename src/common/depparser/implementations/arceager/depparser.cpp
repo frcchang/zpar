@@ -216,11 +216,11 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::updateScoreForState( const CStateItem *outout , const SCORE_TYPE &amount ) {
+inline void CDepParser::updateScoreForState( const CStateItem &from, const CStateItem *outout , const SCORE_TYPE &amount ) {
    static CStateItem item;
    static unsigned action;
    static CPackedScoreType<SCORE_TYPE, action::MAX> empty;
-   item.clear();
+   item = from;
    while ( item != *outout ) {
       action = item.FollowMove( outout );
       getOrUpdateStackScore( &item, empty, action, amount, m_nTrainingRound );
@@ -240,10 +240,21 @@ inline void CDepParser::updateScoreForState( const CStateItem *outout , const SC
 
 void CDepParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
 
-   assert( outout->size() == correct->size() );
+   // do not update those steps where they are correct
+   static CStateItem item;
+   static unsigned action, correct_action;
+   item.clear();
+   while ( item != *outout ) {
+      action = item.FollowMove( outout );
+      correct_action = item.FollowMove( correct );
+      if ( action == correct_action )
+         item.Move( action );
+      else break;
+   }
+
    // for the necessary information for the correct and outout parsetree
-   updateScoreForState( correct , amount_add ) ;
-   updateScoreForState( outout , amount_subtract ) ;
+   updateScoreForState( item, correct , amount_add ) ;
+   updateScoreForState( item, outout , amount_subtract ) ;
 
    m_nTotalErrors++;
 }

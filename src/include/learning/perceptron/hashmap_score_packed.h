@@ -40,7 +40,7 @@ public:
    }
    bool empty() const {
       for (unsigned index=0; index<PACKED_SIZE; ++index)
-         if (!scores[index].empty()) return false;
+         if (!scores[index].zero()) return false;
       return true;
    }
 public:
