@@ -22,14 +22,14 @@ template<class CUnigram>
 class CBigram {
 
 protected:
-   unsigned long int m_nHash;
+   unsigned long m_nHash;
    const CUnigram *m_unigram1;
    const CUnigram *m_unigram2;
    bool m_bAllocated; // whether this is a reference or has allocated memory
 
 public:
    // constructors
-   CBigram() { m_unigram1 = 0; m_unigram2 = 0; m_bAllocated = false; }
+   CBigram() : m_nHash(0), m_unigram1(0), m_unigram2(0), m_bAllocated(false) {}
    // if an allocated bigram is copied to another, both will be allocated. 
    // if the source bigram is unallocated, neither will the target be allocated. 
    CBigram(const CBigram &w) { *this = w;}

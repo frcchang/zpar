@@ -27,6 +27,7 @@ typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2IntM
 typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3IntMap;
 typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagIntMap;
 typedef CPackedScoreMap<CTuple3<CWord, CTag, CTag>, SCORE_TYPE, action::MAX> CWordTagTagIntMap;
+typedef CPackedScoreMap<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, action::MAX> CWordWordTagIntMap;
 typedef CPackedScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, action::MAX> CTaggedWordIntMap;
 typedef CPackedScoreMap<CTwoWords, SCORE_TYPE, action::MAX> CTwoWordsIntMap;
 typedef CPackedScoreMap<CTwoTaggedWords, SCORE_TYPE, action::MAX> CTwoTaggedWordsIntMap;
@@ -56,10 +57,10 @@ public:
    CTaggedWordIntMap m_mapN1wt;
 
    CTwoTaggedWordsIntMap m_mapSTwtN0wt;
-   CTwoTaggedWordsIntMap m_mapSTwtN0w;
-   CTwoTaggedWordsIntMap m_mapSTwN0wt;
-   CTwoTaggedWordsIntMap m_mapSTtN0wt;
-   CTwoTaggedWordsIntMap m_mapSTwtN0t;
+   CWordWordTagIntMap m_mapSTwtN0w;
+   CWordWordTagIntMap m_mapSTwN0wt;
+   CWordTagTagIntMap m_mapSTtN0wt;
+   CWordTagTagIntMap m_mapSTwtN0t;
    CTwoWordsIntMap m_mapSTwN0w;
    CTagSet2IntMap m_mapSTtN0t;
 
