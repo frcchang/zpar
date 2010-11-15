@@ -28,7 +28,7 @@ protected:
 
 public:
    // constructors
-   CTuple2() : m_object1(0), m_object2(0), m_bAllocated(false) {}
+   CTuple2() : m_nHash(0), m_object1(0), m_object2(0), m_bAllocated(false) {}
    // if an allocated tuple2 is copied to another, both will be allocated. 
    // if the source tuple2 is unallocated, neither will the target be allocated. 
    CTuple2(const CTuple2 &w) { 
@@ -80,7 +80,7 @@ public:
    const CClass2 *second() const { return m_object2; }
 
    // getting hash
-   inline const unsigned long int &hash() const { return m_nHash; }
+   inline const unsigned long &hash() const { return m_nHash; }
 
    // comparison methods
    bool operator == (const CTuple2 &w) const { 

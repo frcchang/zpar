@@ -72,11 +72,6 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    n2_tag = n2_index==-1 ? CTag::SENTENCE_END : m_lCache[n2_index].tag;
    n3_tag = n3_index==-1 ? CTag::SENTENCE_END : m_lCache[n3_index].tag;
 
-   const CTaggedWord<CTag, TAG_SEPARATOR> st_word_nil(st_word, CTag::NONE);
-   const CTaggedWord<CTag, TAG_SEPARATOR> st_nil_tag(g_emptyWord, st_tag);
-   const CTaggedWord<CTag, TAG_SEPARATOR> n0_word_nil(n0_word, CTag::NONE);
-   const CTaggedWord<CTag, TAG_SEPARATOR> n0_nil_tag(g_emptyWord, n0_tag);
-
    static CTwoTaggedWords st_word_tag_n0_word_tag ;
    static CTwoTaggedWords st_word_tag_n0_word ;
    static CTwoTaggedWords st_word_n0_word_tag ;
@@ -86,23 +81,16 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    if ( amount == 0 ) {
       st_word_tag_n0_word_tag.refer( &st_word_tag, &n0_word_tag );
-      st_word_tag_n0_word.refer( &st_word_tag, &n0_word_nil );
-      st_word_n0_word_tag.refer( &st_word_nil, &n0_word_tag );
-      st_word_tag_n0_tag.refer( &st_word_tag, &n0_nil_tag );
-      st_tag_n0_word_tag.refer( &st_nil_tag, &n0_word_tag );
       st_word_n0_word.refer( &st_word, &n0_word );
    }
    else {
       st_word_tag_n0_word_tag.allocate( st_word_tag, n0_word_tag );
-      st_word_tag_n0_word.allocate( st_word_tag, n0_word_nil );
-      st_word_n0_word_tag.allocate( st_word_nil, n0_word_tag );
-      st_word_tag_n0_tag.allocate( st_word_tag, n0_nil_tag );
-      st_tag_n0_word_tag.allocate( st_nil_tag, n0_word_tag );
       st_word_n0_word.allocate( st_word, n0_word );
    }
 
    static CTuple2<CWord, CTag> word_tag;
    static CTuple3<CWord, CTag, CTag> word_tag_tag;
+   static CTuple3<CWord, CWord, CTag> word_word_tag;
 
    cast_weights->m_mapSTwt.getOrUpdateScore( retval, st_word_tag, action, m_nScoreIndex, amount, round) ;
    cast_weights->m_mapSTw.getOrUpdateScore( retval, st_word, action, m_nScoreIndex, amount, round) ;
@@ -117,10 +105,14 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    if (n1_index > -1) cast_weights->m_mapN1t.getOrUpdateScore( retval, n1_tag, action, m_nScoreIndex, amount, round ) ;
 
    cast_weights->m_mapSTwtN0wt.getOrUpdateScore( retval, st_word_tag_n0_word_tag, action, m_nScoreIndex, amount, round ); 
-   cast_weights->m_mapSTwtN0w.getOrUpdateScore( retval, st_word_tag_n0_word, action, m_nScoreIndex, amount, round ) ; 
-   cast_weights->m_mapSTwN0wt.getOrUpdateScore( retval, st_word_n0_word_tag, action, m_nScoreIndex, amount, round ) ; 
-   cast_weights->m_mapSTwtN0t.getOrUpdateScore( retval, st_word_tag_n0_tag, action, m_nScoreIndex, amount, round ) ; 
-   cast_weights->m_mapSTtN0wt.getOrUpdateScore( retval, st_tag_n0_word_tag, action, m_nScoreIndex, amount, round ) ;
+   refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &st_tag);
+   cast_weights->m_mapSTwtN0w.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
+   refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &n0_tag);
+   cast_weights->m_mapSTwN0wt.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
+   refer_or_allocate_tuple3(word_tag_tag, &st_word, &st_tag, &n0_tag);
+   cast_weights->m_mapSTwtN0t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
+   refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &n0_tag);
+   cast_weights->m_mapSTtN0wt.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ;
    cast_weights->m_mapSTwN0w.getOrUpdateScore( retval, st_word_n0_word, action, m_nScoreIndex, amount, round ) ; 
    cast_weights->m_mapSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
 
