@@ -107,7 +107,7 @@ private:
 
    // update the built-in weight std::vector for this feature object specifically
    void updateScoresForStates( const depparser::CStateItem *outout , const depparser::CStateItem *correct , depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;
-   inline void updateScoreForState( const depparser::CStateItem *outout , const depparser::SCORE_TYPE &amount ) ;
+   inline void updateScoreForState( const depparser::CStateItem &from, const depparser::CStateItem *outout , const depparser::SCORE_TYPE &amount ) ;
 
 
    // helper method

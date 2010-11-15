@@ -51,6 +51,7 @@ public:
 
    void reset() {current=0; total=0; lastupdate=0;}
    bool empty() const { return current==0 && total==0 && lastupdate==0; }
+   bool zero() const { return current==0 && total==0; }
    void operator ++ (int) {current++;}
    void operator -- (int) {current--;}
    SCORE_TYPE &operator [] (const int &n) {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }}
