@@ -218,7 +218,7 @@ inline void CDepParser::updateScoreForState( const CStateItem &from, const CStat
       getOrUpdateStackScore( &item, empty, action, amount, m_nTrainingRound );
 #ifdef LABELED
       if ( action::getLabel(action) )
-         getOrUpdateStackScore( &item, action::getUnlabeledAction(action), amount, m_nTrainingRound );
+         getOrUpdateStackScore( &item, empty, action::getUnlabeledAction(action), amount, m_nTrainingRound );
 #endif
       item.Move( action );
    }

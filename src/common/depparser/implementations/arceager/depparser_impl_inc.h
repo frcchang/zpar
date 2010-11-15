@@ -12,11 +12,7 @@
 #include "tuple3.h"
 #include "tuple4.h"
 
-#include "tags.h"
-#include "linguistics/word_tokenized.h"
-#include "linguistics/taggedword.h"
 #include "linguistics/lemma.h"
-#include "dep.h"
 
 #ifdef PUNCT
 #include "charcat.h"
@@ -24,11 +20,6 @@
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
-#ifdef LABELED
-   typedef CLabeledDependencyTree CDependencyParse;
-#else
-   typedef CDependencyTree CDependencyParse;
-#endif
 
 
 
