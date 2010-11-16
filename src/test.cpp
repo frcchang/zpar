@@ -16,6 +16,7 @@
 #include "linguistics/generictag.h"
 #include "linguistics/lemma.h"
 #include "learning/perceptron/hashmap_score_packed.h"
+#include "hash_small.h"
 
 class A {
 public:
@@ -144,6 +145,15 @@ void testpackedscores() {
    std::cout << score << std::endl;
 }
 
+void testsmallhash() {
+   CSmallHashMap<unsigned, std::string, 10> t;
+   t[1] = "abc";
+   t[5] = "def";
+   std::cout << t;
+   std::cin >> t;
+   std::cout << t<< std::endl;
+}
+
 int main(int argc, char**argv){
    try {
 //   std::cout << B::C << B::D << std::endl;
@@ -153,7 +163,8 @@ int main(int argc, char**argv){
 //   testconllfeats();
 //   testgenerictags();
 //   testlemma();
-   testpackedscores();
+//   testpackedscores();
+   testsmallhash();
    }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 
