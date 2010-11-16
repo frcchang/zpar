@@ -9,12 +9,10 @@
  *                                                              *
  ****************************************************************/
 
-#ifndef _HASH_SIMPLE_H
-#define _HASH_SIMPLE_H
+#ifndef _HASH_SMALL_H
+#define _HASH_SMALL_H
 
 #include "pool.h"
-
-static const unsigned long POOL_BLOCK_SIZE=(1<<16);
 
 /*===============================================================
  *
@@ -22,11 +20,11 @@ static const unsigned long POOL_BLOCK_SIZE=(1<<16);
  *
  *==============================================================*/
 
-template <typename K, typename V>
-class CHashMap {
+template <typename K, typename V, unsigned TABLE_SIZE>
+class CSmallHashMap {
 
 protected:
-   unsigned long int m_nTableSize;
+   static const unsigned long POOL_BLOCK_SIZE=(1<<16);
 
 protected:
 
@@ -60,15 +58,15 @@ public:
 
    private:
       unsigned long int m_nBucket;
-      CHashMap<K, V> *m_parent;
+      CSmallHashMap<K, V, TABLE_SIZE> *m_parent;
       CEntry *m_entry;
 
    private:
       void validate() {
          // when the next item is at the end of the bucket, move on
-         assert(m_nBucket < m_parent->m_nTableSize);
+         assert(m_nBucket < TABLE_SIZE);
          while (m_entry == 0) { 
-            if (m_nBucket == m_parent->m_nTableSize-1) 
+            if (m_nBucket == TABLE_SIZE-1) 
                return; 
             else { 
                m_entry = m_parent->m_buckets[++m_nBucket]; 
@@ -79,7 +77,7 @@ public:
 
    public:
       iterator() {}
-      iterator(CHashMap<K, V> *parent, int bucket, CEntry *entry) : m_nBucket(bucket), m_parent(parent), m_entry(entry) {
+      iterator(CSmallHashMap<K, V, TABLE_SIZE> *parent, int bucket, CEntry *entry) : m_nBucket(bucket), m_parent(parent), m_entry(entry) {
          validate();
       }
       iterator(const iterator &it) { m_parent = it.m_parent; m_nBucket = it.m_nBucket; m_entry = it.m_entry; }
@@ -91,7 +89,7 @@ public:
          m_entry=m_entry->m_next ;  
          validate();
       }
-      bool valid() const { if (m_nBucket < 0 || m_nBucket > m_parent->m_nTableSize-1 || m_entry == 0) return false; return true; }
+      bool valid() const { if (m_nBucket < 0 || m_nBucket > TABLE_SIZE-1 || m_entry == 0) return false; return true; }
 
       const K &first() { return m_entry->m_key; }
       V &second() { return m_entry->m_value; }
@@ -100,36 +98,19 @@ public:
    //===============================================================
 
 protected:
-   CEntry **m_buckets;
-//   CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool;
+   CEntry* m_buckets[TABLE_SIZE];
 public:
-   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0)/*, pool()*/ { 
-      if (initialize) init();
+   CSmallHashMap() { memset(m_buckets, 0, TABLE_SIZE*sizeof(CEntry*)); }
+      
+   CSmallHashMap(const CSmallHashMap& wordmap) { 
+      THROW("CSmallHashMap does not support copy constructor!"); 
    }
-   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0)/*, pool()*/ { 
-      std::cerr << "CHashMap does not support copy constructor!"; 
-      assert(1==0);
-   }
-   virtual ~CHashMap() { 
-      delete [] m_buckets;
-   }
-   void resize(const unsigned long &size) {
-      ASSERT(m_buckets==0, "Cannot resize hashmap after initialization");
-      m_nTableSize = size;
-   }
-   void init() {
-      ASSERT(m_buckets==0, "Cannot initialize hashmap after initialization");
-      m_buckets = new CEntry*[m_nTableSize] ;
-//      for (int i=0; i<m_nTableSize; ++i) 
-//         m_buckets[i]=0;
-      memset(m_buckets, 0, m_nTableSize*sizeof(CEntry*));
-   }
+   virtual ~CSmallHashMap() { }
 
 protected:
-   CEntry *&getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
+   CEntry *&getEntry(const K &key) { return m_buckets[hash(key)%TABLE_SIZE]; }
 
    CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
-   
 
 public:
    V &operator[] (const K &key) { 
@@ -207,7 +188,7 @@ public:
       return iterator(this, 0, m_buckets[0]); 
    }
    iterator end() { 
-      return iterator(this, m_nTableSize-1, 0); 
+      return iterator(this, TABLE_SIZE-1, 0); 
    }
 
 public:
@@ -215,7 +196,7 @@ public:
    void trace() { 
       std::cout << "tracing size:amount" << std::endl;
       std::map<unsigned, unsigned> statistic;
-      for (unsigned i=0; i<m_nTableSize; ++i) {
+      for (unsigned i=0; i<TABLE_SIZE; ++i) {
          unsigned size = 0;
          CEntry* entry = m_buckets[i];
          while (entry) {
@@ -227,12 +208,53 @@ public:
       std::map<unsigned, unsigned>::iterator it;
       for (it=statistic.begin(); it!=statistic.end(); ++it)
          if (it->second != 0)
-            std::cout << it->first << ':' << it->second << " (" << float(it->second)/m_nTableSize << ")" << std::endl;
+            std::cout << it->first << ':' << it->second << " (" << float(it->second)/TABLE_SIZE << ")" << std::endl;
       std::cout << "done" << std::endl;
    }
 #endif
 
 };
 
+template <typename K, typename V, unsigned TABLE_SIZE>
+std::istream & operator >> (std::istream &is, CSmallHashMap<K, V, TABLE_SIZE> &score_map) {
+   if (!is) return is ;
+   static std::string s ;
+   static K key;
+   static V value;
+   is >> s;
+   ASSERT(s=="{", "The small hashmap does not start with {");
+   is >> s;
+   while (true) {
+      std::istringstream iss_key(s);
+      iss_key >> key;
+      is >> s;
+      ASSERT(s==":", "The small hashmap does not have : after key: "<<key);
+      is >> s;
+      std::istringstream iss_value(s);
+      iss_value >> value;
+      score_map[key] = value;
+      is >> s;
+      ASSERT(s==","||s=="}", "The small hashmap does not have a , or } after value: "<<value);
+      if (s=="}")
+         return is;
+      ASSERT(is>>s, "The small hasmap ended unexpectedly after the value: "<<value);
+   }
+   THROW("hashmap_small.h: the program should not have reached here.");
+   return is ;
+}
+
+template <typename K, typename V, unsigned TABLE_SIZE>
+std::ostream & operator << (std::ostream &os, CSmallHashMap<K, V, TABLE_SIZE> &score_map) {
+   os << "{ ";
+   typename CSmallHashMap<K, V, TABLE_SIZE>::iterator it = score_map.begin();
+   while (it!=score_map.end()) {
+      if (it!=score_map.begin()) 
+         os << " , ";
+      os << it.first() << " : " << it.second();
+      ++it;
+   }
+   os << " }";
+   return os;
+}
 
 #endif
