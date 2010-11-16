@@ -102,12 +102,12 @@ public:
 
 protected:
    CEntry **m_buckets;
-   CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool;
+//   CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool;
 public:
-   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0), pool() { 
+   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0)/*, pool()*/ { 
       if (initialize) init();
    }
-   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0), pool() { 
+   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0)/*, pool()*/ { 
       std::cerr << "CHashMap does not support copy constructor!"; 
       assert(1==0);
    }
@@ -129,11 +129,14 @@ public:
 protected:
    CEntry *&getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
+   CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   
+
 public:
    V &operator[] (const K &key) { 
       CEntry* entry = getEntry(key); 
       if (entry==0) {
-         entry = getEntry(key) = pool.allocate(); 
+         entry = getEntry(key) = getPool().allocate(); 
          entry->m_key = key;
          return entry->m_value;
       }
@@ -147,7 +150,7 @@ public:
                entry = entry->m_next;
          }
       }
-      entry->m_next = pool.allocate();
+      entry->m_next = getPool().allocate();
       entry->m_next->m_key = key;   
       return entry->m_next->m_value;
    }
@@ -166,7 +169,7 @@ public:
       CEntry*entry=getEntry(key); 
       if (entry == 0) { 
          retval = val; 
-         entry= getEntry(key) =pool.allocate(); 
+         entry= getEntry(key) =getPool().allocate(); 
          entry->m_key = key;
          entry->m_value = val; 
          return true; 
@@ -183,7 +186,7 @@ public:
              entry = entry->m_next;
        }
        assert(entry);
-       entry->m_next = pool.allocate();
+       entry->m_next = getPool().allocate();
        entry->m_next->m_key = key;
        entry->m_next->m_value = val;
        retval = val;

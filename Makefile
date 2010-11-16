@@ -55,7 +55,7 @@ ENGLISH_TAGGER_IMPL = agenda
 
 # currently support eisner, covington, nivre, combined implementations 
 ENGLISH_DEPPARSER_IMPL = arceager
-ENGLISH_DEPPARSER_LABELED = true 
+ENGLISH_DEPPARSER_LABELED = true
 ENGLISH_DEPLABELER_IMPL = naive
 # currently support sr implementations 
 ENGLISH_CONPARSER_IMPL = srnew
