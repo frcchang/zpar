@@ -6,15 +6,16 @@ template <typename K, typename V>
 inline
 std::istream & operator >> (std::istream &is, CHashMap<K, V> &table) {
    K key ;
-   V value ;
+//   V value ;
    char c ;
    std::string s ; 
    getline(is, s);
    while (is && !(s.empty())) {
       std::istringstream iss(s) ; 
-      iss >> key >> c >> value ;
+//      iss >> key >> c >> value ;
+      iss >> key >> c >> table[key] ;
       ASSERT( c == ':' , "Hash map does not match key : value format") ;
-      table.insert(key,value);
+//      table.insert(key,value);
       getline(is, s);
    }
    return is;
