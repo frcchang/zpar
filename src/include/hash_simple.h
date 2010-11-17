@@ -43,8 +43,8 @@ protected:
       CEntry *m_next;
 
    public:
-      CEntry() : m_next(0) {}
-      CEntry(const K &key) : m_key(key), m_next(0) {}
+      CEntry() : m_key(), m_value(), m_next(0) {}
+      CEntry(const K &key) : m_key(key), m_value(), m_next(0) {}
       CEntry(const K &key, const V &value) : m_key(key), m_value(value), m_next(0){}
    };
 
@@ -126,7 +126,8 @@ public:
    }
 
 protected:
-   CEntry *&getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
+   CEntry *&getEntry(const K &key) { return m_buckets[hash(key)%m_nTableSize]; }
+   CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
    CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
    
@@ -140,6 +141,7 @@ public:
          return entry->m_value;
       }
       while (true) {
+         assert(entry);
          if (entry->m_key==key)
             return entry->m_value;
          else {
@@ -149,6 +151,7 @@ public:
                entry = entry->m_next;
          }
       }
+      assert(entry);
       entry->m_next = getPool().allocate();
       entry->m_next->m_key = key;   
       return entry->m_next->m_value;
