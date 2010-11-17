@@ -41,8 +41,8 @@ protected:
       CEntry *m_next;
 
    public:
-      CEntry() : m_next(0) {}
-      CEntry(const K &key) : m_key(key), m_next(0) {}
+      CEntry() : m_key(), m_value(), m_next(0) {}
+      CEntry(const K &key) : m_key(key), m_value(), m_next(0) {}
       CEntry(const K &key, const V &value) : m_key(key), m_value(value), m_next(0){}
    };
 
@@ -154,9 +154,9 @@ public:
 
 protected:
    CEntry *&getEntry(const K &key) { return m_buckets[hash(key)%TABLE_SIZE]; }
-   const CEntry *getEntry(const K &key) const { return m_buckets[hash(key)%TABLE_SIZE]; }
+   CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%TABLE_SIZE]; }
 
-   CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() const { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
 
 public:
    V &operator[] (const K &key) { 
@@ -249,7 +249,7 @@ public:
    }
 
 public:
-   bool empty() const { return begin() == end(); }
+   bool empty() const { for (unsigned i=0; i<TABLE_SIZE; ++i) if (getEntry(i)) return false; return true;}
 #ifdef DEBUG 
    void trace() { 
       std::cout << "tracing size:amount" << std::endl;
@@ -279,7 +279,7 @@ std::istream & operator >> (std::istream &is, CSmallHashMap<K, V, TABLE_SIZE> &s
    static std::string s ;
    static K key;
    static V value;
-//   assert(score_map.empty());
+   assert(score_map.empty());
    is >> s;
    ASSERT(s=="{"||s=="{}", "The small hashmap does not start with {");
    if (s=="{}")

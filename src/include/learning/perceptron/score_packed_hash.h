@@ -68,10 +68,10 @@ class CPackedScore {
 protected:
    const static unsigned HASHMAP_SIZE=PACKED_SIZE<8?PACKED_SIZE:8;
    CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE> scores;
-//   CScore<SCORE_TYPE> scores[PACKED_SIZE];
+public:
+   CPackedScore() : scores() {}
 public:
    const SCORE_TYPE score(const unsigned &index, const int &n) const {
-//      return scores[index].score(n);
       return scores.find(index, CScore<SCORE_TYPE>()).score(n);
    }
    void updateCurrent(const unsigned &index, const SCORE_TYPE &added, const int &round) {
@@ -84,8 +84,6 @@ public:
          it.second().updateAverage(round);
          ++it;
       }
-//      for (unsigned index=0; index<PACKED_SIZE; ++index)
-//         scores[index].updateAverage(round);
    }
    void reset() {
       typename CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE>::iterator it;
@@ -94,8 +92,6 @@ public:
          it.second().reset();
          ++it;
       }
-//      for (unsigned index=0; index<PACKED_SIZE; ++index)
-//         scores[index].reset();
    }
    bool empty() const {
       typename CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE>::const_iterator it;
@@ -104,8 +100,6 @@ public:
          if (!it.second().zero()) return false;
          ++it;
       }
-//      for (unsigned index=0; index<PACKED_SIZE; ++index)
-//         if (!scores[index].zero()) return false;
       return true;
    }
    void add(CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &o, const int &which) const {

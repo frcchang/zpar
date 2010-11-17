@@ -18,7 +18,9 @@ class CScore;
 template<typename SCORE_TYPE>
 std::istream & operator >> (std::istream &is, CScore<SCORE_TYPE> &score) {
    char c ;
-   is >> score[0] >> c >> score[1] ;
+   ASSERT(is >> score[0], "The first element of CScore cannot be read."); 
+   ASSERT((is >> c) && c=='/', "The separator CScore cannot be read");
+   ASSERT(is >> score[1], "The second element of CScore cannot be read");
    return is ;
 }
 
