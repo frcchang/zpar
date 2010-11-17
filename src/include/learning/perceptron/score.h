@@ -23,7 +23,7 @@ std::istream & operator >> (std::istream &is, CScore<SCORE_TYPE> &score) {
 }
 
 template<typename SCORE_TYPE>
-std::ostream & operator << (std::ostream &os, CScore<SCORE_TYPE> &score) {
+std::ostream & operator << (std::ostream &os, const CScore<SCORE_TYPE> &score) {
    return os << score[0] << " / " << score[1] ;
 }
 
@@ -55,6 +55,7 @@ public:
    void operator ++ (int) {current++;}
    void operator -- (int) {current--;}
    SCORE_TYPE &operator [] (const int &n) {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }}
+   const SCORE_TYPE &operator [] (const int &n) const {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }}
    const SCORE_TYPE score(const int &n=eNonAverage) const {if (n==eNonAverage) return current; return total;}
    void updateCurrent(const SCORE_TYPE &added, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added; }
    //void updateCurrent(SCORE_TYPE added, int round=0) {if (round>=lastupdate){updateAverage(round);total+=added;lastupdate=round;}current+=added; }
