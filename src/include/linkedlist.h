@@ -1,0 +1,260 @@
+// Copyright (C) University of Oxford 2010
+/****************************************************************
+ *                                                              *
+ * linkedlist.h - the linked list                               *
+ *                                                              *
+ * Author: Yue Zhang                                            *
+ *                                                              *
+ ****************************************************************/
+
+#ifndef _LINKED_LIST_H
+#define _LINKED_LIST_H
+
+#include "pool.h"
+
+/*===============================================================
+ *
+ * Hash table
+ *
+ *==============================================================*/
+
+template <typename K, typename V>
+class CLinkedList {
+
+protected:
+   static const unsigned long POOL_BLOCK_SIZE=(1<<16);
+
+protected:
+
+   //===============================================================
+   //
+   // Hash table entry
+   //
+   //===============================================================
+
+   class CEntry {
+   public:
+      K m_key;
+      V m_value;
+      CEntry *m_next;
+
+   public:
+      CEntry() : m_key(), m_value(), m_next(0) {}
+      CEntry(const K &key) : m_key(key), m_value(), m_next(0) {}
+      CEntry(const K &key, const V &value) : m_key(key), m_value(value), m_next(0){}
+   };
+
+public:
+
+   //===============================================================
+   //
+   // Hash table iterator class
+   //
+   //===============================================================
+
+   class iterator {
+
+   private:
+      CLinkedList<K, V> *m_parent;
+      CEntry *m_entry;
+
+   public:
+      iterator() {}
+      iterator(CLinkedList<K, V> *parent, CEntry *entry) : m_parent(parent), m_entry(entry) {}
+      iterator(const iterator &it) : m_parent(it.m_parent), m_entry(it.m_entry) { }
+      bool operator != (const iterator &it) const { return !((*this)==it);}
+      bool operator == (const iterator &it) const { return m_parent == it.m_parent && m_entry == it.m_entry; }
+      // move to next places
+      void operator ++ () { 
+         if (m_entry) m_entry=m_entry->m_next ;  
+      }
+
+      const K &first() { return m_entry->m_key; }
+      V &second() { return m_entry->m_value; }
+   }; 
+
+   //===============================================================
+   //
+   // Hash table iterator class
+   //
+   //===============================================================
+
+   class const_iterator {
+
+   private:
+      const CLinkedList<K, V> *m_parent;
+      const CEntry *m_entry;
+
+   public:
+      const_iterator() {}
+      const_iterator(const CLinkedList<K, V> *parent, const CEntry *entry) : m_parent(parent), m_entry(entry) {}
+      const_iterator(const const_iterator &it) : m_parent(it.m_parent), m_entry(it.m_entry) { }
+      bool operator != (const const_iterator &it) const { return !((*this)==it);}
+      bool operator == (const const_iterator &it) const { return m_parent == it.m_parent && m_entry == it.m_entry; }
+      // move to next places
+      void operator ++ () { 
+         if(m_entry == 0) return;
+         m_entry=m_entry->m_next ;  
+      }
+
+      const K &first() { return m_entry->m_key; }
+      const V &second() { return m_entry->m_value; }
+   }; 
+
+   //===============================================================
+
+protected:
+   CEntry* m_buckets;
+public:
+   CLinkedList() : m_buckets(0) { }
+      
+   CLinkedList(const CLinkedList& wordmap) { 
+      THROW("CLinkedList does not support copy constructor!"); 
+   }
+   virtual ~CLinkedList() { }
+
+protected:
+   CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() const { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+
+public:
+   V &operator[] (const K &key) { 
+      CEntry* entry = m_buckets; 
+      if (entry==0) {
+         entry = m_buckets = getPool().allocate(); 
+         entry->m_key = key;
+         return entry->m_value;
+      }
+      while (true) {
+         if (entry->m_key==key)
+            return entry->m_value;
+         else {
+            if (entry->m_next==0)
+               break;
+            else
+               entry = entry->m_next;
+         }
+      }
+      entry->m_next = getPool().allocate();
+      entry->m_next->m_key = key;   
+      return entry->m_next->m_value;
+   }
+   void insert (const K &key, const V &val) { (*this)[key] = val; }
+   const V &find (const K &key, const V &val) const { 
+      const CEntry*entry=m_buckets; 
+      while (entry) {
+         if (entry->m_key == key)
+            return entry->m_value;
+         else
+            entry = entry->m_next;
+      }
+      return val;
+   }
+   bool findorinsert (const K &key, const V &val, V &retval) { 
+      CEntry*entry=m_buckets; 
+      if (entry == 0) { 
+         retval = val; 
+         entry= m_buckets =getPool().allocate(); 
+         entry->m_key = key;
+         entry->m_value = val; 
+         return true; 
+       } 
+       while (true) {
+          assert (entry);
+          if (entry->m_key == key) {
+             retval = entry->m_value;
+             return false;
+          }
+          else if (entry->m_next==0) 
+             break;
+          else
+             entry = entry->m_next;
+       }
+       assert(entry);
+       entry->m_next = getPool().allocate();
+       entry->m_next->m_key = key;
+       entry->m_next->m_value = val;
+       retval = val;
+       return true;
+   }
+   bool element (const K &key) const { 
+      CEntry*entry=m_buckets; 
+      while (entry) {
+         if (entry->m_key == key)
+            return true;
+         else
+            entry = entry->m_next;
+      }
+      return false;
+   }
+
+public:
+   iterator begin() { 
+      return iterator(this, m_buckets); 
+   }
+   iterator end() { 
+      return iterator(this, 0); 
+   }
+   const_iterator begin() const { 
+      return const_iterator(this, m_buckets); 
+   }
+   const_iterator end() const { 
+      return const_iterator(this, 0); 
+   }
+
+public:
+   void operator = (const CLinkedList& wordmap) { 
+      THROW("CLinkedList does not support copy constructor!"); 
+   }
+
+public:
+   bool empty() const { return m_buckets==0; }
+
+};
+
+template <typename K, typename V>
+std::istream & operator >> (std::istream &is, CLinkedList<K, V> &score_map) {
+   if (!is) return is ;
+   static std::string s ;
+   static K key;
+   static V value;
+//   assert(score_map.empty());
+   is >> s;
+   ASSERT(s=="{"||s=="{}", "The small hashmap does not start with {");
+   if (s=="{}")
+      return is;
+   while (true) {
+      is >> key;
+      is >> s;
+      ASSERT(s==":", "The small hashmap does not have : after key: "<<key);
+      is >> value;
+      score_map[key] = value;
+      is >> s;
+      ASSERT(s==","||s=="}", "The small hashmap does not have a , or } after value: "<<value);
+      if (s=="}")
+         return is;
+   }
+   THROW("hashmap_small.h: the program should not have reached here.");
+   return is ;
+}
+
+template <typename K, typename V>
+std::ostream & operator << (std::ostream &os, const CLinkedList<K, V> &score_map) {
+   os << "{";
+   typename CLinkedList<K, V>::const_iterator it = score_map.begin();
+   if (it==score_map.end()) {
+      os << "}"; // empty {}
+      return os;
+   }
+   else
+      os << " "; // non-empty { a , b , c }
+   while (it!=score_map.end()) {
+      if (it!=score_map.begin()) 
+         os << " , ";
+      os << it.first() << " : " << it.second();
+      ++it;
+   }
+   os << " }";
+   return os;
+}
+
+#endif

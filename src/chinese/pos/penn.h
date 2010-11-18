@@ -76,6 +76,7 @@ public:
    enum {SENTENCE_BEGIN = PENN_TAG_BEGIN};
    enum {SENTENCE_END = PENN_TAG_END};
    enum {COUNT = PENN_TAG_COUNT};
+   enum {MAX_COUNT = PENN_TAG_COUNT};
    enum {NONE = PENN_TAG_NONE};
    enum {SIZE = PENN_TAG_COUNT_BITS};
    enum {FIRST = PENN_TAG_FIRST};

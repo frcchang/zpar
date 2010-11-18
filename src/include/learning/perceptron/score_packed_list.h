@@ -6,11 +6,11 @@
  *                                                              *
  ****************************************************************/
 
-#ifndef _SCORE_PACKED_HASH_H
-#define _SCORE_PACKED_HASH_H
+#ifndef _SCORE_PACKED_LIST_H
+#define _SCORE_PACKED_LIST_H
 
 #include "hash.h"
-#include "hash_small.h"
+#include "linkedlist.h"
 #include "score.h"
 
 /*===============================================================
@@ -66,8 +66,7 @@ std::ostream & operator << (std::ostream &os, const CPackedScore<SCORE_TYPE, PAC
 template <typename SCORE_TYPE, unsigned PACKED_SIZE>
 class CPackedScore {
 protected:
-   const static unsigned HASHMAP_SIZE=PACKED_SIZE<1?PACKED_SIZE:1;
-   CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE> scores;
+   CLinkedList< unsigned, CScore<SCORE_TYPE> > scores;
 public:
    CPackedScore() : scores() {}
 public:
@@ -78,7 +77,7 @@ public:
       scores[index].updateCurrent(added, round);
    }
    void updateAverage(const int &round) {
-      typename CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE>::iterator it;
+      typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::iterator it;
       it = scores.begin();
       while (it != scores.end()) {
          it.second().updateAverage(round);
@@ -86,7 +85,7 @@ public:
       }
    }
    void reset() {
-      typename CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE>::iterator it;
+      typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::iterator it;
       it = scores.begin();
       while (it != scores.end()) {
          it.second().reset();
@@ -94,7 +93,7 @@ public:
       }
    }
    bool empty() const {
-      typename CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE>::const_iterator it;
+      typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::const_iterator it;
       it = scores.begin();
       while (it != scores.end()) {
          if (!it.second().zero()) return false;
@@ -103,7 +102,7 @@ public:
       return true;
    }
    void add(CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &o, const int &which) const {
-      typename CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE>::const_iterator it;
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::const_iterator it;
       it = scores.begin();
       while (it != scores.end()) {
          o[it.first()]+=it.second().score(which);
@@ -111,7 +110,7 @@ public:
       }
    }
    void trace() const {
-      typename CSmallHashMap<unsigned, CScore<SCORE_TYPE>, HASHMAP_SIZE>::const_iterator it;
+      typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::const_iterator it;
       it = scores.begin();
       while (it != scores.end()) {
          (std::cout) << it.first();
