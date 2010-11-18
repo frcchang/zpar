@@ -8,6 +8,7 @@ enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT, L
 
 #ifdef LABELED
 static unsigned encodeAction(const STACK_ACTION &action, const unsigned &label) {
+   assert(label<DEP_LABEL_COUNT);
    if (action==ARC_LEFT) {
       if (label==0)
          return ARC_LEFT;
