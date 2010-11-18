@@ -30,36 +30,49 @@ std::istream & operator >> (std::istream &is, CPackedScore<SCORE_TYPE, PACKED_SI
    assert(PACKED_SIZE>0);
    score.reset();
    assert(score.empty());
-   is >> score.scores;
-/*
-   static CScore<SCORE_TYPE> sco;
-   static std::string s;
+   if (!is) return is ;
+   static std::string s ;
+   static unsigned key;
+   static CScore<SCORE_TYPE> value;
    is >> s;
-   ASSERT(s=="[", "hashmap_score_packed.h: not well formatted CPackedScore");
-   is >> sco;
-   if (!sco.zero()) score[0] = sco;
-   for (unsigned index=1; index<PACKED_SIZE; ++index) {
+   ASSERT(s=="{"||s=="{}", "The packed score does not start with {");
+   if (s=="{}")
+      return is;
+   while (true) {
+      is >> key;
       is >> s;
-      ASSERT(s==",", "hashmap_score_packed.h: not well formatted CPackedScore");
-      is >> sco;
-      if (!sco.zero()) score[index] = sco;
+//std::cout<<(s)<<endl;std::cout.flush();
+      ASSERT(s==":", "The packed score does not have : after key: "<<key);
+      is >> value;
+      score.scores[key] = value;
+      is >> s;
+      ASSERT(s==","||s=="}", "The packed score does not have a , or } after value: "<<value);
+      if (s=="}")
+         return is;
    }
-   is >> s;
-   ASSERT(s=="]", "hashmap_score_packed.h: not well formatted CPackedScore");
-*/
-   return is;
+   THROW("score_packed_list.h: the program should not have reached here.");
+   return is ;
 }
 
 template <typename SCORE_TYPE, unsigned PACKED_SIZE>
 std::ostream & operator << (std::ostream &os, const CPackedScore<SCORE_TYPE, PACKED_SIZE> &score) {
    assert(PACKED_SIZE>0);
-/*
-   os << " [ ";
-   os << score.find(0);
-   for (unsigned index=1; index<PACKED_SIZE; ++index)
-      os << " , " << score.find(index);
-   os << " ] ";
-*/ os << score.scores;
+   os << "{";
+   typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::const_iterator it = score.scores.begin();
+   bool bBegin=true;
+   while (it!=score.scores.end()) {
+      if (!it.second().zero()) {
+         if (bBegin) 
+            os << ' ';
+         else
+            os << " , ";
+         bBegin=false;
+         os << it.first() << " : " << it.second();
+      }
+      ++it;
+   }
+   if (!bBegin) os << ' ';
+   os << "}";
    return os;
 }
 
