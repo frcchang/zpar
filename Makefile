@@ -51,7 +51,7 @@ CHINESE_DEPLABELER_IMPL = naive
 CHINESE_CONPARSER_IMPL = srnew
 
 # currently support only agenda
-ENGLISH_TAGGER_IMPL = agenda
+ENGLISH_TAGGER_IMPL = collins
 
 # currently support eisner, covington, nivre, combined implementations 
 ENGLISH_DEPPARSER_IMPL = arceager
@@ -87,7 +87,7 @@ include Makefile.common
 INCLUDES = -I$(SRC_INCLUDES)
 
 CXX = g++
-CXXFLAGS = $(INCLUDES) $(DEBUG)
+CXXFLAGS = -W -O3 $(INCLUDES) $(DEBUG)
 
 LD=$(CXX)
 LDFLAGS =
