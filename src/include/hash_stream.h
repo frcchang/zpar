@@ -12,12 +12,10 @@ std::istream & operator >> (std::istream &is, CHashMap<K, V> &table) {
    getline(is, s);
    while (is && !(s.empty())) {
       std::istringstream iss(s) ; 
-//      iss >> key >> c >> value ;
       iss >> key;
       iss >> c;
       ASSERT( c == ':' , "Hash map does not match key : value format") ;
       iss >> table[key] ;
-//      table.insert(key,value);
 //TRACE("Read " << key << " : " << table[key]);
       getline(is, s);
    }
