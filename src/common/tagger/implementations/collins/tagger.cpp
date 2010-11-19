@@ -309,7 +309,7 @@ bool TARGET_LANGUAGE::CTagger::train( const CTwoStringVector * correct ) {
  *
  *--------------------------------------------------------------*/
 
-void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int nBest , SCORE_TYPE * out_scores ) {
+void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector * vReturn , int nBest , double * out_scores ) {
    clock_t total_start_time = clock();;
    // initialise the return value, the agenda and cache
    TRACE("Initialising the tagging process...");

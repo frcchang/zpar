@@ -21,20 +21,20 @@ const static unsigned DEP_TABLE_SIZE = (1<<17);//1000121;
 //
 // TYPE DEFINITIONS
 //
-typedef CPackedScoreMap<CWord, SCORE_TYPE, action::MAX> CWordIntMap;
-typedef CPackedScoreMap<CTag, SCORE_TYPE, action::MAX> CTagIntMap;
-typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2IntMap;
-typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3IntMap;
-typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagIntMap;
-typedef CPackedScoreMap<CTuple3<CWord, CTag, CTag>, SCORE_TYPE, action::MAX> CWordTagTagIntMap;
-typedef CPackedScoreMap<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, action::MAX> CWordWordTagIntMap;
-typedef CPackedScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, action::MAX> CTaggedWordIntMap;
-typedef CPackedScoreMap<CTwoWords, SCORE_TYPE, action::MAX> CTwoWordsIntMap;
-typedef CPackedScoreMap<CTwoTaggedWords, SCORE_TYPE, action::MAX> CTwoTaggedWordsIntMap;
+typedef CPackedScoreMap<CWord, SCORE_TYPE, action::MAX> CWordMap;
+typedef CPackedScoreMap<CTag, SCORE_TYPE, action::MAX> CTagMap;
+typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2Map;
+typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3Map;
+typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagMap;
+typedef CPackedScoreMap<CTuple3<CWord, CTag, CTag>, SCORE_TYPE, action::MAX> CWordTagTagMap;
+typedef CPackedScoreMap<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, action::MAX> CWordWordTagMap;
+typedef CPackedScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, action::MAX> CTaggedWordMap;
+typedef CPackedScoreMap<CTwoWords, SCORE_TYPE, action::MAX> CTwoWordsMap;
+typedef CPackedScoreMap<CTwoTaggedWords, SCORE_TYPE, action::MAX> CTwoTaggedWordsMap;
 
-typedef CPackedScoreMap<CLemma, SCORE_TYPE, action::MAX> CLemmaIntMap;
-typedef CPackedScoreMap<CCoNLLCPOS, SCORE_TYPE, action::MAX> CCoNLLCPOSIntMap;
-typedef CPackedScoreMap<CCoNLLFeats, SCORE_TYPE, action::MAX> CCoNLLFeatsIntMap;
+typedef CPackedScoreMap<CLemma, SCORE_TYPE, action::MAX> CLemmaMap;
+typedef CPackedScoreMap<CCoNLLCPOS, SCORE_TYPE, action::MAX> CCoNLLCPOSMap;
+typedef CPackedScoreMap<CCoNLLFeats, SCORE_TYPE, action::MAX> CCoNLLFeatsMap;
 
 /*===============================================================
  *
@@ -46,51 +46,51 @@ class CWeight : public CWeightBase {
 
 public:
 
-   CWordIntMap m_mapSTw;
-   CTagIntMap m_mapSTt;
-   CTaggedWordIntMap m_mapSTwt;
-   CWordIntMap m_mapN0w;
-   CTagIntMap m_mapN0t;
-   CTaggedWordIntMap m_mapN0wt;
-   CWordIntMap m_mapN1w;
-   CTagIntMap m_mapN1t;
-   CTaggedWordIntMap m_mapN1wt;
+   CWordMap m_mapSTw;
+   CTagMap m_mapSTt;
+   CTaggedWordMap m_mapSTwt;
+   CWordMap m_mapN0w;
+   CTagMap m_mapN0t;
+   CTaggedWordMap m_mapN0wt;
+   CWordMap m_mapN1w;
+   CTagMap m_mapN1t;
+   CTaggedWordMap m_mapN1wt;
 
-   CTwoTaggedWordsIntMap m_mapSTwtN0wt;
-   CWordWordTagIntMap m_mapSTwtN0w;
-   CWordWordTagIntMap m_mapSTwN0wt;
-   CWordTagTagIntMap m_mapSTtN0wt;
-   CWordTagTagIntMap m_mapSTwtN0t;
-   CTwoWordsIntMap m_mapSTwN0w;
-   CTagSet2IntMap m_mapSTtN0t;
+   CTwoTaggedWordsMap m_mapSTwtN0wt;
+   CWordWordTagMap m_mapSTwtN0w;
+   CWordWordTagMap m_mapSTwN0wt;
+   CWordTagTagMap m_mapSTtN0wt;
+   CWordTagTagMap m_mapSTwtN0t;
+   CTwoWordsMap m_mapSTwN0w;
+   CTagSet2Map m_mapSTtN0t;
 
-   CTagSet2IntMap m_mapN0tN1t;
-   CTagSet3IntMap m_mapN0tN1tN2t;
-   CTagSet3IntMap m_mapSTtN0tN1t;
-   CTagSet3IntMap m_mapSTtN0tN0LDt;
-   CTagSet3IntMap m_mapSTHtSTtN0t;
-   CTagSet3IntMap m_mapSTtSTLDtN0t;
-   CTagSet3IntMap m_mapSTtSTRDtN0t;
+   CTagSet2Map m_mapN0tN1t;
+   CTagSet3Map m_mapN0tN1tN2t;
+   CTagSet3Map m_mapSTtN0tN1t;
+   CTagSet3Map m_mapSTtN0tN0LDt;
+   CTagSet3Map m_mapSTHtSTtN0t;
+   CTagSet3Map m_mapSTtSTLDtN0t;
+   CTagSet3Map m_mapSTtSTRDtN0t;
 
-   CWordTagIntMap m_mapN0wN1t;
-   CWordTagTagIntMap m_mapN0wN1tN2t;
-   CWordTagTagIntMap m_mapSTtN0wN1t;
-   CWordTagTagIntMap m_mapSTtN0wN0LDt;
-   CWordTagTagIntMap m_mapSTHtSTtN0w;
-   CWordTagTagIntMap m_mapSTtSTLDtN0w;
-   CWordTagTagIntMap m_mapSTtSTRDtN0w;
+   CWordTagMap m_mapN0wN1t;
+   CWordTagTagMap m_mapN0wN1tN2t;
+   CWordTagTagMap m_mapSTtN0wN1t;
+   CWordTagTagMap m_mapSTtN0wN0LDt;
+   CWordTagTagMap m_mapSTHtSTtN0w;
+   CWordTagTagMap m_mapSTtSTLDtN0w;
+   CWordTagTagMap m_mapSTtSTRDtN0w;
 
-   CLemmaIntMap m_mapSTl;
-   CCoNLLCPOSIntMap m_mapSTc;
-   CCoNLLFeatsIntMap m_mapSTf;
+   CLemmaMap m_mapSTl;
+   CCoNLLCPOSMap m_mapSTc;
+   CCoNLLFeatsMap m_mapSTf;
 
-   CLemmaIntMap m_mapN0l;
-   CCoNLLCPOSIntMap m_mapN0c;
-   CCoNLLFeatsIntMap m_mapN0f;
+   CLemmaMap m_mapN0l;
+   CCoNLLCPOSMap m_mapN0c;
+   CCoNLLFeatsMap m_mapN0f;
 
-   CLemmaIntMap m_mapN1l;
-   CCoNLLCPOSIntMap m_mapN1c;
-   CCoNLLFeatsIntMap m_mapN1f;
+   CLemmaMap m_mapN1l;
+   CCoNLLCPOSMap m_mapN1c;
+   CCoNLLFeatsMap m_mapN1f;
 
 public:
 
