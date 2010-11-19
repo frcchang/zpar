@@ -138,6 +138,10 @@ public:
    const CScore<SCORE_TYPE> & find(const unsigned &index) const { return scores.find(index,CScore<SCORE_TYPE>()); }
    friend std::istream & operator >> <> (std::istream &is, CPackedScore &score);
    friend std::ostream & operator << <> (std::ostream &os, const CPackedScore &score);
+public:
+   static void freePoolMemory() { // call after all instances clean!
+      CLinkedList< unsigned, CScore<SCORE_TYPE> >::freePoolMemory();
+   }
 };
 
 #endif

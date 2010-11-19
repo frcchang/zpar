@@ -31,6 +31,10 @@ typedef CPackedScoreMap<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, action::MAX> CW
 typedef CPackedScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, action::MAX> CTaggedWordMap;
 typedef CPackedScoreMap<CTwoWords, SCORE_TYPE, action::MAX> CTwoWordsMap;
 typedef CPackedScoreMap<CTwoTaggedWords, SCORE_TYPE, action::MAX> CTwoTaggedWordsMap;
+typedef CPackedScoreMap<CTuple2<CWord, int>, SCORE_TYPE, action::MAX> CWordIntMap;
+typedef CPackedScoreMap<CTuple2<CTag, int>, SCORE_TYPE, action::MAX> CTagIntMap;
+typedef CPackedScoreMap<CTuple3<CTag, CTag, int>, SCORE_TYPE, action::MAX> CTagTagIntMap;
+typedef CPackedScoreMap<CTuple3<CWord, CWord, int>, SCORE_TYPE, action::MAX> CWordWordIntMap;
 
 typedef CPackedScoreMap<CLemma, SCORE_TYPE, action::MAX> CLemmaMap;
 typedef CPackedScoreMap<CCoNLLCPOS, SCORE_TYPE, action::MAX> CCoNLLCPOSMap;
@@ -79,6 +83,13 @@ public:
    CWordTagTagMap m_mapSTHtSTtN0w;
    CWordTagTagMap m_mapSTtSTLDtN0w;
    CWordTagTagMap m_mapSTtSTRDtN0w;
+
+   CWordIntMap m_mapSTwd;
+   CTagIntMap m_mapSTtd;
+   CWordIntMap m_mapN0wd;
+   CTagIntMap m_mapN0td;
+   CWordWordIntMap m_mapSTwN0wd;
+   CTagTagIntMap m_mapSTtN0td;
 
    CLemmaMap m_mapSTl;
    CCoNLLCPOSMap m_mapSTc;
@@ -131,6 +142,13 @@ public:
                                                m_mapSTHtSTtN0w("StackHeadTagStackTagNextWord", DEP_TABLE_SIZE),
                                                m_mapSTtSTLDtN0w("StackTagStackLDTagNextWord", DEP_TABLE_SIZE),
                                                m_mapSTtSTRDtN0w("StackTagStackRDTagNextWord", DEP_TABLE_SIZE), 
+
+                                               m_mapSTwd("StackWordDist", DEP_TABLE_SIZE),
+                                               m_mapSTtd("StackTagDist", DEP_TABLE_SIZE),
+                                               m_mapN0wd("NextWordDist", DEP_TABLE_SIZE),
+                                               m_mapN0td("NextTagDist", DEP_TABLE_SIZE),
+                                               m_mapSTwN0wd("StackWordNextWordDist", DEP_TABLE_SIZE),
+                                               m_mapSTtN0td("StackTagNextTagDist", DEP_TABLE_SIZE),
 
                                                m_mapSTl("StackLemma", DEP_TABLE_SIZE),
                                                m_mapSTc("StackCPOS", DEP_TABLE_SIZE),

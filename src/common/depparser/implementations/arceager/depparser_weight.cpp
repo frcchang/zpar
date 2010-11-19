@@ -52,6 +52,13 @@ using namespace TARGET_LANGUAGE::depparser;
    left(m_mapSTtSTLDtN0w)right\
    left(m_mapSTtSTRDtN0w)right\
 \
+   left(m_mapSTwd)right\
+   left(m_mapSTtd)right\
+   left(m_mapN0wd)right\
+   left(m_mapN0td)right\
+   left(m_mapSTwN0wd)right\
+   left(m_mapSTtN0td)right\
+\
    left(m_mapSTl)right\
    left(m_mapSTc)right\
    left(m_mapSTf)right\
