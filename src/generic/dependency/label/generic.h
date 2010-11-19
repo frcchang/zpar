@@ -44,7 +44,7 @@ public:
    enum {ROOT = 1};
    enum {FIRST = 1};
    enum {SIZE = 8};
-   enum {MAX_COUNT = 256};
+   enum {MAX_COUNT = 1<<SIZE};
    static unsigned long COUNT;
    static unsigned long LAST;
 

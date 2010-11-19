@@ -7,17 +7,17 @@ namespace TARGET_LANGUAGE {
 
 namespace tagger {
 
-typedef double SCORE_TYPE ;
+typedef long SCORE_TYPE ;
 
 //
 // Specific global
 //
-const int AGENDA_SIZE = 16;
+const int AGENDA_SIZE = 8;
 
 //
 // General definitions for any method tagger.
 //
-const int MAX_SENTENCE_SIZE = 512; // restrict size of sentences 
+const int MAX_SENTENCE_SIZE = 1024; // restrict size of sentences 
 
 };
 
