@@ -77,15 +77,25 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
    clock_t time_start = clock();
    std::cout<<"Loading scores..."; std::cout.flush();
    std::ifstream file ; 
+   std::string s;
    file.open(m_sRecordPath.c_str()) ;
 
    if (!file.is_open()) {
       std::cout << " empty." << std::endl; return;
    }
 
+#ifdef LABELED
+   getline(file, s);
+   ASSERT(s=="Dependency labels:", "Dependency labels not found in model file") ;
+   getline(file, s);
+   std::istringstream iss(s);
+   CDependencyLabel label;
+   while(iss >> label);
+   getline(file, s);
+   ASSERT(s=="", "No empty line after the dependency labels") ;
+#endif
    iterate_templates(file >>,;);
 
-   std::string s;
    getline(file, s);
    if (s=="Rules=1") {
       setRules(true);
@@ -114,6 +124,12 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
    std::ofstream file ;
    file.open(m_sRecordPath.c_str()) ;
 
+#ifdef LABELED
+   file << "Dependency labels:" << std::endl;
+   for (unsigned label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label)
+      file << CDependencyLabel(label) << ' ';
+   file << std::endl << std::endl;
+#endif
    iterate_templates(file<<,;)
 #ifdef DEBUG
    iterate_templates(,.trace(););

@@ -38,7 +38,7 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    CTwoStringVector input_sent;
    CDependencyParse *outout_sent; 
    depparser::CSuperTag *supertags;
-   std::ifstream *is_supertags;
+   std::ifstream *is_supertags = 0;
 
    supertags = 0;
    if (!sSuperPath.empty()) {
@@ -134,7 +134,7 @@ void process_conll(const std::string sInputFile, const std::string sOutputFile, 
    CCoNLLInput input_sent;
    CCoNLLOutput *outout_sent; 
    depparser::CSuperTag *supertags;
-   std::ifstream *is_supertags;
+   std::ifstream *is_supertags=0;
 
    supertags = 0;
    if (!sSuperPath.empty()) {
