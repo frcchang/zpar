@@ -114,7 +114,7 @@ public:
    virtual ~CLinkedList() { }
 
 protected:
-   CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() const { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   static CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
 
 public:
    V &operator[] (const K &key) { 
@@ -208,6 +208,11 @@ public:
 
 public:
    bool empty() const { return m_buckets==0; }
+
+public:
+   static void freePoolMemory() { // call after all instances clean!
+      getPool().reset();
+   }
 
 };
 

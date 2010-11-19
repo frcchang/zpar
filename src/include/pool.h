@@ -35,38 +35,34 @@ protected:
    unsigned long nItem;
 public:
    CMemoryPool(): current(0), nItem(0) {
-      newblock();
       assert(current!=0);
    }
    virtual ~CMemoryPool() {
-      CMemoryPoolEntry<T, BLOCK_SIZE> *iter = current;
-      while (iter) {
-         CMemoryPoolEntry<T, BLOCK_SIZE> *prev = iter->prev;
-//         if (BLOCK_INIT) delete iter; else std::free(iter);
-         delete iter;
-         iter = prev;
-      }
+      reset();
    }
 protected:
    void newblock() {
       CMemoryPoolEntry<T, BLOCK_SIZE> *iter = current;
-//      if (BLOCK_INIT) {
-         current = new CMemoryPoolEntry<T, BLOCK_SIZE>();
-//      }
-//      else {
-//         current = static_cast<CMemoryPoolEntry<T, BLOCK_SIZE>*>(std::malloc(sizeof(CMemoryPoolEntry<T, BLOCK_SIZE>)));
-//      }
+      current = new CMemoryPoolEntry<T, BLOCK_SIZE>();
       assert(current!=0);
       current->prev = iter;
+      nItem = 0;
    }
 public:
    T* allocate() { 
-      assert(current!=0);
-      if (nItem==BLOCK_SIZE) {
+      if (current==0 || nItem==BLOCK_SIZE) { // if start or block full
          newblock();
-         nItem = 0;
       }
       return &(current->blocks[nItem++]) ;
+   }
+   void reset() {
+      CMemoryPoolEntry<T, BLOCK_SIZE> *iter = current;
+      while (iter) {
+         CMemoryPoolEntry<T, BLOCK_SIZE> *prev = iter->prev;
+         delete iter;
+         iter = prev;
+      }
+      current=0;
    }
 };
 

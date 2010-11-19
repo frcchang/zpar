@@ -129,7 +129,7 @@ protected:
    CEntry *&getEntry(const K &key) { return m_buckets[hash(key)%m_nTableSize]; }
    CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
-   CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   static CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
    
 
 public:
@@ -234,6 +234,11 @@ public:
       std::cout << "done" << std::endl;
    }
 #endif
+
+public:
+   static void freePoolMemory() { // call after all instances clean!
+      getPool().reset();
+   }
 
 };
 

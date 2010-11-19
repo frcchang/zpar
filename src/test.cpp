@@ -164,6 +164,24 @@ void testlinkedlist() {
    std::cout << t<< std::endl;
 }
 
+void testinitializer() {
+   class A {
+   public:
+      int a;
+      int b;
+   public:
+      A() : a(0) {}
+   };
+   class B {
+   public:
+      int a;
+      int b;
+   };
+   A a;
+   B b;
+   std::cout << a.a << ' ' << a.b << ' ' << b.a << ' ' << b.b << std::endl;
+}
+
 int main(int argc, char**argv){
    try {
 //   std::cout << B::C << B::D << std::endl;
@@ -175,7 +193,8 @@ int main(int argc, char**argv){
 //   testlemma();
 //   testpackedscores();
 //   testsmallhash();
-   testlinkedlist();
+//   testlinkedlist();
+   testinitializer();
    }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 

@@ -72,6 +72,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    n2_tag = n2_index==-1 ? CTag::SENTENCE_END : m_lCache[n2_index].tag;
    n3_tag = n3_index==-1 ? CTag::SENTENCE_END : m_lCache[n3_index].tag;
 
+   static int st_n0_dist;
+   st_n0_dist = encodeLinkDistance(st_index, n0_index);
+
    static CTwoTaggedWords st_word_tag_n0_word_tag ;
    static CTwoTaggedWords st_word_tag_n0_word ;
    static CTwoTaggedWords st_word_n0_word_tag ;
@@ -89,8 +92,12 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    static CTuple2<CWord, CTag> word_tag;
+   static CTuple2<CWord, int> word_int;
+   static CTuple2<CTag, int> tag_int;
    static CTuple3<CWord, CTag, CTag> word_tag_tag;
    static CTuple3<CWord, CWord, CTag> word_word_tag;
+   static CTuple3<CWord, CWord, int> word_word_int;
+   static CTuple3<CTag, CTag, int> tag_tag_int;
 
    cast_weights->m_mapSTwt.getOrUpdateScore( retval, st_word_tag, action, m_nScoreIndex, amount, round) ;
    cast_weights->m_mapSTw.getOrUpdateScore( retval, st_word, action, m_nScoreIndex, amount, round) ;
@@ -150,6 +157,19 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &strd_tag);
       cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
    }
+
+   refer_or_allocate_tuple2(word_int, &st_word, &st_n0_dist);
+   cast_weights->m_mapSTwd.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round) ;
+   refer_or_allocate_tuple2(tag_int, &st_tag, &st_n0_dist);
+   cast_weights->m_mapSTtd.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+   refer_or_allocate_tuple2(word_int, &n0_word, &st_n0_dist);
+   cast_weights->m_mapN0wd.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round ) ;
+   refer_or_allocate_tuple2(tag_int, &n0_tag, &st_n0_dist);
+   cast_weights->m_mapN0td.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+   refer_or_allocate_tuple3(word_word_int, &st_word, &n0_word, &st_n0_dist);
+   cast_weights->m_mapSTwN0wd.getOrUpdateScore( retval, word_word_int, action, m_nScoreIndex, amount, round ) ; 
+   refer_or_allocate_tuple3(tag_tag_int, &st_tag, &n0_tag, &st_n0_dist);
+   cast_weights->m_mapSTtN0td.getOrUpdateScore( retval, tag_tag_int, action, m_nScoreIndex, amount, round ) ; 
 
    if (m_bCoNLL) {
       static unsigned i;

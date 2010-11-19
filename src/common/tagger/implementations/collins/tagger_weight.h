@@ -82,7 +82,10 @@ public:
                                                     m_mapContainCapitalLetter("ontains capitalized letter", 2),
                                                     m_mapTagByPrefix("Tag by prefix", 65536),
                                                     m_mapTagBySuffix("Tag by suffix", 65536) {}
-   virtual ~CWeight() {}
+   virtual ~CWeight() {
+      iterate_templates(,.freePoolMemory(););
+      CPackedScore<SCORE_TYPE, CTag::MAX_COUNT>::freePoolMemory();
+   }
 
    // MEHTODS
    void loadScores(); 

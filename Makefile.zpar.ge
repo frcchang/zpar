@@ -67,8 +67,8 @@ $(OBJECT_GENERIC_TAGGER)/weight.o: $(OBJECT_GENERIC_TAGGER) $(OBJECT_DIR)/pos.ge
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -c $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp -o $(OBJECT_GENERIC_TAGGER)/weight.o
 
 # the tagging object
-$(OBJECT_DIR)/generic.postagger.o: $(OBJECT_DIR)/pos.ge.o $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_TAGGER)/tagger.h $(SRC_GENERIC_TAGGER)/$(GENERIC_TAGGER_IMPL).cpp $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
-	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -c $(SRC_GENERIC_TAGGER)/$(GENERIC_TAGGER_IMPL).cpp -o $(OBJECT_DIR)/generic.postagger.o
+$(OBJECT_DIR)/generic.postagger.o: $(OBJECT_DIR)/pos.ge.o $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.cpp $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -c $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.cpp -o $(OBJECT_DIR)/generic.postagger.o
 
 # the main executable file
 $(DIST_GENERIC_TAGGER)/tagger: $(SRC_GENERIC_TAGGER)/main.cpp $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECTS) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
