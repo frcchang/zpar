@@ -26,13 +26,13 @@ protected:
    unsigned long m_size;
 
 public:
-   const bool canShift(const unsigned long &dep) const {
+   bool canShift(const unsigned long &dep) const {
       return ( m_tags[dep] & (1<<HR) ) ;
    }
-   const bool canArcLeft(const unsigned long &head, const unsigned long &dep) const {
+   bool canArcLeft(const unsigned long &head, const unsigned long &dep) const {
       return ( m_tags[head] & (1<<DL) ) && ( m_tags[dep] & (1<<HR) ) ;
    }
-   const bool canArcRight(const unsigned long &head, const unsigned long &dep) const {
+   bool canArcRight(const unsigned long &head, const unsigned long &dep) const {
       return (m_tags[head] & (1<<DR) ) && (m_tags[dep] & (1<<HL) ) ;
    }
    void setSentenceSize(const unsigned long &size) { m_size = size; }
