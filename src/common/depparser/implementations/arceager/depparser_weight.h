@@ -57,6 +57,11 @@
    left(m_mapSTwN0wd)right\
    left(m_mapSTtN0td)right\
 \
+   left(m_mapSTwa)right\
+   left(m_mapSTta)right\
+   left(m_mapN0wa)right\
+   left(m_mapN0ta)right\
+\
    left(m_mapSTl)right\
    left(m_mapSTc)right\
    left(m_mapSTf)right\
@@ -154,6 +159,11 @@ public:
    CWordWordIntMap m_mapSTwN0wd;
    CTagTagIntMap m_mapSTtN0td;
 
+   CWordIntMap m_mapSTwa;
+   CTagIntMap m_mapSTta;
+   CWordIntMap m_mapN0wa;
+   CTagIntMap m_mapN0ta;
+
    CLemmaMap m_mapSTl;
    CCoNLLCPOSMap m_mapSTc;
    CCoNLLFeatsMap m_mapSTf;
@@ -216,6 +226,11 @@ public:
                                                m_mapN0td("NextTagDist", DEP_TABLE_SIZE),
                                                m_mapSTwN0wd("StackWordNextWordDist", DEP_TABLE_SIZE),
                                                m_mapSTtN0td("StackTagNextTagDist", DEP_TABLE_SIZE),
+
+                                               m_mapSTwa("StackWordArity", DEP_TABLE_SIZE),
+                                               m_mapSTta("StackTagArity", DEP_TABLE_SIZE),
+                                               m_mapN0wa("NextWordArity", DEP_TABLE_SIZE),
+                                               m_mapN0ta("NextTagArity", DEP_TABLE_SIZE),
 
                                                m_mapSTl("StackLemma", DEP_TABLE_SIZE),
                                                m_mapSTc("StackCPOS", DEP_TABLE_SIZE),
