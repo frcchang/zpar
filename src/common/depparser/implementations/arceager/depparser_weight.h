@@ -12,6 +12,63 @@
 
 #include "depparser_weight_base.h"
 
+#define iterate_templates(left, right) \
+   left(m_mapSTwt)right\
+   left(m_mapSTw)right\
+   left(m_mapSTt)right\
+   left(m_mapN0wt)right\
+   left(m_mapN0w)right\
+   left(m_mapN0t)right\
+   left(m_mapN1wt)right\
+   left(m_mapN1w)right\
+   left(m_mapN1t)right\
+   left(m_mapN2wt)right\
+   left(m_mapN2w)right\
+   left(m_mapN2t)right\
+\
+   left(m_mapSTwtN0wt)right\
+   left(m_mapSTwtN0w)right\
+   left(m_mapSTwN0wt)right\
+   left(m_mapSTtN0wt)right\
+   left(m_mapSTwtN0t)right\
+   left(m_mapSTwN0w)right\
+   left(m_mapSTtN0t)right\
+\
+   left(m_mapN0tN1t)right\
+   left(m_mapN0tN1tN2t)right\
+   left(m_mapSTtN0tN1t)right\
+   left(m_mapSTtN0tN0LDt)right\
+   left(m_mapSTHtSTtN0t)right\
+   left(m_mapSTtSTLDtN0t)right\
+   left(m_mapSTtSTRDtN0t)right\
+\
+   left(m_mapN0wN1t)right\
+   left(m_mapN0wN1tN2t)right\
+   left(m_mapSTtN0wN1t)right\
+   left(m_mapSTtN0wN0LDt)right\
+   left(m_mapSTHtSTtN0w)right\
+   left(m_mapSTtSTLDtN0w)right\
+   left(m_mapSTtSTRDtN0w)right\
+\
+   left(m_mapSTwd)right\
+   left(m_mapSTtd)right\
+   left(m_mapN0wd)right\
+   left(m_mapN0td)right\
+   left(m_mapSTwN0wd)right\
+   left(m_mapSTtN0td)right\
+\
+   left(m_mapSTl)right\
+   left(m_mapSTc)right\
+   left(m_mapSTf)right\
+\
+   left(m_mapN0l)right\
+   left(m_mapN0c)right\
+   left(m_mapN0f)right\
+\
+   left(m_mapN1l)right\
+   left(m_mapN1c)right\
+   left(m_mapN1f)right
+
 namespace TARGET_LANGUAGE {
 
 namespace depparser {
@@ -53,12 +110,18 @@ public:
    CWordMap m_mapSTw;
    CTagMap m_mapSTt;
    CTaggedWordMap m_mapSTwt;
+
    CWordMap m_mapN0w;
    CTagMap m_mapN0t;
    CTaggedWordMap m_mapN0wt;
+
    CWordMap m_mapN1w;
    CTagMap m_mapN1t;
    CTaggedWordMap m_mapN1wt;
+
+   CWordMap m_mapN2w;
+   CTagMap m_mapN2t;
+   CTaggedWordMap m_mapN2wt;
 
    CTwoTaggedWordsMap m_mapSTwtN0wt;
    CWordWordTagMap m_mapSTwtN0w;
@@ -119,6 +182,10 @@ public:
                                                m_mapN1t("Next+1Tag", DEP_TABLE_SIZE),
                                                m_mapN1wt("Next+1WordTag", DEP_TABLE_SIZE),
 
+                                               m_mapN2w("Next+2Word", DEP_TABLE_SIZE),
+                                               m_mapN2t("Next+2Tag", DEP_TABLE_SIZE),
+                                               m_mapN2wt("Next+2WordTag", DEP_TABLE_SIZE),
+
                                                m_mapSTwtN0wt("StackWordTagNextWordTag", DEP_TABLE_SIZE),
                                                m_mapSTwtN0w("StackWordTagNextWord", DEP_TABLE_SIZE),
                                                m_mapSTwN0wt("StackWordNextWordTag", DEP_TABLE_SIZE),
@@ -163,6 +230,10 @@ public:
                                                m_mapN1f("Next+1Feats", DEP_TABLE_SIZE)
    { loadScores(); }
 
+   virtual ~CWeight() {
+      iterate_templates(,.freePoolMemory(););
+      CPackedScore<SCORE_TYPE, action::MAX>::freePoolMemory();
+   }
 
    // MEHTODS
    virtual void loadScores();
