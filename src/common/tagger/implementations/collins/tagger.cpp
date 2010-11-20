@@ -325,10 +325,14 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
    static unsigned stateindice[MAX_SENTENCE_SIZE];
    static CStateItem temp;
 
-   ASSERT(length<MAX_SENTENCE_SIZE, "The input sentence is longer than the maximum " << MAX_SENTENCE_SIZE << "supported by the current setting.");
    assert(vReturn!=NULL); 
-
    vReturn->clear();
+
+   if (length>=MAX_SENTENCE_SIZE) {
+      WARNING("The input sentence is longer than the maximum " << MAX_SENTENCE_SIZE << "supported by the current setting."<<std::endl<<"Sentence: "<<sentence);
+      return;
+   }
+
    if (length == 0) {
       TRACE("Empty input.");
       return;

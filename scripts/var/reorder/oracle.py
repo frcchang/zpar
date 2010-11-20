@@ -23,7 +23,7 @@ def readAlign(path):
          n += 1
       else:
          assert line.startswith('S ')
-         source, target = map(int, line[2:-1].split())
+         target, source = map(int, line[2:-1].split())
          if not source in retval:
             retval[source] = []
          retval[source].append(target)
