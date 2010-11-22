@@ -3,7 +3,12 @@ import sys
 def posread(path, sep='/'):
    file = open(path)
    for line in file:
-      yield [word.split(sep) for word in line.split()]
+      retval = [word.split(sep) for word in line.split()]
+      for index in range(len(retval)):
+         word = retval[index]
+         if len(word) > 2:
+            retval[index] = [sep.join(word[:-1]), word[-1]]
+      yield retval
    file.close()
 
 def posprint(sent, sep='/'):

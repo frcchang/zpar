@@ -321,18 +321,25 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
    static CStateItem best_bigram[1<<CTag::SIZE][1<<CTag::SIZE];
    static int done_bigram[1<<CTag::SIZE][1<<CTag::SIZE];
    static unsigned long long possible_tags; // possible tags for a word
-   static CStateItem stateitems[AGENDA_SIZE*MAX_SENTENCE_SIZE];
-   static unsigned stateindice[MAX_SENTENCE_SIZE];
    static CStateItem temp;
 
    assert(vReturn!=NULL); 
    vReturn->clear();
 
-   if (length>=MAX_SENTENCE_SIZE) {
-      WARNING("The input sentence is longer than the maximum " << MAX_SENTENCE_SIZE << "supported by the current setting."<<std::endl<<"Sentence: "<<sentence);
-      return;
+   if (length+3>m_nMaxSentenceSize) {
+      while (length+3>m_nMaxSentenceSize) {
+         m_nMaxSentenceSize *= 2;
+      }
+      delete []stateindice;
+      delete []stateitems;
+      stateitems = new CStateItem[AGENDA_SIZE*m_nMaxSentenceSize];
+      stateindice = new unsigned[m_nMaxSentenceSize];
    }
-
+//   if (length>=MAX_SENTENCE_SIZE) {
+//      WARNING("The input sentence is longer than the maximum " << MAX_SENTENCE_SIZE << "supported by the current setting."<<std::endl<<"Sentence: "<<sentence);
+//      return;
+//   }
+//
    if (length == 0) {
       TRACE("Empty input.");
       return;
@@ -378,7 +385,7 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
       m_Agenda->clear();
       for ( j=stateindice[index-1]; j<stateindice[index]; ++j ) {
 
-         pGenerator = stateitems+j;
+         pGenerator = &stateitems[j];
          last_tag = pGenerator->tag;
 
          // lookup dictionary
