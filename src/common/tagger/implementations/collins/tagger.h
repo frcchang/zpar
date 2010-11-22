@@ -64,14 +64,24 @@ private:
 
    std::vector<CWord> m_Cache;      // word cache for decoding
 
+   unsigned m_nMaxSentenceSize;
+   tagger::CStateItem *stateitems;
+   unsigned *stateindice;
+
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(CTag::COUNT) { 
+   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(CTag::COUNT), m_nMaxSentenceSize(tagger::MAX_SENTENCE_SIZE) { 
       m_weights = new tagger::CWeight(m_sFeatureDB, bTrain); 
       loadScores();
       if (m_bTrain) m_nTrainingRound = 0;
       if (m_bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
+      stateitems = new tagger::CStateItem[tagger::AGENDA_SIZE*m_nMaxSentenceSize];
+      stateindice = new unsigned[m_nMaxSentenceSize];
    }
-   ~CTagger() { delete m_weights; }
+   ~CTagger() { 
+      delete m_weights; 
+      delete []stateitems;
+      delete []stateindice;
+   }
    CTagger(CTagger& tagger) : m_TagDict(CTag::COUNT) { std::cerr<<"CTagger does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
 public:
