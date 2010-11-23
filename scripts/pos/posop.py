@@ -1,5 +1,6 @@
 import sys
 import getopt
+import pprint
 
 def tagdict(path, dDict):
    import posio
@@ -22,6 +23,8 @@ if __name__ == '__main__':
          sys.exit(0)
       dDict = {}
       tagdict(sys.argv[2], dDict)
-      for word in dDict:
-         print word, ':', ', '.join(['%s (%d)' % (tag, dDict[word][tag]) for tag in dDict[word]])
+      assert pprint.isreadable(dDict)
+      pprint.pprint(dDict)
+      #for word in dDict:
+         #print word, ':', ', '.join(['%s (%d)' % (tag, dDict[word][tag]) for tag in dDict[word]])
       
