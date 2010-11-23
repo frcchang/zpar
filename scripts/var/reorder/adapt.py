@@ -64,7 +64,7 @@ def updateIndex(tree):
 
 #========================================
 
-def reorderVV(node):
+def reorderVV(node, align, model):
    left_children = []
    bPUFound = False
    while node.left_children:
@@ -83,7 +83,7 @@ def reorderVV(node):
          left_children.insert(0, left_child)
    node.left_children = left_children
 
-def reorderNN(node):
+def reorderNN(node, align, model):
    left_children = []
    while node.left_children:
       left_child = node.left_children.pop(-1) # for each left
@@ -94,17 +94,17 @@ def reorderNN(node):
          left_children.insert(0, left_child)
    node.left_children = left_children
 
-def reorderDEG(node):
+def reorderDEG(node, align, model):
    while node.left_children:
       left_child = node.left_children.pop(0)
       node.right_children.insert(0, left_child)
 
-def reorderLC(node):
+def reorderLC(node, align, model):
    while node.left_children:
       left_child = node.left_children.pop(0)
       node.right_children.insert(0, left_child)
 
-def reorderNode(node):
+def reorderNode(node, align, model):
    # recursion
    for left_child in node.left_children:
       reorderNode(left_child)
@@ -112,16 +112,16 @@ def reorderNode(node):
       reorderNode(right_child)
    # ver
    if node.pos == 'VV':
-      reorderVV(node)
+      reorderVV(node, align, model)
    # n.
    elif node.pos in ['NN', 'NR']:
-      reorderNN(node)
+      reorderNN(node, align, model)
    # lc
    elif node.pos == 'LC':
-      reorderLC(node)
+      reorderLC(node, align, model)
 
-def reorder(tree):
-   reorderNode(tree.root)
+def reorder(tree, align, model):
+   reorderNode(tree.root, align, model)
    updateIndex(tree)
 
 #========================================
@@ -154,21 +154,38 @@ def deg(node):
 #========================================
 
 if __name__ == '__main__':
-   opts, args = getopt.getopt(sys.argv[1:], "o:")
+   opts, args = getopt.getopt(sys.argv[1:], "o:i:")
    if len(args) < 1:
-      print 'adapt [-oi|r] input'
+      print 'adapt [-ia|c] [-oi|r] input align|class'
       sys.exit(0)
 
    # get parameter
    sOutput = 'd'
+   sInput = 'a'
    for opt, val in opts:
       if opt == '-o':
          sOutput = val
+      if opt == '-i':
+         sInput = val
 
-   # run
+   # input
+   alignFile = None
+   modelFile = None
+   align = None
+   model = None
+   if sInput == 'a':
+      alignFile = readAlign(args[1]) 
+   elif sInput == 'c':
+      modelFile = readModel(args[1])
+   else:
+      print 'The input format is invalid'
+      sys.exit(0)
+
    for tree in depio.depread(args[0]):
+      if alignFile:
+         align = alignFile.next()
       dept = dep.CDep(tree)
-      reorder(dept)
+      reorder(dept, align, model)
       if sOutput == 'd':
          print dept
       elif sOutput == 'r':
