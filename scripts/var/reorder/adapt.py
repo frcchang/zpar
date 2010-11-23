@@ -4,6 +4,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../dep"))
 import depio
 import dep
+import gzip
 
 #========================================
 
@@ -12,6 +13,8 @@ def readAlign(path):
    n=0
    file = gzip.open(path)
    for line in file:
+      if not line.strip():
+         continue
       if line.startswith('SENT:'):
 #         number = int(line[6:-1])
 #         assert number == n # make sure of sentence index
@@ -64,32 +67,66 @@ def updateIndex(tree):
 
 #========================================
 
+def crossLink(node1, node2, align):
+   count = 0
+   total = 0
+
+   # do not crosslink if head non
+   indice = align.get(node2.word_index, [])
+   if not indice:
+      return False
+   head_index = indice[0]
+
+   for index in range(node1.leftmost_leaf, node1.rightmost_leaf):
+      indice = align.get(index, 0)
+      if not indice:
+         continue
+      total += 1
+      if indice[0] > head_index:
+         count += 1
+
+   # do not crosslink if non
+   if not total:
+      return False
+
+   if count > total / 2:
+      return True
+   return False
+
 def reorderVV(node, align, model):
    left_children = []
    bPUFound = False
    while node.left_children:
+
       left_child = node.left_children.pop(-1) # for each left
-      if left_child.pos=='PU': # don't move cross PU
-         bPUFound = True
-      if bPUFound == False and left_child.pos in ['P', 'NT', 'M', 'CD', 'OD']:
-         index = 0
-         for index in range(len(node.right_children)):
-            if compare(left_child, node.right_children[index])==1:
-               break
+
+      if left_child.pos in ['P']:
+         if align and crossLink(left_child, node, align):
+            node.right_children.append(left_child)
          else:
-            index += 1
-         node.right_children.insert(index, left_child)
+            left_children.insert(0, left_child)
+
+      elif left_child.pos in ['NT', 'M', 'CD', 'OD']:
+         if align and crossLink(left_child, node, align):
+            node.right_children.insert(0, left_child)
+         else:
+            left_children.insert(0, left_child)
+
       else:
          left_children.insert(0, left_child)
+
    node.left_children = left_children
 
 def reorderNN(node, align, model):
    left_children = []
    while node.left_children:
       left_child = node.left_children.pop(-1) # for each left
-      if left_child.pos == 'DEC' or (left_child.pos == 'DEG' and deg(left_child)):
-         reorderDEG(left_child)
-         node.right_children.insert(0, left_child)
+      if left_child.pos == 'DEC' or left_child.pos == 'DEG':
+         if align and crossLink(left_child, node, align):
+            reorderDEG(left_child, align, model)
+            node.right_children.insert(0, left_child)
+         else:
+            left_children.insert(0, left_child)
       else:
          left_children.insert(0, left_child)
    node.left_children = left_children
@@ -107,9 +144,9 @@ def reorderLC(node, align, model):
 def reorderNode(node, align, model):
    # recursion
    for left_child in node.left_children:
-      reorderNode(left_child)
+      reorderNode(left_child, align, model)
    for right_child in node.right_children:
-      reorderNode(right_child)
+      reorderNode(right_child, align, model)
    # ver
    if node.pos == 'VV':
       reorderVV(node, align, model)
