@@ -41,11 +41,11 @@ protected:
    CStringTokenizer &getTokenizer() const {static CStringTokenizer tokenizer; return tokenizer;}
 
 public:
-   enum {UNKNOWN=0, EMPTY=1};
+   enum {NONE=0, EMPTY=1};
 
 public:
    CLemma() { clear(); }
-   CLemma(const std::string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, UNKNOWN)) { }
+   CLemma(const std::string &s, bool bModify=true) : m_nHash(bModify ?  getTokenizer().lookup(s) : getTokenizer().find(s, NONE)) { }
    CLemma(const CLemma &w) : m_nHash(w.m_nHash) { }
    CLemma(const unsigned long &n) : m_nHash(n) { }
    virtual ~CLemma() {}
@@ -58,12 +58,12 @@ public:
    bool operator < (const CLemma &w) const { return m_nHash < w.m_nHash; }
    void operator = (const CLemma &w) { m_nHash =  w.m_nHash; }
    void copy(const CLemma &w) { m_nHash = w.m_nHash; }
-   void setString(const std::string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
+   void setString(const std::string &s) { m_nHash = getTokenizer().find(s, NONE); }
    // do not use str() for unknown lemmas!!
    const std::string &str() const { ASSERT(m_nHash<getTokenizer().count(), "lemma.h: str() called for an unknown lemma"); return getTokenizer().key(m_nHash); }
    void load(const std::string &s) { m_nHash = getTokenizer().lookup(s); }
    bool empty() { return m_nHash==EMPTY; }
-   bool unknown() { return m_nHash==UNKNOWN; }
+   bool none() { return m_nHash==NONE; }
    void clear() { m_nHash=EMPTY; }
 }; 
 

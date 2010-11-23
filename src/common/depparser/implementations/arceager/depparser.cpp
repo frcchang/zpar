@@ -22,6 +22,7 @@ const CTag g_noneTag = CTag::NONE;
 #define cast_weights static_cast<CWeight*>(m_weights)
 #define refer_or_allocate_tuple2(x, o1, o2) { if (amount == 0) x.refer(o1, o2); else x.allocate(o1, o2); }
 #define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
+#define _conll_or_empty(x) (x == "_" ? "" : x)
 
 /*===============================================================
  *
@@ -196,22 +197,26 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    if (m_bCoNLL) {
+
       static unsigned i;
+
       if (st_index!=-1) {
-         cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st_index], action, m_nScoreIndex, amount, round) ;
-         cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st_index], action, m_nScoreIndex, amount, round) ;
+         if (!m_lCacheCoNLLLemma[st_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st_index], action, m_nScoreIndex, amount, round) ;
+         if (m_lCacheCoNLLCPOS[st_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st_index], action, m_nScoreIndex, amount, round) ;
          for (i=0; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
             cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][i], action, m_nScoreIndex, amount, round) ;
       } // if (st_index!=-1)
+
       if (n0_index!=-1) {
-         cast_weights->m_mapN0l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n0_index], action, m_nScoreIndex, amount, round) ;
-         cast_weights->m_mapN0c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n0_index], action, m_nScoreIndex, amount, round) ;
+         if (!m_lCacheCoNLLLemma[n0_index].empty()) cast_weights->m_mapN0l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n0_index], action, m_nScoreIndex, amount, round) ;
+         if (m_lCacheCoNLLCPOS[n0_index] != CCoNLLCPOS()) cast_weights->m_mapN0c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n0_index], action, m_nScoreIndex, amount, round) ;
          for (i=0; i<m_lCacheCoNLLFeats[n0_index].size(); ++i)
             cast_weights->m_mapN0f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n0_index][i], action, m_nScoreIndex, amount, round) ;
       } // if (n0_index!=-1)
+
       if (n1_index!=-1) {
-         cast_weights->m_mapN1l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n1_index], action, m_nScoreIndex, amount, round) ;
-         cast_weights->m_mapN1c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n1_index], action, m_nScoreIndex, amount, round) ;
+         if (!m_lCacheCoNLLLemma[n1_index].empty()) cast_weights->m_mapN1l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n1_index], action, m_nScoreIndex, amount, round) ;
+         if (m_lCacheCoNLLCPOS[n1_index] != CCoNLLCPOS()) cast_weights->m_mapN1c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n1_index], action, m_nScoreIndex, amount, round) ;
          for (i=0; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
             cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][i], action, m_nScoreIndex, amount, round) ;
       } // if (n1_index!=-1)
@@ -320,11 +325,13 @@ inline void CDepParser::arcleft( const CStateItem *item, const CPackedScoreType<
    static unsigned label;
 #ifdef LABELED
    for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-      scoredaction.action = action::encodeAction(action::ARC_LEFT, label);
-      scoredaction.score = item->score + 
-                           scores[scoredaction.action] +
-                           scores[action::ARC_LEFT];
-      m_Beam->insertItem(&scoredaction);
+      if ( !m_weights->rules() || canAssignLabel(m_lCache, item->size(), item->stacktop(), label) ) {
+         scoredaction.action = action::encodeAction(action::ARC_LEFT, label);
+         scoredaction.score = item->score + 
+                              scores[scoredaction.action] +
+                              scores[action::ARC_LEFT];
+         m_Beam->insertItem(&scoredaction);
+      }
    }
 #else
    scoredaction.action = action::ARC_LEFT;
@@ -344,11 +351,13 @@ inline void CDepParser::arcright( const CStateItem *item, const CPackedScoreType
    static unsigned label;
 #ifdef LABELED
    for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-      scoredaction.action = action::encodeAction(action::ARC_RIGHT, label);
-      scoredaction.score = item->score + 
-                           scores[scoredaction.action] +
-                           scores[action::ARC_RIGHT];
-      m_Beam->insertItem(&scoredaction);
+      if ( !m_weights->rules() || canAssignLabel(m_lCache, item->stacktop(), item->size(), label) ) {
+         scoredaction.action = action::encodeAction(action::ARC_RIGHT, label);
+         scoredaction.score = item->score + 
+                              scores[scoredaction.action] +
+                              scores[action::ARC_RIGHT];
+         m_Beam->insertItem(&scoredaction);
+      }
    }
 #else
    scoredaction.action = action::ARC_RIGHT;
@@ -513,13 +522,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                     ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
                     ( !m_weights->rules() || hasLeftHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
                   ) { 
-#ifdef LABELED
-                  if ( !m_weights->rules() || canAssignLabel(m_lCache, pGenerator->stacktop(), pGenerator->size(), label) ) {
-                     arcright(pGenerator, packed_scores);
-                  }
-#else
                   arcright(pGenerator, packed_scores) ;
-#endif
                }
             }
             if ( !pGenerator->stackempty() ) {
@@ -530,13 +533,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   if ( (m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop())) && // supertags
                        (!m_weights->rules() || hasRightHead(m_lCache[pGenerator->stacktop()].tag.code())) // rules
                      ) {
-#ifdef LABELED
-                     if ( !m_weights->rules() || canAssignLabel(m_lCache, pGenerator->size(), pGenerator->stacktop(), label) ) {
-                        arcleft(pGenerator, packed_scores);
-                     }
-#else
                      arcleft(pGenerator, packed_scores) ;
-#endif
                   }
                }
             }
@@ -656,10 +653,11 @@ void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
    m_lCacheCoNLLCPOS.resize(sentence.size());
    m_lCacheCoNLLFeats.resize(sentence.size());
    for (unsigned i=0; i<sentence.size(); ++i) {
-      m_lCacheCoNLLLemma[i].load(sentence.at(i).lemma);
-      m_lCacheCoNLLCPOS[i].load(sentence.at(i).ctag);
+      m_lCacheCoNLLLemma[i].load(_conll_or_empty(sentence.at(i).lemma));
+      m_lCacheCoNLLCPOS[i].load(_conll_or_empty(sentence.at(i).ctag));
       m_lCacheCoNLLFeats[i].clear();
-      readCoNLLFeats(m_lCacheCoNLLFeats[i], sentence.at(i).feats);
+      if (sentence.at(i).feats != "_")
+         readCoNLLFeats(m_lCacheCoNLLFeats[i], sentence.at(i).feats);
    }
 }
 

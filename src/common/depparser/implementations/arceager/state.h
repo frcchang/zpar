@@ -178,7 +178,7 @@ public:
 #ifdef LABELED
       m_nLastAction=action::encodeAction(action::ARC_LEFT, lab);
 #else
-      m_nLastAction=action::ARC_LEFT;
+      m_nLastAction=action::encodeAction(action::ARC_LEFT);
 #endif
    }
 
@@ -204,7 +204,7 @@ public:
 #ifdef LABELED
       m_nLastAction=action::encodeAction(action::ARC_RIGHT, lab);
 #else
-      m_nLastAction=action::ARC_RIGHT;
+      m_nLastAction=action::encodeAction(action::ARC_RIGHT);
 #endif
    }
 
@@ -214,22 +214,14 @@ public:
       m_nNextWord ++ ;
       m_nLocalHeads++;
       ClearNext();
-#ifdef LABELED
-      m_nLastAction=action::encodeAction(action::SHIFT, CDependencyLabel::NONE);
-#else
-      m_nLastAction=action::SHIFT;
-#endif
+      m_nLastAction=action::encodeAction(action::SHIFT);
    }
  
    // the reduce action does popping
    void Reduce() {
       assert( m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD ) ;
       m_Stack.pop_back() ;
-#ifdef LABELED
-      m_nLastAction=action::encodeAction(action::REDUCE, CDependencyLabel::NONE);
-#else
-      m_nLastAction=action::REDUCE;
-#endif
+      m_nLastAction=action::encodeAction(action::REDUCE);
    }
 
    // this is used for the convenience of scoring and updating
@@ -237,10 +229,8 @@ public:
       assert( m_Stack.size() == 1 && m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ; // make sure only one root item in stack 
 #ifdef LABELED
       m_lLabels[m_Stack.back()] = CDependencyLabel::ROOT;
-      m_nLastAction = action::encodeAction(action::POP_ROOT, CDependencyLabel::ROOT);
-#else
-      m_nLastAction = action::POP_ROOT;
 #endif
+      m_nLastAction = action::encodeAction(action::POP_ROOT);
       m_Stack.pop_back() ; // pop it
    }
 
@@ -386,17 +376,9 @@ public:
             return action::ARC_LEFT;
 #endif
          else if ( item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD ) 
-#ifdef LABELED
-            return action::encodeAction(action::REDUCE, CDependencyLabel::NONE);
-#else
-            return action::REDUCE;
-#endif
+            return action::encodeAction(action::REDUCE);
          else 
-#ifdef LABELED
-            return action::encodeAction(action::POP_ROOT, CDependencyLabel::ROOT);
-#else
-            return action::POP_ROOT;
-#endif
+            return action::encodeAction(action::POP_ROOT);
       }
       // the first case is that there is some words on the stack linking to nextword
       if ( m_Stack.size() > 0 ) {
@@ -412,22 +394,14 @@ public:
 #endif
             }
             else {
-#ifdef LABELED
-               return action::encodeAction(action::REDUCE, CDependencyLabel::NONE);
-#else
-               return action::REDUCE;
-#endif
+               return action::encodeAction(action::REDUCE);
             }
          }
       }
       // the second case is that no words on the stack links nextword, and nextword does not link to stack word
       if ( item->head(m_nNextWord) == DEPENDENCY_LINK_NO_HEAD || // the root or
            item->head(m_nNextWord) > m_nNextWord ) { // head on the right
-#ifdef LABELED
-         return action::encodeAction(action::SHIFT, CDependencyLabel::NONE);
-#else
-         return action::SHIFT;
-#endif
+         return action::encodeAction(action::SHIFT);
       }
       // the last case is that the next words links to stack word
       else {                                        // head on the left 
@@ -441,11 +415,7 @@ public:
 #endif
          }
          else {                                     // must depend on non-immediate h
-#ifdef LABELED
-            return action::encodeAction(action::REDUCE, CDependencyLabel::NONE);
-#else
-            return action::REDUCE;
-#endif
+            return action::encodeAction(action::REDUCE);
          }
       }
    }

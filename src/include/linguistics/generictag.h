@@ -90,7 +90,10 @@ public:
    }
 
    void load(const std::string &s) {
-      m_code=getTagset().lookup(s); 
+      if (s.empty()) 
+         m_code = NONE; // empty are equal to NONE
+      else
+         m_code=getTagset().lookup(s); 
    }
    const std::string &str() const { 
       return getTagset().key(m_code); 
