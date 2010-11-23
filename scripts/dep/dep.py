@@ -2,7 +2,7 @@ import sys
 import depio
 
 class CDepNode(object):
-   __slots__ = ['token', 'pos', 'parent', 'left_children', 'right_children', 'size', 'word_index', 'label', 'extra']
+   __slots__ = ['token', 'pos', 'parent', 'left_children', 'right_children', 'leftmost_leaf', 'rightmost_leaf', 'size', 'word_index', 'label', 'extra']
    def __init__(self):
       self.left_children = [  ]
       self.right_children = [  ]
@@ -39,6 +39,7 @@ class CDep(object):
 
    def updateSize(self, node):
       node.size=0
+      
       for l_child in node.left_children:
          self.updateSize(l_child)
          node.size += l_child.size
@@ -46,6 +47,14 @@ class CDep(object):
       for r_child in node.right_children:
          self.updateSize(r_child)
          node.size += r_child.size
+
+      node.leftmost_leaf = node.word_index
+      node.rightmost_leaf = node.word_index
+      if node.left_children:
+         node.leftmost_leaf = node.left_children[0].leftmost_leaf
+      if node.right_children:
+         node.rightmost_leaf = node.right_children[-1].rightmost_leaf
+      assert node.rightmost_leaf-node.leftmost_leaf+1==node.size
 
    def printnode(self, node):
       parent_index = -1
