@@ -226,11 +226,6 @@ public:
    void copyDependencyHeads(const CLabeledDependencyTree &input) {
       for (unsigned i=0; i<input.size(); ++i) {
          at(i).head = input.at(i).head;
-      }
-   }
-
-   void copyDependencyLabels(const CLabeledDependencyTree &input) {
-      for (unsigned i=0; i<input.size(); ++i) {
          at(i).label = input.at(i).label;
       }
    }

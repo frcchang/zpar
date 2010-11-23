@@ -30,9 +30,9 @@ private:
     *
     *==============================================================*/
    
-   class CDependencyLabelTokenizer : public CTokenizer<std::string, 251> {
+   class CDependencyLabelTokenizer : public CTokenizer<std::string, 256> {
       public: 
-         CDependencyLabelTokenizer() : CTokenizer<std::string, 251>(0/*reserve for NONE BEGIN END*/) {
+         CDependencyLabelTokenizer() : CTokenizer<std::string, 256>(0) {
             lookup("-NONE-");
             lookup("-ROOT-");
          } 
@@ -42,7 +42,7 @@ private:
 public:
    enum {NONE = 0};
    enum {ROOT = 1};
-   enum {FIRST = 1};
+   enum {FIRST = 2};
    enum {SIZE = 8};
    enum {MAX_COUNT = 1<<SIZE};
    static unsigned long COUNT;
@@ -53,7 +53,7 @@ protected:
 
 protected:
    // static method assigns tokenizer as global dictionary of words
-   CDependencyLabelTokenizer &getTokenizer() const {static CDependencyLabelTokenizer tokenizer; return tokenizer;}
+   static CDependencyLabelTokenizer &getTokenizer() {static CDependencyLabelTokenizer tokenizer; return tokenizer;}
 
 public:
    CDependencyLabel() : m_code(NONE) { }
@@ -73,6 +73,11 @@ public:
    bool operator >= (const CDependencyLabel &l) const { return m_code >= l.m_code; }
 
    void load(const std::string &s) {
+      if (s.empty()) {
+         // empty string is treated as NONE
+         m_code = NONE;
+         return;
+      }
       m_code=getTokenizer().lookup(s); 
       COUNT = getTokenizer().count();
       LAST = COUNT-1;
