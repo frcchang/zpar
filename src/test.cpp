@@ -177,9 +177,11 @@ void testinitializer() {
       int a;
       int b;
    };
-   A a;
-   B b;
-   std::cout << a.a << ' ' << a.b << ' ' << b.a << ' ' << b.b << std::endl;
+   A *a = new A();
+   B *b = new B();
+   std::cout << a->a << ' ' << a->b << ' ' << b->a << ' ' << b->b << std::endl;
+   delete a;
+   delete b;
 }
 
 int main(int argc, char**argv){
