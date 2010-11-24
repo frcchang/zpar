@@ -95,23 +95,21 @@ def crossLink(node1, node2, align):
 
 def reorderVV(node, align, model):
    left_children = []
-   bPUFound = False
    while node.left_children:
 
       left_child = node.left_children.pop(-1) # for each left
+      bReorder = False
 
       if left_child.pos in ['P']:
          if align and crossLink(left_child, node, align):
             node.right_children.append(left_child)
-         else:
-            left_children.insert(0, left_child)
-
+            bReorder = True
       elif left_child.pos in ['NT', 'M', 'CD', 'OD']:
          if align and crossLink(left_child, node, align):
             node.right_children.insert(0, left_child)
-         else:
-            left_children.insert(0, left_child)
+            bReorder = True
 
+      if bReorder: recordOrder(left_child, node)
       else:
          left_children.insert(0, left_child)
 
@@ -121,12 +119,14 @@ def reorderNN(node, align, model):
    left_children = []
    while node.left_children:
       left_child = node.left_children.pop(-1) # for each left
+      bReorder = False
       if left_child.pos == 'DEC' or left_child.pos == 'DEG':
          if align and crossLink(left_child, node, align):
             reorderDEG(left_child, align, model)
             node.right_children.insert(0, left_child)
-         else:
-            left_children.insert(0, left_child)
+            bReorder =  True
+
+      if bReorder: recordOrder(left_child, node)
       else:
          left_children.insert(0, left_child)
    node.left_children = left_children
