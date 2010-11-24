@@ -86,8 +86,20 @@ class CDep(object):
          retval.extend(self.printrawnode(right_child))
       return retval
 
+   def printposnode(self, node):
+      retval = []
+      for left_child in node.left_children:
+         retval.extend(self.printposnode(left_child))
+      retval.append([node.token, node.pos])
+      for right_child in node.right_children:
+         retval.extend(self.printposnode(right_child))
+      return retval
+
    def toRaw(self):
       return ' '.join(self.printrawnode(self.root))
+
+   def toPOS(self):
+      return ' '.join(['|'.join(word) for word in self.printposnode(self.root)])
 
 if __name__ == '__main__':
    for words in depio.depread(sys.argv[1]):

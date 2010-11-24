@@ -193,7 +193,7 @@ def deg(node):
 if __name__ == '__main__':
    opts, args = getopt.getopt(sys.argv[1:], "o:i:")
    if len(args) < 1:
-      print 'adapt [-ia|c] [-oi|r] input align|class'
+      print 'adapt [-ia|c] [-oi|r|p|d] input align|class'
       sys.exit(0)
 
    # get parameter
@@ -225,6 +225,8 @@ if __name__ == '__main__':
       reorder(dept, align, model)
       if sOutput == 'd':
          print dept
+      elif sOutput == 'p':
+         print dept.toPOS()
       elif sOutput == 'r':
          print dept.toRaw()
       elif sOutput == 'i':
