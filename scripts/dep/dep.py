@@ -48,13 +48,13 @@ class CDep(object):
          self.updateSize(r_child)
          node.size += r_child.size
 
-      node.leftmost_leaf = node.word_index
-      node.rightmost_leaf = node.word_index
+      node.leftmost_leaf = node
+      node.rightmost_leaf = node
       if node.left_children:
          node.leftmost_leaf = node.left_children[0].leftmost_leaf
       if node.right_children:
          node.rightmost_leaf = node.right_children[-1].rightmost_leaf
-      assert node.rightmost_leaf-node.leftmost_leaf+1==node.size
+      assert node.rightmost_leaf.word_index-node.leftmost_leaf.word_index+1==node.size
 
    def printnode(self, node):
       parent_index = -1

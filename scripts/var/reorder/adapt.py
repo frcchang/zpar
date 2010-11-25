@@ -4,9 +4,16 @@ import os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../dep"))
 import depio
 import dep
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../ml"))
+import orng
 import gzip
 
 #========================================
+
+def readModel(path, bTrain):
+   if bTrain: model = orng.COrangeWriter(path, bTrain)
+   else: model = orng.COrange(path, bTrain)
+   return model
 
 def readAlign(path):
    retval = {}
@@ -67,6 +74,44 @@ def updateIndex(tree):
 
 #========================================
 
+def recordOrder(bReorder, node1, node, nPUBetween, model):
+   def normalize(i):
+      if i > 10: return '10'
+      elif i > 5: return '5'
+      else: return str(i)
+   node_reordered = 'n'
+   if bReorder:
+      node_reordered = 'y'
+   head_word = node.token
+   head_pos = node.pos
+   head_size = normalize(node.size)
+   modifier_word = node1.token
+   modifier_pos = node1.pos
+   modifier_size = normalize(node1.size)
+   pu_between = normalize(nPUBetween)
+   modifier_lmod_word = "-NONE-"
+   modifier_lmod_pos = "-NONE-"
+   if node1.left_children:
+      modifier_lmod_word = node1.left_children[0].token
+      modifier_lmod_pos = node1.left_children[0].pos
+   modifier_rmod_word = "-NONE-"
+   modifier_rmod_pos = "-NONE-"
+   if node1.right_children:
+      modifier_rmod_word = node1.right_children[-1].token
+      modifier_rmod_pos = node1.right_children[-1].pos
+   modifier_lleaf_word = "-NONE-"
+   modifier_lleaf_pos = "-NONE-"
+   if node1.leftmost_leaf:
+      modifier_lleaf_word = node1.leftmost_leaf.token
+      modifier_lleaf_pos = node1.leftmost_leaf.pos
+   modifier_rleaf_word = "-NONE-"
+   modifier_rleaf_pos = "-NONE-"
+   if node1.rightmost_leaf:
+      modifier_rleaf_word = node1.rightmost_leaf.token
+      modifier_rleaf_pos = node1.rightmost_leaf.pos
+   model.setFeatureDefs(['head_word', 'head_pos', 'head_size', 'modifier_word', 'modifier_pos', 'modifier_size', 'pu_between', 'modifier_lmod_word', 'modifier_lmod_pos', 'modifier_rmod_word', 'modifier_rmod_pos', 'modifier_lleaf_word', 'modifier_lleaf_pos', 'modifier_rleaf_word', 'modifier_rleaf_pos', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'class'])
+   model.addExample([head_word, head_pos, head_size, modifier_word, modifier_pos, modifier_size, pu_between, modifier_lmod_word, modifier_lmod_pos, modifier_rmod_word, modifier_rmod_pos, modifier_lleaf_word, modifier_lleaf_pos, modifier_rleaf_word, modifier_rleaf_pos, node_reordered])
+
 def crossLink(node1, node2, align):
    count = 0
    total = 0
@@ -77,7 +122,7 @@ def crossLink(node1, node2, align):
       return False
    head_index = indice[0]
 
-   for index in range(node1.leftmost_leaf, node1.rightmost_leaf):
+   for index in range(node1.leftmost_leaf.word_index, node1.rightmost_leaf.word_index):
       indice = align.get(index, 0)
       if not indice:
          continue
@@ -95,6 +140,7 @@ def crossLink(node1, node2, align):
 
 def reorderVV(node, align, model):
    left_children = []
+   nPUBetween = 0
    while node.left_children:
 
       left_child = node.left_children.pop(-1) # for each left
@@ -108,15 +154,20 @@ def reorderVV(node, align, model):
          if align and crossLink(left_child, node, align):
             node.right_children.insert(0, left_child)
             bReorder = True
+      elif left_child.pos in ['PU']:
+         nPUBetween += 1
 
-      if bReorder: recordOrder(left_child, node)
-      else:
+      if not bReorder: 
          left_children.insert(0, left_child)
+
+      if align:
+         recordOrder(bReorder, left_child, node, nPUBetween, model)
 
    node.left_children = left_children
 
 def reorderNN(node, align, model):
    left_children = []
+   nPUBetween = 0
    while node.left_children:
       left_child = node.left_children.pop(-1) # for each left
       bReorder = False
@@ -125,10 +176,15 @@ def reorderNN(node, align, model):
             reorderDEG(left_child, align, model)
             node.right_children.insert(0, left_child)
             bReorder =  True
+      elif left_child.pos == 'PU':
+         nPUBetween += 1
 
-      if bReorder: recordOrder(left_child, node)
-      else:
+      if not bReorder: 
          left_children.insert(0, left_child)
+
+      if align:
+         recordOrder(bReorder, left_child, node, nPUBetween, model)
+
    node.left_children = left_children
 
 def reorderDEG(node, align, model):
@@ -193,7 +249,7 @@ def deg(node):
 if __name__ == '__main__':
    opts, args = getopt.getopt(sys.argv[1:], "o:i:")
    if len(args) < 1:
-      print 'adapt [-ia|c] [-oi|r|p|d] input align|class'
+      print 'adapt [-ia|c] [-oi|r|p|d] input model [align]'
       sys.exit(0)
 
    # get parameter
@@ -207,13 +263,16 @@ if __name__ == '__main__':
 
    # input
    alignFile = None
-   modelFile = None
    align = None
    model = None
    if sInput == 'a':
-      alignFile = readAlign(args[1]) 
+      if len(args) != 3:
+         print "The alignment file must be provided with -ia"
+         sys.exit(0)
+      model = readModel(args[1], True)
+      alignFile = readAlign(args[2]) 
    elif sInput == 'c':
-      modelFile = readModel(args[1])
+      model = readModel(args[1], False)
    else:
       print 'The input format is invalid'
       sys.exit(0)
@@ -234,3 +293,5 @@ if __name__ == '__main__':
       else:
          print "The output type is not valid"
          sys.exit(0)
+   if align:
+      model.train()
