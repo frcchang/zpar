@@ -19,9 +19,13 @@ if __name__ == '__main__':
    option = sys.argv[1]
    if option == 'tagdict':
       if len(sys.argv) < 3:
-         print 'posop.py tagdict path'
+         print 'posop.py tagdict path [dict_path]'
          sys.exit(0)
       dDict = {}
+      if len(sys.argv) == 4:
+         file_dic = open(sys.argv[3])
+         dDict = eval(file_dic.read())
+         file_dic.close()
       tagdict(sys.argv[2], dDict)
       assert pprint.isreadable(dDict)
       pprint.pprint(dDict)
