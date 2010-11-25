@@ -13,18 +13,19 @@
 #include "depparser_weight_base.h"
 
 #define iterate_templates(left, right) \
-   left(m_mapSTwt)right\
    left(m_mapSTw)right\
    left(m_mapSTt)right\
-   left(m_mapN0wt)right\
+   left(m_mapSTwt)right\
+   left(m_mapSTi)right\
    left(m_mapN0w)right\
    left(m_mapN0t)right\
-   left(m_mapN1wt)right\
+   left(m_mapN0wt)right\
    left(m_mapN1w)right\
    left(m_mapN1t)right\
-   left(m_mapN2wt)right\
+   left(m_mapN1wt)right\
    left(m_mapN2w)right\
    left(m_mapN2t)right\
+   left(m_mapN2wt)right\
 \
    left(m_mapSTwtN0wt)right\
    left(m_mapSTwtN0w)right\
@@ -85,6 +86,7 @@ const static unsigned DEP_TABLE_SIZE = (1<<17);//1000121;
 //
 typedef CPackedScoreMap<CWord, SCORE_TYPE, action::MAX> CWordMap;
 typedef CPackedScoreMap<CTag, SCORE_TYPE, action::MAX> CTagMap;
+typedef CPackedScoreMap<int, SCORE_TYPE, action::MAX> CIntMap;
 typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2Map;
 typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3Map;
 typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagMap;
@@ -115,6 +117,7 @@ public:
    CWordMap m_mapSTw;
    CTagMap m_mapSTt;
    CTaggedWordMap m_mapSTwt;
+   CIntMap m_mapSTi;
 
    CWordMap m_mapN0w;
    CTagMap m_mapN0t;
@@ -183,6 +186,7 @@ public:
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
                                                m_mapSTt("StackTag", DEP_TABLE_SIZE),
                                                m_mapSTwt("StackWordTag", DEP_TABLE_SIZE),
+                                               m_mapSTi("StackLabel", DEP_TABLE_SIZE),
 
                                                m_mapN0w("NextWord", DEP_TABLE_SIZE),
                                                m_mapN0t("NextTag", DEP_TABLE_SIZE),
