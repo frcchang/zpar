@@ -1,7 +1,11 @@
 import sys
+import gzip
 
 def posread(path, sep='/'):
-   file = open(path)
+   if path[-3:] == '.gz':
+      file = gzip.open(path)
+   else:
+      file = open(path)
    for line in file:
       retval = [word.split(sep) for word in line.split()]
       for index in range(len(retval)):
