@@ -26,6 +26,15 @@
    left(m_mapN2w)right\
    left(m_mapN2t)right\
    left(m_mapN2wt)right\
+   left(m_mapSTLDw)right\
+   left(m_mapSTLDt)right\
+   left(m_mapSTLDi)right\
+   left(m_mapSTRDw)right\
+   left(m_mapSTRDt)right\
+   left(m_mapSTRDi)right\
+   left(m_mapN0LDw)right\
+   left(m_mapN0LDt)right\
+   left(m_mapN0LDi)right\
 \
    left(m_mapSTwtN0wt)right\
    left(m_mapSTwtN0w)right\
@@ -131,6 +140,18 @@ public:
    CTagMap m_mapN2t;
    CTaggedWordMap m_mapN2wt;
 
+   CWordMap m_mapSTLDw;
+   CTagMap m_mapSTLDt;
+   CIntMap m_mapSTLDi;
+
+   CWordMap m_mapSTRDw;
+   CTagMap m_mapSTRDt;
+   CIntMap m_mapSTRDi;
+
+   CWordMap m_mapN0LDw;
+   CTagMap m_mapN0LDt;
+   CIntMap m_mapN0LDi;
+
    CTwoTaggedWordsMap m_mapSTwtN0wt;
    CWordWordTagMap m_mapSTwtN0w;
    CWordWordTagMap m_mapSTwN0wt;
@@ -199,6 +220,18 @@ public:
                                                m_mapN2w("Next+2Word", DEP_TABLE_SIZE),
                                                m_mapN2t("Next+2Tag", DEP_TABLE_SIZE),
                                                m_mapN2wt("Next+2WordTag", DEP_TABLE_SIZE),
+
+                                               m_mapSTLDw("StackLDWord", DEP_TABLE_SIZE),
+                                               m_mapSTLDt("StackLDTag", DEP_TABLE_SIZE),
+                                               m_mapSTLDi("StackLDLabel", DEP_TABLE_SIZE),
+
+                                               m_mapSTRDw("StackRDWord", DEP_TABLE_SIZE),
+                                               m_mapSTRDt("StackRDTag", DEP_TABLE_SIZE),
+                                               m_mapSTRDi("StackRDLabel", DEP_TABLE_SIZE),
+
+                                               m_mapN0LDw("NextLDWord", DEP_TABLE_SIZE),
+                                               m_mapN0LDt("NextLDTag", DEP_TABLE_SIZE),
+                                               m_mapN0LDi("NextLDLabel", DEP_TABLE_SIZE),
 
                                                m_mapSTwtN0wt("StackWordTagNextWordTag", DEP_TABLE_SIZE),
                                                m_mapSTwtN0w("StackWordTagNextWord", DEP_TABLE_SIZE),
