@@ -16,7 +16,6 @@
    left(m_mapSTw)right\
    left(m_mapSTt)right\
    left(m_mapSTwt)right\
-   left(m_mapSTi)right\
    left(m_mapN0w)right\
    left(m_mapN0t)right\
    left(m_mapN0wt)right\
@@ -26,6 +25,9 @@
    left(m_mapN2w)right\
    left(m_mapN2t)right\
    left(m_mapN2wt)right\
+   left(m_mapSTHw)right\
+   left(m_mapSTHt)right\
+   left(m_mapSTi)right\
    left(m_mapSTLDw)right\
    left(m_mapSTLDt)right\
    left(m_mapSTLDi)right\
@@ -67,10 +69,12 @@
    left(m_mapSTwN0wd)right\
    left(m_mapSTtN0td)right\
 \
-   left(m_mapSTwa)right\
-   left(m_mapSTta)right\
-   left(m_mapN0wa)right\
-   left(m_mapN0ta)right\
+   left(m_mapSTwra)right\
+   left(m_mapSTtra)right\
+   left(m_mapSTwla)right\
+   left(m_mapSTtla)right\
+   left(m_mapN0wla)right\
+   left(m_mapN0tla)right\
 \
    left(m_mapSTl)right\
    left(m_mapSTc)right\
@@ -126,7 +130,6 @@ public:
    CWordMap m_mapSTw;
    CTagMap m_mapSTt;
    CTaggedWordMap m_mapSTwt;
-   CIntMap m_mapSTi;
 
    CWordMap m_mapN0w;
    CTagMap m_mapN0t;
@@ -139,6 +142,10 @@ public:
    CWordMap m_mapN2w;
    CTagMap m_mapN2t;
    CTaggedWordMap m_mapN2wt;
+
+   CWordMap m_mapSTHw;
+   CTagMap m_mapSTHt;
+   CIntMap m_mapSTi;
 
    CWordMap m_mapSTLDw;
    CTagMap m_mapSTLDt;
@@ -183,10 +190,12 @@ public:
    CWordWordIntMap m_mapSTwN0wd;
    CTagTagIntMap m_mapSTtN0td;
 
-   CWordIntMap m_mapSTwa;
-   CTagIntMap m_mapSTta;
-   CWordIntMap m_mapN0wa;
-   CTagIntMap m_mapN0ta;
+   CWordIntMap m_mapSTwra;
+   CTagIntMap m_mapSTtra;
+   CWordIntMap m_mapSTwla;
+   CTagIntMap m_mapSTtla;
+   CWordIntMap m_mapN0wla;
+   CTagIntMap m_mapN0tla;
 
    CLemmaMap m_mapSTl;
    CCoNLLCPOSMap m_mapSTc;
@@ -207,7 +216,6 @@ public:
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
                                                m_mapSTt("StackTag", DEP_TABLE_SIZE),
                                                m_mapSTwt("StackWordTag", DEP_TABLE_SIZE),
-                                               m_mapSTi("StackLabel", DEP_TABLE_SIZE),
 
                                                m_mapN0w("NextWord", DEP_TABLE_SIZE),
                                                m_mapN0t("NextTag", DEP_TABLE_SIZE),
@@ -220,6 +228,10 @@ public:
                                                m_mapN2w("Next+2Word", DEP_TABLE_SIZE),
                                                m_mapN2t("Next+2Tag", DEP_TABLE_SIZE),
                                                m_mapN2wt("Next+2WordTag", DEP_TABLE_SIZE),
+
+                                               m_mapSTHw("StackHeadWord", DEP_TABLE_SIZE),
+                                               m_mapSTHt("StackHeadTag", DEP_TABLE_SIZE),
+                                               m_mapSTi("StackLabel", DEP_TABLE_SIZE),
 
                                                m_mapSTLDw("StackLDWord", DEP_TABLE_SIZE),
                                                m_mapSTLDt("StackLDTag", DEP_TABLE_SIZE),
@@ -264,10 +276,12 @@ public:
                                                m_mapSTwN0wd("StackWordNextWordDist", DEP_TABLE_SIZE),
                                                m_mapSTtN0td("StackTagNextTagDist", DEP_TABLE_SIZE),
 
-                                               m_mapSTwa("StackWordArity", DEP_TABLE_SIZE),
-                                               m_mapSTta("StackTagArity", DEP_TABLE_SIZE),
-                                               m_mapN0wa("NextWordArity", DEP_TABLE_SIZE),
-                                               m_mapN0ta("NextTagArity", DEP_TABLE_SIZE),
+                                               m_mapSTwra("StackWordRightArity", DEP_TABLE_SIZE),
+                                               m_mapSTtra("StackTagRightArity", DEP_TABLE_SIZE),
+                                               m_mapSTwla("StackWordLeftArity", DEP_TABLE_SIZE),
+                                               m_mapSTtla("StackTagLeftArity", DEP_TABLE_SIZE),
+                                               m_mapN0wla("NextWordRightArity", DEP_TABLE_SIZE),
+                                               m_mapN0tla("NextTagRightArity", DEP_TABLE_SIZE),
 
                                                m_mapSTl("StackLemma", DEP_TABLE_SIZE),
                                                m_mapSTc("StackCPOS", DEP_TABLE_SIZE),
