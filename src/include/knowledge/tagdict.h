@@ -30,12 +30,10 @@ protected:
 
 public:
 
-   CTagDict(unsigned long nTotalNumberOfTags) : m_mapItems(65537) { 
+   CTagDict(unsigned long nTotalNumberOfTags) : m_mapItems(65536) { 
       m_nTotalNumberOfTags = nTotalNumberOfTags ;
-      assert( nTotalNumberOfTags < (sizeof(unsigned long long)*8) );   
+      ASSERT( nTotalNumberOfTags < (sizeof(unsigned long long)*8), "The number of tags is too much for the current tag dictionary to support." );   
    }
-
-   virtual ~CTagDict() { }
 
 public:
 
@@ -64,9 +62,7 @@ public:
          std::istringstream iss(s);
          iss >> word >> tag ;
          i = CTag(tag).code() ; 
-//         if ( i==0 ) {
-//            throw("unrecognized tag in the dictionary file: " + tag + ".");
-//         }
+         ASSERT(i, "Unrecognized tag in the input file for the dict: "<<tag);
          m_mapItems[word] |= (static_cast<unsigned long long>(1)<<i) ;
          getline(is, s);
       }

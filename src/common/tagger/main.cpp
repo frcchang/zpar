@@ -10,10 +10,12 @@
  ****************************************************************/
 
 #include "definitions.h"
+#include "utils.h"
 #include "tagger.h"
 #include "reader.h"
 #include "writer.h"
 #include "stdlib.h"
+#include "options.h"
 
 using namespace TARGET_LANGUAGE;
 
@@ -65,42 +67,28 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
 
 int main(int argc, char* argv[]) {
    try {
-      const std::string hint = " input_file outout_file feature_file [-iN] [-kPath] [-nN] [-pFile]\n\n\
-   Options:\n\
-   -n n best list train\n\
-   -k The knowledge path containing file tagdict.txt\n\
-      Only the tags that conform to the tag dictionary are assigned.\n\
-   ";
-   
-      if (argc < 4) {
-         std::cout << "\nUsage: " << argv[0] << hint << std::endl;
+      COptions options(argc, argv);
+      CConfigurations configurations;
+      configurations.defineConfiguration("d", "Path", "use a dictionary", "");
+      configurations.defineConfiguration("n", "N", "n-best output", "1");
+
+      if (options.args.size() < 2 || options.args.size() > 4) {
+         std::cout << "\nUsage: " << argv[0] << " input_file outout_file feature_rile" << std::endl;
+         std::cout << configurations.message() << std::endl;
          return 1;
       }
-   
-      int nBest = 1;
-      std::string sKnowledgeBase = "";
-   
-      if (argc>4) {
-         for (int i=4; i<argc; ++i) {
-            if (argv[i][0]!='-') {
-               std::cout << "\nUsage: " << argv[0] << hint << std::endl ;
-               return 1;
-            }
-            switch (argv[i][1]) {
-               case 'n':
-                  nBest = atoi(std::string(argv[i]).substr(2).c_str());
-                  break;
-               case 'k':
-                  sKnowledgeBase = std::string(argv[i]).substr(2)+"/tagdict.txt";
-                  break;
-               default:
-                  std::cout << "\nUsage: " << argv[0] << hint << std::endl ;
-                  return 1;
-            }
-         }
+      std::string warning = configurations.loadConfigurations(options.opts);
+      if (!warning.empty()) {
+         std::cout << "Warning: " << warning << std::endl;
       }
    
-      process(argv[1], argv[2], argv[3], nBest, sKnowledgeBase);
+      std::string sTagDict = configurations.getConfiguration("d");
+      int nBest;
+      if (!fromString(nBest, configurations.getConfiguration("n"))) {
+         std::cerr<<"Error: the n-best list output size is not integer." << std::endl; return 1;
+      }  
+   
+      process(argv[1], argv[2], argv[3], nBest, sTagDict);
       return 0;
    } catch(const std::string&e) {std::cerr<<"Error: "<<e<<std::endl;return 1;}
 }

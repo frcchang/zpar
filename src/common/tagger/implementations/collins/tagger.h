@@ -50,10 +50,7 @@ private:
    std::string m_sFeatureDB;        // the path of the feature database
    tagger::CWeight *m_weights; // weight object
 
-   std::string m_sTagDictPath;      // path for tag dict
-   CTagDict<CWord, CTag> m_TagDict;   // the dictionary object
-
-   bool m_bUpdateKnowledgeBase; // update knowledge base when the training example contradicts knowledge base ?
+   CTagDict<CWord, CTag> *m_TagDict;   // the dictionary object
 
    bool m_bTrain;              // whether training
    int m_nTrainingRound;       // the number of sentence
@@ -69,7 +66,7 @@ private:
    unsigned *stateindice;
 
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(CTag::COUNT), m_nMaxSentenceSize(tagger::MAX_SENTENCE_SIZE) { 
+   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(0), m_nMaxSentenceSize(tagger::MAX_SENTENCE_SIZE) { 
       m_weights = new tagger::CWeight(m_sFeatureDB, bTrain); 
       loadScores();
       if (m_bTrain) m_nTrainingRound = 0;
@@ -81,14 +78,15 @@ public:
       delete m_weights; 
       delete []stateitems;
       delete []stateindice;
+      if (m_TagDict) delete m_TagDict;
    }
-   CTagger(CTagger& tagger) : m_TagDict(CTag::COUNT) { std::cerr<<"CTagger does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
+   CTagger(CTagger& tagger) : m_TagDict(0) { ASSERT(1==0, "No copy constructor."); }
 
 public:
-   void loadTagDictionary(const std::string &sTagDictPath, bool bUpdateKnowledgeBase=false) {
-      m_sTagDictPath = sTagDictPath;
-      m_TagDict.load(sTagDictPath);
-      m_bUpdateKnowledgeBase = bUpdateKnowledgeBase;
+   void loadTagDictionary(const std::string &sTagDictPath) {
+      ASSERT(m_TagDict==0, "The tag dict has already been loaded");
+      m_TagDict = new CTagDict<CWord, CTag>(CTag::COUNT);
+      m_TagDict->load(sTagDictPath);
    }
 
 public:
@@ -109,7 +107,6 @@ public:
   void finishTraining();
 
   inline unsigned long long getPossibleTagsForWord(const CWord &word);
-  void updateTagDict(const CTwoStringVector* correct);
 protected:
 
    // add local features to a global feature vector (first param)
