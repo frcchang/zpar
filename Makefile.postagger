@@ -46,10 +46,10 @@ $(OBJECT_DIR)/english.postagger.o: $(SRC_INCLUDES)/hash.h $(SRC_ENGLISH_TAGGER)/
 # the main executable file
 $(DIST_ENGLISH_TAGGER)/tagger: $(SRC_ENGLISH_TAGGER)/main.cpp $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_ENGLISH_TAGGER) -I$(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL) -c $(SRC_ENGLISH_TAGGER)/main.cpp -o $(OBJECT_ENGLISH_TAGGER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_TAGGER)/tagger $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_ENGLISH_TAGGER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_TAGGER)/tagger $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_ENGLISH_TAGGER)/main.o $(OBJECTS)
 
 # the trainer for english pos tagging
 $(DIST_ENGLISH_TAGGER)/train: $(SRC_ENGLISH_TAGGER)/train.cpp $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_ENGLISH_TAGGER) -I$(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL) -c $(SRC_ENGLISH_TAGGER)/train.cpp -o $(OBJECT_ENGLISH_TAGGER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_TAGGER)/train $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_ENGLISH_TAGGER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
+	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_TAGGER)/train $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_ENGLISH_TAGGER)/train.o $(OBJECTS)
 

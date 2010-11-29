@@ -12,6 +12,19 @@ def tagdict(path, dDict):
             dDict[word[0]][word[1]] = 0
          dDict[word[0]][word[1]] += 1
 
+def tagdicttup(path, dDict):
+   import posio
+   for sent in posio.posread(path):
+      for word in sent:
+         dDict[(word[0], word[1])] = dDict.get((word[0], word[1]), 0) + 1
+
+def pprintdicttup(dDict):
+   pprint.pprint(dDict)
+
+def printdicttup(dDict):
+   for word, tag in dDict:
+      print word, tag, dDict[word, tag]
+
 if __name__ == '__main__':
    if len(sys.argv) < 2:
       print 'posop.py option argument'
@@ -26,9 +39,6 @@ if __name__ == '__main__':
          file_dic = open(sys.argv[3])
          dDict = eval(file_dic.read())
          file_dic.close()
-      tagdict(sys.argv[2], dDict)
-      assert pprint.isreadable(dDict)
-      pprint.pprint(dDict)
-      #for word in dDict:
-         #print word, ':', ', '.join(['%s (%d)' % (tag, dDict[word][tag]) for tag in dDict[word]])
+      tagdicttup(sys.argv[2], dDict)
+      printdicttup(dDict)
       

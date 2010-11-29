@@ -104,7 +104,7 @@ void TARGET_LANGUAGE::CTagger::updateScoreVector(const CTwoStringVector* tagged,
          updateLocalFeatureVector(eSubtract, tagged, i, round);
       for (i=0; i<correct->size(); ++i)
          updateLocalFeatureVector(eAdd, correct, i, round);
-      updateTagDict(correct);
+//      updateTagDict(correct);
       m_bScoreModified = true;
    }
 
@@ -223,7 +223,6 @@ void TARGET_LANGUAGE::CTagger::saveScores() {
 void TARGET_LANGUAGE::CTagger::finishTraining() {
    m_weights->computeAverageFeatureWeights(m_nTrainingRound);
    saveScores();
-   if ( m_sTagDictPath!="" ) m_TagDict.save(m_sTagDictPath);
 }
 
 /*===============================================================
@@ -240,35 +239,14 @@ void TARGET_LANGUAGE::CTagger::finishTraining() {
 
 unsigned long long TARGET_LANGUAGE::CTagger::getPossibleTagsForWord( const CWord &word ) {
    static unsigned long long possible_tags;
-   possible_tags = m_TagDict.lookup(word);
-   if (possible_tags==0) possible_tags = ~0L;
-#ifdef _ENGLISH_TAGS_H
-   possible_tags |= getPossibleTagsBySuffix( word.str() );
-   possible_tags |= PENN_TAG_MUST_SEE ;
-#endif
+   possible_tags = m_TagDict ? m_TagDict->lookup(word) : 0;
+   if (possible_tags==0) possible_tags = ~0LL;
+//#ifdef _ENGLISH_TAGS_H
+//   possible_tags |= getPossibleTagsBySuffix( word.str() );
+//   possible_tags |= PENN_TAG_MUST_SEE ;
+//#endif
    assert(possible_tags!=0);
    return possible_tags;
-}
-
-/*---------------------------------------------------------------
- *
- * updateTagDict - update tagdict
- *
- *--------------------------------------------------------------*/
-
-void TARGET_LANGUAGE::CTagger::updateTagDict( const CTwoStringVector * correct ) {
-   static int i;
-   static unsigned long long possible_tags, current_tag;
-
-   for (i=0; i<correct->size(); ++i) {
-      static CWord word; word = correct->at(i).first;
-      possible_tags = getPossibleTagsForWord(word);
-      current_tag = (1L<<CTag(correct->at(i).second).code()) ;
-      if ( ( possible_tags & current_tag ) == 0 ) {
-//         std::cout << "Warning: knowledge contradicts with annotation for the word " << correct->at(i).first << " with tag " << correct->at(i).second << std::endl;
-         m_TagDict.add(word, CTag(correct->at(i).second).code());
-      }
-   }
 }
 
 /*---------------------------------------------------------------
@@ -288,7 +266,6 @@ bool TARGET_LANGUAGE::CTagger::train( const CTwoStringVector * correct ) {
 
    ++m_nTrainingRound;
 
-   updateTagDict(correct);
    tag( &sentence , &tagged , 1 , NULL );
    if ( tagged != *correct ) {
       for (i=0; i<tagged.size(); ++i) 
@@ -361,7 +338,7 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
    scores.reset();
    getLocalScore(scores, sentence, 0, 0);
    for (tag=0; tag<CTag::COUNT; ++tag) {
-     if ( possible_tags & (1L<<tag) ) {
+     if ( possible_tags & (1LL<<tag) ) {
         temp.tag = tag;
         temp.m_nScore = scores[tag] ;
         m_Agenda->insertItem(&temp);
@@ -394,7 +371,7 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
          getLocalScore(scores, sentence, pGenerator, index);
 
          for ( tag=CTag::FIRST; tag<CTag::COUNT; ++tag ) {
-            if ( possible_tags & (1L<<tag) ) {
+            if ( possible_tags & (1LL<<tag) ) {
                temp.prev = pGenerator; temp.tag = tag;
 //               temp.m_nScore = pGenerator->m_nScore + getLocalScore(sentence, &temp, index); 
                temp.m_nScore = pGenerator->m_nScore + scores[tag]; 
