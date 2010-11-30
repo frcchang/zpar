@@ -162,14 +162,14 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    // s0 and n0
    if (st_index != -1) {
       cast_weights->m_mapSTwtN0wt.getOrUpdateScore( retval, st_word_tag_n0_word_tag, action, m_nScoreIndex, amount, round ); 
-      refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &st_tag);
-      cast_weights->m_mapSTwtN0w.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &n0_tag);
-      cast_weights->m_mapSTwN0wt.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(word_tag_tag, &st_word, &st_tag, &n0_tag);
-      cast_weights->m_mapSTwtN0t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &n0_tag);
-      cast_weights->m_mapSTtN0wt.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ;
+//      refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &st_tag);
+//      cast_weights->m_mapSTwtN0w.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
+//      refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &n0_tag);
+//      cast_weights->m_mapSTwN0wt.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
+//      refer_or_allocate_tuple3(word_tag_tag, &st_word, &st_tag, &n0_tag);
+//      cast_weights->m_mapSTwtN0t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
+//      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &n0_tag);
+//      cast_weights->m_mapSTtN0wt.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapSTwN0w.getOrUpdateScore( retval, st_word_n0_word, action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
    }

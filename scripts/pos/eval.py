@@ -5,7 +5,8 @@ def builddic(path, d, w):
    file = open(path)
    for line in file:
       tup = tuple(line.split())
-      d[tuple] = 1
+      assert len(tup) == 2
+      d[tup] = 1
       w[tup[0]] = 1
    file.close()
 
@@ -20,7 +21,7 @@ def eval(pos1, pos2, d, w):
       if word[1] == word2[1]:
          correct += 1
       else:
-         if word[0] in w and not (word[0], word[1]) in d and (word2[0], word2[1]) in d:
+         if (word[0] in w) and (not (word2[0], word2[1]) in d):
             oov += 1
    return total, correct, oov
 
