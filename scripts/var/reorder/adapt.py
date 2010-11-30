@@ -11,8 +11,7 @@ import gzip
 #========================================
 
 def readModel(path, bTrain):
-   if bTrain: model = orng.COrangeWriter(path, bTrain)
-   else: model = orng.COrange(path, bTrain)
+   model = orng.COrangeWriter(path, bTrain)
    return model
 
 def readAlign(path):
@@ -74,14 +73,12 @@ def updateIndex(tree):
 
 #========================================
 
-def recordOrder(bReorder, node1, node, nPUBetween, model):
+def feat(node1, node, nPUBetween):
    def normalize(i):
       if i > 10: return '10'
       elif i > 5: return '5'
       else: return str(i)
    node_reordered = 'n'
-   if bReorder:
-      node_reordered = 'y'
    head_word = node.token
    head_pos = node.pos
    head_size = normalize(node.size)
@@ -109,8 +106,23 @@ def recordOrder(bReorder, node1, node, nPUBetween, model):
    if node1.rightmost_leaf:
       modifier_rleaf_word = node1.rightmost_leaf.token
       modifier_rleaf_pos = node1.rightmost_leaf.pos
-   model.setFeatureDefs(['head_word', 'head_pos', 'head_size', 'modifier_word', 'modifier_pos', 'modifier_size', 'pu_between', 'modifier_lmod_word', 'modifier_lmod_pos', 'modifier_rmod_word', 'modifier_rmod_pos', 'modifier_lleaf_word', 'modifier_lleaf_pos', 'modifier_rleaf_word', 'modifier_rleaf_pos', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'class'])
-   model.addExample([head_word, head_pos, head_size, modifier_word, modifier_pos, modifier_size, pu_between, modifier_lmod_word, modifier_lmod_pos, modifier_rmod_word, modifier_rmod_pos, modifier_lleaf_word, modifier_lleaf_pos, modifier_rleaf_word, modifier_rleaf_pos, node_reordered])
+   #return [head_word, head_pos, head_size, modifier_word, modifier_pos, modifier_size, pu_between, modifier_lmod_word, modifier_lmod_pos, modifier_rmod_word, modifier_rmod_pos, modifier_lleaf_word, modifier_lleaf_pos, modifier_rleaf_word, modifier_rleaf_pos, node_reordered]
+   return [head_pos, head_size, modifier_pos, modifier_size, pu_between, modifier_lmod_pos, modifier_rmod_pos, modifier_lleaf_pos, modifier_rleaf_pos, node_reordered]
+
+def recordOrder(bReorder, node1, node, nPUBetween, model):
+#   model.setFeatureDefs(['head_word', 'head_pos', 'head_size', 'modifier_word', 'modifier_pos', 'modifier_size', 'pu_between', 'modifier_lmod_word', 'modifier_lmod_pos', 'modifier_rmod_word', 'modifier_rmod_pos', 'modifier_lleaf_word', 'modifier_lleaf_pos', 'modifier_rleaf_word', 'modifier_rleaf_pos', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'class'])
+   model.setFeatureDefs(['head_pos', 'head_size', 'modifier_pos', 'modifier_size', 'pu_between', 'modifier_lmod_pos', 'modifier_rmod_pos', 'modifier_lleaf_pos', 'modifier_rleaf_pos', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', '', '', '', 'class'])
+   feature = feat(node1, node, nPUBetween)
+   if bReorder:
+      feature[-1] = 'y'
+   model.addExample(feature)
+
+def classify(node1, node, nPUBetween, model):
+   bReorder = False
+   feature = feat(node1, node, nPUBetween)
+   if str(model.predict(feature)) == 'y':
+      bReorder = True
+   return bReorder
 
 def crossLink(node1, node2, align):
    count = 0
@@ -147,11 +159,13 @@ def reorderVV(node, align, model):
       bReorder = False
 
       if left_child.pos in ['P']:
-         if align and crossLink(left_child, node, align):
+         if ( align and crossLink(left_child, node, align) )\
+            or ( not align and classify(left_child, node, nPUBetween, model) ):
             node.right_children.append(left_child)
             bReorder = True
       elif left_child.pos in ['NT', 'M', 'CD', 'OD']:
-         if align and crossLink(left_child, node, align):
+         if ( align and crossLink(left_child, node, align) )\
+            or ( not align and classify(left_child, node, nPUBetween, model) ):
             node.right_children.insert(0, left_child)
             bReorder = True
       elif left_child.pos in ['PU']:
@@ -172,7 +186,8 @@ def reorderNN(node, align, model):
       left_child = node.left_children.pop(-1) # for each left
       bReorder = False
       if left_child.pos == 'DEC' or left_child.pos == 'DEG':
-         if align and crossLink(left_child, node, align):
+         if ( align and crossLink(left_child, node, align) )\
+            or ( not align and classify(left_child, node, nPUBetween, model) ):
             reorderDEG(left_child, align, model)
             node.right_children.insert(0, left_child)
             bReorder =  True
