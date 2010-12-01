@@ -28,6 +28,9 @@
    left(m_mapSTHw)right\
    left(m_mapSTHt)right\
    left(m_mapSTi)right\
+   left(m_mapSTHHw)right\
+   left(m_mapSTHHt)right\
+   left(m_mapSTHi)right\
    left(m_mapSTLDw)right\
    left(m_mapSTLDt)right\
    left(m_mapSTLDi)right\
@@ -147,6 +150,10 @@ public:
    CTagMap m_mapSTHt;
    CIntMap m_mapSTi;
 
+   CWordMap m_mapSTHHw;
+   CTagMap m_mapSTHHt;
+   CIntMap m_mapSTHi;
+
    CWordMap m_mapSTLDw;
    CTagMap m_mapSTLDt;
    CIntMap m_mapSTLDi;
@@ -232,6 +239,10 @@ public:
                                                m_mapSTHw("StackHeadWord", DEP_TABLE_SIZE),
                                                m_mapSTHt("StackHeadTag", DEP_TABLE_SIZE),
                                                m_mapSTi("StackLabel", DEP_TABLE_SIZE),
+
+                                               m_mapSTHHw("StackHeadHeadWord", DEP_TABLE_SIZE),
+                                               m_mapSTHHt("StackHeadHeadTag", DEP_TABLE_SIZE),
+                                               m_mapSTHi("StackLabel", DEP_TABLE_SIZE),
 
                                                m_mapSTLDw("StackLDWord", DEP_TABLE_SIZE),
                                                m_mapSTLDt("StackLDTag", DEP_TABLE_SIZE),
