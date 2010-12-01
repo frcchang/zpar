@@ -62,6 +62,23 @@ enum PENN_TAG_CONSTANTS {
    PENN_TAG_COUNT
 };
 
+enum PENN_TAG_CLOSED {
+   false, 
+   true,
+   true,
+   true, true, true, 
+   true, true, true, 
+   true, true, true,
+   true, false, true, true, false,
+   true, false, false, false, false, 
+   true, false, false, false, false, 
+   true, true, true, true,
+   false, false, false, false,
+   false, true, false, 
+   false, false, false, false, false, false,
+   true, true, true, true
+};
+
 const int PENN_TAG_FIRST = 3;
 const int PENN_TAG_COUNT_BITS = 6;
 
@@ -106,6 +123,7 @@ public:
          if (PENN_TAG_STRINGS[i] == s)
             m_code = i;
    }
+   bool closed() const { return PENN_TAG_CLOSED[m_code]; }
 
 public:
    bool operator == (const CTag &t1) const { return m_code == t1.m_code; }
