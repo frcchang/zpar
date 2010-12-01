@@ -95,25 +95,7 @@ void TARGET_LANGUAGE::CTagger::getLocalScore( CPackedScoreType<SCORE_TYPE, CTag:
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::CTagger::updateScoreVector(const CTwoStringVector* tagged, const CTwoStringVector* correct, int round) {
-
-   static int i;
-   static unsigned long int possible_tags, current_tag;
-
-   if ( *tagged != *correct ) {
-      for (i=0; i<tagged->size(); ++i) 
-         updateLocalFeatureVector(eSubtract, tagged, i, round);
-      for (i=0; i<correct->size(); ++i)
-         updateLocalFeatureVector(eAdd, correct, i, round);
-//      updateTagDict(correct);
-      m_bScoreModified = true;
-   }
-
-   if (round>m_nTrainingRound) {
-      //
-      // Updates that are common for all example
-      //
-      m_nTrainingRound = round;
-   }
+   THROW("Not implemented");
 }
 
 /*---------------------------------------------------------------
@@ -262,19 +244,34 @@ bool TARGET_LANGUAGE::CTagger::train( const CTwoStringVector * correct ) {
    static CTwoStringVector tagged;
 
    static CStringVector sentence;
+   static bool bDicOOV;
+   static unsigned long long possible_tags, current_tag;
+
    UntagSentence( correct, &sentence );
 
    ++m_nTrainingRound;
 
    tag( &sentence , &tagged , 1 , NULL );
    if ( tagged != *correct ) {
-      for (i=0; i<tagged.size(); ++i) 
-         updateLocalFeatureVector(eSubtract, &tagged, i, m_nTrainingRound);
-      for (i=0; i<correct->size(); ++i)
-         updateLocalFeatureVector(eAdd, correct, i, m_nTrainingRound);
-      m_bScoreModified = true;
+      for (i=0; i<tagged.size(); ++i) {
+         bDicOOV = false;
+	 if (m_TagDict) {
+	    possible_tags = getPossibleTagsForWord(correct->at(i).first);
+	    current_tag = (1LL<<CTag(correct->at(i).second).code()) ;
+	    if ( ( possible_tags & current_tag ) == 0 ) {
+	       WARNING("dictionary does not have the example word " << correct->at(i).first << " with tag " << correct->at(i).second);
+               bDicOOV = true;
+	    }
+	 }
+         if (!bDicOOV) {
+            updateLocalFeatureVector(eSubtract, &tagged, i, m_nTrainingRound);
+            updateLocalFeatureVector(eAdd, correct, i, m_nTrainingRound);
+            m_bScoreModified = true;
+         }
+      }
       return true;
    }
+
    return false;
 }
 

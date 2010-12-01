@@ -41,6 +41,7 @@ public:
 
 protected:
    std::vector<int> m_Stack;                     // stack of words that are currently processed
+   std::vector<int> m_HeadStack;
    int m_nNextWord;                         // index for the next word
    int m_lHeads[MAX_SENTENCE_SIZE];         // the lexical head for each word
    int m_lDepsL[MAX_SENTENCE_SIZE];         // the leftmost dependency for each word (just for cache, temporary info)
@@ -87,6 +88,7 @@ public:
       // I think that the stacks don't have to be compared
       // might be proved by translating tree to stack
       assert( m_Stack == item.m_Stack );
+      assert( m_HeadStack == item.m_HeadStack );
       return true;
    }
    inline bool operator != (const CStateItem &item) const {

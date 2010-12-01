@@ -196,7 +196,7 @@ def reorderNN(node, align, model):
       if left_child.pos == 'DEC' or left_child.pos == 'DEG':
          if ( align and crossLink(left_child, node, align) )\
             or ( not align and classify(left_child, node, nPUBetween, model) ):
-            reorderDEG(left_child, align, model)
+            reorderDE(left_child, align, model)
 #            extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
 #            node.right_children.insert(0, extra)
             node.right_children.insert(0, left_child)
@@ -214,15 +214,15 @@ def reorderNN(node, align, model):
 
    node.left_children = left_children
 
-def reorderDEG(node, align, model):
+def reorderDE(node, align, model):
    while node.left_children:
       left_child = node.left_children.pop(0)
-      node.right_children.insert(0, left_child)
+      node.right_children.append(left_child)
 
 def reorderLC(node, align, model):
    while node.left_children:
       left_child = node.left_children.pop(0)
-      node.right_children.insert(0, left_child)
+      node.right_children.append(left_child)
 
 def reorderNode(node, align, model):
    # recursion
