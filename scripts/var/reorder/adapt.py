@@ -161,12 +161,20 @@ def reorderVV(node, align, model):
       if left_child.pos in ['P']:
          if ( align and crossLink(left_child, node, align) )\
             or ( not align and classify(left_child, node, nPUBetween, model) ):
+#            extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
+#            node.right_children.append(extra)
             node.right_children.append(left_child)
+#            extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
+#            node.right_children.append(extra)
             bReorder = True
       elif left_child.pos in ['NT', 'M', 'CD', 'OD']:
          if ( align and crossLink(left_child, node, align) )\
             or ( not align and classify(left_child, node, nPUBetween, model) ):
+#            extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
+#            node.right_children.insert(0, extra)
             node.right_children.insert(0, left_child)
+#            extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
+#            node.right_children.insert(0, extra)
             bReorder = True
       elif left_child.pos in ['PU']:
          nPUBetween += 1
@@ -189,7 +197,11 @@ def reorderNN(node, align, model):
          if ( align and crossLink(left_child, node, align) )\
             or ( not align and classify(left_child, node, nPUBetween, model) ):
             reorderDEG(left_child, align, model)
+#            extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
+#            node.right_children.insert(0, extra)
             node.right_children.insert(0, left_child)
+#            extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
+#            node.right_children.insert(0, extra)
             bReorder =  True
       elif left_child.pos == 'PU':
          nPUBetween += 1

@@ -8,7 +8,7 @@ def formatdict(dDict, threshold):
          total += dDict[word][tag]
       if total >= threshold:
          for tag in dDict[word]:
-            print word, tag
+            print word, tag, dDict[word][tag]
 
 if __name__ == '__main__':
    if sys.argv[1].endswith('.gz'):

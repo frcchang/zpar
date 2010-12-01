@@ -18,6 +18,12 @@ def tagdicttup(path, dDict):
       for word in sent:
          dDict[(word[0], word[1])] = dDict.get((word[0], word[1]), 0) + 1
 
+def readdicttup(path, dDict):
+   for line  in path:
+      line = line.split()
+      assert len(line) == 3
+      dDict[line[0], line[1]] = int(line[2])
+
 def pprintdicttup(dDict):
    pprint.pprint(dDict)
 
@@ -37,7 +43,7 @@ if __name__ == '__main__':
       dDict = {}
       if len(sys.argv) == 4:
          file_dic = open(sys.argv[3])
-         dDict = eval(file_dic.read())
+         readdicttup(file_dic, dDict)
          file_dic.close()
       tagdicttup(sys.argv[2], dDict)
       printdicttup(dDict)
