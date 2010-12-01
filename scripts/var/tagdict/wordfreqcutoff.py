@@ -21,7 +21,7 @@ def filterdicttup(dDict, threshold):
       dWord[word] = dWord.get(word, 0) + dDict[word, tag]
    for word, tag in dDict:
       if dWord[word] >= threshold:
-         print word, tag
+         print word, tag, dDict[word, tag]
 
 if __name__ == '__main__':
    if sys.argv[1].endswith('.gz'):

@@ -6,7 +6,7 @@ def builddic(path, d, w):
       tup = tuple(line.split())
       assert len(tup) == 3
       d[(tup[0], tup[1])] = int(tup[2])#1
-      w[tup[0]] = w.get(tup[0]) + 1
+      w[tup[0]] = w.get(tup[0], 0) + int(tup[2])
 
 def tagfreqcutoff(d, w, threshold):
    for word, tag in d:
@@ -21,7 +21,7 @@ if __name__ == '__main__':
       file = open(sys.argv[1])
    threshold = 1
    if len(sys.argv) ==3:
-      threshold = int(sys.argv[2])
+      threshold = float(sys.argv[2])
    d = {}
    w = {}
    builddic(file, d, w)
