@@ -150,7 +150,7 @@ def crossLink(node1, node2, align):
       return True
    return False
 
-def reorderVV(node, align, model):
+def reorderVV(node, align, model, bDebug):
    left_children = []
    nPUBetween = 0
    while node.left_children:
@@ -161,20 +161,32 @@ def reorderVV(node, align, model):
       if left_child.pos in ['P']:
          if ( align and crossLink(left_child, node, align) )\
             or ( not align and classify(left_child, node, nPUBetween, model) ):
-#            extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
-#            node.right_children.append(extra)
+
+            if bDebug:
+               extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
+               node.right_children.append(extra)
+
+            # append
             node.right_children.append(left_child)
-#            extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
-#            node.right_children.append(extra)
+
+            if bDebug:
+               extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
+               node.right_children.append(extra)
+
             bReorder = True
       elif left_child.pos in ['NT', 'M', 'CD', 'OD']:
          if ( align and crossLink(left_child, node, align) )\
             or ( not align and classify(left_child, node, nPUBetween, model) ):
-#            extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
-#            node.right_children.insert(0, extra)
+            if bDebug:
+               extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
+               node.right_children.insert(0, extra)
+
+            # insert
             node.right_children.insert(0, left_child)
-#            extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
-#            node.right_children.insert(0, extra)
+
+            if bDebug:
+               extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
+               node.right_children.insert(0, extra)
             bReorder = True
       elif left_child.pos in ['PU']:
          nPUBetween += 1
@@ -187,7 +199,7 @@ def reorderVV(node, align, model):
 
    node.left_children = left_children
 
-def reorderNN(node, align, model):
+def reorderNN(node, align, model, bDebug):
    left_children = []
    nPUBetween = 0
    while node.left_children:
@@ -197,11 +209,13 @@ def reorderNN(node, align, model):
          if ( align and crossLink(left_child, node, align) )\
             or ( not align and classify(left_child, node, nPUBetween, model) ):
             reorderDE(left_child, align, model)
-#            extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
-#            node.right_children.insert(0, extra)
+            if bDebug:
+               extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
+               node.right_children.insert(0, extra)
             node.right_children.insert(0, left_child)
-#            extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
-#            node.right_children.insert(0, extra)
+            if bDebug:
+               extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
+               node.right_children.insert(0, extra)
             bReorder =  True
       elif left_child.pos == 'PU':
          nPUBetween += 1
@@ -224,24 +238,24 @@ def reorderLC(node, align, model):
       left_child = node.left_children.pop(0)
       node.right_children.append(left_child)
 
-def reorderNode(node, align, model):
+def reorderNode(node, align, model, bDebug):
    # recursion
    for left_child in node.left_children:
-      reorderNode(left_child, align, model)
+      reorderNode(left_child, align, model, bDebug)
    for right_child in node.right_children:
-      reorderNode(right_child, align, model)
+      reorderNode(right_child, align, model, bDebug)
    # ver
    if node.pos == 'VV':
-      reorderVV(node, align, model)
+      reorderVV(node, align, model, bDebug)
    # n.
    elif node.pos in ['NN', 'NR']:
-      reorderNN(node, align, model)
+      reorderNN(node, align, model, bDebug)
    # lc
    elif node.pos == 'LC':
       reorderLC(node, align, model)
 
-def reorder(tree, align, model):
-   reorderNode(tree.root, align, model)
+def reorder(tree, align, model, bDebug):
+   reorderNode(tree.root, align, model, bDebug)
    updateIndex(tree)
 
 #========================================
@@ -274,19 +288,22 @@ def deg(node):
 #========================================
 
 if __name__ == '__main__':
-   opts, args = getopt.getopt(sys.argv[1:], "o:i:")
+   opts, args = getopt.getopt(sys.argv[1:], "o:i:d")
    if len(args) < 1:
-      print 'adapt [-ia|c] [-oi|r|p|d] input model [align]'
+      print 'adapt [-ia|c] [-oi|r|p|d] [-d] input model [align]'
       sys.exit(0)
 
    # get parameter
    sOutput = 'd'
    sInput = 'a'
+   bDebug = False
    for opt, val in opts:
       if opt == '-o':
          sOutput = val
       if opt == '-i':
          sInput = val
+      if opt == '-d':
+         bDebug = True
 
    # input
    alignFile = None
@@ -308,7 +325,7 @@ if __name__ == '__main__':
       if alignFile:
          align = alignFile.next()
       dept = dep.CDep(tree)
-      reorder(dept, align, model)
+      reorder(dept, align, model, bDebug)
       if sOutput == 'd':
          print dept
       elif sOutput == 'p':

@@ -62,7 +62,7 @@ enum PENN_TAG_CONSTANTS {
    PENN_TAG_COUNT
 };
 
-enum PENN_TAG_CLOSED {
+const bool PENN_TAG_CLOSED[] = {
    false, 
    true,
    true,
