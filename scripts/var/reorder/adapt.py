@@ -159,8 +159,8 @@ def reorderVV(node, align, model, bDebug):
       bReorder = False
 
       if left_child.pos in ['P']:
-         if ( align and crossLink(left_child, node, align) )\
-            or ( not align and classify(left_child, node, nPUBetween, model) ):
+         if ( align != None and crossLink(left_child, node, align) )\
+            or ( align == None and classify(left_child, node, nPUBetween, model) ):
 
             if bDebug:
                extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
@@ -175,8 +175,8 @@ def reorderVV(node, align, model, bDebug):
 
             bReorder = True
       elif left_child.pos in ['NT', 'M', 'CD', 'OD']:
-         if ( align and crossLink(left_child, node, align) )\
-            or ( not align and classify(left_child, node, nPUBetween, model) ):
+         if ( align != None and crossLink(left_child, node, align) )\
+            or ( align == None and classify(left_child, node, nPUBetween, model) ):
             if bDebug:
                extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
                node.right_children.insert(0, extra)
@@ -194,7 +194,7 @@ def reorderVV(node, align, model, bDebug):
       if not bReorder: 
          left_children.insert(0, left_child)
 
-      if align:
+      if align != None:
          recordOrder(bReorder, left_child, node, nPUBetween, model)
 
    node.left_children = left_children
@@ -206,8 +206,8 @@ def reorderNN(node, align, model, bDebug):
       left_child = node.left_children.pop(-1) # for each left
       bReorder = False
       if left_child.pos == 'DEC' or left_child.pos == 'DEG':
-         if ( align and crossLink(left_child, node, align) )\
-            or ( not align and classify(left_child, node, nPUBetween, model) ):
+         if ( align != None and crossLink(left_child, node, align) )\
+            or ( align == None and classify(left_child, node, nPUBetween, model) ):
             reorderDE(left_child, align, model)
             if bDebug:
                extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
@@ -223,7 +223,7 @@ def reorderNN(node, align, model, bDebug):
       if not bReorder: 
          left_children.insert(0, left_child)
 
-      if align:
+      if align != None:
          recordOrder(bReorder, left_child, node, nPUBetween, model)
 
    node.left_children = left_children
@@ -255,6 +255,7 @@ def reorderNode(node, align, model, bDebug):
       reorderLC(node, align, model)
 
 def reorder(tree, align, model, bDebug):
+   assert (align != None and model.bTrain) or (align == None and not model.bTrain)
    reorderNode(tree.root, align, model, bDebug)
    updateIndex(tree)
 
@@ -324,6 +325,9 @@ if __name__ == '__main__':
    for tree in depio.depread(args[0]):
       if alignFile:
          align = alignFile.next()
+         if align == None:
+            depio.depprint(tree)
+         assert align != None
       dept = dep.CDep(tree)
       reorder(dept, align, model, bDebug)
       if sOutput == 'd':
@@ -337,5 +341,5 @@ if __name__ == '__main__':
       else:
          print "The output type is not valid"
          sys.exit(0)
-   if align:
+   if alignFile:
       model.train()
