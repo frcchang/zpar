@@ -221,8 +221,10 @@ void TARGET_LANGUAGE::CTagger::finishTraining() {
 
 unsigned long long TARGET_LANGUAGE::CTagger::getPossibleTagsForWord( const CWord &word ) {
    static unsigned long long possible_tags;
-   possible_tags = m_TagDict ? m_TagDict->lookup(word) : 0;
-   if (possible_tags==0) possible_tags = ~0LL;
+   possible_tags = m_TagDict ? m_TagDict->lookup(word) : 0LL;
+   // when there is not an open tag for this word
+   //if (possible_tags & m_opentags==0) possible_tags |= m_opentags;
+   possible_tags |= m_opentags;
 //#ifdef _ENGLISH_TAGS_H
 //   possible_tags |= getPossibleTagsBySuffix( word.str() );
 //   possible_tags |= PENN_TAG_MUST_SEE ;

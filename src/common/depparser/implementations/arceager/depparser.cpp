@@ -43,9 +43,14 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int &sthh_index = sth_index == -1 ? -1 : item->head(sth_index); // stack top head
    const int &stld_index = st_index == -1 ? -1 : item->leftdep(st_index); // leftmost dep of stack
    const int &strd_index = st_index == -1 ? -1 : item->rightdep(st_index); // rightmost dep st
+   const int &stl2d_index = stld_index == -1 ? -1 : item->sibling(stld_index); // left 2ndmost dep of stack
+   const int &str2d_index = strd_index == -1 ? -1 : item->sibling(strd_index); // right 2ndmost dep st
    const int &n0_index = item->size()==m_lCache.size() ? -1 : item->size(); // next
    assert(n0_index<static_cast<int>(m_lCache.size())); // the next index shouldn't exceed sentence
    const int &n0ld_index = n0_index==-1 ? -1 : item->leftdep(n0_index); // leftmost dep of next
+   const int &n0l2d_index = n0ld_index==-1 ? -1 : item->sibling(n0ld_index); // leftmost dep of next
+//   const int &sd_index = item->stackempty() ? -1 : item->stackbottom(); // stack bottom
+   const int &ht_index = item->headstackempty() ? -1 : item->headstacktop(); // stack bottom
    static int n1_index;
    static int n2_index;
    static int n3_index;
@@ -58,36 +63,54 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CTaggedWord<CTag, TAG_SEPARATOR> &sthh_word_tag = sthh_index==-1 ? g_emptyTaggedWord : m_lCache[sthh_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &stld_word_tag = stld_index==-1 ? g_emptyTaggedWord : m_lCache[stld_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &strd_word_tag = strd_index==-1 ? g_emptyTaggedWord : m_lCache[strd_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &stl2d_word_tag = stl2d_index==-1 ? g_emptyTaggedWord : m_lCache[stl2d_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &str2d_word_tag = str2d_index==-1 ? g_emptyTaggedWord : m_lCache[str2d_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &n0_word_tag = n0_index==-1 ? g_emptyTaggedWord : m_lCache[n0_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &n0ld_word_tag = n0ld_index==-1 ? g_emptyTaggedWord : m_lCache[n0ld_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &n0l2d_word_tag = n0l2d_index==-1 ? g_emptyTaggedWord : m_lCache[n0l2d_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &n1_word_tag = n1_index==-1 ? g_emptyTaggedWord : m_lCache[n1_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &n2_word_tag = n2_index==-1 ? g_emptyTaggedWord : m_lCache[n2_index];
+//   const CTaggedWord<CTag, TAG_SEPARATOR> &sd_word_tag = sd_index==-1 ? g_emptyTaggedWord : m_lCache[sd_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &ht_word_tag = ht_index==-1 ? g_emptyTaggedWord : m_lCache[ht_index];
 
    const CWord &st_word = st_word_tag.word;
    const CWord &sth_word = sth_word_tag.word;
    const CWord &sthh_word = sthh_word_tag.word;
    const CWord &stld_word = stld_word_tag.word;
    const CWord &strd_word = strd_word_tag.word;
+   const CWord &stl2d_word = stl2d_word_tag.word;
+   const CWord &str2d_word = str2d_word_tag.word;
    const CWord &n0_word = n0_word_tag.word;
    const CWord &n0ld_word = n0ld_word_tag.word;
+   const CWord &n0l2d_word = n0l2d_word_tag.word;
    const CWord &n1_word = n1_word_tag.word;
    const CWord &n2_word = n2_word_tag.word;
+//   const CWord &sd_word = sd_word_tag.word;
+   const CWord &ht_word = ht_word_tag.word;
 
    const CTag &st_tag = st_word_tag.tag;
    const CTag &sth_tag = sth_word_tag.tag;
    const CTag &sthh_tag = sthh_word_tag.tag;
    const CTag &stld_tag = stld_word_tag.tag;
    const CTag &strd_tag = strd_word_tag.tag;
+   const CTag &stl2d_tag = stl2d_word_tag.tag;
+   const CTag &str2d_tag = str2d_word_tag.tag;
    const CTag &n0_tag = n0_word_tag.tag;
    const CTag &n0ld_tag = n0ld_word_tag.tag;
+   const CTag &n0l2d_tag = n0l2d_word_tag.tag;
    const CTag &n1_tag = n1_word_tag.tag;
    const CTag &n2_tag = n2_word_tag.tag;
+//   const CTag &sd_tag = sd_word_tag.tag;
+   const CTag &ht_tag = ht_word_tag.tag;
 
    const int &st_label = st_index==-1 ? CDependencyLabel::NONE : item->label(st_index);
    const int &sth_label = sth_index==-1 ? CDependencyLabel::NONE : item->label(sth_index);
    const int &stld_label = stld_index==-1 ? CDependencyLabel::NONE : item->label(stld_index);
    const int &strd_label = strd_index==-1 ? CDependencyLabel::NONE : item->label(strd_index);
+   const int &stl2d_label = stl2d_index==-1 ? CDependencyLabel::NONE : item->label(stl2d_index);
+   const int &str2d_label = str2d_index==-1 ? CDependencyLabel::NONE : item->label(strd_index);
    const int &n0ld_label = n0ld_index==-1 ? CDependencyLabel::NONE : item->label(n0ld_index);
+   const int &n0l2d_label = n0l2d_index==-1 ? CDependencyLabel::NONE : item->label(n0l2d_index);
 
    static int st_n0_dist;
    st_n0_dist = encodeLinkDistance(st_index, n0_index);
@@ -143,13 +166,13 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    if (sth_index != -1) {
       cast_weights->m_mapSTHw.getOrUpdateScore( retval, sth_word, action, m_nScoreIndex, amount, round) ;
       cast_weights->m_mapSTHt.getOrUpdateScore( retval, sth_tag, action, m_nScoreIndex, amount, round ) ;
-//      cast_weights->m_mapSTi.getOrUpdateScore( retval, st_label, action, m_nScoreIndex, amount, round) ;
+      cast_weights->m_mapSTi.getOrUpdateScore( retval, st_label, action, m_nScoreIndex, amount, round) ;
    }
 
    if (sthh_index != -1) {
       cast_weights->m_mapSTHHw.getOrUpdateScore( retval, sthh_word, action, m_nScoreIndex, amount, round) ;
       cast_weights->m_mapSTHHt.getOrUpdateScore( retval, sthh_tag, action, m_nScoreIndex, amount, round ) ;
-//      cast_weights->m_mapSTHi.getOrUpdateScore( retval, sth_label, action, m_nScoreIndex, amount, round) ;
+      cast_weights->m_mapSTHi.getOrUpdateScore( retval, sth_label, action, m_nScoreIndex, amount, round) ;
    }
 
    if (stld_index != -1) {
@@ -169,6 +192,36 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0LDt.getOrUpdateScore( retval, n0ld_tag, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapN0LDi.getOrUpdateScore( retval, n0ld_label, action, m_nScoreIndex, amount, round) ;
    }
+
+   if (stl2d_index != -1) {
+      cast_weights->m_mapSTL2Dw.getOrUpdateScore( retval, stl2d_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTL2Dt.getOrUpdateScore( retval, stl2d_tag, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTL2Di.getOrUpdateScore( retval, stl2d_label, action, m_nScoreIndex, amount, round) ;
+   }
+
+   if (str2d_index != -1) {
+      cast_weights->m_mapSTR2Dw.getOrUpdateScore( retval, str2d_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTR2Dt.getOrUpdateScore( retval, str2d_tag, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTR2Di.getOrUpdateScore( retval, str2d_label, action, m_nScoreIndex, amount, round) ;
+   }
+
+   if (n0l2d_index != -1) {
+      cast_weights->m_mapN0L2Dw.getOrUpdateScore( retval, n0l2d_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN0L2Dt.getOrUpdateScore( retval, n0l2d_tag, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN0L2Di.getOrUpdateScore( retval, n0l2d_label, action, m_nScoreIndex, amount, round) ;
+   }
+
+//   if (sd_index != -1) {
+//      cast_weights->m_mapSDw.getOrUpdateScore( retval, sd_word, action, m_nScoreIndex, amount, round ) ;
+//      cast_weights->m_mapSDt.getOrUpdateScore( retval, sd_tag, action, m_nScoreIndex, amount, round ) ;
+//      cast_weights->m_mapSDwt.getOrUpdateScore( retval, sd_word_tag, action, m_nScoreIndex, amount, round) ;
+//   }
+
+//   if (ht_index != -1) {
+//      cast_weights->m_mapHTw.getOrUpdateScore( retval, ht_word, action, m_nScoreIndex, amount, round ) ;
+//      cast_weights->m_mapHTt.getOrUpdateScore( retval, ht_tag, action, m_nScoreIndex, amount, round ) ;
+//      cast_weights->m_mapHTwt.getOrUpdateScore( retval, ht_word_tag, action, m_nScoreIndex, amount, round) ;
+//   }
 
    // s0 and n0
    if (st_index != -1) {
@@ -190,41 +243,16 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)), action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)), action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)), action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapN0tN0LDtN0L2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n0ld_tag,n0l2d_tag)), action, m_nScoreIndex, amount, round ) ; 
    }
    if (st_index!=-1) {
       cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTHHtSTHtSTt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sthh_tag, sth_tag,st_tag)), action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTtSTLDtSTL2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,stl2d_tag)), action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTtSTRDtSTR2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,str2d_tag)), action, m_nScoreIndex, amount, round ) ; 
    }
-
-//   if (n1_index!=-1) {
-//      refer_or_allocate_tuple2(word_tag, &n0_word, &n1_tag);
-//      cast_weights->m_mapN0wN1t.getOrUpdateScore( retval, word_tag, action, m_nScoreIndex, amount, round ) ; 
-//   }
-//   if (n2_index!=-1) {
-//      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &n1_tag, &n2_tag);
-//      cast_weights->m_mapN0wN1tN2t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-//   }
-//   if (n0_index!=-1) {
-//      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &n1_tag);
-//      cast_weights->m_mapSTtN0wN1t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-//   }
-//   if (n0ld_index!=-1) {
-//      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &n0ld_tag);
-//      cast_weights->m_mapSTtN0wN0LDt.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-//   }
-//   if (sth_index!=-1) {
-//      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &sth_tag, &st_tag);
-//      cast_weights->m_mapSTHtSTtN0w.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-//   }
-//   if (stld_index!=-1) {
-//      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &stld_tag);
-//      cast_weights->m_mapSTtSTLDtN0w.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-//   }
-//   if (strd_index!=-1) {
-//      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &strd_tag);
-//      cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-//   }
 
    // distance
    if (st_index!=-1 && n0_index!=-1) {
@@ -582,7 +610,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                }
             }
             if ( !pGenerator->stackempty() ) {
-               if ( ( pGenerator->size() < length-1 || pGenerator->numberoflocalheads() == 1 ) && // one root
+               if ( ( pGenerator->size() < length-1 || pGenerator->headstacksize() == 1 ) && // one root
                     ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
                     ( !m_weights->rules() || hasLeftHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
                   ) { 

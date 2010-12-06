@@ -65,8 +65,10 @@ private:
    tagger::CStateItem *stateitems;
    unsigned *stateindice;
 
+   unsigned long long m_opentags;
+
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(0), m_nMaxSentenceSize(tagger::MAX_SENTENCE_SIZE) { 
+   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(0), m_nMaxSentenceSize(tagger::MAX_SENTENCE_SIZE), m_opentags(~0LL) { 
       m_weights = new tagger::CWeight(m_sFeatureDB, bTrain); 
       loadScores();
       if (m_bTrain) m_nTrainingRound = 0;
@@ -84,9 +86,16 @@ public:
 
 public:
    void loadTagDictionary(const std::string &sTagDictPath) {
+      // load dictionary
       ASSERT(m_TagDict==0, "The tag dict has already been loaded");
       m_TagDict = new CTagDict<CWord, CTag>(CTag::COUNT);
       m_TagDict->load(sTagDictPath);
+      // enumerate only open set tags
+      m_opentags = ~m_opentags;
+      ASSERT(m_opentags==0LL, "Open tags must be unitialized");
+      for (unsigned tag=CTag::FIRST; tag<CTag::COUNT; ++tag)
+         if (CTag(tag).closed()) {std::cout << CTag(tag) << std::endl; m_opentags |= (1LL << tag); }
+      m_opentags = ~m_opentags;
    }
 
 public:

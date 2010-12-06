@@ -40,6 +40,21 @@
    left(m_mapN0LDw)right\
    left(m_mapN0LDt)right\
    left(m_mapN0LDi)right\
+   left(m_mapSTL2Dw)right\
+   left(m_mapSTL2Dt)right\
+   left(m_mapSTL2Di)right\
+   left(m_mapSTR2Dw)right\
+   left(m_mapSTR2Dt)right\
+   left(m_mapSTR2Di)right\
+   left(m_mapN0L2Dw)right\
+   left(m_mapN0L2Dt)right\
+   left(m_mapN0L2Di)right\
+   left(m_mapHTw)right\
+   left(m_mapHTt)right\
+   left(m_mapHTwt)right\
+   /*left(m_mapSDw)right\
+   left(m_mapSDt)right\
+   left(m_mapSDwt)right*/\
 \
    left(m_mapSTwtN0wt)right\
    left(m_mapSTwtN0w)right\
@@ -53,17 +68,13 @@
    left(m_mapN0tN1tN2t)right\
    left(m_mapSTtN0tN1t)right\
    left(m_mapSTtN0tN0LDt)right\
+   left(m_mapN0tN0LDtN0L2Dt)right\
    left(m_mapSTHtSTtN0t)right\
+   left(m_mapSTHHtSTHtSTt)right\
    left(m_mapSTtSTLDtN0t)right\
+   left(m_mapSTtSTLDtSTL2Dt)right\
    left(m_mapSTtSTRDtN0t)right\
-\
-   left(m_mapN0wN1t)right\
-   left(m_mapN0wN1tN2t)right\
-   left(m_mapSTtN0wN1t)right\
-   left(m_mapSTtN0wN0LDt)right\
-   left(m_mapSTHtSTtN0w)right\
-   left(m_mapSTtSTLDtN0w)right\
-   left(m_mapSTtSTRDtN0w)right\
+   left(m_mapSTtSTRDtSTR2Dt)right\
 \
    left(m_mapSTwd)right\
    left(m_mapSTtd)right\
@@ -105,6 +116,7 @@ typedef CPackedScoreMap<CTag, SCORE_TYPE, action::MAX> CTagMap;
 typedef CPackedScoreMap<int, SCORE_TYPE, action::MAX> CIntMap;
 typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2Map;
 typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3Map;
+typedef CPackedScoreMap<CTagSet<CTag, 4>, SCORE_TYPE, action::MAX> CTagSet4Map;
 typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagMap;
 typedef CPackedScoreMap<CTuple3<CWord, CTag, CTag>, SCORE_TYPE, action::MAX> CWordTagTagMap;
 typedef CPackedScoreMap<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, action::MAX> CWordWordTagMap;
@@ -166,6 +178,26 @@ public:
    CTagMap m_mapN0LDt;
    CIntMap m_mapN0LDi;
 
+   CWordMap m_mapSTL2Dw;
+   CTagMap m_mapSTL2Dt;
+   CIntMap m_mapSTL2Di;
+
+   CWordMap m_mapSTR2Dw;
+   CTagMap m_mapSTR2Dt;
+   CIntMap m_mapSTR2Di;
+
+   CWordMap m_mapN0L2Dw;
+   CTagMap m_mapN0L2Dt;
+   CIntMap m_mapN0L2Di;
+
+   CWordMap m_mapHTw;
+   CTagMap m_mapHTt;
+   CTaggedWordMap m_mapHTwt;
+
+//   CWordMap m_mapSDw;
+//   CTagMap m_mapSDt;
+//   CTaggedWordMap m_mapSDwt;
+
    CTwoTaggedWordsMap m_mapSTwtN0wt;
    CWordWordTagMap m_mapSTwtN0w;
    CWordWordTagMap m_mapSTwN0wt;
@@ -178,17 +210,13 @@ public:
    CTagSet3Map m_mapN0tN1tN2t;
    CTagSet3Map m_mapSTtN0tN1t;
    CTagSet3Map m_mapSTtN0tN0LDt;
+   CTagSet3Map m_mapN0tN0LDtN0L2Dt;
    CTagSet3Map m_mapSTHtSTtN0t;
+   CTagSet3Map m_mapSTHHtSTHtSTt;
    CTagSet3Map m_mapSTtSTLDtN0t;
+   CTagSet3Map m_mapSTtSTLDtSTL2Dt;
    CTagSet3Map m_mapSTtSTRDtN0t;
-
-   CWordTagMap m_mapN0wN1t;
-   CWordTagTagMap m_mapN0wN1tN2t;
-   CWordTagTagMap m_mapSTtN0wN1t;
-   CWordTagTagMap m_mapSTtN0wN0LDt;
-   CWordTagTagMap m_mapSTHtSTtN0w;
-   CWordTagTagMap m_mapSTtSTLDtN0w;
-   CWordTagTagMap m_mapSTtSTRDtN0w;
+   CTagSet3Map m_mapSTtSTRDtSTR2Dt;
 
    CWordIntMap m_mapSTwd;
    CTagIntMap m_mapSTtd;
@@ -256,6 +284,26 @@ public:
                                                m_mapN0LDt("NextLDTag", DEP_TABLE_SIZE),
                                                m_mapN0LDi("NextLDLabel", DEP_TABLE_SIZE),
 
+                                               m_mapSTL2Dw("StackL2DWord", DEP_TABLE_SIZE),
+                                               m_mapSTL2Dt("StackL2DTag", DEP_TABLE_SIZE),
+                                               m_mapSTL2Di("StackL2DLabel", DEP_TABLE_SIZE),
+
+                                               m_mapSTR2Dw("StackR2DWord", DEP_TABLE_SIZE),
+                                               m_mapSTR2Dt("StackR2DTag", DEP_TABLE_SIZE),
+                                               m_mapSTR2Di("StackR2DLabel", DEP_TABLE_SIZE),
+
+                                               m_mapN0L2Dw("NextL2DWord", DEP_TABLE_SIZE),
+                                               m_mapN0L2Dt("NextL2DTag", DEP_TABLE_SIZE),
+                                               m_mapN0L2Di("NextL2DLabel", DEP_TABLE_SIZE),
+
+                                               m_mapHTw("HeadStackWord", DEP_TABLE_SIZE),
+                                               m_mapHTt("HeadStackTag", DEP_TABLE_SIZE),
+                                               m_mapHTwt("HeadStackWordTag", DEP_TABLE_SIZE),
+
+//                                               m_mapSDw("StackBottomWord", DEP_TABLE_SIZE),
+//                                               m_mapSDt("StackBottomTag", DEP_TABLE_SIZE),
+//                                               m_mapSDwt("StackBottomWordTag", DEP_TABLE_SIZE),
+
                                                m_mapSTwtN0wt("StackWordTagNextWordTag", DEP_TABLE_SIZE),
                                                m_mapSTwtN0w("StackWordTagNextWord", DEP_TABLE_SIZE),
                                                m_mapSTwN0wt("StackWordNextWordTag", DEP_TABLE_SIZE),
@@ -268,17 +316,13 @@ public:
                                                m_mapN0tN1tN2t("NextTagTrigram", DEP_TABLE_SIZE),
                                                m_mapSTtN0tN1t("StackTagNextTagNext+1Tag", DEP_TABLE_SIZE),
                                                m_mapSTtN0tN0LDt("StackTagNextTagNextLDTag", DEP_TABLE_SIZE),
+                                               m_mapN0tN0LDtN0L2Dt("StackTagNextTagNextLDTagNextTagNextL2DTag", DEP_TABLE_SIZE),
                                                m_mapSTHtSTtN0t("StackHeadTagStackTagNextTag", DEP_TABLE_SIZE),
+                                               m_mapSTHHtSTHtSTt("StackHeadHeadTagStackHeadTagStackTag", DEP_TABLE_SIZE),
                                                m_mapSTtSTLDtN0t("StackTagStackLDTagNextTag", DEP_TABLE_SIZE),
+                                               m_mapSTtSTLDtSTL2Dt("StackTagStackLDTagStackL2DTag", DEP_TABLE_SIZE),
                                                m_mapSTtSTRDtN0t("StackTagStackRDTagNextTag", DEP_TABLE_SIZE),
-
-                                               m_mapN0wN1t("NextWordNext+1Tag", DEP_TABLE_SIZE),
-                                               m_mapN0wN1tN2t("NextWordNext+1TagNext+2Tag", DEP_TABLE_SIZE),
-                                               m_mapSTtN0wN1t("StackTagNextWordNext+1Tag", DEP_TABLE_SIZE),
-                                               m_mapSTtN0wN0LDt("StackTagNextWordNextLDTag", DEP_TABLE_SIZE),
-                                               m_mapSTHtSTtN0w("StackHeadTagStackTagNextWord", DEP_TABLE_SIZE),
-                                               m_mapSTtSTLDtN0w("StackTagStackLDTagNextWord", DEP_TABLE_SIZE),
-                                               m_mapSTtSTRDtN0w("StackTagStackRDTagNextWord", DEP_TABLE_SIZE), 
+                                               m_mapSTtSTRDtSTR2Dt("StackTagStackRDTagStackR2DTag", DEP_TABLE_SIZE),
 
                                                m_mapSTwd("StackWordDist", DEP_TABLE_SIZE),
                                                m_mapSTtd("StackTagDist", DEP_TABLE_SIZE),

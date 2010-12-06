@@ -53,7 +53,6 @@ protected:
    unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
 #endif
    unsigned long m_nLastAction;                  // the last stack action
-   int m_nLocalHeads;                       // the local heads for the moment, or the sub trees
 
 public:
    SCORE_TYPE score;                        // score of stack - predicting how potentially this is the correct one
@@ -102,13 +101,11 @@ public:
    inline int stackbottom() const { assert(!m_Stack.empty()); return m_Stack.front(); }
    inline int stackitem( const unsigned &index ) const { assert(index<m_Stack.size()); return m_Stack[index]; }
 
-   inline int numberoflocalheads() const { return m_nLocalHeads; }
-   inline int lastlocalhead() const { 
-      for (int i=m_Stack.size()-1; i>-1; i--) 
-         if (m_lHeads[m_Stack.at(i)]==DEPENDENCY_LINK_NO_HEAD) 
-            return m_Stack.at(i); 
-      assert(0==1); 
-   }
+   inline bool headstackempty() const { return m_HeadStack.empty(); }
+   inline int headstacktop() const { assert(!m_HeadStack.empty()); return m_HeadStack.back(); }
+   inline int headstackitem( const unsigned &index ) const { assert(index<m_HeadStack.size()); return m_HeadStack[index]; }
+   inline int headstacksize() const { return m_HeadStack.size(); }
+
    inline bool afterreduce() const { 
 #ifdef LABELED
       return action::getUnlabeledAction(m_nLastAction)==action::REDUCE;
@@ -130,16 +127,16 @@ public:
    inline int rightarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumR[index]; }
 
    void clear() { 
-      m_nNextWord = 0; m_Stack.clear(); 
+      m_nNextWord = 0; m_Stack.clear(); m_HeadStack.clear(); 
       score = 0; 
-      m_nLocalHeads = 0; m_nLastAction = action::NO_ACTION;
+      m_nLastAction = action::NO_ACTION;
       ClearNext();
    }
 
    void operator = ( const CStateItem &item ) {
       m_Stack = item.m_Stack;
+      m_HeadStack = item.m_HeadStack;
       m_nNextWord = item.m_nNextWord;
-      m_nLocalHeads = item.m_nLocalHeads;
       m_nLastAction = item.m_nLastAction;
       score = item.score; 
       for ( int i=0; i<=m_nNextWord; ++i ){ // only copy active word (including m_nNext)
@@ -169,6 +166,7 @@ public:
       static int left ;
       left = m_Stack.back() ;
       m_Stack.pop_back() ;
+      m_HeadStack.pop_back() ;
       m_lHeads[left] = m_nNextWord;
 #ifdef LABELED
       m_lLabels[left] = lab;
@@ -176,7 +174,6 @@ public:
       m_lSibling[left] = m_lDepsL[m_nNextWord];
       m_lDepsL[m_nNextWord] = left ;
       m_lDepNumL[m_nNextWord] ++ ;
-      m_nLocalHeads--;
 #ifdef LABELED
       m_nLastAction=action::encodeAction(action::ARC_LEFT, lab);
 #else
@@ -213,8 +210,8 @@ public:
    // the shift action does pushing
    void Shift() {
       m_Stack.push_back( m_nNextWord );
+      m_HeadStack.push_back( m_nNextWord );
       m_nNextWord ++ ;
-      m_nLocalHeads++;
       ClearNext();
       m_nLastAction=action::encodeAction(action::SHIFT);
    }
