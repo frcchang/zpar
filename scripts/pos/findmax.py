@@ -26,6 +26,7 @@ def findmax(path):
       pat = reoov.match(line)
       if pat:
          dev_oov = float(pat.group(1))
+         line = file.readline()
       else:
          dev_oov = '-'
 
@@ -42,17 +43,18 @@ def findmax(path):
       pat = reoov.match(line)
       if pat:
          test_oov = float(pat.group(1))
+         line = file.readline()
       else:
          test_oov = '-'
 
-      line = file.readline()
+#      line = file.readline()
       if not line:
          return maxidx, values[maxidx]
       if line.startswith("Training"):
          brown_prec = '-'
          brown_oov = '-'
       else:
-         assert line.startswith('Loading')
+         assert line.startswith('Tagging')
          pat = reprec.match(line)
          while not pat:
             line = file.readline()

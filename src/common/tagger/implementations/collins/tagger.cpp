@@ -223,8 +223,7 @@ unsigned long long TARGET_LANGUAGE::CTagger::getPossibleTagsForWord( const CWord
    static unsigned long long possible_tags;
    possible_tags = m_TagDict ? m_TagDict->lookup(word) : 0LL;
    // when there is not an open tag for this word
-   //if (possible_tags & m_opentags==0) possible_tags |= m_opentags;
-   possible_tags |= m_opentags;
+   if (possible_tags ==0) possible_tags |= m_opentags;
 //#ifdef _ENGLISH_TAGS_H
 //   possible_tags |= getPossibleTagsBySuffix( word.str() );
 //   possible_tags |= PENN_TAG_MUST_SEE ;
@@ -253,6 +252,10 @@ bool TARGET_LANGUAGE::CTagger::train( const CTwoStringVector * correct ) {
 
    ++m_nTrainingRound;
 
+   m_CacheTags.clear();
+   for (i=0; i<correct->size(); ++i)
+      m_CacheTags.push_back(CTag(correct->at(i).second).code());
+
    tag( &sentence , &tagged , 1 , NULL );
    if ( tagged != *correct ) {
       for (i=0; i<tagged.size(); ++i) {
@@ -265,11 +268,11 @@ bool TARGET_LANGUAGE::CTagger::train( const CTwoStringVector * correct ) {
                bDicOOV = true;
 	    }
 	 }
-         if (!bDicOOV) {
+//         if (!bDicOOV) {
             updateLocalFeatureVector(eSubtract, &tagged, i, m_nTrainingRound);
             updateLocalFeatureVector(eAdd, correct, i, m_nTrainingRound);
             m_bScoreModified = true;
-         }
+//         }
       }
       return true;
    }
@@ -334,6 +337,7 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
    stateindice[1] = 0;
    temp.prev = 0;
    possible_tags = getPossibleTagsForWord(m_Cache[0]);
+   if (m_bTrain) possible_tags |= (1LL<<m_CacheTags[0]);
    scores.reset();
    getLocalScore(scores, sentence, 0, 0);
    for (tag=0; tag<CTag::COUNT; ++tag) {
@@ -366,6 +370,7 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
 
          // lookup dictionary
          possible_tags = getPossibleTagsForWord(m_Cache[index]);
+   if (m_bTrain) possible_tags |= (1LL<<m_CacheTags[index]);
          scores.reset();
          getLocalScore(scores, sentence, pGenerator, index);
 

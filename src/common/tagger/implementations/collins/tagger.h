@@ -60,6 +60,7 @@ private:
    int m_nScoreIndex;
 
    std::vector<CWord> m_Cache;      // word cache for decoding
+   std::vector<unsigned> m_CacheTags; // tag cache for training
 
    unsigned m_nMaxSentenceSize;
    tagger::CStateItem *stateitems;
