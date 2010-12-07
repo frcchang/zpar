@@ -52,9 +52,6 @@
    left(m_mapHTw)right\
    left(m_mapHTt)right\
    left(m_mapHTwt)right\
-   /*left(m_mapSDw)right\
-   left(m_mapSDt)right\
-   left(m_mapSDwt)right*/\
 \
    left(m_mapSTwtN0wt)right\
    left(m_mapSTwtN0w)right\
@@ -82,6 +79,13 @@
    left(m_mapN0td)right\
    left(m_mapSTwN0wd)right\
    left(m_mapSTtN0td)right\
+\
+   left(m_mapSTwm)right\
+   left(m_mapSTtm)right\
+   left(m_mapN0wm)right\
+   left(m_mapN0tm)right\
+   left(m_mapSTwN0wm)right\
+   left(m_mapSTtN0tm)right\
 \
    left(m_mapSTwra)right\
    left(m_mapSTtra)right\
@@ -194,10 +198,6 @@ public:
    CTagMap m_mapHTt;
    CTaggedWordMap m_mapHTwt;
 
-//   CWordMap m_mapSDw;
-//   CTagMap m_mapSDt;
-//   CTaggedWordMap m_mapSDwt;
-
    CTwoTaggedWordsMap m_mapSTwtN0wt;
    CWordWordTagMap m_mapSTwtN0w;
    CWordWordTagMap m_mapSTwN0wt;
@@ -224,6 +224,13 @@ public:
    CTagIntMap m_mapN0td;
    CWordWordIntMap m_mapSTwN0wd;
    CTagTagIntMap m_mapSTtN0td;
+
+   CWordIntMap m_mapSTwm;
+   CTagIntMap m_mapSTtm;
+   CWordIntMap m_mapN0wm;
+   CTagIntMap m_mapN0tm;
+   CWordWordIntMap m_mapSTwN0wm;
+   CTagTagIntMap m_mapSTtN0tm;
 
    CWordIntMap m_mapSTwra;
    CTagIntMap m_mapSTtra;
@@ -300,10 +307,6 @@ public:
                                                m_mapHTt("HeadStackTag", DEP_TABLE_SIZE),
                                                m_mapHTwt("HeadStackWordTag", DEP_TABLE_SIZE),
 
-//                                               m_mapSDw("StackBottomWord", DEP_TABLE_SIZE),
-//                                               m_mapSDt("StackBottomTag", DEP_TABLE_SIZE),
-//                                               m_mapSDwt("StackBottomWordTag", DEP_TABLE_SIZE),
-
                                                m_mapSTwtN0wt("StackWordTagNextWordTag", DEP_TABLE_SIZE),
                                                m_mapSTwtN0w("StackWordTagNextWord", DEP_TABLE_SIZE),
                                                m_mapSTwN0wt("StackWordNextWordTag", DEP_TABLE_SIZE),
@@ -330,6 +333,13 @@ public:
                                                m_mapN0td("NextTagDist", DEP_TABLE_SIZE),
                                                m_mapSTwN0wd("StackWordNextWordDist", DEP_TABLE_SIZE),
                                                m_mapSTtN0td("StackTagNextTagDist", DEP_TABLE_SIZE),
+
+                                               m_mapSTwm("StackWordWing", DEP_TABLE_SIZE),
+                                               m_mapSTtm("StackTagWing", DEP_TABLE_SIZE),
+                                               m_mapN0wm("NextWordWing", DEP_TABLE_SIZE),
+                                               m_mapN0tm("NextTagWing", DEP_TABLE_SIZE),
+                                               m_mapSTwN0wm("StackWordNextWordWing", DEP_TABLE_SIZE),
+                                               m_mapSTtN0tm("StackTagNextTagWing", DEP_TABLE_SIZE),
 
                                                m_mapSTwra("StackWordRightArity", DEP_TABLE_SIZE),
                                                m_mapSTtra("StackTagRightArity", DEP_TABLE_SIZE),
