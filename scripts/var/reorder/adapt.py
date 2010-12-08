@@ -232,6 +232,8 @@ def reorderDE(node, align, model):
    while node.left_children:
       left_child = node.left_children.pop(0)
       node.right_children.append(left_child)
+   # de*
+   node.token = node.token+'*'
 
 def reorderLC(node, align, model):
    while node.left_children:

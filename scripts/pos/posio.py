@@ -12,6 +12,9 @@ def posread(path, sep='/'):
          word = retval[index]
          if len(word) > 2:
             retval[index] = [sep.join(word[:-1]), word[-1]]
+         if len(retval[index]) != 2:
+            print>>sys.stderr, retval[index]
+         assert len(retval[index]) == 2
       yield retval
    file.close()
 
