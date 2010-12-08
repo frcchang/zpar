@@ -49,7 +49,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    assert(n0_index<static_cast<int>(m_lCache.size())); // the next index shouldn't exceed sentence
    const int &n0ld_index = n0_index==-1 ? -1 : item->leftdep(n0_index); // leftmost dep of next
    const int &n0l2d_index = n0ld_index==-1 ? -1 : item->sibling(n0ld_index); // leftmost dep of next
-   const int &ht_index = item->headstackempty() ? -1 : item->headstacktop(); // stack bottom
+   const int &ht_index = item->headstackempty() ? -1 : item->headstacktop(); // headstack
+   const int &ht2_index = item->headstacksize()<2 ? -1 : item->headstackitem(item->headstacksize()-2); // headstack 2nd
    static int n1_index;
    static int n2_index;
    static int n3_index;
@@ -70,6 +71,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CTaggedWord<CTag, TAG_SEPARATOR> &n1_word_tag = n1_index==-1 ? g_emptyTaggedWord : m_lCache[n1_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &n2_word_tag = n2_index==-1 ? g_emptyTaggedWord : m_lCache[n2_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &ht_word_tag = ht_index==-1 ? g_emptyTaggedWord : m_lCache[ht_index];
+   const CTaggedWord<CTag, TAG_SEPARATOR> &ht2_word_tag = ht2_index==-1 ? g_emptyTaggedWord : m_lCache[ht2_index];
 
    const CWord &st_word = st_word_tag.word;
    const CWord &sth_word = sth_word_tag.word;
@@ -84,6 +86,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &n1_word = n1_word_tag.word;
    const CWord &n2_word = n2_word_tag.word;
    const CWord &ht_word = ht_word_tag.word;
+   const CWord &ht2_word = ht2_word_tag.word;
 
    const CTag &st_tag = st_word_tag.tag;
    const CTag &sth_tag = sth_word_tag.tag;
@@ -98,6 +101,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CTag &n1_tag = n1_word_tag.tag;
    const CTag &n2_tag = n2_word_tag.tag;
    const CTag &ht_tag = ht_word_tag.tag;
+   const CTag &ht2_tag = ht2_word_tag.tag;
 
    const int &st_label = st_index==-1 ? CDependencyLabel::NONE : item->label(st_index);
    const int &sth_label = sth_index==-1 ? CDependencyLabel::NONE : item->label(sth_index);
@@ -110,10 +114,6 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    static int st_n0_dist;
    st_n0_dist = encodeLinkDistance(st_index, n0_index);
-
-   static int st_wing;
-   st_wing = st_index == -1 ? 0 : st_index - ht_index + 1;
-   ASSERT(st_wing == 0 || ht_index!=-1, "Wing error");
 
    const int st_rarity = st_index==-1?0:item->rightarity(st_index);
    const int st_larity = st_index==-1?0:item->leftarity(st_index);
@@ -247,6 +247,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtSTRDtSTR2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,str2d_tag)), action, m_nScoreIndex, amount, round ) ; 
    }
+   if (ht_index!=-1) {
+      cast_weights->m_mapHTtHT2tN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(ht_tag,ht2_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+   }
 
    // distance
    if (st_index!=-1 && n0_index!=-1) {
@@ -262,22 +265,6 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTwN0wd.getOrUpdateScore( retval, word_word_int, action, m_nScoreIndex, amount, round ) ; 
       refer_or_allocate_tuple3(tag_tag_int, &st_tag, &n0_tag, &st_n0_dist);
       cast_weights->m_mapSTtN0td.getOrUpdateScore( retval, tag_tag_int, action, m_nScoreIndex, amount, round ) ; 
-   }
-
-   // wing
-   if (st_index!=-1 && n0_index!=-1) {
-      refer_or_allocate_tuple2(word_int, &st_word, &st_wing);
-      cast_weights->m_mapSTwm.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_int, &st_tag, &st_wing);
-      cast_weights->m_mapSTtm.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
-      refer_or_allocate_tuple2(word_int, &n0_word, &st_wing);
-      cast_weights->m_mapN0wm.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round ) ;
-      refer_or_allocate_tuple2(tag_int, &n0_tag, &st_wing);
-      cast_weights->m_mapN0tm.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
-      refer_or_allocate_tuple3(word_word_int, &st_word, &n0_word, &st_wing);
-      cast_weights->m_mapSTwN0wm.getOrUpdateScore( retval, word_word_int, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(tag_tag_int, &st_tag, &n0_tag, &st_wing);
-      cast_weights->m_mapSTtN0tm.getOrUpdateScore( retval, tag_tag_int, action, m_nScoreIndex, amount, round ) ; 
    }
 
    // st arity

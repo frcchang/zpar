@@ -25,12 +25,14 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, const int nBest, const std::string &sKnowledgeBase) {
+void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, const int nBest, const std::string &sTagDict, const std::string &sKnowledge) {
    std::cout << "Tagging started" << std::endl;
    int time_start = clock();
    CTagger tagger(sFeatureFile, false);
-   if (sKnowledgeBase.size())
-      tagger.loadTagDictionary(sKnowledgeBase);
+   if (sTagDict.size())
+      tagger.loadTagDictionary(sTagDict);
+   if (sKnowledge.size())
+      tagger.loadKnowledge(sKnowledge);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter outout_writer(sOutputFile);
    CStringVector *input_sent = new CStringVector;
@@ -70,6 +72,7 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("d", "Path", "use a dictionary", "");
+      configurations.defineConfiguration("k", "Path", "use special knowledge", "");
       configurations.defineConfiguration("n", "N", "n-best output", "1");
 
       if (options.args.size() < 2 || options.args.size() > 4) {
@@ -83,12 +86,13 @@ int main(int argc, char* argv[]) {
       }
    
       std::string sTagDict = configurations.getConfiguration("d");
+      std::string sKnowledge = configurations.getConfiguration("k");
       int nBest;
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
          std::cerr<<"Error: the n-best list output size is not integer." << std::endl; return 1;
       }  
    
-      process(argv[1], argv[2], argv[3], nBest, sTagDict);
+      process(argv[1], argv[2], argv[3], nBest, sTagDict, sKnowledge);
       return 0;
    } catch(const std::string&e) {std::cerr<<"Error: "<<e<<std::endl;return 1;}
 }

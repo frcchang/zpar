@@ -12,8 +12,6 @@
 #ifndef _ENGLISH_PENN_POS_H
 #define _ENGLISH_PENN_POS_H 1
 
-//#include <std::string>
-
 namespace english {
 
 /*===============================================================
@@ -127,6 +125,7 @@ public:
 
 public:
    bool operator == (const CTag &t1) const { return m_code == t1.m_code; }
+   bool operator != (const CTag &t1) const { return m_code != t1.m_code; }
    bool operator < (const CTag &t1) const { return m_code < t1.m_code; }
    bool operator > (const CTag &t1) const { return m_code > t1.m_code; }
    bool operator <= (const CTag &t1) const { return m_code <= t1.m_code; }

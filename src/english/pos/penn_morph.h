@@ -13,7 +13,6 @@
 #define _ENGLISH_MORPHOLOGY_H
 
 #include "knowledge/tagdict.h"
-#include "tags.h"
 
 #define long_1 static_cast<unsigned long long>(1)
 
