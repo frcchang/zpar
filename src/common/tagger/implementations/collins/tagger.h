@@ -51,6 +51,7 @@ private:
    tagger::CWeight *m_weights; // weight object
 
    CTagDict<CWord, CTag> *m_TagDict;   // the dictionary object
+   CHashMap<CWord, CTag> *m_TopTags;   // the top tags
 
    bool m_bTrain;              // whether training
    int m_nTrainingRound;       // the number of sentence
@@ -59,29 +60,38 @@ private:
 
    int m_nScoreIndex;
 
-   std::vector<CWord> m_Cache;      // word cache for decoding
+   unsigned m_CacheSize;
    std::vector<unsigned> m_CacheTags; // tag cache for training
+   std::vector<CTag> m_CacheTopTags; // toptags cache for both
 
    unsigned m_nMaxSentenceSize;
    tagger::CStateItem *stateitems;
    unsigned *stateindice;
 
+   CWord *m_Cache;
+   unsigned long long *m_possibletags;
+
    unsigned long long m_opentags;
 
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(0), m_nMaxSentenceSize(tagger::MAX_SENTENCE_SIZE), m_opentags(~0LL) { 
+   CTagger(const std::string &sFeatureDBPath, bool bTrain=false) : CTaggerImpl() , m_sFeatureDB(sFeatureDBPath) , m_bTrain(bTrain) , m_TagDict(0), m_TopTags(0), m_CacheSize(0), m_nMaxSentenceSize(tagger::MAX_SENTENCE_SIZE), m_opentags(~0LL) { 
       m_weights = new tagger::CWeight(m_sFeatureDB, bTrain); 
       loadScores();
       if (m_bTrain) m_nTrainingRound = 0;
       if (m_bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
       stateitems = new tagger::CStateItem[tagger::AGENDA_SIZE*m_nMaxSentenceSize];
       stateindice = new unsigned[m_nMaxSentenceSize];
+      m_possibletags = new unsigned long long[m_nMaxSentenceSize];
+      m_Cache = new CWord[m_nMaxSentenceSize];
    }
    ~CTagger() { 
       delete m_weights; 
       delete []stateitems;
       delete []stateindice;
+      delete []m_possibletags;
+      delete []m_Cache;
       if (m_TagDict) delete m_TagDict;
+      if (m_TopTags) delete m_TopTags;
    }
    CTagger(CTagger& tagger) : m_TagDict(0) { ASSERT(1==0, "No copy constructor."); }
 
@@ -97,6 +107,15 @@ public:
       for (unsigned tag=CTag::FIRST; tag<CTag::COUNT; ++tag)
          if (CTag(tag).closed()) {std::cout << CTag(tag) << std::endl; m_opentags |= (1LL << tag); }
       m_opentags = ~m_opentags;
+   }
+
+   void loadKnowledge(const std::string &sKnowledge) {
+      // load dictionary
+      ASSERT(m_TopTags==0, "The toptags dict has already been loaded");
+      m_TopTags = new CHashMap<CWord, CTag>(32768);
+      std::ifstream i(sKnowledge.c_str());
+      i >> (*m_TopTags);
+      i.close();
    }
 
 public:
@@ -121,6 +140,9 @@ protected:
 
    // add local features to a global feature vector (first param)
    void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* tagged, int index, int round=0);
+
+   // toptags
+   void getOrUpdateToptags( CPackedScoreType<tagger::SCORE_TYPE, CTag::MAX_COUNT> &retval, const unsigned &tag, const unsigned &index, const tagger::SCORE_TYPE &amount, const int &round );
 };
 }; // namespace TARGET_LANGUAGE
 

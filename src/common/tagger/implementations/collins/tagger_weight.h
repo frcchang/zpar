@@ -33,13 +33,22 @@ namespace tagger {
    left(m_mapContainNumber)right\
    left(m_mapContainCapitalLetter)right\
    left(m_mapTagByPrefix)right\
-   left(m_mapTagBySuffix)right
+   left(m_mapTagBySuffix)right\
+\
+   left(m_mapTagByTopTag0)right\
+   left(m_mapTagByTopTagR1)right\
+   left(m_mapTagByTopTag0L1)right\
+   left(m_mapTagByTopTag0L1L2)right\
+   left(m_mapTagByTopTag0R1)right\
+   left(m_mapTagByTopTag0R1R2)right\
+   left(m_mapTagByTopTag0L1R1)right
 
 //
 // TYPE DEFINITIONS
 //
 typedef CPackedScoreMap< CWord, SCORE_TYPE, CTag::MAX_COUNT > CWordMap;
 typedef CPackedScoreMap< CTagSet<CTag, 2>, SCORE_TYPE, CTag::MAX_COUNT > CTagSet2Map;
+typedef CPackedScoreMap< CTagSet<CTag, 3>, SCORE_TYPE, CTag::MAX_COUNT > CTagSet3Map;
 typedef CPackedScoreMap< CTag, SCORE_TYPE, CTag::MAX_COUNT > CTagMap;
 typedef CPackedScoreMap< unsigned, SCORE_TYPE, CTag::MAX_COUNT > CUnsignedMap;
 
@@ -68,6 +77,14 @@ public:
    CWordMap m_mapTagByPrefix;
    CWordMap m_mapTagBySuffix;
 
+   CTagMap m_mapTagByTopTag0;
+   CTagMap m_mapTagByTopTagR1;
+   CTagSet2Map m_mapTagByTopTag0L1;
+   CTagSet3Map m_mapTagByTopTag0L1L2;
+   CTagSet2Map m_mapTagByTopTag0R1;
+   CTagSet3Map m_mapTagByTopTag0R1R2;
+   CTagSet3Map m_mapTagByTopTag0L1R1;
+
    // CONSTRUCTOR 
    CWeight(const std::string &sFeatureDB, bool bTrain) : CWeightBase(sFeatureDB, bTrain) , 
                                                     m_mapLastTagByTag("TagBigram", 128),
@@ -81,7 +98,16 @@ public:
                                                     m_mapContainNumber("Contains number", 2),
                                                     m_mapContainCapitalLetter("ontains capitalized letter", 2),
                                                     m_mapTagByPrefix("Tag by prefix", 65536),
-                                                    m_mapTagBySuffix("Tag by suffix", 65536) {}
+                                                    m_mapTagBySuffix("Tag by suffix", 65536), 
+
+                                                    m_mapTagByTopTag0("Tag by toptag0", 65536),
+                                                    m_mapTagByTopTagR1("Tag by toptagr1", 65536),
+                                                    m_mapTagByTopTag0L1("Tag by toptag0, l1", 65536),
+                                                    m_mapTagByTopTag0L1L2("Tag by toptag0, l1, l2", 65536),
+                                                    m_mapTagByTopTag0R1("Tag by toptag0, r1", 65536),
+                                                    m_mapTagByTopTag0R1R2("Tag by toptag0, r1, r2", 65536),
+                                                    m_mapTagByTopTag0L1R1("Tag by toptag0, l1, r1", 65536)
+   { /* do nothing */ }
    virtual ~CWeight() {
       iterate_templates(,.freePoolMemory(););
       CPackedScore<SCORE_TYPE, CTag::MAX_COUNT>::freePoolMemory();

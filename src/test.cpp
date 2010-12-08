@@ -18,6 +18,8 @@
 #include "learning/perceptron/hashmap_score_packed.h"
 #include "hash_small.h"
 #include "linkedlist.h"
+#include "linguistics/word_tokenized.h"
+#include "english/tags.h"
 
 class A {
 public:
@@ -184,6 +186,15 @@ void testinitializer() {
    delete b;
 }
 
+void testhashmap(const char *f) {
+   CHashMap<CWord, english::CTag> map(65536);
+   std::ifstream i(f);
+   i>>map;
+   i.close();
+   std::cout << map;
+   return;
+}
+
 int main(int argc, char**argv){
    try {
 //   std::cout << B::C << B::D << std::endl;
@@ -196,7 +207,8 @@ int main(int argc, char**argv){
 //   testpackedscores();
 //   testsmallhash();
 //   testlinkedlist();
-   testinitializer();
+//   testinitializer();
+   testhashmap(argv[1]);
    }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 
