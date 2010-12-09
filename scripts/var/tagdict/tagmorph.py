@@ -32,11 +32,7 @@ def tagrel(d):
             continue
          if tag2 in closed.closedtags:
             continue
-         if word1[-1] in ['e', 'y']:
-            word1 = word1[:-1]
-         if word2[-1] in ['e', 'y']:
-            word2 = word2[:-1]
-         if word1.startswith(word2) or word2.startswith(word1):
+         if ismorph(word1, word2):
             retval.append([word1, tag1, word2, tag2])
    return retval
 
@@ -53,15 +49,33 @@ def printlist(l):
    for item in l:
       print ' '.join(item)
 
+def ismorph(w1, w2):
+   if w1[-1] in ['e', 'y']:
+      w1 = w1[:-1]
+   if w2[-1] in ['e', 'y']:
+      w2 = w2[:-1]
+   if w1.startswith(w2):
+      ws = w2
+      wb = w1
+   elif w2.startswith(w1):
+      ws = w1
+      wb = w2
+   else:
+      return False
+   diff = wb[len(ws):]
+   if len(ws) > len(diff):
+      return true
+   return False
+
 def getgroups(d, cutoff):
    import networkx
    G = networkx.Graph()
-   for tg1, tg2 in d:
-      G.add_node(tg1)
-      G.add_node(tg2)
-      G.add_edge(tg1, tg2)
+   for wd1, tg1, wd2, tg2 in d:
+      G.add_node((wd1, tg1))
+      G.add_node((wd2, tg2))
+      G.add_edge((wd1, tg1), (wd2, tg2))
    for tgs in networkx.connected_components(G):
-      print ' '.join(tgs)
+      print ' '.join([' '.join(tup) for tup in tgs])
 
 if __name__ == '__main__':
    command = sys.argv[1]
@@ -79,7 +93,7 @@ if __name__ == '__main__':
       cutoff = 1
       if len(sys.argv) > 3:
          cutoff = int(sys.argv[3])
-      d = {}
+      d = []
       readlist(file, d)
       getgroups(d, cutoff)
    else:
