@@ -48,20 +48,23 @@ protected:
    int m_lDepsR[MAX_SENTENCE_SIZE];         // the rightmost dependency for each word (just for cache, temporary info)
    int m_lDepNumL[MAX_SENTENCE_SIZE];       // the number of left dependencies
    int m_lDepNumR[MAX_SENTENCE_SIZE];       // the number of right dependencies
+   CSetOfTags<CTag> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
+   CSetOfTags<CTag> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
    int m_lSibling[MAX_SENTENCE_SIZE];       // the sibling towards head
 #ifdef LABELED
    unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
 #endif
    unsigned long m_nLastAction;                  // the last stack action
+   const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
 
 public:
    SCORE_TYPE score;                        // score of stack - predicting how potentially this is the correct one
 
 public:
    // constructors and destructor
-   CStateItem() { clear(); }
+   CStateItem(const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >*cache=0) : m_lCache(cache) { clear(); }
    ~CStateItem() { }
-   CStateItem(CStateItem& item) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
+   CStateItem(CStateItem& item) : m_lCache(0) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
 public:
    // comparison
@@ -126,6 +129,9 @@ public:
    inline int leftarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumL[index]; }
    inline int rightarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumR[index]; }
 
+   inline const CSetOfTags<CTag> &lefttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagL[index]; }
+   inline const CSetOfTags<CTag> &righttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagR[index]; }
+
    void clear() { 
       m_nNextWord = 0; m_Stack.clear(); m_HeadStack.clear(); 
       score = 0; 
@@ -138,6 +144,7 @@ public:
       m_HeadStack = item.m_HeadStack;
       m_nNextWord = item.m_nNextWord;
       m_nLastAction = item.m_nLastAction;
+      m_lCache = item.m_lCache;
       score = item.score; 
       for ( int i=0; i<=m_nNextWord; ++i ){ // only copy active word (including m_nNext)
          m_lHeads[i] = item.m_lHeads[i];  
@@ -145,6 +152,8 @@ public:
          m_lDepsR[i] = item.m_lDepsR[i];
          m_lDepNumL[i] = item.m_lDepNumL[i];
          m_lDepNumR[i] = item.m_lDepNumR[i];
+         m_lDepTagL[i] = item.m_lDepTagL[i];
+         m_lDepTagR[i] = item.m_lDepTagR[i];
          m_lSibling[i] = item.m_lSibling[i];
 #ifdef LABELED
          m_lLabels[i] = item.m_lLabels[i];
@@ -174,6 +183,7 @@ public:
       m_lSibling[left] = m_lDepsL[m_nNextWord];
       m_lDepsL[m_nNextWord] = left ;
       m_lDepNumL[m_nNextWord] ++ ;
+      m_lDepTagL[m_nNextWord].add((*m_lCache)[left].tag) ;
 #ifdef LABELED
       m_nLastAction=action::encodeAction(action::ARC_LEFT, lab);
 #else
@@ -198,6 +208,7 @@ public:
       m_lSibling[m_nNextWord] = m_lDepsR[left];
       m_lDepsR[left] = m_nNextWord ;
       m_lDepNumR[left] ++ ;
+      m_lDepTagR[left].add((*m_lCache)[m_nNextWord].tag) ;
       m_nNextWord ++;
       ClearNext();
 #ifdef LABELED
@@ -239,7 +250,9 @@ public:
       m_lDepsL[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
       m_lDepsR[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
       m_lDepNumL[m_nNextWord] = 0 ;
+      m_lDepTagL[m_nNextWord].clear() ;
       m_lDepNumR[m_nNextWord] = 0 ;
+      m_lDepTagR[m_nNextWord].clear() ;
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;

@@ -121,6 +121,9 @@ public:
          if (PENN_TAG_STRINGS[i] == s)
             m_code = i;
    }
+   void load(const unsigned &i) {
+      m_code = i;
+   }
    bool closed() const { return PENN_TAG_CLOSED[m_code]; }
 
 public:

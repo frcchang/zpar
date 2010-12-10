@@ -119,6 +119,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int st_larity = st_index==-1?0:item->leftarity(st_index);
    const int n0_larity = n0_index==-1?0:item->leftarity(n0_index);
 
+   const CSetOfTags<CTag> &st_rtagset = st_index==-1?CSetOfTags<CTag>():item->righttagset(st_index);
+
    static CTwoTaggedWords st_word_tag_n0_word_tag ;
    static CTwoWords st_word_n0_word ;
    if ( amount == 0 ) {
@@ -137,6 +139,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple3<CWord, CWord, CTag> word_word_tag;
    static CTuple3<CWord, CWord, int> word_word_int;
    static CTuple3<CTag, CTag, int> tag_tag_int;
+   static CTuple2<CWord, CSetOfTags<CTag> > word_tagset;
+   static CTuple2<CTag, CSetOfTags<CTag> > tag_tagset;
 
    // single
    if (st_index != -1) {
@@ -247,9 +251,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtSTRDtSTR2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,str2d_tag)), action, m_nScoreIndex, amount, round ) ; 
    }
-   if (ht_index!=-1) {
-      cast_weights->m_mapHTtHT2tN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(ht_tag,ht2_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-   }
+//   if (ht_index!=-1) {
+//      cast_weights->m_mapHTtHT2tN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(ht_tag,ht2_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+//   }
 
    // distance
    if (st_index!=-1 && n0_index!=-1) {
@@ -285,6 +289,14 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0wla.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round) ;
       refer_or_allocate_tuple2(tag_int, &n0_tag, &n0_larity);
       cast_weights->m_mapN0tla.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+   }
+
+   // st tagset
+   if (st_index != -1){//
+      refer_or_allocate_tuple2(word_tagset, &st_word, &st_rtagset);
+      cast_weights->m_mapSTwrp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_rtagset);
+      cast_weights->m_mapSTtrp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
    }
 
    if (m_bCoNLL) {
@@ -349,7 +361,7 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
  *--------------------------------------------------------------*/
 
 inline void CDepParser::updateScoreForState( const CStateItem &from, const CStateItem *outout , const SCORE_TYPE &amount ) {
-   static CStateItem item;
+   static CStateItem item(&m_lCache);
    static unsigned action;
    static CPackedScoreType<SCORE_TYPE, action::MAX> empty;
    item = from;
@@ -373,7 +385,7 @@ inline void CDepParser::updateScoreForState( const CStateItem &from, const CStat
 void CDepParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
 
    // do not update those steps where they are correct
-   static CStateItem item;
+   static CStateItem item(&m_lCache);
    static unsigned action, correct_action;
    item.clear();
    while ( item != *outout ) {
@@ -501,12 +513,12 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    const int length = sentence.size() ; 
 
    const CStateItem *pGenerator ;
-   static CStateItem pCandidate ;
+   static CStateItem pCandidate(&m_lCache) ;
 
    // used only for training
    static bool bCorrect ;  // used in learning for early update
    static bool bContradictsRules;
-   static CStateItem correctState ;
+   static CStateItem correctState(&m_lCache) ;
    static CPackedScoreType<SCORE_TYPE, action::MAX> packed_scores;
 
    ASSERT(length<MAX_SENTENCE_SIZE, "The size of the sentence is larger than the system configuration.");

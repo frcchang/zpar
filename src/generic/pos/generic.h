@@ -83,6 +83,10 @@ public:
       LAST = COUNT-1;
       assert((1<<SIZE)>COUNT);
    }
+   void load(const unsigned &i) {
+      assert(i<COUNT);
+      m_code = i;
+   }
    const std::string &str() const { 
       return getTokenizer().key(m_code); 
    }
