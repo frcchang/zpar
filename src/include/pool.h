@@ -35,7 +35,6 @@ protected:
    unsigned long nItem;
 public:
    CMemoryPool(): current(0), nItem(0) {
-      assert(current!=0);
    }
    virtual ~CMemoryPool() {
       reset();
