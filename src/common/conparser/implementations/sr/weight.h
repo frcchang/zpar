@@ -27,37 +27,27 @@ namespace conparser {
 typedef CScoreMapType<CWord, SCORE_TYPE, CAction::MAX> CWordMap;
 typedef CScoreMapType<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, CAction::MAX> CTaggedWordMap;
 typedef CScoreMapType<std::pair<CWord, unsigned long>,  SCORE_TYPE, CAction::MAX> CWordIntMap;
-typedef CScoreMapType<CTuple3<CWord, unsigned long, CAction>,  SCORE_TYPE, CAction::MAX> CWordIntActionMap;
-typedef CScoreMapType<std::pair<CWord, CAction>,  SCORE_TYPE, CAction::MAX> CWordActionMap;
-typedef CScoreMapType<std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, CAction>, SCORE_TYPE, CAction::MAX> CTaggedWordActionMap;
 typedef CScoreMapType<unsigned long, SCORE_TYPE, CAction::MAX> CIntMap;
-typedef CScoreMapType<std::pair<unsigned long, CAction>, SCORE_TYPE, CAction::MAX> CIntActionMap;
 typedef CScoreMapType<std::pair<unsigned long, unsigned long>, SCORE_TYPE, CAction::MAX> CTwoIntMap;
 typedef CScoreMapType<CTwoWords, SCORE_TYPE, CAction::MAX> CTwoWordsMap;
-typedef CScoreMapType<std::pair<CTwoWords, CAction>, SCORE_TYPE, CAction::MAX> CTwoWordsActionMap;
 typedef CScoreMapType<std::pair<CTwoWords, CActionType>, SCORE_TYPE, CAction::MAX> CTwoWordsActionTypeMap;
-typedef CScoreMapType<CTuple3<CTwoWords, CTag, CAction>, SCORE_TYPE, CAction::MAX> CTwoWordsTagActionMap;
 typedef CScoreMapType<CTuple3<CTwoWords, CTag, CActionType>, SCORE_TYPE, CAction::MAX> CTwoWordsTagActionTypeMap;
-typedef CScoreMapType<CTuple3<CTwoWords, CCFGSet, CAction>, SCORE_TYPE, CAction::MAX>
-CTwoWordsCFGSetActionMap;
+typedef CScoreMapType<CTuple2<CTwoWords, CCFGSet>, SCORE_TYPE, CAction::MAX> CTwoWordsCFGSetMap;
 typedef CScoreMapType<CTwoTaggedWords, SCORE_TYPE, CAction::MAX> CTwoTaggedWordsMap;
-typedef CScoreMapType<std::pair<CTwoTaggedWords, CAction>, SCORE_TYPE, CAction::MAX> CTwoTaggedWordsActionMap;
 typedef CScoreMapType<std::pair<CTwoTaggedWords, CActionType>, SCORE_TYPE, CAction::MAX> CTwoTaggedWordsActionTypeMap;
 typedef CScoreMapType<CCFGSet, SCORE_TYPE, CAction::MAX> CCFGSetMap;
 typedef CScoreMapType<std::pair<CCFGSet, unsigned long>, SCORE_TYPE, CAction::MAX> CCFGSetIntMap;
-typedef CScoreMapType<std::pair<CCFGSet, CAction>, SCORE_TYPE, CAction::MAX> CCFGSetActionMap;
-typedef CScoreMapType<CTuple3<CWord, CCFGSet, CAction>, SCORE_TYPE, CAction::MAX> CWordCFGSetActionMap;
+typedef CScoreMapType<CTuple2<CWord, CCFGSet>, SCORE_TYPE, CAction::MAX> CWordCFGSetMap;
 typedef CScoreMapType<CTuple3<CWord, CCFGSet, CActionType>, SCORE_TYPE, CAction::MAX> CWordCFGSetActionTypeMap;
 typedef CScoreMapType<std::pair<CWord, CCFGSet>, SCORE_TYPE, CAction::MAX> CWordCFGRuleMap;
 typedef CScoreMapType<std::pair<CTwoWords, CCFGSet>, SCORE_TYPE, CAction::MAX> CTwoWordsCFGRuleMap;
 typedef CScoreMapType<std::pair<CCFGSet, unsigned long>, SCORE_TYPE, CAction::MAX> CCFGSetIntMap;
-typedef CScoreMapType<std::pair<CCFGSet, CAction>, SCORE_TYPE, CAction::MAX> CCFGSetActionMap;
 typedef CScoreMapType<std::pair<CCFGSet, CActionType>, SCORE_TYPE, CAction::MAX> CCFGSetActionTypeMap;
-typedef CScoreMapType<CTuple3<CWord, CConstituent, CAction>, SCORE_TYPE, CAction::MAX>
-CWordConstituentActionMap;
-typedef CScoreMapType<CTuple3<CTag, CConstituent, CAction>, SCORE_TYPE, CAction::MAX> CTagConstituentActionMap;
+typedef CScoreMapType<CTuple2<CWord, CConstituent>, SCORE_TYPE, CAction::MAX>
+CWordConstituentMap;
+typedef CScoreMapType<CTuple2<CTag, CConstituent>, SCORE_TYPE, CAction::MAX> CTagConstituentMap;
 typedef CScoreMapType<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE, CAction::MAX> CWordTagIntMap;
-typedef CScoreMapType<std::pair<CConstituent, CAction>, SCORE_TYPE, CAction::MAX> CConstituentActionMap;
+typedef CScoreMapType<CConstituent, SCORE_TYPE, CAction::MAX> CConstituentMap;
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
@@ -71,215 +61,123 @@ class CWeight : public CWeightBase {
 
 public:
 
-   // Gr
-   CWordIntMap m_mapHw;
-   CTwoIntMap m_mapHt;
-   CCFGSetMap m_mapHc;
-   CWordCFGRuleMap m_mapHwc;
-
-   CCFGSetMap m_mapHcMc;
-   CWordCFGRuleMap m_mapHwMc;
-   CWordCFGRuleMap m_mapHcMw;
-   CTwoWordsCFGRuleMap m_mapHwMw;
-
-   CCFGSetMap m_mapBigramsL;
-   CCFGSetMap m_mapBigramsR;
-   CWordCFGRuleMap m_mapBigramsLexA;
-   CWordCFGRuleMap m_mapBigramsLexB;
-
-   CCFGSetMap m_mapRules;
-   CCFGSetIntMap m_mapRulesWithSizes;
-
-   CIntMap m_mapBracket;
-
-   CCFGSetMap m_mapHtMt;
-   CWordCFGRuleMap m_mapHtMw;
-   CWordCFGRuleMap m_mapHwMt;
-
-   CIntMap m_mapSiblingTags;
-   CWordIntMap m_mapSiblingWordTag;
-   CWordIntMap m_mapSiblingTagWord;
-
-   CTwoIntMap m_mapHtArityL;
-   CTwoIntMap m_mapHtArityR;
-   CWordIntMap m_mapHwArityL;
-   CWordIntMap m_mapHwArityR;
-   
    // S0
-   CConstituentActionMap m_mapS0c;
-   CTaggedWordActionMap m_mapS0w;
-   CTagConstituentActionMap m_mapS0tc;
-   CWordConstituentActionMap m_mapS0wc;
+   CConstituentMap m_mapS0c;
+   CTaggedWordMap m_mapS0w;
+   CTagConstituentMap m_mapS0tc;
+   CWordConstituentMap m_mapS0wc;
 
    // S1
-   CConstituentActionMap m_mapS1c;
-   CTaggedWordActionMap m_mapS1w;
-   CTagConstituentActionMap m_mapS1tc;
-   CWordConstituentActionMap m_mapS1wc;
+   CConstituentMap m_mapS1c;
+   CTaggedWordMap m_mapS1w;
+   CTagConstituentMap m_mapS1tc;
+   CWordConstituentMap m_mapS1wc;
 
    // S2
-   CTagConstituentActionMap m_mapS2tc;
-   CWordConstituentActionMap m_mapS2wc;
+   CTagConstituentMap m_mapS2tc;
+   CWordConstituentMap m_mapS2wc;
 
    // S3
-   CTagConstituentActionMap m_mapS3tc;
-   CWordConstituentActionMap m_mapS3wc;
+   CTagConstituentMap m_mapS3tc;
+   CWordConstituentMap m_mapS3wc;
 
    // N0
-   CWordActionMap m_mapN0w;
+   CWordMap m_mapN0w;
    CIntMap m_mapN0t;
-   CTaggedWordActionMap m_mapN0wt;
+   CTaggedWordMap m_mapN0wt;
 
    // N1
-   CWordActionMap m_mapN1w;
+   CWordMap m_mapN1w;
    CIntMap m_mapN1t;
-   CTaggedWordActionMap m_mapN1wt;
+   CTaggedWordMap m_mapN1wt;
 
    // N2
-   CWordActionMap m_mapN2w;
+   CWordMap m_mapN2w;
    CIntMap m_mapN2t;
-   CTaggedWordActionMap m_mapN2wt;
+   CTaggedWordMap m_mapN2wt;
 
    // N3
-   CWordActionMap m_mapN3w;
+   CWordMap m_mapN3w;
    CIntMap m_mapN3t;
-   CTaggedWordActionMap m_mapN3wt;
+   CTaggedWordMap m_mapN3wt;
 
    // S0L
-   CWordConstituentActionMap m_mapS0Lwc;
-   CTagConstituentActionMap m_mapS0Ltc;
-   CCFGSetActionMap m_mapS0cS0HcS0L2c;
+   CWordConstituentMap m_mapS0Lwc;
+   CTagConstituentMap m_mapS0Ltc;
+   CCFGSetMap m_mapS0cS0HcS0L2c;
 
    // S0R
-   CWordConstituentActionMap m_mapS0Rwc;
-   CTagConstituentActionMap m_mapS0Rtc;
-   CCFGSetActionMap m_mapS0cS0HcS0R2c;
+   CWordConstituentMap m_mapS0Rwc;
+   CTagConstituentMap m_mapS0Rtc;
+   CCFGSetMap m_mapS0cS0HcS0R2c;
 
    // S0U
-   CWordConstituentActionMap m_mapS0Uwc;
-   CTagConstituentActionMap m_mapS0Utc;
+   CWordConstituentMap m_mapS0Uwc;
+   CTagConstituentMap m_mapS0Utc;
 
    // S1L
-   CWordConstituentActionMap m_mapS1Lwc;
-   CTagConstituentActionMap m_mapS1Ltc;
+   CWordConstituentMap m_mapS1Lwc;
+   CTagConstituentMap m_mapS1Ltc;
 
    // S1R
-   CWordConstituentActionMap m_mapS1Rwc;
-   CTagConstituentActionMap m_mapS1Rtc;
-   CCFGSetActionMap m_mapS1cS1HcS1R2c;
+   CWordConstituentMap m_mapS1Rwc;
+   CTagConstituentMap m_mapS1Rtc;
+   CCFGSetMap m_mapS1cS1HcS1R2c;
 
    // S1U
-   CWordConstituentActionMap m_mapS1Uwc;
-   CTagConstituentActionMap m_mapS1Utc;
-
-   // S0LD
-   CWordActionMap m_mapS0LDw;
-   CIntMap m_mapS0LDt;
-
-   // S0RD
-   CWordActionMap m_mapS0RDw;
-   CIntMap m_mapS0RDt;
-
-   // S1LD
-   CWordActionMap m_mapS1LDw;
-   CIntMap m_mapS1LDt;
-
-   // S1RD
-   CWordActionMap m_mapS1RDw;
-   CIntMap m_mapS1RDt;
+   CWordConstituentMap m_mapS1Uwc;
+   CTagConstituentMap m_mapS1Utc;
 
    // S0 S1
-   CTwoWordsCFGSetActionMap m_mapS0wcS1wc; // the original 
-   CWordCFGSetActionMap m_mapS0wS1c;
-   CWordCFGSetActionMap m_mapS0cS1w;
-   CCFGSetActionMap m_mapS0cS1c;
+   CTwoWordsCFGSetMap m_mapS0wcS1wc; // the original 
+   CWordCFGSetMap m_mapS0wS1c;
+   CWordCFGSetMap m_mapS0cS1w;
+   CCFGSetMap m_mapS0cS1c;
 
-   CTwoTaggedWordsActionTypeMap m_mapS0wtS1wt;
-   CTwoWordsTagActionTypeMap m_mapS0wtS1w;
-   CTwoWordsTagActionTypeMap m_mapS0wS1wt;
-   CTwoWordsActionTypeMap m_mapS0wS1w;
-   CWordCFGSetActionTypeMap m_mapS0wtS1t;
-   CWordCFGSetActionTypeMap m_mapS0tS1wt;
-   CCFGSetActionTypeMap m_mapS0tS1t;
-
-   CCFGSetActionMap m_mapBetweenTags;
+   CCFGSetMap m_mapBetweenTags;
 
    // S0 N0
-   CTwoWordsCFGSetActionMap m_mapS0wN0w;
-   CWordCFGSetActionMap m_mapS0cN0w;
-   CWordCFGSetActionMap m_mapS0wN0t;
-   CCFGSetActionMap m_mapS0cN0t;
+   CTwoWordsCFGSetMap m_mapS0wN0w;
+   CWordCFGSetMap m_mapS0cN0w;
+   CWordCFGSetMap m_mapS0wN0t;
+   CCFGSetMap m_mapS0cN0t;
    CTwoIntMap m_mapS0cmN0tm;
 
    // S1 N0
-   CTwoWordsCFGSetActionMap m_mapS1wN0w;
-   CWordCFGSetActionMap m_mapS1cN0w;
-   CWordCFGSetActionMap m_mapS1wN0t;
-   CCFGSetActionMap m_mapS1cN0t;
+   CTwoWordsCFGSetMap m_mapS1wN0w;
+   CWordCFGSetMap m_mapS1cN0w;
+   CWordCFGSetMap m_mapS1wN0t;
+   CCFGSetMap m_mapS1cN0t;
 
    // N0 N1
-   CTwoWordsCFGSetActionMap m_mapN0wN1w;
-   CWordCFGSetActionMap m_mapN0tN1w;
-   CWordCFGSetActionMap m_mapN0wN1t;
-   CCFGSetActionMap m_mapN0tN1t;
-
-   // Bracket
-#ifdef _CHINESE_CFG_H
-   CIntMap m_mapBracketS0c;
-   CWordIntMap m_mapBracketS0w;
-   CWordIntMap m_mapBracketS0wS1c;
-   CWordIntMap m_mapBracketS0cS1w;
-   CIntMap m_mapBracketS0cS1c;
-   CWordIntMap m_mapBracketS0cN0w;
-   CWordIntMap m_mapBracketS0wN0t;
-   CIntMap m_mapBracketS0cN0t;
-
-   // Separator
-   CIntActionMap m_mapS0cSeparator;
-   CWordIntActionMap m_mapS0wcSeparator;
-   CIntActionMap m_mapS0cSepCount;
-   CWordIntActionMap m_mapS0wcSepCount;
-   CIntActionMap m_mapS1cSeparator;
-   CWordIntActionMap m_mapS1wcSeparator;
-   CIntActionMap m_mapS1cSepCount;
-   CWordIntActionMap m_mapS1wcSepCount;
-   CIntActionMap m_mapS0cS1cSeparator;
-   CIntActionMap m_mapS0cS1cSepCount;
-#endif
-
-   // Distance
-   CWordIntMap m_mapS0wS1Dist;
-   CIntMap m_mapS0cS1Dist;
-   CWordIntMap m_mapS0S1wDist;
-   CIntMap m_mapS0S1cDist;
-   CTwoWordsActionMap m_mapS0wS1wDist;
-   CWordIntMap m_mapS0wS1cDist;
-   CWordIntMap m_mapS0cS1wDist;
-   CIntMap m_mapS0cS1cDist;
+   CTwoWordsCFGSetMap m_mapN0wN1w;
+   CWordCFGSetMap m_mapN0tN1w;
+   CWordCFGSetMap m_mapN0wN1t;
+   CCFGSetMap m_mapN0tN1t;
 
    // S0 S1N0
-   CWordCFGSetActionMap m_mapS0wS1cN0t;
-   CWordCFGSetActionMap m_mapS0cS1wN0t;
-   CWordCFGSetActionMap m_mapS0cS1cN0w;
-   CCFGSetActionMap m_mapS0cS1cN0t;
-   CCFGSetActionMap m_mapS0tS1tN0t;
-   CCFGSetActionMap m_mapS0jS1jN0t;
+   CWordCFGSetMap m_mapS0wS1cN0t;
+   CWordCFGSetMap m_mapS0cS1wN0t;
+   CWordCFGSetMap m_mapS0cS1cN0w;
+   CCFGSetMap m_mapS0cS1cN0t;
+   CCFGSetMap m_mapS0tS1tN0t;
+   CCFGSetMap m_mapS0jS1jN0t;
 
    // S0 N0N1
-   CWordCFGSetActionMap m_mapS0wN0tN1t;
-   CWordCFGSetActionMap m_mapS0cN0wN1t;
-   CWordCFGSetActionMap m_mapS0cN0tN1w;
-   CCFGSetActionMap m_mapS0cN0tN1t;
-   CCFGSetActionMap m_mapS0tN0tN1t;
-   CCFGSetActionMap m_mapS0jN0tN1t;
+   CWordCFGSetMap m_mapS0wN0tN1t;
+   CWordCFGSetMap m_mapS0cN0wN1t;
+   CWordCFGSetMap m_mapS0cN0tN1w;
+   CCFGSetMap m_mapS0cN0tN1t;
+   CCFGSetMap m_mapS0tN0tN1t;
+   CCFGSetMap m_mapS0jN0tN1t;
 
    // S0 S1S2
-   CWordCFGSetActionMap m_mapS0wS1cS2c;
-   CWordCFGSetActionMap m_mapS0cS1wS2c;
-   CWordCFGSetActionMap m_mapS0cS1cS2w;
-   CCFGSetActionMap m_mapS0cS1cS2c;
-   CCFGSetActionMap m_mapS0tS1tS2t;
-   CCFGSetActionMap m_mapS0jS1jS2j;
+   CWordCFGSetMap m_mapS0wS1cS2c;
+   CWordCFGSetMap m_mapS0cS1wS2c;
+   CWordCFGSetMap m_mapS0cS1cS2w;
+   CCFGSetMap m_mapS0cS1cS2c;
+   CCFGSetMap m_mapS0tS1tS2t;
+   CCFGSetMap m_mapS0jS1jS2j;
 
    // tag bigram
    CIntMap m_mapS1cS2c;
@@ -296,43 +194,43 @@ public:
    CIntMap m_mapN0tN1tN2t;
 
    // S0 S0LRUN0
-   CCFGSetActionMap m_mapS0cS0RcN0t;
-   CCFGSetActionMap m_mapS0cS0RjN0t;
-   CWordCFGSetActionMap m_mapS0cS0RcN0w;
+   CCFGSetMap m_mapS0cS0RcN0t;
+   CCFGSetMap m_mapS0cS0RjN0t;
+   CWordCFGSetMap m_mapS0cS0RcN0w;
 
-   CCFGSetActionMap m_mapS0cS0LcN0t;
-   CWordCFGSetActionMap m_mapS0wS0LcN0t;
-   CWordCFGSetActionMap m_mapS0cS0LcN0w;
-   CWordCFGSetActionMap m_mapS0wS0RcN0t;
-   CCFGSetActionMap m_mapS0cS0UcN0t;
-   CWordCFGSetActionMap m_mapS0wS0UcN0t;
-   CWordCFGSetActionMap m_mapS0cS0UcN0w;
+   CCFGSetMap m_mapS0cS0LcN0t;
+   CWordCFGSetMap m_mapS0wS0LcN0t;
+   CWordCFGSetMap m_mapS0cS0LcN0w;
+   CWordCFGSetMap m_mapS0wS0RcN0t;
+   CCFGSetMap m_mapS0cS0UcN0t;
+   CWordCFGSetMap m_mapS0wS0UcN0t;
+   CWordCFGSetMap m_mapS0cS0UcN0w;
 
    // S0 S0LRUS1
-   CCFGSetActionMap m_mapS0cS0LcS1c;
-   CCFGSetActionMap m_mapS0cS0LjS1j;
-   CWordCFGSetActionMap m_mapS0cS0LcS1w;
+   CCFGSetMap m_mapS0cS0LcS1c;
+   CCFGSetMap m_mapS0cS0LjS1j;
+   CWordCFGSetMap m_mapS0cS0LcS1w;
 
-   CWordCFGSetActionMap m_mapS0wS0LcS1c;
-   CCFGSetActionMap m_mapS0cS0RcS1c;
-   CWordCFGSetActionMap m_mapS0wS0RcS1c;
-   CWordCFGSetActionMap m_mapS0cS0RcS1w;
-   CCFGSetActionMap m_mapS0cS0UcS1c;
-   CWordCFGSetActionMap m_mapS0wS0UcS1c;
-   CWordCFGSetActionMap m_mapS0cS0UcS1w;
+   CWordCFGSetMap m_mapS0wS0LcS1c;
+   CCFGSetMap m_mapS0cS0RcS1c;
+   CWordCFGSetMap m_mapS0wS0RcS1c;
+   CWordCFGSetMap m_mapS0cS0RcS1w;
+   CCFGSetMap m_mapS0cS0UcS1c;
+   CWordCFGSetMap m_mapS0wS0UcS1c;
+   CWordCFGSetMap m_mapS0cS0UcS1w;
 
    // S0 S1LRUS1
-   CCFGSetActionMap m_mapS0cS1cS1Rc;
-   CCFGSetActionMap m_mapS0jS1cS1Rj;
-   CWordCFGSetActionMap m_mapS0wS1cS1Rc;
+   CCFGSetMap m_mapS0cS1cS1Rc;
+   CCFGSetMap m_mapS0jS1cS1Rj;
+   CWordCFGSetMap m_mapS0wS1cS1Rc;
 
-   CCFGSetActionMap m_mapS0cS1cS1Lc;
-   CWordCFGSetActionMap m_mapS0wS1cS1Lc;
-   CWordCFGSetActionMap m_mapS0cS1wS1Lc;
-   CWordCFGSetActionMap m_mapS0cS1wS1Rc;
-   CCFGSetActionMap m_mapS0cS1cS1Uc;
-   CWordCFGSetActionMap m_mapS0wS1cS1Uc;
-   CWordCFGSetActionMap m_mapS0cS1wS1Uc;
+   CCFGSetMap m_mapS0cS1cS1Lc;
+   CWordCFGSetMap m_mapS0wS1cS1Lc;
+   CWordCFGSetMap m_mapS0cS1wS1Lc;
+   CWordCFGSetMap m_mapS0cS1wS1Rc;
+   CCFGSetMap m_mapS0cS1cS1Uc;
+   CWordCFGSetMap m_mapS0wS1cS1Uc;
+   CWordCFGSetMap m_mapS0cS1wS1Uc;
 
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
@@ -344,37 +242,6 @@ public:
 
                           m_nMaxWordFrequency(0) ,
                           m_mapWordFrequency(TABLE_SIZE),
-
-                          m_mapHw("HeadWord", TABLE_SIZE),
-                          m_mapHt("HeadTag", TABLE_SIZE),
-                          m_mapHc("HeadConstituents", TABLE_SIZE),
-                          m_mapHwc("HeadWord", TABLE_SIZE),
-
-                          m_mapHcMc("HeadModifierConstituents", TABLE_SIZE),
-                          m_mapHwMc("HeadModifierWordConstituent", TABLE_SIZE),
-                          m_mapHcMw("HeadModifierConstituentW", TABLE_SIZE),
-                          m_mapHwMw("HeadModifierWrds", TABLE_SIZE),
-
-                          m_mapBigramsL("BigramsOnTheLeft", TABLE_SIZE),
-                          m_mapBigramsR("BigramsOnTheRight", TABLE_SIZE),
-                          m_mapBigramsLexA("LexicalizedBigramsWC", TABLE_SIZE),
-                          m_mapBigramsLexB("LexicalizedBigramsCW", TABLE_SIZE),
-
-                          m_mapRules("Rules", TABLE_SIZE),
-                          m_mapRulesWithSizes("RulesSz", TABLE_SIZE),
-
-                          m_mapBracket("BracketType", TABLE_SIZE),
-
-                          m_mapHtMt("HeadTagModifierTag", TABLE_SIZE),
-                          m_mapHtMw("HeadTagModifierWord", TABLE_SIZE),
-                          m_mapHwMt("HeadWordModifierTag", TABLE_SIZE),
-                          m_mapSiblingTags("SiblingTs", TABLE_SIZE),
-                          m_mapSiblingWordTag("SiblingWt", TABLE_SIZE),
-                          m_mapSiblingTagWord("SiblingTw", TABLE_SIZE),
-                          m_mapHtArityL("HeadTagArityLeft", TABLE_SIZE),
-                          m_mapHtArityR("HeadTagArityRight", TABLE_SIZE),
-                          m_mapHwArityL("HeadWordArityLeft", TABLE_SIZE),
-                          m_mapHwArityR("HeadWordArityRight", TABLE_SIZE),
 
                           m_mapS0c("Stack0Constituent", TABLE_SIZE),
                           m_mapS0w("Stack0Word", TABLE_SIZE),
@@ -429,30 +296,11 @@ public:
                           m_mapS1Uwc("Stack1UniWord", TABLE_SIZE),
                           m_mapS1Utc("Stack1UniConstituent", TABLE_SIZE), 
 
-                          m_mapS0LDw("Stack0LeftDepWord", TABLE_SIZE),
-                          m_mapS0LDt("Stack0LeftDepTag", TABLE_SIZE), 
-
-                          m_mapS0RDw("Stack0RightDepWord", TABLE_SIZE),
-                          m_mapS0RDt("Stack0RightDepTag", TABLE_SIZE), 
-
-                          m_mapS1LDw("Stack1LeftDepWord", TABLE_SIZE),
-                          m_mapS1LDt("Stack1LeftDepTag", TABLE_SIZE), 
-
-                          m_mapS1RDw("Stack1RightDepWord", TABLE_SIZE),
-                          m_mapS1RDt("Stack1RightDepTag", TABLE_SIZE), 
-
                           m_mapS0wcS1wc("Stack0WordStack1Word", TABLE_SIZE),
                           m_mapS0wS1c("Stack0WordStack1Constituent", TABLE_SIZE),
                           m_mapS0cS1w("Stack0ConstituentStack1Word", TABLE_SIZE),
                           m_mapS0cS1c("Stack0ConstituentStack1Constituent",
 TABLE_SIZE),
-                          m_mapS0wtS1wt("Stack0WordTagStack1WordTag", TABLE_SIZE),
-                          m_mapS0wtS1w("Stack0WordTagStack1Word", TABLE_SIZE),
-                          m_mapS0wS1wt("Stack0WordStack1WordTag", TABLE_SIZE),
-                          m_mapS0wS1w("Stack0WordStack1Word", TABLE_SIZE),
-                          m_mapS0wtS1t("Stack0WordTagStack1Tag", TABLE_SIZE),
-                          m_mapS0tS1wt("Stack0TagStack1WordTag", TABLE_SIZE),
-                          m_mapS0tS1t("Stack0TagStack1Tag", TABLE_SIZE),
                           m_mapBetweenTags("BetweenTags", TABLE_SIZE),
                                             
                           m_mapS0wN0w("Stack0WordNext0Word", TABLE_SIZE),
@@ -470,37 +318,6 @@ TABLE_SIZE),
                           m_mapN0tN1w("Next0TagNext1Word", TABLE_SIZE),
                           m_mapN0wN1t("Next0WordNext1Tag", TABLE_SIZE),
                           m_mapN0tN1t("Next0TagNext1WordTag", TABLE_SIZE),
-
-#ifdef _CHINESE_CFG_H
-                          m_mapBracketS0c("BracketStack0Constituent", TABLE_SIZE), 
-                          m_mapBracketS0w("BracketStack0Word", TABLE_SIZE),
-                          m_mapBracketS0wS1c("BracketStack0WordStack1Constituent", TABLE_SIZE),
-                          m_mapBracketS0cS1w("BracketStack0ConstituentStack1Word", TABLE_SIZE),
-                          m_mapBracketS0cS1c("BracketStack0ConsituentStack1Constituent", TABLE_SIZE),
-                          m_mapBracketS0cN0w("BracketStack0ConstituentNext0Word", TABLE_SIZE),
-                          m_mapBracketS0wN0t("BracketStack0WordNext0Tag", TABLE_SIZE),
-                          m_mapBracketS0cN0t("BracketStack0ConstituentNext0Tag", TABLE_SIZE),
-
-                          m_mapS0cSeparator("Stack0ConstituentSeparator", TABLE_SIZE),
-                          m_mapS0wcSeparator("Stack0WordConstituentSeparator", TABLE_SIZE),
-                          m_mapS0cSepCount("Stack0ConstituentSeparatorCount", TABLE_SIZE),
-                          m_mapS0wcSepCount("Stack0WordConstituentSeparatorCount", TABLE_SIZE),
-                          m_mapS1cSeparator("Stack1ConstituentSeparator", TABLE_SIZE),
-                          m_mapS1wcSeparator("Stack1WordConstituentSeparator", TABLE_SIZE),
-                          m_mapS1cSepCount("Stack1ConstituentSeparatorCount", TABLE_SIZE),
-                          m_mapS1wcSepCount("Stack1WordConstituentSeparatorCount", TABLE_SIZE),
-                          m_mapS0cS1cSeparator("Stack0ConstituentStack1ConstituentSeparator", TABLE_SIZE),
-                          m_mapS0cS1cSepCount("Stack0ConstituentStack1ConstituentSeparatorCount", TABLE_SIZE),
-#endif
-
-                          m_mapS0wS1Dist("Stack0WordStack1Distance", TABLE_SIZE),
-                          m_mapS0cS1Dist("Stack0ConstituentStack1Distance", TABLE_SIZE),
-                          m_mapS0S1wDist("Stack0Stack1WordDistance", TABLE_SIZE),
-                          m_mapS0S1cDist("Stack0Stack1ConstituentDistance", TABLE_SIZE),
-                          m_mapS0wS1wDist("Stack0WordStack1WordDistance", TABLE_SIZE),
-                          m_mapS0wS1cDist("Stack0WordStack1ConstituentDistance", TABLE_SIZE),
-                          m_mapS0cS1wDist("Stack0ConstituentStack1WordDistance", TABLE_SIZE),
-                          m_mapS0cS1cDist("Stack0ConstituentStack1ConstituentDistance",TABLE_SIZE),
 
                           m_mapS0wS1cN0t("Stack0WordStack1ConstituentNext0Tag", TABLE_SIZE),
                           m_mapS0cS1wN0t("Stack0ConstituentStack1WordNext0Tag", TABLE_SIZE),

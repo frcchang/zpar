@@ -17,58 +17,7 @@ using namespace TARGET_LANGUAGE::conparser;
 
 const CScore<SCORE_TYPE> g_zeroScore;
 
-#ifdef _CHINESE_CFG_H
-#define _BRACKET_AND_SEPARATOR_FEATURES(left,right) \
-   left(m_mapBracketS0c)right\
-   left(m_mapBracketS0w)right\
-   left(m_mapBracketS0wS1c)right\
-   left(m_mapBracketS0cS1w)right\
-   left(m_mapBracketS0cS1c)right\
-   left(m_mapBracketS0cN0w)right\
-   left(m_mapBracketS0wN0t)right\
-   left(m_mapBracketS0cN0t)right\
-\
-   left(m_mapS0cSeparator)right\
-   left(m_mapS0wcSeparator)right\
-   left(m_mapS0cSepCount)right\
-   left(m_mapS0wcSepCount)right\
-   left(m_mapS1cSeparator)right\
-   left(m_mapS1wcSeparator)right\
-   left(m_mapS1cSepCount)right\
-   left(m_mapS1wcSepCount)right\
-   left(m_mapS0cS1cSeparator)right\
-   left(m_mapS0cS1cSepCount)right
-#else
-#define _BRACKET_AND_SEPARATOR_FEATURES(left,right)
-#endif
-
 #define iterate_templates(left, right) \
-   left(m_mapHw)right\
-   left(m_mapHt)right\
-   left(m_mapHc)right\
-   left(m_mapHwc)right\
-   left(m_mapHcMc)right\
-   left(m_mapHcMw)right\
-   left(m_mapHwMc)right\
-   left(m_mapHwMw)right\
-   left(m_mapBigramsL)right\
-   left(m_mapBigramsR)right\
-   left(m_mapBigramsLexA)right\
-   left(m_mapBigramsLexB)right\
-   left(m_mapRules)right\
-   left(m_mapRulesWithSizes)right\
-   left(m_mapHtMt)right\
-   left(m_mapHtMw)right\
-   left(m_mapHwMt)right\
-   left(m_mapSiblingTags)right\
-   left(m_mapSiblingWordTag)right\
-   left(m_mapSiblingTagWord)right\
-   left(m_mapBracket)right\
-   left(m_mapHtArityL)right\
-   left(m_mapHtArityR)right\
-   left(m_mapHwArityL)right\
-   left(m_mapHwArityR)right\
-\
    left(m_mapS0c)right\
    left(m_mapS0w)right\
    left(m_mapS0tc)right\
@@ -116,26 +65,11 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapS1cS1HcS1R2c)right\
    left(m_mapS1Uwc)right\
    left(m_mapS1Utc)right\
-   left(m_mapS0LDw)right\
-   left(m_mapS0LDt)right\
-   left(m_mapS0RDw)right\
-   left(m_mapS0RDt)right\
-   left(m_mapS1LDw)right\
-   left(m_mapS1LDt)right\
-   left(m_mapS1RDw)right\
-   left(m_mapS1RDt)right\
 \
    left(m_mapS0wcS1wc)right\
    left(m_mapS0wS1c)right\
    left(m_mapS0cS1w)right\
    left(m_mapS0cS1c)right\
-   left(m_mapS0wtS1wt)right\
-   left(m_mapS0wtS1w)right\
-   left(m_mapS0wS1wt)right\
-   left(m_mapS0wS1w)right\
-   left(m_mapS0wtS1w)right\
-   left(m_mapS0wS1wt)right\
-   left(m_mapS0tS1t)right\
    left(m_mapBetweenTags)right\
 \
    left(m_mapS0wN0w)right\
@@ -153,17 +87,6 @@ const CScore<SCORE_TYPE> g_zeroScore;
    left(m_mapN0tN1w)right\
    left(m_mapN0wN1t)right\
    left(m_mapN0tN1t)right\
-\
-   _BRACKET_AND_SEPARATOR_FEATURES(left,right)\
-\
-   left(m_mapS0wS1Dist)right\
-   left(m_mapS0cS1Dist)right\
-   left(m_mapS0S1wDist)right\
-   left(m_mapS0S1cDist)right\
-   left(m_mapS0wS1wDist)right\
-   left(m_mapS0wS1cDist)right\
-   left(m_mapS0cS1wDist)right\
-   left(m_mapS0cS1cDist)right\
 \
    left(m_mapS0wS1cN0t)right\
    left(m_mapS0cS1wN0t)right\
