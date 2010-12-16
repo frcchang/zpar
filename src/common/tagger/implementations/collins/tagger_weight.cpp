@@ -25,6 +25,10 @@ void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
    std::cout << "Loading model..."; std::cout.flush();
    std::ifstream is(m_sFeatureDB.c_str());
 
+   if (!is.is_open()) {
+      std::cout << " empty." << std::endl; return;
+   }
+
    static std::string s;
    getline(is, s);
    ASSERT(s=="Tags:", "Tags not found in model file.") ;
