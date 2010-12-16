@@ -99,6 +99,7 @@ public:
    std::string str() const { assert(m_code<PENN_CON_COUNT) ; return PENN_CON_STRINGS[m_code]; }
    void load(const std::string &s) {
       m_code = PENN_CON_NONE ;
+      if (s.empty()) return;
       bool bFound = false;
       for (int i=0; i<PENN_CON_COUNT; ++i) {
          if (PENN_CON_STRINGS[i] == s) {

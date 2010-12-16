@@ -70,7 +70,7 @@ void tag(const std::string sInputFile, const std::string sOutputFile, const std:
 void parse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
    std::cout << "Parsing started" << std::endl;
    int time_start = clock();
-   std::ostream *std::couts; if (sOutputFile=="") std::couts=&std::cout; else std::couts = new std::ofstream(sOutputFile.c_str()); 
+   std::ostream *outs; if (sOutputFile=="") outs=&std::cout; else outs = new std::ofstream(sOutputFile.c_str()); 
    std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
    std::string sParserFeatureFile = sFeaturePath + "/conparser";
    if (!FileExists(sTaggerFeatureFile))
@@ -98,13 +98,13 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
       tagger.tag(input_sent, tagged_sent, 1, NULL);
       conparser.parse(*tagged_sent, outout_sent);
       // Ouptut sent
-      (*std::couts) << outout_sent->str_unbinarized() << std::endl;
+      (*outs) << outout_sent->str_unbinarized() << std::endl;
    }
    delete input_sent;
    delete tagged_sent;
    delete outout_sent;
 
-   if (sOutputFile!="") delete std::couts;
+   if (sOutputFile!="") delete outs;
    std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
@@ -117,7 +117,7 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
 void depparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath, bool bLabeled) {
    std::cout << "Parsing started" << std::endl;
    int time_start = clock();
-   std::ostream *std::couts; if (sOutputFile=="") std::couts=&std::cout; else std::couts = new std::ofstream(sOutputFile.c_str()); 
+   std::ostream *outs; if (sOutputFile=="") outs=&std::cout; else outs = new std::ofstream(sOutputFile.c_str()); 
    std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
    std::string sParserFeatureFile = sFeaturePath + "/depparser";
    std::string sLabelerFeatureFile = sFeaturePath + "/deplabeler";
@@ -158,16 +158,16 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
       if (bLabeled) {
          deplabeler->label(parsed_sent, &labeled_sent);
          // Ouptut sent
-         (*std::couts) << labeled_sent;
+         (*outs) << labeled_sent;
       }
       else {
-         (*std::couts) << parsed_sent;
+         (*outs) << parsed_sent;
       }
    }
 
    if (bLabeled) delete deplabeler;
 
-   if (sOutputFile!="") delete std::couts;
+   if (sOutputFile!="") delete outs;
    std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 

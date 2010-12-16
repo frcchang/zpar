@@ -220,16 +220,16 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
    }
 
    // N0 N1
-//   if (m_Context.n1!=-1) {
-//      refer_or_allocate_tuple2(twoword_cfgset, &(m_Context.n0wn1w), &(m_Context.n0tn1t)); 
-//      cast_weights->m_mapN0wN1w.getOrUpdateScore(retval, twoword_cfgset, action.code(), m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple2(word_cfgset, m_Context.n1w, &(m_Context.n0tn1t)); 
-//      cast_weights->m_mapN0tN1w.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-//      refer_or_allocate_tuple2(word_cfgset, m_Context.n0w, &(m_Context.n0tn1t)); 
-//      cast_weights->m_mapN0wN1t.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-//      cast_weights->m_mapN0tN1t.getOrUpdateScore(retval, m_Context.n0tn1t, action.code(), m_nScoreIndex, amount, round);
-//   }
-//   
+   if (m_Context.n1!=-1) {
+      refer_or_allocate_tuple2(twoword_cfgset, &(m_Context.n0wn1w), &(m_Context.n0tn1t)); 
+      cast_weights->m_mapN0wN1w.getOrUpdateScore(retval, twoword_cfgset, action.code(), m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple2(word_cfgset, m_Context.n1w, &(m_Context.n0tn1t)); 
+      cast_weights->m_mapN0tN1w.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+      refer_or_allocate_tuple2(word_cfgset, m_Context.n0w, &(m_Context.n0tn1t)); 
+      cast_weights->m_mapN0wN1t.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+      cast_weights->m_mapN0tN1t.getOrUpdateScore(retval, m_Context.n0tn1t, action.code(), m_nScoreIndex, amount, round);
+   }
+   
 #ifdef _CHINESE_CFG_H
 /* BRACKET PUNC */
 #endif

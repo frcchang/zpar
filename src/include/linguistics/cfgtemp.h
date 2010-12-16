@@ -40,7 +40,7 @@ public:
    bool operator >= (const CTemporary &w) const { return CConstituentLabel::m_code >= w.CConstituentLabel::m_code; }
 
    void load(const std::string &s) {
-      if (s[s.size()-1] == '*') {
+      if (s.size() && s[s.size()-1] == '*') {
          CConstituentLabel::load(s.substr(0, s.size()-1));
          setTemporary(true);
       }
