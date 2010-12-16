@@ -24,6 +24,17 @@ using namespace TARGET_LANGUAGE::tagger;
 void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
    std::cout << "Loading model..."; std::cout.flush();
    std::ifstream is(m_sFeatureDB.c_str());
+
+   static std::string s;
+   getline(is, s);
+   ASSERT(s=="Tags:", "Tags not found in model file.") ;
+   getline(is, s);
+   std::istringstream iss(s);
+   CTag t;
+   while(iss >> t);
+   getline(is, s);
+   ASSERT(s=="", "No empty line after the tags.") ;
+
    iterate_templates(is>>,;);
 #ifdef DEBUG
    iterate_templates(,.trace(););
@@ -42,6 +53,12 @@ void TARGET_LANGUAGE::tagger::CWeight::saveScores() {
    std::cout << "Saving model..."; std::cout.flush();
    std::ofstream os(m_sFeatureDB.c_str());
    assert(os.is_open());
+
+   os << "Tags:" << std::endl;
+   for (unsigned t=CTag::FIRST; t<CTag::COUNT; ++t)
+      os << CTag(t) << ' ';
+   os << std::endl << std::endl;
+
    iterate_templates(os<<,;);
    os.close();
    std::cout << " done." << std::endl ;

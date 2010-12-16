@@ -15,145 +15,6 @@
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::conparser;
 
-const CScore<SCORE_TYPE> g_zeroScore;
-
-#define iterate_templates(left, right) \
-   left(m_mapS0c)right\
-   left(m_mapS0w)right\
-   left(m_mapS0tc)right\
-   left(m_mapS0wc)right\
-\
-   left(m_mapS1c)right\
-   left(m_mapS1w)right\
-   left(m_mapS1tc)right\
-   left(m_mapS1wc)right\
-\
-   left(m_mapS2tc)right\
-   left(m_mapS2wc)right\
-\
-   left(m_mapS3tc)right\
-   left(m_mapS3wc)right\
-\
-   left(m_mapN0w)right\
-   left(m_mapN0t)right\
-   left(m_mapN0wt)right\
-\
-   left(m_mapN1w)right\
-   left(m_mapN1t)right\
-   left(m_mapN1wt)right\
-\
-   left(m_mapN2w)right\
-   left(m_mapN2t)right\
-   left(m_mapN2wt)right\
-\
-   left(m_mapN3w)right\
-   left(m_mapN3t)right\
-   left(m_mapN3wt)right\
-\
-   left(m_mapS0Lwc)right\
-   left(m_mapS0Ltc)right\
-   left(m_mapS0cS0HcS0L2c)right\
-   left(m_mapS0Rwc)right\
-   left(m_mapS0Rtc)right\
-   left(m_mapS0cS0HcS0R2c)right\
-   left(m_mapS0Uwc)right\
-   left(m_mapS0Utc)right\
-   left(m_mapS1Lwc)right\
-   left(m_mapS1Ltc)right\
-   left(m_mapS1Rwc)right\
-   left(m_mapS1Rtc)right\
-   left(m_mapS1cS1HcS1R2c)right\
-   left(m_mapS1Uwc)right\
-   left(m_mapS1Utc)right\
-\
-   left(m_mapS0wcS1wc)right\
-   left(m_mapS0wS1c)right\
-   left(m_mapS0cS1w)right\
-   left(m_mapS0cS1c)right\
-   left(m_mapBetweenTags)right\
-\
-   left(m_mapS0wN0w)right\
-   left(m_mapS0cN0w)right\
-   left(m_mapS0wN0t)right\
-   left(m_mapS0cN0t)right\
-   left(m_mapS0cmN0tm)right\
-\
-   left(m_mapS1wN0w)right\
-   left(m_mapS1cN0w)right\
-   left(m_mapS1wN0t)right\
-   left(m_mapS1cN0t)right\
-\
-   left(m_mapN0wN1w)right\
-   left(m_mapN0tN1w)right\
-   left(m_mapN0wN1t)right\
-   left(m_mapN0tN1t)right\
-\
-   left(m_mapS0wS1cN0t)right\
-   left(m_mapS0cS1wN0t)right\
-   left(m_mapS0cS1cN0w)right\
-   left(m_mapS0cS1cN0t)right\
-   left(m_mapS0tS1tN0t)right\
-   left(m_mapS0jS1jN0t)right\
-\
-   left(m_mapS0wN0tN1t)right\
-   left(m_mapS0cN0wN1t)right\
-   left(m_mapS0cN0tN1w)right\
-   left(m_mapS0cN0tN1t)right\
-   left(m_mapS0tN0tN1t)right\
-   left(m_mapS0jN0tN1t)right\
-\
-   left(m_mapS0wS1cS2c)right\
-   left(m_mapS0cS1wS2c)right\
-   left(m_mapS0cS1cS2w)right\
-   left(m_mapS0cS1cS2c)right\
-   left(m_mapS0tS1tS2t)right\
-   left(m_mapS0jS1jS2j)right\
-\
-   left(m_mapS1cS2c)right\
-   left(m_mapS2cS3c)right\
-   left(m_mapN1tN2t)right\
-   left(m_mapN2tN3t)right\
-\
-   left(m_mapS0cS2c)right\
-   left(m_mapS1cS3c)right\
-   left(m_mapS0cN1t)right\
-   left(m_mapN0tN2t)right\
-   left(m_mapN1tN3t)right\
-\
-   left(m_mapS0cS0LcN0t)right\
-   left(m_mapS0wS0LcN0t)right\
-   left(m_mapS0cS0LcN0w)right\
-   left(m_mapS0cS0RcN0t)right\
-   left(m_mapS0cS0RjN0t)right\
-   left(m_mapS0wS0RcN0t)right\
-   left(m_mapS0cS0RcN0w)right\
-   left(m_mapS0cS0UcN0t)right\
-   left(m_mapS0wS0UcN0t)right\
-   left(m_mapS0cS0UcN0w)right\
-\
-   left(m_mapS0cS0LcS1c)right\
-   left(m_mapS0cS0LjS1j)right\
-   left(m_mapS0wS0LcS1c)right\
-   left(m_mapS0cS0LcS1w)right\
-   left(m_mapS0cS0RcS1c)right\
-   left(m_mapS0wS0RcS1c)right\
-   left(m_mapS0cS0RcS1w)right\
-   left(m_mapS0cS0UcS1c)right\
-   left(m_mapS0wS0UcS1c)right\
-   left(m_mapS0cS0UcS1w)right\
-\
-   left(m_mapN0tN1tN2t)right\
-   left(m_mapS0cS1cS1Lc)right\
-   left(m_mapS0wS1cS1Lc)right\
-   left(m_mapS0cS1wS1Lc)right\
-   left(m_mapS0cS1cS1Rc)right\
-   left(m_mapS0jS1cS1Rj)right\
-   left(m_mapS0wS1cS1Rc)right\
-   left(m_mapS0cS1wS1Rc)right\
-   left(m_mapS0cS1cS1Uc)right\
-   left(m_mapS0wS1cS1Uc)right\
-   left(m_mapS0cS1wS1Uc)right
-
 /*---------------------------------------------------------------
  *
  * loadScores - load scores from the file specified at constructor
@@ -174,19 +35,28 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
    }
    m_bEmpty = false;
 
+   static std::string s;
+   getline(file, s);
+   ASSERT(s=="Categories:", "Category symbols not found in model file") ;
+   getline(file, s);
+   std::istringstream iss_c(s);
+   CConstituent c;
+   while(iss_c >> c);
+   getline(file, s);
+   ASSERT(s=="", "No empty line after the category symbols") ;
+
    iterate_templates(file >>,;);
 
-   static std::string s;
    getline(file, s);
    ASSERT(s=="Word frequency", "Word frequency not found from model.");
    file >> m_mapWordFrequency;
 
-   static std::istringstream iss;
    getline(file, s);
    ASSERT(s=="Maximum frequency", "Maximum frequency not found from model.");
    getline(file, s);
-   iss.str(s);
-   iss >> m_nMaxWordFrequency;
+   std::istringstream iss_f(s);
+//   iss.str(s);
+   iss_f >> m_nMaxWordFrequency;
 
 //   file.close() ;
    std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
@@ -205,6 +75,12 @@ void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
    std::cout<<"Saving scores..."; std::cout.flush();
 //   std::ofstream file ;
 //   file.open(m_sRecordPath.c_str()) ;
+
+   file << "Categories:" << std::endl;
+   file << CConstituent(CConstituent::FIRST);
+   for (unsigned c=CConstituent::FIRST+1; c<CConstituent::COUNT; ++c)
+      file << ' ' << CConstituent(c);
+   file << std::endl << std::endl;
 
    iterate_templates(file<<,;)
 

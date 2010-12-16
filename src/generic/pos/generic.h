@@ -47,6 +47,7 @@ public:
    enum {SIZE = 8};
    static unsigned long COUNT;
    static unsigned long LAST;
+   static const unsigned long MAX_COUNT=1<<SIZE;
 
 protected:
    unsigned long m_code;
@@ -92,6 +93,7 @@ public:
    }
 
    void clear() { m_code=NONE; }
+   bool closed() const { return false; }
 }; 
 
 };

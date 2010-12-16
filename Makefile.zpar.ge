@@ -1,6 +1,6 @@
 
 # currently support only agenda
-GENERIC_TAGGER_IMPL = agenda
+GENERIC_TAGGER_IMPL = collins
 
 # currently support nivre, combined implementations (other implementations are not generalized)
 GENERIC_DEPPARSER_IMPL = arceager
@@ -8,7 +8,7 @@ GENERIC_DEPPARSER_LABELED = true
 # current naive
 GENERIC_DEPLABELER_IMPL = naive
 # currently support sr implementations 
-GENERIC_CONPARSER_IMPL = srnew
+GENERIC_CONPARSER_IMPL = sr
 GENERIC_CONPARSER_D = -DNO_TEMP_CONSTITUENT -DGENERIC_CONLABEL_SIZE=12 -DFRAGMENTED_TREE
 
 #===================================================================
@@ -73,12 +73,12 @@ $(OBJECT_DIR)/generic.postagger.o: $(OBJECT_DIR)/pos.ge.o $(SRC_INCLUDES)/hash.h
 # the main executable file
 $(DIST_GENERIC_TAGGER)/tagger: $(SRC_GENERIC_TAGGER)/main.cpp $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECTS) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -c $(SRC_GENERIC_TAGGER)/main.cpp -o $(OBJECT_GENERIC_TAGGER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_TAGGER)/tagger $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_GENERIC_TAGGER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_TAGGER)/tagger $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_GENERIC_TAGGER)/main.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 
 # the trainer for generic pos tagging
 $(DIST_GENERIC_TAGGER)/train: $(SRC_GENERIC_TAGGER)/train.cpp $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECTS) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -c $(SRC_GENERIC_TAGGER)/train.cpp -o $(OBJECT_GENERIC_TAGGER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_TAGGER)/train $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_GENERIC_TAGGER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_TAGGER)/train $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_GENERIC_TAGGER)/train.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 
 #===================================================================
 
@@ -127,12 +127,12 @@ $(OBJECT_DIR)/generic.conparser.o: $(SRC_INCLUDES)/linguistics/constituent.h $(S
 # the main executable
 $(DIST_GENERIC_CONPARSER)/conparser: $(SRC_GENERIC_CONPARSER)/main.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/main.cpp -o $(OBJECT_GENERIC_CONPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/conparser $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o 
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/conparser $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/main.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
 
 # the trainer for conparser
 $(DIST_GENERIC_CONPARSER)/train: $(SRC_GENERIC_CONPARSER)/train.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECTS) $(OBJECT_GENERIC_CONPARSER)/constituent.o
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/train.cpp -o $(OBJECT_GENERIC_CONPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o 
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
 
 #===================================================================
 
@@ -158,18 +158,18 @@ $(OBJECT_DIR)/generic.deplabeler.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPLABEL
 # the main executable
 $(DIST_GENERIC_DEPLABELER)/deplabeler: $(SRC_COMMON_DEPLABELER)/main.cpp $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPLABELER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_DEPLABELER) -I$(SRC_COMMON_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL) -c $(SRC_COMMON_DEPLABELER)/main.cpp -o $(OBJECT_GENERIC_DEPLABELER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPLABELER)/deplabeler $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_GENERIC_DEPLABELER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPLABELER)/deplabeler $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_GENERIC_DEPLABELER)/main.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 
 # the trainer for deplabeler
 $(DIST_GENERIC_DEPLABELER)/train: $(SRC_COMMON_DEPLABELER)/train.cpp $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPLABELER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_DEPLABELER) -I$(SRC_COMMON_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL) -c $(SRC_COMMON_DEPLABELER)/train.cpp -o $(OBJECT_GENERIC_DEPLABELER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPLABELER)/train $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_GENERIC_DEPLABELER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPLABELER)/train $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_GENERIC_DEPLABELER)/train.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 
 
 #===================================================================
 
-zpar.ge: $(OBJECT_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(DIST_DIR) $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o
+zpar.ge: $(OBJECT_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(DIST_DIR) $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic $(GENERIC_DEPPARSER_D) -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -I$(SRC_GENERIC_DEPLABELER) -I$(SRC_GENERIC_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL) -c $(SRC_GENERIC)/zpar.ge.cpp -o $(OBJECT_DIR)/zpar.ge.o
-	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar.ge $(OBJECT_DIR)/zpar.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o
+	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar.ge $(OBJECT_DIR)/zpar.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 	@echo The generic zpar.ge system compiled successfully into $(DIST_DIR).
 
