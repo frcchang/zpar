@@ -48,8 +48,8 @@ protected:
    int m_lDepsR[MAX_SENTENCE_SIZE];         // the rightmost dependency for each word (just for cache, temporary info)
    int m_lDepNumL[MAX_SENTENCE_SIZE];       // the number of left dependencies
    int m_lDepNumR[MAX_SENTENCE_SIZE];       // the number of right dependencies
-   CSetOfTags<CTag> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
-   CSetOfTags<CTag> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
+   CSetOfTags<CDependencyLabel> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
+   CSetOfTags<CDependencyLabel> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
    int m_lSibling[MAX_SENTENCE_SIZE];       // the sibling towards head
 #ifdef LABELED
    unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
@@ -129,8 +129,8 @@ public:
    inline int leftarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumL[index]; }
    inline int rightarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumR[index]; }
 
-   inline const CSetOfTags<CTag> &lefttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagL[index]; }
-   inline const CSetOfTags<CTag> &righttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagR[index]; }
+   inline const CSetOfTags<CDependencyLabel> &lefttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagL[index]; }
+   inline const CSetOfTags<CDependencyLabel> &righttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagR[index]; }
 
    void clear() { 
       m_nNextWord = 0; m_Stack.clear(); m_HeadStack.clear(); 
@@ -179,11 +179,11 @@ public:
       m_lHeads[left] = m_nNextWord;
 #ifdef LABELED
       m_lLabels[left] = lab;
+      m_lDepTagL[m_nNextWord].add(lab) ;
 #endif
       m_lSibling[left] = m_lDepsL[m_nNextWord];
       m_lDepsL[m_nNextWord] = left ;
       m_lDepNumL[m_nNextWord] ++ ;
-      m_lDepTagL[m_nNextWord].add((*m_lCache)[left].tag) ;
 #ifdef LABELED
       m_nLastAction=action::encodeAction(action::ARC_LEFT, lab);
 #else
@@ -204,11 +204,11 @@ public:
       m_lHeads[m_nNextWord] = left ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = lab ;
+      m_lDepTagR[left].add(lab) ;
 #endif
       m_lSibling[m_nNextWord] = m_lDepsR[left];
       m_lDepsR[left] = m_nNextWord ;
       m_lDepNumR[left] ++ ;
-      m_lDepTagR[left].add((*m_lCache)[m_nNextWord].tag) ;
       m_nNextWord ++;
       ClearNext();
 #ifdef LABELED
