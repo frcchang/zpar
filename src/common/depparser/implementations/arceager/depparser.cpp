@@ -119,7 +119,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int st_larity = st_index==-1?0:item->leftarity(st_index);
    const int n0_larity = n0_index==-1?0:item->leftarity(n0_index);
 
-   const CSetOfTags<CTag> &st_rtagset = st_index==-1?CSetOfTags<CTag>():item->righttagset(st_index);
+   const CSetOfTags<CDependencyLabel> &st_rtagset = st_index==-1?CSetOfTags<CDependencyLabel>():item->righttagset(st_index);
+   const CSetOfTags<CDependencyLabel> &st_ltagset = st_index==-1?CSetOfTags<CDependencyLabel>():item->lefttagset(st_index);
+   const CSetOfTags<CDependencyLabel> &n0_ltagset = n0_index==-1?CSetOfTags<CDependencyLabel>():item->lefttagset(n0_index);
 
    static CTwoTaggedWords st_word_tag_n0_word_tag ;
    static CTwoWords st_word_n0_word ;
@@ -139,8 +141,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple3<CWord, CWord, CTag> word_word_tag;
    static CTuple3<CWord, CWord, int> word_word_int;
    static CTuple3<CTag, CTag, int> tag_tag_int;
-   static CTuple2<CWord, CSetOfTags<CTag> > word_tagset;
-   static CTuple2<CTag, CSetOfTags<CTag> > tag_tagset;
+   static CTuple2<CWord, CSetOfTags<CDependencyLabel> > word_tagset;
+   static CTuple2<CTag, CSetOfTags<CDependencyLabel> > tag_tagset;
 
    // single
    if (st_index != -1) {
@@ -291,14 +293,27 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0tla.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
    }
 
-   // st tagset
+   // st labelset
    if (st_index != -1){//
       refer_or_allocate_tuple2(word_tagset, &st_word, &st_rtagset);
       cast_weights->m_mapSTwrp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
       refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_rtagset);
       cast_weights->m_mapSTtrp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+
+      refer_or_allocate_tuple2(word_tagset, &st_word, &st_ltagset);
+      cast_weights->m_mapSTwlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_ltagset);
+      cast_weights->m_mapSTtlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
    }
 
+   // n0 labelset
+//   if (n0_index != -1){//
+//      refer_or_allocate_tuple2(word_tagset, &n0_word, &n0_ltagset);
+//      cast_weights->m_mapN0wlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
+//      refer_or_allocate_tuple2(tag_tagset, &n0_tag, &n0_ltagset);
+//      cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+//   }
+//
    if (m_bCoNLL) {
 
       static unsigned i;
@@ -626,7 +641,9 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                   arcright(pGenerator, packed_scores) ;
                }
             }
-            if ( !pGenerator->stackempty() ) {
+            if ( (!m_bCoNLL && !pGenerator->stackempty()) ||
+                 (m_bCoNLL && pGenerator->stacksize()>1) // make sure that for conll the first item is not popped
+               ) {
                if ( pGenerator->head( pGenerator->stacktop() ) != DEPENDENCY_LINK_NO_HEAD ) {
                   reduce(pGenerator, packed_scores) ;
                }
