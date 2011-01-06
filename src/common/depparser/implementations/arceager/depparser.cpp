@@ -307,13 +307,13 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    // n0 labelset
-//   if (n0_index != -1){//
-//      refer_or_allocate_tuple2(word_tagset, &n0_word, &n0_ltagset);
-//      cast_weights->m_mapN0wlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
-//      refer_or_allocate_tuple2(tag_tagset, &n0_tag, &n0_ltagset);
-//      cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
-//   }
-//
+   if (n0_index != -1){//
+      refer_or_allocate_tuple2(word_tagset, &n0_word, &n0_ltagset);
+      cast_weights->m_mapN0wlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(tag_tagset, &n0_tag, &n0_ltagset);
+      cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+   }
+
    if (m_bCoNLL) {
 
       static unsigned i;
@@ -548,17 +548,17 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
       if (bTrain && m_weights->rules()) {
          // the root
          if ( correct[index].head == DEPENDENCY_LINK_NO_HEAD && canBeRoot(m_lCache[index].tag.code())==false) {
-            TRACE("Rule contradiction: " << m_lCache[index].tag << " can be root.");
+            TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " can be root.");
             bContradictsRules = true;
          }
          // head left
          if ( correct[index].head < index && hasLeftHead(m_lCache[index].tag.code())==false) {
-            TRACE("Rule contradiction: " << m_lCache[index].tag << " has left head.");
+            TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " has left head.");
             bContradictsRules = true;
          }
          // head right
          if ( correct[index].head > index && hasRightHead(m_lCache[index].tag.code())==false) {
-            TRACE("Rule contradiction: " << m_lCache[index].tag << " has right head.");
+            TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " has right head.");
             bContradictsRules = true;
          }
       }
@@ -583,7 +583,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
       for (index=0; index<length; ++index) {
          m_lCacheLabel.push_back(CDependencyLabel(correct[index].label));
          if (m_weights->rules() && !canAssignLabel(m_lCache, correct[index].head, index, m_lCacheLabel[index])) {
-            TRACE("Rule contradiction: " << correct[index].label << " on link head " << m_lCache[correct[index].head].tag << " dep " << m_lCache[index].tag);
+            TRACE("Rule contradiction: " << correct[index].label << " on link head " << m_lCache[correct[index].head].tag.code() << " dep " << m_lCache[index].tag.code());
             bContradictsRules = true;
          }
       }
