@@ -36,7 +36,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
    CCoNLLOutput ref_conll; 
 
    depparser::CSuperTag *supertags;
-   std::ifstream *is_supertags;
+   std::ifstream *is_supertags=0;
 
    supertags = 0;
    if (!sSuperPath.empty()) {

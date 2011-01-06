@@ -145,25 +145,41 @@ template<typename CTag>
 class CSetOfTags {
 
 protected:
-   unsigned long long m_code;
+   typedef unsigned char CBasicType;
+   const static unsigned long basic_size = sizeof(CBasicType)*8;
+   CBasicType m_code[CTag::MAX_COUNT/basic_size+1];
 
 public:
-   CSetOfTags() : m_code(0) {}
+   CSetOfTags() {
+      memset(m_code, 0, sizeof(m_code));
+//      for (unsigned i=0; i<sizeof(m_code)/sizeof(CBasicType); ++i)
+//         ASSERT(m_code[i]==0, "Initialize");
+   }
+   static unsigned long size() { return CTag::MAX_COUNT; }
 
 public:
-   void add(const CTag &tag) { m_code |= (1LL<<tag.code()); }
-   void remove(const CTag &tag) { m_code &= ~(1LL<<tag.code()); }
-   void clear() { m_code = 0LL; }
+   void add(const CTag &tag) { 
+      const unsigned long &bit = tag.code();
+      m_code[bit/basic_size] |= (static_cast<CBasicType>(1)<<(bit%basic_size)); 
+   }
+   void remove(const CTag &tag) { 
+      const unsigned long &bit = tag.code();
+      m_code[bit/basic_size] &= ~(static_cast<CBasicType>(1)<<(bit%basic_size)); 
+   }
+   void clear() { memset(m_code, 0, sizeof(m_code)); }
 
 public:
-   bool contains(const CTag &tag) const { return m_code & (1LL<<tag.code()); }
+   bool contains(const CTag &tag) const { 
+      const unsigned long &bit = tag.code();
+      return m_code[bit/basic_size] & (static_cast<CBasicType>(1)<<(bit%basic_size)); 
+   }
 
 public:
-   const unsigned long long &code() const { return m_code; }
-   const unsigned long long &hash() const { return m_code; }
+//   const unsigned long long &code() const { return m_code; }
+   unsigned long long hash() const { return static_cast<unsigned long long>(*m_code); }
 
 public:
-   bool operator == (const CSetOfTags &s) const { return m_code == s.m_code; }
+   bool operator == (const CSetOfTags &s) const { return memcmp(m_code, s.m_code, sizeof(m_code))==0; }
 };
 
 //==============================================================================
@@ -175,11 +191,12 @@ inline std::istream & operator >> (std::istream &is, CSetOfTags<CTag> &c) {
    CTag t;
    is >> s;
    assert(s=="[");
+   c.clear();
 
    is >> s;
    while (s!="]") {
      t.load(s);
-     ASSERT(t.code()<sizeof(unsigned long long)*8, "tagset.h: The number of tagsexceeds the capacity of CSetOfTags.");
+//     ASSERT(t.code()<sizeof(unsigned long long)*8, "tagset.h: The number of tagsexceeds the capacity of CSetOfTags.");
      c.add(t);
      is >> s;
    }
@@ -191,7 +208,7 @@ template<typename CTag>
 inline std::ostream & operator << (std::ostream &os, const CSetOfTags<CTag> &c) {
 
    os << "[ ";
-   for (unsigned i=0; i<sizeof(unsigned long long)*8; ++i) {
+   for (unsigned i=0; i<CTag::COUNT; ++i) {
       static CTag t;
       t.load(i);
       if (c.contains(t)) os << t << ' ';
