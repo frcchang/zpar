@@ -64,7 +64,7 @@ def ismorph(w1, w2):
       return False
    diff = wb[len(ws):]
    if len(ws) > len(diff):
-      return true
+      return True
    return False
 
 def getgroups(d, cutoff):
