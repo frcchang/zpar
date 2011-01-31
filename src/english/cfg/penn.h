@@ -34,7 +34,7 @@ const std::string PENN_CON_STRINGS[] = {
 
 enum PENN_CON_CONSTANTS {
    PENN_CON_NONE=0,
-   PENN_CON_BEGIN=0,
+   PENN_CON_BEGIN=1,
    PENN_CON_PENN_CON_S, PENN_CON_PENN_CON_SBAR, PENN_CON_PENN_CON_SBARQ, PENN_CON_PENN_CON_SINV, PENN_CON_PENN_CON_SQ, 
    PENN_CON_ADJP, PENN_CON_ADVP, 
    PENN_CON_CONJP, 
@@ -108,6 +108,7 @@ public:
    void load(const std::string &s) {
       m_code = PENN_CON_NONE ;
       bool bFound = false;
+      if (s.empty()) return;
       for (int i=0; i<PENN_CON_COUNT; ++i) {
          if (PENN_CON_STRINGS[i] == s) {
             m_code = i;

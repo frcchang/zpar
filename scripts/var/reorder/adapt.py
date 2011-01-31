@@ -39,37 +39,41 @@ def readAlign(path):
 
 #========================================
 
-def printOrderForNode(node):
+def __PrintOrderForNode(node):
    retval = []
    for left_child in node.left_children:
-      retval.extend(printOrderForNode(left_child))
+      retval.extend(__PrintOrderForNode(left_child))
    retval.append(str(node.extra))
    for right_child in node.right_children:
-      retval.extend(printOrderForNode(right_child))
+      retval.extend(__PrintOrderForNode(right_child))
    return retval
 
+# print the original index of the words in the current order
 def printOrder(tree):
-   retlst = printOrderForNode(tree.root)
+   retlst = __PrintOrderForNode(tree.root)
    retval = ' '.join(retlst)
    return retval
 
 #========================================
 
-def updateIndexForNode(node, index):
+def __updateIndexForNode(node, index):
    node.extra = node.word_index
    node.word_index = index
    return index+1
 
-def updateIndexForTree(node, index):
+def __updateIndexForTree(node, index):
    for left_child in node.left_children:
-      index = updateIndexForTree(left_child, index)
-   index = updateIndexForNode(node, index)
+      index = __updateIndexForTree(left_child, index)
+   index = __updateIndexForNode(node, index)
    for right_child in node.right_children:
-      index = updateIndexForTree(right_child, index)
+      index = __updateIndexForTree(right_child, index)
    return index
 
+# record the original index into 'extra'
+# post-processing after the whole reordering is done
+# word_index field updated with new order
 def updateIndex(tree):
-   updateIndexForTree(tree.root, 0)
+   __updateIndexForTree(tree.root, 0)
 
 #========================================
 
