@@ -43,8 +43,8 @@ CHINESE_TAGGER_IMPL = agenda
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = combined
-CHINESE_DEPPARSER_LABELED = false
+CHINESE_DEPPARSER_IMPL = arceager
+CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
