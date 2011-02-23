@@ -124,6 +124,9 @@ def readSent(path):
       # read sentence
       match = g_reDep.match(line)
       if not match:
+         if not (not line or line.startswith('<c>')):
+            print >>sys.stderr, 'Skipped line:', line
+            continue
          assert not line or line.startswith('<c>')
          if not line:
             yield words, links
