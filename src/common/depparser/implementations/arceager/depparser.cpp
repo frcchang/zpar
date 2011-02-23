@@ -217,12 +217,6 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0L2Di.getOrUpdateScore( retval, n0l2d_label, action, m_nScoreIndex, amount, round) ;
    }
 
-//   if (ht_index != -1&&ht_index!=st_index&&ht_index!=sth_index&&ht_index!=sthh_index) {
-//      cast_weights->m_mapHTw.getOrUpdateScore( retval, ht_word, action, m_nScoreIndex, amount, round ) ;
-//      cast_weights->m_mapHTt.getOrUpdateScore( retval, ht_tag, action, m_nScoreIndex, amount, round ) ;
-//      cast_weights->m_mapHTwt.getOrUpdateScore( retval, ht_word_tag, action, m_nScoreIndex, amount, round) ;
-//   }
-
    // s0 and n0
    if (st_index != -1) {
       cast_weights->m_mapSTwtN0wt.getOrUpdateScore( retval, st_word_tag_n0_word_tag, action, m_nScoreIndex, amount, round ); 
@@ -253,9 +247,6 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtSTRDtSTR2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,str2d_tag)), action, m_nScoreIndex, amount, round ) ; 
    }
-//   if (ht_index!=-1) {
-//      cast_weights->m_mapHTtHT2tN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(ht_tag,ht2_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-//   }
 
    // distance
    if (st_index!=-1 && n0_index!=-1) {
@@ -294,25 +285,25 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    // st labelset
-//   if (st_index != -1){//
-//      refer_or_allocate_tuple2(word_tagset, &st_word, &st_rtagset);
-//      cast_weights->m_mapSTwrp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
-//      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_rtagset);
-//      cast_weights->m_mapSTtrp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
-//
-//      refer_or_allocate_tuple2(word_tagset, &st_word, &st_ltagset);
-//      cast_weights->m_mapSTwlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
-//      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_ltagset);
-//      cast_weights->m_mapSTtlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
-//   }
+   if (st_index != -1){
+      refer_or_allocate_tuple2(word_tagset, &st_word, &st_rtagset);
+      cast_weights->m_mapSTwrp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_rtagset);
+      cast_weights->m_mapSTtrp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+
+      refer_or_allocate_tuple2(word_tagset, &st_word, &st_ltagset);
+      cast_weights->m_mapSTwlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_ltagset);
+      cast_weights->m_mapSTtlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+   }
 
    // n0 labelset
-//   if (n0_index != -1){//
-//      refer_or_allocate_tuple2(word_tagset, &n0_word, &n0_ltagset);
-//      cast_weights->m_mapN0wlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
-//      refer_or_allocate_tuple2(tag_tagset, &n0_tag, &n0_ltagset);
-//      cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
-//   }
+   if (n0_index != -1){
+      refer_or_allocate_tuple2(word_tagset, &n0_word, &n0_ltagset);
+      cast_weights->m_mapN0wlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(tag_tagset, &n0_tag, &n0_ltagset);
+      cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+   }
 
    if (m_bCoNLL) {
 
