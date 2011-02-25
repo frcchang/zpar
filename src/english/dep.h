@@ -3,11 +3,11 @@
 #define _ENGLISH_DEPLABEL_H
 
 #ifdef LABELED
-//#include "dependency/label/penn.h"
-#include "dependency/label/stanford.h"
+#include "dependency/label/penn.h"
+//#include "dependency/label/stanford.h"
 #endif
 
-//#include "dependency/rules/penn.h"
-#include "dependency/rules/stanford.h"
+#include "dependency/rules/penn.h"
+//#include "dependency/rules/stanford.h"
 
 #endif
