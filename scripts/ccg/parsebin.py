@@ -263,25 +263,28 @@ def shiftreduce(path):
 def findbasenp(path):
 
    def findbasenpfornode(node, ret):
-      if node.type == "token":
-         return
-      else:
-         if node.name == 'NP':
-            ret.append((node.leftmost_leaf.token, node.rightmost_leaf.token))
-         else:
-            findbasenpfornode(node.left_child, ret)
-            if node.right_child:
-               findbasenpfornode(node.right_child, ret)
+      # find nps from next level.
+      baser = False
+      if node.type == 'constituent':
+         if node.left_child:
+            baser |= findbasenpfornode(node.left_child, ret)
+         if node.right_child:
+            baser |= findbasenpfornode(node.right_child, ret)
+      # find current item
+      if not baser and node.name == 'NP':
+         ret.append((node.leftmost_leaf.token, node.rightmost_leaf.token))
+         baser=True
+      return baser
 
-   nps = []
    file = open(path)
    for line in file:
       if not line.strip(): continue
+      nps = []
       srctree = fromString(line)
       findbasenpfornode(srctree.root, nps)
+      print ' '.join(['/'.join(word) for word in zip(srctree.words, srctree.pos)])
+      print nps
    file.close()
-   print ' '.join(['/'.join(word) for word in zip(srctree.words, srctree.pos)])
-   print nps
 
 #=================================================
 
