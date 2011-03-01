@@ -128,6 +128,30 @@ def classify(node1, node, nPUBetween, model):
       bReorder = True
    return bReorder
 
+def getAlign(n, align):
+   indice = align.get(n, [])
+   if not indice:
+      return None
+   return indice[0]
+
+def allNodesUnderSubTree(node):
+   return range(node.leftmost_leaf.word_index, node.rightmost_leaf.word_index+1)
+
+def relativePosition(n1, n2, align):
+   left = 0
+   right = 0
+   for i1 in allNodesUnderSubTree(n1):
+      for i2 in allNodesUnderSubTree(n2):
+         a1 = getAlign(i1, align)
+         a2 = getAlign(i2, align)
+         if not a1 is None and not a2 is None:
+            if a1 < a2:
+               left += 1
+            else:
+               right += 1
+            assert a1 != a2
+   return left, right
+
 def crossLink(node1, node2, align):
    count = 0
    total = 0
@@ -138,7 +162,7 @@ def crossLink(node1, node2, align):
       return False
    head_index = indice[0]
 
-   for index in range(node1.leftmost_leaf.word_index, node1.rightmost_leaf.word_index):
+   for index in allNodesUnderSubTree(node1):
       indice = align.get(index, 0)
       if not indice:
          continue
