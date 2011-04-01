@@ -6,6 +6,8 @@
 #
 #****************************************************************
 
+from collections import defaultdict
+
 class CBinarizedTreeNode(object):
    __slots__ = ['type',        # 'constituent' / 'token'
                 'parent',      # parent
@@ -272,7 +274,7 @@ def findbasenp(path):
             baser |= findbasenpfornode(node.right_child, ret)
       # find current item
       if not baser and node.name == 'NP':
-         ret.append((node.leftmost_leaf.token, node.rightmost_leaf.token))
+         ret.append((node.leftmost_leaf.token, node.rightmost_leaf.token, node.head_leaf.token))
          baser=True
       return baser
 
@@ -284,6 +286,39 @@ def findbasenp(path):
       findbasenpfornode(srctree.root, nps)
       print ' '.join(['/'.join(word) for word in zip(srctree.words, srctree.pos)])
       print nps
+   file.close()
+
+def maxunary(path):
+
+   def maxunaryfornode(node, ret, seq):
+      # find nps from next level.
+      unary = 0
+      cat = ''
+      if node.type == 'constituent':
+         if node.left_child:
+            left, lcat = maxunaryfornode(node.left_child, ret, seq)
+         if node.right_child:
+            maxunaryfornode(node.right_child, ret, seq)
+         if node.head_child == 's':
+            unary = 1+left
+            cat = node.left_child.name
+      if unary > ret[0]:
+         ret[0] = unary
+         ret[1] = defaultdict(set)
+         ret[1][(node.name, node.left_child.name, lcat)].add(str(seq))
+      elif unary and unary == ret[0]:
+         ret[1][(node.name, node.left_child.name, lcat)].add(str(seq))
+      return unary, cat
+
+   file = open(path)
+   value = [0, set()]
+   seq = 0
+   for line in file:
+      if not line.strip(): continue
+      seq += 1
+      srctree = fromString(line)
+      maxunaryfornode(srctree.root, value, seq)
+   print value[0], '\n'.join([' '.join(key)+'   :   ['+' '.join(value[1][key])+']' for key in value[1]])
    file.close()
 
 #=================================================
@@ -300,6 +335,7 @@ if __name__ == '__main__':
       print '  findcatsforword'
       print '  shiftreduce'
       print '  findbasenp'
+      sys.exit(1)
 
    command = sys.argv[1]
    if command == 'findroots':
@@ -307,7 +343,7 @@ if __name__ == '__main__':
          print 'parsebin.py findroots file'
          sys.exit(1)
       findroots(sys.argv[2])
-   if command == 'findcatsforword':
+   elif command == 'findcatsforword':
       if len(sys.argv) != 4:
          print 'parsebin.py findcatsforword word file'
          sys.exit(1)
@@ -322,6 +358,11 @@ if __name__ == '__main__':
          print 'parsebin.py findbasenp file'
          sys.exit(1)
       findbasenp(sys.argv[2])
+   elif command == 'maxunary':
+      if len(sys.argv) != 3:
+         print 'parsebin.py maxunary file'
+         sys.exit(1)
+      maxunary(sys.argv[2])
    else:
       print 'parsebin.py command'
       print 'commands:'

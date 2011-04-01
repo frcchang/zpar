@@ -36,6 +36,7 @@ class CDep(object):
          #
          index += 1
       self.updateSize(self.root)
+      self.nodes = nodes
 
    def updateSize(self, node):
       node.size=0
