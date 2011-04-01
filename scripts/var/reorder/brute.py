@@ -86,7 +86,7 @@ def getAlignedNodes(node, align, align_cache):
       ret.append(getAlignedNode(i, align, align_cache))
    return ret
 
-def getAlignedNode(i, align, align_cache)):
+def getAlignedNode(i, align, align_cache):
    if align_cache[i] == -2:
       j = align.get(i, [])
       if j:
@@ -110,12 +110,13 @@ def onTheLeft(x, y):
 def reorderNode(node, align, model, align_cache, bDebug):
    src = []
    tgt = []
-   head_index = node.word_index
    for left_child in node.left_children:
+      left_child.extra = True
       reorderNode(left_child, align, model, align_cache, bDebug)
       src.append((left_child, getAlignedNodes(left_child, align, align_cache)))
-   src.append((node, [getAlignedNode(node, align, aclign_cache)]))
+   src.append((node, [getAlignedNode(node.word_index, align, align_cache)]))
    for right_child in node.right_children:
+      right_child.extra = False
       reorderNode(right_child, align, model, align_cache, bDebug)
       src.append((right_child, getAlignedNodes(right_child, align, align_cache)))
 
@@ -123,27 +124,33 @@ def reorderNode(node, align, model, align_cache, bDebug):
       n = 0
       for tgt_node, tgt_aligned_nodes in tgt:
          if onTheLeft(src_aligned_nodes, tgt_aligned_nodes):
-            tgt.insert(n, (src_node, src_aligned_nodes))
+            break
          n += 1
+      tgt.insert(n, (src_node, src_aligned_nodes))
 
+   head_index = node.word_index
    left_children = []
    right_children = []
    left = True
-   for node, aligned_node in tgt:
+   for tgt_node, tgt_aligned_node in tgt:
       if left:
-         if node.word_index == head_index:
+         if tgt_node.word_index == head_index:
             left = False
          else:
-            left_children.append(node)
+            left_children.append(tgt_node)
       else:
-         right_children.append(node)
+         if tgt_node.extra:
+            if tgt_node.pos in ['DEC', 'DEG']:
+               tgt_node.token = tgt_node.token + '*'
+         right_children.append(tgt_node)
    node.left_children = left_children
    node.right_children = right_children
 
 def reorder(tree, align, model, bDebug):
-   assert (align != None and model.bTrain) or (align == None and not model.bTrain)
-   align_cache = [-2]*len(tree.nodes)
-   reorderNode(tree.root, align, model, align_cache, bDebug)
+#   assert (align != None and model.bTrain) or (align == None and not model.bTrain)
+   if align:
+      align_cache = [-2]*len(tree.nodes)
+      reorderNode(tree.root, align, model, align_cache, bDebug)
    updateIndex(tree)
 
 #========================================
@@ -180,7 +187,7 @@ if __name__ == '__main__':
       model = readModel(args[1], True)
       alignFile = readAlign(args[2]) 
    elif sInput == 'c':
-      model = readModel(args[1], False)
+      model = None #readModel(args[1], False)
    else:
       print 'The input format is invalid'
       sys.exit(0)
