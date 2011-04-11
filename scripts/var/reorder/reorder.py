@@ -72,14 +72,14 @@ def reorderVV(node):
       if left_child.pos=='PU': # don't move cross PU
          bPUFound = True
       if bPUFound == False and left_child.pos in ['P', 'LC', 'NT', 'M', 'CD', 'OD']:
-         #index = 0
+         index = 0
          #for index in range(len(node.right_children)):
          #   if compare(left_child, node.right_children[index])==1:
          #      break
          #else:
          #   index += 1
-         #node.right_children.insert(index, left_child)
-      #else:
+         node.right_children.insert(index, left_child)
+      else:
          left_children.insert(0, left_child)
    node.left_children = left_children
 
