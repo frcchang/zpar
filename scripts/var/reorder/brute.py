@@ -142,6 +142,8 @@ def reorderNode(node, align, model, align_cache, bDebug):
          if tgt_node.extra:
             if tgt_node.pos in ['DEC', 'DEG']:
                tgt_node.token = tgt_node.token + '*'
+               tgt_node.right_children.extend(tgt_node.left_children)
+               tgt_node.left_children = []
          right_children.append(tgt_node)
    node.left_children = left_children
    node.right_children = right_children
