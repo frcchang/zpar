@@ -108,6 +108,8 @@ def onTheLeft(x, y):
    return left > right
 
 def reorderNode(node, align, model, align_cache, bDebug):
+   if not node.pos in ['VV', 'NN', 'NR', 'LC']:
+      return
    src = []
    tgt = []
    for left_child in node.left_children:
