@@ -230,6 +230,12 @@ public:
       }
    }
 
+   void copyDependencyLabels(const CLabeledDependencyTree &input) {
+      for (unsigned i=0; i<input.size(); ++i) {
+         at(i).label = input.at(i).label;
+      }
+   }
+
    void toDependencyTree(CDependencyTree &out) const {
       out.clear();
       for (unsigned i=0; i<size(); ++i) {
