@@ -114,7 +114,7 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
  *
  *==============================================================*/
 
-void depparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath, bool bLabeled) {
+void depparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
    std::cout << "Parsing started" << std::endl;
    int time_start = clock();
    std::ostream *outs; if (sOutputFile=="") outs=&std::cout; else outs = new std::ofstream(sOutputFile.c_str()); 
@@ -125,17 +125,17 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/depparser");
-   if (bLabeled && !FileExists(sLabelerFeatureFile))
-      THROW("Labeler model does not exists. It should be put at model_path/deplabeler");
+//   if (bLabeled && !FileExists(sLabelerFeatureFile))
+//      THROW("Labeler model does not exists. It should be put at model_path/deplabeler");
    std::cout << "[POS tagging module] "; std::cout.flush();
    CTagger tagger(sTaggerFeatureFile, false);
    std::cout << "[Parsing module] "; std::cout.flush();
    CDepParser depparser(sParserFeatureFile, false);
    CDepLabeler *deplabeler = 0;
-   if (bLabeled) {
-      std::cout << "[Labeling module] "; std::cout.flush();
-      deplabeler = new CDepLabeler(sLabelerFeatureFile, false);
-   }
+//   if (bLabeled) {
+//      std::cout << "[Labeling module] "; std::cout.flush();
+//      deplabeler = new CDepLabeler(sLabelerFeatureFile, false);
+//   }
    CSentenceReader input_reader(sInputFile);
    CStringVector input_sent;
    CTwoStringVector tagged_sent; 
@@ -154,18 +154,19 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
          input_sent.pop_back();
       }
       tagger.tag(&input_sent, &tagged_sent, 1, NULL);
-      depparser.parse(tagged_sent, &parsed_sent, 1, NULL);
-      if (bLabeled) {
-         deplabeler->label(parsed_sent, &labeled_sent);
+      depparser.parse(tagged_sent, &labeled_sent, 1, NULL);
+      (*outs) << labeled_sent;
+//      if (bLabeled) {
+//         deplabeler->label(parsed_sent, &labeled_sent);
          // Ouptut sent
-         (*outs) << labeled_sent;
-      }
-      else {
-         (*outs) << parsed_sent;
-      }
+//         (*outs) << labeled_sent;
+//      }
+//      else {
+//         (*outs) << parsed_sent;
+//      }
    }
 
-   if (bLabeled) delete deplabeler;
+//   if (bLabeled) delete deplabeler;
 
    if (sOutputFile!="") delete outs;
    std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
@@ -181,7 +182,7 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("o", "{t|d|u|c}", "outout format; 't' pos-tagged format in sentences, 'd' refers to labeled dependency tree format, 'u' refers to unlabeled dependency tree format, and 'c' refers to constituent parse tree format", "d");
+      configurations.defineConfiguration("o", "{t|d|c}", "outout format; 't' pos-tagged format in sentences, 'd' refers to labeled dependency tree format, and 'c' refers to constituent parse tree format", "d");
 
       if (options.args.size() < 2 || options.args.size() > 4) {
          std::cout << "\nUsage: " << argv[0] << " feature_path [input_file [outout_file]]" << std::endl;
@@ -202,9 +203,7 @@ int main(int argc, char* argv[]) {
       if (sOutFormat == "c" )
           parse(sInputFile, sToFile, options.args[1]);
       if (sOutFormat == "d" )
-          depparse(sInputFile, sToFile, options.args[1], true);
-      if (sOutFormat == "u" )
-          depparse(sInputFile, sToFile, options.args[1], false);
+          depparse(sInputFile, sToFile, options.args[1]);
       return 0;
    } catch(const std::string&e) {std::cerr<<"Error: "<<e<<std::endl;return 1;}
 }

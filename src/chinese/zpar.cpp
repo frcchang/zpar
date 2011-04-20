@@ -79,7 +79,7 @@ void tag(const std::string sInputFile, const std::string sOutputFile, const std:
 void parse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
    std::cout << "Initializing ZPar..." << std::endl;
    int time_start = clock();
-   std::ostream *std::couts; if (sOutputFile=="") std::couts=&std::cout; else std::couts = new std::ofstream(sOutputFile.c_str()); 
+   std::ostream *outs; if (sOutputFile=="") outs=&std::cout; else outs = new std::ofstream(sOutputFile.c_str()); 
    std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
    std::string sParserFeatureFile = sFeaturePath + "/conparser";
    if (!FileExists(sTaggerFeatureFile))
@@ -111,14 +111,14 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
       tagger.tag(input_sent, tagged_sent, NULL, 1);
       conparser.parse(*tagged_sent, outout_sent);
       // Ouptut sent
-      (*std::couts) << outout_sent->str_unbinarized() << std::endl;
+      (*outs) << outout_sent->str_unbinarized() << std::endl;
       input_sent->clear();
    }
    delete input_sent;
    delete tagged_sent;
    delete outout_sent;
 
-   if (sOutputFile!="") delete std::couts;
+   if (sOutputFile!="") delete outs;
    std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
@@ -131,7 +131,7 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
 void depparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
    std::cout << "Initializing ZPar..." << std::endl;
    int time_start = clock();
-   std::ostream *std::couts; if (sOutputFile=="") std::couts=&std::cout; else std::couts = new std::ofstream(sOutputFile.c_str()); 
+   std::ostream *outs; if (sOutputFile=="") outs=&std::cout; else outs = new std::ofstream(sOutputFile.c_str()); 
    std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
    std::string sParserFeatureFile = sFeaturePath + "/depparser";
    if (!FileExists(sTaggerFeatureFile))
@@ -146,7 +146,7 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *tagged_sent = new CTwoStringVector; 
-   CDependencyTree *outout_sent = new CDependencyTree; 
+   CLabeledDependencyTree *outout_sent = new CLabeledDependencyTree; 
    std::cout << "ZPar initialized." << std::endl; std::cout.flush();
 
    unsigned nCount=0;
@@ -163,14 +163,14 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
       tagger.tag(input_sent, tagged_sent, NULL, 1);
       depparser.parse(*tagged_sent, outout_sent);
       // Ouptut sent
-      (*std::couts) << *outout_sent;
+      (*outs) << *outout_sent;
       input_sent->clear();
    }
    delete input_sent;
    delete tagged_sent;
    delete outout_sent;
 
-   if (sOutputFile!="") delete std::couts;
+   if (sOutputFile!="") delete outs;
    std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 

@@ -54,7 +54,7 @@ $(OBJECT_DIR)/cfg.ge.o: $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/cfg/ge
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/cfg/generic.cpp -o $@
 
 # the constituent
-$(OBJECT_GENERIC_CONPARSER)/constituent.o: $(OBJECT_GENERIC_CONPARSER) $(SRC_GENERIC)/cfg.h $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_LIBS)/linguistics/constituent.cpp
+$(OBJECT_DIR)/constituent.ge.o: $(OBJECT_GENERIC_CONPARSER) $(SRC_GENERIC)/cfg.h $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_LIBS)/linguistics/constituent.cpp
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/constituent.cpp -o $@
 
 #===================================================================
@@ -125,14 +125,14 @@ $(OBJECT_DIR)/generic.conparser.o: $(SRC_INCLUDES)/linguistics/constituent.h $(S
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/generic.conparser.o
 
 # the main executable
-$(DIST_GENERIC_CONPARSER)/conparser: $(SRC_GENERIC_CONPARSER)/main.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECTS)
+$(DIST_GENERIC_CONPARSER)/conparser: $(SRC_GENERIC_CONPARSER)/main.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/constituent.ge.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/main.cpp -o $(OBJECT_GENERIC_CONPARSER)/main.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/conparser $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/main.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/conparser $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/main.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
 
 # the trainer for conparser
-$(DIST_GENERIC_CONPARSER)/train: $(SRC_GENERIC_CONPARSER)/train.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECTS) $(OBJECT_GENERIC_CONPARSER)/constituent.o
+$(DIST_GENERIC_CONPARSER)/train: $(SRC_GENERIC_CONPARSER)/train.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECTS) $(OBJECT_DIR)/constituent.ge.o
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/train.cpp -o $(OBJECT_GENERIC_CONPARSER)/train.o
-	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
 
 #===================================================================
 
@@ -168,8 +168,8 @@ $(DIST_GENERIC_DEPLABELER)/train: $(SRC_COMMON_DEPLABELER)/train.cpp $(OBJECT_DI
 
 #===================================================================
 
-zpar.ge: $(OBJECT_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(DIST_DIR) $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECTS)
+zpar.ge: $(OBJECT_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(DIST_DIR) $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic $(GENERIC_DEPPARSER_D) -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -I$(SRC_GENERIC_DEPLABELER) -I$(SRC_GENERIC_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL) -c $(SRC_GENERIC)/zpar.ge.cpp -o $(OBJECT_DIR)/zpar.ge.o
-	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar.ge $(OBJECT_DIR)/zpar.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/constituent.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
+	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar.ge $(OBJECT_DIR)/zpar.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 	@echo The generic zpar.ge system compiled successfully into $(DIST_DIR).
 
