@@ -64,6 +64,17 @@ def updateIndex(tree):
 
 #========================================
 
+def addRight(right_children, left_child):
+   dOrder = {'P' : 1, 'LC' : 2, 'M' : 3, 'CD' : 3, 'OD' : 3, 'NT' : 4}
+   index = 0
+   for right_child in right_children:
+      if dOrder[left_child.pos] < dOrder[right_child.pos]:
+         break
+      index += 1
+   right_children.insert(index, left_child)
+
+#========================================
+
 def reorderVV(node):
    left_children = []
    bPUFound = False
@@ -97,7 +108,7 @@ def reorderNN(node):
 def reorderDEG(node):
    node.right_children.extend(node.left_children)
    node.left_children = []
-   node.token = node.token+'*'
+##   node.token = node.token+'*'
 #   while node.left_children:
 #      left_child = node.left_children.pop(0)
 #      node.right_children.insert(0, left_child)

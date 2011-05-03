@@ -77,7 +77,7 @@ def updateIndex(tree):
 
 #========================================
 
-def feat(node1, node, nPUBetween):
+def feat(node1, node, nPUBetween, nDist):
    def normalize(i):
       if i > 10: return '10'
       elif i > 5: return '5'
@@ -90,6 +90,7 @@ def feat(node1, node, nPUBetween):
    modifier_pos = node1.pos
    modifier_size = normalize(node1.size)
    pu_between = normalize(nPUBetween)
+   dist = normalize(nDist)
    modifier_lmod_word = "-NONE-"
    modifier_lmod_pos = "-NONE-"
    if node1.left_children:
@@ -111,19 +112,21 @@ def feat(node1, node, nPUBetween):
       modifier_rleaf_word = node1.rightmost_leaf.token
       modifier_rleaf_pos = node1.rightmost_leaf.pos
    #return [head_word, head_pos, head_size, modifier_word, modifier_pos, modifier_size, pu_between, modifier_lmod_word, modifier_lmod_pos, modifier_rmod_word, modifier_rmod_pos, modifier_lleaf_word, modifier_lleaf_pos, modifier_rleaf_word, modifier_rleaf_pos, node_reordered]
-   return [head_pos, head_size, modifier_pos, modifier_size, pu_between, modifier_lmod_pos, modifier_rmod_pos, modifier_lleaf_pos, modifier_rleaf_pos, node_reordered]
+   #return [head_pos, head_size, modifier_pos, modifier_size, pu_between, modifier_lmod_pos, modifier_rmod_pos, modifier_lleaf_pos, modifier_rleaf_pos, node_reordered]
+   return [head_pos, head_size, modifier_pos, modifier_size, pu_between, dist, node_reordered]
 
-def recordOrder(bReorder, node1, node, nPUBetween, model):
+def recordOrder(bReorder, node1, node, nPUBetween, nDist, model):
 #   model.setFeatureDefs(['head_word', 'head_pos', 'head_size', 'modifier_word', 'modifier_pos', 'modifier_size', 'pu_between', 'modifier_lmod_word', 'modifier_lmod_pos', 'modifier_rmod_word', 'modifier_rmod_pos', 'modifier_lleaf_word', 'modifier_lleaf_pos', 'modifier_rleaf_word', 'modifier_rleaf_pos', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'class'])
-   model.setFeatureDefs(['head_pos', 'head_size', 'modifier_pos', 'modifier_size', 'pu_between', 'modifier_lmod_pos', 'modifier_rmod_pos', 'modifier_lleaf_pos', 'modifier_rleaf_pos', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', '', '', '', 'class'])
-   feature = feat(node1, node, nPUBetween)
+#   model.setFeatureDefs(['head_pos', 'head_size', 'modifier_pos', 'modifier_size', 'pu_between', 'modifier_lmod_pos', 'modifier_rmod_pos', 'modifier_lleaf_pos', 'modifier_rleaf_pos', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', '', '', '', 'class'])
+   model.setFeatureDefs(['head_pos', 'head_size', 'modifier_pos', 'modifier_size', 'pu_between', 'dist', 'reorder'], ['d', 'd', 'd', 'd', 'd', 'd', 'd'], ['', '', '', '', '', '', 'class'])
+   feature = feat(node1, node, nPUBetween, nDist)
    if bReorder:
       feature[-1] = 'y'
    model.addExample(feature)
 
-def classify(node1, node, nPUBetween, model):
+def classify(node1, node, nPUBetween, nDist, model):
    bReorder = False
-   feature = feat(node1, node, nPUBetween)
+   feature = feat(node1, node, nPUBetween, nDist)
    if str(model.predict(feature)) == 'y':
       bReorder = True
    return bReorder
@@ -133,6 +136,15 @@ def getAlign(n, align):
    if not indice:
       return None
    return indice[0]
+
+def nodeToRaw(node):
+   retval = []
+   for left_child in node.left_children:
+      retval.extend(nodeToRaw(left_child))
+   retval.append(node.token)
+   for right_child in node.right_children:
+      retval.extend(nodeToRaw(right_child))
+   return retval
 
 def allNodesUnderSubTree(node):
    return range(node.leftmost_leaf.word_index, node.rightmost_leaf.word_index+1)
@@ -156,6 +168,10 @@ def crossLink(node1, node2, align):
    count = 0
    total = 0
 
+#   print 'crossLink'
+#   print ' '.join(nodeToRaw(node1))
+#   print node2.token
+
    # do not crosslink if head non
    indice = align.get(node2.word_index, [])
    if not indice:
@@ -170,6 +186,8 @@ def crossLink(node1, node2, align):
       if indice[0] > head_index:
          count += 1
 
+#   print count, total
+
    # do not crosslink if non
    if not total:
       return False
@@ -178,44 +196,34 @@ def crossLink(node1, node2, align):
       return True
    return False
 
+def insertRight(node, left_child, bDebug):
+   if bDebug:
+      extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
+      node.right_children.insert(0, extra)
+
+   # insert
+   node.right_children.insert(0, left_child)
+
+   if bDebug:
+      extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
+      node.right_children.insert(0, extra)
+
 def reorderVV(node, align, model, bDebug):
    left_children = []
    nPUBetween = 0
+   nDist = 0
    while node.left_children:
 
       left_child = node.left_children.pop(-1) # for each left
+      nDist += 1
       bReorder = False
 
-      if left_child.pos in ['P']:
+      if left_child.pos in ['P', 'NT', 'M', 'CD', 'OD']:
          if ( align != None and crossLink(left_child, node, align) )\
-            or ( align == None and classify(left_child, node, nPUBetween, model) ):
-
-            if bDebug:
-               extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
-               node.right_children.append(extra)
-
-            # append
-            node.right_children.append(left_child)
-
-            if bDebug:
-               extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
-               node.right_children.append(extra)
-
+            or ( align == None and classify(left_child, node, nPUBetween, nDist, model) ):
+            insertRight(node, left_child, bDebug)
             bReorder = True
-      elif left_child.pos in ['NT', 'M', 'CD', 'OD']:
-         if ( align != None and crossLink(left_child, node, align) )\
-            or ( align == None and classify(left_child, node, nPUBetween, model) ):
-            if bDebug:
-               extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
-               node.right_children.insert(0, extra)
 
-            # insert
-            node.right_children.insert(0, left_child)
-
-            if bDebug:
-               extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
-               node.right_children.insert(0, extra)
-            bReorder = True
       elif left_child.pos in ['PU']:
          nPUBetween += 1
 
@@ -223,27 +231,23 @@ def reorderVV(node, align, model, bDebug):
          left_children.insert(0, left_child)
 
       if align != None:
-         recordOrder(bReorder, left_child, node, nPUBetween, model)
+         recordOrder(bReorder, left_child, node, nPUBetween, nDist, model)
 
    node.left_children = left_children
 
 def reorderNN(node, align, model, bDebug):
    left_children = []
    nPUBetween = 0
+   nDist = 0
    while node.left_children:
       left_child = node.left_children.pop(-1) # for each left
+      nDist += 1
       bReorder = False
       if left_child.pos == 'DEC' or left_child.pos == 'DEG':
          if ( align != None and crossLink(left_child, node, align) )\
-            or ( align == None and classify(left_child, node, nPUBetween, model) ):
+            or ( align == None and classify(left_child, node, nPUBetween, nDist, model) ):
             reorderDE(left_child, align, model)
-            if bDebug:
-               extra = dep.CDepNode(); extra.token=')'; extra.pos=""; extra.word_index=-1
-               node.right_children.insert(0, extra)
-            node.right_children.insert(0, left_child)
-            if bDebug:
-               extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
-               node.right_children.insert(0, extra)
+            insertRight(node, left_child, bDebug)
             bReorder =  True
       elif left_child.pos == 'PU':
          nPUBetween += 1
@@ -252,7 +256,7 @@ def reorderNN(node, align, model, bDebug):
          left_children.insert(0, left_child)
 
       if align != None:
-         recordOrder(bReorder, left_child, node, nPUBetween, model)
+         recordOrder(bReorder, left_child, node, nPUBetween, nDist, model)
 
    node.left_children = left_children
 
@@ -291,30 +295,6 @@ def reorder(tree, align, model, bDebug):
 
 #========================================
 
-def posCompare(pos1, pos2):
-   order = {'PU':-1, 'NN':10, 'AS':11}
-   return cmp(order.get(pos1, 0), order.get(pos2, 0))
-
-def sizeCompare(node1, node2):
-   if node1.size > 1.5*node2.size: # significantly smaller
-      return -1 # nearer
-   if node2.size > 1.5*node1.size:
-      return 1
-   return 0
-
-def compare(node1, node2):
-   retval = posCompare(node1.pos,node2.pos)
-   if retval:
-      return retval
-   retval = sizeCompare(node1, node2)
-   return retval
-
-def deg(node):
-   assert node.pos == 'DEG'
-   for left_child in node.left_children:
-      if left_child.pos == 'JJ':
-         return False
-   return True
 
 #========================================
 
