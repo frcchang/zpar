@@ -37,6 +37,9 @@ class CWord(object):
       self.align = align
       self.word = word
       self.next = []
+      self.index = -1
+      if self.align:
+         self.index = self.align[0]
 
 def filter(source, align):
    source_sentences = readSource(source)
