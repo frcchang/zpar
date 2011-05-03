@@ -54,6 +54,10 @@ def printOrder(tree):
    retval = ' '.join(retlst)
    return retval
 
+def listOrder(tree):
+   retlst = __PrintOrderForNode(tree.root)
+   return retlst
+
 #========================================
 
 def __updateIndexForNode(node, index):

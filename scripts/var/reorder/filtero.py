@@ -7,7 +7,7 @@ def readSource(path):
    file = open(path)
    for line in file:
       yield line[:-1].split()
-   close(file)
+   file.close()
 
 def readAlign(path):
    retval = {}
@@ -42,10 +42,9 @@ class CWord(object):
          self.index = self.align[0]
 
 def filter(source, align):
-   source_sentences = readSource(source)
    alignments = readAlign(align)
    # for each sentence...
-   for sentence in source_sentences:
+   for sentence in readSource(source):
       alignment = alignments.next() # iterator
       heads = [] # the front non-aligned words
       words = []
@@ -80,9 +79,9 @@ def filter(source, align):
                   total += 1
                   if ai > aj:
                      cross += 1
-      if cross > float(total)*0.5:
-         print 0
-      else: print ' '.join(source_sentences)
+      if cross > float(total)*0.1:
+         print 0, ' '.join(sentence)
+      else: print ' '.join(sentence)
 
 #========================================
 
