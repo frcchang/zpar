@@ -43,7 +43,7 @@ def __PrintOrderForNode(node):
    retval = []
    for left_child in node.left_children:
       retval.extend(__PrintOrderForNode(left_child))
-   retval.append(str(node.extra))
+   retval.append(node.extra)
    for right_child in node.right_children:
       retval.extend(__PrintOrderForNode(right_child))
    return retval
@@ -51,7 +51,7 @@ def __PrintOrderForNode(node):
 # print the original index of the words in the current order
 def printOrder(tree):
    retlst = __PrintOrderForNode(tree.root)
-   retval = ' '.join(retlst)
+   retval = ' '.join(map(sre, retlst))
    return retval
 
 def listOrder(tree):

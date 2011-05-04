@@ -18,17 +18,22 @@ def filter(dep, align):
       else:
          l.append(-1)
 
-   total = 0
-   count = 0
+   total = 0 # the total number of links
+   count = 0 # the number of crossing links
+   empty = 0 # the number of no align word
    for i in range(len(l)):
       if l[i] != -1:
-         for j in range(i+1., len(l)):
+         for j in range(i+1, len(l)):
             if l[j] != -1:
                total += 1
                if l[i] > l[j]:
                   count += 1
+      else:
+         empty += 1
 
-   if count > float(total) * 0.1:
+   if empty > float(len(l)) * 0.3:
+      print 0, 0, dep.toRaw()
+   elif count > float(total) * 0.3:
       print 0, dep.toRaw()
    else:
       print dep.toRaw()
