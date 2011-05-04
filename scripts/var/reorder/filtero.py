@@ -79,7 +79,7 @@ def filter(source, align):
                   total += 1
                   if ai > aj:
                      cross += 1
-      if cross > float(total)*0.1:
+      if cross > float(total)*0.2:
          print 0, ' '.join(sentence)
       else: print ' '.join(sentence)
 
