@@ -1,0 +1,38 @@
+# currently support sr implementations 
+GENERIC_CCGPARSER_IMPL = sr
+GENERIC_CCGPARSER_D = -DNO_TEMP_CONSTITUENT -DGENERIC_CONLABEL_SIZE=12 -DFRAGMENTED_TREE
+
+#===================================================================
+
+SRC_GENERIC_CCGPARSER = $(SRC_COMMON_CONPARSER)
+DIST_GENERIC_CCGPARSER = $(DIST_DIR)/generic.ccgparser
+OBJECT_GENERIC_CCGPARSER = $(OBJECT_DIR)/generic.ccgparser
+
+#===================================================================
+
+$(DIST_GENERIC_CCGPARSER):
+	mkdir $(DIST_GENERIC_CCGPARSER)
+$(OBJECT_GENERIC_CCGPARSER):
+	mkdir $(OBJECT_GENERIC_CCGPARSER)
+generic.ccgparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_GENERIC_CCGPARSER) $(DIST_GENERIC_CCGPARSER) $(DIST_GENERIC_CCGPARSER)/conparser $(DIST_GENERIC_CCGPARSER)/train 
+	@echo The generic CCG parser system is compiled successfully into $(DIST_GENERIC_CCGPARSER).
+
+# the weight module
+$(OBJECT_GENERIC_CCGPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/weight_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/weight.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/weight.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) $(GENERIC_CCGPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/weight.cpp -o $(OBJECT_GENERIC_CCGPARSER)/weight.o
+
+# the conparser object
+$(OBJECT_DIR)/generic.ccgparser.o: $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER)/conparser_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/conparser.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/conparser.cpp $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/stateitem.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/rule.h ./Makefile
+	$(CXX) $(CXXFLAGS) $(GENERIC_CCGPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/generic.ccgparser.o
+
+# the main executable
+$(DIST_GENERIC_CCGPARSER)/conparser: $(SRC_GENERIC_CCGPARSER)/main.cpp $(OBJECT_DIR)/generic.ccgparser.o $(OBJECT_GENERIC_CCGPARSER)/weight.o $(OBJECT_DIR)/constituent.ge.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(GENERIC_CCGPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CCGPARSER) -I$(SRC_GENERIC_CCGPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL) -c $(SRC_GENERIC_CCGPARSER)/main.cpp -o $(OBJECT_GENERIC_CCGPARSER)/main.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CCGPARSER)/conparser $(OBJECT_DIR)/generic.ccgparser.o $(OBJECT_GENERIC_CCGPARSER)/weight.o $(OBJECT_GENERIC_CCGPARSER)/main.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
+
+# the trainer for conparser
+$(DIST_GENERIC_CCGPARSER)/train: $(SRC_GENERIC_CCGPARSER)/train.cpp $(OBJECT_DIR)/generic.ccgparser.o $(OBJECT_GENERIC_CCGPARSER)/weight.o $(OBJECTS) $(OBJECT_DIR)/constituent.ge.o
+	$(CXX) $(CXXFLAGS) $(GENERIC_CCGPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CCGPARSER) -I$(SRC_GENERIC_CCGPARSER)/implementations/$(GENERIC_CCGPARSER_IMPL) -c $(SRC_GENERIC_CCGPARSER)/train.cpp -o $(OBJECT_GENERIC_CCGPARSER)/train.o
+	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CCGPARSER)/train $(OBJECT_DIR)/generic.ccgparser.o $(OBJECT_GENERIC_CCGPARSER)/weight.o $(OBJECT_GENERIC_CCGPARSER)/train.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
+
+

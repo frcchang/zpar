@@ -20,6 +20,7 @@
 #include "linkedlist.h"
 #include "linguistics/word_tokenized.h"
 #include "english/tags.h"
+#include "hash.h"
 
 class A {
 public:
@@ -187,7 +188,7 @@ void testinitializer() {
 }
 
 void testhashmap(const char *f) {
-   CHashMap<CWord, english::CTag> map(65536);
+   CHashMap<CWord, int> map(65536);
    std::ifstream i(f);
    i>>map;
    i.close();
