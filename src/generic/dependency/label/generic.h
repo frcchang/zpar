@@ -43,7 +43,7 @@ public:
    enum {NONE = 0};
    enum {ROOT = 1};
    enum {FIRST = 2};
-   enum {SIZE = 8};
+   enum {SIZE = 12};
    enum {MAX_COUNT = 1<<SIZE};
    static unsigned long COUNT;
    static unsigned long LAST;
@@ -80,8 +80,9 @@ public:
       }
       m_code=getTokenizer().lookup(s); 
       COUNT = getTokenizer().count();
+      TRACE_IF(COUNT>LAST+1, "New label:"<<this->str());
       LAST = COUNT-1;
-      assert((1<<SIZE)>COUNT);
+      ASSERT((1<<SIZE)>COUNT, "Too many labels.");
    }
    void load(const unsigned long &u) {
       m_code = u;

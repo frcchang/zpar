@@ -14,23 +14,9 @@
 
 #include "tokenizer.h"
 
-namespace TARGET_LANGUAGE {
+namespace generic {
 
-/*===============================================================
- *
- * the tokenizer
- *
- *==============================================================*/
-
-class CTagTokenizer : public CTokenizer<std::string, 251> {
-   public: 
-      CTagTokenizer() : CTokenizer<std::string, 251>(0/*reserve for NONE BEGIN END*/) {
-         lookup("-NONE-");
-         lookup("-BEGIN-");
-         lookup("-END-");
-      } 
-      virtual ~CTagTokenizer() {}
-};
+const char TAG_SEPARATOR = '/';
 
 /*===============================================================
  *
@@ -39,6 +25,23 @@ class CTagTokenizer : public CTokenizer<std::string, 251> {
  *==============================================================*/
 
 class CTag {
+
+   /*===============================================================
+    *
+    * the tokenizer
+    *
+    *==============================================================*/
+   
+   class CTagTokenizer : public CTokenizer<std::string, 251> {
+      public: 
+         CTagTokenizer() : CTokenizer<std::string, 251>(0/*reserve for NONE BEGIN END*/) {
+            lookup("-NONE-");
+            lookup("-BEGIN-");
+            lookup("-END-");
+         } 
+         virtual ~CTagTokenizer() {}
+   };
+
 public:
    enum {NONE = 0};
    enum {SENTENCE_BEGIN = 1};
@@ -98,7 +101,21 @@ public:
 
 };
 
-inline const unsigned long &hash(const TARGET_LANGUAGE::CTag &tag) {return tag.code(); }
+inline const unsigned long &hash(const generic::CTag &tag) {return tag.code(); }
+
+//===============================================================
+
+inline std::istream & operator >> (std::istream &is, generic::CTag &tag) {
+   std::string s;
+   is >> s;
+   tag.load(s);
+   return is;
+}
+
+inline std::ostream & operator << (std::ostream &os, const generic::CTag &tag) {
+   os << tag.str() ;
+   return os;
+}
 
 #endif
 

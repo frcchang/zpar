@@ -14,25 +14,5 @@
 
 #include "pos/generic.h"
 
-namespace generic {
-
-const char TAG_SEPARATOR = '/';
-
-}; // namespace generic
-
-//===============================================================
-
-inline std::istream & operator >> (std::istream &is, generic::CTag &tag) {
-   std::string s;
-   is >> s;
-   tag.load(s);
-   return is;
-}
-
-inline std::ostream & operator << (std::ostream &os, const generic::CTag &tag) {
-   os << tag.str() ;
-   return os;
-}
-
 #endif
 
