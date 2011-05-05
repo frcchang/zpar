@@ -57,9 +57,11 @@
 #ifdef DEBUG 
 #define TRACE(x) { std::cout << x << std::endl; std::cout.flush(); }
 #define TRACE_WORD(x) { std::cout << x; std::cout.flush(); }
+#define TRACE_IF(x, y) { if (x) { std::cout << y << std::endl; std::cout.flush(); } }
 #else
 #define TRACE(x) 
 #define TRACE_WORD(x)
+#define TRACE_IF(x, y)
 #endif
 
 // conditional compiling
