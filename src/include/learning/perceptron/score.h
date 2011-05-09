@@ -60,6 +60,7 @@ public:
    const SCORE_TYPE &operator [] (const int &n) const {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }}
    const SCORE_TYPE score(const int &n=eNonAverage) const {if (n==eNonAverage) return current; return total;}
    void updateCurrent(const SCORE_TYPE &added, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added; }
+   void scaleCurrent(const SCORE_TYPE &scale, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}total-=current;current*=scale;total+=current;}
    //void updateCurrent(SCORE_TYPE added, int round=0) {if (round>=lastupdate){updateAverage(round);total+=added;lastupdate=round;}current+=added; }
    void updateAverage(const int &round=0) {if (round>lastupdate)total += current*(round-lastupdate);
    else if (round<lastupdate) std::cout << "Round is: "<<round<<"<"<<lastupdate<<std::endl;}
