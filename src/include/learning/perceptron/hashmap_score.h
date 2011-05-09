@@ -91,7 +91,24 @@ public:
       return retval;
    }
 
-   SCORE_TYPE dotProductCurrentSelf() {
+   void scaleCurrent(const SCORE_TYPE &scale, const int &round) {
+      typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
+      while (it != this->end()) {
+         it.second().scaleCurrent(scale);
+         ++ it;
+      }
+   }
+
+   SCORE_TYPE addCurrent(CScoreMap &mp, const int &round) {
+      const CScore<SCORE_TYPE> sc_zero;
+      typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
+      while (it != this->end()) {
+         it.second().updateCurrent(mp.find(it.first(), sc_zero).score(), round);
+         ++ it;
+      }
+   }
+
+   SCORE_TYPE squareNorm() {
       SCORE_TYPE retval = 0;
       typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
       while (it != this->end()) {

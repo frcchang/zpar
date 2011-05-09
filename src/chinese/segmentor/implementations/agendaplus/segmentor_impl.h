@@ -82,28 +82,29 @@ public:
    CPairIntMap m_mapCharCatTrigram;
 
 public:
-   CWeight() : m_mapCharUnigram("CharUnigram", DEFAULT_TABLE_SIZE, false),
-               m_mapCharBigram("CharBigram", DEFAULT_TABLE_SIZE, false),
-               m_mapCharTrigram("CharTrigram", DEFAULT_TABLE_SIZE, false),
-               m_mapSeenWords("SeenWords", DEFAULT_TABLE_SIZE, false),
-               m_mapLastWordByWord("LastWordByWord", DEFAULT_TABLE_SIZE, false),
-               m_mapWordAndNextChar("WordAndNextChar", DEFAULT_TABLE_SIZE, false),
-               m_mapWordAndPrevChar("WordAndPrevChar", DEFAULT_TABLE_SIZE, false),
-               m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", DEFAULT_TABLE_SIZE, false),
-               m_mapLastWordByLastChar("LastWordByLastChar", DEFAULT_TABLE_SIZE, false),
-               m_mapSeparateChars("SeparateChars", DEFAULT_TABLE_SIZE, false),
-               m_mapConsecutiveChars("ConsecutiveChars", DEFAULT_TABLE_SIZE, false),
-               m_mapFirstAndLastChars("FirstAndLastChars", DEFAULT_TABLE_SIZE, false),
-               m_mapFirstCharAndChar("FirstCharAndChar", DEFAULT_TABLE_SIZE, false),
-               m_mapOneCharWord("OneCharWord", DEFAULT_TABLE_SIZE, false),
-               m_mapLengthByFirstChar("LengthByFirstChar", DEFAULT_TABLE_SIZE, false),
-               m_mapLengthByLastChar("LengthByLastChar", DEFAULT_TABLE_SIZE, false),
-               m_mapLengthByLastWord("LengthByLastWord", DEFAULT_TABLE_SIZE, false),
-               m_mapLastLengthByWord("LastLengthByWord", DEFAULT_TABLE_SIZE, false),
-               m_mapLexiconWord("LexiconWord", 7, false), 
-               m_mapCharCatUnigram("CharCatUnigram", 997, false),
-               m_mapCharCatBigram("CharCatBigram", 997, false), 
-               m_mapCharCatTrigram("CharCatTrigram", 997, false) {
+   CWeight(const unsigned &TABLE_SIZE=DEFAULT_TABLE_SIZE) : 
+               m_mapCharUnigram("CharUnigram", TABLE_SIZE, false),
+               m_mapCharBigram("CharBigram", TABLE_SIZE, false),
+               m_mapCharTrigram("CharTrigram", TABLE_SIZE, false),
+               m_mapSeenWords("SeenWords", TABLE_SIZE, false),
+               m_mapLastWordByWord("LastWordByWord", TABLE_SIZE, false),
+               m_mapWordAndNextChar("WordAndNextChar", TABLE_SIZE, false),
+               m_mapWordAndPrevChar("WordAndPrevChar", TABLE_SIZE, false),
+               m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", TABLE_SIZE, false),
+               m_mapLastWordByLastChar("LastWordByLastChar", TABLE_SIZE, false),
+               m_mapSeparateChars("SeparateChars", TABLE_SIZE, false),
+               m_mapConsecutiveChars("ConsecutiveChars", TABLE_SIZE, false),
+               m_mapFirstAndLastChars("FirstAndLastChars", TABLE_SIZE, false),
+               m_mapFirstCharAndChar("FirstCharAndChar", TABLE_SIZE, false),
+               m_mapOneCharWord("OneCharWord", TABLE_SIZE, false),
+               m_mapLengthByFirstChar("LengthByFirstChar", TABLE_SIZE, false),
+               m_mapLengthByLastChar("LengthByLastChar", TABLE_SIZE, false),
+               m_mapLengthByLastWord("LengthByLastWord", TABLE_SIZE, false),
+               m_mapLastLengthByWord("LastLengthByWord", TABLE_SIZE, false),
+               m_mapLexiconWord("LexiconWord", TABLE_SIZE, false), 
+               m_mapCharCatUnigram("CharCatUnigram", TABLE_SIZE, false),
+               m_mapCharCatBigram("CharCatBigram", TABLE_SIZE, false), 
+               m_mapCharCatTrigram("CharCatTrigram", TABLE_SIZE, false) {
    }
 };
 
