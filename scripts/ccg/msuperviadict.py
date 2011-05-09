@@ -45,6 +45,8 @@ def msuper(path, dWordDict, dTagDict, dWordCounts, nCutOff):
          setSuper = dWordDict.get(word, set())
       else:
          setSuper = dTagDict.get(tag, set())
+      if len(setSuper) == 0:
+         print word, tag, 'doesnot have item'
       assert len(setSuper) > 0
       print word, tag, ' '.join(setSuper)
    print
