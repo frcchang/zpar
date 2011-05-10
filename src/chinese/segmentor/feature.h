@@ -45,7 +45,7 @@ public:
    // collect the set of features from data
    void extractPosFeatures(const CStringVector *sent);
 #endif
-   // update the built-in weight std::vector for this feature object specifically
+   // update the built-in weight vector for this feature object specifically
    void updateScoreVector(const CStringVector* outout, const CStringVector* correct, int round=0);
    // compute the total or average feature vector after update
    void computeAverageFeatureWeights(int round=0) {
@@ -54,7 +54,7 @@ public:
       std::cout << "done" << std::endl;
    }
 
-   // load the weight std::vectors from the database
+   // load the weight vectors from the database
    void loadScores() {
       // initialize
       clock_t time_start = clock();
@@ -101,7 +101,7 @@ public:
       std::cout << "done (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)." << std::endl ;
    }
 
-   // save the weight std::vectors into the database
+   // save the weight vectors into the database
    void saveScores() {
       // initialization
       std::cout << "Saving model ... "; std::cout.flush();
