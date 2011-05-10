@@ -13,24 +13,24 @@
 const int CHAR_CAT_BITS = 3;
 
 #define iterate_templates(left,right) \
-   left(m_weights.m_mapCharUnigram)right\
-   left(m_weights.m_mapCharBigram)right\
-   left(m_weights.m_mapSeenWords)right\
-   left(m_weights.m_mapLastWordByWord)right\
-   left(m_weights.m_mapWordAndNextChar)right\
-   left(m_weights.m_mapWordAndPrevChar)right\
-   left(m_weights.m_mapFirstCharLastWordByWord)right\
-   left(m_weights.m_mapLastWordByLastChar)right\
-   left(m_weights.m_mapSeparateChars)right\
-   left(m_weights.m_mapConsecutiveChars)right\
-   left(m_weights.m_mapFirstAndLastChars)right\
-   left(m_weights.m_mapOneCharWord)right\
-   left(m_weights.m_mapLengthByFirstChar)right\
-   left(m_weights.m_mapLengthByLastChar)right\
-   left(m_weights.m_mapLengthByLastWord)right\
-   left(m_weights.m_mapLastLengthByWord)right\
-   left(m_weights.m_mapLexiconWord)right\
-   left(m_weights.m_mapCharCatTrigram)right
+   left m_mapCharUnigram right\
+   left m_mapCharBigram right\
+   left m_mapSeenWords right\
+   left m_mapLastWordByWord right\
+   left m_mapWordAndNextChar right\
+   left m_mapWordAndPrevChar right\
+   left m_mapFirstCharLastWordByWord right\
+   left m_mapLastWordByLastChar right\
+   left m_mapSeparateChars right\
+   left m_mapConsecutiveChars right\
+   left m_mapFirstAndLastChars right\
+   left m_mapOneCharWord right\
+   left m_mapLengthByFirstChar right\
+   left m_mapLengthByLastChar right\
+   left m_mapLengthByLastWord right\
+   left m_mapLastLengthByWord right\
+   left m_mapLexiconWord right\
+   left m_mapCharCatTrigram right
 
 /*===============================================================
  *
