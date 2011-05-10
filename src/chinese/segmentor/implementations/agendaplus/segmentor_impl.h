@@ -13,6 +13,8 @@
 const int CHAR_TYPE_SIZE = 4;
 const unsigned DEFAULT_TABLE_SIZE = 65536;
 
+#define ID(x) x
+
 #define iterate_templates(left,right) \
    left m_mapCharUnigram right\
    left m_mapCharBigram right\
@@ -106,6 +108,38 @@ public:
                m_mapCharCatBigram("CharCatBigram", TABLE_SIZE, false), 
                m_mapCharCatTrigram("CharCatTrigram", TABLE_SIZE, false) {
    }
+
+public:
+   void clear() {
+      iterate_templates(,.clear(););
+   }
+   void scale(const SCORE_TYPE &scale, const int &round) {
+      iterate_templates(,ID(.scaleCurrent(scale, round);));
+   }
+   void addCurrent(CWeight &w, const int &round) {
+      m_mapCharUnigram.addCurrent(w.m_mapCharUnigram, round);
+      m_mapCharBigram.addCurrent(w.m_mapCharBigram, round);
+      m_mapCharTrigram.addCurrent(w.m_mapCharTrigram, round);
+      m_mapSeenWords.addCurrent(w.m_mapSeenWords, round);
+      m_mapLastWordByWord.addCurrent(w.m_mapLastWordByWord, round);
+      m_mapWordAndNextChar.addCurrent(w.m_mapWordAndNextChar, round);
+      m_mapWordAndPrevChar.addCurrent(w.m_mapWordAndPrevChar, round);
+      m_mapFirstCharLastWordByWord.addCurrent(w.m_mapFirstCharLastWordByWord, round);
+      m_mapLastWordByLastChar.addCurrent(w.m_mapLastWordByLastChar, round);
+      m_mapSeparateChars.addCurrent(w.m_mapSeparateChars, round);
+      m_mapConsecutiveChars.addCurrent(w.m_mapConsecutiveChars, round);
+      m_mapFirstAndLastChars.addCurrent(w.m_mapFirstAndLastChars, round);
+      m_mapFirstCharAndChar.addCurrent(w.m_mapFirstCharAndChar, round);
+      m_mapOneCharWord.addCurrent(w.m_mapOneCharWord, round);
+      m_mapLengthByFirstChar.addCurrent(w.m_mapLengthByFirstChar, round);
+      m_mapLengthByLastChar.addCurrent(w.m_mapLengthByLastChar, round);
+      m_mapLengthByLastWord.addCurrent(w.m_mapLengthByLastWord, round);
+      m_mapLastLengthByWord.addCurrent(w.m_mapLastLengthByWord, round);
+      m_mapLexiconWord.addCurrent(w.m_mapLexiconWord, round);
+      m_mapCharCatUnigram.addCurrent(w.m_mapCharCatUnigram, round);
+      m_mapCharCatBigram.addCurrent(w.m_mapCharCatBigram, round);
+      m_mapCharCatTrigram.addCurrent(w.m_mapCharCatTrigram, round);
+   }
 };
 
 /*===============================================================
@@ -118,7 +152,7 @@ class CSegmentorImpl {
 protected:
    CWeight m_delta;
 public:
-   CSegmentorImpl() : m_delta(4) {}
+   CSegmentorImpl() : m_delta(128) {}
    CWeight &getDelta() { return m_delta; }
 };
 
