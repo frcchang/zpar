@@ -101,9 +101,9 @@ public:
 
    SCORE_TYPE addCurrent(CScoreMap &mp, const int &round) {
       const CScore<SCORE_TYPE> sc_zero;
-      typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
-      while (it != this->end()) {
-         it.second().updateCurrent(mp.find(it.first(), sc_zero).score(), round);
+      typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = mp.begin();
+      while (it != mp.end()) {
+         (*this)[it.first()].updateCurrent((it.second()).score(), round);
          ++ it;
       }
    }

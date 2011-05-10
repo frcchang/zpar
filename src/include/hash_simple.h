@@ -135,6 +135,7 @@ protected:
       static CEntry *retval;
       if (m_freed) {
          retval = m_freed;
+         retval->m_next = 0;
          m_freed = m_freed->m_next;
          return retval;
       }

@@ -152,7 +152,7 @@ class CSegmentorImpl {
 protected:
    CWeight m_delta;
 public:
-   CSegmentorImpl() : m_delta(128) {}
+   CSegmentorImpl() : m_delta(128) { iterate_templates(m_delta.,.init();); }
    CWeight &getDelta() { return m_delta; }
 };
 

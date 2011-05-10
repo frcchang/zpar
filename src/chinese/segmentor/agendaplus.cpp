@@ -84,7 +84,7 @@ SCORE_TYPE getOrUpdateSeparateScore(CSegmentor *segmentor, const CStringVector* 
    static int which_score;
    which_score = segmentor->isTraining() ? CScore<SCORE_TYPE>::eNonAverage : CScore<SCORE_TYPE>::eAverage ;
    // abbreviation weight
-   CWeight &weight = segmentor->getWeights();
+   CWeight &weight = amount ? segmentor->getDelta() : segmentor->getWeights();
 
    // temporary variables
    static int tmp_i;
@@ -220,7 +220,7 @@ SCORE_TYPE getOrUpdateAppendScore(CSegmentor *segmentor, const CStringVector* se
    static int which_score;
    which_score = segmentor->isTraining() ? CScore<SCORE_TYPE>::eNonAverage : CScore<SCORE_TYPE>::eAverage ;
    // abbreviation weight
-   CWeight &weight = segmentor->getWeights();
+   CWeight &weight = amount ? segmentor->getDelta() : segmentor->getWeights();
    // temporary vals
    static int tmp_i;
 
@@ -356,6 +356,10 @@ inline void updateScoreVectorForState(CSegmentor *segmentor, const CStringVector
 void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* outout, const CStateItem* correct, int round) {
    updateScoreVectorForState(segmentor, sentence, outout, -1, round);
    updateScoreVectorForState(segmentor, sentence, correct, 1, round);
+   CWeight &weight = segmentor->getDelta();
+   iterate_templates(std::cout<<weight.,.squareNorm()<<std::endl;);
+   segmentor->getWeights().addCurrent(segmentor->getDelta(), round);
+   segmentor->getDelta().clear();
 }
 
 
@@ -493,7 +497,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
          
       // update scores if none from the agenda is correct state.
       if (correct_starts && !bCompatible) {
-         TRACE("Decoding error, updating the weight std::vector");
+         TRACE("Decoding error, updating the weight vector");
          if (correct_append)
             correct->append(lattice_index[index+2]);
          else
@@ -519,7 +523,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
    if (correct_starts) {
       assert(bCompatible);
       if (correct!=best[0]) {
-         TRACE("Decoding error, updating the weight std::vector");
+         TRACE("Decoding error, updating the weight vector");
          updateScoreVectorForStates(segmentor, &sentence, best[0], correct, round);
          return false;
       }
