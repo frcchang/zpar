@@ -133,9 +133,11 @@ protected:
    
    CEntry *allocate() {
       static CEntry *retval;
+      static V value;
       if (m_freed) {
          retval = m_freed;
          retval->m_next = 0;
+          retval->m_value = value;
          m_freed = m_freed->m_next;
          return retval;
       }
