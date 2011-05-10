@@ -50,7 +50,7 @@ public:
    // compute the total or average feature vector after update
    void computeAverageFeatureWeights(int round=0) {
       std::cout << "Computing averaged feature scores ... ";
-      iterate_templates(,.computeAverage(round););
+      iterate_templates(m_weights.,.computeAverage(round););
       std::cout << "done" << std::endl;
    }
 
@@ -63,7 +63,7 @@ public:
       std::ifstream is(m_sFeatureDB.c_str());
       if (!is.is_open()) { 
          std::cout << "empty."<<std::endl; 
-         iterate_templates(,.init(););
+         iterate_templates(m_weights.,.init(););
          return; 
       }
       // use char cat information?
@@ -94,7 +94,7 @@ public:
       getline(is, line);
       std::istringstream(line) >> m_bRule;
       // load features by iterating templates defined by implementation
-      iterate_templates(is>>,;);
+      iterate_templates(is>>m_weights.,;);
       // finalize
       is.close();
       m_bScoreModified = false;
@@ -117,9 +117,9 @@ public:
       os << m_bRule << std::endl;
       // save features
 #ifdef DEBUG
-      iterate_templates(,.trace(););
+      iterate_templates(m_weights.,.trace(););
 #endif
-      iterate_templates(os<<,;);
+      iterate_templates(os<<m_weights.,;);
       // finalization
       os.close();
       m_bScoreModified = false;
