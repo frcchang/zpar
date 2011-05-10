@@ -356,8 +356,8 @@ inline void updateScoreVectorForState(CSegmentor *segmentor, const CStringVector
 void updateScoreVectorForStates(CSegmentor *segmentor, const CStringVector* sentence, const CStateItem* outout, const CStateItem* correct, int round) {
    updateScoreVectorForState(segmentor, sentence, outout, -1, round);
    updateScoreVectorForState(segmentor, sentence, correct, 1, round);
-   CWeight &weight = segmentor->getDelta();
-   iterate_templates(std::cout<<weight.,.squareNorm()<<std::endl;);
+//   CWeight &weight = segmentor->getDelta();
+//   iterate_templates(std::cout<<weight.,.squareNorm()<<std::endl;);
    segmentor->getWeights().addCurrent(segmentor->getDelta(), round);
    segmentor->getDelta().clear();
 }
