@@ -134,7 +134,7 @@ inline
 std::istream & operator >> (std::istream &is, CScoreMap<K, SCORE_TYPE> &score_map) {
    if (!is) return is ;
    std::string s ;
-   getline(is, s) ;
+   if (!getline(is, s)) THROW("incorrectly formatted scoremap (no title).") ;
    // match name
    const unsigned &size = score_map.name.size();
    if ( s.substr(0, size)!=score_map.name ) THROW("the expected score map " << score_map.name << " is not matched.");

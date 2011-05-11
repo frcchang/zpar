@@ -68,7 +68,7 @@ public:
       }
       // use char cat information?
       bool bCharCat; 
-      getline(is, line);
+      if (!getline(is, line)) THROW("The model file incorrectly formatted.");
       std::istringstream(line) >> bCharCat;
       if (bCharCat) {
          std::cout << "loading charcat ... "; std::cout.flush();
@@ -80,7 +80,7 @@ public:
       }
       // use lexicon?
       bool bLexicon;
-      getline(is, line);
+      if (!getline(is, line)) THROW("The model file is incorrectly formatted.");
       std::istringstream(line) >> bLexicon;
       if (bLexicon) {
          std::cout << "loading lexicon ... "; std::cout.flush();
@@ -91,7 +91,7 @@ public:
          else THROW("CSegmentor feature: m_WordLst already loaded.");
       }
       // use rules?
-      getline(is, line);
+      if (!getline(is, line)) THROW("The model is incorrectly formatted.");
       std::istringstream(line) >> m_bRule;
       // load features by iterating templates defined by implementation
       iterate_templates(is>>m_weights.,;);
