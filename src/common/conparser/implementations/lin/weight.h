@@ -20,33 +20,41 @@ const static unsigned TABLE_SIZE = 1<<17;
    left(m_mapS0w)right\
    left(m_mapS0tc)right\
    left(m_mapS0wc)right\
+   left(m_mapS0k)right\
 \
    left(m_mapS1c)right\
    left(m_mapS1w)right\
    left(m_mapS1tc)right\
    left(m_mapS1wc)right\
+   left(m_mapS1k)right\
 \
    left(m_mapS2tc)right\
    left(m_mapS2wc)right\
+   left(m_mapS2k)right\
 \
    left(m_mapS3tc)right\
    left(m_mapS3wc)right\
+   left(m_mapS3k)right\
 \
    left(m_mapN0w)right\
    left(m_mapN0t)right\
    left(m_mapN0wt)right\
+   left(m_mapN0k)right\
 \
    left(m_mapN1w)right\
    left(m_mapN1t)right\
    left(m_mapN1wt)right\
+   left(m_mapN1k)right\
 \
    left(m_mapN2w)right\
    left(m_mapN2t)right\
    left(m_mapN2wt)right\
+   left(m_mapN2k)right\
 \
    left(m_mapN3w)right\
    left(m_mapN3t)right\
    left(m_mapN3wt)right\
+   left(m_mapN3k)right\
 \
    left(m_mapS0Lwc)right\
    left(m_mapS0Ltc)right\
@@ -150,7 +158,7 @@ typedef CScoreMapType<CWord, SCORE_TYPE, CAction::MAX> CWordMap;
 typedef CScoreMapType<CTag, SCORE_TYPE, CAction::MAX> CTagMap;
 typedef CScoreMapType<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, CAction::MAX> CTaggedWordMap;
 typedef CScoreMapType<std::pair<CWord, unsigned long>,  SCORE_TYPE, CAction::MAX> CWordIntMap;
-typedef CScoreMapType<unsigned long, SCORE_TYPE, CAction::MAX> CIntMap;
+typedef CScoreMapType<int, SCORE_TYPE, CAction::MAX> CIntMap;
 typedef CScoreMapType<std::pair<unsigned long, unsigned long>, SCORE_TYPE, CAction::MAX> CTwoIntMap;
 typedef CScoreMapType<CTwoWords, SCORE_TYPE, CAction::MAX> CTwoWordsMap;
 typedef CScoreMapType<std::pair<CTwoWords, CActionType>, SCORE_TYPE, CAction::MAX> CTwoWordsActionTypeMap;
@@ -189,40 +197,48 @@ public:
    CTaggedWordMap m_mapS0w;
    CTagConstituentMap m_mapS0tc;
    CWordConstituentMap m_mapS0wc;
+   CIntMap m_mapS0k;
 
    // S1
    CConstituentMap m_mapS1c;
    CTaggedWordMap m_mapS1w;
    CTagConstituentMap m_mapS1tc;
    CWordConstituentMap m_mapS1wc;
+   CIntMap m_mapS1k;
 
    // S2
    CTagConstituentMap m_mapS2tc;
    CWordConstituentMap m_mapS2wc;
+   CIntMap m_mapS2k;
 
    // S3
    CTagConstituentMap m_mapS3tc;
    CWordConstituentMap m_mapS3wc;
+   CIntMap m_mapS3k;
 
    // N0
    CWordMap m_mapN0w;
    CTagMap m_mapN0t;
    CTaggedWordMap m_mapN0wt;
+   CIntMap m_mapN0k;
 
    // N1
    CWordMap m_mapN1w;
    CTagMap m_mapN1t;
    CTaggedWordMap m_mapN1wt;
+   CIntMap m_mapN1k;
 
    // N2
    CWordMap m_mapN2w;
    CTagMap m_mapN2t;
    CTaggedWordMap m_mapN2wt;
+   CIntMap m_mapN2k;
 
    // N3
    CWordMap m_mapN3w;
    CTagMap m_mapN3t;
    CTaggedWordMap m_mapN3wt;
+   CIntMap m_mapN3k;
 
    // S0L
    CWordConstituentMap m_mapS0Lwc;
@@ -298,20 +314,6 @@ public:
    CCFGSetMap m_mapS0cS1cS2c;
    CCFGSetMap m_mapS0tS1tS2t;
 
-   // tag bigram
-//   CIntMap m_mapS1cS2c;
-//   CIntMap m_mapS2cS3c;
-//   CIntMap m_mapN1tN2t;
-//   CIntMap m_mapN2tN3t;
-   
-//   CIntMap m_mapS0cS2c;
-//   CIntMap m_mapS1cS3c;
-//   CIntMap m_mapS0cN1t;
-//   CIntMap m_mapN0tN2t;
-//   CIntMap m_mapN1tN3t;
-
-//   CIntMap m_mapN0tN1tN2t;
-
    // S0 S0LRUN0
    CCFGSetMap m_mapS0cS0RcN0t;
    CCFGSetMap m_mapS0cS0RjN0t;
@@ -366,33 +368,41 @@ public:
                           m_mapS0w("Stack0Word", TABLE_SIZE),
                           m_mapS0tc("Stack0Tag", TABLE_SIZE),
                           m_mapS0wc("Stack0WordConstituent", TABLE_SIZE),
+                          m_mapS0k("Stack0Kluster", TABLE_SIZE),
 
                           m_mapS1c("Stack1Constituent", TABLE_SIZE),
                           m_mapS1w("Stack1Word", TABLE_SIZE),
                           m_mapS1tc("Stack1Tag", TABLE_SIZE),
                           m_mapS1wc("Stack1WordConstituent", TABLE_SIZE),
+                          m_mapS1k("Stack1Kluster", TABLE_SIZE),
 
                           m_mapS2tc("Stack2Tag", TABLE_SIZE),
                           m_mapS2wc("Stack2WordConstituent", TABLE_SIZE),
+                          m_mapS2k("Stack2Kluster", TABLE_SIZE),
 
                           m_mapS3tc("Stack3Tag", TABLE_SIZE),
                           m_mapS3wc("Stack3WordConstituent", TABLE_SIZE),
+                          m_mapS3k("Stack3Kluster", TABLE_SIZE),
 
                           m_mapN0w("Next0Word", TABLE_SIZE),
                           m_mapN0t("Next0Tag", TABLE_SIZE),
                           m_mapN0wt("Next0WordTag", TABLE_SIZE),
+                          m_mapN0k("Next0Klustor"),
                                             
                           m_mapN1w("Next1Word", TABLE_SIZE),
                           m_mapN1t("Next1Tag", TABLE_SIZE),
                           m_mapN1wt("Next1WordTag", TABLE_SIZE),
+                          m_mapN1k("Next1Klustor"),
 
                           m_mapN2w("Next2Word", TABLE_SIZE),
                           m_mapN2t("Next2Tag", TABLE_SIZE),
                           m_mapN2wt("Next2WordTag", TABLE_SIZE),
+                          m_mapN2k("Next2Klustor"),
 
                           m_mapN3w("Next3Word", TABLE_SIZE),
                           m_mapN3t("Next3Tag", TABLE_SIZE),
                           m_mapN3wt("Next3WordTag", TABLE_SIZE),
+                          m_mapN3k("Next3Klustor"),
 
                           m_mapS0Lwc("Stack0LeftWord", TABLE_SIZE),
                           m_mapS0Ltc("Stack0LeftConstituent", TABLE_SIZE), 
@@ -455,17 +465,6 @@ TABLE_SIZE),
                           m_mapS0cS1cS2c("Stack0ConstituentStack1ConstituentStack2Constituent", TABLE_SIZE),
                           m_mapS0tS1tS2t("Stack0TagStack1TagStack2Tag", TABLE_SIZE),
 
-//                          m_mapS1cS2c("Stack1ConstituentStack2Constituent", TABLE_SIZE),
-//                          m_mapS2cS3c("Stack2ConstituentStack3Constituent", TABLE_SIZE),
-//                          m_mapN1tN2t("Next1TagNext2Tag", TABLE_SIZE),
-//                          m_mapN2tN3t("Next2TagNext3Tag", TABLE_SIZE),
-//                                               
-//                          m_mapS0cS2c("Stack0ConstituentStack2Constituent", TABLE_SIZE),
-//                          m_mapS1cS3c("Stack1ConstituentStack3Constituent", TABLE_SIZE),
-//                          m_mapS0cN1t("Stack0ConstituentNext1Tag", TABLE_SIZE),
-//                          m_mapN0tN2t("Next0TagNext2Tag", TABLE_SIZE),
-//                          m_mapN1tN3t("Next1TagNextTag", TABLE_SIZE),
-
                           m_mapS0cS0LcN0t("Stack0ConstituentStack0LConstituentNex0tTag", TABLE_SIZE),
                           m_mapS0wS0LcN0t("Stack0WordStack0LConstituentNex0tTag", TABLE_SIZE),
                           m_mapS0cS0LcN0w("Stack0ConstituentStack0LConstituentNex0tWord", TABLE_SIZE),
@@ -488,7 +487,6 @@ TABLE_SIZE),
                           m_mapS0wS0UcS1c("Stack0WordStack0UConstituentStack1Constituent", TABLE_SIZE),
                           m_mapS0cS0UcS1w("Stack0ConstituentStack0UConstituentStack1Word", TABLE_SIZE),
 
-//                          m_mapN0tN1tN2t("NextTagTrigram", TABLE_SIZE),
                           m_mapS0cS1cS1Lc("Stack0ConstituentStack1ConstituentStack1LConstituent", TABLE_SIZE),
                           m_mapS0wS1cS1Lc("Stack0WordStack1ConstituentStack1LConstituent", TABLE_SIZE),
                           m_mapS0cS1wS1Lc("Stack0ConstituentStack1WordStack1LConstituent", TABLE_SIZE),
