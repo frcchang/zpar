@@ -615,8 +615,6 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    clock_t total_start_time = clock();;
 #endif
    TRACE("Starting segmenting a sentence...");
-   int j, k, l; 
-   CStateItem *pGenerator;
 
    // turn the spaces in the input sentence into rules that separate corresponding characters
    static CStringVector sentence;
@@ -632,7 +630,6 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    // correct outout reference param as NULL
    work(this, sentence, vReturn, out_scores, rules, NULL, nBest, -1);
 
-   TRACE("Done, the best score: " << pGenerator->score);
    TRACE("total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
 }
 
