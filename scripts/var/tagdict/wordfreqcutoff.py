@@ -50,7 +50,7 @@ if __name__ == '__main__':
    else:
       file = open(args[0])
 
-   lClosedTag = closed.closedtags
+#   lClosedTag = closed.closedtags
 
    threshold = int(args[1])
 
