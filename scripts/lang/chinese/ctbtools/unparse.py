@@ -60,6 +60,5 @@ if __name__ == '__main__':
          sLogs = opt[1]
       elif opt[0] == '-s':
          sSep = opt[1]
-   print sSep
    rule = CUnParse(args[0], sLogs, sSep)
    rule.process()
