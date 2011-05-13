@@ -104,8 +104,9 @@ public:
       // enumerate only open set tags
       m_opentags = ~m_opentags;
       ASSERT(m_opentags==0LL, "Open tags must be unitialized");
-      for (unsigned tag=CTag::FIRST; tag<CTag::COUNT; ++tag)
-         if (CTag(tag).closed()) {std::cout << CTag(tag) << std::endl; m_opentags |= (1LL << tag); }
+      // only use 'real' opetags.
+//      for (unsigned tag=CTag::FIRST; tag<CTag::COUNT; ++tag)
+//         if (CTag(tag).closed()) {std::cout << CTag(tag) << std::endl; m_opentags |= (1LL << tag); }
       m_opentags = ~m_opentags;
    }
 

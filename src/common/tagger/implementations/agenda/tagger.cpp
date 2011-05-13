@@ -233,7 +233,7 @@ void TARGET_LANGUAGE::CTagger::finishTraining() {
 
 /*===============================================================
  *
- * CTagger - the tagger for Chinese 
+ * CTagger - the tagger.
  *
  *==============================================================*/
 

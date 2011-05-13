@@ -15,12 +15,13 @@ import getopt
 
 class CUnParse(object):
 
-   def __init__(self, sInput, sLogs):
+   def __init__(self, sInput, sLogs, sSep):
       self.path = sInput
       if sLogs != None:
          self.log = open(sLogs, "w")
       else:
          self.log = None
+      self.sep = sSep
 
    def __del__(self):
       if self.log != None:
@@ -31,7 +32,7 @@ class CUnParse(object):
       for line in file:
          srcnode = binarize.CBinarizedTreeNode()
          srcnode.load(line)
-         print srcnode.tokens()
+         print srcnode.tokens(self.sep)
       file.close()
 
 
@@ -43,16 +44,22 @@ if __name__ == '__main__':
    sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
    from tools import config
    try:
-      opts, args = getopt.getopt(sys.argv[1:], "nl:")
+      opts, args = getopt.getopt(sys.argv[1:], "nl:s:")
    except getopt.GetOptError: 
       print "\nUsage: unparse.py [-llogfile] parsed_file > output\n"
+      print "s -- pos separator"
       sys.exit(1)
    if len(args) != 1:
       print "\nUsage: unparse.py [-llogfile] parsed_file > output\n"
+      print "s -- pos separator"
       sys.exit(1)
    sLogs = None
+   sSep = '_'
    for opt in opts:
       if opt[0] == '-l':
          sLogs = opt[1]
-   rule = CUnParse(args[0], sLogs)
+      elif opt[0] == '-s':
+         sSep = opt[1]
+   print sSep
+   rule = CUnParse(args[0], sLogs, sSep)
    rule.process()
