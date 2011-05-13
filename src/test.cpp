@@ -21,6 +21,8 @@
 #include "linguistics/word_tokenized.h"
 #include "english/tags.h"
 #include "hash.h"
+#include "linguistics/word.h"
+#include "vector_stream.h"
 
 class A {
 public:
@@ -196,6 +198,13 @@ void testhashmap(const char *f) {
    return;
 }
 
+void test_word_vector_int_map() {
+   CHashMap< CWord, std::vector<int> > m(128);
+   std::ifstream is("tmp.txt");
+   is >> m;
+   std::cout << m;
+}
+
 int main(int argc, char**argv){
    try {
 //   std::cout << B::C << B::D << std::endl;
@@ -209,7 +218,8 @@ int main(int argc, char**argv){
 //   testsmallhash();
 //   testlinkedlist();
 //   testinitializer();
-   testhashmap(argv[1]);
+//   testhashmap(argv[1]);
+      test_word_vector_int_map();
    }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 
