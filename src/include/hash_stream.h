@@ -14,7 +14,7 @@ std::istream & operator >> (std::istream &is, CHashMap<K, V> &table) {
       std::istringstream iss(s) ; 
       iss >> key;
       iss >> c;
-      ASSERT( c == ':' , "Hash map does not match key : value format") ;
+      ASSERT( c == ':' , "Hash map does not match key : value format (column missing); key was: " << key) ;
       iss >> table[key] ;
 //TRACE("Read " << key << " : " << table[key]);
       getline(is, s);
