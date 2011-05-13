@@ -44,7 +44,7 @@ if __name__ == '__main__':
    sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
    from tools import config
    try:
-      opts, args = getopt.getopt(sys.argv[1:], "nl:s:")
+      opts, args = getopt.getopt(sys.argv[1:], "l:s:")
    except getopt.GetOptError: 
       print "\nUsage: unparse.py [-llogfile] parsed_file > output\n"
       print "s -- pos separator"
