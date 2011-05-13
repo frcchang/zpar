@@ -37,12 +37,15 @@ class CBinarizedTreeNode(object):
          else:
             sContent = self.left_child.__str__() + " " + self.right_child.__str__()
       elif self.type == 'token':
-         if self.tree.pos == []:
-            sType = 't'
-            sContent = self.token
-         else:
-            sType = 'c'
-            sContent = self.tree.pos[self.token] + ' ' + self.tree.words[self.token]
+         assert self.tree.pos
+#         if self.tree.pos == []:
+#            sType = 't'
+#            sContent = self.token
+#         else:
+#            sType = 'c'
+#            sContent = self.tree.pos[self.token] + ' ' + self.tree.words[self.token]
+         sType = 'c'
+         sContent = self.tree.pos[self.token] + ' ' + self.tree.words[self.token]
       else:
          raise "Type not defined for node"
       if self.temporary:
