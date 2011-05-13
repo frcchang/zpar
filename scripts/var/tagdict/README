@@ -1,1 +1,3 @@
 The input files for frequency cutoff should be produced by posop
+
+wordfreqcutoff and tagfreqcutoff can perform the same format as cleanup (remove the count)
