@@ -9,9 +9,11 @@ import brute
 
 #========================================
 
-def filter(dep, align):
+def filter(tree, align):
+   dept = dep.CDep(tree)
+   brute.reorder(dept, align, None, False)
    l = []
-   for j in brute.listOrder(dep):
+   for j in brute.listOrder(dept):
       a = align.get(j, [])
       if a:
          l.append(a[0])
@@ -31,12 +33,13 @@ def filter(dep, align):
       else:
          empty += 1
 
+   dept = dep.CDep(tree)
    if empty > float(len(l)) * 0.3:
-      print 0, 0, dep.toRaw()
+      print 0, 0, dept.toRaw()
    elif count > float(total) * 0.3:
-      print 0, dep.toRaw()
+      print 0, dept.toRaw()
    else:
-      print dep.toRaw()
+      print dept.toRaw()
 
 #========================================
 
@@ -61,6 +64,4 @@ if __name__ == '__main__':
 
    for tree in depio.depread(sInput):
       align = alignFile.next()
-      dept = dep.CDep(tree)
-      brute.reorder(dept, align, None, False)
-      filter(dept, align)
+      filter(tree, align)
