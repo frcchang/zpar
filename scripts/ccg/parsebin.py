@@ -97,7 +97,8 @@ class CBinarizedTreeNode(object):
          self.leftmost_leaf = self.left_child.leftmost_leaf
          self.rightmost_leaf = self.left_child.rightmost_leaf
       else:
-         assert sType[0] == "t" or sType[0] == "c"
+#         assert sType[0] == "t" or sType[0] == "c"
+         assert sType[0] == "c"
          self.type = "token"
          if sType[0] == "c":
             self.tree.pos.append(lToken[nIndex])
