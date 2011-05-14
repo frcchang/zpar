@@ -208,6 +208,18 @@ def insertRight(node, left_child, bDebug):
       extra = dep.CDepNode(); extra.token='('+left_child.pos; extra.pos=""; extra.word_index=-1
       node.right_children.insert(0, extra)
 
+def appendRight(node, left_child, bDebug):
+   if bDebug:
+      extra = dep.CDepNode(); extra.token='('; extra.pos=""; extra.word_index=-1
+      node.right_children.append(extra)
+
+   # insert
+   node.right_children.append(left_child)
+
+   if bDebug:
+      extra = dep.CDepNode(); extra.token=')'+left_child.pos; extra.pos=""; extra.word_index=-1
+      node.right_children.append(extra)
+
 def reorderVV(node, align, model, bDebug):
    left_children = []
    nPUBetween = 0
@@ -221,7 +233,7 @@ def reorderVV(node, align, model, bDebug):
       if left_child.pos in ['P', 'NT', 'M', 'CD', 'OD']:
          if ( align != None and crossLink(left_child, node, align) )\
             or ( align == None and classify(left_child, node, nPUBetween, nDist, model) ):
-            insertRight(node, left_child, bDebug)
+            appendRight(node, left_child, bDebug)
             bReorder = True
 
       elif left_child.pos in ['PU']:
