@@ -387,22 +387,22 @@ public:
                           m_mapN0w("Next0Word", TABLE_SIZE),
                           m_mapN0t("Next0Tag", TABLE_SIZE),
                           m_mapN0wt("Next0WordTag", TABLE_SIZE),
-                          m_mapN0k("Next0Klustor"),
+                          m_mapN0k("Next0Klustor", TABLE_SIZE),
                                             
                           m_mapN1w("Next1Word", TABLE_SIZE),
                           m_mapN1t("Next1Tag", TABLE_SIZE),
                           m_mapN1wt("Next1WordTag", TABLE_SIZE),
-                          m_mapN1k("Next1Klustor"),
+                          m_mapN1k("Next1Klustor", TABLE_SIZE),
 
                           m_mapN2w("Next2Word", TABLE_SIZE),
                           m_mapN2t("Next2Tag", TABLE_SIZE),
                           m_mapN2wt("Next2WordTag", TABLE_SIZE),
-                          m_mapN2k("Next2Klustor"),
+                          m_mapN2k("Next2Klustor", TABLE_SIZE),
 
                           m_mapN3w("Next3Word", TABLE_SIZE),
                           m_mapN3t("Next3Tag", TABLE_SIZE),
                           m_mapN3wt("Next3WordTag", TABLE_SIZE),
-                          m_mapN3k("Next3Klustor"),
+                          m_mapN3k("Next3Klustor", TABLE_SIZE),
 
                           m_mapS0Lwc("Stack0LeftWord", TABLE_SIZE),
                           m_mapS0Ltc("Stack0LeftConstituent", TABLE_SIZE), 
