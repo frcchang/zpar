@@ -52,10 +52,11 @@ private:
    int m_nScoreIndex;
    conparser::CRule m_rule;
    conparser::CContext m_Context;
+   CHashMap< CWord, vector<int> > m_mapCluster;
 
 public:
    // constructor and destructor
-   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache) { 
+   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache), m_mapCluster(1<<16) { 
       // initialize agenda
 //      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
@@ -71,6 +72,12 @@ public:
       if (!bTrain && m_weights->empty()) { // when decoding, model must be found
          THROW("The model file " << sFeatureDBPath<< " is not found.")
       }
+      // load cluster
+      ifstream ifs("cluster.txt");
+      ASSERT(ifs.is_open(), "The cluster file (cluster.txt) is not accessible");
+      ifs >> m_mapCluster;
+      ifs.close()
+
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
