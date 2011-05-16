@@ -115,12 +115,27 @@ public:
 
 protected:
    static CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   static CEntry* &getFreeMemory() { static CEntry* c_free = 0; return c_free; }
+
+public:
+   CEntry *allocate() {
+      static CEntry *retval;
+      CEntry * &c_free = getFreeMemory();
+      if (c_free) {
+         retval = c_free;
+         c_free = c_free->m_next;
+         return retval;
+      }
+      else {
+         return getPool().allocate();
+      }
+   }
 
 public:
    V &operator[] (const K &key) { 
       CEntry* entry = m_buckets; 
       if (entry==0) {
-         entry = m_buckets = getPool().allocate(); 
+         entry = m_buckets = allocate(); 
          entry->m_key = key;
          return entry->m_value;
       }
@@ -134,7 +149,7 @@ public:
                entry = entry->m_next;
          }
       }
-      entry->m_next = getPool().allocate();
+      entry->m_next = allocate();
       entry->m_next->m_key = key;   
       return entry->m_next->m_value;
    }
@@ -153,7 +168,7 @@ public:
       CEntry*entry=m_buckets; 
       if (entry == 0) { 
          retval = val; 
-         entry= m_buckets =getPool().allocate(); 
+         entry= m_buckets =allocate(); 
          entry->m_key = key;
          entry->m_value = val; 
          return true; 
@@ -170,7 +185,7 @@ public:
              entry = entry->m_next;
        }
        assert(entry);
-       entry->m_next = getPool().allocate();
+       entry->m_next = allocate();
        entry->m_next->m_key = key;
        entry->m_next->m_value = val;
        retval = val;
@@ -185,6 +200,19 @@ public:
             entry = entry->m_next;
       }
       return false;
+   }
+   void clear() {
+      if (!m_buckets) return;
+      CEntry *tail = m_buckets;
+      static V empty;
+      while (tail->m_next) {
+         tail->m_value = empty;
+         tail = tail->m_next;
+      }
+      CEntry* &c_free = getFreeMemory();
+      tail->m_next = c_free;
+      c_free = m_buckets;
+      m_buckets = 0;
    }
 
 public:

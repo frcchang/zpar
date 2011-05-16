@@ -144,12 +144,23 @@ public:
       }
    }
 
-   void clearScores() {
+//   void clearScores() {
+//      typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = this->begin();
+//      while (it != this->end()) {
+//         it.second().reset() ;
+//         ++ it;
+//      }
+//   }
+
+   void clear() {
+      // first clear each ste of packed scores so that the memory will be freed
       typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = this->begin();
       while (it != this->end()) {
-         it.second().reset() ;
+         it.second().clear() ;
          ++ it;
       }
+      // second clear hash
+      CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::clear();
    }
 
 #ifdef DEBUG

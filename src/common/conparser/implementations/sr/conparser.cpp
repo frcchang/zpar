@@ -368,9 +368,9 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
    while (count>0) {
       m_Context.load(states[count], m_lCache, m_lWordLen, true);
       // update action
-#ifdef NO_NEG_FEATURE
-      if (amount==1) getOrUpdateStackScore(scores, states[count], states[count-1]->action, 1, -1 ); // add feature; the amount 1 is skipped by scoremap, but used here to make sure that the word is allocated...
-#endif
+//#ifdef NO_NEG_FEATURE
+//      if (amount==1) getOrUpdateStackScore(scores, states[count], states[count-1]->action, 1, -1 ); // add feature; the amount 1 is skipped by scoremap, but used here to make sure that the word is allocated...
+//#endif
       getOrUpdateStackScore(scores, states[count], states[count-1]->action, amount, m_nTrainingRound );
       --count;
    }
@@ -524,7 +524,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          ++lattice_index[index+1];
       }
 
-      // update items if correct item jump std::cout of the agenda
+      // update items if correct item jump out of the agenda
       if (bTrain) { 
 #ifdef EARLY_UPDATE
          if (!bCorrect && candidate_outout!=correctState) {
@@ -639,3 +639,27 @@ void CConParser::train( const CSentenceMultiCon<CConstituent> &con_input, const 
 
 };
 
+#ifdef NO_NEG_FEATURE
+/*---------------------------------------------------------------
+ *
+ * getPositiveFeatures - get positive features
+ *
+ *---------------------------------------------------------------*/
+
+void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
+   static CStateItem state[MAX_SENTENCE_SIZE*(1+UNARY_MOVES)+2];
+   static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
+   static int current;
+   static CAction action;
+
+   state[0].clear();
+   current = 0;
+
+   while ( !state[current].IsTerminated() ) {
+      state[current].StandardMove(correct, action);
+      getOrUpdateStackScore(scores, states[current], action, 1, -1);
+      state[current].Move(state+current+1, action);
+      ++current;
+   }
+}
+#endif
