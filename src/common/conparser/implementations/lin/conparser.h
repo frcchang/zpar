@@ -52,7 +52,7 @@ private:
    int m_nScoreIndex;
    conparser::CRule m_rule;
    conparser::CContext m_Context;
-   CHashMap< CWord, vector<int> > m_mapCluster;
+   CHashMap< CWord, std::vector<int> > m_mapCluster;
 
 public:
    // constructor and destructor
@@ -73,10 +73,10 @@ public:
          THROW("The model file " << sFeatureDBPath<< " is not found.")
       }
       // load cluster
-      ifstream ifs("cluster.txt");
+      std::ifstream ifs("cluster.txt");
       ASSERT(ifs.is_open(), "The cluster file (cluster.txt) is not accessible");
       ifs >> m_mapCluster;
-      ifs.close()
+      ifs.close();
 
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
@@ -87,8 +87,8 @@ public:
 //      delete m_Agenda;
       delete m_weights;
    }
-   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache) { 
-      assert(1==0);
+   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache), m_mapCluster(1) { 
+      THROW("Copy constructor called");
    }
 
 public:
