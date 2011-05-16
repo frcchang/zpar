@@ -43,14 +43,14 @@ if __name__ == '__main__':
    print >>sys.stderr, 'wordfreqcutoff.py -o[d|c] input [closed]'
    print >>sys.stderr, ' -od: output dictionary'
    print >>sys.stderr, ' -oc: output dictionary and counts'
-   print >>sys.stderr, ' closed: leave all closed set tags'
+   print >>sys.stderr, ' closed: keep all closed set tags'
 
    if args[0].endswith('.gz'):
       file = gzip.open(args[0])
    else:
       file = open(args[0])
 
-#   lClosedTag = closed.closedtags
+#   lClosedTag = [define]
 
    threshold = int(args[1])
 
