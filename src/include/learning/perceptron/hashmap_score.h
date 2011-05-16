@@ -71,13 +71,13 @@ public:
       }
    }
 
-   void clearScores() {
-      typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
-      while (it != this->end()) {
-         it.second().reset() ;
-         ++ it;
-      }
-   }
+//   void clearScores() {
+//      typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
+//      while (it != this->end()) {
+//         it.second().reset() ;
+//         ++ it;
+//      }
+//   }
 
 public:
    SCORE_TYPE dotProductCurrent(CScoreMap &mp) {

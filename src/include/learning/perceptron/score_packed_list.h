@@ -28,7 +28,7 @@ template <typename SCORE_TYPE, unsigned PACKED_SIZE>
 inline
 std::istream & operator >> (std::istream &is, CPackedScore<SCORE_TYPE, PACKED_SIZE> &score) {
    assert(PACKED_SIZE>0);
-   score.reset();
+   score.clear();
    assert(score.empty());
    if (!is) return is ;
    static std::string s ;
@@ -97,13 +97,16 @@ public:
          ++it;
       }
    }
-   void reset() {
-      typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::iterator it;
-      it = scores.begin();
-      while (it != scores.end()) {
-         it.second().reset();
-         ++it;
-      }
+//   void reset() {
+//      typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::iterator it;
+//      it = scores.begin();
+//      while (it != scores.end()) {
+//         it.second().reset();
+//         ++it;
+//      }
+//   }
+   void clear() {
+      scores.clear();
    }
    bool empty() const {
       typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::const_iterator it;
@@ -132,6 +135,9 @@ public:
          std::cout << std::endl;
          ++it;
       }
+   }
+   bool element(const unsigned &index) {
+      return scores.element[index];
    }
 public:
    CScore<SCORE_TYPE> & operator [](const unsigned &index) { return scores[index]; }

@@ -35,7 +35,7 @@ namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
- * CConParser - the constituent parser for English 
+ * CConParser - the constituent parser
  *
  *==============================================================*/
 
@@ -113,6 +113,9 @@ public:
    void parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
    void train( const CSentenceMultiCon<CConstituent> &con_input, const CSentenceParsed &correct , int round ) ;
+#ifdef NO_NEG_FEATURE
+   void getPositiveFeatures( const CSentenceParsed &correct ) ;
+#endif
 
    void finishtraining() {
       // compute average
