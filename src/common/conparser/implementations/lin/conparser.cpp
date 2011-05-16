@@ -70,6 +70,9 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
    static CActionType actionType;
    actionType.code = action.type();
 
+   static std::vector<int> empty_vec;
+   static std::vector<int>::const_iterator it;
+
    // S0
    cast_weights->m_mapS0w.getOrUpdateScore(retval, *(m_Context.s0wt), action.code(), m_nScoreIndex, amount, round);
    if (!m_Context.s0c.empty()) cast_weights->m_mapS0c.getOrUpdateScore(retval, m_Context.s0c, action.code(), m_nScoreIndex, amount, round);
@@ -77,6 +80,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
    cast_weights->m_mapS0tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
    refer_or_allocate_tuple2(word_constituent, m_Context.s0w, &(m_Context.s0c)); 
    cast_weights->m_mapS0wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+
+   std::vector<int> &ks0 = mPmapCluster.find(s0w, empty_vec);
+   for (it = ks0.begin(); it != ks0.end(); ++it)
+      cast_weights->m_mapS0k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
 
    // S1
    if (m_Context.s1!=0) {
@@ -86,6 +93,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapS1tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple2(word_constituent, m_Context.s1w, &(m_Context.s1c)); 
       cast_weights->m_mapS1wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+
+      std::vector<int> &ks1 = mPmapCluster.find(s1w, empty_vec);
+      for (it = ks1.begin(); it != ks1.end(); ++it)
+         cast_weights->m_mapS1k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
    }
 
    // S2
@@ -96,6 +107,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapS2tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple2(word_constituent, m_Context.s2w, &(m_Context.s2c)); 
       cast_weights->m_mapS2wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+
+      std::vector<int> &ks2 = mPmapCluster.find(s2w, empty_vec);
+      for (it = ks2.begin(); it != ks2.end(); ++it)
+         cast_weights->m_mapS2k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
    }
 
    // S3
@@ -106,6 +121,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapS3tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
       refer_or_allocate_tuple2(word_constituent, m_Context.s3w, &(m_Context.s3c)); 
       cast_weights->m_mapS3wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+
+      std::vector<int> &ks3 = mPmapCluster.find(s3w, empty_vec);
+      for (it = ks3.begin(); it != ks3.end(); ++it)
+         cast_weights->m_mapS3k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
    }
 
    // N0
@@ -113,6 +132,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
 //      cast_weights->m_mapN0w.getOrUpdateScore(retval, *(m_Context.n0w), action.code(), m_nScoreIndex, amount, round);
 //      cast_weights->m_mapN0t.getOrUpdateScore(retval, n0t_action, action.code(), m_nScoreIndex, amount, round);
       cast_weights->m_mapN0wt.getOrUpdateScore(retval, *(m_Context.n0wt), action.code(), m_nScoreIndex, amount, round);
+
+      std::vector<int> &kn0 = mPmapCluster.find(n0w, empty_vec);
+      for (it = kn0.begin(); it != kn0.end(); ++it)
+         cast_weights->m_mapN0k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
    }
 
    // N1
@@ -120,6 +143,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
 //      cast_weights->m_mapN1w.getOrUpdateScore(retval, *(m_Context.n1w), action.code(), m_nScoreIndex, amount, round);
 //      cast_weights->m_mapN1t.getOrUpdateScore(retval, n1t_action, action.code(), m_nScoreIndex, amount, round);
       cast_weights->m_mapN1wt.getOrUpdateScore(retval, *(m_Context.n1wt), action.code(), m_nScoreIndex, amount, round);
+
+      std::vector<int> &kn1 = mPmapCluster.find(n1w, empty_vec);
+      for (it = kn1.begin(); it != kn1.end(); ++it)
+         cast_weights->m_mapN1k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
    }
 
    // N2
@@ -127,6 +154,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
 //      cast_weights->m_mapN2w.getOrUpdateScore(retval, *(m_Context.n2w), action.code(), m_nScoreIndex, amount, round);
 //      cast_weights->m_mapN2t.getOrUpdateScore(retval, n2t_action, action.code(), m_nScoreIndex, amount, round);
       cast_weights->m_mapN2wt.getOrUpdateScore(retval, *(m_Context.n2wt), action.code(), m_nScoreIndex, amount, round);
+
+      std::vector<int> &kn2 = mPmapCluster.find(n2w, empty_vec);
+      for (it = kn2.begin(); it != kn2.end(); ++it)
+         cast_weights->m_mapN2k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
    }
 
    // N3
@@ -134,6 +165,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
 //      cast_weights->m_mapN3w.getOrUpdateScore(retval, *(m_Context.n3w), action.code(), m_nScoreIndex, amount, round);
 //      cast_weights->m_mapN3t.getOrUpdateScore(retval, n3t_action, action.code(), m_nScoreIndex, amount, round);
       cast_weights->m_mapN3wt.getOrUpdateScore(retval, *(m_Context.n3wt), action.code(), m_nScoreIndex, amount, round);
+
+      std::vector<int> &kn3 = mPmapCluster.find(n3w, empty_vec);
+      for (it = kn3.begin(); it != kn3.end(); ++it)
+         cast_weights->m_mapN3k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
    }
 
    // S0L
