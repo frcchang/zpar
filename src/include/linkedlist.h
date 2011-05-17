@@ -210,6 +210,7 @@ public:
          tail = tail->m_next;
       }
       CEntry* &c_free = getFreeMemory();
+      tail->m_value = empty;
       tail->m_next = c_free;
       c_free = m_buckets;
       m_buckets = 0;
@@ -240,6 +241,7 @@ public:
 public:
    static void freePoolMemory() { // call after all instances clean!
       getPool().reset();
+      getFreeMemory() = 0;
    }
 
 };

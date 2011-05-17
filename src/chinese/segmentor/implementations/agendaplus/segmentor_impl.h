@@ -140,6 +140,10 @@ public:
       m_mapCharCatBigram.addCurrent(w.m_mapCharCatBigram, round);
       m_mapCharCatTrigram.addCurrent(w.m_mapCharCatTrigram, round);
    }
+
+   ~CWeight() {
+      iterate_templates(,.freePoolMemory(););
+   }
 };
 
 /*===============================================================
