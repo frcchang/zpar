@@ -43,8 +43,9 @@ std::istream & operator >> (std::istream &is, CPackedScore<SCORE_TYPE, PACKED_SI
       is >> s;
 //std::cout<<(s)<<endl;std::cout.flush();
       ASSERT(s==":", "The packed score does not have : after key: "<<key);
-      is >> value;
-      score.scores[key] = value;
+      is >> score.scores[key];
+//      is >> value;
+//      score.scores[key] = value;
       is >> s;
       ASSERT(s==","||s=="}", "The packed score does not have a , or } after value: "<<value);
       if (s=="}")

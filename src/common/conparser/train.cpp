@@ -35,7 +35,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
    std::ifstream is(sOutputFile.c_str());
    ASSERT(is.is_open(), "The training file is unaccessible.");
 
-   std::ifstream *cis;
+   std::ifstream *cis=0;
    if (!sConInputPath.empty()) cis=new std::ifstream(sConInputPath.c_str());
 
    static CSentenceMultiCon<CConstituent> con_input;
@@ -59,6 +59,12 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
    }
 
    parser.finishtraining();
+
+   if (cis) {
+      cis->close();
+      delete cis;
+   }
+   is.close();
 
    std::cout << "Done. " << std::endl;
 

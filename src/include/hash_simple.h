@@ -101,9 +101,9 @@ public:
 
 protected:
    CEntry **m_buckets;
-   CEntry *m_freed; // freed from hash but not freed pool
+//   CEntry *m_freed; // freed from hash but not freed pool
 public:
-   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0), m_freed(0) { 
+   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0) { 
       if (initialize) init();
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0)/*, pool()*/ { 
@@ -130,15 +130,15 @@ protected:
    CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
    static CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   static CEntry* &getFreeMemory() { static CEntry* c_free = 0; return c_free; }
    
    CEntry *allocate() {
       static CEntry *retval;
-      static V value;
-      if (m_freed) {
-         retval = m_freed;
+      CEntry* &c_freed = getFreeMemory();
+      if (c_freed) {
+         retval = c_freed;
          retval->m_next = 0;
-          retval->m_value = value;
-         m_freed = m_freed->m_next;
+         c_freed = c_freed->m_next;
          return retval;
       }
       else {
@@ -219,14 +219,19 @@ public:
       return false;
    }
    void clear() {
+      static V value;
       CEntry * tail = 0;
       for (unsigned i = 0; i < m_nTableSize; ++i) {
          if (m_buckets[i]) {
             tail = m_buckets[i];
-            while (tail->m_next) 
+            while (tail->m_next) {
+               tail->m_value = value;
                tail = tail->m_next;
-            tail->m_next = m_freed;
-            m_freed = m_buckets[i];
+            }
+            static CEntry* &c_freed = getFreeMemory();
+            tail->m_value = value;
+            tail->m_next = c_freed;
+            c_freed = m_buckets[i];
             m_buckets[i]=0;
          }
       }
@@ -265,6 +270,7 @@ public:
 public:
    static void freePoolMemory() { // call after all instances clean!
       getPool().reset();
+      getFreeMemory() = 0;
    }
 
 };
