@@ -156,7 +156,7 @@ protected:
    CEntry *&getEntry(const K &key) { return m_buckets[hash(key)%TABLE_SIZE]; }
    CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%TABLE_SIZE]; }
 
-   static CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
 
 public:
    V &operator[] (const K &key) { 
