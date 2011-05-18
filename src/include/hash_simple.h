@@ -129,7 +129,7 @@ protected:
    CEntry *&getEntry(const K &key) { return m_buckets[hash(key)%m_nTableSize]; }
    CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
-   static CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
    static CEntry* &getFreeMemory() { static CEntry* c_free = 0; return c_free; }
    
    CEntry *allocate() {

@@ -16,11 +16,21 @@
  *
  *==============================================================*/
 
-template <typename T, unsigned BLOCK_SIZE>
+template <typename T>
 class CMemoryPoolEntry {
 public:
-   T blocks[BLOCK_SIZE];
+   T* blocks;
+
    CMemoryPoolEntry *prev;
+
+   const unsigned long blocksize;
+public:
+   CMemoryPoolEntry(const unsigned long &bs): blocksize(bs), prev(0) {
+      blocks = new T[bs];
+   }
+   virtual ~CMemoryPoolEntry() {
+      delete [] blocks;
+   }
 };
 /*===============================================================
  *
@@ -28,36 +38,38 @@ public:
  *
  *==============================================================*/
 
-template <typename T, unsigned BLOCK_SIZE>
+template <typename T>
 class CMemoryPool {
 protected:
-   CMemoryPoolEntry<T, BLOCK_SIZE> *current;
+   CMemoryPoolEntry<T> *current;
    unsigned long nItem;
+   unsigned long blocksize;
 public:
-   CMemoryPool(): current(0), nItem(0) {
+   CMemoryPool(const unsigned long &bs): current(0), nItem(0), blocksize(bs) {
    }
    virtual ~CMemoryPool() {
       reset();
    }
 protected:
    void newblock() {
-      CMemoryPoolEntry<T, BLOCK_SIZE> *iter = current;
-      current = new CMemoryPoolEntry<T, BLOCK_SIZE>();
+      CMemoryPoolEntry<T> *iter = current;
+      current = new CMemoryPoolEntry<T>(blocksize);
       assert(current!=0);
       current->prev = iter;
       nItem = 0;
+      blocksize<<=1;
    }
 public:
    T* allocate() { 
-      if (current==0 || nItem==BLOCK_SIZE) { // if start or block full
+      if (current==0 || nItem==current->blocksize) { // if start or block full
          newblock();
       }
       return &(current->blocks[nItem++]) ;
    }
    void reset() {
-      CMemoryPoolEntry<T, BLOCK_SIZE> *iter = current;
+      CMemoryPoolEntry<T> *iter = current;
       while (iter) {
-         CMemoryPoolEntry<T, BLOCK_SIZE> *prev = iter->prev;
+         CMemoryPoolEntry<T> *prev = iter->prev;
          delete iter;
          iter = prev;
       }

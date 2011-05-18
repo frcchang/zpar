@@ -114,7 +114,7 @@ public:
    virtual ~CLinkedList() { }
 
 protected:
-   static CMemoryPool<CEntry, POOL_BLOCK_SIZE> &getPool() { static CMemoryPool<CEntry, POOL_BLOCK_SIZE> pool; return pool; }
+   static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
    static CEntry* &getFreeMemory() { static CEntry* c_free = 0; return c_free; }
 
 public:
