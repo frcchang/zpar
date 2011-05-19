@@ -33,7 +33,7 @@ std::istream & operator >> (std::istream &is, CPackedScore<SCORE_TYPE, PACKED_SI
    if (!is) return is ;
    static std::string s ;
    static unsigned key;
-   static CScore<SCORE_TYPE> value;
+//   static CScore<SCORE_TYPE> value;
    is >> s;
    ASSERT(s=="{"||s=="{}", "The packed score does not start with {");
    if (s=="{}")
@@ -47,7 +47,7 @@ std::istream & operator >> (std::istream &is, CPackedScore<SCORE_TYPE, PACKED_SI
 //      is >> value;
 //      score.scores[key] = value;
       is >> s;
-      ASSERT(s==","||s=="}", "The packed score does not have a , or } after value: "<<value);
+      ASSERT(s==","||s=="}", "The packed score does not have a , or } after value: "<<score.scores[key]);
       if (s=="}")
          return is;
    }
@@ -62,14 +62,18 @@ std::ostream & operator << (std::ostream &os, const CPackedScore<SCORE_TYPE, PAC
    typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::const_iterator it = score.scores.begin();
    bool bBegin=true;
    while (it!=score.scores.end()) {
+#ifndef NO_NEG_FEATURE
       if (!it.second().zero()) {
+#endif // do not print zero scores when allow negative feature
          if (bBegin) 
             os << ' ';
          else
             os << " , ";
          bBegin=false;
          os << it.first() << " : " << it.second();
+#ifndef NO_NEG_FEATURE
       }
+#endif // but have to when disallow because features are static
       ++it;
    }
    if (!bBegin) os << ' ';

@@ -9,7 +9,7 @@ std::istream & operator >> (std::istream &is, CHashMap<K, V> &table) {
 //   V value ;
    char c ;
    std::string s ; 
-   getline(is, s);
+   if (!getline(is, s)) THROW("hash map file ended unexpectedly");
    while (is && !(s.empty())) {
       std::istringstream iss(s) ; 
       iss >> key;

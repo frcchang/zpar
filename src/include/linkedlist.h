@@ -251,7 +251,7 @@ std::istream & operator >> (std::istream &is, CLinkedList<K, V> &score_map) {
    if (!is) return is ;
    static std::string s ;
    static K key;
-   static V value;
+//   static V value;
 //   assert(score_map.empty());
    is >> s;
    ASSERT(s=="{"||s=="{}", "The small hashmap does not start with {");
@@ -261,10 +261,11 @@ std::istream & operator >> (std::istream &is, CLinkedList<K, V> &score_map) {
       is >> key;
       is >> s;
       ASSERT(s==":", "The small hashmap does not have : after key: "<<key);
-      is >> value;
-      score_map[key] = value;
+//      is >> value;
+//      score_map[key] = value;
+      is >> score_map[key];
       is >> s;
-      ASSERT(s==","||s=="}", "The small hashmap does not have a , or } after value: "<<value);
+      ASSERT(s==","||s=="}", "The small hashmap does not have a , or } after value: "<<score_map[key]);
       if (s=="}")
          return is;
    }
