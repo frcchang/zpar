@@ -116,11 +116,20 @@ public:
       CHashMap<K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::init();
    }
 
+#ifdef NO_NEG_FEATURE
+   virtual inline void addPositiveFeature(const K &key, const unsigned &index) {
+      (*this)[key][index];
+   }
+#endif // define features
+
    virtual inline void getScore( CPackedScoreType<SCORE_TYPE, PACKED_SIZE>&o, const K &key , const int &which ) {
       return this->find( key , m_zero ).add( o , which );
    }
 
    virtual inline void updateScore( const K &key , const unsigned &index , const SCORE_TYPE &amount , const int &round ) {
+#ifdef NO_NEG_FEATURE
+      if (this->element(key) && (*this)[key].element(index))
+#endif // update can only happen with defined features
       (*this)[ key ].updateCurrent( index , amount , round );
    }
 
@@ -129,7 +138,7 @@ public:
          this->find(key, m_zero).add(out, which) ;
       }
       else {
-         assert( round != 0 );
+         assert( round > 0 );
          updateScore( key , index , amount , round ) ;
       }
    }
@@ -213,7 +222,9 @@ std::ostream & operator << (std::ostream &os, CPackedScoreMap<K, SCORE_TYPE, PAC
 
    typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
+#ifndef NO_NEG_FEATURE
       if ( !it.second().empty() ) 
+#endif // do not write zero scores if allow negative scores
          os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;
    }
