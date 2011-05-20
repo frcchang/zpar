@@ -82,8 +82,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
    cast_weights->m_mapS0wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
 
    const std::vector<int> &ks0 = m_mapCluster.find(*(m_Context.s0w), empty_vec);
-   for (it = ks0.begin(); it != ks0.end(); ++it)
-      cast_weights->m_mapS0k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+   if (m_Context.s0t.code()==PENN_TAG_VERB || m_Context.s0t.code()==PENN_TAG_VERB_PAST || m_Context.s0t.code()==PENN_TAG_VERB_PROG || m_Context.s0t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.s0t.code()==PENN_TAG_VERB_PRES || m_Context.s0t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
+      for (it = ks0.begin(); it != ks0.end(); ++it)
+         cast_weights->m_mapS0k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+   }
 
    // S1
    if (m_Context.s1!=0) {
@@ -95,8 +97,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapS1wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
 
       const std::vector<int> &ks1 = m_mapCluster.find(*(m_Context.s1w), empty_vec);
-      for (it = ks1.begin(); it != ks1.end(); ++it)
-         cast_weights->m_mapS1k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      if (m_Context.s1t.code()==PENN_TAG_VERB || m_Context.s1t.code()==PENN_TAG_VERB_PAST || m_Context.s1t.code()==PENN_TAG_VERB_PROG || m_Context.s1t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.s1t.code()==PENN_TAG_VERB_PRES || m_Context.s1t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
+         for (it = ks1.begin(); it != ks1.end(); ++it)
+            cast_weights->m_mapS1k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      }
    }
 
    // S2
@@ -109,8 +113,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapS2wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
 
       const std::vector<int> &ks2 = m_mapCluster.find(*(m_Context.s2w), empty_vec);
+      if (m_Context.s2t.code()==PENN_TAG_VERB || m_Context.s2t.code()==PENN_TAG_VERB_PAST || m_Context.s2t.code()==PENN_TAG_VERB_PROG || m_Context.s2t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.s2t.code()==PENN_TAG_VERB_PRES || m_Context.s2t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
       for (it = ks2.begin(); it != ks2.end(); ++it)
          cast_weights->m_mapS2k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      }
    }
 
    // S3
@@ -123,8 +129,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapS3wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
 
       const std::vector<int> &ks3 = m_mapCluster.find(*(m_Context.s3w), empty_vec);
-      for (it = ks3.begin(); it != ks3.end(); ++it)
-         cast_weights->m_mapS3k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      if (m_Context.s3t.code()==PENN_TAG_VERB || m_Context.s3t.code()==PENN_TAG_VERB_PAST || m_Context.s3t.code()==PENN_TAG_VERB_PROG || m_Context.s3t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.s3t.code()==PENN_TAG_VERB_PRES || m_Context.s3t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
+         for (it = ks3.begin(); it != ks3.end(); ++it)
+            cast_weights->m_mapS3k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      }
    }
 
    // N0
@@ -134,8 +142,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapN0wt.getOrUpdateScore(retval, *(m_Context.n0wt), action.code(), m_nScoreIndex, amount, round);
 
       const std::vector<int> &kn0 = m_mapCluster.find(*(m_Context.n0w), empty_vec);
-      for (it = kn0.begin(); it != kn0.end(); ++it)
-         cast_weights->m_mapN0k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      if (m_Context.n0t.code()==PENN_TAG_VERB || m_Context.n0t.code()==PENN_TAG_VERB_PAST || m_Context.n0t.code()==PENN_TAG_VERB_PROG || m_Context.n0t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.n0t.code()==PENN_TAG_VERB_PRES || m_Context.n0t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
+         for (it = kn0.begin(); it != kn0.end(); ++it)
+            cast_weights->m_mapN0k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      }
    }
 
    // N1
@@ -145,8 +155,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapN1wt.getOrUpdateScore(retval, *(m_Context.n1wt), action.code(), m_nScoreIndex, amount, round);
 
       const std::vector<int> &kn1 = m_mapCluster.find(*(m_Context.n1w), empty_vec);
-      for (it = kn1.begin(); it != kn1.end(); ++it)
-         cast_weights->m_mapN1k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      if (m_Context.n1t.code()==PENN_TAG_VERB || m_Context.n1t.code()==PENN_TAG_VERB_PAST || m_Context.n1t.code()==PENN_TAG_VERB_PROG || m_Context.n1t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.n1t.code()==PENN_TAG_VERB_PRES || m_Context.n1t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
+         for (it = kn1.begin(); it != kn1.end(); ++it)
+            cast_weights->m_mapN1k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      }
    }
 
    // N2
@@ -156,8 +168,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapN2wt.getOrUpdateScore(retval, *(m_Context.n2wt), action.code(), m_nScoreIndex, amount, round);
 
       const std::vector<int> &kn2 = m_mapCluster.find(*(m_Context.n2w), empty_vec);
-      for (it = kn2.begin(); it != kn2.end(); ++it)
-         cast_weights->m_mapN2k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      if (m_Context.n2t.code()==PENN_TAG_VERB || m_Context.n2t.code()==PENN_TAG_VERB_PAST || m_Context.n2t.code()==PENN_TAG_VERB_PROG || m_Context.n2t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.n2t.code()==PENN_TAG_VERB_PRES || m_Context.n2t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
+         for (it = kn2.begin(); it != kn2.end(); ++it)
+            cast_weights->m_mapN2k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      }
    }
 
    // N3
@@ -167,8 +181,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapN3wt.getOrUpdateScore(retval, *(m_Context.n3wt), action.code(), m_nScoreIndex, amount, round);
 
       const std::vector<int> &kn3 = m_mapCluster.find(*(m_Context.n3w), empty_vec);
-      for (it = kn3.begin(); it != kn3.end(); ++it)
-         cast_weights->m_mapN3k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      if (m_Context.n3t.code()==PENN_TAG_VERB || m_Context.n3t.code()==PENN_TAG_VERB_PAST || m_Context.n3t.code()==PENN_TAG_VERB_PROG || m_Context.n3t.code()==PENN_TAG_VERB_PAST_PARTICIPATE || m_Context.n3t.code()==PENN_TAG_VERB_PRES || m_Context.n3t.code()==PENN_TAG_VERB_THIRD_SINGLE) {
+         for (it = kn3.begin(); it != kn3.end(); ++it)
+            cast_weights->m_mapN3k.getOrUpdateScore(retval, *it, action.code(), m_nScoreIndex, amount, round);
+      }
    }
 
    // S0L
