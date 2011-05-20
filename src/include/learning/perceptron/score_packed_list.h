@@ -144,6 +144,38 @@ public:
    bool element(const unsigned &index) {
       return scores.element[index];
    }
+
+public:
+
+   void addCurrent(CPackedScore &s, const int &round) const {
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::const_iterator it;
+      it = s.scores.begin();
+      while (it != s.scores.end()) {
+         scores[it.first()].updateCurrent(it.second().score(), round);
+         ++it;
+      }
+   }
+
+   SCORE_TYPE squareNorm() {
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::const_iterator it;
+      it = scores.begin();
+      SCORE_TYPE retval = 0;
+      while (it != scores.end()) {
+         retval += it.second().score() * it.second().score();
+         ++it;
+      }
+      return retval;
+   }
+
+   void scaleCurrent(SCORE_TYPE scale, const int &round) {
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::const_iterator it;
+      it = scores.begin();
+      while (it != scores.end()) {
+         it.second().scaleCurrent(scale, round);
+         ++it;
+      }
+   }
+
 public:
    CScore<SCORE_TYPE> & operator [](const unsigned &index) { return scores[index]; }
    const CScore<SCORE_TYPE> & find(const unsigned &index) const { return scores.find(index,CScore<SCORE_TYPE>()); }
