@@ -24,7 +24,7 @@ using namespace TARGET_LANGUAGE;
 
 void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const std::string &sBinaryRulePath, const std::string &sUnaryRulePath, const std::string &sConInputPath) {
 
-   std::cout << "Training iteration is started ... " << std::endl ; std::cout.flush();
+   std::cout << "Training iteration is started... " << std::endl ; std::cout.flush();
 
    CConParser parser(sFeatureFile, true);
    if (!sBinaryRulePath.empty()) 
