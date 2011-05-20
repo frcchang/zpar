@@ -142,11 +142,11 @@ int main(int argc, char* argv[]) {
       std::cout << "Training started." << std::endl;
       int time_start = clock();
 #ifdef NO_NEG_FEATURE
-      if (!FileExists(options.args[1]))
-         extract_features(options.args[0], options.args[1]); 
+      if (!FileExists(options.args[2]))
+         extract_features(options.args[1], options.args[2]); 
 #endif     
       for (int i=0; i<training_rounds; ++i) {
-         auto_train(options.args[0], options.args[1], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
+         auto_train(options.args[1], options.args[2], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
          if (i==0) { // do not apply rules in next iterations
             sBinaryRulePath.clear();
             sUnaryRulePath.clear();
