@@ -72,6 +72,41 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 
 /*===============================================================
  *
+ * extract_features - train by the parser itself, black-box training
+ *
+ *===============================================================*/
+
+#ifdef NO_NEG_FEATURE
+void extract_features(const std::string &sOutputFile, const std::string &sFeatureFile) {
+
+   std::cout << "Extracting feature... "; std::cout.flush();
+
+   CConParser parser(sFeatureFile, true);
+
+   std::ifstream is(sOutputFile.c_str());
+   ASSERT(is.is_open(), "The training file is unaccessible.");
+
+   static CSentenceParsed ref_sent; 
+
+   int nCount=0;
+   
+   is >> ref_sent;
+   while( ! ref_sent.empty() ) {
+      parser.getPositiveFeatures( ref_sent );
+      is >> ref_sent;
+   }
+
+   parser.finishtraining();
+
+   is.close();
+
+   std::cout << "done. " << std::endl;
+
+}
+#endif
+
+/*===============================================================
+ *
  * main
  *
  *==============================================================*/
@@ -106,6 +141,10 @@ int main(int argc, char* argv[]) {
    
       std::cout << "Training started." << std::endl;
       int time_start = clock();
+#ifdef NO_NEG_FEATURE
+      if (!FileExists(options.args[1]))
+         extract_features(options.args[0], options.args[1]); 
+#endif     
       for (int i=0; i<training_rounds; ++i) {
          auto_train(options.args[0], options.args[1], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
          if (i==0) { // do not apply rules in next iterations
