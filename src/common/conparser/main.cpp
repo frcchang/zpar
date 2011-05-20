@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       bool bBinary = configurations.getConfiguration("b").empty() ? false : true;
       char cInputFormat = configurations.getConfiguration("i") == "c" ? 'c' : 'r';
-      process(argv[1], argv[2], argv[3], cInputFormat, nBest, bScores, bBinary);
+      process(options.args[0], options.args[1], options.args[2], cInputFormat, nBest, bScores, bBinary);
    } 
    catch (const std::string &e) {
       std::cerr << "Error: " << e << std::endl;
