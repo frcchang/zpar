@@ -647,18 +647,18 @@ void CConParser::train( const CSentenceMultiCon<CConstituent> &con_input, const 
  *---------------------------------------------------------------*/
 
 void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
-   static CStateItem state[MAX_SENTENCE_SIZE*(1+UNARY_MOVES)+2];
+   static CStateItem states[MAX_SENTENCE_SIZE*(1+UNARY_MOVES)+2];
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
    static int current;
    static CAction action;
 
-   state[0].clear();
+   states[0].clear();
    current = 0;
 
-   while ( !state[current].IsTerminated() ) {
-      state[current].StandardMove(correct, action);
-      getOrUpdateStackScore(scores, states[current], action, 1, -1);
-      state[current].Move(state+current+1, action);
+   while ( !states[current].IsTerminated() ) {
+      states[current].StandardMove(correct, action);
+      getOrUpdateStackScore(scores, states+current, action, 1, -1);
+      states[current].Move(states+current+1, action);
       ++current;
    }
 }
