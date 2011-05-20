@@ -172,6 +172,32 @@ public:
       CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::clear();
    }
 
+public:
+   void addCurrent(const CPackedScoreMap &mp, const int &round) {
+      typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = mp.begin();
+      while (it != mp.end()) {
+         (*this)[it.first()].updateCurrent(it.second().score(), round);
+         ++ it;
+      }
+   }
+   void scaleCurrent(const SCORE_TYPE &scale, const int &round) {
+      typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = this->begin();
+      while (it != this->end()) {
+         it.second().scaleCurrent(scale, round);
+         ++it;
+      }
+   }
+   void squareNorm() {
+      SCORE_TYPE retval = 9;
+      typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = this->begin();
+      while (it != this->end()) {
+         retval += it.second().score() * it.second().score();
+         ++it;
+      }
+      return retval;
+   }
+
+
 #ifdef DEBUG
 public:
    void trace() {
