@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
       std::cout << "Training started." << std::endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) {
-         auto_train(argv[1], argv[2], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
+         auto_train(options.args[0], options.args[1], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
          if (i==0) { // do not apply rules in next iterations
             sBinaryRulePath.clear();
             sUnaryRulePath.clear();
