@@ -142,7 +142,7 @@ public:
       }
    }
    bool element(const unsigned &index) {
-      return scores.element[index];
+      return scores.element(index);
    }
 
 public:

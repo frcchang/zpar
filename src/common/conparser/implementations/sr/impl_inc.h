@@ -31,11 +31,7 @@ typedef CTemporary<CConstituentLabel> CConstituent;
 #include "learning/perceptron/score.h"
 #include "learning/perceptron/hashmap_score_packed.h"
 
-#ifdef NO_NEG_FEATURE
-#define CScoreMapType CPackedScoreMapNoNegFeatures
-#else
 #define CScoreMapType CPackedScoreMap
-#endif
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
