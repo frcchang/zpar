@@ -12,8 +12,7 @@
 
 #include "weight_base.h"
 
-//#define TABLE_SIZE 122651
-const static unsigned TABLE_SIZE = 1<<17;
+const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 
 #define iterate_templates(left, right) \
    left(m_mapS0c)right\
@@ -368,7 +367,8 @@ public:
 
 public:
 
-   CWeight(bool bTrain) : CWeightBase(bTrain) ,
+   CWeight(bool bTrain, unsigned TABLE_SIZE = DEFAULT_TABLE_SIZE) : 
+                          CWeightBase(bTrain) ,
 
                           m_nMaxWordFrequency(0) ,
                           m_mapWordFrequency(TABLE_SIZE),
