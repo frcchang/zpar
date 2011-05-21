@@ -52,14 +52,16 @@ private:
    int m_nScoreIndex;
    conparser::CRule m_rule;
    conparser::CContext m_Context;
+   conparser::CWeight *m_delta;
 
 public:
    // constructor and destructor
-   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache) { 
+   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache), m_delta(0) { 
       // initialize agenda
 //      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
       m_weights = new conparser :: CWeight( bTrain );
+      if (bTrain) m_delta = new conparser::CWeight( bTrain, 256 );
       std::ifstream file;
       file.open(sFeatureDBPath.c_str());
       m_weights->loadScores(file);
@@ -79,6 +81,7 @@ public:
    ~CConParser() {
 //      delete m_Agenda;
       delete m_weights;
+      if (m_delta) delete m_delta;
    }
    CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache) { 
       assert(1==0);
