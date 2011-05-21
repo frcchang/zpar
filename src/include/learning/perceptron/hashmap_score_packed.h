@@ -134,6 +134,12 @@ public:
    }
 
    virtual inline void getOrUpdateScore( CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &out , const K &key , const unsigned &index , const int &which , const SCORE_TYPE &amount=0 , const int &round=0 ) {
+#ifdef NO_NEG_FEATURE
+      if ( round == -1 ) {
+         addPositiveFeature( key, index );
+         return;
+      }
+#endif
       if ( amount == 0 ) {
          this->find(key, m_zero).add(out, which) ;
       }
