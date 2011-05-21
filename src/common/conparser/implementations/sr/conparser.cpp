@@ -647,6 +647,7 @@ void CConParser::train( const CSentenceMultiCon<CConstituent> &con_input, const 
  *---------------------------------------------------------------*/
 
 void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
+   static CTwoStringVector sentence;
    static CStateItem states[MAX_SENTENCE_SIZE*(1+UNARY_MOVES)+2];
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
    static int current;
@@ -654,9 +655,18 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
 
    states[0].clear();
    current = 0;
+   UnparseSentence( &correct, &sentence ) ;
+   m_lCache.clear();
+   m_lWordLen.clear();
+   for (unsigned i=0; i<sentence.size(); ++i) {
+      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[i].first , sentence[i].second) );
+      m_lWordLen.push_back( getUTF8StringLength(sentence[i].first) );
+   }
 
    while ( !states[current].IsTerminated() ) {
       states[current].StandardMove(correct, action);
+//std::cout << action << std::endl;
+      m_Context.load(states+current, m_lCache, m_lWordLen, true);
       getOrUpdateStackScore(scores, states+current, action, 1, -1);
       states[current].Move(states+current+1, action);
       ++current;
