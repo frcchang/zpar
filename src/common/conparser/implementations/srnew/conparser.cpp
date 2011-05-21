@@ -15,8 +15,6 @@
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::conparser;
 
-#define cast_weights static_cast<CWeight*>(m_weights)
-
 #define refer_or_allocate_tuple2(x, o1, o2) { if (amount == 0) x.refer(o1, o2); else x.allocate(o1, o2); }
 
 /*===============================================================
@@ -69,6 +67,8 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
 
    static CActionType actionType;
    actionType.code = action.type();
+
+   CWeight* cast_weights = amount ? m_delta : static_cast<CWeight*>(m_weights);
 
    // S0
    cast_weights->m_mapS0w.getOrUpdateScore(retval, *(m_Context.s0wt), action.code(), m_nScoreIndex, amount, round);
@@ -326,17 +326,7 @@ SCORE_TYPE CConParser::getGlobalScore(const CSentenceParsed &parsed) {
 
 void CConParser::updateScores(const CSentenceParsed & parsed , const CSentenceParsed & correct , int round ) {
    
-   assert( m_bTrain );
-
-   if ( round > m_nTrainingRound )
-      m_nTrainingRound = round ;
-
-   if ( parsed == correct ) 
-      return;
-
-
-    m_nTotalErrors++;
-
+   THROW("Unsupported method");
 }
 
 /*---------------------------------------------------------------
@@ -388,6 +378,9 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    updateScoresForState( correct, eAdd );
    updateScoresForState( outout, eSubtract );
+
+   static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
+   m_delta->clear();
 
    m_nTotalErrors++;
 }

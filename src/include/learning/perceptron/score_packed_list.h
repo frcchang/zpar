@@ -147,8 +147,8 @@ public:
 
 public:
 
-   void addCurrent(CPackedScore &s, const int &round) const {
-      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::const_iterator it;
+   void addCurrent(CPackedScore &s, const int &round) {
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::iterator it;
       it = s.scores.begin();
       while (it != s.scores.end()) {
          scores[it.first()].updateCurrent(it.second().score(), round);
@@ -157,7 +157,7 @@ public:
    }
 
    SCORE_TYPE squareNorm() {
-      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::const_iterator it;
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::iterator it;
       it = scores.begin();
       SCORE_TYPE retval = 0;
       while (it != scores.end()) {
@@ -168,7 +168,7 @@ public:
    }
 
    void scaleCurrent(SCORE_TYPE scale, const int &round) {
-      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::const_iterator it;
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::iterator it;
       it = scores.begin();
       while (it != scores.end()) {
          it.second().scaleCurrent(scale, round);
