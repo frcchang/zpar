@@ -179,10 +179,10 @@ public:
    }
 
 public:
-   void addCurrent(const CPackedScoreMap &mp, const int &round) {
+   void addCurrent(CPackedScoreMap &mp, const int &round) {
       typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = mp.begin();
       while (it != mp.end()) {
-         (*this)[it.first()].updateCurrent(it.second().score(), round);
+         (*this)[it.first()].addCurrent(it.second(), round);
          ++ it;
       }
    }
@@ -193,11 +193,11 @@ public:
          ++it;
       }
    }
-   void squareNorm() {
-      SCORE_TYPE retval = 9;
+   SCORE_TYPE squareNorm() {
+      SCORE_TYPE retval = 0;
       typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = this->begin();
       while (it != this->end()) {
-         retval += it.second().score() * it.second().score();
+         retval += it.second().squareNorm();
          ++it;
       }
       return retval;

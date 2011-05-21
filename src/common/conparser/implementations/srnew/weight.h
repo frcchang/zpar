@@ -14,6 +14,8 @@
 
 const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 
+#define ID(x) x
+
 #define iterate_templates(left, right) \
    left(m_mapS0c)right\
    left(m_mapS0w)right\
@@ -521,6 +523,19 @@ TABLE_SIZE),
    virtual void saveScores(std::ofstream &os);
    void computeAverageFeatureWeights(int round);
    SCORE_TYPE dotProduct(const CWeight &w);
+   void clear() {
+      iterate_templates(,.clear(););
+   }
+   void addCurrent(CWeight*w, int round);
+   void scaleCurrent(const SCORE_TYPE &scale, const int &round) {
+      iterate_templates(,ID(.scaleCurrent(scale, round);));
+   }
+   SCORE_TYPE squareNorm() {
+      static SCORE_TYPE retval;
+      retval = 0;
+      iterate_templates(retval+=,.squareNorm(););
+      return retval;
+   }
  
 };
 
