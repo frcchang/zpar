@@ -137,8 +137,8 @@ protected:
       CEntry* &c_freed = getFreeMemory();
       if (c_freed) {
          retval = c_freed;
-         retval->m_next = 0;
          c_freed = c_freed->m_next;
+         retval->m_next = 0;
          return retval;
       }
       else {

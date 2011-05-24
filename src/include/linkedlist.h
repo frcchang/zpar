@@ -108,8 +108,9 @@ protected:
 public:
    CLinkedList() : m_buckets(0) { }
       
-   CLinkedList(const CLinkedList& wordmap) { 
-      THROW("CLinkedList does not support copy constructor!"); 
+   CLinkedList(const CLinkedList& o) { 
+      ASSERT(o.m_buckets==0, "CLinkedList does not support copy constructor unless copying from an empty one.");
+      clear(); 
    }
    virtual ~CLinkedList() { }
 
@@ -124,6 +125,7 @@ public:
       if (c_free) {
          retval = c_free;
          c_free = c_free->m_next;
+         retval->m_next = 0;
          return retval;
       }
       else {
@@ -231,8 +233,9 @@ public:
    }
 
 public:
-   void operator = (const CLinkedList& wordmap) { 
-      THROW("CLinkedList does not support copy constructor!"); 
+   void operator = (const CLinkedList& o) { 
+      ASSERT(o.m_buckets==0, "CLinkedList does not support copy constructor unless copying from an empty one.");
+      clear(); 
    }
 
 public:
