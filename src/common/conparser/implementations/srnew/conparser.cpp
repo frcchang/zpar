@@ -418,7 +418,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    const static CStateItem *correctState ;
    static bool bCorrect ;  // used in learning for early update
    static int tmp_i, tmp_j;
-   static CAction action;
+   static CAction correct_action;
+   static CScoredStateAction scored_correct_action;
    static std::vector<CAction> actions; // actions to apply for a candidate
    static CAgendaSimple<CScoredStateAction> beam(AGENDA_SIZE);
    static CScoredStateAction scored_action; // used rank actions
@@ -466,6 +467,13 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          
       beam.clear();
 
+      if (bTrain) {
+         pBestGen = 0;
+         bCorrect = false;
+         if (!correctState->IsTerminated()) {
+            correctState->StandardMove(correct, correct_action);
+         }
+      }
       for (pGenerator=lattice_index[index-1]; pGenerator!=lattice_index[index]; ++pGenerator) { // for each generator
 
          // when an item is terminated, move it to potential outouts.
@@ -483,19 +491,15 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
                scored_action.load(actions[tmp_j], pGenerator, packedscores[actions[tmp_j].code()]);
                beam.insertItem(&scored_action);
+               if (bTrain && !correctState->IsTerminated() && pGenerator == correctState && actions[tmp_j] == correct_action) {
+                  scored_correct_action = scored_action;
+               }
             }
          }
    
       } // done iterating generator item
 
       // insertItems
-      if (bTrain) {
-         pBestGen = 0;
-         bCorrect = false;
-         if (!correctState->IsTerminated()) {
-            correctState->StandardMove(correct, action);
-         }
-      }
       for (tmp_j=0; tmp_j<beam.size(); ++tmp_j) { // insert from
          pGenerator = beam.item(tmp_j)->item;
          pGenerator->Move(lattice_index[index+1], beam.item(tmp_j)->action);
@@ -505,7 +509,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             if ( pBestGen == 0 || lattice_index[index+1]->score > pBestGen->score ) {
                pBestGen = lattice_index[index+1];
             }
-            if ( pGenerator == correctState && beam.item(tmp_j)->action == action ) {
+            if ( pGenerator == correctState && beam.item(tmp_j)->action == correct_action ) {
                // pGenerator==correctState implies correctState not finished
                // since a finished generator will not be put into beam
                // and thus it implis that action is valid
@@ -522,8 +526,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 #ifdef EARLY_UPDATE
          if (!bCorrect && candidate_outout!=correctState) {
             if (!correctState->IsTerminated()) {
-               correctState->Move(lattice_index[index+1], action); 
+               correctState->Move(lattice_index[index+1], correct_action); 
                correctState = lattice_index[index+1];
+               lattice_index[index+1]->score = scored_correct_action.score;
             }
             if (pBestGen == 0 || candidate_outout && candidate_outout->score > pBestGen->score )
                pBestGen = candidate_outout;
