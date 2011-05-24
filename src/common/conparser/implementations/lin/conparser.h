@@ -52,11 +52,12 @@ private:
    int m_nScoreIndex;
    conparser::CRule m_rule;
    conparser::CContext m_Context;
-   CHashMap< CWord, std::vector<int> > m_mapCluster;
+   CHashMap< CWord, std::vector<int> > m_mapClusterV;
+   CHashMap< CWord, std::vector<int> > m_mapClusterN;
 
 public:
    // constructor and destructor
-   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache), m_mapCluster(1<<16) { 
+   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache), m_mapClusterV(1<<16), m_mapClusterN(1<<16) { 
       // initialize agenda
 //      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
@@ -73,10 +74,13 @@ public:
          THROW("The model file " << sFeatureDBPath<< " is not found.")
       }
       // load cluster
-      std::ifstream ifs("cluster.txt");
-      ASSERT(ifs.is_open(), "The cluster file (cluster.txt) is not accessible");
-      ifs >> m_mapCluster;
-      ifs.close();
+      std::ifstream ifsv("clusterv.txt");
+      ASSERT(ifsv.is_open(), "The cluster file (clusterv.txt) is not accessible");
+      ifsv >> m_mapClusterV;
+      std::ifstream ifsn("clustern.txt");
+      ASSERT(ifsn.is_open(), "The cluster file (clustern.txt) is not accessible");
+      ifsn >> m_mapClusterN;
+      ifsn.close();
 
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
@@ -87,7 +91,7 @@ public:
 //      delete m_Agenda;
       delete m_weights;
    }
-   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache), m_mapCluster(1) { 
+   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache), m_mapClusterV(1), m_mapClusterN(1) { 
       THROW("Copy constructor called");
    }
 
