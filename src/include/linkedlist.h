@@ -22,7 +22,7 @@ template <typename K, typename V>
 class CLinkedList {
 
 protected:
-   static const unsigned long POOL_BLOCK_SIZE=(1<<16);
+   enum{POOL_BLOCK_SIZE=(1<<16)};
 
 protected:
 
