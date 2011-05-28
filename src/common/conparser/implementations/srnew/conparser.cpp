@@ -379,6 +379,9 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
    updateScoresForState( correct, eAdd );
    updateScoresForState( outout, eSubtract );
 
+   double tou = (1+outout->score-correct->score)/(1+m_delta->squareNorm());
+//std::cout << outout->score << ' ' << correct->score;
+   m_delta->scaleCurrent(tou, m_nTrainingRound);
    static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
    m_delta->clear();
 
