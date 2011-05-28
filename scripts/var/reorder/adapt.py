@@ -159,9 +159,8 @@ def relativePosition(n1, n2, align):
          if not a1 is None and not a2 is None:
             if a1 < a2:
                left += 1
-            else:
+            elif a1 > a2:
                right += 1
-            assert a1 != a2
    return left, right
 
 def minimizeCrossingLinks(nodes, align):
@@ -169,7 +168,7 @@ def minimizeCrossingLinks(nodes, align):
    for node in nodes:
       n = 0
       for retnode in retval:
-         l, r = relativePosition(node, retnode(
+         l, r = relativePosition(node, retnode, align)
          if l > r:
             break
          n += 1

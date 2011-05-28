@@ -4,7 +4,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../dep"))
 import depio
 import dep
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../ml"))
 import brute
 
 #========================================
@@ -33,7 +32,7 @@ def filter(tree, align):
       else:
          empty += 1
 
-   dept = dep.CDep(tree)
+   dept = dep.CDep(tree) # comment this if reordered out desired
    if empty > float(len(l)) * 0.3:
       print 0, 0, dept.toRaw()
    elif count > float(total) * 0.3:
