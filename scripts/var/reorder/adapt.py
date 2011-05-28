@@ -164,6 +164,18 @@ def relativePosition(n1, n2, align):
             assert a1 != a2
    return left, right
 
+def minimizeCrossingLinks(nodes, align):
+   retval = []
+   for node in nodes:
+      n = 0
+      for retnode in retval:
+         l, r = relativePosition(node, retnode(
+         if l > r:
+            break
+         n += 1
+      retval.insert(n, node)
+   return retval
+
 def crossLink(node1, node2, align):
    count = 0
    total = 0
@@ -293,6 +305,9 @@ def reorderNode(node, align, model, bDebug):
    # ver
    if node.pos == 'VV':
       reorderVV(node, align, model, bDebug)
+      if align != None:
+         right = minimizeCrossingLinks(node.right_children, align)
+         node.right_children = right
    # n.
    elif node.pos in ['NN', 'NR']:
       reorderNN(node, align, model, bDebug)
