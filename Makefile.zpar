@@ -7,7 +7,7 @@ ifeq ($(CHINESE_DEPPARSER_IMPL), combined)
 	CHINESE_DEPPARSER_IMPL = nivre
 endif
 
-zpar: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o 
+zpar: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese $(CHINESE_DEPPARSER_D) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_DOC2SNT) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE)/zpar.cpp -o $(OBJECT_DIR)/zpar.o
 	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar $(OBJECT_DIR)/zpar.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECTS)
 	@echo The Chinese zpar system compiled successfully into $(DIST_DIR).
