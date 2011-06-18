@@ -61,7 +61,12 @@ public:
 //      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
       m_weights = new conparser :: CWeight( bTrain );
-      if (bTrain) m_delta = new conparser::CWeight( bTrain, 256 );
+      if (bTrain) {
+         m_delta = new conparser::CWeight( bTrain, 256 );
+#ifdef NO_NEG_FEATURE
+         m_delta->setPositiveFeature(static_cast<conparser::CWeight*>(m_weights));
+#endif
+      }
       std::ifstream file;
       file.open(sFeatureDBPath.c_str());
       m_weights->loadScores(file);

@@ -15,6 +15,9 @@
 const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 
 #define ID(x) x
+#define ID_LRB (
+#define ID_RRB )
+#define ID_COMMA ,
 
 #define iterate_templates(left, right) \
    left(m_mapS0c)right\
@@ -149,6 +152,58 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapS0wS1cS1Uc)right\
    left(m_mapS0cS1wS1Uc)right
 
+
+#define iterate_double_templates(left, middle, right)\
+   left m_mapS0c middle m_mapS0c right\
+   left m_mapS0w middle m_mapS0w right\
+   left m_mapS0tc middle m_mapS0tc right\
+   left m_mapS0wc middle m_mapS0wc right\
+\
+   left m_mapS1c middle m_mapS1c right\
+   left m_mapS1w middle m_mapS1w right\
+   left m_mapS1tc middle m_mapS1tc right\
+   left m_mapS1wc middle m_mapS1wc right\
+\
+   left m_mapS2tc middle m_mapS2tc right\
+   left m_mapS2wc middle m_mapS2wc right\
+\
+   left m_mapS3tc middle m_mapS3tc right\
+   left m_mapS3wc middle m_mapS3wc right\
+\
+   left m_mapN0w middle m_mapN0w right\
+   left m_mapN0t middle m_mapN0t right\
+   left m_mapN0wt middle m_mapN0wt right\
+\
+   left m_mapN1w middle m_mapN1w right\
+   left m_mapN1t middle m_mapN1t right\
+   left m_mapN1wt middle m_mapN1wt right\
+\
+   left m_mapN2w middle m_mapN2w right\
+   left m_mapN2t middle m_mapN2t right\
+   left m_mapN2wt middle m_mapN2wt right\
+\
+   left m_mapN3w middle m_mapN3w right\
+   left m_mapN3t middle m_mapN3t right\
+   left m_mapN3wt middle m_mapN3wt right\
+\
+   left m_mapS0Lwc middle m_mapS0Lwc right\
+   left m_mapS0Ltc middle m_mapS0Ltc right\
+   left m_mapS0Rwc middle m_mapS0Rwc right\
+   left m_mapS0Rtc middle m_mapS0Rtc right\
+   left m_mapS0Uwc middle m_mapS0Uwc right\
+   left m_mapS0Utc middle m_mapS0Utc right\
+   left m_mapS1Lwc middle m_mapS1Lwc right\
+   left m_mapS1Ltc middle m_mapS1Ltc right\
+   left m_mapS1Rwc middle m_mapS1Rwc right\
+   left m_mapS1Rtc middle m_mapS1Rtc right\
+   left m_mapS1Uwc middle m_mapS1Uwc right\
+   left m_mapS1Utc middle m_mapS1Utc right\
+\
+   left m_mapS0wcS1wc middle m_mapS0wcS1wc right\
+   left m_mapS0wS1c middle m_mapS0wS1c right\
+   left m_mapS0cS1w middle m_mapS0cS1w right\
+   left m_mapS0cS1c middle m_mapS0cS1c right\
+   left m_mapBetweenTags middle m_mapBetweenTags right\
 
 namespace TARGET_LANGUAGE {
 
@@ -527,6 +582,9 @@ TABLE_SIZE),
       iterate_templates(,.clear(););
    }
    void addCurrent(CWeight*w, int round);
+#ifdef NO_NEG_FEATURE
+   void setPositiveFeature(const CWeight*w);
+#endif
    void scaleCurrent(const SCORE_TYPE &scale, const int &round) {
       iterate_templates(,ID(.scaleCurrent(scale, round);));
    }

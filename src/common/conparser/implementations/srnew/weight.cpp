@@ -108,7 +108,8 @@ void TARGET_LANGUAGE::conparser::CWeight::computeAverageFeatureWeights(int round
 }
 
 void TARGET_LANGUAGE::conparser::CWeight::addCurrent(CWeight*w, int round) {
-   m_mapS0c.addCurrent(w->m_mapS0c, round);
+   iterate_double_templates(, .addCurrent ID_LRB w-> , ID_COMMA round ID_RRB ;);
+/*   m_mapS0c.addCurrent(w->m_mapS0c, round);
    m_mapS0w.addCurrent(w->m_mapS0w, round);
    m_mapS0tc.addCurrent(w->m_mapS0tc, round);
    m_mapS0wc.addCurrent(w->m_mapS0wc, round);
@@ -239,5 +240,11 @@ void TARGET_LANGUAGE::conparser::CWeight::addCurrent(CWeight*w, int round) {
    m_mapS0cS1cS1Uc.addCurrent(w->m_mapS0cS1cS1Uc, round);
    m_mapS0wS1cS1Uc.addCurrent(w->m_mapS0wS1cS1Uc, round);
    m_mapS0cS1wS1Uc.addCurrent(w->m_mapS0cS1wS1Uc, round);
+*/}
+
+#ifdef NO_NEG_FEATURE
+void TARGET_LANGUAGE::conparser::CWeight::setPositiveFeature(const CWeight*w) {
+   iterate_double_templates(,.setPositiveFeature ID_LRB w-> , ID_RRB ; );
 }
+#endif
 

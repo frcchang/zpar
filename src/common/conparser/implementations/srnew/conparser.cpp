@@ -68,7 +68,7 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
    static CActionType actionType;
    actionType.code = action.type();
 
-   CWeight* cast_weights = amount ? m_delta : static_cast<CWeight*>(m_weights);
+   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
 
    // S0
    cast_weights->m_mapS0w.getOrUpdateScore(retval, *(m_Context.s0wt), action.code(), m_nScoreIndex, amount, round);
