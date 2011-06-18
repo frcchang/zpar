@@ -100,13 +100,22 @@ class CPackedScoreMap : public CHashMap< K , CPackedScore<SCORE_TYPE, PACKED_SIZ
 protected:
    const CPackedScore<SCORE_TYPE, PACKED_SIZE> m_zero ;
 
+#ifdef NO_NEG_FEATURE
+protected:
+   const CPackedScoreMap *m_positive;
+#endif
+
 public:
    const std::string name ;
    bool initialized ;
    unsigned count ;
 
 public:
-   CPackedScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CPackedScore<SCORE_TYPE, PACKED_SIZE> >(TABLE_SIZE, bInitMap) {
+   CPackedScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CPackedScore<SCORE_TYPE, PACKED_SIZE> >(TABLE_SIZE, bInitMap) 
+#ifdef NO_NEG_FEATURE
+, m_positive(this)
+#endif
+   {
       assert(m_zero.empty());
    }
 
@@ -117,6 +126,10 @@ public:
    }
 
 #ifdef NO_NEG_FEATURE
+   virtual inline void setPositiveFeature(const CPackedScoreMap &positive) {
+      m_positive = &positive;
+   }
+
    virtual inline void addPositiveFeature(const K &key, const unsigned &index) {
       (*this)[key][index];
    }
@@ -128,7 +141,7 @@ public:
 
    virtual inline void updateScore( const K &key , const unsigned &index , const SCORE_TYPE &amount , const int &round ) {
 #ifdef NO_NEG_FEATURE
-      if (this->element(key) && (*this)[key].element(index))
+      if (m_positive->element(key) && (*m_positive)[key].element(index))
 #endif // update can only happen with defined features
       (*this)[ key ].updateCurrent( index , amount , round );
    }

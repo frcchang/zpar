@@ -211,8 +211,8 @@ public:
          tail->m_value = empty;
          tail = tail->m_next;
       }
-      CEntry* &c_free = getFreeMemory();
       tail->m_value = empty;
+      CEntry* &c_free = getFreeMemory();
       tail->m_next = c_free;
       c_free = m_buckets;
       m_buckets = 0;

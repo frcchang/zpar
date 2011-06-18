@@ -170,6 +170,16 @@ public:
       entry->m_next->m_key = key;   
       return entry->m_next->m_value;
    }
+   const V &operator [] (const K &key) const { 
+      const CEntry*entry=getEntry(key); 
+      while (entry) {
+         if (entry->m_key == key)
+            return entry->m_value;
+         else
+            entry = entry->m_next;
+      }
+      THROW("const[]: Cannot find key in hashmap.");
+   }
    void insert (const K &key, const V &val) { (*this)[key] = val; }
    const V &find (const K &key, const V &val) const { 
       const CEntry*entry=getEntry(key); 
@@ -228,8 +238,8 @@ public:
                tail->m_value = value;
                tail = tail->m_next;
             }
-            static CEntry* &c_freed = getFreeMemory();
             tail->m_value = value;
+            CEntry* &c_freed = getFreeMemory();
             tail->m_next = c_freed;
             c_freed = m_buckets[i];
             m_buckets[i]=0;

@@ -141,7 +141,7 @@ public:
          ++it;
       }
    }
-   bool element(const unsigned &index) {
+   bool element(const unsigned &index) const {
       return scores.element(index);
    }
 
