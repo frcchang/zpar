@@ -204,6 +204,87 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapS0cS1w middle m_mapS0cS1w right\
    left m_mapS0cS1c middle m_mapS0cS1c right\
    left m_mapBetweenTags middle m_mapBetweenTags right\
+\
+   left m_mapS0wN0w middle m_mapS0wN0w right\
+   left m_mapS0cN0w middle m_mapS0cN0w right\
+   left m_mapS0wN0t middle m_mapS0wN0t right\
+   left m_mapS0cN0t middle m_mapS0cN0t right\
+   left m_mapS0cmN0tm middle m_mapS0cmN0tm right\
+\
+   left m_mapS1wN0w middle m_mapS1wN0w right\
+   left m_mapS1cN0w middle m_mapS1cN0w right\
+   left m_mapS1wN0t middle m_mapS1wN0t right\
+   left m_mapS1cN0t middle m_mapS1cN0t right\
+\
+   left m_mapN0wN1w middle m_mapN0wN1w right\
+   left m_mapN0tN1w middle m_mapN0tN1w right\
+   left m_mapN0wN1t middle m_mapN0wN1t right\
+   left m_mapN0tN1t middle m_mapN0tN1t right\
+\
+   left m_mapS0wS1cN0t middle m_mapS0wS1cN0t right\
+   left m_mapS0cS1wN0t middle m_mapS0cS1wN0t right\
+   left m_mapS0cS1cN0w middle m_mapS0cS1cN0w right\
+   left m_mapS0cS1cN0t middle m_mapS0cS1cN0t right\
+   left m_mapS0tS1tN0t middle m_mapS0tS1tN0t right\
+   left m_mapS0jS1jN0t middle m_mapS0jS1jN0t right\
+\
+   left m_mapS0wN0tN1t middle m_mapS0wN0tN1t right\
+   left m_mapS0cN0wN1t middle m_mapS0cN0wN1t right\
+   left m_mapS0cN0tN1w middle m_mapS0cN0tN1w right\
+   left m_mapS0cN0tN1t middle m_mapS0cN0tN1t right\
+   left m_mapS0tN0tN1t middle m_mapS0tN0tN1t right\
+   left m_mapS0jN0tN1t middle m_mapS0jN0tN1t right\
+\
+   left m_mapS0wS1cS2c middle m_mapS0wS1cS2c right\
+   left m_mapS0cS1wS2c middle m_mapS0cS1wS2c right\
+   left m_mapS0cS1cS2w middle m_mapS0cS1cS2w right\
+   left m_mapS0cS1cS2c middle m_mapS0cS1cS2c right\
+   left m_mapS0tS1tS2t middle m_mapS0tS1tS2t right\
+\
+   left m_mapS1cS2c middle m_mapS1cS2c right\
+   left m_mapS2cS3c middle m_mapS2cS3c right\
+   left m_mapN1tN2t middle m_mapN1tN2t right\
+   left m_mapN2tN3t middle m_mapN2tN3t right\
+\
+   left m_mapS0cS2c middle m_mapS0cS2c right\
+   left m_mapS1cS3c middle m_mapS1cS3c right\
+   left m_mapS0cN1t middle m_mapS0cN1t right\
+   left m_mapN0tN2t middle m_mapN0tN2t right\
+   left m_mapN1tN3t middle m_mapN1tN3t right\
+\
+   left m_mapS0cS0LcN0t middle m_mapS0cS0LcN0t right\
+   left m_mapS0wS0LcN0t middle m_mapS0wS0LcN0t right\
+   left m_mapS0cS0LcN0w middle m_mapS0cS0LcN0w right\
+   left m_mapS0cS0RcN0t middle m_mapS0cS0RcN0t right\
+   left m_mapS0cS0RjN0t middle m_mapS0cS0RjN0t right\
+   left m_mapS0wS0RcN0t middle m_mapS0wS0RcN0t right\
+   left m_mapS0cS0RcN0w middle m_mapS0cS0RcN0w right\
+   left m_mapS0cS0UcN0t middle m_mapS0cS0UcN0t right\
+   left m_mapS0wS0UcN0t middle m_mapS0wS0UcN0t right\
+   left m_mapS0cS0UcN0w middle m_mapS0cS0UcN0w right\
+\
+   left m_mapS0cS0LcS1c middle m_mapS0cS0LcS1c right\
+   left m_mapS0cS0LjS1j middle m_mapS0cS0LjS1j right\
+   left m_mapS0wS0LcS1c middle m_mapS0wS0LcS1c right\
+   left m_mapS0cS0LcS1w middle m_mapS0cS0LcS1w right\
+   left m_mapS0cS0RcS1c middle m_mapS0cS0RcS1c right\
+   left m_mapS0wS0RcS1c middle m_mapS0wS0RcS1c right\
+   left m_mapS0cS0RcS1w middle m_mapS0cS0RcS1w right\
+   left m_mapS0cS0UcS1c middle m_mapS0cS0UcS1c right\
+   left m_mapS0wS0UcS1c middle m_mapS0wS0UcS1c right\
+   left m_mapS0cS0UcS1w middle m_mapS0cS0UcS1w right\
+\
+   left m_mapN0tN1tN2t middle m_mapN0tN1tN2t right\
+   left m_mapS0cS1cS1Lc middle m_mapS0cS1cS1Lc right\
+   left m_mapS0wS1cS1Lc middle m_mapS0wS1cS1Lc right\
+   left m_mapS0cS1wS1Lc middle m_mapS0cS1wS1Lc right\
+   left m_mapS0cS1cS1Rc middle m_mapS0cS1cS1Rc right\
+   left m_mapS0jS1cS1Rj middle m_mapS0jS1cS1Rj right\
+   left m_mapS0wS1cS1Rc middle m_mapS0wS1cS1Rc right\
+   left m_mapS0cS1wS1Rc middle m_mapS0cS1wS1Rc right\
+   left m_mapS0cS1cS1Uc middle m_mapS0cS1cS1Uc right\
+   left m_mapS0wS1cS1Uc middle m_mapS0wS1cS1Uc right\
+   left m_mapS0cS1wS1Uc middle m_mapS0cS1wS1Uc right
 
 namespace TARGET_LANGUAGE {
 
@@ -501,7 +582,7 @@ TABLE_SIZE),
                           m_mapN0wN1w("Next0WordNext1Word", TABLE_SIZE),
                           m_mapN0tN1w("Next0TagNext1Word", TABLE_SIZE),
                           m_mapN0wN1t("Next0WordNext1Tag", TABLE_SIZE),
-                          m_mapN0tN1t("Next0TagNext1WordTag", TABLE_SIZE),
+                          m_mapN0tN1t("Next0TagNext1Tag", TABLE_SIZE),
 
                           m_mapS0wS1cN0t("Stack0WordStack1ConstituentNext0Tag", TABLE_SIZE),
                           m_mapS0cS1wN0t("Stack0ConstituentStack1WordNext0Tag", TABLE_SIZE),

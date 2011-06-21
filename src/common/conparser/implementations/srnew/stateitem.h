@@ -23,8 +23,8 @@ public:
    const CStateNode* right_child;
    // fields for tokens and constituents
    int lexical_head;
-//   int lexical_start;
-//   int lexical_end;
+   int lexical_start;
+   int lexical_end;
 
 public:
    inline bool head_left() const { return type==HEAD_LEFT; }
@@ -32,8 +32,8 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head) {}
-   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0) {}
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end) {}
+   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0) {}
    virtual ~CStateNode() {}
 public:
    bool valid() const { return id!=-1; }
@@ -45,8 +45,10 @@ public:
       this->left_child = 0; 
       this->right_child = 0; 
       this->lexical_head = 0; 
+      this->lexical_start = 0; 
+      this->lexical_end = 0; 
    }
-   void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head) { 
+   void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) { 
       this->id = id;
       this->type = type; 
       this->temp = temp; 
@@ -54,6 +56,8 @@ public:
       this->left_child = left_child; 
       this->right_child = right_child; 
       this->lexical_head = lexical_head; 
+      this->lexical_start = lexical_start; 
+      this->lexical_end = lexical_end; 
    }//{}
    bool operator == (const CStateNode &nd) const {
       return id == nd.id &&
@@ -63,6 +67,8 @@ public:
              left_child == nd.left_child && 
              right_child == nd.right_child &&
              lexical_head == nd.lexical_head;
+             lexical_start == nd.lexical_start;
+             lexical_end == nd.lexical_end;
    }
    void operator = (const CStateNode &nd) {
       id = nd.id;
@@ -72,6 +78,8 @@ public:
       left_child = nd.left_child;
       right_child = nd.right_child;
       lexical_head = nd.lexical_head;
+      lexical_start = nd.lexical_start;
+      lexical_end = nd.lexical_end;
    }
 public:
    void toCCFGTreeNode(CCFGTreeNode &node) const {
@@ -168,7 +176,7 @@ protected:
       //TRACE("shift");
       assert(!IsTerminated());
       static int t;
-      retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, current_word);
+      retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, current_word, current_word, current_word);
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///  
       assert(!retval->IsTerminated());
@@ -183,7 +191,7 @@ protected:
          assert(head_left == false);
          assert(temporary == false);
          l = &node;
-         retval->node.set(node.id+1, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head);
+         retval->node.set(node.id+1, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head, l->lexical_start, l->lexical_end);
          retval->stackPtr = stackPtr;
       }
       else {
@@ -191,9 +199,9 @@ protected:
          r = &node;
          l = &(stackPtr->node);
 #ifdef NO_TEMP_CONSTITUENT
-         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, constituent, l, r, (head_left?l->lexical_head:r->lexical_head));
+         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, constituent, l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
 #else
-         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, CConstituent::encodeTmp(constituent, temporary), l, r, (head_left?l->lexical_head:r->lexical_head));
+         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, CConstituent::encodeTmp(constituent, temporary), l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
 #endif
          retval->stackPtr = stackPtr->stackPtr;
       }

@@ -149,7 +149,7 @@ private:
    inline void getOrUpdateStackScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
    inline void getOrUpdateScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem &item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
 
-   // update the built-in weight std::vector for this feature object specifically
+   // update the built-in weight vector for this feature object specifically
    void updateScoresForStates( const conparser::CStateItem *outout , const conparser::CStateItem *correct ) ;
    void updateScoresForState( const conparser::CStateItem *outout , SCORE_UPDATE update ) ;
 
