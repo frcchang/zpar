@@ -16,11 +16,11 @@ $(OBJECT_CONPARSER)/constituent.o: $(OBJECT_CONPARSER) $(SRC_CHINESE)/cfg.h $(SR
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -c $(SRC_LIBS)/linguistics/constituent.cpp -o $@
 
 # the weight module
-$(OBJECT_CONPARSER)/weight.o: $(SRC_CHINESE_CONPARSER)/weight_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp $(OBJECT_CONPARSER)/constituent.o ./Makefile
+$(OBJECT_CONPARSER)/weight.o: $(SRC_CHINESE_CONPARSER)/weight_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h $(OBJECT_CONPARSER)/constituent.o ./Makefile
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp -o $(OBJECT_CONPARSER)/weight.o
 
 # the conparser object
-$(OBJECT_DIR)/chinese.conparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_CONPARSER)/conparser_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/stateitem.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/context.h $(OBJECT_CONPARSER)/constituent.o ./Makefile
+$(OBJECT_DIR)/chinese.conparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_CONPARSER)/conparser_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/stateitem.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/context.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h$(OBJECT_CONPARSER)/constituent.o ./Makefile
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/chinese.conparser.o
 
 # the main executable
@@ -49,11 +49,11 @@ $(OBJECT_ENGLISH_CONPARSER)/constituent.o: $(OBJECT_CONPARSER) $(SRC_ENGLISH)/cf
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -c $(SRC_LIBS)/linguistics/constituent.cpp -o $@
 
 # the weight module
-$(OBJECT_ENGLISH_CONPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/weight_base.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/weight.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/weight.cpp ./Makefile
+$(OBJECT_ENGLISH_CONPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/weight_base.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/weight.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/conparser_macros.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/weight.cpp ./Makefile
 	$(CXX) $(CXXFLAGS) $(ENGLISH_CONPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/weight.cpp -o $(OBJECT_ENGLISH_CONPARSER)/weight.o
 
 # the conparser object
-$(OBJECT_DIR)/english.conparser.o: $(OBJECT_ENGLISH_CONPARSER) $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER)/conparser_base.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/conparser.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/conparser.cpp $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/stateitem.h $(OBJECT_ENGLISH_CONPARSER)/constituent.o ./Makefile
+$(OBJECT_DIR)/english.conparser.o: $(OBJECT_ENGLISH_CONPARSER) $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER)/conparser_base.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/conparser.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/conparser.cpp $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/stateitem.h $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/conparser_macros.h $(OBJECT_ENGLISH_CONPARSER)/constituent.o ./Makefile
 	$(CXX) $(CXXFLAGS) $(ENGLISH_CONPARSER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/english.conparser.o
 
 # the main executable
