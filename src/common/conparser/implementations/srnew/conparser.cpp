@@ -335,30 +335,42 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDATE update ) {
+void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDATE update , CBracketTupleMap *brackets ) {
 
    const SCORE_TYPE amount = (update==eAdd ? 1 : -1);
-
    const static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
 
    static int count;
    const CStateItem *current;
-   count = 0;
-   current = item;
 
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
 
+   static CBracketTuple bracket_tuple;
+   if (brackets) //brackets is not NULL
+      brackets->clear();
+
+   count = 0;
+   current = item;
    while (current) {
       states[count] = current;
       ++count ; //updating
       current = current->statePtr;
    }
-   --count;
+   --count; // state [0..count] are the reverse lifecycle of item.
+
    // for each
    while (count>0) {
       m_Context.load(states[count], m_lCache, m_lWordLen, true);
       // update action
-      getOrUpdateStackScore(scores, states[count], states[count-1]->action, amount, m_nTrainingRound );
+      const CAction &action = states[count-1]->action;
+      getOrUpdateStackScore(scores, states[count], action, amount, m_nTrainingRound );
+      // record brackets
+      if (brackets && (action.isReduceUnary() || action.isReduceBinary())) {
+         bracket_tuple.refer(&(states[count-1]->node.lexical_start), 
+                             &(states[count-1]->node.lexical_end),
+                             &(states[count-1]->node.constituent));
+         (*brackets)[bracket_tuple] += 1;
+      }
       --count;
    }
 }
@@ -373,16 +385,74 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    std::cout << "updating parameters ... " ; 
 
-   updateScoresForState( correct, eAdd );
-   updateScoresForState( outout, eSubtract );
+   static CBracketTupleMap bracketsCorrect(MAX_SENTENCE_SIZE), bracketsOutput(MAX_SENTENCE_SIZE);
 
-   double tou = (1+outout->score-correct->score)/(m_delta->squareNorm());
+   updateScoresForState( correct, eAdd, &bracketsCorrect );
+   updateScoresForState( outout, eSubtract, &bracketsOutput );
+
+   static double F;
+   F = computeLossF(bracketsCorrect, bracketsOutput);
+
+   double tou = (std::sqrt(F)+outout->score-correct->score)/(m_delta->squareNorm());
 //std::cout << outout->score << ' ' << correct->score;
    m_delta->scaleCurrent(tou, m_nTrainingRound);
    static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
    m_delta->clear();
 
    m_nTotalErrors++;
+}
+
+/*---------------------------------------------------------------
+ *
+ * computeLossF - computer the F-score loss functions
+ *
+ *--------------------------------------------------------------*/
+
+double CConParser::computeLossF(CBracketTupleMap &bracketsCorrect, CBracketTupleMap &bracketsOutput) {
+   static unsigned brackets_correct_only, brackets_output_only, brackets_share;
+   static CBracketTupleMap::iterator it;
+   static unsigned n;
+   static double P, R;
+
+   // calculate brackets
+   brackets_correct_only = 0;
+   brackets_output_only = 0;
+   brackets_share = 0;
+   it = bracketsOutput.begin();
+   while (it != bracketsOutput.end()) { // for every output
+      if (bracketsCorrect.element(it.first())) { // in correct
+         n = bracketsCorrect[it.first()];
+         if (it.second() >= n) { // more output
+            brackets_output_only += (it.second() - n);
+            brackets_share += n;
+         }
+         else {
+            brackets_correct_only += (n - it.second());
+            brackets_share += it.second();
+         }
+      }
+      else { // not in correct
+         brackets_output_only += it.second();
+      }
+      ++it; 
+   }
+   it = bracketsCorrect.begin();
+   while (it != bracketsCorrect.end()) { // for every correct
+      if (!(bracketsOutput.element(it.first()))) { // not in output
+         brackets_correct_only += it.second();
+      }
+      ++it;
+   }
+
+   return brackets_output_only + brackets_correct_only;
+
+   if (brackets_share==0)
+      return 0;
+
+   P = static_cast<double>(brackets_share) / (brackets_share + brackets_output_only);
+   R = static_cast<double>(brackets_share) / (brackets_share + brackets_correct_only);
+
+   return 2*P*R/(P+R);
 }
 
 /*---------------------------------------------------------------

@@ -45,6 +45,10 @@ namespace conparser {
 
 typedef double SCORE_TYPE ;
 
+// labeled brackets
+typedef CTuple3<int, int, CConstituent> CBracketTuple;
+typedef CHashMap<CBracketTuple, unsigned> CBracketTupleMap;
+
 //#include "conparser_macros.h" 
 #include "stateitem.h" 
 #include "context.h"

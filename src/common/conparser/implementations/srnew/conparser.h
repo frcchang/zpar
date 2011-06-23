@@ -151,7 +151,10 @@ private:
 
    // update the built-in weight vector for this feature object specifically
    void updateScoresForStates( const conparser::CStateItem *outout , const conparser::CStateItem *correct ) ;
-   void updateScoresForState( const conparser::CStateItem *outout , SCORE_UPDATE update ) ;
+   void updateScoresForState( const conparser::CStateItem *outout , SCORE_UPDATE update , conparser::CBracketTupleMap *brackets ) ;
+
+   // loss functions
+   double computeLossF(conparser::CBracketTupleMap &bracketsCorrect, conparser::CBracketTupleMap &bracketsOutput);
 
 };
 

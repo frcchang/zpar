@@ -18,6 +18,7 @@ static const unsigned long AGENDA_SIZE = 16;
 static const int MAX_SENTENCE_SIZE = 256 ; 
 static const int MAX_SENTENCE_SIZE_BITS = 8 ; 
 
+// normalize numberings
 inline unsigned long normalize3(const unsigned long &x) {
    assert(x!=0); return x>2 ? 2 : x==2 ? 1 : 0;
 }
