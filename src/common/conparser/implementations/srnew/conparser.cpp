@@ -68,6 +68,11 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
    static CActionType actionType;
    actionType.code = action.type();
 
+   const CAction &a1 = item->action;
+   const CAction &a2 = item->statePtr->action;
+
+   static CTuple2<CAction, CAction> tuple_action2;
+
    CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
 
    // S0
@@ -299,6 +304,10 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       refer_or_allocate_tuple2(word_cfgset, m_Context.s0w, &(m_Context.s1cs1rc)); 
       cast_weights->m_mapS0wS1cS1Rc.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
    }
+
+   cast_weights->m_mapA1.getOrUpdateScore(retval, a1, action.code(), m_nScoreIndex, amount, round);
+   refer_or_allocate_tuple2(tuple_action2, &a1, &a2);
+   cast_weights->m_mapA1A2.getOrUpdateScore(retval, tuple_action2, action.code(), m_nScoreIndex, amount, round);
 }
 
 /*---------------------------------------------------------------
@@ -393,7 +402,7 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
    static double F;
    F = computeLossF(bracketsCorrect, bracketsOutput);
 
-   double tou = (std::sqrt(F)+outout->score-correct->score)/(m_delta->squareNorm());
+   double tou = (std::sqrt(1)+outout->score-correct->score)/(m_delta->squareNorm());
 //std::cout << outout->score << ' ' << correct->score;
    m_delta->scaleCurrent(tou, m_nTrainingRound);
    static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);

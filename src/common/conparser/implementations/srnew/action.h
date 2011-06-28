@@ -11,8 +11,8 @@
 class CActionType {
 
 public:
-   static const unsigned long SIZE=2;
-   enum CODE {SHIFT=0, POP_ROOT=1, REDUCE_BINARY=2, REDUCE_UNARY=3};
+   static const unsigned long SIZE=3;
+   enum CODE {NO_ACTION=0, SHIFT=1, REDUCE_BINARY=2, REDUCE_UNARY=3, POP_ROOT=4};
 
 public:
    unsigned long code;
@@ -29,7 +29,9 @@ public:
 inline std::istream & operator >> (std::istream &is, CActionType &action) {
    std::string s;
    is >> s;
-   if (s=="SHIFT")
+   if (s=="NO_ACTION")
+      action.code = CActionType::NO_ACTION;
+   else if (s=="SHIFT")
       action.code = CActionType::SHIFT;
    else if (s=="REDUCE_UNARY")
       action.code = CActionType::REDUCE_UNARY;
@@ -44,6 +46,9 @@ inline std::istream & operator >> (std::istream &is, CActionType &action) {
 
 inline std::ostream & operator << (std::ostream &os, const CActionType &action) {
    switch(action.code) {
+   case CActionType::NO_ACTION:
+      os << "NO_ACTION";
+      break;
    case CActionType::SHIFT:
       os << "SHIFT";
       break;
@@ -100,6 +105,7 @@ public:
   CAction() : action(0) {}
 
 public:
+   inline bool isNone() const { return type()==CActionType::NO_ACTION; }
    inline bool isShift() const { return type()==CActionType::SHIFT; }
 //   inline bool isReduce() const { return isReduceUnary() || isReduceBinary(); }
    inline bool isReduceRoot() const { return type()==CActionType::POP_ROOT; }
@@ -150,6 +156,7 @@ public:
  
 public:
    inline std::string str() const {
+      if (isNone()) { return "NONE"; }
       if (isReduceRoot()) { return "REDUCE ROOT"; }
       std::string retval;
       if (isShift()) {
@@ -160,7 +167,7 @@ public:
          if (isReduceUnary()) 
             retval += " UNARY";
          else {
-            ASSERT(isReduceBinary(), "Internal error: unknown action code ("<<action);
+            ASSERT(isReduceBinary(), "Internal error: unknown action code ("<<action<<')');
             retval += " BINARY";
             retval += (headLeft()) ? " LEFT" : " RIGHT";
             if (isTemporary()) retval += " TMP";
@@ -176,7 +183,11 @@ public:
       CAction t;
       bool head_left, temporary;
       iss >> tmp;
-      if (tmp=="SHIFT") {
+
+      if (tmp=="NONE") {
+         clear();
+      }
+      else if (tmp=="SHIFT") {
          iss >> tmp;
          c.load(tmp);
          encodeShift(c.code());
@@ -234,7 +245,10 @@ inline std::istream & operator >> (std::istream &is, CAction &action) {
    CAction t;
    bool head_left, temporary;
    is >> tmp;
-   if (tmp=="SHIFT") {
+   if (tmp=="NONE") {
+      action.clear();
+   }
+   else if (tmp=="SHIFT") {
       is >> tmp; c.load(tmp);
       action.encodeShift(c.code());
    }
