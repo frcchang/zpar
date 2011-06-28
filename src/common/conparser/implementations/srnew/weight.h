@@ -150,7 +150,10 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapS0cS1wS1Rc)right\
    left(m_mapS0cS1cS1Uc)right\
    left(m_mapS0wS1cS1Uc)right\
-   left(m_mapS0cS1wS1Uc)right
+   left(m_mapS0cS1wS1Uc)right\
+\
+   left(m_mapA1)right\
+   left(m_mapA1A2)right
 
 
 #define iterate_double_templates(left, middle, right)\
@@ -284,7 +287,10 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapS0cS1wS1Rc middle m_mapS0cS1wS1Rc right\
    left m_mapS0cS1cS1Uc middle m_mapS0cS1cS1Uc right\
    left m_mapS0wS1cS1Uc middle m_mapS0wS1cS1Uc right\
-   left m_mapS0cS1wS1Uc middle m_mapS0cS1wS1Uc right
+   left m_mapS0cS1wS1Uc middle m_mapS0cS1wS1Uc right\
+\
+   left m_mapA1 middle m_mapA1 right\
+   left m_mapA1A2 middle m_mapA1A2 right
 
 namespace TARGET_LANGUAGE {
 
@@ -319,6 +325,8 @@ CWordConstituentMap;
 typedef CScoreMapType<CTuple2<CTag, CConstituent>, SCORE_TYPE, CAction::MAX> CTagConstituentMap;
 typedef CScoreMapType<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE, CAction::MAX> CWordTagIntMap;
 typedef CScoreMapType<CConstituent, SCORE_TYPE, CAction::MAX> CConstituentMap;
+typedef CScoreMapType<CAction, SCORE_TYPE, CAction::MAX> CActionMap;
+typedef CScoreMapType<CTuple2<CAction, CAction>, SCORE_TYPE, CAction::MAX> CAction2Map;
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
@@ -499,6 +507,10 @@ public:
    CWordCFGSetMap m_mapS0wS1cS1Uc;
    CWordCFGSetMap m_mapS0cS1wS1Uc;
 
+   // past action
+   CActionMap m_mapA1;
+   CAction2Map m_mapA1A2;
+
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
    CWordToIntMap m_mapWordFrequency;
@@ -647,7 +659,10 @@ TABLE_SIZE),
                           m_mapS0cS1wS1Rc("Stack0ConstituentStack1WordStack1RConstituent", TABLE_SIZE),
                           m_mapS0cS1cS1Uc("Stack0ConstituentStack1ConstituentStack1UConstituent", TABLE_SIZE),
                           m_mapS0wS1cS1Uc("Stack0WordStack1ConstituentStack1UConstituent", TABLE_SIZE),
-                          m_mapS0cS1wS1Uc("Stack0ConstituentStack1WordStack1UConstituent", TABLE_SIZE)
+                          m_mapS0cS1wS1Uc("Stack0ConstituentStack1WordStack1UConstituent", TABLE_SIZE),
+
+                          m_mapA1("PreviousAction", TABLE_SIZE),
+                          m_mapA1A2("PreviousActionBigram", TABLE_SIZE)
    { }
    ~CWeight() {
       iterate_templates(,.freePoolMemory(););
