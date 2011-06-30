@@ -5,9 +5,13 @@
 #define SIMPLE_HASH
 
 // early update? 
-#ifndef EARLY_UPDATE
 #define EARLY_UPDATE
-#endif
+
+// local training? it will affect the setting of early update and agenda size
+#define LOCAL_LEARNING
+
+// The size of agenda
+#define AGENDA_SIZE 64
 
 //label
 #ifdef LABELED
@@ -21,9 +25,6 @@ typedef long SCORE_TYPE ;
 
 // supertag
 #define SR_SUPERTAG 1
-
-// The size of agenda
-const unsigned AGENDA_SIZE = 64 ;
 
 // The size of a sentence and the words
 const unsigned MAX_SENTENCE_SIZE = 256 ; 
@@ -43,5 +44,10 @@ inline int encodeLinkDistance(const int &head_index, const int &dep_index) {
 
 // arity direction
 enum ARITY_DIRECTION { ARITY_DIRECTION_LEFT=0, ARITY_DIRECTION_RIGHT=1 } ;
+
+#ifdef LOCAL_LEARNING
+#define EARLY_UPDATE
+#define AGENDA_SIZE 1
+#endif
 
 #endif

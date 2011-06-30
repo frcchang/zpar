@@ -199,6 +199,9 @@ class CAgendaBeam {
       CNode* generator(int n) { if (n>=m_nBeamSize[m_nGenerator]) return 0; return m_lBeamPointer[m_nGenerator][n]; }
       void sortGenerators() { std::sort_heap(m_lBeamPointer[m_nGenerator], m_lBeamPointer[m_nGenerator]+m_nBeamSize[m_nGenerator], more); }
 
+      void clearGenerators() { clear(m_nGenerator); }
+      void clearCandidates() { clear(m_nGenerated); }
+
       inline static bool more(CNode *x, CNode *y) {return *x > *y;}
       inline static bool less(CNode *x, CNode *y) {return *x < *y;}
 
