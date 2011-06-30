@@ -668,15 +668,25 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          if (!bCorrect) {
             TRACE("Error at the "<<correctState.size()<<"th word; total is "<<correct.size())
             updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
+#ifndef LOCAL_LEARNING
             return ;
+#else
+            m_Agenda->clearCandidates();
+            m_Agenda->pushCandidate(&correctState);
+#endif
          }
 #endif
 
+         if (bCorrect) {
 #ifdef LABELED
-         correctState.StandardMoveStep(correct, m_lCacheLabel);
+            correctState.StandardMoveStep(correct, m_lCacheLabel);
 #else
-         correctState.StandardMoveStep(correct);
+            correctState.StandardMoveStep(correct);
 #endif
+#ifdef LOCAL_LEARNING
+            ++m_nTrainingRound; // each training round is one transition-action
+#endif
+         }
       } 
       
       m_Agenda->nextRound(); // move round
@@ -745,7 +755,10 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
    UnparseSentence( &correct, &sentence ) ;
 
    // The following code does update for each processing stage
-   m_nTrainingRound = round ;
+#ifndef LOCAL_LEARNING
+   ++m_nTrainingRound;
+   ASSERT(m_nTrainingRound == round, "Training round error") ;
+#endif
    work( true , sentence , &outout , correct , 1 , 0 ) ; 
 
 };
