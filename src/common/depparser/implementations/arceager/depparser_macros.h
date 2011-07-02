@@ -8,7 +8,7 @@
 #define EARLY_UPDATE
 
 // local training? it will affect the setting of early update and agenda size
-#define LOCAL_LEARNING
+//#define LOCAL_LEARNING
 
 // The size of agenda
 #define AGENDA_SIZE 64

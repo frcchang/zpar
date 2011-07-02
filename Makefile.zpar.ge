@@ -94,7 +94,7 @@ $(OBJECT_GENERIC_DEPPARSER)/weight.o: $(OBJECT_GENERIC_DEPPARSER) $(SRC_GENERIC_
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.cpp -o $(OBJECT_GENERIC_DEPPARSER)/weight.o
 
 # the depparser object
-$(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
+$(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_macros.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/generic.depparser.o
 
 # the main executable
