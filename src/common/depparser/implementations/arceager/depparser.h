@@ -69,6 +69,7 @@ public:
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
+//      m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; 
       if (bTrain) m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage ;
    }
    ~CDepParser() {
