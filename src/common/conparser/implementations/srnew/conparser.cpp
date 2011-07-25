@@ -29,7 +29,7 @@ using namespace TARGET_LANGUAGE::conparser;
  *
  *---------------------------------------------------------------*/
 
-inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAction::MAX> &retval, const CStateItem *item, const CAction &action, SCORE_TYPE amount , int round ) {
+inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedScoreType<SCORE_TYPE, CAction::MAX> &retval, const CStateItem *item, const CAction &action, SCORE_TYPE amount , int round ) {
 
    retval.reset();
 
@@ -73,7 +73,7 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
 
    static CTuple2<CAction, CAction> tuple_action2;
 
-   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
+//   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
 
    // S0
    cast_weights->m_mapS0w.getOrUpdateScore(retval, *(m_Context.s0wt), action.code(), m_nScoreIndex, amount, round);
@@ -305,9 +305,9 @@ inline void CConParser::getOrUpdateStackScore( CPackedScoreType<SCORE_TYPE, CAct
       cast_weights->m_mapS0wS1cS1Rc.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
    }
 
-   cast_weights->m_mapA1.getOrUpdateScore(retval, a1, action.code(), m_nScoreIndex, amount, round);
-   refer_or_allocate_tuple2(tuple_action2, &a1, &a2);
-   cast_weights->m_mapA1A2.getOrUpdateScore(retval, tuple_action2, action.code(), m_nScoreIndex, amount, round);
+//   cast_weights->m_mapA1.getOrUpdateScore(retval, a1, action.code(), m_nScoreIndex, amount, round);
+//   refer_or_allocate_tuple2(tuple_action2, &a1, &a2);
+//   cast_weights->m_mapA1A2.getOrUpdateScore(retval, tuple_action2, action.code(), m_nScoreIndex, amount, round);
 }
 
 /*---------------------------------------------------------------
@@ -344,7 +344,7 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDATE update , CBracketTupleMap *brackets ) {
+void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem *item , const SCORE_UPDATE update , CBracketTupleMap *brackets ) {
 
    const SCORE_TYPE amount = (update==eAdd ? 1 : -1);
    const static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
@@ -372,7 +372,7 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
       m_Context.load(states[count], m_lCache, m_lWordLen, true);
       // update action
       const CAction &action = states[count-1]->action;
-      getOrUpdateStackScore(scores, states[count], action, amount, m_nTrainingRound );
+      getOrUpdateStackScore(cast_weights, scores, states[count], action, amount, m_nTrainingRound );
       // record brackets
       if (brackets && (action.isReduceUnary() || action.isReduceBinary())) {
          bracket_tuple.refer(&(states[count-1]->node.lexical_start), 
@@ -384,6 +384,7 @@ void CConParser::updateScoresForState( const CStateItem *item , const SCORE_UPDA
    }
 }
 
+#ifndef TRAIN_MULTI
 /*---------------------------------------------------------------
  *
  * updateScoresForStates - update scores for states
@@ -396,20 +397,133 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    static CBracketTupleMap bracketsCorrect(MAX_SENTENCE_SIZE), bracketsOutput(MAX_SENTENCE_SIZE);
 
-   updateScoresForState( correct, eAdd, &bracketsCorrect );
-   updateScoresForState( outout, eSubtract, &bracketsOutput );
+   updateScoresForState( m_delta, correct, eAdd, &bracketsCorrect );
+   updateScoresForState( m_delta, outout, eSubtract, &bracketsOutput );
 
    static double F;
+#ifdef TRAIN_LOSS
    F = computeLossF(bracketsCorrect, bracketsOutput);
+#else
+   F = 1.0;
+#endif
 
-   double tou = (std::sqrt(1)+outout->score-correct->score)/(m_delta->squareNorm());
-//std::cout << outout->score << ' ' << correct->score;
+#ifdef TRAIN_MARGIN
+   double tou = (std::sqrt(F)+outout->score-correct->score)/(m_delta->squareNorm());
    m_delta->scaleCurrent(tou, m_nTrainingRound);
+#endif
    static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
    m_delta->clear();
 
    m_nTotalErrors++;
 }
+
+#else
+/*---------------------------------------------------------------
+ *
+ * updateScoresForMultipleStates - update multi
+ *
+ *--------------------------------------------------------------*/
+
+void CConParser::updateScoresForMultipleStates( const CStateItem *output_start , const CStateItem *output_end , const CStateItem  *candidate , const CStateItem *correct ) {
+   // computateDeltasDist
+   unsigned K = 0;
+   updateScoresForState(m_gold, correct, eAdd, 0);
+   for (const CStateItem *item = output_start; item<output_end; ++item) {
+      if (item->score >= correct->score) {
+         updateScoresForState(m_delta[K], item, eSubtract, 0);
+         m_delta[K]->subtractCurrent(m_gold, m_nTrainingRound);
+         m_dist[K] = 1.0 + item->score - correct->score;
+         ++K;
+      }
+   }
+   if ( candidate && candidate->score > correct->score ) {
+      updateScoresForState(m_delta[K], candidate, eSubtract, 0);
+      m_delta[K]->subtractCurrent(m_gold, m_nTrainingRound);
+      m_dist[K] = 1.0 + candidate->score - correct->score;
+      ++K;
+   }
+   assert(K);
+   // compuateAlpha
+   computeAlpha(K);
+   // update
+   for (unsigned i=0; i<K; ++i) {
+      m_delta[i]->scaleCurrent(m_alpha[i], m_nTrainingRound);
+      static_cast<CWeight*>(m_weights)->addCurrent(m_delta[i], m_nTrainingRound);
+   }
+}
+
+/*---------------------------------------------------------------
+ *
+ * compuateAlpha - hildreth
+ *
+ *--------------------------------------------------------------*/
+
+void CConParser::computeAlpha( const unsigned K ) {
+   static unsigned i;
+   static unsigned iter;
+   static double diff_alpha;
+   static double add_alpha;
+
+   static const unsigned max_iter = 1e4;
+   static const double eps = 1e-7;
+   static const double zero = 1e-11;
+
+   static double kkt[MIRA_SIZE];
+   static double max_kkt;
+   static int max_kkt_i;
+   static double A[MIRA_SIZE][MIRA_SIZE];
+   static bool computed[MIRA_SIZE];
+
+   for (i=0; i<K; ++i) {
+      A[i][i] = m_delta[i]->squareNorm();
+      computed[i] = false;
+   }
+
+   for (i=0; i<K; ++i) {
+      kkt[i] = m_dist[i];
+      if (i==0||kkt[i]>max_kkt) {
+         max_kkt = kkt[i];
+         max_kkt_i = i;
+      }
+   }
+
+   iter = 0;
+   while (max_kkt >= eps && iter<max_iter){
+      diff_alpha = A[max_kkt_i][max_kkt_i] <= zero ? 0 : m_dist[max_kkt_i]/A[max_kkt_i][max_kkt_i];
+      if (m_alpha[max_kkt_i]+diff_alpha<0) {
+         add_alpha = -m_alpha[max_kkt_i];
+      }
+      else {
+         add_alpha = diff_alpha;
+      }
+      m_alpha[max_kkt_i] += add_alpha;
+
+      if (!computed[max_kkt_i]) {
+         for (i=0; i<K; ++i) {
+            A[i][max_kkt_i] = m_delta[i]->dotProduct(*(m_delta[max_kkt_i]));
+         }
+         computed[max_kkt_i] = true;
+      }
+
+      for (i=0; i<K; ++i) {
+         m_dist[i] -= (add_alpha * A[i][max_kkt_i]);
+         kkt[i] = m_dist[i];
+         if (m_alpha[i] > zero)
+            kkt[i] = abs(m_dist[i]);
+      }
+
+      for (i=0; i<K; ++i) {
+         kkt[i] = m_dist[i];
+         if (i==0||kkt[i]>max_kkt) {
+            max_kkt_i = i;
+            max_kkt = kkt[i];
+         }
+      }
+
+      ++iter;
+   }
+}
+#endif // TRAIN_MULTI
 
 /*---------------------------------------------------------------
  *
@@ -456,12 +570,12 @@ double CConParser::computeLossF(CBracketTupleMap &bracketsCorrect, CBracketTuple
    return brackets_output_only + brackets_correct_only;
 
    if (brackets_share==0)
-      return 0;
+      return 1.0;
 
    P = static_cast<double>(brackets_share) / (brackets_share + brackets_output_only);
    R = static_cast<double>(brackets_share) / (brackets_share + brackets_correct_only);
 
-   return 2*P*R/(P+R);
+   return 1.0-2*P*R/(P+R);
 }
 
 /*---------------------------------------------------------------
@@ -471,7 +585,7 @@ double CConParser::computeLossF(CBracketTupleMap &bracketsCorrect, CBracketTuple
  *--------------------------------------------------------------*/
 
 void CConParser::getOrUpdateScore( CPackedScoreType<SCORE_TYPE, CAction::MAX> &retval, const conparser::CStateItem &item, const conparser::CAction &action, conparser::SCORE_TYPE amount, int round ) {
-   return getOrUpdateStackScore(retval, &item, action, amount, round);
+   THROW("Not implemented");
 }
 
 /*---------------------------------------------------------------
@@ -566,7 +680,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    
             // get actions
             m_rule.getActions(*pGenerator, actions);
-            getOrUpdateScore(packedscores, *pGenerator);
+            getOrUpdateStackScore(static_cast<CWeight*>(m_weights), packedscores, pGenerator);
             for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
                scored_action.load(actions[tmp_j], pGenerator, packedscores[actions[tmp_j].code()]);
                beam.insertItem(&scored_action);
@@ -609,14 +723,18 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
                correctState = lattice_index[index+1];
                lattice_index[index+1]->score = scored_correct_action.score;
             }
+            TRACE("Error at the "<<correctState->current_word<<"th word; total is "<<m_lCache.size())
+            // update
+#ifdef TRAIN_MULTI
+            updateScoresForMultipleStates(lattice_index[index], lattice_index[index+1], candidate_outout, correctState) ; 
+#else
             if (pBestGen == 0 || candidate_outout && candidate_outout->score > pBestGen->score )
                pBestGen = candidate_outout;
             // trace
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
-            TRACE("Error at the "<<correctState->current_word<<"th word; total is "<<m_lCache.size())
-            // update
             updateScoresForStates(pBestGen, correctState) ; 
+#endif // TRAIN_MULTI
             return ;
          }
 #endif
@@ -626,10 +744,14 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    if (bTrain) {
       // make sure that the correct item is stack top finally
       if ( candidate_outout != correctState ) {
+         TRACE("The best item is not the correct one")
+#ifdef TRAIN_MULTI
+         updateScoresForMultipleStates(lattice_index[index], lattice_index[index+1], candidate_outout, correctState) ; 
+#else // TRAIN_MULTI
          correctState->trace(&sentence);
          candidate_outout->trace(&sentence);
-         TRACE("The best item is not the correct one")
          updateScoresForStates(candidate_outout, correctState) ; 
+#endif // TRAIN_MULTI
          return ;
       }
    } 
@@ -744,7 +866,7 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
       states[current].StandardMove(correct, action);
 //std::cout << action << std::endl;
       m_Context.load(states+current, m_lCache, m_lWordLen, true);
-      getOrUpdateStackScore(scores, states+current, action, 1, -1);
+      getOrUpdateStackScore(static_cast<CWeight*>(m_weights), scores, states+current, action, 1, -1);
       states[current].Move(states+current+1, action);
       ++current;
    }

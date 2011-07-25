@@ -43,7 +43,6 @@ class CConParser : public CConParserBase {
 
 private:
 
-//   CAgendaBeam<conparser::CStateItem> *m_Agenda;
    std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    std::vector<unsigned long> m_lWordLen;
    int m_nTrainingRound;
@@ -52,21 +51,52 @@ private:
    int m_nScoreIndex;
    conparser::CRule m_rule;
    conparser::CContext m_Context;
+#ifdef TRAIN_MULTI
+   conparser::CWeight *m_gold;
+   conparser::CWeight *m_delta[conparser::MIRA_SIZE];
+   conparser::SCORE_TYPE m_dist[conparser::MIRA_SIZE];
+   conparser::SCORE_TYPE m_alpha[conparser::MIRA_SIZE];
+#else
    conparser::CWeight *m_delta;
+#endif
 
 public:
    // constructor and destructor
-   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache), m_delta(0) { 
-      // initialize agenda
-//      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
-      // and initialize the weith module laoding content
+   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache) { 
+      // and initialize the weith module loading content
       m_weights = new conparser :: CWeight( bTrain );
       if (bTrain) {
+
+#ifdef TRAIN_MULTI //===
+         m_gold = new conparser::CWeight( bTrain, 256 );
+         for (unsigned i=0; i<conparser::MIRA_SIZE; ++i) {
+            m_delta[i] = new conparser::CWeight( bTrain, 256 );
+         }
+#ifdef NO_NEG_FEATURE
+         m_gold->setPositiveFeature(static_cast<conparser::CWeight*>(m_weights));
+         for (unsigned i=0; i<conparser::MIRA_SIZE; ++i) {
+            m_delta[i]->setPositiveFeature(static_cast<conparser::CWeight*>(m_weights));
+         }
+#endif // NO_NEG_FEATURE
+
+#else // ===
          m_delta = new conparser::CWeight( bTrain, 256 );
 #ifdef NO_NEG_FEATURE
          m_delta->setPositiveFeature(static_cast<conparser::CWeight*>(m_weights));
+#endif // NO_NEG_FEATURE
+
+#endif // === TRAIN_MULTI
+      }
+      else {
+#ifdef TRAIN_MULTI
+         m_gold = 0;
+         for (unsigned i=0; i<conparser::MIRA_SIZE; ++i)
+            m_delta[i] = 0;
+ #else
+         m_delta = 0;
 #endif
       }
+
       std::ifstream file;
       file.open(sFeatureDBPath.c_str());
       m_weights->loadScores(file);
@@ -83,11 +113,22 @@ public:
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
       ASSERT(conparser::CAction::MAX<=(1LL<<(sizeof(unsigned)*8)), "conparser.h: The size of action is too big for the packed scoretype");
    }
+
    ~CConParser() {
-//      delete m_Agenda;
       delete m_weights;
-      if (m_delta) delete m_delta;
+#ifdef TRAIN_MULTI
+      if (m_gold) { delete m_gold; m_gold=0; }
+      for (unsigned i=0; i<conparser::MIRA_SIZE; ++i) {
+         if (m_delta[i]) {
+            delete m_delta[i];
+            m_delta[i] = 0;
+         }
+      }
+#else
+      if (m_delta) { delete m_delta; m_delta=0; }
+#endif
    }
+
    CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache) { 
       assert(1==0);
    }
@@ -146,12 +187,17 @@ private:
    void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
 
    // get the global score for a parsed sentence or section
-   inline void getOrUpdateStackScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
+   inline void getOrUpdateStackScore( conparser::CWeight *cast_weights, CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem *item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
    inline void getOrUpdateScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem &item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
+   void updateScoresForState( conparser::CWeight *cast_weights , const conparser::CStateItem *outout , SCORE_UPDATE update , conparser::CBracketTupleMap *brackets ) ;
+#ifdef TRAIN_MULTI
+   void updateScoresForMultipleStates( const conparser::CStateItem *outout_start , const conparser::CStateItem *output_end , const conparser::CStateItem  *candidate , const conparser::CStateItem *correct ) ;
+   void computeAlpha( const unsigned K );
+#else
    void updateScoresForStates( const conparser::CStateItem *outout , const conparser::CStateItem *correct ) ;
-   void updateScoresForState( const conparser::CStateItem *outout , SCORE_UPDATE update , conparser::CBracketTupleMap *brackets ) ;
+#endif
 
    // loss functions
    double computeLossF(conparser::CBracketTupleMap &bracketsCorrect, conparser::CBracketTupleMap &bracketsOutput);
