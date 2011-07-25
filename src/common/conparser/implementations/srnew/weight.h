@@ -673,11 +673,12 @@ TABLE_SIZE),
    virtual void loadScores(std::ifstream &is);
    virtual void saveScores(std::ofstream &os);
    void computeAverageFeatureWeights(int round);
-   SCORE_TYPE dotProduct(const CWeight &w);
+   SCORE_TYPE dotProduct(CWeight &w);
    void clear() {
       iterate_templates(,.clear(););
    }
    void addCurrent(CWeight*w, int round);
+   void subtractCurrent(CWeight*w, int round);
 #ifdef NO_NEG_FEATURE
    void setPositiveFeature(const CWeight*w);
 #endif

@@ -156,6 +156,28 @@ public:
       }
    }
 
+   void subtractCurrent(CPackedScore &s, const int &round) {
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::iterator it;
+      it = s.scores.begin();
+      while (it != s.scores.end()) {
+         scores[it.first()].updateCurrent(-it.second().score(), round);
+         ++it;
+      }
+   }
+
+   SCORE_TYPE dotProduct(const CPackedScore &s) {
+      static const CScore<SCORE_TYPE> sc_zero;
+      SCORE_TYPE retval = 0;
+      if (s.empty()) return retval;
+      typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::iterator it;
+      it = this->scores.begin();
+      while (it != this->scores.end()) {
+         retval += it.second().score() * s.scores.find(it.first(), sc_zero).score();
+         ++ it;
+      }
+      return retval;
+   }
+
    SCORE_TYPE squareNorm() {
       typename CLinkedList<unsigned, CScore<SCORE_TYPE> > ::iterator it;
       it = scores.begin();

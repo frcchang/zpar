@@ -5,14 +5,17 @@
 #define SIMPLE_HASH
 
 //#define NO_NEG_FEATURE
+//
+//#define TRAIN_MARGIN
+//#define TRAIN_LOSS
+#define TRAIN_MULTI
 
 // early update? 
-#ifndef EARLY_UPDATE
 #define EARLY_UPDATE
-#endif
 
 // The size of agenda
 static const unsigned long AGENDA_SIZE = 16;
+static const unsigned long MIRA_SIZE = AGENDA_SIZE+1;
 
 // The size of a sentence and the words
 static const int MAX_SENTENCE_SIZE = 256 ; 

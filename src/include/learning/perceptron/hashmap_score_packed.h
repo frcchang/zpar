@@ -199,6 +199,13 @@ public:
          ++ it;
       }
    }
+   void subtractCurrent(CPackedScoreMap &mp, const int &round) {
+      typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = mp.begin();
+      while (it != mp.end()) {
+         (*this)[it.first()].subtractCurrent(it.second(), round);
+         ++ it;
+      }
+   }
    void scaleCurrent(const SCORE_TYPE &scale, const int &round) {
       typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = this->begin();
       while (it != this->end()) {
@@ -212,6 +219,16 @@ public:
       while (it != this->end()) {
          retval += it.second().squareNorm();
          ++it;
+      }
+      return retval;
+   }
+
+   SCORE_TYPE dotProduct(CPackedScoreMap &mp) {
+      SCORE_TYPE retval = 0;
+      typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = this->begin();
+      while (it != this->end()) {
+         retval += it.second().dotProduct(mp.find(it.first(), m_zero));
+         ++ it;
       }
       return retval;
    }
