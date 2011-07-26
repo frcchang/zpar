@@ -425,20 +425,21 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
  *--------------------------------------------------------------*/
 
 void CConParser::updateScoresForMultipleStates( const CStateItem *output_start , const CStateItem *output_end , const CStateItem  *candidate , const CStateItem *correct ) {
+   std::cout << "updating parameters ... " ; 
    // computateDeltasDist
    unsigned K = 0;
    updateScoresForState(m_gold, correct, eAdd, 0);
    for (const CStateItem *item = output_start; item<output_end; ++item) {
       if (item->score >= correct->score) {
          updateScoresForState(m_delta[K], item, eSubtract, 0);
-         m_delta[K]->subtractCurrent(m_gold, m_nTrainingRound);
+         m_delta[K]->addCurrent(m_gold, m_nTrainingRound);
          m_dist[K] = 1.0 + item->score - correct->score;
          ++K;
       }
    }
    if ( candidate && candidate->score > correct->score ) {
       updateScoresForState(m_delta[K], candidate, eSubtract, 0);
-      m_delta[K]->subtractCurrent(m_gold, m_nTrainingRound);
+      m_delta[K]->addCurrent(m_gold, m_nTrainingRound);
       m_dist[K] = 1.0 + candidate->score - correct->score;
       ++K;
    }
@@ -450,6 +451,10 @@ void CConParser::updateScoresForMultipleStates( const CStateItem *output_start ,
       m_delta[i]->scaleCurrent(m_alpha[i], m_nTrainingRound);
       static_cast<CWeight*>(m_weights)->addCurrent(m_delta[i], m_nTrainingRound);
    }
+   // clear
+   for (unsigned i=0; i<K; ++i)
+      m_delta[i]->clear();
+   m_gold->clear();
 }
 
 /*---------------------------------------------------------------
@@ -480,6 +485,7 @@ void CConParser::computeAlpha( const unsigned K ) {
    }
 
    for (i=0; i<K; ++i) {
+      m_alpha[i] = 0;
       kkt[i] = m_dist[i];
       if (i==0||kkt[i]>max_kkt) {
          max_kkt = kkt[i];
