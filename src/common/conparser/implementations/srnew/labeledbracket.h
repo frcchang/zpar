@@ -13,6 +13,10 @@ public:
    CConstituent constituent;
 };
 
+std::ostream & operator << (std::ostream &os, const CLabeledBracket &lb) {
+   os << '<' << lb.begin << ',' << lb.end << ',' << lb.constituent << '>';
+}
+
 } // namespace TARGET_LANGUAGE
 
 #endif
