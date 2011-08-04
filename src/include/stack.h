@@ -14,7 +14,7 @@
 
 /*===============================================================
  *
- * Hash table
+ * Stack
  *
  *==============================================================*/
 
@@ -28,7 +28,7 @@ protected:
 
    //===============================================================
    //
-   // Hash table entry
+   // Stack entry
    //
    //===============================================================
 
@@ -46,7 +46,7 @@ public:
 
    //===============================================================
    //
-   // Hash table iterator class
+   // Stack iterator class
    //
    //===============================================================
 
@@ -72,7 +72,7 @@ public:
 
    //===============================================================
    //
-   // Hash table iterator class
+   // Stack iterator class
    //
    //===============================================================
 
@@ -100,9 +100,9 @@ public:
    //===============================================================
 
 protected:
-   CEntry* m_buckets;
+   CEntry* m_top;
 public:
-   CStack() : m_buckets(0) { }
+   CStack() : m_top(0) { }
       
    CStack(const CStack& o) { 
       (*this) = o;
@@ -134,21 +134,21 @@ public:
    void push(const V&val) {
       CEntry *entry = allocate();
       entry->m_value = val;
-      entry->m_next = m_buckets;
-      m_buckets = entry;
+      entry->m_next = m_top;
+      m_top = entry;
    }
    void pop(V&ret) const {
       static V empty;
-      ret = m_buckets->m_value;
+      ret = m_top->m_value;
       CEntry *&c_free = getFreeMemory();
-      CEntry *entry = m_buckets->m_next;
-      m_buckets->m_next = c_free;
-      m_buckets->m_value = empty;
-      c_free = m_buckets;
-      m_buckets = entry;
+      CEntry *entry = m_top->m_next;
+      m_top->m_next = c_free;
+      m_top->m_value = empty;
+      c_free = m_top;
+      m_top = entry;
    }
    bool element (const V &value) const { 
-      CEntry*entry=m_buckets; 
+      CEntry*entry=m_top; 
       while (entry) {
          if (entry->m_value == value)
             return true;
@@ -158,8 +158,8 @@ public:
       return false;
    }
    void clear() {
-      if (!m_buckets) return;
-      CEntry *tail = m_buckets;
+      if (!m_top) return;
+      CEntry *tail = m_top;
       static V empty;
       while (tail->m_next) {
          tail->m_value = empty;
@@ -168,19 +168,19 @@ public:
       tail->m_value = empty;
       CEntry* &c_free = getFreeMemory();
       tail->m_next = c_free;
-      c_free = m_buckets;
-      m_buckets = 0;
+      c_free = m_top;
+      m_top = 0;
    }
 
 public:
    iterator begin() { 
-      return iterator(this, m_buckets); 
+      return iterator(this, m_top); 
    }
    iterator end() { 
       return iterator(this, 0); 
    }
    const_iterator begin() const { 
-      return const_iterator(this, m_buckets); 
+      return const_iterator(this, m_top); 
    }
    const_iterator end() const { 
       return const_iterator(this, 0); 
@@ -189,14 +189,14 @@ public:
 public:
    void operator = (const CStack& o) { 
       clear(); 
-      CEntry *entry = m_buckets;
+      CEntry *entry = m_top;
       assert(entry==0);
       const_iterator it = o.begin();
       while (it != o.end()) {
-         if (m_buckets==0) {
-            m_buckets = allocate();
-            m_buckets->m_value = *it; 
-            entry = m_buckets;
+         if (m_top==0) {
+            m_top = allocate();
+            m_top->m_value = *it; 
+            entry = m_top;
          }
          else {
             entry->m_next = allocate();
@@ -208,7 +208,7 @@ public:
    }
 
 public:
-   bool empty() const { return m_buckets==0; }
+   bool empty() const { return m_top==0; }
 
 };
 
