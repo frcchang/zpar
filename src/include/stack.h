@@ -1,14 +1,14 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * linkedlist.h - the linked list                               *
+ * stack.h - the stack                                          *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
  ****************************************************************/
 
-#ifndef _LINKED_LIST_H
-#define _LINKED_LIST_H
+#ifndef _STACK_H
+#define _STACK_H
 
 #include "pool.h"
 
@@ -18,8 +18,8 @@
  *
  *==============================================================*/
 
-template <typename K, typename V>
-class CLinkedList {
+template <typename V>
+class CStack {
 
 protected:
    enum{POOL_BLOCK_SIZE=(1<<16)};
@@ -34,14 +34,12 @@ protected:
 
    class CEntry {
    public:
-      K m_key;
       V m_value;
       CEntry *m_next;
 
    public:
-      CEntry() : m_key(), m_value(), m_next(0) {}
-      CEntry(const K &key) : m_key(key), m_value(), m_next(0) {}
-      CEntry(const K &key, const V &value) : m_key(key), m_value(value), m_next(0){}
+      CEntry() : m_value(), m_next(0) {}
+      CEntry(&key, const V &value) : m_value(value), m_next(0){}
    };
 
 public:
@@ -55,12 +53,12 @@ public:
    class iterator {
 
    private:
-      CLinkedList<K, V> *m_parent;
+      CStack<V> *m_parent;
       CEntry *m_entry;
 
    public:
       iterator() {}
-      iterator(CLinkedList<K, V> *parent, CEntry *entry) : m_parent(parent), m_entry(entry) {}
+      iterator(CStack<V> *parent, CEntry *entry) : m_parent(parent), m_entry(entry) {}
       iterator(const iterator &it) : m_parent(it.m_parent), m_entry(it.m_entry) { }
       bool operator != (const iterator &it) const { return !((*this)==it);}
       bool operator == (const iterator &it) const { return m_parent == it.m_parent && m_entry == it.m_entry; }
@@ -69,8 +67,7 @@ public:
          if (m_entry) m_entry=m_entry->m_next ;  
       }
 
-      const K &first() { return m_entry->m_key; }
-      V &second() { return m_entry->m_value; }
+      V &operator *() { return m_entry->m_value; }
    }; 
 
    //===============================================================
@@ -82,12 +79,12 @@ public:
    class const_iterator {
 
    private:
-      const CLinkedList<K, V> *m_parent;
+      const CStack<V> *m_parent;
       const CEntry *m_entry;
 
    public:
       const_iterator() {}
-      const_iterator(const CLinkedList<K, V> *parent, const CEntry *entry) : m_parent(parent), m_entry(entry) {}
+      const_iterator(const CStack<V> *parent, const CEntry *entry) : m_parent(parent), m_entry(entry) {}
       const_iterator(const const_iterator &it) : m_parent(it.m_parent), m_entry(it.m_entry) { }
       bool operator != (const const_iterator &it) const { return !((*this)==it);}
       bool operator == (const const_iterator &it) const { return m_parent == it.m_parent && m_entry == it.m_entry; }
@@ -97,8 +94,7 @@ public:
          m_entry=m_entry->m_next ;  
       }
 
-      const K &first() { return m_entry->m_key; }
-      const V &second() { return m_entry->m_value; }
+      const V &operator *() { return m_entry->m_value; }
    }; 
 
    //===============================================================
@@ -106,13 +102,12 @@ public:
 protected:
    CEntry* m_buckets;
 public:
-   CLinkedList() : m_buckets(0) { }
+   CStack() : m_buckets(0) { }
       
-   CLinkedList(const CLinkedList& o) { 
-      ASSERT(o.m_buckets==0, "CLinkedList does not support copy constructor unless copying from an empty one.");
-      clear(); 
+   CStack(const CStack& o) { 
+      (*this) = o;
    }
-   virtual ~CLinkedList() { 
+   virtual ~CStack() { 
       clear();
    }
 
@@ -136,69 +131,26 @@ public:
    }
 
 public:
-   V &operator[] (const K &key) { 
-      CEntry* entry = m_buckets; 
-      if (entry==0) {
-         entry = m_buckets = allocate(); 
-         entry->m_key = key;
-         return entry->m_value;
-      }
-      while (true) {
-         if (entry->m_key==key)
-            return entry->m_value;
-         else {
-            if (entry->m_next==0)
-               break;
-            else
-               entry = entry->m_next;
-         }
-      }
-      entry->m_next = allocate();
-      entry->m_next->m_key = key;   
-      return entry->m_next->m_value;
+   void push(const V&val) {
+      CEntry *entry = allocate();
+      entry->m_value = val;
+      entry->m_next = m_buckets;
+      m_buckets = entry;
    }
-   void insert (const K &key, const V &val) { (*this)[key] = val; }
-   const V &find (const K &key, const V &val) const { 
-      const CEntry*entry=m_buckets; 
-      while (entry) {
-         if (entry->m_key == key)
-            return entry->m_value;
-         else
-            entry = entry->m_next;
-      }
-      return val;
+   void pop(V&ret) const {
+      static V empty;
+      ret = m_buckets->m_value;
+      CEntry *&c_free = getFreeMemory();
+      CEntry *entry = m_buckets->m_next;
+      m_buckets->m_next = c_free;
+      m_buckets->m_value = empty;
+      c_free = m_buckets;
+      m_buckets = entry;
    }
-   bool findorinsert (const K &key, const V &val, V &retval) { 
-      CEntry*entry=m_buckets; 
-      if (entry == 0) { 
-         retval = val; 
-         entry= m_buckets =allocate(); 
-         entry->m_key = key;
-         entry->m_value = val; 
-         return true; 
-       } 
-       while (true) {
-          assert (entry);
-          if (entry->m_key == key) {
-             retval = entry->m_value;
-             return false;
-          }
-          else if (entry->m_next==0) 
-             break;
-          else
-             entry = entry->m_next;
-       }
-       assert(entry);
-       entry->m_next = allocate();
-       entry->m_next->m_key = key;
-       entry->m_next->m_value = val;
-       retval = val;
-       return true;
-   }
-   bool element (const K &key) const { 
+   bool element (const V &value) const { 
       CEntry*entry=m_buckets; 
       while (entry) {
-         if (entry->m_key == key)
+         if (entry->m_value == value)
             return true;
          else
             entry = entry->m_next;
@@ -235,63 +187,72 @@ public:
    }
 
 public:
-   void operator = (const CLinkedList& o) { 
-      ASSERT(o.m_buckets==0, "CLinkedList does not support copy constructor unless copying from an empty one.");
+   void operator = (const CStack& o) { 
       clear(); 
+      CEntry *entry = m_buckets;
+      assert(entry==0);
+      const_iterator it = o.begin();
+      while (it != o.end()) {
+         if (m_buckets==0) {
+            m_buckets = allocate();
+            m_buckets->m_value = *it; 
+            entry = m_buckets;
+         }
+         else {
+            entry->m_next = allocate();
+            entry->m_next->m_value = *it; 
+            entry = entry->m_next;
+         }
+         ++it;
+      }
    }
 
 public:
    bool empty() const { return m_buckets==0; }
 
-//public:
-//   static void freePoolMemory() { // call after all instances clean!
-//      getPool().reset();
-//      getFreeMemory() = 0;
-//   }
-
 };
 
-template <typename K, typename V>
-std::istream & operator >> (std::istream &is, CLinkedList<K, V> &score_map) {
+template <typename V>
+std::istream & operator >> (std::istream &is, CStack<V> &score_map) {
    if (!is) return is ;
    static std::string s ;
-   static K key;
-//   static V value;
-//   assert(score_map.empty());
+   static V value;
    is >> s;
-   ASSERT(s=="{"||s=="{}", "The small hashmap does not start with {");
+   ASSERT(s=="{"||s=="{}", "The stack does not start with {");
    if (s=="{}")
       return is;
    while (true) {
-      is >> key;
+      is >> value;
+      score_map.push(value);
       is >> s;
-      ASSERT(s==":", "The small hashmap does not have : after key: "<<key);
-//      is >> value;
-//      score_map[key] = value;
-      is >> score_map[key];
-      is >> s;
-      ASSERT(s==","||s=="}", "The small hashmap does not have a , or } after value: "<<score_map[key]);
+      ASSERT(s==","||s=="}", "The stack does not have a , or } after value: "<<score_map[key]);
       if (s=="}")
          return is;
    }
-   THROW("hashmap_small.h: the program should not have reached here.");
+   THROW("stack.h the program should not have reached here.");
    return is ;
 }
 
-template <typename K, typename V>
-std::ostream & operator << (std::ostream &os, const CLinkedList<K, V> &score_map) {
+template <typename V>
+std::ostream & operator << (std::ostream &os, const CStack<V> &score_map) {
+   static CStack<V> buffer;
    os << "{";
-   typename CLinkedList<K, V>::const_iterator it = score_map.begin();
-   if (it==score_map.end()) {
+   if (score_map.empty()) {
       os << "}"; // empty {}
       return os;
    }
-   else
-      os << " "; // non-empty { a , b , c }
+   os << " "; // non-empty { a , b , c }
+   buffer.clear();
+   typename CStack<V>::const_iterator it = score_map.begin();
    while (it!=score_map.end()) {
-      if (it!=score_map.begin()) 
+      buffer.push(*it);
+      ++it;
+   }
+   it = buffer.begin();
+   while (it != buffer.end()) {
+      if (it!=buffer.begin()) 
          os << " , ";
-      os << it.first() << " : " << it.second();
+      os << *it;
       ++it;
    }
    os << " }";

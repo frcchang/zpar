@@ -92,7 +92,7 @@ public:
          m_gold = 0;
          for (unsigned i=0; i<conparser::MIRA_SIZE; ++i)
             m_delta[i] = 0;
- #else
+#else
          m_delta = 0;
 #endif
       }
@@ -115,7 +115,6 @@ public:
    }
 
    ~CConParser() {
-      delete m_weights;
 #ifdef TRAIN_MULTI
       if (m_gold) { delete m_gold; m_gold=0; }
       for (unsigned i=0; i<conparser::MIRA_SIZE; ++i) {
@@ -127,6 +126,7 @@ public:
 #else
       if (m_delta) { delete m_delta; m_delta=0; }
 #endif
+      delete m_weights; m_weights=0;
    }
 
    CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache) { 

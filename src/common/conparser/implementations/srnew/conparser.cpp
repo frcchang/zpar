@@ -395,16 +395,19 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    std::cout << "updating parameters ... " ; 
 
+   static double F;
+#ifdef TRAIN_LOSS
    static CBracketTupleMap bracketsCorrect(MAX_SENTENCE_SIZE), bracketsOutput(MAX_SENTENCE_SIZE);
+
+   F = computeLossF(bracketsCorrect, bracketsOutput);
 
    updateScoresForState( m_delta, correct, eAdd, &bracketsCorrect );
    updateScoresForState( m_delta, outout, eSubtract, &bracketsOutput );
 
-   static double F;
-#ifdef TRAIN_LOSS
-   F = computeLossF(bracketsCorrect, bracketsOutput);
 #else
    F = 1.0;
+   updateScoresForState( m_delta, correct, eAdd, 0 );
+   updateScoresForState( m_delta, outout, eSubtract, 0 );
 #endif
 
 #ifdef TRAIN_MARGIN

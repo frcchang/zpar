@@ -665,8 +665,8 @@ TABLE_SIZE),
                           m_mapA1A2("PreviousActionBigram", TABLE_SIZE)
    { }
    ~CWeight() {
-      iterate_templates(,.freePoolMemory(););
-      CPackedScore<SCORE_TYPE, CAction::MAX>::freePoolMemory();
+//      iterate_templates(,.freePoolMemory(););
+//      CPackedScore<SCORE_TYPE, CAction::MAX>::freePoolMemory();
    }
 
    // MEHTODS

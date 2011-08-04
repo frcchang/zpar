@@ -111,6 +111,7 @@ public:
       assert(1==0);
    }
    virtual ~CHashMap() { 
+      clear();
       delete [] m_buckets;
    }
    void resize(const unsigned long &size) {
@@ -277,11 +278,11 @@ public:
    }
 #endif
 
-public:
-   static void freePoolMemory() { // call after all instances clean!
-      getPool().reset();
-      getFreeMemory() = 0;
-   }
+//public:
+//   static void freePoolMemory() { // call after all instances clean!
+//      getPool().reset();
+//      getFreeMemory() = 0;
+//   }
 
 };
 
