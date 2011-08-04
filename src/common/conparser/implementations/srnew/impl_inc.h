@@ -59,4 +59,6 @@ typedef CHashMap<CBracketTuple, unsigned> CBracketTupleMap;
 
 #include "rule.h"
 
+#include "labeledbracket.h"
+
 #endif

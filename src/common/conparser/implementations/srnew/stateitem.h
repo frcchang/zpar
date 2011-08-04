@@ -171,7 +171,7 @@ public:
    bool operator != (const CStateItem &st) const { return !( (*this) == st ); }
 
 protected:
-   // now this aftions MUST BE called by Move
+   // now this actions MUST BE called by Move
    void shift(CStateItem *retval, const unsigned long &constituent = CConstituent::NONE) const {
       //TRACE("shift");
       assert(!IsTerminated());
