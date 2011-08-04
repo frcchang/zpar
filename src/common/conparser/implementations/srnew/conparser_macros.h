@@ -6,9 +6,9 @@
 
 //#define NO_NEG_FEATURE
 //
-//#define TRAIN_MARGIN
+#define TRAIN_MARGIN
 //#define TRAIN_LOSS
-#define TRAIN_MULTI
+//#define TRAIN_MULTI
 
 // early update? 
 #define EARLY_UPDATE
