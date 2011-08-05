@@ -106,10 +106,13 @@ public:
 protected:
    CEntry* m_buckets;
 public:
-   CLinkedList() : m_buckets(0) { }
+   CLinkedList() : m_buckets(0) { 
+      getPool(); // ensure that the pool is constructed.
+   }
       
    CLinkedList(const CLinkedList& o) { 
       ASSERT(o.m_buckets==0, "CLinkedList does not support copy constructor unless copying from an empty one.");
+      getPool(); // ensure that the pool is constructed.
       clear(); 
    }
    virtual ~CLinkedList() { 

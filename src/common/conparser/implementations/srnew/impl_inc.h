@@ -37,6 +37,9 @@ typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARAT
 
 typedef TARGET_LANGUAGE::CCFGTree CSentenceParsed;
 
+#include "labeledbracket.h"
+#include "stack.h"
+
 namespace TARGET_LANGUAGE { 
 
 #include "linguistics/cfgset.h"
@@ -49,7 +52,6 @@ typedef double SCORE_TYPE ;
 typedef CTuple3<int, int, CConstituent> CBracketTuple;
 typedef CHashMap<CBracketTuple, unsigned> CBracketTupleMap;
 
-//#include "conparser_macros.h" 
 #include "stateitem.h" 
 #include "context.h"
 
@@ -58,7 +60,5 @@ typedef CHashMap<CBracketTuple, unsigned> CBracketTupleMap;
 }
 
 #include "rule.h"
-
-#include "labeledbracket.h"
 
 #endif

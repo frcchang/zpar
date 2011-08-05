@@ -10,11 +10,16 @@ class CLabeledBracket {
 public:
    unsigned begin;
    unsigned end;
-   CConstituent constituent;
+   unsigned long constituent;
+
+public:
+   CLabeledBracket(): begin(0), end(0), constituent(0) {}
+   CLabeledBracket(const unsigned &begin, const unsigned &end, const unsigned long &constituent): begin(begin), end(end), constituent(constituent) {}
 };
 
+inline
 std::ostream & operator << (std::ostream &os, const CLabeledBracket &lb) {
-   os << '<' << lb.begin << ',' << lb.end << ',' << lb.constituent << '>';
+   os << '<' << lb.begin << ',' << lb.end << ',' << CConstituent(lb.constituent).str() << '>';
 }
 
 } // namespace TARGET_LANGUAGE
