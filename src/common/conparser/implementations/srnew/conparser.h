@@ -13,22 +13,6 @@
 #define _CONPARSER_IMPL_H 
 
 #include "conparser_base.h"
-
-/*===============================================================
- *
- * Global items
- *
- *==============================================================*/
-
-//namespace TARGET_LANGUAGE {
-//
-//namespace conparser {
-//
-//#include "stateitem.h"
-//
-//}; // namespace conparser
-//};
-
 #include "weight.h"
 
 namespace TARGET_LANGUAGE {
@@ -201,6 +185,7 @@ private:
 
    // loss functions
    double computeLossF(conparser::CBracketTupleMap &bracketsCorrect, conparser::CBracketTupleMap &bracketsOutput);
+   void getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CLabeledBracket> &brackets);
 
 };
 

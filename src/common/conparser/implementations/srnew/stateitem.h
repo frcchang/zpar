@@ -117,7 +117,9 @@ public:
    const CStateItem *stackPtr;
    int current_word;
    CAction action;
-//   const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > *sent;
+#ifdef TRAIN_LOSS
+   CStack<CLabeledBracket> gold_lb;
+#endif
    
 public:
    CStateItem() : current_word(0), score(0), action(), /*sent(0),*/ stackPtr(0), statePtr(0), node() {}

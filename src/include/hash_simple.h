@@ -101,14 +101,14 @@ public:
 
 protected:
    CEntry **m_buckets;
-//   CEntry *m_freed; // freed from hash but not freed pool
+
 public:
    CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0) { 
+      getPool(); // ensure that the pool is constructed.
       if (initialize) init();
    }
-   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0)/*, pool()*/ { 
-      std::cerr << "CHashMap does not support copy constructor!"; 
-      assert(1==0);
+   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0) { 
+      THROW("CHashMap does not support copy constructor!"); 
    }
    virtual ~CHashMap() { 
       clear();

@@ -39,7 +39,7 @@ protected:
 
    public:
       CEntry() : m_value(), m_next(0) {}
-      CEntry(&key, const V &value) : m_value(value), m_next(0){}
+      CEntry(const V &value) : m_value(value), m_next(0){}
    };
 
 public:
@@ -50,6 +50,7 @@ public:
    //
    //===============================================================
 
+   class const_iterator;
    class iterator {
 
    private:
@@ -68,6 +69,7 @@ public:
       }
 
       V &operator *() { return m_entry->m_value; }
+      friend class const_iterator;
    }; 
 
    //===============================================================
@@ -88,13 +90,16 @@ public:
       const_iterator(const const_iterator &it) : m_parent(it.m_parent), m_entry(it.m_entry) { }
       bool operator != (const const_iterator &it) const { return !((*this)==it);}
       bool operator == (const const_iterator &it) const { return m_parent == it.m_parent && m_entry == it.m_entry; }
+      bool operator != (const iterator &it) const { return !((*this)==it);}
+      bool operator == (const iterator &it) const { return m_parent == it.m_parent && m_entry == it.m_entry; }
+      void operator = (const iterator &it) { m_parent = it.m_parent; m_entry = it.m_entry; }
       // move to next places
       void operator ++ () { 
          if(m_entry == 0) return;
          m_entry=m_entry->m_next ;  
       }
 
-      const V &operator *() { return m_entry->m_value; }
+      const V &operator *() const { return m_entry->m_value; }
    }; 
 
    //===============================================================
@@ -102,10 +107,13 @@ public:
 protected:
    CEntry* m_top;
 public:
-   CStack() : m_top(0) { }
+   CStack() : m_top(0) { 
+      getPool(); // ensure that the pool is constructed.
+   }
       
    CStack(const CStack& o) { 
       (*this) = o;
+      getPool(); // ensure that the pool is constructed.
    }
    virtual ~CStack() { 
       clear();
@@ -146,6 +154,9 @@ public:
       m_top->m_value = empty;
       c_free = m_top;
       m_top = entry;
+   }
+   const V&top() const {
+      return m_top->m_value;
    }
    bool element (const V &value) const { 
       CEntry*entry=m_top; 
@@ -225,7 +236,7 @@ std::istream & operator >> (std::istream &is, CStack<V> &score_map) {
       is >> value;
       score_map.push(value);
       is >> s;
-      ASSERT(s==","||s=="}", "The stack does not have a , or } after value: "<<score_map[key]);
+      ASSERT(s==","||s=="}", "The stack does not have a , or } after value: "<<score_map.top());
       if (s=="}")
          return is;
    }

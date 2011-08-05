@@ -397,13 +397,14 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    static double F;
 #ifdef TRAIN_LOSS
-   static CBracketTupleMap bracketsCorrect(MAX_SENTENCE_SIZE), bracketsOutput(MAX_SENTENCE_SIZE);
+//   static CBracketTupleMap bracketsCorrect(MAX_SENTENCE_SIZE), bracketsOutput(MAX_SENTENCE_SIZE);
+//   F = computeLossF(bracketsCorrect, bracketsOutput);
+//   updateScoresForState( m_delta, correct, eAdd, &bracketsCorrect );
+//   updateScoresForState( m_delta, outout, eSubtract, &bracketsOutput );
 
-   F = computeLossF(bracketsCorrect, bracketsOutput);
-
-   updateScoresForState( m_delta, correct, eAdd, &bracketsCorrect );
-   updateScoresForState( m_delta, outout, eSubtract, &bracketsOutput );
-
+   F = 1.0;
+   updateScoresForState( m_delta, correct, eAdd, 0 );
+   updateScoresForState( m_delta, outout, eSubtract, 0 );
 #else
    F = 1.0;
    updateScoresForState( m_delta, correct, eAdd, 0 );
@@ -589,6 +590,42 @@ double CConParser::computeLossF(CBracketTupleMap &bracketsCorrect, CBracketTuple
 
 /*---------------------------------------------------------------
  *
+ * getLabeledBrackets - turn a parse tree into a set of labeled brackets
+ *
+ *--------------------------------------------------------------*/
+
+void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CLabeledBracket> &brackets) {
+   std::vector<CLabeledBracket> vec;
+   unsigned i;
+   unsigned begin, end;
+   unsigned long constituent;
+   brackets.clear();
+   for (i=0; i<parse_tree.nodes.size(); ++i) {
+      const CCFGTreeNode &node = parse_tree.nodes[i];
+      if (!node.is_constituent) {
+         begin = node.token;
+         end = begin;
+      }
+      else {
+         begin = vec[node.left_child].begin;
+         if (node.right_child == -1)
+            end = vec[node.left_child].end;
+         else
+            end = vec[node.right_child].end;
+      }
+#ifdef NO_TEMP_CONSTITUENT
+      constituent = node.constituent;
+#else
+      constituent = CConstituent::encodeTmp(node.constituent, node.temp);
+#endif
+      vec.push_back(CLabeledBracket(begin, end, constituent));
+      if (node.is_constituent) 
+         brackets.push(vec.back());
+   } //for
+}
+
+/*---------------------------------------------------------------
+ *
  * getOrUpdateScore - get or update the score of a state and act
  *
  *--------------------------------------------------------------*/
@@ -646,6 +683,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    // initialise agenda
    lattice_index[0] = lattice;
    lattice_index[0]->clear();
+#ifdef TRAIN_LOSS
+   getLabeledBrackets(correct, lattice_index[0]->gold_lb);
+   std::cout << lattice_index[0]->gold_lb << std::endl;
+#endif
    lattice_index[1] = lattice+1;
    if (bTrain) { 
       correctState = lattice_index[0];
