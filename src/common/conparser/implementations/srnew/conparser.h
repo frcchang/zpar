@@ -175,7 +175,7 @@ private:
    inline void getOrUpdateScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem &item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
-   void updateScoresForState( conparser::CWeight *cast_weights , const conparser::CStateItem *outout , SCORE_UPDATE update , conparser::CBracketTupleMap *brackets ) ;
+   void updateScoresForState( conparser::CWeight *cast_weights , const conparser::CStateItem *outout , SCORE_UPDATE update) ;
 #ifdef TRAIN_MULTI
    void updateScoresForMultipleStates( const conparser::CStateItem *outout_start , const conparser::CStateItem *output_end , const conparser::CStateItem  *candidate , const conparser::CStateItem *correct ) ;
    void computeAlpha( const unsigned K );
@@ -183,9 +183,11 @@ private:
    void updateScoresForStates( const conparser::CStateItem *outout , const conparser::CStateItem *correct ) ;
 #endif
 
+#ifdef TRAIN_LOSS
    // loss functions
-   double computeLossF(conparser::CBracketTupleMap &bracketsCorrect, conparser::CBracketTupleMap &bracketsOutput);
+   double computeLossF(const conparser::CStateItem* item);
    void getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CLabeledBracket> &brackets);
+#endif
 
 };
 

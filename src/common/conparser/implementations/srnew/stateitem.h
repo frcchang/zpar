@@ -119,6 +119,8 @@ public:
    CAction action;
 #ifdef TRAIN_LOSS
    CStack<CLabeledBracket> gold_lb;
+   unsigned correct_lb;
+   unsigned lost_lb;
 #endif
    
 public:
@@ -132,6 +134,9 @@ public:
       node.clear();
       score = 0;
       action.clear();
+      gold_lb.clear();
+      correct_lb=0;
+      lost_lb=0;
 //      sent = 0;
    }
    bool empty() const {
@@ -177,17 +182,30 @@ protected:
    void shift(CStateItem *retval, const unsigned long &constituent = CConstituent::NONE) const {
       //TRACE("shift");
       assert(!IsTerminated());
-      static int t;
       retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, current_word, current_word, current_word);
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///  
+      // compute loss
+      retval->gold_lb.clear();
+      static CStack< CLabeledBracket >::const_iterator it;
+      it = gold_lb.begin();
+      while ( it != gold_lb.end() ) {
+         if ( (*it).end == node.lexical_end ) {
+            ++ (retval->lost_lb);
+         }
+         else {
+            retval->gold_lb.push( *it );
+         }
+         ++it;
+      } // while
       assert(!retval->IsTerminated());
    }
    void reduce(CStateItem *retval, const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) const {
       //TRACE("reduce");
       assert(!IsTerminated());
-      static int c;         // the new node
       const static CStateNode *l, *r;
+      static CStack< CLabeledBracket >::const_iterator it;
+      retval->gold_lb.clear();
       assert(stackPtr!=0);
       if (single_child) {
          assert(head_left == false);
@@ -195,6 +213,19 @@ protected:
          l = &node;
          retval->node.set(node.id+1, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head, l->lexical_start, l->lexical_end);
          retval->stackPtr = stackPtr;
+         // compute loss
+         it = gold_lb.begin();
+         while ( it != gold_lb.end() ) {
+            if ( (*it).begin == node.lexical_start &&
+                 (*it).end == node.lexical_end &&
+                 (*it).constituent == constituent ) {
+               ++(retval->correct_lb);
+            }
+            else {
+               retval->gold_lb.push(*it);
+            }
+            ++it;
+         } //while
       }
       else {
          assert(stacksize()>=2);
@@ -206,6 +237,22 @@ protected:
          retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, CConstituent::encodeTmp(constituent, temporary), l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
 #endif
          retval->stackPtr = stackPtr->stackPtr;
+         // compute loss
+         it=gold_lb.begin();
+         while ( it != gold_lb.end() ) {
+            if ( (*it).begin == l->lexical_start &&
+                 (*it).end == r->lexical_end &&
+                 (*it).constituent == constituent ) {
+               ++(retval->correct_lb);
+            }
+            else if ( (*it).begin == r->lexical_start ) {
+               ++(retval->lost_lb);
+            }
+            else {
+               retval->gold_lb.push(*it);
+            }
+            ++it;
+         } // while
       }
       retval->current_word = current_word;
       assert(!IsTerminated());
@@ -217,6 +264,16 @@ protected:
       retval->node.clear();
       retval->stackPtr=this;
       retval->current_word = current_word;
+      // compute loss
+      retval->gold_lb.clear();
+      static CStack< CLabeledBracket >::const_iterator it;
+      it = gold_lb.begin();
+      while ( it != gold_lb.end() ) {
+         ASSERT( (*it).begin == node.lexical_start
+                 && (*it).end == node.lexical_end, "Wrong labeledbrackets");
+         ++(retval->lost_lb);
+         ++it;
+      }//while
       assert(retval->IsTerminated());
    }
 

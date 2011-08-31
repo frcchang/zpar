@@ -344,7 +344,7 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem *item , const SCORE_UPDATE update , CBracketTupleMap *brackets ) {
+void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem *item , const SCORE_UPDATE update) {
 
    const SCORE_TYPE amount = (update==eAdd ? 1 : -1);
    const static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
@@ -353,10 +353,6 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
    const CStateItem *current;
 
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
-
-   static CBracketTuple bracket_tuple;
-   if (brackets) //brackets is not NULL
-      brackets->clear();
 
    count = 0;
    current = item;
@@ -373,13 +369,6 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
       // update action
       const CAction &action = states[count-1]->action;
       getOrUpdateStackScore(cast_weights, scores, states[count], action, amount, m_nTrainingRound );
-      // record brackets
-      if (brackets && (action.isReduceUnary() || action.isReduceBinary())) {
-         bracket_tuple.refer(&(states[count-1]->node.lexical_start), 
-                             &(states[count-1]->node.lexical_end),
-                             &(states[count-1]->node.constituent));
-         (*brackets)[bracket_tuple] += 1;
-      }
       --count;
    }
 }
@@ -397,18 +386,13 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    static double F;
 #ifdef TRAIN_LOSS
-//   static CBracketTupleMap bracketsCorrect(MAX_SENTENCE_SIZE), bracketsOutput(MAX_SENTENCE_SIZE);
-//   F = computeLossF(bracketsCorrect, bracketsOutput);
-//   updateScoresForState( m_delta, correct, eAdd, &bracketsCorrect );
-//   updateScoresForState( m_delta, outout, eSubtract, &bracketsOutput );
-
-   F = 1.0;
-   updateScoresForState( m_delta, correct, eAdd, 0 );
-   updateScoresForState( m_delta, outout, eSubtract, 0 );
+   F = computeLossF(outout);
+   updateScoresForState( m_delta, correct, eAdd );
+   updateScoresForState( m_delta, outout, eSubtract );
 #else
    F = 1.0;
-   updateScoresForState( m_delta, correct, eAdd, 0 );
-   updateScoresForState( m_delta, outout, eSubtract, 0 );
+   updateScoresForState( m_delta, correct, eAdd );
+   updateScoresForState( m_delta, outout, eSubtract );
 #endif
 
 #ifdef TRAIN_MARGIN
@@ -535,57 +519,22 @@ void CConParser::computeAlpha( const unsigned K ) {
 }
 #endif // TRAIN_MULTI
 
+#ifdef TRAIN_LOSS
 /*---------------------------------------------------------------
  *
  * computeLossF - computer the F-score loss functions
  *
  *--------------------------------------------------------------*/
 
-double CConParser::computeLossF(CBracketTupleMap &bracketsCorrect, CBracketTupleMap &bracketsOutput) {
-   static unsigned brackets_correct_only, brackets_output_only, brackets_share;
-   static CBracketTupleMap::iterator it;
-   static unsigned n;
-   static double P, R;
-
-   // calculate brackets
-   brackets_correct_only = 0;
-   brackets_output_only = 0;
-   brackets_share = 0;
-   it = bracketsOutput.begin();
-   while (it != bracketsOutput.end()) { // for every output
-      if (bracketsCorrect.element(it.first())) { // in correct
-         n = bracketsCorrect[it.first()];
-         if (it.second() >= n) { // more output
-            brackets_output_only += (it.second() - n);
-            brackets_share += n;
-         }
-         else {
-            brackets_correct_only += (n - it.second());
-            brackets_share += it.second();
-         }
-      }
-      else { // not in correct
-         brackets_output_only += it.second();
-      }
-      ++it; 
+double CConParser::computeLossF(const CStateItem* item) {
+   double retval = 0;
+   const CStateItem *next;
+   next = item;
+   while (next) {
+      retval += next->lost_lb;
+      next = next->statePtr;
    }
-   it = bracketsCorrect.begin();
-   while (it != bracketsCorrect.end()) { // for every correct
-      if (!(bracketsOutput.element(it.first()))) { // not in output
-         brackets_correct_only += it.second();
-      }
-      ++it;
-   }
-
-   return brackets_output_only + brackets_correct_only;
-
-   if (brackets_share==0)
-      return 1.0;
-
-   P = static_cast<double>(brackets_share) / (brackets_share + brackets_output_only);
-   R = static_cast<double>(brackets_share) / (brackets_share + brackets_correct_only);
-
-   return 1.0-2*P*R/(P+R);
+   return retval;
 }
 
 /*---------------------------------------------------------------
@@ -623,6 +572,7 @@ void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CL
          brackets.push(vec.back());
    } //for
 }
+#endif
 
 /*---------------------------------------------------------------
  *
@@ -685,7 +635,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    lattice_index[0]->clear();
 #ifdef TRAIN_LOSS
    getLabeledBrackets(correct, lattice_index[0]->gold_lb);
-   std::cout << lattice_index[0]->gold_lb << std::endl;
+//   std::cout << lattice_index[0]->gold_lb << std::endl;
 #endif
    lattice_index[1] = lattice+1;
    if (bTrain) { 
