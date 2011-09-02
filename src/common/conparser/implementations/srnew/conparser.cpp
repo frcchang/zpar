@@ -386,6 +386,9 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    static double F;
 #ifdef TRAIN_LOSS
+   F = computeLossF(correct);
+   ASSERT(F==0,"correct");
+
    F = computeLossF(outout);
    updateScoresForState( m_delta, correct, eAdd );
    updateScoresForState( m_delta, outout, eSubtract );
@@ -635,7 +638,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    lattice_index[0]->clear();
 #ifdef TRAIN_LOSS
    getLabeledBrackets(correct, lattice_index[0]->gold_lb);
-//   std::cout << lattice_index[0]->gold_lb << std::endl;
+   TRACE(lattice_index[0]->gold_lb << std::endl);
 #endif
    lattice_index[1] = lattice+1;
    if (bTrain) { 
