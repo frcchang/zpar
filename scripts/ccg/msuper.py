@@ -9,3 +9,25 @@ def msuperread(path):
          retval.append(word.split('|'))
       yield retval
    file.close()
+
+def superread(path):
+   file = open(path)
+   tokens = []
+   for line in file:
+      line = line[:-1]
+      line = line.strip()
+      if not line:
+         yield tokens
+         tokens = []
+         continue
+      line = line.split()
+      n = int(line[2])
+      t = []
+      for i in range(n):
+         t.append(line[3+2*i])
+      tokens.append([line[0], line[1], t[:]])
+   file.close()
+
+if __name__ == '__main__':
+   for s in superread(sys.argv[1]):
+      print s
