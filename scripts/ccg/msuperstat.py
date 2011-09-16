@@ -1,5 +1,4 @@
 import sys
-sys.path.append("../../../cpp1/scripts/ccg")
 import msuper
 
 if __name__ == "__main__":
