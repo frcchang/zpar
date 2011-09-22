@@ -185,8 +185,9 @@ private:
 
 #ifdef TRAIN_LOSS
    // loss functions
-   double computeLossF(const conparser::CStateItem* item);
+//   double computeLossF(const conparser::CStateItem* item);
    void getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CLabeledBracket> &brackets);
+void updateScoresByLoss( const conparser::CStateItem *outout , const conparser::CStateItem *correct );
 #endif
 
 };
