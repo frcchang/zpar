@@ -1,5 +1,6 @@
 import sys
 
+# stagged
 def msuperread(path):
    file = open(path)
    for line in file:
@@ -10,6 +11,7 @@ def msuperread(path):
       yield retval
    file.close()
 
+# msuper output
 def superread(path):
    file = open(path)
    tokens = []

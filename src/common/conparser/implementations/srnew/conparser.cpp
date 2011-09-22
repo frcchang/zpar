@@ -386,10 +386,10 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    static double F;
 #ifdef TRAIN_LOSS
-   F = computeLossF(correct);
-   ASSERT(F==0,"correct");
+   F = correct->loss();
+   ASSERT(F==0,"correct"<<F);
 
-   F = computeLossF(outout);
+   F = outout->loss(); 
    updateScoresForState( m_delta, correct, eAdd );
    updateScoresForState( m_delta, outout, eSubtract );
 #else
@@ -529,16 +529,16 @@ void CConParser::computeAlpha( const unsigned K ) {
  *
  *--------------------------------------------------------------*/
 
-double CConParser::computeLossF(const CStateItem* item) {
-   double retval = 0;
-   const CStateItem *next;
-   next = item;
-   while (next) {
-      retval += next->lost_lb;
-      next = next->statePtr;
-   }
-   return retval;
-}
+//double CConParser::computeLossF(const CStateItem* item) {
+//   double retval = 0;
+//   const CStateItem *next;
+//   next = item;
+//   while (next) {
+//      retval += next->lost_lb;
+//      next = next->statePtr;
+//   }
+//   return retval;
+//}
 
 /*---------------------------------------------------------------
  *
@@ -575,6 +575,21 @@ void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CL
          brackets.push(vec.back());
    } //for
 }
+
+/*---------------------------------------------------------------
+ *
+ * updateScoresByLoss - update scores 
+ *
+ *--------------------------------------------------------------*/
+
+void CConParser::updateScoresByLoss( const CStateItem *outout , const CStateItem *correct ) {
+
+   std::cout << "updating parameters ... " ; 
+
+   // TODO
+
+}
+
 #endif
 
 /*---------------------------------------------------------------
@@ -720,6 +735,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       // update items if correct item jump out of the agenda
       if (bTrain) { 
 #ifdef EARLY_UPDATE
+         // note that if bCorrect == true then the correct state has 
+         // already been updated, and the new value is one of the new states
+         // among the newly produced from lattice[index+1].
          if (!bCorrect && candidate_outout!=correctState) {
             if (!correctState->IsTerminated()) {
                correctState->Move(lattice_index[index+1], correct_action); 

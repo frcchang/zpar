@@ -120,14 +120,15 @@ public:
 #ifdef TRAIN_LOSS
    CStack<CLabeledBracket> gold_lb;
    unsigned correct_lb;
-   unsigned lost_lb;
+   unsigned plost_lb;
+   unsigned rlost_lb;
 #endif
    
 public:
 #ifdef TRAIN_LOSS
-   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node(), correct_lb(0), lost_lb(0) {}
+   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node(), correct_lb(0), plost_lb(0), rlost_lb(0) {}
 #else
-   CStateItem() : current_word(0), score(0), action(), /*sent(0),*/ stackPtr(0), statePtr(0), node() {}
+   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node() {}
 #endif
    virtual ~CStateItem() {}
 public:
@@ -140,7 +141,8 @@ public:
       action.clear();
       gold_lb.clear();
       correct_lb=0;
-      lost_lb=0;
+      plost_lb=0;
+      rlost_lb=0;
 //      sent = 0;
    }
    bool empty() const {
@@ -189,34 +191,15 @@ protected:
       retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, current_word, current_word, current_word);
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///  
-      // compute loss
-      retval->gold_lb.clear();
-      retval->correct_lb = 0;
-      retval->lost_lb = 0;
-      static CStack< CLabeledBracket >::const_iterator it;
-      it = gold_lb.begin();
-      while ( it != gold_lb.end() ) {
-         if ( node.valid() && (*it).end == node.lexical_end ) {
-            ++ (retval->lost_lb);
-         }
-         else {
-            retval->gold_lb.push( *it );
-         }
-         ++it;
-      } // while
+#ifdef TRAIN_LOSS
+      computeShiftLB(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb);
+#endif
       assert(!retval->IsTerminated());
    }
    void reduce(CStateItem *retval, const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) const {
       //TRACE("reduce");
       assert(!IsTerminated());
       const static CStateNode *l, *r;
-#ifdef TRAIN_LOSS
-      static CStack< CLabeledBracket >::const_iterator it;
-      static bool bCorrect;
-      retval->gold_lb.clear();
-      retval->correct_lb = 0;
-      retval->lost_lb = 0;
-#endif
       assert(stackPtr!=0);
       if (single_child) {
          assert(head_left == false);
@@ -224,57 +207,24 @@ protected:
          l = &node;
          retval->node.set(node.id+1, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head, l->lexical_start, l->lexical_end);
          retval->stackPtr = stackPtr;
-         // compute loss
 #ifdef TRAIN_LOSS
-         it = gold_lb.begin();
-         bCorrect = false;
-         while ( it != gold_lb.end() ) {
-            if ( (*it).begin == node.lexical_start &&
-                 (*it).end == node.lexical_end &&
-                 (*it).constituent == constituent ) {
-               ++(retval->correct_lb);
-               bCorrect = true;
-            }
-            else {
-               retval->gold_lb.push(*it);
-            }
-            ++it;
-         } //while
-         if (!bCorrect)
-            ++(retval->lost_lb);
+         computeReduceUnaryLB(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb, constituent);
 #endif
       }
       else {
+         static unsigned long fullconst; 
          assert(stacksize()>=2);
          r = &node;
          l = &(stackPtr->node);
 #ifdef NO_TEMP_CONSTITUENT
-         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, constituent, l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
+         fullconst = constituent;
 #else
-         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, CConstituent::encodeTmp(constituent, temporary), l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
+         fullconst = CConstituent::encodeTmp(constituent, temporary);
 #endif
+         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, fullconst, l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
          retval->stackPtr = stackPtr->stackPtr;
-         // compute loss
 #ifdef TRAIN_LOSS
-         it=gold_lb.begin();
-         bCorrect = false;
-         while ( it != gold_lb.end() ) {
-            if ( (*it).begin == l->lexical_start &&
-                 (*it).end == r->lexical_end &&
-                 (*it).constituent == constituent ) {
-               ++(retval->correct_lb);
-               bCorrect=true;
-            }
-            else if ( (*it).begin == r->lexical_start ) {
-               ++(retval->lost_lb);
-            }
-            else {
-               retval->gold_lb.push(*it);
-            }
-            ++it;
-         } // while
-         if (!bCorrect)
-            ++(retval->lost_lb);
+         computeReduceBinaryLB(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb, fullconst);
 #endif
       }
       retval->current_word = current_word;
@@ -289,19 +239,104 @@ protected:
       retval->current_word = current_word;
       // compute loss
 #ifdef TRAIN_LOSS
-      retval->gold_lb.clear();
-      retval->correct_lb = 0;
-      retval->lost_lb = 0;
+      computeTerminateLoss(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb);
+#endif
+      assert(retval->IsTerminated());
+   }
+
+protected:
+
+#ifdef TRAIN_LOSS
+   void computeShiftLB( CStack<CLabeledBracket> *gold, unsigned &correct, unsigned &plost, unsigned &rlost) const {
+      // compute shift
+      if (gold) gold->clear();
+      correct = correct_lb;
+      plost = plost_lb;
+      rlost = rlost_lb;
+      static CStack< CLabeledBracket >::const_iterator it;
+      it = gold_lb.begin();
+      while ( it != gold_lb.end() ) {
+         if ( node.valid() && (*it).end == node.lexical_end ) {
+            ++ (rlost);
+         }
+         else {
+            if (gold) gold->push( *it );
+         }
+         ++it;
+      } // while
+   }
+   
+   void computeReduceUnaryLB(CStack<CLabeledBracket> *gold, unsigned &correct, unsigned &plost, unsigned &rlost, const unsigned long &constituent) const {
+      static CStack< CLabeledBracket >::const_iterator it;
+      static bool bCorrect;
+      if (gold) gold->clear();
+      plost = plost_lb;
+      rlost = rlost_lb;
+      correct = correct_lb;
+      // loop
+      it = gold_lb.begin();
+      bCorrect = false;
+      while ( it != gold_lb.end() ) {
+         if ( (*it).begin == node.lexical_start &&
+              (*it).end == node.lexical_end &&
+              (*it).constituent == constituent ) {
+            bCorrect = true;
+            ++correct;
+         }
+         else {
+            if (gold) gold->push(*it);
+         }
+         ++it;
+      } //while
+      if (!bCorrect)
+         ++(plost);
+   }
+
+   void computeReduceBinaryLB(CStack<CLabeledBracket> *gold, unsigned &correct, unsigned &plost, unsigned &rlost, const unsigned long &constituent) const {
+      const static CStateNode *l, *r;
+      static CStack< CLabeledBracket >::const_iterator it;
+      static bool bCorrect;
+      if (gold) gold->clear();
+      correct = correct_lb;
+      plost = plost_lb;
+      rlost = rlost_lb;
+      r = &node;
+      l = &(stackPtr->node);
+      // loop
+      bCorrect = false;
+      it=gold_lb.begin();
+      while ( it != gold_lb.end() ) {
+         if ( (*it).begin == l->lexical_start &&
+              (*it).end == r->lexical_end &&
+              (*it).constituent == constituent ) {
+            bCorrect=true;
+            ++correct;
+         }
+         else if ( (*it).begin == r->lexical_start ) {
+            ++(rlost);
+         }
+         else {
+            if (gold) gold->push(*it);
+         }
+         ++it;
+      } // while
+      if (!bCorrect)
+         ++(plost);
+   }
+   void computeTerminateLoss(CStack<CLabeledBracket> *gold, unsigned &correct, unsigned &plost, unsigned &rlost) const {
+      if (gold) gold->clear();
+      correct = correct_lb;
+      plost = plost_lb;
+      rlost = rlost_lb;
       static CStack< CLabeledBracket >::const_iterator it;
       it = gold_lb.begin();
       while ( it != gold_lb.end() ) {
          assert( (*it).begin == node.lexical_start && (*it).end == node.lexical_end);
-         ++(retval->lost_lb);
+         ++(rlost);
          ++it;
       }//while
-#endif
-      assert(retval->IsTerminated());
    }
+#endif
 
 public:
 
@@ -449,6 +484,9 @@ public:
          current = current->statePtr;
       }
       TRACE("State item score == " << score);
+#ifdef TRAIN_LOSS
+      TRACE("cor = " << correct_lb << ", plo = " << plost_lb << ", rlo = " << rlost_lb << ", Loss = " << loss());
+#endif
       --count;
       while (count>=0) {
          if (s) {
@@ -461,6 +499,51 @@ public:
       }
       TRACE("");
    }
+
+   //===============================================================================
+#ifdef TRAIN_LOSS   
+public:
+   SCORE_TYPE actionLoss(const CAction &action) const {
+      static unsigned rlost, plost, correct;
+      static unsigned long constituent;
+      if (action.isShift()) {
+         computeShiftLB(0, correct, plost, rlost);
+      }
+      else if (action.isReduceRoot()) {
+         computeTerminateLoss(0, correct, plost, rlost);
+      }
+      else if (action.singleChild()) {
+         computeReduceUnaryLB(0, correct, plost, rlost, action.getConstituent());
+      }
+      else {
+#ifdef NO_TEMP_CONSTITUENT
+         constituent = action.getConstituent();
+#else
+         constituent = CConstituent::encodeTmp(action.getConstituent(), action.isTemporary());
+#endif
+         computeReduceBinaryLB(0, correct, plost, rlost, constituent);
+      }
+      return loss(correct, plost, rlost);
+   }
+   SCORE_TYPE loss(const unsigned &correct, const unsigned &plost, const unsigned &rlost) const {
+      static SCORE_TYPE p, r, f;
+      if (correct == 0) {
+         if (plost == 0 && rlost == 0) {
+            return static_cast<SCORE_TYPE>(0);
+         }
+         else {
+            return static_cast<SCORE_TYPE>(1);
+         }
+      }
+      p = static_cast<SCORE_TYPE>(correct) / (correct + plost);
+      r = static_cast<SCORE_TYPE>(correct) / (correct + rlost);
+      f = 2*static_cast<SCORE_TYPE>(p)*r / (p + r);
+      return 1-f;
+   }
+   SCORE_TYPE loss() const {
+      return loss(correct_lb, plost_lb, rlost_lb);
+   }
+#endif
 };
 
 /*===============================================================
@@ -481,7 +564,8 @@ public:
    void load(const CAction &action, const CStateItem *item, const SCORE_TYPE &score) {
       this->action = action; 
       this->item = item;
-      this->score = item->score + score;
+      this->score = -std::sqrt(item->loss()) + std::sqrt(item->actionLoss(action)) + item->score + score;
+//      this->score = item->score + score;
    }
 
 public:
