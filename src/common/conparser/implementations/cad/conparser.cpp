@@ -526,6 +526,22 @@ void CConParser::computeAlpha( const unsigned K ) {
 #endif // TRAIN_MULTI
 
 #ifdef TRAIN_LOSS
+/*---------------------------------------------------------------
+ *
+ * computeLossF - computer the F-score loss functions
+ *
+ *--------------------------------------------------------------*/
+
+//double CConParser::computeLossF(const CStateItem* item) {
+//   double retval = 0;
+//   const CStateItem *next;
+//   next = item;
+//   while (next) {
+//      retval += next->lost_lb;
+//      next = next->statePtr;
+//   }
+//   return retval;
+//}
 
 /*---------------------------------------------------------------
  *
@@ -562,6 +578,86 @@ void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CL
          brackets.push(vec.back());
    } //for
 }
+
+/*---------------------------------------------------------------
+ *
+ * updateScoresByLoss - update scores 
+ *
+ *--------------------------------------------------------------*/
+
+void CConParser::updateScoresByLoss( const CStateItem *output , const CStateItem *correct ) {
+
+   std::cout << "updating parameters ... " ; 
+
+   // TODO
+   const static CStateItem* oitems[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+   const static CStateItem* citems[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+
+   static int oi, ci;
+   static const CStateItem *item;
+   static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
+   static double L, tou;
+   SCORE_TYPE oscore, cscore;
+
+   // list output in reverse order each step
+   oi = -1; // the index
+   item = output; // ptr
+   while (item) {
+      ++oi;
+      oitems[oi] = item;
+      item = item->statePtr;
+   }
+   // list correct in reverse order each step
+   ci = -1; // the index
+   item = correct; // ptr
+   while (item) {
+      ++ci;
+      citems[ci] = item;
+      item = item->statePtr;
+   }
+   ASSERT(oitems[oi]==citems[ci], "Initial items unqueal");
+
+   // do not consider those steps in which output did perfect
+   while (oitems[oi] == citems[ci]) {
+      --oi;
+      --ci;
+   } // here -- mean ++ in step
+   ASSERT(oi >= 0 && ci >= 0, "output correct same"); // change to assert
+   ++ci;
+   ++oi;
+
+   // now the main loop updating pair of action
+   // note that output must contain a smaller 
+   // number of actions, due to early-update
+   while (oi > 0 && ci > 0) {
+      m_delta->clear();
+      // load output
+      m_Context.load(oitems[oi], m_lCache, m_lWordLen, true);
+      const CAction &oaction = oitems[oi-1]->action; //-1 means +1 step
+      getOrUpdateStackScore(m_delta, scores, oitems[oi], oaction, -1, m_nTrainingRound);
+      // load correct
+      m_Context.load(citems[ci], m_lCache, m_lWordLen, true);
+      const CAction &caction = citems[ci-1]->action;
+      getOrUpdateStackScore(m_delta, scores, citems[ci], caction, 1, m_nTrainingRound);
+      // update scores
+      L = oitems[oi-1]->stepHammingLoss();
+      if (L==0) L = 1.0; //ASSERT(L, "no loss");
+      ASSERT(L>0, "neg");
+      if (m_delta->squareNorm()) {
+         oscore = oitems[oi-1]->score-oitems[oi]->score;
+         cscore = citems[ci-1]->score - citems[ci]->score;
+         tou = (std::sqrt(L)+oscore-cscore)/m_delta->squareNorm();
+         m_delta->scaleCurrent(tou, m_nTrainingRound);
+         static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
+      }
+      // next round
+      --oi;
+      --ci;
+   }
+   ++m_nTotalErrors;
+   m_delta->clear(); // clear delta and free memory
+}
+
 #endif
 
 /*---------------------------------------------------------------
@@ -706,6 +802,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
       // update items if correct item jump out of the agenda
       if (bTrain) { 
+         // when the correct is complete, update as long as it is not on top first
+         if (bCorrect && correctState->IsTerminated() && correctState!=pBestGen)
+            bCorrect = false;
 #ifdef EARLY_UPDATE
          // note that if bCorrect == true then the correct state has 
          // already been updated, and the new value is one of the new states
@@ -726,7 +825,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             // trace
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
-            updateScoresForStates(pBestGen, correctState) ; 
+            updateScoresByLoss(pBestGen, correctState) ; 
+//            updateScoresForStates(pBestGen, correctState) ; 
 #endif // TRAIN_MULTI
             return ;
          }
@@ -743,7 +843,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 #else // TRAIN_MULTI
          correctState->trace(&sentence);
          candidate_outout->trace(&sentence);
-         updateScoresForStates(candidate_outout, correctState) ; 
+         updateScoresByLoss(candidate_outout, correctState) ; 
+//         updateScoresForStates(candidate_outout, correctState) ; 
 #endif // TRAIN_MULTI
          return ;
       }
