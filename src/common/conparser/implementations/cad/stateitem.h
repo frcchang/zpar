@@ -139,11 +139,12 @@ public:
       node.clear();
       score = 0;
       action.clear();
+#ifdef TRAIN_LOSS
       gold_lb.clear();
       correct_lb=0;
       plost_lb=0;
       rlost_lb=0;
-//      sent = 0;
+#endif
    }
    bool empty() const {
       if (current_word==0) {
@@ -581,8 +582,11 @@ public:
       this->action = action; 
       this->item = item;
 //      this->score = -std::sqrt(item->FLoss()) + std::sqrt(item->actionFLoss(action)) + item->score + score;
-//      this->score = item->score + score;
+#ifdef TRAIN_LOSS
       this->score = item->score + score + std::sqrt(item->actionStepHammingLoss(action));
+#else
+      this->score = item->score + score;
+#endif
    }
 
 public:
