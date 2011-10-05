@@ -37,7 +37,7 @@ inline unsigned long encodeTorCs(const unsigned long &toc1, const unsigned long 
 
 /*===============================================================
  *
- * definitions abstd::cout constituent set 
+ * definitions about constituent set 
  *
  *==============================================================*/
 

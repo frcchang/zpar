@@ -46,10 +46,10 @@ class CBinarizedTreeNode(object):
       elif self.type == 'token':
          if self.pos == "":
             sType = 't'
-            sContent = gb2utf(self.token)
+            sContent = self.token
          else:
             sType = 'c'
-            sContent = self.pos + ' ' + gb2utf(self.token)
+            sContent = self.pos + ' ' + self.token
       else:
          raise "Type not defined for node"
       if self.temporary:

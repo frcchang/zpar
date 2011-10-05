@@ -11,7 +11,7 @@
 //#define TRAIN_MULTI
 
 // early update? 
-#define EARLY_UPDATE
+//#define EARLY_UPDATE
 
 // The size of agenda
 static const unsigned long AGENDA_SIZE = 16;
