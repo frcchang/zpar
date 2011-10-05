@@ -175,7 +175,6 @@ public:
    void load(const CStateItem *item, const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> > &wrds, const std::vector<unsigned long> &wordlen, const bool &modify) {
       stacksize = item->stacksize();
       if (stacksize==0) return; // must shift; no feature updates, no comparisons for different actions
-      assert(!item->IsTerminated());
       static unsigned long tmp;
       static int tmp_i;
       static int i, j;

@@ -33,13 +33,18 @@ public:
 
 public:
    void getActions(const CStateItem &item, std::vector<CAction> &actions) {
-      assert(!item.IsTerminated());
       actions.clear();
 
       static CAction action;
       const unsigned stack_size = item.stacksize();
       const unsigned &length = m_sent->size();
 
+      // finish
+      if (item.IsTerminated()) {
+         action.encodeIdle();
+         actions.push_back(action);
+         return;
+      }
       // finish parsing
       if (item.IsComplete(length)) { 
          action.encodeReduceRoot();

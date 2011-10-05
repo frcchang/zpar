@@ -12,7 +12,7 @@ class CActionType {
 
 public:
    static const unsigned long SIZE=3;
-   enum CODE {NO_ACTION=0, SHIFT=1, REDUCE_BINARY=2, REDUCE_UNARY=3, POP_ROOT=4};
+   enum CODE {NO_ACTION=0, SHIFT=1, REDUCE_BINARY=2, REDUCE_UNARY=3, POP_ROOT=4, IDLE=5};
 
 public:
    unsigned long code;
@@ -89,12 +89,6 @@ protected:
    const static unsigned long TEMPORARY_MASK = 1L<<TEMPORARY_SHIFT;
    const static unsigned long CONSTITUENT_MASK = ((1L<<CConstituent::SIZE)-1)<<CONSTITUENT_SHIFT;
 
-//public: 
-//   inline unsigned long encodeAction(const unsigned long &action, const unsigned long &num) {
-//      assert(action>>(CConstituent::SIZE+4)==0);
-//      return action | ( num << (CConstituent::SIZE+4) ); // action takes 4 extra bits plus consti (REDUCE, SINGLE_C, HEAD_L, TEMP)
-//   }
-   
 protected:
    unsigned long action;
 
@@ -106,6 +100,7 @@ public:
 
 public:
    inline bool isNone() const { return type()==CActionType::NO_ACTION; }
+   inline bool isIdle() const { return type()==CActionType::IDLE; }
    inline bool isShift() const { return type()==CActionType::SHIFT; }
 //   inline bool isReduce() const { return isReduceUnary() || isReduceBinary(); }
    inline bool isReduceRoot() const { return type()==CActionType::POP_ROOT; }
@@ -134,6 +129,10 @@ public:
       action = CActionType::POP_ROOT;
    }
 
+   inline void encodeIdle() {
+      action = CActionType::IDLE;
+   }
+
 public:
    inline unsigned long type() const {
       return action & ACTIONTYPE_MASK;
@@ -156,7 +155,8 @@ public:
  
 public:
    inline std::string str() const {
-      if (isNone()) { return "NONE"; }
+      if (isNone()) { return "NO ACTION"; }
+      if (isIdle()) { return "IDLE"; }
       if (isReduceRoot()) { return "REDUCE ROOT"; }
       std::string retval;
       if (isShift()) {

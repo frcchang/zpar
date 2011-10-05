@@ -235,14 +235,25 @@ protected:
       //TRACE("terminate");
 //      assert(IsComplete());
       assert(!IsTerminated());
-      retval->node.clear();
-      retval->stackPtr=this;
+      retval->node = this->node;
+      retval->stackPtr=this->stackPtr;
       retval->current_word = current_word;
       // compute loss
 #ifdef TRAIN_LOSS
       computeTerminateLoss(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb);
 #endif
       assert(retval->IsTerminated());
+   }
+   void noact(CStateItem *retval) const {
+      //TRACE("noact");
+      assert(IsTerminated());
+      retval->node = this->node;
+      retval->stackPtr=this->stackPtr;
+      retval->current_word = current_word;
+      // compute loss
+#ifdef TRAIN_LOSS
+      computeIdleLoss(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb);
+#endif
    }
 
 protected:
@@ -337,6 +348,12 @@ protected:
          ++it;
       }//while
    }
+   void computeIdleLoss(CStack<CLabeledBracket> *gold, unsigned &correct, unsigned &plost, unsigned &rlost) const {
+      if (gold) gold->clear();
+      correct = correct_lb;
+      plost = plost_lb;
+      rlost = rlost_lb;
+   }
 #endif
 
 public:
@@ -373,8 +390,10 @@ public:
    }
 
    void StandardMove(const CCFGTree &tr, CAction &retval) const {
-      assert(!IsTerminated());
-//      assert(tr.words.size() == sent->size());
+      if (IsTerminated()) {
+         retval.encodeIdle();
+         return;
+      }
       // stack empty?shift
       if (stacksize()==0) {
          retval.encodeShift(tr.nodes[newNodeIndex()].constituent);
@@ -391,10 +410,13 @@ public:
    void Move(CStateItem *retval, const CAction &action) const {
       retval->action = action; // this makes it necessary for the actions to 
       retval->statePtr = this; // be called by Move
-      if (action.isShift())
+      if (action.isIdle()) {
+         noact(retval);
+      }
+      else if (action.isShift())
          shift(retval, action.getConstituent());
       else if (action.isReduceRoot())
-         { /*assert(IsComplete());*/ terminate(retval); }
+         { terminate(retval); }
       else
          reduce(retval, action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
    }
@@ -408,7 +430,7 @@ public:
    }
 
    bool IsTerminated() const {
-      return action.type() == CActionType::POP_ROOT; 
+      return action.type() == CActionType::POP_ROOT or action.type() == CActionType::IDLE; 
    }
 
    void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &out) const {
@@ -455,7 +477,7 @@ public:
       const static CStateItem *current;
       current = this;
       while (current) {
-         if (current->node.valid()) {
+         if (!current->IsTerminated() && current->node.valid()) {
             nodes[count] = &current->node;
             ++count; 
          }
@@ -555,6 +577,11 @@ public:
          return 0;
       return plost_lb-statePtr->plost_lb + rlost_lb-statePtr->rlost_lb;
    }
+   SCORE_TYPE actionHammingLoss(const CAction &action) const {
+      static unsigned correct, plost, rlost;
+      actionLoss(action, correct, plost, rlost);
+      return plost + rlost;
+   }
    SCORE_TYPE actionStepHammingLoss(const CAction &action) const {
       static unsigned correct, plost, rlost;
       actionLoss(action, correct, plost, rlost);
@@ -581,9 +608,10 @@ public:
    void load(const CAction &action, const CStateItem *item, const SCORE_TYPE &score) {
       this->action = action; 
       this->item = item;
-//      this->score = -std::sqrt(item->FLoss()) + std::sqrt(item->actionFLoss(action)) + item->score + score;
 #ifdef TRAIN_LOSS
-      this->score = item->score + score + std::sqrt(item->actionStepHammingLoss(action));
+//      this->score = -std::sqrt(item->HammingLoss()) + std::sqrt(item->actionHammingLoss(action)) + item->score + score;
+//      this->score = item->score + score + item->actionStepHammingLoss(action);
+      this->score = item->score + score;
 #else
       this->score = item->score + score;
 #endif
