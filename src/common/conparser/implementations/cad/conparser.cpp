@@ -571,7 +571,7 @@ void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CL
 #ifdef NO_TEMP_CONSTITUENT
       constituent = node.constituent;
 #else
-      constituent = CConstituent::encodeTmp(node.constituent, node.temp);
+      constituent = CConstituent::encodeTmp(node.constituent.code(), node.temp);
 #endif
       vec.push_back(CLabeledBracket(begin, end, constituent));
       if (node.is_constituent) 
@@ -646,7 +646,8 @@ void CConParser::updateScoresByLoss( const CStateItem *output , const CStateItem
       if (m_delta->squareNorm()) {
          oscore = oitems[oi-1]->score-oitems[oi]->score;
          cscore = citems[ci-1]->score - citems[ci]->score;
-         tou = (std::sqrt(L)+oscore-cscore)/m_delta->squareNorm();
+//         tou = (std::sqrt(L)+oscore-cscore)/m_delta->squareNorm();
+         tou = (L+oscore-cscore)/m_delta->squareNorm();
          m_delta->scaleCurrent(tou, m_nTrainingRound);
          static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
       }
@@ -719,6 +720,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    lattice_index[0] = lattice;
    lattice_index[0]->clear();
 #ifdef TRAIN_LOSS
+   lattice_index[0]->bTrain = m_bTrain;
    getLabeledBrackets(correct, lattice_index[0]->gold_lb);
    TRACE(lattice_index[0]->gold_lb << std::endl);
 #endif
@@ -802,10 +804,6 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
       if (pBestGen->IsTerminated())
          break; // while
-#ifndef EARLY_UPDATE
-//      if (bTrain && !bCorrect && correctState->IsTerminated())
-//         break;
-#endif
 
       // update items if correct item jump out of the agenda
       if (bTrain) { 
@@ -828,8 +826,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             // trace
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
-//            updateScoresByLoss(pBestGen, correctState) ; 
-            updateScoresForStates(pBestGen, correctState) ; 
+            updateScoresByLoss(pBestGen, correctState) ; 
+//            updateScoresForStates(pBestGen, correctState) ; 
 #endif // TRAIN_MULTI
             return ;
 //         } // bCorrect
@@ -855,8 +853,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 #else // TRAIN_MULTI
          correctState->trace(&sentence);
          pBestGen->trace(&sentence);
-//         updateScoresByLoss(pBestGen, correctState) ; 
-         updateScoresForStates(pBestGen, correctState) ; 
+         updateScoresByLoss(pBestGen, correctState) ; 
+//         updateScoresForStates(pBestGen, correctState) ; 
 #endif // TRAIN_MULTI
          return ;
       }

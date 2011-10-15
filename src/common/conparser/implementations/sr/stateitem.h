@@ -80,9 +80,11 @@ public:
       node.temp = temp;
 #ifdef NO_TEMP_CONSTITUENT
       ASSERT(!node.temp, "Internal error: this version does not temporary constituents but state items have them.")
-      node.constituent = constituent.code();
+      node.constituent = constituent;
+//      node.constituent = constituent.code();
 #else
-      node.constituent = constituent.extractConstituentCode();
+      node.constituent.load(constituent.extractConstituentCode());
+//      node.constituent = constituent.extractConstituentCode();
 #endif
       node.single_child = single_child();
       node.head_left = head_left();
@@ -216,7 +218,8 @@ public:
       int s = node.id;
       const CCFGTreeNode &nd = snt.nodes[s];
       const CCFGTreeNode &hd = snt.nodes[snt.parent(s)];
-      assert(hd.constituent!=CConstituent::NONE); // so that reduce and reduce_root are not same
+      assert(!hd.constituent.empty()); // so that reduce and reduce_root are not same
+//      assert(hd.constituent!=CConstituent::NONE); // so that reduce and reduce_root are not same
       bool single_child;
       bool head_left;
       bool temporary;
@@ -229,7 +232,7 @@ public:
       else {
          // stack top left child ? shift
          if (s == hd.left_child) {
-            retval.encodeShift(snt.nodes[newNodeIndex()].constituent); return;
+            retval.encodeShift(snt.nodes[newNodeIndex()].constituent.code()); return;
          }
          // stack top right child ? reduce bin
          assert(s==hd.right_child);
@@ -240,7 +243,7 @@ public:
          ASSERT(!temporary, "This version does not accept temporary constituents, but the training data give them.");
 #endif
       }
-      retval.encodeReduce(hd.constituent, single_child, head_left, temporary);
+      retval.encodeReduce(hd.constituent.code(), single_child, head_left, temporary);
    }
 
    void StandardMove(const CCFGTree &tr, CAction &retval) const {
@@ -248,7 +251,7 @@ public:
 //      assert(tr.words.size() == sent->size());
       // stack empty?shift
       if (stacksize()==0) {
-         retval.encodeShift(tr.nodes[newNodeIndex()].constituent);
+         retval.encodeShift(tr.nodes[newNodeIndex()].constituent.code());
          return;
       }
       if (tr.parent(node.id) == -1) {

@@ -32,22 +32,23 @@ public:
    bool head_left; // double children
    bool temp;
    // fields for constituents
-   unsigned long constituent;
+   CConstituentLabel constituent;
+//   unsigned long constituent;
    int left_child;
    int right_child;
    // fields for tokens and constituents
    int token;
 
 public:
-   CCFGTreeNode() { 
-      token=-1; 
-      left_child=-1; 
-      right_child=-1; 
-      is_constituent = true;
-      single_child = true;
-      head_left = false;
-      temp = false;
-      constituent=CConstituentLabel::NONE;
+   CCFGTreeNode() : token(-1), left_child(-1), right_child(-1), is_constituent(true), single_child(true), head_left(false), temp(false), constituent() { 
+//      token=-1; 
+//      left_child=-1; 
+//      right_child=-1; 
+//      is_constituent = true;
+//      single_child = true;
+//      head_left = false;
+//      temp = false;
+//      constituent=CConstituentLabel::NONE;
    }
    virtual ~CCFGTreeNode() {}
 
