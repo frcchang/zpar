@@ -42,10 +42,12 @@ int CCFGTree::readNode(std::istream &is) {
          // e - NONE node; l / r - labeled node
          if (s[0] == 'e') {
             ASSERT(name==CConstituentLabel(CConstituentLabel::NONE).str(), "An empty node has constituent: " << name);
-            nodes[node].constituent = CConstituentLabel::NONE;
+            nodes[node].constituent.clear();
+//            nodes[node].constituent = CConstituentLabel::NONE;
          }
          else {
-            nodes[node].constituent = CConstituentLabel(name).code();
+            nodes[node].constituent.load(name);
+//            nodes[node].constituent = CConstituentLabel(name).code();
          }
          // e - no token; l / r - has token
          if (s[0] == 'e') {
@@ -66,7 +68,8 @@ int CCFGTree::readNode(std::istream &is) {
          nodes[node].is_constituent = true;
          nodes[node].single_child = true;
          nodes[node].left_child = left;
-         nodes[node].constituent = CConstituentLabel(name).code();
+         nodes[node].constituent.load(name);
+//         nodes[node].constituent = CConstituentLabel(name).code();
          nodes[node].right_child = -1;
          nodes[node].token = nodes.at(left).token;
          nodes[node].head_left = false;
@@ -82,7 +85,8 @@ int CCFGTree::readNode(std::istream &is) {
          nodes[node].is_constituent = false;
          nodes[node].single_child = false;
          nodes[node].head_left = false;
-         if (s[0]=='c') { nodes[node].constituent = CConstituentLabel(name).code(); is >> name; }
+         if (s[0]=='c') { nodes[node].constituent.load(name); is >> name; }
+//         if (s[0]=='c') { nodes[node].constituent = CConstituentLabel(name).code(); is >> name; }
          is >> token;
          is >> s;
          while (s != ")") {
@@ -103,7 +107,8 @@ std::string CCFGTree::writeNode(int node) const {
       std::string type;
       std::string cont;
       if (nd.is_constituent) { // [1]node type cons
-         if (nd.constituent==CConstituentLabel::NONE) {
+         if (nd.constituent.empty()) {
+//         if (nd.constituent==CConstituentLabel::NONE) {
             type = "e";
             ASSERT(nd.temp == false, "Internal error: a NONE node is marked temporary.");
             ASSERT(nd.head_left==false, "Internal error: a NONE node is marked head_left.");
@@ -117,7 +122,8 @@ std::string CCFGTree::writeNode(int node) const {
             else 
                type = "r";
          }
-         name = CConstituentLabel(nd.constituent).str();
+         name = nd.constituent.str();
+//         name = CConstituentLabel(nd.constituent).str();
          if (nd.temp)
             type += "*";
          if (nd.single_child) 
@@ -127,9 +133,11 @@ std::string CCFGTree::writeNode(int node) const {
          }
       }
       else { //[2] node.type token
-         if (nd.constituent!=CConstituentLabel::NONE) {
+         if (!nd.constituent.empty()) {
+//         if (nd.constituent!=CConstituentLabel::NONE) {
             type = "c";
-            name = CConstituentLabel(nd.constituent).str();
+            name = nd.constituent.str();
+//            name = CConstituentLabel(nd.constituent).str();
             cont = words[nd.token].second + " " + words[nd.token].first;
          }
          else {
@@ -147,11 +155,13 @@ std::string CCFGTree::writeNodeUnbin(int node) const {
    std::string cont;
    if (nd.is_constituent) { // [1] constituent
       // do not write node label for temp nodes and NONE nodes (fragmented tree)
-      if (nd.temp || nd.constituent==CConstituentLabel::NONE) {
+      if (nd.temp || nd.constituent.empty()) {
+//      if (nd.temp || nd.constituent==CConstituentLabel::NONE) {
          return writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
       }
       else {
-         name = CConstituentLabel(nd.constituent).str();
+         name = nd.constituent.str();
+//         name = CConstituentLabel(nd.constituent).str();
          if (nd.single_child) 
             cont = writeNodeUnbin(nd.left_child);
          else {
@@ -161,10 +171,12 @@ std::string CCFGTree::writeNodeUnbin(int node) const {
       }
    }
    else { // [2] token
-      if (nd.constituent==CConstituentLabel::NONE)
+      if (nd.constituent.empty())
+//      if (nd.constituent==CConstituentLabel::NONE)
          name = words[nd.token].second;
       else
-         name = CConstituentLabel(nd.constituent).str();
+         name = nd.constituent.str();
+//         name = CConstituentLabel(nd.constituent).str();
       cont = words[nd.token].first;
       return "(" + name + " " + cont + ")";
    }

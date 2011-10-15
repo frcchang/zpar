@@ -122,11 +122,12 @@ public:
    unsigned correct_lb;
    unsigned plost_lb;
    unsigned rlost_lb;
+   bool bTrain;
 #endif
    
 public:
 #ifdef TRAIN_LOSS
-   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node(), correct_lb(0), plost_lb(0), rlost_lb(0) {}
+   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node(), correct_lb(0), plost_lb(0), rlost_lb(0), bTrain(false) {}
 #else
    CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node() {}
 #endif
@@ -144,6 +145,7 @@ public:
       correct_lb=0;
       plost_lb=0;
       rlost_lb=0;
+      bTrain = false;
 #endif
    }
    bool empty() const {
@@ -193,6 +195,7 @@ protected:
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///  
 #ifdef TRAIN_LOSS
+      retval->bTrain = this->bTrain;
       computeShiftLB(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb);
 #endif
       assert(!retval->IsTerminated());
@@ -209,6 +212,7 @@ protected:
          retval->node.set(node.id+1, CStateNode::SINGLE_CHILD, false, constituent, l, 0, l->lexical_head, l->lexical_start, l->lexical_end);
          retval->stackPtr = stackPtr;
 #ifdef TRAIN_LOSS
+         retval->bTrain = this->bTrain;
          computeReduceUnaryLB(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb, constituent);
 #endif
       }
@@ -225,6 +229,7 @@ protected:
          retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, fullconst, l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
          retval->stackPtr = stackPtr->stackPtr;
 #ifdef TRAIN_LOSS
+         retval->bTrain = this->bTrain;
          computeReduceBinaryLB(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb, fullconst);
 #endif
       }
@@ -240,6 +245,7 @@ protected:
       retval->current_word = current_word;
       // compute loss
 #ifdef TRAIN_LOSS
+      retval->bTrain = this->bTrain;
       computeTerminateLoss(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb);
 #endif
       assert(retval->IsTerminated());
@@ -252,6 +258,7 @@ protected:
       retval->current_word = current_word;
       // compute loss
 #ifdef TRAIN_LOSS
+      retval->bTrain = this->bTrain;
       computeIdleLoss(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb);
 #endif
    }
@@ -265,6 +272,7 @@ protected:
       correct = correct_lb;
       plost = plost_lb;
       rlost = rlost_lb;
+      if (!bTrain) return;
       static CStack< CLabeledBracket >::const_iterator it;
       it = gold_lb.begin();
       while ( it != gold_lb.end() ) {
@@ -285,6 +293,7 @@ protected:
       plost = plost_lb;
       rlost = rlost_lb;
       correct = correct_lb;
+      if (!bTrain) return;
       // loop
       it = gold_lb.begin();
       bCorrect = false;
@@ -312,6 +321,7 @@ protected:
       correct = correct_lb;
       plost = plost_lb;
       rlost = rlost_lb;
+      if (!bTrain) return;
       r = &node;
       l = &(stackPtr->node);
       // loop
@@ -340,6 +350,7 @@ protected:
       correct = correct_lb;
       plost = plost_lb;
       rlost = rlost_lb;
+      if (!bTrain) return;
       static CStack< CLabeledBracket >::const_iterator it;
       it = gold_lb.begin();
       while ( it != gold_lb.end() ) {
@@ -353,6 +364,7 @@ protected:
       correct = correct_lb;
       plost = plost_lb;
       rlost = rlost_lb;
+      if (!bTrain) return;
    }
 #endif
 
@@ -362,7 +374,7 @@ public:
       int s = node.id;
       const CCFGTreeNode &nd = snt.nodes[s];
       const CCFGTreeNode &hd = snt.nodes[snt.parent(s)];
-      assert(hd.constituent!=CConstituent::NONE); // so that reduce and reduce_root are not same
+      assert(!hd.constituent.empty()); // so that reduce and reduce_root are not same
       bool single_child;
       bool head_left;
       bool temporary;
@@ -375,7 +387,7 @@ public:
       else {
          // stack top left child ? shift
          if (s == hd.left_child) {
-            retval.encodeShift(snt.nodes[newNodeIndex()].constituent); return;
+            retval.encodeShift(snt.nodes[newNodeIndex()].constituent.code()); return;
          }
          // stack top right child ? reduce bin
          assert(s==hd.right_child);
@@ -386,7 +398,7 @@ public:
          ASSERT(!temporary, "This version does not accept temporary constituents, but the training data give them.");
 #endif
       }
-      retval.encodeReduce(hd.constituent, single_child, head_left, temporary);
+      retval.encodeReduce(hd.constituent.code(), single_child, head_left, temporary);
    }
 
    void StandardMove(const CCFGTree &tr, CAction &retval) const {
@@ -396,7 +408,7 @@ public:
       }
       // stack empty?shift
       if (stacksize()==0) {
-         retval.encodeShift(tr.nodes[newNodeIndex()].constituent);
+         retval.encodeShift(tr.nodes[newNodeIndex()].constituent.code());
          return;
       }
       if (tr.parent(node.id) == -1) {
@@ -534,6 +546,9 @@ public:
       else if (action.isReduceRoot()) {
          computeTerminateLoss(0, correct, plost, rlost);
       }
+      else if (action.isIdle()) {
+         computeIdleLoss(0, correct, plost, rlost);
+      }
       else if (action.singleChild()) {
          computeReduceUnaryLB(0, correct, plost, rlost, action.getConstituent());
       }
@@ -610,8 +625,7 @@ public:
       this->item = item;
 #ifdef TRAIN_LOSS
 //      this->score = -std::sqrt(item->HammingLoss()) + std::sqrt(item->actionHammingLoss(action)) + item->score + score;
-//      this->score = item->score + score + item->actionStepHammingLoss(action);
-      this->score = item->score + score;
+      this->score = item->score + score + item->actionStepHammingLoss(action);
 #else
       this->score = item->score + score;
 #endif
