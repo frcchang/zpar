@@ -555,7 +555,7 @@ void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CL
 #ifdef NO_TEMP_CONSTITUENT
       constituent = node.constituent;
 #else
-      constituent = CConstituent::encodeTmp(node.constituent, node.temp);
+      constituent = CConstituent::encodeTmp(node.constituent.code(), node.temp);
 #endif
       vec.push_back(CLabeledBracket(begin, end, constituent));
       if (node.is_constituent) 
@@ -737,6 +737,11 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    if (bTrain) {
       // make sure that the correct item is stack top finally
       if ( candidate_outout != correctState ) {
+//         if (!correctState->IsTerminated()) {
+//            correctState->Move(lattice_index[index+1], correct_action); 
+//            correctState = lattice_index[index+1];
+//            lattice_index[index+1]->score = scored_correct_action.score;
+//         }
          TRACE("The best item is not the correct one")
 #ifdef TRAIN_MULTI
          updateScoresForMultipleStates(lattice_index[index], lattice_index[index+1], candidate_outout, correctState) ; 

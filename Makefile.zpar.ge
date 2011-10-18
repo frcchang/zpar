@@ -8,7 +8,7 @@ GENERIC_DEPPARSER_LABELED = true
 # current naive
 GENERIC_DEPLABELER_IMPL = naive
 # currently support sr implementations 
-GENERIC_CONPARSER_IMPL = sr
+GENERIC_CONPARSER_IMPL = srnew
 GENERIC_CONPARSER_D = -DNO_TEMP_CONSTITUENT -DGENERIC_CONLABEL_SIZE=12 -DFRAGMENTED_TREE
 
 #===================================================================
