@@ -1,5 +1,5 @@
 # currently support sr implementations 
-GENERIC_CCGPARSER_IMPL = sr
+GENERIC_CCGPARSER_IMPL = srnew
 GENERIC_CCGPARSER_D = -DNO_TEMP_CONSTITUENT -DGENERIC_CONLABEL_SIZE=12 -DFRAGMENTED_TREE
 
 #===================================================================

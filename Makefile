@@ -48,7 +48,7 @@ CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
-CHINESE_CONPARSER_IMPL = sr
+CHINESE_CONPARSER_IMPL = srnew
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = collins
@@ -66,8 +66,8 @@ ENGLISH_CONPARSER_IMPL = cad
 #
 #================================================================
 
-DEBUG = -DDEBUG -g
-#DEBUG = -DNDEBUG
+#DEBUG = -DDEBUG -g
+DEBUG = -DNDEBUG
 
 #================================================================
 #
@@ -229,4 +229,5 @@ include Makefile.ccg
 #----------------------------------------------------------------
 
 include Makefile.misc
+include Makefile.rr
 

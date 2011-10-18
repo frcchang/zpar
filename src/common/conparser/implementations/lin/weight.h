@@ -522,10 +522,7 @@ TABLE_SIZE),
                           m_mapS0wS1cS1Uc("Stack0WordStack1ConstituentStack1UConstituent", TABLE_SIZE),
                           m_mapS0cS1wS1Uc("Stack0ConstituentStack1WordStack1UConstituent", TABLE_SIZE)
    { }
-   ~CWeight() {
-      iterate_templates(,.freePoolMemory(););
-      CPackedScore<SCORE_TYPE, CAction::MAX>::freePoolMemory();
-   }
+   ~CWeight() { }
 
    // MEHTODS
    virtual void loadScores(std::ifstream &is);
