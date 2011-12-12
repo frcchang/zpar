@@ -13,6 +13,9 @@ def depread(path):
          sent.append(line)
    file.close()
 
+   if sent: 
+      yield sent
+
 def depstring(sent):
    retval = ''
    for line in sent:
