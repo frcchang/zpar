@@ -117,7 +117,7 @@ generic.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR
 	@echo The generic constituent parser system is compiled successfully into $(DIST_GENERIC_CONPARSER).
 
 # the weight module
-$(OBJECT_GENERIC_CONPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/weight_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.cpp ./Makefile
+$(OBJECT_GENERIC_CONPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.cpp ./Makefile
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.cpp -o $(OBJECT_GENERIC_CONPARSER)/weight.o
 
 # the conparser object
