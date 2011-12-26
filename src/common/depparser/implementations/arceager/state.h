@@ -7,18 +7,18 @@
  * CStateItem - the search state item, representing a partial
  *              candidate with shift reduce. 
  *
- * Note abstd::cout members: there are two types of item properties;
+ * Note about members: there are two types of item properties;
  * The first is the stack, which changes during the process; 
  * The second is the incoming sentence, including m_lHeads, 
  * m_lDepsL and m_lDepsR, m_lDepNumL, m_lDepNumR etc, which 
  * records the properties of each input word so far.
  *
- * A state item is partial and do not include information abstd::cout
+ * A state item is partial and do not include information about
  * all words from the input sentence. Though m_lHeads, m_lDepsL 
  * and m_lDepsR are fixed arrays with MAX_SENTENCE_SIZE length, 
  * not all the elements from the arrays are used. The ACTIVE 
  * elements are from the input index 0 to m_nNextWord, inclusive. 
- * And a state item only captures information abstd::cout the active 
+ * And a state item only captures information about the active 
  * sub section from input.
  *
  * The property for each input word need to be initialised. 

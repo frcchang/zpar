@@ -367,8 +367,8 @@ public:
    { loadScores(); }
 
    virtual ~CWeight() {
-      iterate_templates(,.freePoolMemory(););
-      CPackedScore<SCORE_TYPE, action::MAX>::freePoolMemory();
+//      iterate_templates(,.freePoolMemory(););
+//      CPackedScore<SCORE_TYPE, action::MAX>::freePoolMemory();
    }
 
    // MEHTODS

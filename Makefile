@@ -66,8 +66,8 @@ ENGLISH_CONPARSER_IMPL = cad
 #
 #================================================================
 
-#DEBUG = -DDEBUG -g
-DEBUG = -DNDEBUG
+DEBUG = -DDEBUG -g
+#DEBUG = -DNDEBUG
 
 #================================================================
 #
@@ -229,5 +229,5 @@ include Makefile.ccg
 #----------------------------------------------------------------
 
 include Makefile.misc
-include Makefile.rr
+#include Makefile.rr
 
