@@ -41,6 +41,29 @@ def headdepcount(path, counts):
                counts[key] = 0
             counts[key] += 1
 
+def maxmodifycount(path, condition):
+   ret = {}
+   for sent in depio.depread(path):
+      counts = {}
+      for index, word in enumerate(sent):
+         head = int(word[2])
+         if head != -1 and condition(head, index):
+            if not head in counts:
+               counts[head]=0
+            counts[head] += 1
+         for head in counts:
+            count = counts[head]
+            pos=sent[head][1]
+            if count > ret.get(pos, 0):
+               ret[pos]=count
+   maxcnt=0
+   for pos in ret:
+      count = ret[pos]
+      print pos, ':', count
+      if count>maxcnt:
+         maxcnt = count
+   print 'Overall', ':', maxcnt
+
 if __name__ == "__main__":
    if len(sys.argv) != 3:
       print "depop.py options input >output"
@@ -58,3 +81,13 @@ if __name__ == "__main__":
       headdepcount(input, counts)
       for head, dep, head_pos, dep_pos, head_direction in counts:
          print head, head_pos, dep, dep_pos, head_direction, counts[(head, dep, head_pos, dep_pos, head_direction)]
+   if option == 'maxleftmodifycount':
+      if len(sys.argv) != 3:
+         print 'depio.py maxleftmodifycount path'
+         sys.exit(0)
+      maxmodifycount(sys.argv[2], lambda x,y:x>y)
+   if option == 'maxrightmodifycount':
+      if len(sys.argv) != 3:
+         print 'depio.py maxrightmodifycount path'
+         sys.exit(0)
+      maxmodifycount(sys.argv[2], lambda x,y:x<y)
