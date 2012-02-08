@@ -54,9 +54,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static int n1_index;
    static int n2_index;
    static int n3_index;
-   n1_index = n0_index+1<m_lCache.size() ? n0_index+1 : -1 ;
-   n2_index = n0_index+2<m_lCache.size() ? n0_index+2 : -1 ;
-   n3_index = n0_index+3<m_lCache.size() ? n0_index+3 : -1 ;
+   n1_index = (n0_index != -1 && n0_index+1<m_lCache.size()) ? n0_index+1 : -1 ;
+   n2_index = (n0_index != -1 && n0_index+2<m_lCache.size()) ? n0_index+2 : -1 ;
+   n3_index = (n0_index != -1 && n0_index+3<m_lCache.size()) ? n0_index+3 : -1 ;
 
    const CTaggedWord<CTag, TAG_SEPARATOR> &st_word_tag = st_index==-1 ? g_emptyTaggedWord : m_lCache[st_index];
    const CTaggedWord<CTag, TAG_SEPARATOR> &sth_word_tag = sth_index==-1 ? g_emptyTaggedWord : m_lCache[sth_index];
