@@ -28,7 +28,7 @@ class CGenericTagset : public CTokenizer<std::string, 251> {
 
 /*===============================================================
  *
- * definitions abstd::cout tag 
+ * definitions about tag 
  *
  * Each tag is associated with a tagset. 
  * This is different from the concept of POS tags, which are 

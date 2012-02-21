@@ -191,12 +191,12 @@ public:
       s0l = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? 0 : s0->left_child) : 0;
       s0r = s0->is_constituent() ? (s0->single_child()||!s0->head_left() ? 0 : s0->right_child) : 0;
       s0u = s0->is_constituent() ? (s0->single_child() ? s0->left_child : 0) : 0;
-      s0h = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? s0->left_child : s0->right_child) : 0;
+//      s0h = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? s0->left_child : s0->right_child) : 0;
 
       s1l = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? 0 : s1->left_child) : 0 );
       s1r = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||!s1->head_left() ? 0 : s1->right_child) : 0 );
       s1u = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child() ? s1->left_child : 0) : 0 );
-      s1l = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? s1->left_child : s1->right_child) : 0 );
+//      s1h = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? s1->left_child : s1->right_child) : 0 );
    
       s0c.load( constituent_or_none(*s0) );
       s0wt = &( wrds[s0->lexical_head] );
