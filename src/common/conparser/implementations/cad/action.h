@@ -155,7 +155,7 @@ public:
  
 public:
    inline std::string str() const {
-      if (isNone()) { return "NO ACTION"; }
+      if (isNone()) { return "NONE"; }
       if (isIdle()) { return "IDLE"; }
       if (isReduceRoot()) { return "REDUCE ROOT"; }
       std::string retval;
@@ -186,6 +186,9 @@ public:
 
       if (tmp=="NONE") {
          clear();
+      }
+      else if (tmp=="IDLE") {
+         encodeIdle();
       }
       else if (tmp=="SHIFT") {
          iss >> tmp;
@@ -247,6 +250,9 @@ inline std::istream & operator >> (std::istream &is, CAction &action) {
    is >> tmp;
    if (tmp=="NONE") {
       action.clear();
+   }
+   else if (tmp=="IDLE") {
+      action.encodeIdle();
    }
    else if (tmp=="SHIFT") {
       is >> tmp; c.load(tmp);

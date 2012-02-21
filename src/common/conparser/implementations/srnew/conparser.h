@@ -95,7 +95,7 @@ public:
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
-      ASSERT(conparser::CAction::MAX<=(1LL<<(sizeof(unsigned)*8)), "conparser.h: The size of action is too big for the packed scoretype");
+//      ASSERT(conparser::CAction::MAX<=(1LL<<(sizeof(unsigned)*8)), "conparser.h: The size of action is too big for the packed scoretype");
    }
 
    ~CConParser() {

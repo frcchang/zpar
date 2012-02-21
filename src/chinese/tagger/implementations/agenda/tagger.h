@@ -101,7 +101,7 @@ protected:
          // if it matches, search from the next characters
          if ( tag == PENN_TAG_CD ) return true; // don't search for CD assume correct
          for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
-            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, std::min(index+tmp_i, sentence.size()-1), &sentence ), tag ) ) 
+            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, std::min(index+tmp_i, static_cast<unsigned long>(sentence.size())-1), &sentence ), tag ) ) 
                return true;
          }
          return false;

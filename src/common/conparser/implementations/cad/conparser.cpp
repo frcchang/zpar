@@ -826,8 +826,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             // trace
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
-            updateScoresByLoss(pBestGen, correctState) ; 
-//            updateScoresForStates(pBestGen, correctState) ; 
+//            updateScoresByLoss(pBestGen, correctState) ; 
+            updateScoresForStates(pBestGen, correctState) ; 
 #endif // TRAIN_MULTI
             return ;
 //         } // bCorrect
@@ -853,8 +853,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 #else // TRAIN_MULTI
          correctState->trace(&sentence);
          pBestGen->trace(&sentence);
-         updateScoresByLoss(pBestGen, correctState) ; 
-//         updateScoresForStates(pBestGen, correctState) ; 
+//         updateScoresByLoss(pBestGen, correctState) ; 
+         updateScoresForStates(pBestGen, correctState) ; 
 #endif // TRAIN_MULTI
          return ;
       }
