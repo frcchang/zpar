@@ -617,7 +617,10 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          // for the state items that still need more words
          else {  
             if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.               
-               if ( ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
+               if ( 
+#ifndef FRAGMENTED_TREE
+                    ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
+#endif
                     ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) && // supertags
                     ( pGenerator->stackempty() || !m_weights->rules() || canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
                   ) {
@@ -625,7 +628,10 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                }
             }
             if ( !pGenerator->stackempty() ) {
-               if ( ( pGenerator->size() < length-1 || pGenerator->headstacksize() == 1 ) && // one root
+               if ( 
+#ifndef FRAGMENTED_TREE
+                    ( pGenerator->size() < length-1 || pGenerator->headstacksize() == 1 ) && // one root
+#endif
                     ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
                     ( !m_weights->rules() || hasLeftHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
                   ) { 
@@ -751,7 +757,9 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
    static CDependencyParse outout ; 
 
    assert( !m_bCoNLL );
+#ifndef FRAGMENTED_TREE
    assert( IsProjectiveDependencyTree(correct) ) ;
+#endif
    UnparseSentence( &correct, &sentence ) ;
 
    // The following code does update for each processing stage
