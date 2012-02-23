@@ -609,10 +609,17 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          getOrUpdateStackScore( pGenerator, packed_scores, action::NO_ACTION );
          if ( pGenerator->size() == length ) {
             assert( pGenerator->stacksize() != 0 );
-            if ( pGenerator->stacksize()>1 ) 
+            if ( pGenerator->stacksize()>1 ) {
+#ifdef FRAGMENTED_TREE
+               if (pGenerator->head(pGenerator->stacktop()) == DEPENDENCY_LINK_NO_HEAD)
+                  poproot(pGenerator, packed_scores);
+               else
+#endif
                reduce(pGenerator, packed_scores) ;
-            else
+            }
+            else {
                poproot(pGenerator, packed_scores); 
+            }
          }
          // for the state items that still need more words
          else {  

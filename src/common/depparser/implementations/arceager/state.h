@@ -236,7 +236,11 @@ public:
 
    // this is used for the convenience of scoring and updating
    void PopRoot() {
+#ifndef FRAGMENTED_TREE
       assert( m_Stack.size() == 1 && m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ; // make sure only one root item in stack 
+#else
+      assert( m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ;
+#endif
 #ifdef LABELED
       m_lLabels[m_Stack.back()] = CDependencyLabel::ROOT;
 #endif
@@ -377,8 +381,14 @@ public:
       static int top;
       // if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
       if ( m_nNextWord == item->m_nNextWord ) {
-//for (int i=0; i<m_Stack.size(); ++i) std::cout << m_Stack[i] << " "; std::cout << std::endl;
-//for (int i=0; i<item->m_Stack.size(); ++i) std::cout << item->m_Stack[i] << " "; std::cout << std::endl;
+//std::cout << "this" << std::endl; for (int i=0; i<m_Stack.size(); ++i) std::cout << m_Stack[i] << " "; std::cout << std::endl;
+//std::cout << "that" << std::endl; for (int i=0; i<item->m_Stack.size(); ++i) std::cout << item->m_Stack[i] << " "; std::cout << std::endl;
+//         if ( m_Stack.size() == item->m_Stack.size() ) {
+//std::cout << "this heads" << std::endl; for (int i=0; i<=m_nNextWord; ++i) std::cout << m_lHeads[i] << " "; std::cout << std::endl;
+//std::cout << "that heads" << std::endl; for (int i=0; i<=item->m_nNextWord; ++i) std::cout << item->m_lHeads[i] << " "; std::cout << std::endl;
+//std::cout << "this dtags" << std::endl; for (int i=0; i<=m_nNextWord; ++i) std::cout << m_lLabels[i] << " "; std::cout << std::endl;
+//std::cout << "that dtags" << std::endl; for (int i=0; i<=item->m_nNextWord; ++i) std::cout << item->m_lLabels[i] << " "; std::cout << std::endl;
+//         }
          assert( m_Stack.size() > item->m_Stack.size() );
          top = m_Stack.back();
          if ( item->m_lHeads[top] == m_nNextWord ) 
