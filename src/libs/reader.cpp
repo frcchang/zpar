@@ -255,6 +255,12 @@ inline bool tokenizeWord(const std::string &w, CStringVector *v) {
          --size;
          split = true;
       }
+      else if ( w[b] == '(' /*|| w[b] == '[' || w[b]=='{'*/ ) {
+         v->push_back(w.substr(b, 1));
+         ++b;
+         --size;
+         split = true;
+      }
       else
          break;
    }
@@ -267,7 +273,7 @@ inline bool tokenizeWord(const std::string &w, CStringVector *v) {
          --e;
          --size;
       }
-      else if ( w[e] == ',' || w[e] == ';' || w[e] == ':' || w[e] == '?' || w[e] == '!' || w[e] == '\'' || e == '"' ) {
+      else if ( w[e] == ',' || w[e] == ';' || w[e] == ':' || w[e] == '?' || w[e] == '!' || w[e] == '\'' || w[e] == '"' || w[e] == ')' /*|| w[e] == ']' || w[e] == '}'*/ ) {
          tmp.push_back(w.substr(e, 1));
          split = true;
          --e;
@@ -364,6 +370,14 @@ bool CSentenceReader::readSegmentedSentenceAndTokenize(CStringVector *vReturn, b
                vReturn->push_back(sWord); 
             sWord = "";
          }
+      }
+      if (cTemp == ':' ) {
+         if (!sWord.empty()) {                  // we have found another word
+            if (!tokenizeWord(sWord, vReturn))
+               vReturn->push_back(sWord); 
+         }
+         vReturn->push_back(":"); 
+         sWord = "";
       }
       else                                      // otherwise
          sWord += cTemp;
