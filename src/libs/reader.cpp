@@ -226,3 +226,123 @@ bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEm
    return bReadSomething;
 };
 
+/*---------------------------------------------------------------
+ * tokenizeWord - tokenize a word 
+ *
+ * Return: whether split words and pushed vReturn
+ *
+ *--------------------------------------------------------------*/
+
+inline bool tokenizeWord(const std::string &w, CStringVector *v) {
+   int n = w.size();
+   if ( n > 3 ) {
+      if ( w == "cannot" ) {
+         v->push_back("can");
+         v->push_back("not");
+         return true;
+      }
+      if (w[n-2] == '\'' || w[n-3] == '\'') {
+         std::string postfix = w.substr(n-3);
+         if (postfix == "'ll" || postfix == "'re" || postfix == "'ve" || postfix == "n't") {
+            v->push_back(w.substr(0, n-3));
+            v->push_back(postfix);
+            return true;
+         }
+      }
+   }
+   if ( n > 2 ) {
+      if ( w[n-2] == '\'' ) {
+         std::string postfix = w.substr(n-2);
+         if (postfix == "'s" || postfix == "'m" || postfix == "'d" ) {
+            v->push_back(w.substr(0, n-2));
+            v->push_back(postfix);
+            return true;
+         }
+      }
+   }
+   if ( n > 1 ) {
+      if ( w[0] == '"' ) {
+         v->push_back("``");
+         if ( w[n-1] == '"' ) {
+            v->push_back(w.substr(1, n-1));
+            v->push_back("''");
+         }
+         else {
+            v->push_back(w.substr(1));
+         }
+         return true;
+      }
+      else if ( w[n-1] == '"' ) {
+         v->push_back(w.substr(0, n-1));
+         v->push_back("''");
+      }
+      else {
+         int m = n-1;
+         while ( w[m] == ',' || w[m] == ';' || w[m] == ':' || w[m] == '?' || w[m] == '!' || w[m] == '\'' ) {
+            v->push_back(w.substr(0, m));
+            --m;
+         }
+         v->push_back(w.substr(m));
+         return true;
+      }
+   }
+   return false;
+}
+
+/*---------------------------------------------------------------
+ *
+ * readSegmentedSentenceAndTokenize - read a segmented sentence
+ *
+ * The input file should contain segmented sentences each in a line, 
+ * with space separated words. Input must be sentence segmented. 
+ *
+ * The return value shows if anything was read from the file
+ *
+ *--------------------------------------------------------------*/
+
+bool CSentenceReader::readSegmentedSentenceAndTokenize(CStringVector *vReturn, bool bSkipEmptyLines) {
+   assert(vReturn != NULL);
+   vReturn->clear();
+   char cTemp;
+   std::string sWord;                                // std::string for next word
+   bool bReadSomething = false;
+   while (m_iStream->get(cTemp)) {              // still have something there
+      bReadSomething = true;
+      if (cTemp == '\r')
+         continue;
+      if (cTemp == '\n') {                      // if we meet EOL, return std::string
+         m_nLine++;                             // new line
+         if (!sWord.empty()) {                  // we have found another word
+            if (!tokenizeWord(sWord, vReturn)) { // tokenize word
+               // end of sentence .
+               if (sWord.size() > 1 && sWord[sWord.size()-1] == '.') {
+                  vReturn->push_back(sWord.substr(0, sWord.size()-1));
+                  vReturn->push_back(".");
+               }
+               else
+                  vReturn->push_back(sWord); 
+            }
+         }
+         if (vReturn->empty()) {
+            if (bSkipEmptyLines)
+               continue;
+         }
+         return bReadSomething;
+      }
+      if (cTemp == ' ') {                       // otherwise, if we meet " "
+         if (!sWord.empty()) {                  // we have found another word
+            if (!tokenizeWord(sWord, vReturn))
+               vReturn->push_back(sWord); 
+            sWord = "";
+         }
+      }
+      else                                      // otherwise
+         sWord += cTemp;
+   }
+   if (!sWord.empty()) {                        // we have found another word
+      vReturn->push_back(sWord); 
+      sWord = "";
+   }
+   return bReadSomething;
+};
+

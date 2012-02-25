@@ -48,7 +48,7 @@ void tag(const std::string sInputFile, const std::string sOutputFile, const std:
    const unsigned nBest = 1;
    outout_sent = new CTwoStringVector[nBest];
 
-   while( input_reader.readSegmentedSentence(input_sent) ) {
+   while( input_reader.readSegmentedSentenceAndTokenize(input_sent) ) {
       TRACE("Sentence " << nCount);
       ++ nCount;
       //
@@ -99,7 +99,7 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
    CBitArray prunes(MAX_SENTENCE_SIZE);
 
    // If we read segmented sentence, we will ignore spaces from input. 
-   while( input_reader.readSegmentedSentence(input_sent) ) {
+   while( input_reader.readSegmentedSentenceAndTokenize(input_sent) ) {
       TRACE("Sentence " << nCount);
       ++ nCount;
       if ( input_sent->back()=="\n" ) {
@@ -150,7 +150,7 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
    CBitArray prunes(MAX_SENTENCE_SIZE);
 
    // If we read segmented sentence, we will ignore spaces from input. 
-   while( input_reader.readSegmentedSentence(input_sent) ) {
+   while( input_reader.readSegmentedSentenceAndTokenize(input_sent) ) {
 //      TRACE("Sentence " << nCount);
       ++ nCount;
       time_one = clock();
