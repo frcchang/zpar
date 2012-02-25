@@ -235,58 +235,87 @@ bool CSentenceReader::readTaggedSentence(CTwoStringVector *vReturn, bool bSkipEm
 
 inline bool tokenizeWord(const std::string &w, CStringVector *v) {
    int n = w.size();
-   if ( n > 3 ) {
-      if ( w == "cannot" ) {
+   int b = 0;
+   int e = n-1;
+   int size = n;
+   bool split = false;
+   CStringVector tmp;
+
+   // beginning quotation marks
+   while ( size > 1 ) {
+      if ( w[b] == '"' ) {
+         v->push_back("``");
+         ++b;
+         --size;
+         split = true;
+      }
+      else if ( w[b] == '\'' || w[b] == '`') {
+         v->push_back("`");
+         ++b;
+         --size;
+         split = true;
+      }
+      else
+         break;
+   }
+
+   // punctuations at the end of word
+   while ( size > 1 ) {
+      if ( w[e] == '"' ) {
+         tmp.push_back("''");
+         split = true;
+         --e;
+         --size;
+      }
+      else if ( w[e] == ',' || w[e] == ';' || w[e] == ':' || w[e] == '?' || w[e] == '!' || w[e] == '\'' || e == '"' ) {
+         tmp.push_back(w.substr(e, 1));
+         split = true;
+         --e;
+         --size;
+      }
+      else
+         break;
+   }
+
+   if ( size == 6 ) {
+      if ( w.substr(b, 6) == "cannot" ) {
          v->push_back("can");
          v->push_back("not");
-         return true;
+         b += 6;
+         size -= 6;
+         split = true;
       }
-      if (w[n-2] == '\'' || w[n-3] == '\'') {
-         std::string postfix = w.substr(n-3);
+   }
+
+   if ( size > 3 ) {
+      if (w[e-1] == '\'' || w[e-2] == '\'') {
+         std::string postfix = w.substr(e-2, 3);
          if (postfix == "'ll" || postfix == "'re" || postfix == "'ve" || postfix == "n't") {
-            v->push_back(w.substr(0, n-3));
-            v->push_back(postfix);
-            return true;
+            tmp.push_back(postfix);
+            e -= 3;
+            size -=3;
+            split = true;
          }
       }
    }
-   if ( n > 2 ) {
-      if ( w[n-2] == '\'' ) {
-         std::string postfix = w.substr(n-2);
+   if ( size > 2 ) {
+      if ( w[e-1] == '\'' ) {
+         std::string postfix = w.substr(e-1, 2);
          if (postfix == "'s" || postfix == "'m" || postfix == "'d" ) {
-            v->push_back(w.substr(0, n-2));
-            v->push_back(postfix);
-            return true;
+            tmp.push_back(postfix);
+            e -= 2;
+            size -= 2;
+            split = true;
          }
       }
    }
-   if ( n > 1 ) {
-      if ( w[0] == '"' ) {
-         v->push_back("``");
-         if ( w[n-1] == '"' ) {
-            v->push_back(w.substr(1, n-1));
-            v->push_back("''");
-         }
-         else {
-            v->push_back(w.substr(1));
-         }
-         return true;
-      }
-      else if ( w[n-1] == '"' ) {
-         v->push_back(w.substr(0, n-1));
-         v->push_back("''");
-      }
-      else {
-         int m = n-1;
-         while ( w[m] == ',' || w[m] == ';' || w[m] == ':' || w[m] == '?' || w[m] == '!' || w[m] == '\'' ) {
-            v->push_back(w.substr(0, m));
-            --m;
-         }
-         v->push_back(w.substr(m));
-         return true;
-      }
+   
+   if (split && size>0) {
+      v->push_back(w.substr(b, size));
    }
-   return false;
+   for (e=tmp.size()-1; e>=0; --e)
+      v->push_back(tmp[e]);
+   return split;
 }
 
 /*---------------------------------------------------------------
