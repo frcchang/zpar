@@ -27,7 +27,7 @@ typedef long SCORE_TYPE ;
 #define SR_SUPERTAG 1
 
 // force the tree to be single-rooted or allow multiple pseudo roots
-#define FRAGMENTED_TREE
+//#define FRAGMENTED_TREE
 
 // The size of a sentence and the words
 const unsigned MAX_SENTENCE_SIZE = 256 ; 
