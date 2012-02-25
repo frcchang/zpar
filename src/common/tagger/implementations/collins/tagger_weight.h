@@ -109,8 +109,8 @@ public:
                                                     m_mapTagByTopTag0L1R1("Tag by toptag0, l1, r1", 65536)
    { /* do nothing */ }
    virtual ~CWeight() {
-      iterate_templates(,.freePoolMemory(););
-      CPackedScore<SCORE_TYPE, CTag::MAX_COUNT>::freePoolMemory();
+//      iterate_templates(,.freePoolMemory(););
+//      CPackedScore<SCORE_TYPE, CTag::MAX_COUNT>::freePoolMemory();
    }
 
    // MEHTODS
