@@ -57,6 +57,7 @@ class CSentenceReader {
       bool readRawSentence(CStringVector *retval, bool bSkipEmptyLines=false, bool bIgnoreSpace=false);
       bool readSegmentedSentence(CStringVector *retval, bool bSkipEmptyLines=false);
       bool readTaggedSentence(CTwoStringVector *retval, bool bSkipEmptyLines=false, const char separator='_');
+      bool readSegmentedSentenceAndTokenize(CStringVector *vReturn, bool bSkipEmptyLines=false);
 };
 
 #endif
