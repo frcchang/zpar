@@ -371,12 +371,15 @@ bool CSentenceReader::readSegmentedSentenceAndTokenize(CStringVector *vReturn, b
             sWord = "";
          }
       }
-      if (cTemp == ':' ) {
+      if (cTemp == ':' || cTemp == ',' || cTemp == ';' ) {
          if (!sWord.empty()) {                  // we have found another word
             if (!tokenizeWord(sWord, vReturn))
                vReturn->push_back(sWord); 
          }
-         vReturn->push_back(":"); 
+         // append ctemp as a string
+         sWord = "";
+         sWord += cTemp;
+         vReturn->push_back(sWord); 
          sWord = "";
       }
       else                                      // otherwise
