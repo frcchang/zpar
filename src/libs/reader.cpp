@@ -345,7 +345,7 @@ bool CSentenceReader::readSegmentedSentenceAndTokenize(CStringVector *vReturn, b
       bReadSomething = true;
       if (cTemp == '\r')
          continue;
-      if (cTemp == '\n') {                      // if we meet EOL, return std::string
+      else if (cTemp == '\n') {                      // if we meet EOL, return std::string
          m_nLine++;                             // new line
          if (!sWord.empty()) {                  // we have found another word
             if (!tokenizeWord(sWord, vReturn)) { // tokenize word
@@ -364,14 +364,14 @@ bool CSentenceReader::readSegmentedSentenceAndTokenize(CStringVector *vReturn, b
          }
          return bReadSomething;
       }
-      if (cTemp == ' ') {                       // otherwise, if we meet " "
+      else if (cTemp == ' ') {                       // otherwise, if we meet " "
          if (!sWord.empty()) {                  // we have found another word
             if (!tokenizeWord(sWord, vReturn))
                vReturn->push_back(sWord); 
             sWord = "";
          }
       }
-      if (cTemp == ':' || cTemp == ',' || cTemp == ';' ) {
+      else if (cTemp == ':' || cTemp == ',' || cTemp == ';' ) {
          if (!sWord.empty()) {                  // we have found another word
             if (!tokenizeWord(sWord, vReturn))
                vReturn->push_back(sWord); 

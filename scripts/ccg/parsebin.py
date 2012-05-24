@@ -309,20 +309,22 @@ def maxunary(path):
       if unary > ret[0]:
          ret[0] = unary
          ret[1] = defaultdict(set)
-         ret[1][(node.name, node.left_child.name, lcat)].add(str(seq))
-      elif unary and unary == ret[0]:
-         ret[1][(node.name, node.left_child.name, lcat)].add(str(seq))
+      if unary:
+         ret[1][unary].add(str(seq))
+#      ret[1][(node.name, node.left_child.name, lcat)].add(str(seq))
       return unary, cat
 
    file = open(path)
-   value = [0, set()]
+   value = [0, defaultdict(set)]
    seq = 0
    for line in file:
       if not line.strip(): continue
       seq += 1
       srctree = fromString(line)
       maxunaryfornode(srctree.root, value, seq)
-   print value[0], '\n'.join([' '.join(key)+'   :   ['+' '.join(value[1][key])+']' for key in value[1]])
+#   print value[0], '\n'.join([' '.join(key)+'   :   ['+' '.join(value[1][key])+']' for key in value[1]])
+   print 'Max u:', value[0]
+   print 'Sentences:', '\n', '\n'.join(['%s: %s' % (k, value[1][k]) for k in value[1]])
    file.close()
 
 #=================================================
