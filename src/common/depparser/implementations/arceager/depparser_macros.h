@@ -8,6 +8,10 @@
 #define EARLY_UPDATE
 
 // local training? it will affect the setting of early update and agenda size
+// if you want to experiment with local training, define this when you train
+// it will automatically set beam1
+// but undefine this when you decode with beam more than one
+// using the model you trained with this defined
 //#define LOCAL_LEARNING
 
 // The size of agenda
