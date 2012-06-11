@@ -50,7 +50,7 @@ public:
    enum {SIZE = 8};
    static unsigned long COUNT;
    static unsigned long LAST;
-   static const unsigned long MAX_COUNT=1<<SIZE;
+//   static const unsigned long MAX_COUNT=1<<SIZE;
 
 protected:
    unsigned long m_code;
