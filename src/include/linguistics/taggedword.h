@@ -39,7 +39,7 @@ public:
    CTaggedWord() {}
 //   CTaggedWord(const std::string &s, const CTag t) : word(s), tag(t) { }
    CTaggedWord(const std::string &s, const std::string &t) : word(s), tag(t) { }
-   CTaggedWord(const CWord &w, const CTag t) : word(w), tag(t) { }
+   CTaggedWord(const CWord &w, const CTag &t) : word(w), tag(t) { }
    CTaggedWord(const CTaggedWord &w) : word(w.word), tag(w.tag) { }
    virtual ~CTaggedWord() {}
 
