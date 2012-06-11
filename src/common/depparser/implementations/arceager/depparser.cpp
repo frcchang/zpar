@@ -696,10 +696,10 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 #else
             correctState.StandardMoveStep(correct);
 #endif
-#ifdef LOCAL_LEARNING
-            ++m_nTrainingRound; // each training round is one transition-action
-#endif
          }
+#ifdef LOCAL_LEARNING
+         ++m_nTrainingRound; // each training round is one transition-action
+#endif
       } 
       
       m_Agenda->nextRound(); // move round
