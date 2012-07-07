@@ -50,7 +50,7 @@ public:
    enum {SIZE = 8};
    static unsigned long COUNT;
    static unsigned long LAST;
-//   static const unsigned long MAX_COUNT=1<<SIZE;
+   static const unsigned long MAX_COUNT=1<<SIZE;
 
 protected:
    unsigned long m_code;
@@ -85,7 +85,7 @@ public:
       m_code=getTokenizer().lookup(s); 
       COUNT = getTokenizer().count();
       LAST = COUNT-1;
-      assert((1<<SIZE)>COUNT);
+      ASSERT((1<<SIZE)>COUNT, "The number of POS tags larger than the generic tag max size: change generic pos.");
    }
    void load(const unsigned &i) {
       assert(i<COUNT);
