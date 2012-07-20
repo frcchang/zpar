@@ -349,7 +349,7 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
    static SCORE_TYPE amount;
    amount = (update==eAdd ? 1 : -1);
 #ifdef SCALE
-//   amount /= item->size;
+   amount /= item->size;
 #endif
    const static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
 
