@@ -124,13 +124,22 @@ public:
    unsigned rlost_lb;
    bool bTrain;
 #endif
+#ifdef SCALE
+   unsigned size;
+#endif
    
 public:
 #ifdef TRAIN_LOSS
-   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node(), correct_lb(0), plost_lb(0), rlost_lb(0), bTrain(false) {}
+#define LOSS_CON , correct_lb(0), plost_lb(0), rlost_lb(0), bTrain(false)
 #else
-   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node() {}
+#define LOSS_CON 
 #endif
+#ifdef SCALE
+#define SCALE_CON , size(0)
+#else
+#define SCALE_CON 
+#endif
+   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node() LOSS_CON SCALE_CON {}
    virtual ~CStateItem() {}
 public:
    void clear() {
@@ -146,6 +155,9 @@ public:
       plost_lb=0;
       rlost_lb=0;
       bTrain = false;
+#endif
+#ifdef SCALE
+      size = 0;
 #endif
    }
    bool empty() const {
@@ -431,6 +443,9 @@ public:
          { terminate(retval); }
       else
          reduce(retval, action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
+#ifdef SCALE
+      retval->size = this->size + 1;
+#endif
    }
    
    bool IsComplete(const int &nWords) const {

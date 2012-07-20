@@ -346,7 +346,11 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
 
 void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem *item , const SCORE_UPDATE update) {
 
+#ifdef SCALE
+   const SCORE_TYPE amount = (update==eAdd ? 1 : -1) / item->size;
+#else
    const SCORE_TYPE amount = (update==eAdd ? 1 : -1);
+#endif
    const static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
 
    static int count;
@@ -703,6 +707,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    ASSERT(nBest=1, "currently only do 1 best parse");
    static unsigned index;
    static bool bSkipLast;
+#ifdef SCALE
+   bool bAllTerminated;
+#endif
 
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> packedscores;
 
@@ -781,11 +788,18 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    
       } // done iterating generator item
 
+#ifdef SCALE
+      bAllTerminated = true;
+#endif
       // insertItems
       for (tmp_j=0; tmp_j<beam.size(); ++tmp_j) { // insert from
          pGenerator = beam.item(tmp_j)->item;
          pGenerator->Move(lattice_index[index+1], beam.item(tmp_j)->action);
          lattice_index[index+1]->score = beam.item(tmp_j)->score;
+#ifdef SCALE
+         if ( ! lattice_index[index+1]->IsTerminated() )
+            bAllTerminated = false;
+#endif
 
          if ( pBestGen == 0 || lattice_index[index+1]->score > pBestGen->score ) {
             pBestGen = lattice_index[index+1];
@@ -802,8 +816,13 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          ++lattice_index[index+1];
       }
 
+#ifdef SCALE
+      if (bAllTerminated)
+         break; // while
+#else
       if (pBestGen->IsTerminated())
          break; // while
+#endif
 
       // update items if correct item jump out of the agenda
       if (bTrain) { 

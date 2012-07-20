@@ -6,12 +6,15 @@
 
 //#define NO_NEG_FEATURE
 //
-//#define TRAIN_MARGIN
+#define TRAIN_MARGIN
 //#define TRAIN_LOSS
 //#define TRAIN_MULTI
 
 // early update? 
 #define EARLY_UPDATE
+
+// scale scores? this must be used with TRAIN_MARGIN or undefined
+#define SCALE
 
 // The size of agenda
 static const unsigned long AGENDA_SIZE = 16;
@@ -57,5 +60,9 @@ inline unsigned long encodeLinkDirectionAndSize(const unsigned long &head, const
    else
       return (HEAD_RIGHT<<3) | normalize510(head-mod);
 }
+
+#ifndef TRAIN_MARGIN
+#undef SCALE
+#endif
 
 #endif
