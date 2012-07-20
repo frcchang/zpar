@@ -636,13 +636,22 @@ public:
 public:
    CScoredStateAction() : item(0), action(), score(0) {}
    void load(const CAction &action, const CStateItem *item, const SCORE_TYPE &score) {
+      SCORE_TYPE item_sc;
       this->action = action; 
       this->item = item;
+      item_sc = item->score;
+#ifdef SCALE
+      item_sc *= item->size;
+#endif
 #ifdef TRAIN_LOSS
-//      this->score = -std::sqrt(item->HammingLoss()) + std::sqrt(item->actionHammingLoss(action)) + item->score + score;
-      this->score = item->score + score + item->actionStepHammingLoss(action);
+#define LOSS_ADD + item->actionStepHammingLoss(action)
+//#define LOSS_ADD -std::sqrt(item->HammingLoss()) + std::sqrt(item->actionHammingLoss(action))
 #else
-      this->score = item->score + score;
+#define LOSS_ADD 
+#endif
+      this->score = item_sc + score + LOSS_ADD;
+#ifdef SCALE
+      this->score /= (item->size + 1);
 #endif
    }
 
