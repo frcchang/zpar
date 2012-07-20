@@ -41,8 +41,10 @@ public:
 
       // finish
       if (item.IsTerminated()) {
+#ifndef SCALE
          action.encodeIdle();
          actions.push_back(action);
+#endif
          return;
       }
       // finish parsing
