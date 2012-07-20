@@ -346,29 +346,34 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
 
 void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem *item , const SCORE_UPDATE update) {
 
+   static SCORE_TYPE amount;
+   amount = (update==eAdd ? 1 : -1);
 #ifdef SCALE
-   const SCORE_TYPE amount = (update==eAdd ? 1 : -1) / item->size;
-#else
-   const SCORE_TYPE amount = (update==eAdd ? 1 : -1);
+//   amount /= item->size;
 #endif
    const static CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
 
-   static int count;
+   static int count, exc_count;
    const CStateItem *current;
 
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
 
    count = 0;
+   exc_count = 0;
    current = item;
    while (current) {
+#ifdef SCALE
+      if (current->IsIdle()) ++exc_count; // exclude idle actions
+#endif
       states[count] = current;
       ++count ; //updating
       current = current->statePtr;
    }
    --count; // state [0..count] are the reverse lifecycle of item.
+   assert(item->size + exc_count == count);
 
    // for each
-   while (count>0) {
+   while (count>exc_count) {
       m_Context.load(states[count], m_lCache, m_lWordLen, true);
       // update action
       const CAction &action = states[count-1]->action;
