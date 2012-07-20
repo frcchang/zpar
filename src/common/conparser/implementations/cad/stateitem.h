@@ -649,7 +649,7 @@ public:
 #else
 #define LOSS_ADD 
 #endif
-      this->score = item_sc + score + LOSS_ADD;
+      this->score = item_sc + score LOSS_ADD;
 #ifdef SCALE
       this->score /= (item->size + 1);
 #endif
