@@ -436,16 +436,21 @@ public:
       retval->statePtr = this; // be called by Move
       if (action.isIdle()) {
          noact(retval);
-      }
-      else if (action.isShift())
-         shift(retval, action.getConstituent());
-      else if (action.isReduceRoot())
-         { terminate(retval); }
-      else
-         reduce(retval, action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary());
 #ifdef SCALE
-      retval->size = this->size + 1;
+         retval->size = this->size;
 #endif
+      }
+      else {
+         if (action.isShift())
+            { shift(retval, action.getConstituent()); }
+         else if (action.isReduceRoot())
+            { terminate(retval); }
+         else
+            { reduce(retval, action.getConstituent(), action.singleChild(), action.headLeft(), action.isTemporary()); }
+#ifdef SCALE
+         retval->size = this->size + 1;
+#endif
+      }
    }
    
    bool IsComplete(const int &nWords) const {
@@ -458,6 +463,10 @@ public:
 
    bool IsTerminated() const {
       return action.type() == CActionType::POP_ROOT or action.type() == CActionType::IDLE; 
+   }
+
+   bool IsIdle() const {
+      return action.type() == CActionType::IDLE; 
    }
 
    void GenerateTree(const CTwoStringVector &tagged, CSentenceParsed &out) const {
@@ -534,6 +543,7 @@ public:
          current = current->statePtr;
       }
       TRACE("State item score == " << score);
+      TRACE("State item size == " << size);
 #ifdef TRAIN_LOSS
       TRACE("cor = " << correct_lb << ", plo = " << plost_lb << ", rlo = " << rlost_lb << ", Loss = " << FLoss());
 #endif
