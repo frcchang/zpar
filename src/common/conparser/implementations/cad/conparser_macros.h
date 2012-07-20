@@ -5,9 +5,14 @@
 #define SIMPLE_HASH
 
 //#define NO_NEG_FEATURE
-//
-#define TRAIN_MARGIN
+
+// using passive aggressive
+//#define TRAIN_MARGIN
+
+// applying loss func
 //#define TRAIN_LOSS
+
+// using mira
 //#define TRAIN_MULTI
 
 // early update? 
