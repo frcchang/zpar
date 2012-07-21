@@ -370,7 +370,9 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
       current = current->statePtr;
    }
    --count; // state [0..count] are the reverse lifecycle of item.
+#ifdef SCALE
    assert(item->size + exc_count == count);
+#endif
 
    // for each
    while (count>exc_count) {
