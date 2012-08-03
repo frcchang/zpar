@@ -52,6 +52,8 @@ inline unsigned long int encodeConstituents(const CConstituentLabel &con1, const
 inline std::istream & operator >> (std::istream &is, generic::CConstituentLabel &con) {
    std::string s;
    is >> s;
+   if (!is)
+      return is;
    con.load(s);
    return is;
 }
