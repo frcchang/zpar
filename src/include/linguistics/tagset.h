@@ -137,7 +137,7 @@ inline std::ostream & operator << (std::ostream &os, const CTagSet<CTag, size> &
 
 //=============================================================================
 //
-// a set of tags
+// a set of tags -- satisfy the size of CTag but static. use csetofint dynamic
 //
 //=============================================================================
 
