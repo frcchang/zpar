@@ -44,12 +44,12 @@ class CBinarizedTreeNode(object):
          else:
             sContent = self.left_child.__str__() + " " + self.right_child.__str__()
       elif self.type == 'token':
-         if self.pos == "":
+         if self.pos == '':
             sType = 't'
-            sContent = self.token
+            sContent = gb2utf(self.token)
          else:
             sType = 'c'
-            sContent = self.pos + ' ' + self.token
+            sContent = self.pos + ' ' + gb2utf(self.token)
       else:
          raise "Type not defined for node"
       if self.temporary:
@@ -139,20 +139,20 @@ class CBinarizedTreeNode(object):
 
          if 'head_leaf' in dir(node) : self.head_leaf = node.head_leaf
 
-   def tokens(self, sep='_'):
+   def tokens(self):
       if self.type == 'constituent':
          if(self.head_child=='s'):
-            return self.left_child.tokens(sep)
+            return self.left_child.tokens()
          else:
-            return self.left_child.tokens(sep)+" "+self.right_child.tokens(sep)
+            return self.left_child.tokens()+" "+self.right_child.tokens()
       elif self.type == 'token':
-         return "%s%s%s" % (self.token,sep, self.name)
+         return "%s_%s" % (self.token, self.name)
 
 #================================================================
 
 class CBinarizer(object):
 
-   def __init__(self, sFile, sLogs, bBinarize, bRemoveUnary, sDictionary):
+   def __init__(self, sFile, sLogs, bBinarize, bRemoveUnary, sDictionary, bEmptyKeep):
       self.m_dRules = {}
       file = open(sFile)
       line = file.readline()
@@ -170,6 +170,7 @@ class CBinarizer(object):
          self.log = None
       self.m_bBinarize = bBinarize
       self.m_bRemoveUnary = bRemoveUnary
+      self.m_bEmptyKeep = bEmptyKeep
       self.m_mapDict = {}
       if sDictionary != None:
          file = open(sDictionary)
@@ -226,6 +227,8 @@ class CBinarizer(object):
       return headchild
 
    def not_empty(self, srcnode):
+      if self.m_bEmptyKeep:
+          return True
       if srcnode.name == "-NONE-":
          return False
       if srcnode.type == "token":
@@ -239,14 +242,18 @@ class CBinarizer(object):
 #      if self.m_bRemoveUnary:
 #         while srcnode.type == "constituent" and len(srcnode.children) == 1:
 #            srcnode = srcnode.children[0]
-      if srcnode.name == '-NONE-':
+      if not self.m_bEmptyKeep and srcnode.name == '-NONE-':
          return False
       node.type = srcnode.type
-      node.name = self.escape(srcnode.name.split("-")[0])
+      if srcnode.name != '-NONE-':
+          node.name = self.escape(srcnode.name.split("-")[0])
+      else:
+          node.name = '-NONE-'
       node.start_index = srcnode.start_index
       node.end_index = srcnode.end_index
       if node.type == 'token':
          node.token = self.escape(srcnode.token)
+         
       if srcnode.type == "constituent":
          node.children = []
          for srcchildnode in srcnode.children:
@@ -266,13 +273,18 @@ class CBinarizer(object):
          while srcnode.type == "constituent" and len(srcnode.children) == 1:
             srcnode = srcnode.children[0]
 
-      if srcnode.name == '-NONE-':
+      if not self.m_bEmptyKeep and srcnode.name == '-NONE-':
          return False
-      srcname = srcnode.name.split("-")[0].split("=")[0]
+      if srcnode.name != '-NONE-':
+          srcname = srcnode.name.split("-")[0].split("=")[0]
+      else:
+          srcname = '-NONE-'
+
       node.name = srcname
       node.type = srcnode.type
       if srcnode.type == 'token':
          node.token = srcnode.token
+         node.pos = ''   #added by Ding
       else:
          assert srcnode.type == 'constituent'
          # one child node
@@ -352,11 +364,13 @@ class CBinarizer(object):
       if type(head) == list:
          lHead = head
       else:
-         lHead = [head]
+         lHead = [head]                         
       # output the dep node
       for head in lHead:
+        # print head
          if self.m_bBinarize:
             outh = CBinarizedTreeNode()
+      #      print outh
             self.build_binarized_node(outh, head)
             print outh
          else:
@@ -370,9 +384,9 @@ if __name__ == '__main__':
    import sys
    import config
    try:
-      opts, args = getopt.getopt(sys.argv[1:], "nul:d:")
+      opts, args = getopt.getopt(sys.argv[1:], "nuel:d:")
    except getopt.GetoptError: 
-      print "\nUsage: binarize.py [-nu] [-llogfile] [-ddictionary_file] rule_file input_file > output\n"
+      print "\nUsage: binarize.py [-nue] [-llogfile] [-ddictionary_file] rule_file input_file > output\n"
       print "-n: not binarize\n"
       print "-u: remove unary nodes\n"
       print "-d: replace with dictionary\n"
@@ -381,12 +395,14 @@ if __name__ == '__main__':
       print "\nUsage: binarize.py [-nu] [-llogfile] rule_file input_file > output\n"
       print "-n: not binarize\n"
       print "-u: remove unary nodes\n"
+      print "-e: keep empty nodes\n"
       print "-d: replace with dictionary\n"
       sys.exit(1)
    sLogs = None
    sDictionary = None
    bBinarize = True
    bRemoveUnary = False
+   bEmptyKeep = False
    for opt in opts:
       if opt[0] == '-n':
          bBinarize = False
@@ -394,10 +410,13 @@ if __name__ == '__main__':
          sLogs = opt[1]
       elif opt[0] == '-u':
          bRemoveUnary = True
+      elif opt[0] == '-e':
+         bEmptyKeep = True
       elif opt[0] == '-d':
          sDictionary = opt[1]
-   rule = CBinarizer(args[0], sLogs, bBinarize, bRemoveUnary, sDictionary)
+   rule = CBinarizer(args[0], sLogs, bBinarize, bRemoveUnary, sDictionary, bEmptyKeep)
    file = open(args[1])
    for line in file:
-      rule.process(line)
+#       print line
+       rule.process(line)
    file.close()
