@@ -2,6 +2,9 @@
 #
 # prolog.py - dealing with the prolog format for tree
 #
+# Warning: the format prolog does not by default give head information.
+# head_left is set to 'r' by default!
+# This might not be true according to the rules.
 # Author: Yue Zhang
 #
 # Computing lab, University of Oxford. 2009.06
@@ -152,6 +155,7 @@ def LoadNode(file, tree):
          retval.right = None
          retval.end_index = retval.left.end_index
       assert scratch[0] == ")"
+      retval.head_left = False # this is because there is not such information!
       retval.supercategory = cat
       retval.action = action
       return retval, scratch[1:]
