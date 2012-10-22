@@ -268,6 +268,9 @@ def shiftreduce(path):
 
 def findbasenp(path):
 
+   import re
+   npcom=re.compile('NP(\[[a-z]+\])?$')
+
    def findbasenpfornode(node, ret):
       # find nps from next level.
       baser = False
@@ -277,7 +280,7 @@ def findbasenp(path):
          if node.right_child:
             baser |= findbasenpfornode(node.right_child, ret)
       # find current item
-      if not baser and node.name == 'NP':
+      if not baser and npcom.match(node.name):
          ret.append((node.leftmost_leaf.token, node.rightmost_leaf.token, node.head_leaf.token))
          baser=True
       return baser
