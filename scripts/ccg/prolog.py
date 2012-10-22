@@ -121,6 +121,7 @@ def LoadNode(file, tree):
       word_id = int(line[tree_comma_index+1:word_comma_index])
       end_bracket_index = __find_next_bracket__(line, word_comma_index+1)
       cat = line[word_comma_index+1:end_bracket_index]
+      cat = cat.strip("'")
       # retval
       retval = parsetree.CTreeNode(tree, "token")
       retval.start_index = word_id-1
@@ -143,6 +144,7 @@ def LoadNode(file, tree):
       else:
          comma_index = line.find(",")
       cat = line[bracket_index+1:comma_index]
+      cat = cat.strip("'")
       assert line[comma_index+1:].strip() ==""
       # retval
       retval = parsetree.CTreeNode(tree, "constituent")
