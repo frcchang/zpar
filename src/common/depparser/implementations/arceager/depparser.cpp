@@ -786,7 +786,7 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
 
 void CDepParser::extract_features(const CDependencyParse &input) {
 
-   CStateItem item(&m_lCache)
+   CStateItem item(&m_lCache);
    CStateItem tmp(&m_lCache);
    unsigned action;
    CPackedScoreType<SCORE_TYPE, action::MAX> empty;
@@ -794,9 +794,9 @@ void CDepParser::extract_features(const CDependencyParse &input) {
    // word and pos
    m_lCache.clear();
 #ifdef LABELED
-   m_lCacheLabel.clear();A
+   m_lCacheLabel.clear();
 #endif
-   for (int i=0; i<sentence.size(); ++i) {
+   for (int i=0; i<input.size(); ++i) {
       m_lCache.push_back(CTaggedWord<CTag, TAG_SEPARATOR>(input[i].word, input[i].tag));
 #ifdef LABELED
    m_lCacheLabel.push_back(CDependencyLabel(input[i].label));
@@ -805,7 +805,7 @@ void CDepParser::extract_features(const CDependencyParse &input) {
 
    // make standard item
    item.clear();
-   for (int i=0; i<sentence.size() * 2; ++i) {
+   for (int i=0; i<input.size() * 2; ++i) {
 #ifdef LABELED
    item.StandardMoveStep(input, m_lCacheLabel);
 #else
@@ -816,7 +816,7 @@ void CDepParser::extract_features(const CDependencyParse &input) {
    // extract feature now with another step less efficient yet easier here
    tmp.clear();
    while (tmp != item) {
-      action = tmp.FollowMove(item );
+      action = tmp.FollowMove(&item );
       getOrUpdateStackScore(&tmp, empty, action, 1, 0);
       tmp.Move(action);
    }
@@ -911,7 +911,7 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
  *
  *---------------------------------------------------------------*/
 
-void extract_features_conll( const CCoNLLOutput &input) {
+void CDepParser::extract_features_conll( const CCoNLLOutput &input) {
 
    CDependencyParse dep;
    assert( m_bCoNLL );
