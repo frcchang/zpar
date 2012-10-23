@@ -780,6 +780,50 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
 
 /*---------------------------------------------------------------
  *
+ * extract_features - extract features from an example (counts recorded to parser model as weights)
+ *
+ *---------------------------------------------------------------*/
+
+void CDepParser::extract_features(const CDependencyParse &input) {
+
+   CStateItem item(&m_lCache)
+   CStateItem tmp(&m_lCache);
+   unsigned action;
+   CPackedScoreType<SCORE_TYPE, action::MAX> empty;
+
+   // word and pos
+   m_lCache.clear();
+#ifdef LABELED
+   m_lCacheLabel.clear();A
+#endif
+   for (int i=0; i<sentence.size(); ++i) {
+      m_lCache.push_back(CTaggedWord<CTag, TAG_SEPARATOR>(input[i].word, input[i].tag));
+#ifdef LABELED
+   m_lCacheLabel.push_back(CDependencyLabel(input[i].label));
+#endif
+   }
+
+   // make standard item
+   item.clear();
+   for (int i=0; i<sentence.size() * 2; ++i) {
+#ifdef LABELED
+   item.StandardMoveStep(input, m_lCacheLabel);
+#else
+   item.StandardMoveStep(input);
+#endif
+   }
+
+   // extract feature now with another step less efficient yet easier here
+   tmp.clear();
+   while (tmp != item) {
+      action = tmp.FollowMove(item );
+      getOrUpdateStackScore(&tmp, empty, action, 1, 0);
+      tmp.Move(action);
+   }
+}
+
+/*---------------------------------------------------------------
+ *
  * initCoNLLCache
  *
  *---------------------------------------------------------------*/
@@ -858,5 +902,21 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
    work( true , sentence , &outout , reference , 1 , 0 ) ; 
+
+}
+
+/*---------------------------------------------------------------
+ *
+ * extract_features_conll - extract features from an example
+ *
+ *---------------------------------------------------------------*/
+
+void extract_features_conll( const CCoNLLOutput &input) {
+
+   CDependencyParse dep;
+   assert( m_bCoNLL );
+   initCoNLLCache( input );
+   input.toDependencyTree( dep );
+   extract_features(dep);
 
 }
