@@ -33,6 +33,9 @@ typedef long SCORE_TYPE ;
 // force the tree to be single-rooted or allow multiple pseudo roots
 //#define FRAGMENTED_TREE
 
+// the implementation supports the extraction of features as a command
+#define SUPPORT_FEATURE_EXTRACTION
+
 // The size of a sentence and the words
 const unsigned MAX_SENTENCE_SIZE = 256 ; 
 const unsigned MAX_SENTENCE_SIZE_BITS = 8 ; 
