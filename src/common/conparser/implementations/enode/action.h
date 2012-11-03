@@ -175,7 +175,9 @@ public:
       }
       else if(isShiftEmpty())
       {
-          retval = "SHIFT_EMTPY" + " " + CTag(getConstituent()).str();
+          retval = "SHIFT_EMTPY";
+          retval += " ";
+          retval += CTag(getConstituent()).str();
           return retval;
       }
       else {
@@ -212,7 +214,7 @@ public:
          c.load(tmp);
          encodeShift(c.code());
       }
-      else if(tmp == "SHIFT_EMPTY"))
+      else if(tmp == "SHIFT_EMPTY")
       {
           iss >> tmp;
           p.load(tmp);
@@ -284,7 +286,7 @@ inline std::istream & operator >> (std::istream &is, CAction &action) {
    }
    else if(tmp == "SHIFT_EMPTY")
    {
-       iss >> tmp;
+       is >> tmp;
        p.load(tmp);
        action.encodeShiftEmpty(p.code());
    }

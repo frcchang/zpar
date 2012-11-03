@@ -12,6 +12,7 @@
 #ifndef _CONPARSER_IMPL_H
 #define _CONPARSER_IMPL_H 
 
+#include "definitions.h"
 #include "pos/penn_empty.h"
 
 #include "conparser_base.h"
