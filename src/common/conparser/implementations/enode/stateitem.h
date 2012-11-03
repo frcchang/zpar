@@ -34,7 +34,7 @@ public:
 
 public:
    CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const CTaggedWord<CTag, TAG_SEPARATOR>* lexical_head, const int lexical_head_index, const CStateNode* word_prev, const CTaggedWord<CTag, TAG_SEPARATOR>* word_last) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_head_index(lexical_head_index), word_prev(word_prev), word_last(word_last) {}
-   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexial_head_index(-1), word_prev(0), word_last(this) {}
+   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_head_index(-1), word_prev(0), word_last(this) {}
    virtual ~CStateNode() {}
 public:
    bool valid() const { return id!=-1; }
@@ -59,7 +59,7 @@ public:
       this->right_child = right_child; 
       this->lexical_head = lexical_head; 
       this->lexical_head_index = lexical_head_index;
-      this->word_prev = word_prv;
+      this->word_prev = word_prve;
       this->word_last = word_last;
    }//{}
    bool operator == (const CStateNode &nd) const {
@@ -72,7 +72,7 @@ public:
              lexical_head == nd.lexical_head &&
              lexical_head_index == nd.lexical_head_index && 
              word_prev == nd.word_prev &&
-             word_last = nd.word_last;
+             word_last == nd.word_last;
    }
    void operator = (const CStateNode &nd) {
       id = nd.id;
@@ -146,7 +146,7 @@ public:
       score = 0;
       action.clear();
       m_lCache = 0;
-      m_lEmptyNode = 0;
+      m_lEmptyWords = 0;
 #ifdef SCALE
       size = 0;
 #endif
@@ -403,10 +403,10 @@ public:
       // generate nodes for out
       static int i,j;
       // first words
-      std::vector<const CTaggedWord<CTag, TSG_SEPARATOR>* > tmp;
+      std::vector<const CTaggedWord<CTag, TAG_SEPARATOR>* > tmp;
       const CStateNode* current_word;
       current_word = this->node.word_last;
-      while(current_word.valid())
+      while(current_word->valid())
       {
           tmp.push_back(current_word->lexical_head);
           current_word = current_word->word_prev;
