@@ -44,6 +44,7 @@ inline unsigned long normalize510(const unsigned long &x) {
 
 // unary moves 
 const int UNARY_MOVES = 3;
+const int EMPTY_SHIFT_MOVES = 2;
 
 const unsigned long HEAD_LEFT = 1;
 const unsigned long HEAD_RIGHT = 2;

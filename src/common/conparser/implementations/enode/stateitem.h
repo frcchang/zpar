@@ -22,9 +22,9 @@ public:
    const CStateNode* left_child;
    const CStateNode* right_child;
    const CTaggedWord<CTag, TAG_SEPARATOR>* lexical_head;
-   int lexical_head_index;
+   unsigned int lexical_head_index;
    const CStateNode * word_prev;
-   const CTaggedWord<CTag, TAG_SEPARATOR>* word_last;
+   const CStateNode * word_last;
 
 
 public:
@@ -50,7 +50,7 @@ public:
       this->word_prev = 0;
       this->word_last = this;
    }
-   void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const CTaggedWord<CTag, TAG_SEPARATOR>* lexical_head, const int lexical_head_index, const CStateNode *word_prev, const CTaggedWord<CTag, TAG_SEPARATOR>* word_last) { 
+   void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const CTaggedWord<CTag, TAG_SEPARATOR>* lexical_head, const int lexical_head_index, const CStateNode *word_prev, const CStateNode * word_last) { 
       this->id = id;
       this->type = type; 
       this->temp = temp; 
@@ -372,10 +372,21 @@ public:
       // generate nodes for out
       static int i,j;
       // first words
-      for (i=0; i<tagged.size(); ++i) 
-         out.newWord(tagged[i].first, tagged[i].second);
+      std::vector<const CTaggedWord<CTag, TSG_SEPARATOR>* > tmp;
+      const CStateNode* current_word;
+      current_word = this->node.word_last;
+      while(current_word.valid())
+      {
+          tmp.push_back(current_word->lexical_head);
+          current_word = current_word->word_prev;
+      }
+
+      for(i=tmp.size()-1; i>=0; --i)
+      {
+          out.newWord(tmp[i]->first, tagged[i]->second);
+      }
       // second constituents
-      static const CStateNode* nodes[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+      static const CStateNode* nodes[MAX_SENTENCE_SIZE*(1+EMPTY_SHIFT_MOVES)*(2+UNARY_MOVES)+2];
       static int count;
       count = 0;
       const static CStateItem *current;
@@ -400,7 +411,7 @@ public:
    //===============================================================================
 
    void trace(const CTwoStringVector *s=0) const {
-      static const CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+      static const CStateItem* states[MAX_SENTENCE_SIZE*(1+EMPTY_SHIFT_MOVES)*(2+UNARY_MOVES)+2];
       static int count;
       const static CStateItem *current;
       count = 0;

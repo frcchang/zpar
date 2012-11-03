@@ -12,7 +12,7 @@ class CActionType {
 
 public:
    static const unsigned long SIZE=3;
-   enum CODE {NO_ACTION=0, SHIFT=1, REDUCE_BINARY=2, REDUCE_UNARY=3, POP_ROOT=4, IDLE=5};
+   enum CODE {NO_ACTION=0, SHIFT=1, REDUCE_BINARY=2, REDUCE_UNARY=3, POP_ROOT=4, IDLE=5, SHIFT_EMPTY=6};
 
 public:
    unsigned long code;
@@ -39,6 +39,8 @@ inline std::istream & operator >> (std::istream &is, CActionType &action) {
       action.code = CActionType::REDUCE_BINARY;
    else if (s=="POP_ROOT")
       action.code = CActionType::POP_ROOT;
+   else if(s == "SHIFT_EMPTY")
+       action.code = CActionType::SHIFT_EMPTY;
    else
       THROW("Action type unrecognized (" << s << ")");
    return is;
@@ -60,6 +62,9 @@ inline std::ostream & operator << (std::ostream &os, const CActionType &action) 
       break;
    case CActionType::POP_ROOT:
       os << "POP_ROOT";
+      break;
+   case CActionType::SHIFT_EMPTY:
+      os << "SHIFT_EMPTY";
       break;
    default:
       THROW("Internal error: unknown action type code (" << action.code << ")");
@@ -106,6 +111,7 @@ public:
    inline bool isReduceRoot() const { return type()==CActionType::POP_ROOT; }
    inline bool isReduceUnary() const { return type()==CActionType::REDUCE_UNARY; }
    inline bool isReduceBinary() const { return type()==CActionType::REDUCE_BINARY; }
+   inline bool isShiftEmpty() const {return type() == CActionType::SHIFT_EMPTY;}
 
 public:
    inline void encodeReduce(const unsigned long &constituent, bool single_child, bool head_left, bool temporary) {
@@ -131,6 +137,11 @@ public:
 
    inline void encodeIdle() {
       action = CActionType::IDLE;
+   }
+
+   inline void encodeShiftEmpty(const unsigned long &tag=CTag::NONE)
+   {
+       action = (tag<<CONSTITUENT_SHIFT | CActionType::SHIFT_EMPTY);
    }
 
 public:
@@ -162,6 +173,11 @@ public:
       if (isShift()) {
          retval =  "SHIFT";
       }
+      else if(isShiftEmpty())
+      {
+          retval = "SHIFT_EMTPY" + " " + CTag(getConstituent()).str();
+          return retval;
+      }
       else {
           retval = "REDUCE";
          if (isReduceUnary()) 
@@ -180,6 +196,7 @@ public:
       std::istringstream iss(s);
       std::string tmp;
       CConstituent c;
+      CTag p;
       CAction t;
       bool head_left, temporary;
       iss >> tmp;
@@ -194,6 +211,12 @@ public:
          iss >> tmp;
          c.load(tmp);
          encodeShift(c.code());
+      }
+      else if(tmp == "SHIFT_EMPTY"))
+      {
+          iss >> tmp;
+          p.load(tmp);
+          encodeShiftEmpty(p.code());
       }
       else {
          assert (tmp=="REDUCE"); 
@@ -245,6 +268,7 @@ public:
 inline std::istream & operator >> (std::istream &is, CAction &action) {
    std::string tmp;
    CConstituent c;
+   CTag p;
    CAction t;
    bool head_left, temporary;
    is >> tmp;
@@ -257,6 +281,12 @@ inline std::istream & operator >> (std::istream &is, CAction &action) {
    else if (tmp=="SHIFT") {
       is >> tmp; c.load(tmp);
       action.encodeShift(c.code());
+   }
+   else if(tmp == "SHIFT_EMPTY")
+   {
+       iss >> tmp;
+       p.load(tmp);
+       action.encodeShiftEmpty(p.code());
    }
    else {
       assert (tmp=="REDUCE"); 
