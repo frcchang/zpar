@@ -733,6 +733,8 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    // initialise agenda
    lattice_index[0] = lattice;
    lattice_index[0]->clear();
+   lattice_index[0]->m_lCache = m_lCache;
+   lattice_index[0]->m_lEmptyWords = Empty_Wors;
 #ifdef TRAIN_LOSS
    lattice_index[0]->bTrain = m_bTrain;
    getLabeledBrackets(correct, lattice_index[0]->gold_lb);

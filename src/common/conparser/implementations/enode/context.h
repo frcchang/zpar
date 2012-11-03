@@ -199,22 +199,22 @@ public:
 //      s1h = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? s1->left_child : s1->right_child) : 0 );
    
       s0c.load( constituent_or_none(*s0) );
-      s0wt = &( wrds[s0->lexical_head] );
+      s0wt = s0->lexical_head;
       s0w = &(s0wt->word);
       s0t = s0wt->tag;
    
       s1c.load( s1==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1) );
-      s1wt = s1 == 0 ? 0 : &( wrds[s1->lexical_head] );
+      s1wt = s1 == 0 ? 0 : s1->lexical_head;
       s1w = &(s1wt->word);
       s1t = s1 == 0 ? g_noneTag : s1wt->tag;
    
       s2c.load( s2==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2) );
-      s2w = s2 == 0 ? 0 : &(wrds[s2->lexical_head].word);
-      s2t = s2 == 0 ? 0 : wrds[s2->lexical_head].tag;
+      s2w = s2 == 0 ? 0 : &(s2->lexical_head->word);
+      s2t = s2 == 0 ? 0 : s2->lexical_head->tag;
    
       s3c.load( s3==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s3) );
-      s3w = s3 == 0 ? 0 : &(wrds[s3->lexical_head].word);
-      s3t = s3 == 0 ? 0 : wrds[s3->lexical_head].tag;
+      s3w = s3 == 0 ? 0 : &(s3->lexical_head->word);
+      s3t = s3 == 0 ? 0 : s3->lexical_head->tag;
    
       s0lc.load( s0l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0l) );
       s0lw = s0l==0 ? 0 : &(wrds[s0l->lexical_head].word);

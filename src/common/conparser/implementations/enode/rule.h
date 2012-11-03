@@ -63,6 +63,10 @@ public:
          }
 #endif // NO_TEMP_CONSTITUENT
       }
+      if(item.empty_shifts < EMPTY_SHIFT_MOVES)
+      {
+          getShiftEmtpyRules(item, actions);
+      }
       // reduce bin
       if ( stack_size > 1 ) {
          getBinaryRules(item, actions);
@@ -162,6 +166,16 @@ protected:
             actions.push_back(action);
          }
       } // for constituent
+   }
+
+   void getShiftEmptyRules(const CStateItem &item, std::vector<CAction> &actions)
+   {
+       static CAction action;
+       for(int i=0; i<PENN_EMTPY_TAG_COUNT; ++i)
+       {
+           action.encodeShiftEmpty(PENN_EMPTY_TAG_FIRST + i);
+           actions.push_back(action);
+       }
    }
 
 public:
