@@ -12,6 +12,8 @@
 #ifndef _CONPARSER_IMPL_H
 #define _CONPARSER_IMPL_H 
 
+#include "pos/penn_empty.h"
+
 #include "conparser_base.h"
 #include "weight.h"
 
@@ -29,6 +31,7 @@ private:
 
    std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    std::vector<unsigned long> m_lWordLen;
+   CTaggedWord<CTag, TAG_SEPARATOR>* m_lEmptyWords;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
@@ -96,6 +99,13 @@ public:
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
 //      ASSERT(conparser::CAction::MAX<=(1LL<<(sizeof(unsigned)*8)), "conparser.h: The size of action is too big for the packed scoretype");
+//
+//
+    m_lEmptyWords = new CTaggedWord<CTag, TAG_SEPARATOR>[PENN_EMPTY_TAG_COUNT];
+    for(int i=0; i<PENN_EMPTY_TAG_COUNT; ++i)
+    {
+        m_lEmptyWords[i].load("-NONE-", PENN_TAG_STRINGS[PENN_EMPTY_TAG_FIRST+i]);
+    }
    }
 
    ~CConParser() {

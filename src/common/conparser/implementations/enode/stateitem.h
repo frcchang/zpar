@@ -179,6 +179,20 @@ public:
       }
       return retval;
    }
+
+   unsigned empty_shifts() const {
+      unsigned retval = 0;
+      const CStateItem *current = this;
+      while (current) {
+         if (current->action.type() == CActionType::SHIFT_EMPTY)
+            ++retval;
+         else
+            return retval;
+         current = current->statePtr;
+      }
+      return retval;
+   }
+
    int newNodeIndex() const { return node.id+1; }
 
 public:
@@ -194,8 +208,17 @@ protected:
    void shift(CStateItem *retval, const unsigned long &constituent = CConstituent::NONE) const {
       //TRACE("shift");
       assert(!IsTerminated());
-      retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, &((*m_lCache)[current_word]), ((this->node).word_last)->lexical_head_index+1, this->node->word_last, retval);
+      retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, &((*m_lCache)[current_word]), ((this->node).word_last)->lexical_head_index+1, this->node->word_last, retval->node);
       retval->current_word = current_word+1;
+      retval->stackPtr = this; ///  
+      assert(!retval->IsTerminated());
+
+   }
+   void shift_empty(CStateItem *retval, const unsigned long &index) const {
+      //TRACE("shift_empty");
+      assert(!IsTerminated());
+      retval->node.set(node.id+1, CStateNode::LEAF, false, CConstituent::NONE, 0, 0, m_lEmptyWords+index, ((this->node).word_last)->lexical_head_index+1, this->node->word_last, retval->node);
+      retval->current_word = current_word;
       retval->stackPtr = this; ///  
       assert(!retval->IsTerminated());
    }
@@ -302,6 +325,10 @@ public:
    void Move(CStateItem *retval, const CAction &action) const {
       retval->action = action; // this makes it necessary for the actions to 
       retval->statePtr = this; // be called by Move
+
+      retval->m_lCache = m_lCache;
+      retval->m_lEmptyWords = m_lEmptyWords;
+
       if (action.isIdle()) {
          noact(retval);
 #ifdef SCALE
@@ -311,6 +338,10 @@ public:
       else {
          if (action.isShift())
             { shift(retval, action.getConstituent()); }
+         else if(action.isShiftEmpty())
+         {
+             shift_empty(retval, action.getConstituent()-PENN_EMPTY_TAG_FIRST);
+         }
          else if (action.isReduceRoot())
             { terminate(retval); }
          else

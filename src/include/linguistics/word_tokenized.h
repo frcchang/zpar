@@ -40,7 +40,7 @@ class CStringTokenizer : public CTokenizer<std::string, 65537> {
 
 /*===============================================================
  *
- * definitions abstd::cout word 
+ * definitions about word 
  *
  *==============================================================*/
 

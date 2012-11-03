@@ -10,6 +10,8 @@
 #ifndef _CONPARSER_WEIGHTS_H
 #define _CONPARSER_WEIGHTS_H
 
+#include "pos/penn_empty.h"
+
 #include "weight_base.h"
 
 const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
