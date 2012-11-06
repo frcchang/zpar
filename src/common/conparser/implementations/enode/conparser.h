@@ -105,7 +105,7 @@ public:
     m_lEmptyWords = new CTaggedWord<CTag, TAG_SEPARATOR>[PENN_EMPTY_TAG_COUNT];
     for(int i=0; i<PENN_EMPTY_TAG_COUNT; ++i)
     {
-        m_lEmptyWords[i].load("-NONE-", PENN_TAG_STRINGS[PENN_EMPTY_TAG_FIRST+i]);
+        m_lEmptyWords[i].load(CWord("-NONE-"), PENN_TAG_STRINGS[PENN_EMPTY_TAG_FIRST+i]);
     }
    }
 

@@ -217,28 +217,28 @@ public:
       s3t = s3 == 0 ? 0 : s3->lexical_head->tag;
    
       s0lc.load( s0l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0l) );
-      s0lw = s0l==0 ? 0 : &(wrds[s0l->lexical_head].word);
-      s0lt = s0l==0 ? g_noneTag : wrds[s0l->lexical_head].tag;
+      s0lw = s0l==0 ? 0 : &(s0l->lexical_head->word);
+      s0lt = s0l==0 ? g_noneTag : s0l->lexical_head->tag;
 
       s0rc.load(s0r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0r));
-      s0rw = s0r==0 ? 0 : &(wrds[s0r->lexical_head].word);
-      s0rt = s0r==0 ? 0 : wrds[s0r->lexical_head].tag;
+      s0rw = s0r==0 ? 0 : &(s0r->lexical_head->word);
+      s0rt = s0r==0 ? 0 : s0r->lexical_head->tag;
 
       s0uc.load(s0u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0u));
-      s0uw = s0u==0 ? 0 : &(wrds[s0u->lexical_head].word);
-      s0ut = s0u==0 ? 0 : wrds[s0u->lexical_head].tag;
+      s0uw = s0u==0 ? 0 : &(s0u->lexical_head->word);
+      s0ut = s0u==0 ? 0 : s0u->lexical_head->tag;
    
       s1lc.load(s1l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1l));
-      s1lw = s1l==0 ? 0 : &(wrds[s1l->lexical_head].word);
-      s1lt = s1l==0 ? 0 : wrds[s1l->lexical_head].tag;
+      s1lw = s1l==0 ? 0 : &(s1l->lexical_head->word);
+      s1lt = s1l==0 ? 0 : s1l->lexical_head->tag;
 
       s1rc.load(s1r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1r));
-      s1rw = s1r==0 ? 0 : &(wrds[s1r->lexical_head].word);
-      s1rt = s1r==0 ? 0 : wrds[s1r->lexical_head].tag;
+      s1rw = s1r==0 ? 0 : &(s1r->lexical_head->word);
+      s1rt = s1r==0 ? 0 : s1r->lexical_head->tag;
 
       s1uc.load(s1u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1u));
-      s1uw = s1u==0 ? 0 : &(wrds[s1u->lexical_head].word);
-      s1ut = s1u==0 ? 0 : wrds[s1u->lexical_head].tag;
+      s1uw = s1u==0 ? 0 : &(s1u->lexical_head->word);
+      s1ut = s1u==0 ? 0 : s1u->lexical_head->tag;
 
       n0t = n0==-1 ? g_noneTag : wrds[n0].tag;
       n0w = n0 == -1 ? 0 : &(wrds[n0].word);
@@ -329,7 +329,7 @@ public:
       s0ts1tbt = s0ts1t; s0ts1tbt.add(g_noneTag);
       between_tag.clear();
       if (s1!=0)
-      for (i=s1->lexical_head+1; i<s0->lexical_head; ++i) {
+      for (i=s1->lexical_head_index+1; i<s0->lexical_head_index; ++i) {
          between_tag.push_back(wrds[i].tag);
       }
 
