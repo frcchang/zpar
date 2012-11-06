@@ -63,9 +63,9 @@ public:
          }
 #endif // NO_TEMP_CONSTITUENT
       }
-      if(item.empty_shifts < EMPTY_SHIFT_MOVES)
+      if(item.empty_shifts() < EMPTY_SHIFT_MOVES)
       {
-          getShiftEmtpyRules(item, actions);
+          getShiftEmptyRules(item, actions);
       }
       // reduce bin
       if ( stack_size > 1 ) {
@@ -121,7 +121,7 @@ protected:
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {
 	    const bool &head_left = static_cast<bool>(i);
-            const CWord &head_wd = m_sent->at((head_left?left:right).lexical_head).word;
+            const CWord &head_wd = m_sent->at((head_left?left:right).lexical_head_index).word;
 #ifndef NO_TEMP_CONSTITUENT
             for (unsigned j=0; j<=1; ++j) {
                const bool &temporary = static_cast<bool>(j);
@@ -171,7 +171,7 @@ protected:
    void getShiftEmptyRules(const CStateItem &item, std::vector<CAction> &actions)
    {
        static CAction action;
-       for(int i=0; i<PENN_EMTPY_TAG_COUNT; ++i)
+       for(int i=0; i<PENN_EMPTY_TAG_COUNT; ++i)
        {
            action.encodeShiftEmpty(PENN_EMPTY_TAG_FIRST + i);
            actions.push_back(action);

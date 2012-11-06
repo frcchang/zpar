@@ -33,7 +33,7 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const CTaggedWord<CTag, TAG_SEPARATOR>* lexical_head, const int lexical_head_index, const CStateNode* word_prev, const CTaggedWord<CTag, TAG_SEPARATOR>* word_last) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_head_index(lexical_head_index), word_prev(word_prev), word_last(word_last) {}
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const CTaggedWord<CTag, TAG_SEPARATOR>* lexical_head, const int lexical_head_index, const CStateNode* word_prev, const CStateNode* word_last) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_head_index(lexical_head_index), word_prev(word_prev), word_last(word_last) {}
    CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_head_index(-1), word_prev(0), word_last(this) {}
    virtual ~CStateNode() {}
 public:
@@ -59,7 +59,7 @@ public:
       this->right_child = right_child; 
       this->lexical_head = lexical_head; 
       this->lexical_head_index = lexical_head_index;
-      this->word_prev = word_prve;
+      this->word_prev = word_prev;
       this->word_last = word_last;
    }//{}
    bool operator == (const CStateNode &nd) const {
@@ -208,7 +208,7 @@ protected:
    void shift(CStateItem *retval, const unsigned long &constituent = CConstituent::NONE) const {
       //TRACE("shift");
       assert(!IsTerminated());
-      retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, &((*m_lCache)[current_word]), ((this->node).word_last)->lexical_head_index+1, this->node->word_last, retval->node);
+      retval->node.set(node.id+1, CStateNode::LEAF, false, constituent, 0, 0, &((*m_lCache)[current_word]), ((this->node.word_last))->lexical_head_index+1, (this->node).word_last, &(retval->node));
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///  
       assert(!retval->IsTerminated());
@@ -217,7 +217,7 @@ protected:
    void shift_empty(CStateItem *retval, const unsigned long &index) const {
       //TRACE("shift_empty");
       assert(!IsTerminated());
-      retval->node.set(node.id+1, CStateNode::LEAF, false, CConstituent::NONE, 0, 0, m_lEmptyWords+index, ((this->node).word_last)->lexical_head_index+1, this->node->word_last, retval->node);
+      retval->node.set(node.id+1, CStateNode::LEAF, false, CConstituent::NONE, 0, 0, m_lEmptyWords+index, ((this->node).word_last)->lexical_head_index+1, (this->node).word_last, &(retval->node));
       retval->current_word = current_word;
       retval->stackPtr = this; ///  
       assert(!retval->IsTerminated());
@@ -414,7 +414,7 @@ public:
 
       for(i=tmp.size()-1; i>=0; --i)
       {
-          out.newWord(tmp[i]->first, tagged[i]->second);
+          out.newWord((tmp[i]->word).str(), (tmp[i]->tag).str());
       }
       // second constituents
       static const CStateNode* nodes[MAX_SENTENCE_SIZE*(1+EMPTY_SHIFT_MOVES)*(2+UNARY_MOVES)+2];
