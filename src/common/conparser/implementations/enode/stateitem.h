@@ -290,7 +290,14 @@ public:
       else {
          // stack top left child ? shift
          if (s == hd.left_child) {
-            retval.encodeShift(snt.nodes[newNodeIndex()].constituent.code()); return;
+             if(snt.words[snt.nodes[newNodeIndex()].token].first == "-NONE-")
+             {
+                 retval.encodeShiftEmpty(CTag(snt.words[snt.nodes[newNodeIndex()].token].second).code()); return;
+             }
+             else
+             {
+                retval.encodeShift(snt.nodes[newNodeIndex()].constituent.code()); return;
+             }
          }
          // stack top right child ? reduce bin
          assert(s==hd.right_child);
@@ -311,11 +318,17 @@ public:
       }
       // stack empty?shift
       if (stacksize()==0) {
-         retval.encodeShift(tr.nodes[newNodeIndex()].constituent.code());
-         return;
+          if(tr.words[tr.nodes[newNodeIndex()].token].first == "-NONE-")
+          {
+              retval.encodeShiftEmpty(CTag(tr.words[tr.nodes[newNodeIndex()].token].second).code()); return;
+          }
+          else
+          {
+             retval.encodeShift(tr.nodes[newNodeIndex()].constituent.code()); return;
+          }
       }
       if (tr.parent(node.id) == -1) {
-         assert(IsComplete(tr.words.size()));
+         assert(IsComplete(m_lCache->size()));
          retval.encodeReduceRoot();
          return;
       }
@@ -337,7 +350,7 @@ public:
       }
       else {
          if (action.isShift())
-            { shift(retval, action.getConstituent()); }
+            {shift(retval, action.getConstituent()); }
          else if(action.isShiftEmpty())
          {
              shift_empty(retval, action.getConstituent()-PENN_EMPTY_TAG_FIRST);
@@ -405,7 +418,8 @@ public:
       // first words
       std::vector<const CTaggedWord<CTag, TAG_SEPARATOR>* > tmp;
       const CStateNode* current_word;
-      current_word = this->node.word_last;
+      //current_word = this->node.word_last;
+      current_word = node.right_child==0 ? node.left_child->word_last : node.right_child->word_last;
       while(current_word->valid())
       {
           tmp.push_back(current_word->lexical_head);
@@ -457,7 +471,7 @@ public:
       --count;
       while (count>=0) {
          if (s) {
-            TRACE(states[count]->action.str()<<" ["<<(states[count]->stacksize()>0?s->at(states[count]->node.lexical_head).first:"")<<"]"); 
+            //TRACE(states[count]->action.str()<<" ["<<(states[count]->stacksize()>0?s->at(states[count]->node.lexical_head).first:"")<<"]"); 
          }
          else {
             TRACE(states[count]->action.str());

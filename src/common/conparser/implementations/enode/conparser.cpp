@@ -692,8 +692,8 @@ void CConParser::getOrUpdateScore( CPackedScoreType<SCORE_TYPE, CAction::MAX> &r
 
 void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
 
-   static CStateItem lattice[(MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2)*(AGENDA_SIZE+1)];
-   static CStateItem *lattice_index[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+   static CStateItem lattice[(MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2)*(AGENDA_SIZE+1)+1000000];
+   static CStateItem *lattice_index[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2+1000000];
 
 #ifdef DEBUG
    clock_t total_start_time = clock();
@@ -727,8 +727,11 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    m_lCache.clear();
    m_lWordLen.clear();
    for ( tmp_i=0; tmp_i<length; tmp_i++ ) {
-      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[tmp_i].first , sentence[tmp_i].second) );
-      m_lWordLen.push_back( getUTF8StringLength(sentence[tmp_i].first) );
+       if(sentence[tmp_i].first != "-NONE-")
+       {
+           m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[tmp_i].first , sentence[tmp_i].second) );
+           m_lWordLen.push_back( getUTF8StringLength(sentence[tmp_i].first) );
+       }
    }
    // initialise agenda
    lattice_index[0] = lattice;

@@ -328,10 +328,12 @@ public:
       // a tag between s0 and s1
       s0ts1tbt = s0ts1t; s0ts1tbt.add(g_noneTag);
       between_tag.clear();
+      /*
       if (s1!=0)
       for (i=s1->lexical_head_index+1; i<s0->lexical_head_index; ++i) {
          between_tag.push_back(wrds[i].tag);
       }
+      */
 
       // unexpand s0 sub
 //      s0_unbinarized.clear();

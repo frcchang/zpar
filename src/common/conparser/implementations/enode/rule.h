@@ -63,6 +63,7 @@ public:
          }
 #endif // NO_TEMP_CONSTITUENT
       }
+      if(item.current_word < length)
       if(item.empty_shifts() < EMPTY_SHIFT_MOVES)
       {
           getShiftEmptyRules(item, actions);
@@ -121,7 +122,7 @@ protected:
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {
 	    const bool &head_left = static_cast<bool>(i);
-            const CWord &head_wd = m_sent->at((head_left?left:right).lexical_head_index).word;
+            const CWord &head_wd = ((head_left?left:right).lexical_head)->word;
 #ifndef NO_TEMP_CONSTITUENT
             for (unsigned j=0; j<=1; ++j) {
                const bool &temporary = static_cast<bool>(j);
@@ -148,6 +149,7 @@ protected:
    void getUnaryRules(const CStateItem &item,  std::vector<CAction> &actions) {
       const CStateNode &child = item.node;
       // input rule list
+      m_mapUnaryRules = false;
       if (m_mapUnaryRules) {
          const std::vector<CAction> &result = m_mapUnaryRules->find(child.constituent, std::vector<CAction>());
          for (int i=0; i<result.size(); ++i) {
