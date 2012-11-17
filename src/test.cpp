@@ -16,7 +16,7 @@
 #include "linguistics/generictag.h"
 #include "linguistics/lemma.h"
 #include "learning/perceptron/hashmap_score_packed.h"
-#include "hash_small.h"
+//#include "hash_small.h"
 #include "linkedlist.h"
 #include "linguistics/word_tokenized.h"
 #include "english/tags.h"
@@ -151,14 +151,14 @@ void testpackedscores() {
    std::cout << score << std::endl;
 }
 
-void testsmallhash() {
-   CSmallHashMap<unsigned, std::string, 10> t;
-   t[1] = "abc";
-   t[5] = "def";
-   std::cout << t;
-   std::cin >> t;
-   std::cout << t<< std::endl;
-}
+//void testsmallhash() {
+//   CSmallHashMap<unsigned, std::string, 10> t;
+//   t[1] = "abc";
+//   t[5] = "def";
+//   std::cout << t;
+//   std::cin >> t;
+//   std::cout << t<< std::endl;
+//}
 
 void testlinkedlist() {
    CLinkedList<unsigned, std::string> t;
@@ -205,6 +205,10 @@ void test_word_vector_int_map() {
    std::cout << m;
 }
 
+class C {
+public: int i;
+};
+
 int main(int argc, char**argv){
    try {
 //   std::cout << B::C << B::D << std::endl;
@@ -219,7 +223,10 @@ int main(int argc, char**argv){
 //   testlinkedlist();
 //   testinitializer();
 //   testhashmap(argv[1]);
-      test_word_vector_int_map();
+//      test_word_vector_int_map();
+   C* c = new C();
+   c -> i = 1;
+   delete c;
    }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 
