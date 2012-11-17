@@ -11,6 +11,7 @@
 #define _DEPPARSER_WEIGHTS_H
 
 #include "depparser_weight_base.h"
+#include "depparser_meta_weight.h"
 
 #define iterate_templates(left, right) \
    left(m_mapSTw)right\
