@@ -45,7 +45,8 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
    getline(file, s);
    ASSERT(s=="", "No empty line after the dependency labels") ;
 #endif
-   iterate_templates(file >>,;);
+   iterate_templates(file >>,,;);
+   iterate_templates(file >>,m_meta.,;);
 
    getline(file, s);
    if (s=="Rules=1") {
@@ -81,9 +82,11 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
       file << CDependencyLabel(label) << ' ';
    file << std::endl << std::endl;
 #endif
-   iterate_templates(file<<,;)
+   iterate_templates(file<<,,;)
+   iterate_templates(file<<,m_meta.,;)
 #ifdef DEBUG
-   iterate_templates(,.trace(););
+   iterate_templates(,,.trace(););
+   iterate_templates(,m_meta.,.trace(););
 #endif
    if (m_bRules) file << "Rules=1" << std::endl;
    else file << "Rules=0" << std::endl;
@@ -100,7 +103,8 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
 
 void TARGET_LANGUAGE::depparser::CWeight::computeAverageFeatureWeights(int round) {
    std::cout<<"Computing averaged (total) feature vector..."; std::cout.flush();
-   iterate_templates(,.computeAverage(round);) ;
+   iterate_templates(,,.computeAverage(round);) ;
+   iterate_templates(,m_meta.,.computeAverage(round);) ;
 
    std::cout<<"done."<<std::endl;
 }

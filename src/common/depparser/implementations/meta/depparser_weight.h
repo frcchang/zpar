@@ -13,100 +13,100 @@
 #include "depparser_weight_base.h"
 #include "depparser_meta_weight.h"
 
-#define iterate_templates(left, right) \
-   left(m_mapSTw)right\
-   left(m_mapSTt)right\
-   left(m_mapSTwt)right\
-   left(m_mapN0w)right\
-   left(m_mapN0t)right\
-   left(m_mapN0wt)right\
-   left(m_mapN1w)right\
-   left(m_mapN1t)right\
-   left(m_mapN1wt)right\
-   left(m_mapN2w)right\
-   left(m_mapN2t)right\
-   left(m_mapN2wt)right\
-   left(m_mapSTHw)right\
-   left(m_mapSTHt)right\
-   left(m_mapSTi)right\
-   left(m_mapSTHHw)right\
-   left(m_mapSTHHt)right\
-   left(m_mapSTHi)right\
-   left(m_mapSTLDw)right\
-   left(m_mapSTLDt)right\
-   left(m_mapSTLDi)right\
-   left(m_mapSTRDw)right\
-   left(m_mapSTRDt)right\
-   left(m_mapSTRDi)right\
-   left(m_mapN0LDw)right\
-   left(m_mapN0LDt)right\
-   left(m_mapN0LDi)right\
-   left(m_mapSTL2Dw)right\
-   left(m_mapSTL2Dt)right\
-   left(m_mapSTL2Di)right\
-   left(m_mapSTR2Dw)right\
-   left(m_mapSTR2Dt)right\
-   left(m_mapSTR2Di)right\
-   left(m_mapN0L2Dw)right\
-   left(m_mapN0L2Dt)right\
-   left(m_mapN0L2Di)right\
-   left(m_mapHTw)right\
-   left(m_mapHTt)right\
-   left(m_mapHTwt)right\
+#define iterate_templates(left, middle, right) \
+   left(middle m_mapSTw)right\
+   left(middle m_mapSTt)right\
+   left(middle m_mapSTwt)right\
+   left(middle m_mapN0w)right\
+   left(middle m_mapN0t)right\
+   left(middle m_mapN0wt)right\
+   left(middle m_mapN1w)right\
+   left(middle m_mapN1t)right\
+   left(middle m_mapN1wt)right\
+   left(middle m_mapN2w)right\
+   left(middle m_mapN2t)right\
+   left(middle m_mapN2wt)right\
+   left(middle m_mapSTHw)right\
+   left(middle m_mapSTHt)right\
+   left(middle m_mapSTi)right\
+   left(middle m_mapSTHHw)right\
+   left(middle m_mapSTHHt)right\
+   left(middle m_mapSTHi)right\
+   left(middle m_mapSTLDw)right\
+   left(middle m_mapSTLDt)right\
+   left(middle m_mapSTLDi)right\
+   left(middle m_mapSTRDw)right\
+   left(middle m_mapSTRDt)right\
+   left(middle m_mapSTRDi)right\
+   left(middle m_mapN0LDw)right\
+   left(middle m_mapN0LDt)right\
+   left(middle m_mapN0LDi)right\
+   left(middle m_mapSTL2Dw)right\
+   left(middle m_mapSTL2Dt)right\
+   left(middle m_mapSTL2Di)right\
+   left(middle m_mapSTR2Dw)right\
+   left(middle m_mapSTR2Dt)right\
+   left(middle m_mapSTR2Di)right\
+   left(middle m_mapN0L2Dw)right\
+   left(middle m_mapN0L2Dt)right\
+   left(middle m_mapN0L2Di)right\
+   left(middle m_mapHTw)right\
+   left(middle m_mapHTt)right\
+   left(middle m_mapHTwt)right\
 \
-   left(m_mapSTwtN0wt)right\
-   left(m_mapSTwtN0w)right\
-   left(m_mapSTwN0wt)right\
-   left(m_mapSTtN0wt)right\
-   left(m_mapSTwtN0t)right\
-   left(m_mapSTwN0w)right\
-   left(m_mapSTtN0t)right\
+   left(middle m_mapSTwtN0wt)right\
+   left(middle m_mapSTwtN0w)right\
+   left(middle m_mapSTwN0wt)right\
+   left(middle m_mapSTtN0wt)right\
+   left(middle m_mapSTwtN0t)right\
+   left(middle m_mapSTwN0w)right\
+   left(middle m_mapSTtN0t)right\
 \
-   left(m_mapN0tN1t)right\
-   left(m_mapN0tN1tN2t)right\
-   left(m_mapSTtN0tN1t)right\
-   left(m_mapSTtN0tN0LDt)right\
-   left(m_mapN0tN0LDtN0L2Dt)right\
-   left(m_mapSTHtSTtN0t)right\
-   left(m_mapHTtHT2tN0t)right\
-   left(m_mapSTHHtSTHtSTt)right\
-   left(m_mapSTtSTLDtN0t)right\
-   left(m_mapSTtSTLDtSTL2Dt)right\
-   left(m_mapSTtSTRDtN0t)right\
-   left(m_mapSTtSTRDtSTR2Dt)right\
+   left(middle m_mapN0tN1t)right\
+   left(middle m_mapN0tN1tN2t)right\
+   left(middle m_mapSTtN0tN1t)right\
+   left(middle m_mapSTtN0tN0LDt)right\
+   left(middle m_mapN0tN0LDtN0L2Dt)right\
+   left(middle m_mapSTHtSTtN0t)right\
+   left(middle m_mapHTtHT2tN0t)right\
+   left(middle m_mapSTHHtSTHtSTt)right\
+   left(middle m_mapSTtSTLDtN0t)right\
+   left(middle m_mapSTtSTLDtSTL2Dt)right\
+   left(middle m_mapSTtSTRDtN0t)right\
+   left(middle m_mapSTtSTRDtSTR2Dt)right\
 \
-   left(m_mapSTwd)right\
-   left(m_mapSTtd)right\
-   left(m_mapN0wd)right\
-   left(m_mapN0td)right\
-   left(m_mapSTwN0wd)right\
-   left(m_mapSTtN0td)right\
+   left(middle m_mapSTwd)right\
+   left(middle m_mapSTtd)right\
+   left(middle m_mapN0wd)right\
+   left(middle m_mapN0td)right\
+   left(middle m_mapSTwN0wd)right\
+   left(middle m_mapSTtN0td)right\
 \
-   left(m_mapSTwra)right\
-   left(m_mapSTtra)right\
-   left(m_mapSTwla)right\
-   left(m_mapSTtla)right\
-   left(m_mapN0wla)right\
-   left(m_mapN0tla)right\
+   left(middle m_mapSTwra)right\
+   left(middle m_mapSTtra)right\
+   left(middle m_mapSTwla)right\
+   left(middle m_mapSTtla)right\
+   left(middle m_mapN0wla)right\
+   left(middle m_mapN0tla)right\
 \
-   left(m_mapSTwrp)right\
-   left(m_mapSTtrp)right\
-   left(m_mapSTwlp)right\
-   left(m_mapSTtlp)right\
-   left(m_mapN0wlp)right\
-   left(m_mapN0tlp)right\
+   left(middle m_mapSTwrp)right\
+   left(middle m_mapSTtrp)right\
+   left(middle m_mapSTwlp)right\
+   left(middle m_mapSTtlp)right\
+   left(middle m_mapN0wlp)right\
+   left(middle m_mapN0tlp)right\
 \
-   left(m_mapSTl)right\
-   left(m_mapSTc)right\
-   left(m_mapSTf)right\
+   left(middle m_mapSTl)right\
+   left(middle m_mapSTc)right\
+   left(middle m_mapSTf)right\
 \
-   left(m_mapN0l)right\
-   left(m_mapN0c)right\
-   left(m_mapN0f)right\
+   left(middle m_mapN0l)right\
+   left(middle m_mapN0c)right\
+   left(middle m_mapN0f)right\
 \
-   left(m_mapN1l)right\
-   left(m_mapN1c)right\
-   left(m_mapN1f)right
+   left(middle m_mapN1l)right\
+   left(middle m_mapN1c)right\
+   left(middle m_mapN1f)right
 
 namespace TARGET_LANGUAGE {
 
@@ -255,6 +255,8 @@ public:
    CLemmaMap m_mapN1l;
    CCoNLLCPOSMap m_mapN1c;
    CCoNLLFeatsMap m_mapN1f;
+
+   CMetaWeight m_meta;
 
 public:
 
