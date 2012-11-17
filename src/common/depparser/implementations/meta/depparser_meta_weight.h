@@ -14,6 +14,8 @@ namespace TARGET_LANGUAGE {
 
 namespace depparser {
 
+const static int META_TABLE_SIZE = 3;
+
 typedef CScoreMap<int, SCORE_TYPE> CMetaMap;
 
 /*===============================================================
@@ -22,9 +24,7 @@ typedef CScoreMap<int, SCORE_TYPE> CMetaMap;
  *
  *==============================================================*/
 
-class CMetaWeight {
-
-public:
+struct CMetaWeight {
 
    CMetaMap m_mapSTw;
    CMetaMap m_mapSTt;
@@ -87,7 +87,7 @@ public:
    CMetaMap m_mapSTtN0t;
 
    CMetaMap m_mapN0tN1t;
-   CTagSet3Map CMetaMap;
+   CMetaMap m_mapN0tN1tN2t;
    CMetaMap m_mapSTtN0tN1t;
    CMetaMap m_mapSTtN0tN0LDt;
    CMetaMap m_mapN0tN0LDtN0L2Dt;
@@ -132,6 +132,112 @@ public:
    CMetaMap m_mapN1c;
    CMetaMap m_mapN1f;
  
+   CMetaWeight() : m_mapSTw("MetaStackWord", META_TABLE_SIZE),
+                                               m_mapSTt("MetaStackTag", META_TABLE_SIZE),
+                                               m_mapSTwt("MetaStackWordTag", META_TABLE_SIZE),
+
+                                               m_mapN0w("MetaNextWord", META_TABLE_SIZE),
+                                               m_mapN0t("MetaNextTag", META_TABLE_SIZE),
+                                               m_mapN0wt("MetaNextWordTag", META_TABLE_SIZE),
+
+                                               m_mapN1w("MetaNext+1Word", META_TABLE_SIZE),
+                                               m_mapN1t("MetaNext+1Tag", META_TABLE_SIZE),
+                                               m_mapN1wt("MetaNext+1WordTag", META_TABLE_SIZE),
+
+                                               m_mapN2w("MetaNext+2Word", META_TABLE_SIZE),
+                                               m_mapN2t("MetaNext+2Tag", META_TABLE_SIZE),
+                                               m_mapN2wt("MetaNext+2WordTag", META_TABLE_SIZE),
+
+                                               m_mapSTHw("MetaStackHeadWord", META_TABLE_SIZE),
+                                               m_mapSTHt("MetaStackHeadTag", META_TABLE_SIZE),
+                                               m_mapSTi("MetaStackLabel", META_TABLE_SIZE),
+
+                                               m_mapSTHHw("MetaStackHeadHeadWord", META_TABLE_SIZE),
+                                               m_mapSTHHt("MetaStackHeadHeadTag", META_TABLE_SIZE),
+                                               m_mapSTHi("MetaStackLabel", META_TABLE_SIZE),
+
+                                               m_mapSTLDw("MetaStackLDWord", META_TABLE_SIZE),
+                                               m_mapSTLDt("MetaStackLDTag", META_TABLE_SIZE),
+                                               m_mapSTLDi("MetaStackLDLabel", META_TABLE_SIZE),
+
+                                               m_mapSTRDw("MetaStackRDWord", META_TABLE_SIZE),
+                                               m_mapSTRDt("MetaStackRDTag", META_TABLE_SIZE),
+                                               m_mapSTRDi("MetaStackRDLabel", META_TABLE_SIZE),
+
+                                               m_mapN0LDw("MetaNextLDWord", META_TABLE_SIZE),
+                                               m_mapN0LDt("MetaNextLDTag", META_TABLE_SIZE),
+                                               m_mapN0LDi("MetaNextLDLabel", META_TABLE_SIZE),
+
+                                               m_mapSTL2Dw("MetaStackL2DWord", META_TABLE_SIZE),
+                                               m_mapSTL2Dt("MetaStackL2DTag", META_TABLE_SIZE),
+                                               m_mapSTL2Di("MetaStackL2DLabel", META_TABLE_SIZE),
+
+                                               m_mapSTR2Dw("MetaStackR2DWord", META_TABLE_SIZE),
+                                               m_mapSTR2Dt("MetaStackR2DTag", META_TABLE_SIZE),
+                                               m_mapSTR2Di("MetaStackR2DLabel", META_TABLE_SIZE),
+
+                                               m_mapN0L2Dw("MetaNextL2DWord", META_TABLE_SIZE),
+                                               m_mapN0L2Dt("MetaNextL2DTag", META_TABLE_SIZE),
+                                               m_mapN0L2Di("MetaNextL2DLabel", META_TABLE_SIZE),
+
+                                               m_mapHTw("MetaHeadStackWord", META_TABLE_SIZE),
+                                               m_mapHTt("MetaHeadStackTag", META_TABLE_SIZE),
+                                               m_mapHTwt("MetaHeadStackWordTag", META_TABLE_SIZE),
+
+                                               m_mapSTwtN0wt("MetaStackWordTagNextWordTag", META_TABLE_SIZE),
+                                               m_mapSTwtN0w("MetaStackWordTagNextWord", META_TABLE_SIZE),
+                                               m_mapSTwN0wt("MetaStackWordNextWordTag", META_TABLE_SIZE),
+                                               m_mapSTtN0wt("MetaStackTagNextWordTag", META_TABLE_SIZE),
+                                               m_mapSTwtN0t("MetaStackWordTagNextTag", META_TABLE_SIZE),
+                                               m_mapSTwN0w("MetaStackWordNextWord", META_TABLE_SIZE),
+                                               m_mapSTtN0t("MetaStackTagNextTag", META_TABLE_SIZE),
+
+                                               m_mapN0tN1t("MetaNextTagNext+1Tag", META_TABLE_SIZE),
+                                               m_mapN0tN1tN2t("MetaNextTagTrigram", META_TABLE_SIZE),
+                                               m_mapSTtN0tN1t("MetaStackTagNextTagNext+1Tag", META_TABLE_SIZE),
+                                               m_mapSTtN0tN0LDt("MetaStackTagNextTagNextLDTag", META_TABLE_SIZE),
+                                               m_mapN0tN0LDtN0L2Dt("MetaStackTagNextTagNextLDTagNextTagNextL2DTag", META_TABLE_SIZE),
+                                               m_mapSTHtSTtN0t("MetaStackHeadTagStackTagNextTag", META_TABLE_SIZE),
+                                               m_mapHTtHT2tN0t("MetaHeadStackTagHeadStack2TagNextTag", META_TABLE_SIZE),
+                                               m_mapSTHHtSTHtSTt("MetaStackHeadHeadTagStackHeadTagStackTag", META_TABLE_SIZE),
+                                               m_mapSTtSTLDtN0t("MetaStackTagStackLDTagNextTag", META_TABLE_SIZE),
+                                               m_mapSTtSTLDtSTL2Dt("MetaStackTagStackLDTagStackL2DTag", META_TABLE_SIZE),
+                                               m_mapSTtSTRDtN0t("MetaStackTagStackRDTagNextTag", META_TABLE_SIZE),
+                                               m_mapSTtSTRDtSTR2Dt("MetaStackTagStackRDTagStackR2DTag", META_TABLE_SIZE),
+
+                                               m_mapSTwd("MetaStackWordDist", META_TABLE_SIZE),
+                                               m_mapSTtd("MetaStackTagDist", META_TABLE_SIZE),
+                                               m_mapN0wd("MetaNextWordDist", META_TABLE_SIZE),
+                                               m_mapN0td("MetaNextTagDist", META_TABLE_SIZE),
+                                               m_mapSTwN0wd("MetaStackWordNextWordDist", META_TABLE_SIZE),
+                                               m_mapSTtN0td("MetaStackTagNextTagDist", META_TABLE_SIZE),
+
+                                               m_mapSTwra("MetaStackWordRightArity", META_TABLE_SIZE),
+                                               m_mapSTtra("MetaStackTagRightArity", META_TABLE_SIZE),
+                                               m_mapSTwla("MetaStackWordLeftArity", META_TABLE_SIZE),
+                                               m_mapSTtla("MetaStackTagLeftArity", META_TABLE_SIZE),
+                                               m_mapN0wla("MetaNextWordRightArity", META_TABLE_SIZE),
+                                               m_mapN0tla("MetaNextTagRightArity", META_TABLE_SIZE),
+
+                                               m_mapSTwrp("MetaStackWordRightSetoftags", META_TABLE_SIZE),
+                                               m_mapSTtrp("MetaStackTagRightSetoftags", META_TABLE_SIZE),
+                                               m_mapSTwlp("MetaStackWordLeftSetoftags", META_TABLE_SIZE),
+                                               m_mapSTtlp("MetaStackTagLeftSetoftags", META_TABLE_SIZE),
+                                               m_mapN0wlp("MetaNext0WordLeftSetoftags", META_TABLE_SIZE),
+                                               m_mapN0tlp("MetaNext0TagLeftSetoftags", META_TABLE_SIZE),
+
+                                               m_mapSTl("MetaStackLemma", META_TABLE_SIZE),
+                                               m_mapSTc("MetaStackCPOS", META_TABLE_SIZE),
+                                               m_mapSTf("MetaStackFeats", META_TABLE_SIZE),
+
+                                               m_mapN0l("MetaNextLemma", META_TABLE_SIZE),
+                                               m_mapN0c("MetaNextCPOS", META_TABLE_SIZE),
+                                               m_mapN0f("MetaNextFeats", META_TABLE_SIZE),
+
+                                               m_mapN1l("MetaNext+1Lemma", META_TABLE_SIZE),
+                                               m_mapN1c("MetaNext+1CPOS", META_TABLE_SIZE),
+                                               m_mapN1f("MetaNext+1Feats", META_TABLE_SIZE) {}
+
 };
 
 };
