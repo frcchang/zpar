@@ -392,6 +392,13 @@ public:
 
    CMetaWeight m_meta;
 
+public:
+   CWeightPlusMeta(const std::string &sPath, bool bTrain) : CWeight(sPath, bTrain)
+   {}
+   virtual void loadScores();
+   virtual void saveScores();
+   void computeAverageFeatureWeights(int round);
+
 };
 
 };

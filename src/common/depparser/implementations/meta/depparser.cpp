@@ -19,7 +19,7 @@ const CWord g_emptyWord("");
 const CTaggedWord<CTag, TAG_SEPARATOR> g_emptyTaggedWord;
 const CTag g_noneTag = CTag::NONE;
 
-#define cast_weights static_cast<CWeight*>(m_weights)
+#define cast_weights static_cast<CWeightPlusMeta*>(m_weights)
 #define refer_or_allocate_tuple2(x, o1, o2) { if (amount == 0) x.refer(o1, o2); else x.allocate(o1, o2); }
 #define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
 #define _conll_or_empty(x) (x == "_" ? "" : x)
