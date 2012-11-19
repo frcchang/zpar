@@ -55,6 +55,7 @@ private:
    std::vector< CCoNLLCPOS > m_lCacheCoNLLCPOS; // conll
    std::vector< std::vector<CCoNLLFeats> > m_lCacheCoNLLFeats; // conll
 
+   depparser::CWeight *m_freq; // meta category information
 
    int m_nTrainingRound;
    int m_nTotalErrors;
@@ -66,7 +67,8 @@ public:
    CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(AGENDA_SIZE);
       m_Beam = new CAgendaSimple<depparser::action::CScoredAction>(AGENDA_SIZE);
-      m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
+      m_weights = new depparser :: CWeightPlusMeta(sFeatureDBPath, bTrain);
+      m_freq = 0;
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
 //      m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; 
@@ -76,9 +78,15 @@ public:
       delete m_Agenda;
       delete m_Beam;
       delete m_weights;
+      if (m_freq) delete m_freq;
    }
    CDepParser( CDepParser &depparser) : CDepParserBase(depparser) { 
       assert(1==0);
+   }
+
+public:
+   void loadMeta(const std::string &sPath) {
+      m_freq = new depparser::CWeight(sPath, false);
    }
 
 public:
