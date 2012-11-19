@@ -256,8 +256,6 @@ public:
    CCoNLLCPOSMap m_mapN1c;
    CCoNLLFeatsMap m_mapN1f;
 
-   CMetaWeight m_meta;
-
 public:
 
    CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
@@ -380,6 +378,20 @@ public:
    void computeAverageFeatureWeights(int round);
    SCORE_TYPE dotProduct(const CWeight &w);
  
+};
+
+/*===============================================================
+ *
+ * CWeightPlusMeta - the definition of weights + meta, in feature
+ *
+ *==============================================================*/
+
+class CWeightPlusMeta : public CWeight {
+
+public:
+
+   CMetaWeight m_meta;
+
 };
 
 };
