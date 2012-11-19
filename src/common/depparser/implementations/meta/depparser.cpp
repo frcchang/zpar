@@ -23,6 +23,21 @@ const CTag g_noneTag = CTag::NONE;
 #define refer_or_allocate_tuple2(x, o1, o2) { if (amount == 0) x.refer(o1, o2); else x.allocate(o1, o2); }
 #define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
 #define _conll_or_empty(x) (x == "_" ? "" : x)
+#define normal_and_meta(x, f) \
+   cast_weights->x.getOrUpdateScore(retval, f, action, m_nScoreIndex, amount, round); \
+   m_freq->x.getScore(freq, f, action, CScore<depparser::SCORE_TYPE>::eNonAverage); \
+   if (amount) { \
+      if (freq[action]) { \
+         cast_weights.m_meta->x.updateScore(freq[action], amount, round); \
+      } \
+   } \
+   else { \
+      for (i=0; i<action::MAX; ++i) { \
+         if (freq[i]) { \
+            retval[i] += cast_weights.m_meta->x.getScore(freq[i], m_nScoreIndex); \
+         } \
+      } \
+   }
 
 /*===============================================================
  *
