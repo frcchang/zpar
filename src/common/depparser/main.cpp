@@ -30,11 +30,11 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    int time_start = clock();
 
    CDepParser parser(sFeatureFile, false) ;
-#ifef SUPPORT_META_FEATURE_DEFINITIONS
+#ifdef SUPPORT_META_FEATURE_DEFINITIONS
    if (!sMetaPath.empty() )
       parser.loadMeta(sMetaPath);
 #endif
-   CSentenceReader *input_reader(sInputFile);
+   CSentenceReader *input_reader;
    std::ifstream *is;
    std::ofstream os(sOutputFile.c_str());
    std::ofstream *os_scores=0;
@@ -67,20 +67,30 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       os_scores = new std::ofstream(std::string(sOutputFile+".scores").c_str());
    }
 
-   outout_sent = new CDependencyParse[nBest];
+   if (bCoNLL)
+      output_conll = new CCoNLLOutput[nBest];
+   else
+      outout_sent = new CDependencyParse[nBest];
  
    // Read the next example
-   bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
+   if (bCoNLL)
+      bReadSuccessful = ( (*is) >> input_conll );
+   else
+      bReadSuccessful = input_reader->readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
    while( bReadSuccessful ) {
 
       TRACE("Sentence " << nCount);
       ++ nCount;
 
       // check size
-      if (input_sent.size() > depparser::MAX_SENTENCE_SIZE) {
+      if ( (bCoNLL && input_conll.size() > depparser::MAX_SENTENCE_SIZE) ||
+           (!bCoNLL && input_sent.size() > depparser::MAX_SENTENCE_SIZE) ) {
          WARNING("The sentence is longer than system limitation, skipping it.");
          for (unsigned i=0; i<nBest; ++i) {
-            outout_sent[i].clear();
+            if (bCoNLL) 
+               output_conll[i].clear();
+            else
+               outout_sent[i].clear();
             if (bScores) scores[i]=0;
          }
       }
@@ -88,17 +98,18 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
 
          // Find decoder outout
          if (supertags) {
-            supertags->setSentenceSize( input_sent.size() );
+            if (bCoNLL)
+               supertags->setSentenceSize( input_conll.size() );
+            else
+               supertags->setSentenceSize( input_sent.size() );
             (*is_supertags) >> *supertags;
          }
 
-         parser.parse( input_sent , outout_sent , nBest , scores ) ;
+         if (bCoNLL)
+            parser.parse_conll( input_conll , output_conll , nBest , scores );
+         else
+            parser.parse( input_sent , outout_sent , nBest , scores ) ;
 
-//         if (supertags && outout_sent->empty()) {
-//            parser.setSuperTags(0);
-//            parser.parse( input_sent , outout_sent , nBest , scores ) ;
-//            parser.setSuperTags(supertags);
-//         }
       }
       
       // Ouptut sent
@@ -108,10 +119,16 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       }
       
       // Read the next example
-      bReadSuccessful = input_reader.readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
+      if (bCoNLL)
+         bReadSuccessful = ( (*is) >> input_conll );
+      else
+         bReadSuccessful = input_reader->readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
    }
 
-   delete [] outout_sent ;
+   if (bCoNLL)
+      delete [] output_conll;
+   else
+      delete [] outout_sent ;
    os.close();
 
    if (bScores) {
@@ -119,6 +136,11 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       delete os_scores;
       delete []scores;
    }
+
+   if (bCoNLL)
+      delete is;
+   else
+      delete input_reader;
 
    if (supertags) {
       delete supertags;
