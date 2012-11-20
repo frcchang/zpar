@@ -22,12 +22,16 @@ using namespace TARGET_LANGUAGE;
  *
  *===============================================================*/
 
-void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const bool &bRules, const std::string &sSuperPath, const bool &bCoNLL, const bool &bExtract) {
+void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const bool &bRules, const std::string &sSuperPath, const bool &bCoNLL, const bool &bExtract, const std::string &sMetaPath) {
 
    std::cout << "Training iteration is started..." << std::endl ; std::cout.flush();
 
    CDepParser parser(sFeatureFile, true, bCoNLL);
    parser.setRules(bRules);
+#ifdef SUPPORT_META_FEATURE_DEFINITION
+   if (!sMetaPath.empty() )
+      parser.loadMeta(sMetaPath);
+#endif
 
    std::ifstream is(sOutputFile.c_str());
    assert(is.is_open());
@@ -106,6 +110,9 @@ int main(int argc, char* argv[]) {
 #ifdef SUPPORT_FEATURE_EXTRACTION
       configurations.defineConfiguration("f", "", "extract features only: weights will be counts", "");
 #endif
+#ifdef SUPPORT_META_FEATURE_DEFINITION
+      configurations.defineConfiguration("t", "path", "meta feature types", "");
+#endif
       if (options.args.size() != 4) {
          std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
          std::cout << configurations.message() << std::endl;
@@ -126,11 +133,15 @@ int main(int argc, char* argv[]) {
 #ifdef SUPPORT_FEATURE_EXTRACTION
       bExtract = configurations.getConfiguration("f").empty() ? false : true;
 #endif
+   std::string sMetaPath;
+#ifdef SUPPORT_META_FEATURE_DEFINITION
+      sMetaPath = configurations.getConfiguration("t");
+#endif
 
       std::cout << "Training started" << std::endl;
       int time_start = clock();
       for (int i=0; i<training_rounds; ++i) 
-         auto_train(options.args[1], options.args[2], bRules, sSuperPath, bCoNLL, bExtract);
+         auto_train(options.args[1], options.args[2], bRules, sSuperPath, bCoNLL, bExtract, sMetaPath);
       std::cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
    
       return 0;
