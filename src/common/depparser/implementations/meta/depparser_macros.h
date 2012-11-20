@@ -35,6 +35,7 @@ typedef long SCORE_TYPE ;
 
 // the implementation supports the extraction of features as a command
 #define SUPPORT_FEATURE_EXTRACTION
+#define SUPPORT_META_FEATURE_DEFINITION
 
 // The size of a sentence and the words
 const unsigned MAX_SENTENCE_SIZE = 256 ; 
