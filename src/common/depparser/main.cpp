@@ -210,11 +210,6 @@ void process_conll(const std::string sInputFile, const std::string sOutputFile, 
 
          parser.parse_conll( input_sent , outout_sent , nBest , scores ) ;
 
-//         if (supertags && outout_sent->empty()) {
-//            parser.setSuperTags(0);
-//            parser.parse( input_sent , outout_sent , nBest , scores ) ;
-//            parser.setSuperTags(supertags);
-//         }
       }
       
       // Ouptut sent
