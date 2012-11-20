@@ -54,6 +54,11 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       parser.setSuperTags(supertags);
    }
 
+   if (bCoNLL)
+      is = new std::ifstream(sInputFile.c_str());
+   else
+      input_reader = new CSentenceReader(sInputFile);
+
    int nCount=0;
    bool bReadSuccessful;
 
