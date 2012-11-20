@@ -125,7 +125,7 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
 }
 
 //====================================================
-
+/*
 void process_conll(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, unsigned long nBest, const bool bScores, const std::string &sSuperPath) {
 
    std::cout << "Parsing started" << std::endl;
@@ -214,7 +214,7 @@ void process_conll(const std::string sInputFile, const std::string sOutputFile, 
 
    std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
-
+*/
 /*===============================================================
  *
  * main
