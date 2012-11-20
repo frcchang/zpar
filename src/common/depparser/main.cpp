@@ -222,6 +222,9 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("n", "N", "N best list outout", "1");
       configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
       configurations.defineConfiguration("p", "path", "supertags", "");
+#ifdef SUPPORT_META_FEATURE_DEFINITIONS
+      configurations.defineConfiguration("t", "path", "meta feature types", "");
+#endif
       // check arguments
       if (options.args.size() != 4) {
          std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
@@ -238,6 +241,10 @@ int main(int argc, char* argv[]) {
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
       std::string sSuperPath = configurations.getConfiguration("p");
+      std::string sMetaPath;
+#ifdef SUPPORT_META_FEATURE_DEFINITIONS
+      sMetaPath = configurations.getConfiguration("t");
+#endif
    
       if (bCoNLL)
          process_conll(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
