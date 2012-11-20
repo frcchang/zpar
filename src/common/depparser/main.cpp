@@ -23,20 +23,27 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, unsigned long nBest, const bool bScores, const std::string &sSuperPath) {
+void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, unsigned long nBest, const bool bScores, const std::string &sSuperPath, bool bCoNLL, const std::string &sMetaPath) {
 
    std::cout << "Parsing started" << std::endl;
 
    int time_start = clock();
 
    CDepParser parser(sFeatureFile, false) ;
-   CSentenceReader input_reader(sInputFile);
+#ifef SUPPORT_META_FEATURE_DEFINITIONS
+   if (!sMetaPath.empty() )
+      parser.loadMeta(sMetaPath);
+#endif
+   CSentenceReader *input_reader(sInputFile);
+   std::ifstream *is;
    std::ofstream os(sOutputFile.c_str());
    std::ofstream *os_scores=0;
    depparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
    CTwoStringVector input_sent;
+   CCoNLLInput input_conll;
    CDependencyParse *outout_sent; 
+   CCoNLLOutput *output_conll;
    depparser::CSuperTag *supertags;
    std::ifstream *is_supertags = 0;
 
@@ -246,10 +253,10 @@ int main(int argc, char* argv[]) {
       sMetaPath = configurations.getConfiguration("t");
 #endif
    
-      if (bCoNLL)
-         process_conll(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
-      else
-         process(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
+//      if (bCoNLL)
+//         process_conll(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
+//      else
+      process(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath, bCoNLL, sMetaPath);
       return 0;
    } catch (const std::string &e) {
       std::cerr << "Error: " << e << std::endl;
