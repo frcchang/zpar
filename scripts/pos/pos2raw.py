@@ -12,14 +12,17 @@ n=0
 count = 0
 line=file.readline().strip()
 while line:
+   n += 1
    output_line = []
    wordls = line.split(" ")
    for word in wordls:
       lwordtag = word.split("/")
       if len(lwordtag) > 2:
          lword = lwordtag[:-1]
-         for sword in lword[:-1]:
-            assert sword[-1] == '\\'
+#         for sword in lword[:-1]:
+#            if sword[-1] != '\\':
+#               print 'In line', n, 'two \s word.'
+#               sys.exit(1)
       word = "/".join(lwordtag[:-1])
       tag = lwordtag[-1]
       output_line.append(word)

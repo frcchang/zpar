@@ -36,25 +36,25 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
    }
 
 #ifdef LABELED
-   getline(file, s);
-   ASSERT(s=="Dependency labels:", "Dependency labels not found in model file") ;
-   getline(file, s);
-   std::istringstream iss(s);
-   CDependencyLabel label;
-   while(iss >> label);
-   getline(file, s);
-   ASSERT(s=="", "No empty line after the dependency labels") ;
+//   getline(file, s);
+//   ASSERT(s=="Dependency labels:", "Dependency labels not found in model file") ;
+//   getline(file, s);
+//   std::istringstream iss(s);
+//   CDependencyLabel label;
+//   while(iss >> label);
+//   getline(file, s);
+//   ASSERT(s=="", "No empty line after the dependency labels") ;
 #endif
    iterate_templates(file >>,,;);
 
-   getline(file, s);
-   if (s=="Rules=1") {
-      setRules(true);
-   }
-   else {
-      ASSERT(s=="Rules=0", "Rules flag not found from the model file");
-      setRules(false);
-   }
+//   getline(file, s);
+//   if (s=="Rules=1") {
+//      setRules(true);
+//   }
+//   else {
+//      ASSERT(s=="Rules=0", "Rules flag not found from the model file");
+//      setRules(false);
+//   }
 
    file.close() ;
    std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
@@ -76,17 +76,17 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
    file.open(m_sRecordPath.c_str()) ;
 
 #ifdef LABELED
-   file << "Dependency labels:" << std::endl;
-   for (unsigned label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label)
-      file << CDependencyLabel(label) << ' ';
-   file << std::endl << std::endl;
+//   file << "Dependency labels:" << std::endl;
+//   for (unsigned label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label)
+//      file << CDependencyLabel(label) << ' ';
+//   file << std::endl << std::endl;
 #endif
    iterate_templates(file<<,,;)
 #ifdef DEBUG
    iterate_templates(,,.trace(););
 #endif
-   if (m_bRules) file << "Rules=1" << std::endl;
-   else file << "Rules=0" << std::endl;
+//   if (m_bRules) file << "Rules=1" << std::endl;
+//   else file << "Rules=0" << std::endl;
 
    file.close();
    std::cout<<" done."<<std::endl;

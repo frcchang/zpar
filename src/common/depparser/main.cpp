@@ -30,7 +30,7 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    int time_start = clock();
 
    CDepParser parser(sFeatureFile, false) ;
-#ifdef SUPPORT_META_FEATURE_DEFINITIONS
+#ifdef SUPPORT_META_FEATURE_DEFINITION
    if (!sMetaPath.empty() )
       parser.loadMeta(sMetaPath);
 #endif
@@ -251,7 +251,7 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("n", "N", "N best list outout", "1");
       configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
       configurations.defineConfiguration("p", "path", "supertags", "");
-#ifdef SUPPORT_META_FEATURE_DEFINITIONS
+#ifdef SUPPORT_META_FEATURE_DEFINITION
       configurations.defineConfiguration("t", "path", "meta feature types", "");
 #endif
       // check arguments
@@ -271,7 +271,7 @@ int main(int argc, char* argv[]) {
       bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
       std::string sSuperPath = configurations.getConfiguration("p");
       std::string sMetaPath;
-#ifdef SUPPORT_META_FEATURE_DEFINITIONS
+#ifdef SUPPORT_META_FEATURE_DEFINITION
       sMetaPath = configurations.getConfiguration("t");
 #endif
    

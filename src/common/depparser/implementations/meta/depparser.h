@@ -68,6 +68,7 @@ public:
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(AGENDA_SIZE);
       m_Beam = new CAgendaSimple<depparser::action::CScoredAction>(AGENDA_SIZE);
       m_weights = new depparser :: CWeightPlusMeta(sFeatureDBPath, bTrain);
+      m_weights->loadScores();
       m_freq = 0;
       m_nTrainingRound = 0; 
       m_nTotalErrors = 0;
@@ -87,6 +88,7 @@ public:
 public:
    void loadMeta(const std::string &sPath) {
       m_freq = new depparser::CWeight(sPath, false);
+      m_freq->loadScores();
    }
 
 public:
@@ -99,8 +101,8 @@ public:
    void extract_features_conll( const CCoNLLOutput &input ) ;
 
    void finishtraining() {
-      static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
-      static_cast<depparser::CWeight*>(m_weights)->saveScores();
+      static_cast<depparser::CWeightPlusMeta*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
+      static_cast<depparser::CWeightPlusMeta*>(m_weights)->saveScores();
       std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
