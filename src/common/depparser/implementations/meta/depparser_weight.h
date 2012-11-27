@@ -365,7 +365,9 @@ public:
                                                m_mapN1l("Next+1Lemma", DEP_TABLE_SIZE),
                                                m_mapN1c("Next+1CPOS", DEP_TABLE_SIZE),
                                                m_mapN1f("Next+1Feats", DEP_TABLE_SIZE)
-   { loadScores(); }
+   { 
+//      loadScores(); 
+   }
 
    virtual ~CWeight() {
 //      iterate_templates(,.freePoolMemory(););
