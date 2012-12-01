@@ -131,6 +131,12 @@ struct CMetaWeight {
    CMetaMap m_mapN1l;
    CMetaMap m_mapN1c;
    CMetaMap m_mapN1f;
+
+   CMetaMap m_mapSTwN0wN1w;
+   CMetaMap m_mapSTHwSTwN0w;
+   CMetaMap m_mapSTwSTLDwN0w;
+   CMetaMap m_mapSTwSTRDwN0w;
+   CMetaMap m_mapSTwN0wN0LDw;
  
    CMetaWeight() : m_mapSTw("MetaStackWord", META_TABLE_SIZE),
                                                m_mapSTt("MetaStackTag", META_TABLE_SIZE),
@@ -236,7 +242,14 @@ struct CMetaWeight {
 
                                                m_mapN1l("MetaNext+1Lemma", META_TABLE_SIZE),
                                                m_mapN1c("MetaNext+1CPOS", META_TABLE_SIZE),
-                                               m_mapN1f("MetaNext+1Feats", META_TABLE_SIZE) {}
+                                               m_mapN1f("MetaNext+1Feats", META_TABLE_SIZE),
+
+                                               m_mapSTwN0wN1w("StackWordNextWordNext+1Word", META_TABLE_SIZE),
+                                               m_mapSTHwSTwN0w("StackHeadWordStackWordNextWord", META_TABLE_SIZE),
+                                               m_mapSTwSTLDwN0w("StackWordStackLDWordNextWord", META_TABLE_SIZE),
+                                               m_mapSTwSTRDwN0w("StackWordStackRDWordNextWord", META_TABLE_SIZE),
+                                               m_mapSTwN0wN0LDw("StackWordNextWordNextLDWord", META_TABLE_SIZE) {}
+
 
 };
 

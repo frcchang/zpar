@@ -106,7 +106,13 @@
 \
    left(middle m_mapN1l)right\
    left(middle m_mapN1c)right\
-   left(middle m_mapN1f)right
+   left(middle m_mapN1f)right \
+\
+   left(middle m_mapSTwN0wN1w)right\
+   left(middle m_mapSTHwSTwN0w)right\
+   left(middle m_mapSTwSTLDwN0w)right\
+   left(middle m_mapSTwSTRDwN0w)right\
+   left(middle m_mapSTwN0wN0LDw)right
 
 namespace TARGET_LANGUAGE {
 
@@ -135,6 +141,7 @@ typedef CPackedScoreMap<CTuple3<CTag, CTag, int>, SCORE_TYPE, action::MAX> CTagT
 typedef CPackedScoreMap<CTuple3<CWord, CWord, int>, SCORE_TYPE, action::MAX> CWordWordIntMap;
 typedef CPackedScoreMap<CTuple2< CWord, CSetOfTags<CDependencyLabel> >, SCORE_TYPE, action::MAX> CWordSetOfLabelsMap;
 typedef CPackedScoreMap<CTuple2< CTag, CSetOfTags<CDependencyLabel> >, SCORE_TYPE, action::MAX> CTagSetOfLabelsMap;
+typedef CPackedScoreMap<CTuple3< CWord, CWord, CWord >, SCORE_TYPE, action::MAX> CWordWordWordMap;
 
 typedef CPackedScoreMap<CLemma, SCORE_TYPE, action::MAX> CLemmaMap;
 typedef CPackedScoreMap<CCoNLLCPOS, SCORE_TYPE, action::MAX> CCoNLLCPOSMap;
@@ -256,6 +263,12 @@ public:
    CCoNLLCPOSMap m_mapN1c;
    CCoNLLFeatsMap m_mapN1f;
 
+   CWordWordWordMap m_mapSTwN0wN1w;
+   CWordWordWordMap m_mapSTHwSTwN0w;
+   CWordWordWordMap m_mapSTwSTLDwN0w;
+   CWordWordWordMap m_mapSTwSTRDwN0w;
+   CWordWordWordMap m_mapSTwN0wN0LDw;
+
 public:
 
    CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
@@ -364,7 +377,13 @@ public:
 
                                                m_mapN1l("Next+1Lemma", DEP_TABLE_SIZE),
                                                m_mapN1c("Next+1CPOS", DEP_TABLE_SIZE),
-                                               m_mapN1f("Next+1Feats", DEP_TABLE_SIZE)
+                                               m_mapN1f("Next+1Feats", DEP_TABLE_SIZE), 
+
+                                               m_mapSTwN0wN1w("StackWordNextWordNext+1Word", DEP_TABLE_SIZE),
+                                               m_mapSTHwSTwN0w("StackHeadWordStackWordNextWord", DEP_TABLE_SIZE),
+                                               m_mapSTwSTLDwN0w("StackWordStackLDWordNextWord", DEP_TABLE_SIZE),
+                                               m_mapSTwSTRDwN0w("StackWordStackRDWordNextWord", DEP_TABLE_SIZE),
+                                               m_mapSTwN0wN0LDw("StackWordNextWordNextLDWord", DEP_TABLE_SIZE)
    { 
 //      loadScores(); 
    }
