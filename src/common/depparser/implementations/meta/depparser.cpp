@@ -160,6 +160,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple3<CWord, CTag, CTag> word_tag_tag;
    static CTuple3<CWord, CWord, CTag> word_word_tag;
    static CTuple3<CWord, CWord, int> word_word_int;
+   static CTuple3<CWord, CWord, CWord> word_word_word;
    static CTuple3<CTag, CTag, int> tag_tag_int;
    static CTuple2<CWord, CSetOfTags<CDependencyLabel> > word_tagset;
    static CTuple2<CTag, CSetOfTags<CDependencyLabel> > tag_tagset;
@@ -256,15 +257,25 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       normal_and_meta( m_mapN0tN1t, (CTagSet<CTag,2>(encodeTags(n0_tag,n1_tag))) );
       normal_and_meta(m_mapN0tN1tN2t, (CTagSet<CTag,3>(encodeTags(n0_tag,n1_tag,n2_tag))) );
       normal_and_meta( m_mapSTtN0tN1t, (CTagSet<CTag,3>(encodeTags(st_tag,n0_tag,n1_tag))) );
+      refer_or_allocate_tuple3(word_word_word, &st_word, &n0_word, &n1_word);
+      normal_and_meta( m_mapSTwN0wN1w, word_word_word );
       normal_and_meta( m_mapSTtN0tN0LDt, (CTagSet<CTag,3>(encodeTags(st_tag,n0_tag,n0ld_tag))) );
+      refer_or_allocate_tuple3(word_word_word, &st_word, &n0_word, &n0ld_word);
+      normal_and_meta( m_mapSTwN0wN0LDw, word_word_word );
       normal_and_meta(m_mapN0tN0LDtN0L2Dt, (CTagSet<CTag,3>(encodeTags(n0_tag,n0ld_tag,n0l2d_tag))) );
    }
    if (st_index!=-1) {
       normal_and_meta( m_mapSTHtSTtN0t, (CTagSet<CTag,3>(encodeTags(sth_tag,st_tag,n0_tag))) );
+      refer_or_allocate_tuple3(word_word_word, &sth_word, &st_word, &n0_word);
+      normal_and_meta( m_mapSTHwSTwN0w, word_word_word );
       normal_and_meta( m_mapSTHHtSTHtSTt, (CTagSet<CTag,3>(encodeTags(sthh_tag,sth_tag,st_tag))) );
       normal_and_meta( m_mapSTtSTLDtN0t, (CTagSet<CTag,3>(encodeTags(st_tag,stld_tag,n0_tag))) );
+      refer_or_allocate_tuple3(word_word_word, &st_word, &stld_word, &n0_word);
+      normal_and_meta( m_mapSTwSTLDwN0w, word_word_word );
       normal_and_meta( m_mapSTtSTLDtSTL2Dt, (CTagSet<CTag,3>(encodeTags(st_tag,stld_tag,stl2d_tag))) );
       normal_and_meta( m_mapSTtSTRDtN0t, (CTagSet<CTag,3>(encodeTags(st_tag,strd_tag,n0_tag))) );
+      refer_or_allocate_tuple3(word_word_word, &st_word, &strd_word, &n0_word);
+      normal_and_meta( m_mapSTwSTRDwN0w, word_word_word );
       normal_and_meta( m_mapSTtSTRDtSTR2Dt, (CTagSet<CTag,3>(encodeTags(st_tag,strd_tag,str2d_tag))) );
    }
 
