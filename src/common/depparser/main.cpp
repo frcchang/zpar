@@ -29,7 +29,7 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
 
    int time_start = clock();
 
-   CDepParser parser(sFeatureFile, false) ;
+   CDepParser parser(sFeatureFile, false, bCoNLL) ;
 #ifdef SUPPORT_META_FEATURE_DEFINITION
    if (!sMetaPath.empty() )
       parser.loadMeta(sMetaPath);
@@ -54,6 +54,8 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       parser.setSuperTags(supertags);
    }
 
+   is = 0;
+   input_reader = 0;
    if (bCoNLL)
       is = new std::ifstream(sInputFile.c_str());
    else
@@ -67,6 +69,8 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       os_scores = new std::ofstream(std::string(sOutputFile+".scores").c_str());
    }
 
+   output_conll = 0;
+   outout_sent = 0;
    if (bCoNLL)
       output_conll = new CCoNLLOutput[nBest];
    else
@@ -114,7 +118,10 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       
       // Ouptut sent
       for (unsigned i=0; i<nBest; ++i) {
-         os << outout_sent[i] ;
+         if (bCoNLL)
+            os << output_conll[i];
+         else
+            os << outout_sent[i] ;
          if (bScores) *os_scores << scores[i] << std::endl;
       }
       
