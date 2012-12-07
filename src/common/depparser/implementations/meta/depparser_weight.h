@@ -112,7 +112,13 @@
    left(middle m_mapSTHwSTwN0w)right\
    left(middle m_mapSTwSTLDwN0w)right\
    left(middle m_mapSTwSTRDwN0w)right\
-   left(middle m_mapSTwN0wN0LDw)right
+   left(middle m_mapSTwN0wN0LDw)right\
+\
+   left(middle m_mapSTwN0wN1t)right\
+   left(middle m_mapSTHtSTwN0w)right\
+   left(middle m_mapSTwSTLDtN0w)right\
+   left(middle m_mapSTwSTRDtN0w)right\
+   left(middle m_mapSTwN0wN0LDt)right
 
 namespace TARGET_LANGUAGE {
 
@@ -269,6 +275,12 @@ public:
    CWordWordWordMap m_mapSTwSTRDwN0w;
    CWordWordWordMap m_mapSTwN0wN0LDw;
 
+   CWordWordTagMap m_mapSTwN0wN1t;
+   CWordWordTagMap m_mapSTHtSTwN0w;
+   CWordWordTagMap m_mapSTwSTLDtN0w;
+   CWordWordTagMap m_mapSTwSTRDtN0w;
+   CWordWordTagMap m_mapSTwN0wN0LDt;
+
 public:
 
    CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
@@ -383,7 +395,13 @@ public:
                                                m_mapSTHwSTwN0w("StackHeadWordStackWordNextWord", DEP_TABLE_SIZE),
                                                m_mapSTwSTLDwN0w("StackWordStackLDWordNextWord", DEP_TABLE_SIZE),
                                                m_mapSTwSTRDwN0w("StackWordStackRDWordNextWord", DEP_TABLE_SIZE),
-                                               m_mapSTwN0wN0LDw("StackWordNextWordNextLDWord", DEP_TABLE_SIZE)
+                                               m_mapSTwN0wN0LDw("StackWordNextWordNextLDWord", DEP_TABLE_SIZE),
+
+                                               m_mapSTwN0wN1t("StackWordNextWordNext+1Tag", DEP_TABLE_SIZE),
+                                               m_mapSTHtSTwN0w("StackHeadTagStackWordNextWord", DEP_TABLE_SIZE),
+                                               m_mapSTwSTLDtN0w("StackWordStackLDTagNextWord", DEP_TABLE_SIZE),
+                                               m_mapSTwSTRDtN0w("StackWordStackRDTagNextWord", DEP_TABLE_SIZE),
+                                               m_mapSTwN0wN0LDt("StackWordNextWordNextLDTag", DEP_TABLE_SIZE)
    { 
 //      loadScores(); 
    }
