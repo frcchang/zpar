@@ -139,6 +139,7 @@ void TARGET_LANGUAGE::depparser::CWeightPlusMeta::loadScores() {
 #endif
    iterate_templates(file >>,,;);
    iterate_templates(file >>,m_meta.,;);
+   iterate_templates(file >>,m_metapos.,;);
 
    getline(file, s);
    if (s=="Rules=1") {
@@ -176,9 +177,11 @@ void TARGET_LANGUAGE::depparser::CWeightPlusMeta::saveScores() {
 #endif
    iterate_templates(file<<,,;)
    iterate_templates(file<<,m_meta.,;)
+   iterate_templates(file<<,m_metapos.,;)
 #ifdef DEBUG
    iterate_templates(,,.trace(););
    iterate_templates(,m_meta.,.trace(););
+   iterate_templates(,m_metapos.,.trace(););
 #endif
    if (m_bRules) file << "Rules=1" << std::endl;
    else file << "Rules=0" << std::endl;
@@ -197,6 +200,7 @@ void TARGET_LANGUAGE::depparser::CWeightPlusMeta::computeAverageFeatureWeights(i
    std::cout<<"Computing averaged (total) feature vector..."; std::cout.flush();
    iterate_templates(,,.computeAverage(round);) ;
    iterate_templates(,m_meta.,.computeAverage(round);) ;
+   iterate_templates(,m_metapos.,.computeAverage(round);) ;
 
    std::cout<<"done."<<std::endl;
 }

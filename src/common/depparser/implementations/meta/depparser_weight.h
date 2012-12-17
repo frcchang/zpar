@@ -12,6 +12,7 @@
 
 #include "depparser_weight_base.h"
 #include "depparser_meta_weight.h"
+#include "depparser_metapos_weight.h"
 
 #define iterate_templates(left, middle, right) \
    left(middle m_mapSTw)right\
@@ -430,6 +431,7 @@ class CWeightPlusMeta : public CWeight {
 public:
 
    CMetaWeight m_meta;
+   CMetaPOSWeight m_metapos;
 
 public:
    CWeightPlusMeta(const std::string &sPath, bool bTrain) : CWeight(sPath, bTrain)
