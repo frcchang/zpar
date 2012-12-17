@@ -31,12 +31,16 @@ const CTag g_noneTag = CTag::NONE;
       if (amount) { \
          if (freq[action]) { \
             cast_weights->m_meta.x.updateScore(freq[action], amount, round); \
+            ti.allocate(&st_tag, &(freq[action])); \
+            cast_weights->m_metapos.x.updateScore(ti, amount, round); \
          } \
       } \
       else { \
          for (long i=0; i<action::MAX; ++i) { \
             if (freq[i]) { \
+               ti.refer(&st_tag, &(freq[i])); \
                retval[i] += cast_weights->m_meta.x.getScore(freq[i], m_nScoreIndex); \
+               retval[i] += cast_weights->m_metapos.x.getScore(ti, m_nScoreIndex); \
             } \
          } \
       } \
@@ -164,6 +168,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple3<CTag, CTag, int> tag_tag_int;
    static CTuple2<CWord, CSetOfTags<CDependencyLabel> > word_tagset;
    static CTuple2<CTag, CSetOfTags<CDependencyLabel> > tag_tagset;
+
+   static CTuple2<CTag, long> ti;
 
    // single
    if (st_index != -1) {
