@@ -519,6 +519,10 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 
    const CStateItem *pGenerator ;
    static CStateItem pCandidate(&m_lCache) ;
+#ifdef USE_MAXPREC
+   CStateItem *pMaxPrec ;
+   double prec, maxprec ;
+#endif
 
    // used only for training
    static bool bCorrect ;  // used in learning for early update
@@ -689,15 +693,16 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          }
 #endif
 
-         if (bCorrect) {
-#ifdef LABELED
-            correctState.StandardMoveStep(correct, m_lCacheLabel);
-#else
-            correctState.StandardMoveStep(correct);
-#endif
-         }
 #ifdef LOCAL_LEARNING
          ++m_nTrainingRound; // each training round is one transition-action
+#else
+
+#ifdef LABELED
+         correctState.StandardMoveStep(correct, m_lCacheLabel);
+#else
+         correctState.StandardMoveStep(correct);
+#endif
+
 #endif
       } 
       
@@ -706,12 +711,25 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 
    if (bTrain) {
       correctState.StandardFinish(); // pop the root that is left
+#ifdef USE_MAXPREC
+      pMaxPrec = 0;
+      for (int i=0; i<m_Agenda->generatorSize();++i) {
+         prec = m_Agenda->generator(i)->precision(correct);
+         if (!pMaxPrec || maxprec < prec) {
+            pMaxPrec = m_Agenda->generator(i);
+            maxprec = prec;
+         }
+      }
+      if (m_Agenda->bestGenerator() != pMaxPrec)
+         updateScoresForStates(m_Agenda->bestGenerator(), pMaxPrec, 1, -1) ;
+#else
       // then make sure that the correct item is stack top finally
       if ( *(m_Agenda->bestGenerator()) != correctState ) {
          TRACE("The best item is not the correct one")
          updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
          return ;
       }
+#endif
    } 
 
    TRACE("Outputing sentence");

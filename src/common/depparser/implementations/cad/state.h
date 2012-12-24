@@ -453,7 +453,13 @@ public:
    }
 
 
-
+   double precision( const CDependencyParse &reference) {
+      double correct = 0;
+     for (int i=0; i<reference.size(); ++i)
+         if (m_lHeads[i] == reference[i].head)
+            ++correct;
+      return correct/reference.size();
+   }
 
 };
 
