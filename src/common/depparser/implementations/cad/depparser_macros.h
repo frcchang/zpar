@@ -8,7 +8,7 @@
 //#define EARLY_UPDATE
 
 // maxprec
-//#define USE_MAXPREC
+#define USE_MAXPREC
 
 // local training? it will affect the setting of early update and agenda size
 // if you want to experiment with local training, define this when you train

@@ -697,11 +697,16 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          ++m_nTrainingRound; // each training round is one transition-action
 #else
 
+         unsigned long action;
 #ifdef LABELED
-         correctState.StandardMoveStep(correct, m_lCacheLabel);
+         action = correctState.StandardMoveStep(correct, m_lCacheLabel);
 #else
-         correctState.StandardMoveStep(correct);
+         action = correctState.StandardMoveStep(correct);
 #endif
+         packed_scores.reset();
+         getOrUpdateStackScore( &correctState, packed_scores, action::NO_ACTION );
+         correctState.score += packed_scores[action];
+         correctState.Move(action);
 
 #endif
       } 
@@ -724,7 +729,11 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          updateScoresForStates(m_Agenda->bestGenerator(), pMaxPrec, 1, -1) ;
 #else
       // then make sure that the correct item is stack top finally
+#ifdef EARLY_UPDATE
       if ( *(m_Agenda->bestGenerator()) != correctState ) {
+#else
+      if ( *(m_Agenda->bestGenerator()) != correctState&&(correctState.score<=m_Agenda->bestGenerator()->score)) {
+#endif
          TRACE("The best item is not the correct one")
          updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
          return ;

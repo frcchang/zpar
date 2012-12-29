@@ -306,21 +306,23 @@ public:
 
    // returns true is the next word advances -- by shift or arcright. 
 #ifdef LABELED
-   bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel ) {
+   unsigned long StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel ) {
 #else
-   bool StandardMoveStep( const CDependencyParse &tree ) {
+   unsigned long StandardMoveStep( const CDependencyParse &tree ) {
 #endif
       static int top;
       // when the next word is tree.size() it means that the sentence is done already
       if ( m_nNextWord == static_cast<int>(tree.size()) ) {
          assert( m_Stack.size() > 0 );
          if ( m_Stack.size() > 1 ) {
-            Reduce();
-            return false;
+//            Reduce();
+//            return false;
+            return action::REDUCE;
          }
          else {
-            PopRoot();
-            return false;
+//            PopRoot();
+//            return false;
+            return action::POP_ROOT;
          }
       }
       // the first case is that there is some words on the stack linking to nextword
@@ -332,23 +334,27 @@ public:
             if ( top == m_Stack.back() ) {
 #ifdef LABELED
                assert(m_lCacheLabel[top].str() == tree[top].label);
-               ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
+//               ArcLeft(m_lCacheLabel[top].code()); // link it to the next word
+               return action::encodeAction(action::ARC_LEFT, m_lCacheLabel[top].code());
 #else
-               ArcLeft();                          // link it to the next word
+//               ArcLeft();                          // link it to the next word
+               return action::ARC_LEFT;
 #endif
-               return false;
+//               return false;
             }
             else {
-               Reduce();
-               return false;
+//               Reduce();
+//               return false;
+               return action::REDUCE;
             }
          }
       }
       // the second case is that no words on the stack links nextword, and nextword does not link to stack word
       if ( tree[m_nNextWord].head == DEPENDENCY_LINK_NO_HEAD || // the root or
            tree[m_nNextWord].head > m_nNextWord ) { // head on the right
-         Shift(); 
-         return true;
+//         Shift(); 
+//         return true;
+            return action::SHIFT;
       }
       // the last case is that the next words links to stack word
       else {                                        // head on the left 
@@ -357,15 +363,18 @@ public:
          if ( tree[m_nNextWord].head == top ) {     // the next word deps on stack top
 #ifdef LABELED
             assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
-            ArcRight(m_lCacheLabel[m_nNextWord].code());
+//            ArcRight(m_lCacheLabel[m_nNextWord].code());
+               return action::encodeAction(action::ARC_RIGHT, m_lCacheLabel[m_nNextWord].code());
 #else            
-            ArcRight();
+//            ArcRight();
+               return ARC_RIGHT;
 #endif            
-            return true;
+//            return true;
          }
          else {                                     // must depend on non-immediate h
-            Reduce();
-            return false;
+//            Reduce();
+//            return false;
+               return action::REDUCE;
          }
       }
    }
