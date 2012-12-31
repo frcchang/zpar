@@ -10,6 +10,7 @@
 
 #include "depparser.h"
 #include "depparser_weight.h"
+#include <stdlib.h>
 
 using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::depparser;
@@ -681,7 +682,9 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
       // when we are doing training, we need to consider the standard move and update
       if (bTrain) {
 #ifdef EARLY_UPDATE
-         if (!bCorrect) {
+    	 srand(m_nTrainingRound * (int)m_Agenda->bestGenerator()->score);
+    	 int current_seed = rand()%100 ;
+         if (!bCorrect && (current_seed < EARLY_UP_DATE_PROB * 100  || m_nTrainingRound < MIN_START_ROUND_MAXPREC) ) {
             TRACE("Error at the "<<correctState.size()<<"th word; total is "<<correct.size())
             updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
 #ifndef LOCAL_LEARNING
@@ -725,8 +728,14 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
             maxprec = prec;
          }
       }
-      if (m_Agenda->bestGenerator() != pMaxPrec)
+      if (m_Agenda->bestGenerator() != pMaxPrec && m_nTrainingRound >= MIN_START_ROUND_MAXPREC)
+      {
          updateScoresForStates(m_Agenda->bestGenerator(), pMaxPrec, 1, -1) ;
+      }
+      else
+      {
+    	  updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ;
+      }
 #else
       // then make sure that the correct item is stack top finally
 #ifdef EARLY_UPDATE
