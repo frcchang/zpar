@@ -5,7 +5,7 @@
 #define SIMPLE_HASH
 
 // early update? 
-//#define EARLY_UPDATE
+#define EARLY_UPDATE
 
 // maxprec
 #define USE_MAXPREC
@@ -42,6 +42,11 @@ typedef long SCORE_TYPE ;
 // The size of a sentence and the words
 const unsigned MAX_SENTENCE_SIZE = 256 ; 
 const unsigned MAX_SENTENCE_SIZE_BITS = 8 ; 
+
+// The round of start MAXPREC
+const unsigned MIN_START_ROUND_MAXPREC = 39832*5;
+// The probability of using early-update
+const float EARLY_UP_DATE_PROB = 0.9;
 
 // normalise link size and the direction
 inline int encodeLinkDistance(const int &head_index, const int &dep_index) {
