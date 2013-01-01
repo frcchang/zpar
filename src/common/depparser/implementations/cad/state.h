@@ -470,6 +470,111 @@ public:
       return correct/reference.size();
    }
 
+   int hammingloss(const CDependencyParse &reference, unsigned long nNextAction)
+   {
+	   unsigned long unLabelAction = nNextAction;
+	   unsigned label = 0;
+
+#ifdef LABELED
+	   unLabelAction = action::getUnlabeledAction(nNextAction);
+	   label = action::getLabel(nNextAction);
+#endif
+	   int stack_top = -1;
+	   if(m_Stack.size() > 0)stack_top = m_Stack.back() ;
+	   int queue_top = m_nNextWord;
+
+	   int loss = 0;
+	   if(unLabelAction == action::ARC_LEFT)
+	   {
+		   if(reference[stack_top].head > queue_top
+#ifdef LABELED
+			|| (reference[stack_top].head == queue_top
+			&& CDependencyLabel(reference[stack_top].label) != label)
+#endif
+				   )
+		   {
+			   loss++;
+			   for(int qIndex = queue_top + 1; qIndex < reference.size(); qIndex++)
+			   {
+				   if(reference[qIndex].head == stack_top)loss++;
+			   }
+		   }
+	   }
+	   else if(unLabelAction == action::ARC_RIGHT)
+	   {
+		   bool bFindHeadInStackOrQueue = false;
+		   for(int sIndex = 0; sIndex < m_Stack.size()-1; sIndex++)
+		   {
+			   int wordIndex = m_Stack[sIndex];
+
+			   if(reference[queue_top].head == wordIndex)
+			   {
+				   bFindHeadInStackOrQueue = true;
+				   loss++;
+			   }
+
+			   if(reference[wordIndex].head == queue_top)
+			   {
+				   loss++;
+			   }
+		   }
+
+		   if(reference[queue_top].head > queue_top
+#ifdef LABELED
+				|| ( reference[queue_top].head == stack_top
+		  			&& CDependencyLabel(reference[queue_top].label) != label )
+#endif
+		  				   )
+		   {
+			   bFindHeadInStackOrQueue = true;
+			   loss++;
+		   }
+
+		   if( (reference[queue_top].head == stack_top
+#ifdef LABELED
+			 && CDependencyLabel(reference[queue_top].label) != label
+#endif
+			 ) || !bFindHeadInStackOrQueue
+				   )
+		   {
+			   //assert(loss == 0 || loss == 1) ;
+			   loss = 0;
+		   }
+
+	   }
+	   else if(unLabelAction == action::REDUCE)
+	   {
+		   for(int qIndex = queue_top; qIndex < reference.size(); qIndex++)
+		   {
+			   if(reference[qIndex].head == stack_top)loss++;
+		   }
+	   }
+	   else if(unLabelAction == action::SHIFT)
+	   {
+		   for(int sIndex = 0; sIndex < m_Stack.size(); sIndex++)
+		   {
+			   int wordIndex = m_Stack[sIndex];
+
+			   if(reference[queue_top].head == wordIndex)
+			   {
+				   loss++;
+			   }
+
+			   if(reference[wordIndex].head == queue_top)
+			   {
+				   loss++;
+			   }
+		   }
+	   }
+	   else
+	   {
+		   //assert(false);
+	   }
+
+
+	   return loss;
+   }
+
 };
 
 #endif

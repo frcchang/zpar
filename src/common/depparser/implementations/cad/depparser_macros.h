@@ -7,8 +7,11 @@
 // early update? 
 #define EARLY_UPDATE
 
+//use hamming loss
+#define USE_HAMLOSS
+
 // maxprec
-#define USE_MAXPREC
+//#define USE_MAXPREC
 
 // local training? it will affect the setting of early update and agenda size
 // if you want to experiment with local training, define this when you train
@@ -27,7 +30,7 @@ const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
 const unsigned DEP_LABEL_COUNT = 1;
 #endif
 
-typedef long SCORE_TYPE ;
+typedef double SCORE_TYPE ;
 #include "action.h"
 
 // supertag

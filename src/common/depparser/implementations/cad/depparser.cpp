@@ -387,6 +387,75 @@ inline void CDepParser::updateScoreForState( const CStateItem &from, const CStat
  * updateScoresForStates - update scores for states
  *
  *--------------------------------------------------------------*/
+inline void CDepParser::updateScoresWithWeight( const CStateItem *outout , const depparser::CStateItem *correctState, const CDependencyParse &correct)
+{
+	std::vector<double> update;
+	double total_neg;
+	int pos_count, count;
+	double step_cost;
+	static CPackedScoreType<SCORE_TYPE, action::MAX> empty;
+	static CStateItem item(&m_lCache);
+	static unsigned action;
+	int i;
+	int hamLoss;
+	count = 0;
+	pos_count = 0;
+	total_neg = 0.0;
+
+
+	item.clear();
+	while(item != *outout)
+	{
+		action = item.FollowMove( outout );
+		hamLoss = item.hammingloss(correct, action);
+		step_cost = hamLoss * 1.0 / outout-> size();
+		if(hamLoss > 0)
+		{
+			update.push_back(-step_cost);
+			total_neg += step_cost;
+		}
+		else
+		{
+			update.push_back(1.0);
+			++pos_count;
+		}
+		++count;
+		item.Move( action );
+	}
+	pos_count += count;
+
+	item.clear();
+	for( i = 0; i < count; ++i)
+	{
+		action = item.FollowMove( outout );
+		if(update[i] < 0.0)
+		{
+			getOrUpdateStackScore( &item, empty, action, update[i], m_nTrainingRound );
+		}
+		else
+		{
+			getOrUpdateStackScore( &item, empty, action, total_neg/pos_count, m_nTrainingRound );
+		}
+
+		item.Move( action );
+	}
+
+	item.clear();
+	for( i = 0; i < count; ++i)
+	{
+		action = item.FollowMove( correctState );
+		getOrUpdateStackScore( &item, empty, action,total_neg/pos_count, m_nTrainingRound );
+		item.Move( action );
+	}
+	m_nTotalErrors++;
+}
+
+
+/*---------------------------------------------------------------
+ *
+ * updateScoresForStates - update scores for states
+ *
+ *--------------------------------------------------------------*/
 
 void CDepParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
 
@@ -683,10 +752,19 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
       if (bTrain) {
 #ifdef EARLY_UPDATE
     	 srand(m_nTrainingRound * (int)m_Agenda->bestGenerator()->score);
+#ifdef USE_MAXPREC
     	 int current_seed = rand()%100 ;
          if (!bCorrect && (current_seed < EARLY_UP_DATE_PROB * 100  || m_nTrainingRound < MIN_START_ROUND_MAXPREC) ) {
+#else
+         if (!bCorrect) {
+#endif
             TRACE("Error at the "<<correctState.size()<<"th word; total is "<<correct.size())
+#ifdef USE_HAMLOSS
+			updateScoresWithWeight(m_Agenda->bestGenerator(), &correctState, correct);
+#else
             updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
+#endif
+
 #ifndef LOCAL_LEARNING
             return ;
 #else
@@ -744,7 +822,11 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
       if ( *(m_Agenda->bestGenerator()) != correctState&&(correctState.score<=m_Agenda->bestGenerator()->score)) {
 #endif
          TRACE("The best item is not the correct one")
-         updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
+#ifdef USE_HAMLOSS
+		updateScoresWithWeight(m_Agenda->bestGenerator(), &correctState, correct);
+#else
+        updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ;
+#endif
          return ;
       }
 #endif
