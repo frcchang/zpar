@@ -54,6 +54,11 @@ protected:
 #ifdef LABELED
    unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
 #endif
+
+#ifdef USE_HAMLOSS
+   bool m_bLossCounted[MAX_SENTENCE_SIZE];   // mark whether the loss has been counted
+#endif
+
    unsigned long m_nLastAction;                  // the last stack action
    const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
 
@@ -136,6 +141,10 @@ public:
       m_nNextWord = 0; m_Stack.clear(); m_HeadStack.clear(); 
       score = 0; 
       m_nLastAction = action::NO_ACTION;
+#ifdef USE_HAMLOSS
+      for(int i = 0; i < MAX_SENTENCE_SIZE; i++)
+    	  m_bLossCounted[i] = false;
+#endif
       ClearNext();
    }
 
@@ -159,6 +168,10 @@ public:
          m_lLabels[i] = item.m_lLabels[i];
 #endif
       }
+#ifdef USE_HAMLOSS
+      for(int i = 0; i < MAX_SENTENCE_SIZE; i++)
+    	  m_bLossCounted[i] = item.m_bLossCounted[i];
+#endif
    }
 
 //-----------------------------------------------------------------------------
@@ -461,7 +474,6 @@ public:
 #endif
    }
 
-
    double precision( const CDependencyParse &reference) {
       double correct = 0;
      for (int i=0; i<reference.size(); ++i)
@@ -470,6 +482,7 @@ public:
       return correct/reference.size();
    }
 
+#ifdef USE_HAMLOSS
    int hammingloss(const CDependencyParse &reference, unsigned long nNextAction)
    {
 	   unsigned long unLabelAction = nNextAction;
@@ -479,6 +492,7 @@ public:
 	   unLabelAction = action::getUnlabeledAction(nNextAction);
 	   label = action::getLabel(nNextAction);
 #endif
+
 	   int stack_top = -1;
 	   if(m_Stack.size() > 0)stack_top = m_Stack.back() ;
 	   int queue_top = m_nNextWord;
@@ -486,94 +500,153 @@ public:
 	   int loss = 0;
 	   if(unLabelAction == action::ARC_LEFT)
 	   {
-		   if(reference[stack_top].head > queue_top
+		   TRACE_WORD("ARC_LEFT ");
+#ifdef LABELED
+		   TRACE_WORD(CDependencyLabel(label).str() << " ");
+#endif
+
+		   if(reference[stack_top].head > queue_top || reference[stack_top].head == DEPENDENCY_LINK_NO_HEAD
 #ifdef LABELED
 			|| (reference[stack_top].head == queue_top
 			&& CDependencyLabel(reference[stack_top].label) != label)
 #endif
 				   )
 		   {
-			   loss++;
-			   for(int qIndex = queue_top + 1; qIndex < reference.size(); qIndex++)
+			   assert(!m_bLossCounted[stack_top]);
 			   {
-				   if(reference[qIndex].head == stack_top)loss++;
+				   loss++;
+				   m_bLossCounted[stack_top] = true;
+			   }
+		   }
+		   for(int qIndex = queue_top + 1; qIndex < reference.size(); qIndex++)
+		   {
+			   if(reference[qIndex].head == stack_top)
+			   {
+				   assert(!m_bLossCounted[qIndex]);
+				   {
+					   loss++;
+					   m_bLossCounted[qIndex] = true;
+				   }
 			   }
 		   }
 	   }
 	   else if(unLabelAction == action::ARC_RIGHT)
 	   {
-		   bool bFindHeadInStackOrQueue = false;
-		   for(int sIndex = 0; sIndex < m_Stack.size()-1; sIndex++)
-		   {
-			   int wordIndex = m_Stack[sIndex];
+		   TRACE_WORD("ARC_RIGHT ");
+#ifdef LABELED
+		   TRACE_WORD(CDependencyLabel(label).str() << " ");
+#endif
 
-			   if(reference[queue_top].head == wordIndex)
+		   if(reference[queue_top].head != stack_top
+#ifdef LABELED
+		   	|| CDependencyLabel(reference[queue_top].label) != label
+#endif
+		   )
+		   {
+			   for(int sIndex = 0; sIndex < m_Stack.size() -1; sIndex++)
 			   {
-				   bFindHeadInStackOrQueue = true;
-				   loss++;
+				   int wordIndex = m_Stack[sIndex];
+
+				   if(reference[wordIndex].head == queue_top
+					&&	m_lHeads[wordIndex]  == DEPENDENCY_LINK_NO_HEAD)
+				   {
+					   assert(!m_bLossCounted[wordIndex]);
+					   {
+						   loss++;
+						   m_bLossCounted[wordIndex] = true;
+					   }
+				   }
+
+				   if(reference[queue_top].head == wordIndex)
+				   {
+					   assert(!m_bLossCounted[queue_top]);
+					   {
+						   loss++;
+						   m_bLossCounted[queue_top] = true;
+					   }
+				   }
 			   }
 
-			   if(reference[wordIndex].head == queue_top)
+			   if(reference[queue_top].head > queue_top || reference[queue_top].head == DEPENDENCY_LINK_NO_HEAD
+#ifdef LABELED
+				|| reference[queue_top].head == stack_top
+#endif
+					   )
 			   {
-				   loss++;
+				   assert(!m_bLossCounted[queue_top]);
+				   {
+					   loss++;
+					   m_bLossCounted[queue_top] = true;
+				   }
 			   }
-		   }
-
-		   if(reference[queue_top].head > queue_top
-#ifdef LABELED
-				|| ( reference[queue_top].head == stack_top
-		  			&& CDependencyLabel(reference[queue_top].label) != label )
-#endif
-		  				   )
-		   {
-			   bFindHeadInStackOrQueue = true;
-			   loss++;
-		   }
-
-		   if( (reference[queue_top].head == stack_top
-#ifdef LABELED
-			 && CDependencyLabel(reference[queue_top].label) != label
-#endif
-			 ) || !bFindHeadInStackOrQueue
-				   )
-		   {
-			   //assert(loss == 0 || loss == 1) ;
-			   loss = 0;
 		   }
 
 	   }
 	   else if(unLabelAction == action::REDUCE)
 	   {
+		   TRACE_WORD("REDUCE ");
+
 		   for(int qIndex = queue_top; qIndex < reference.size(); qIndex++)
 		   {
-			   if(reference[qIndex].head == stack_top)loss++;
+			   if(reference[qIndex].head == stack_top)
+			   {
+				   assert(!m_bLossCounted[qIndex]);
+				   {
+					   loss++;
+					   m_bLossCounted[qIndex] = true;
+				   }
+			   }
 		   }
 	   }
 	   else if(unLabelAction == action::SHIFT)
 	   {
+		   TRACE_WORD("SHIFT ");
+
 		   for(int sIndex = 0; sIndex < m_Stack.size(); sIndex++)
 		   {
 			   int wordIndex = m_Stack[sIndex];
 
 			   if(reference[queue_top].head == wordIndex)
 			   {
-				   loss++;
+				   assert(!m_bLossCounted[queue_top]);
+				   {
+					   loss++;
+					   m_bLossCounted[queue_top] = true;
+				   }
 			   }
 
-			   if(reference[wordIndex].head == queue_top)
+			   if(reference[wordIndex].head == queue_top
+				&&	m_lHeads[wordIndex]  == DEPENDENCY_LINK_NO_HEAD)
+			   {
+				   assert(!m_bLossCounted[wordIndex]);
+				   {
+					   loss++;
+					   m_bLossCounted[wordIndex] = true;
+				   }
+			   }
+		   }
+	   }
+	   else if(unLabelAction == action::POP_ROOT)
+	   {
+		   TRACE_WORD("POP_ROOT ");
+
+		   if(reference[stack_top].head != DEPENDENCY_LINK_NO_HEAD)
+		   {
+			   if(!m_bLossCounted[stack_top]);
 			   {
 				   loss++;
+				   m_bLossCounted[stack_top] = true;
 			   }
 		   }
 	   }
 	   else
 	   {
-		   //assert(false);
+		   TRACE_WORD("OTHER ");
 	   }
-
-
+	   TRACE_WORD(" loss:" << loss);
 	   return loss;
    }
+#endif
 
 };
 

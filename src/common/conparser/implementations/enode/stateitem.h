@@ -83,8 +83,8 @@ public:
       right_child = nd.right_child;
       lexical_head = nd.lexical_head;
       lexical_head_index = nd.lexical_head_index;
-      word_prev = word_prev;
-      word_last = word_last;
+      word_prev = nd.word_prev;
+      word_last = nd.word_last;
    }
 public:
    void toCCFGTreeNode(CCFGTreeNode &node) const {

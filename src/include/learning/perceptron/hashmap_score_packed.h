@@ -136,7 +136,7 @@ public:
 #endif // define features
 
    virtual inline void getScore( CPackedScoreType<SCORE_TYPE, PACKED_SIZE>&o, const K &key , const int &which ) {
-      return this->find( key , m_zero ).add( o , which );
+      this->find( key , m_zero ).add( o , which );
    }
 
    virtual inline void updateScore( const K &key , const unsigned &index , const SCORE_TYPE &amount , const int &round ) {

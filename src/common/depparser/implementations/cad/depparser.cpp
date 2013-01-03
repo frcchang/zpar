@@ -396,33 +396,60 @@ inline void CDepParser::updateScoresWithWeight( const CStateItem *outout , const
 	static CPackedScoreType<SCORE_TYPE, action::MAX> empty;
 	static CStateItem item(&m_lCache);
 	static unsigned action;
+	static CPackedScoreType<SCORE_TYPE, action::MAX> packed_scores;
 	int i;
 	int hamLoss;
 	count = 0;
 	pos_count = 0;
 	total_neg = 0.0;
 
+	TRACE("\nGOLDTREE:")
+	for(int gIndex = 0; gIndex < correct.size(); gIndex++)
+	{
+		TRACE(gIndex << " "<< correct[gIndex].word << " " << correct[gIndex].tag << " "<< correct[gIndex].head << " " << correct[gIndex].label);
+	}
 
 	item.clear();
+
+	TRACE("PREDICTED:")
 	while(item != *outout)
 	{
 		action = item.FollowMove( outout );
 		hamLoss = item.hammingloss(correct, action);
-		step_cost = hamLoss * 1.0 / outout-> size();
+		step_cost = hamLoss * 1.0 ;
 		if(hamLoss > 0)
 		{
 			update.push_back(-step_cost);
+			//update.push_back(-1.0);
 			total_neg += step_cost;
 		}
 		else
 		{
 			update.push_back(1.0);
+			//total_neg += 1.0;
 			++pos_count;
 		}
 		++count;
+		packed_scores.reset();
+		getOrUpdateStackScore( &item, packed_scores, action::NO_ACTION );
+		TRACE(" added "<< packed_scores[action]);
 		item.Move( action );
 	}
-	pos_count += count;
+	//pos_count += count;
+	pos_count = count;
+
+	item.clear();
+	TRACE("GOLD:")
+	for( i = 0; i < count; ++i)
+	{
+		action = item.FollowMove( correctState );
+		hamLoss = item.hammingloss(correct, action);
+		assert(hamLoss == 0);
+		packed_scores.reset();
+		getOrUpdateStackScore( &item, packed_scores, action::NO_ACTION );
+		TRACE(" added "<< packed_scores[action]);
+		item.Move( action );
+	}
 
 	item.clear();
 	for( i = 0; i < count; ++i)
@@ -432,10 +459,10 @@ inline void CDepParser::updateScoresWithWeight( const CStateItem *outout , const
 		{
 			getOrUpdateStackScore( &item, empty, action, update[i], m_nTrainingRound );
 		}
-		else
-		{
-			getOrUpdateStackScore( &item, empty, action, total_neg/pos_count, m_nTrainingRound );
-		}
+		//else
+		//{
+		//	getOrUpdateStackScore( &item, empty, action, total_neg/pos_count, m_nTrainingRound );
+		//}
 
 		item.Move( action );
 	}
