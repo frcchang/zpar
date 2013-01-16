@@ -312,7 +312,8 @@ protected:
       while ( it != gold_lb.end() ) {
          if ( (*it).begin == node.lexical_start &&
               (*it).end == node.lexical_end &&
-              (*it).constituent == constituent ) {
+              (*it).constituent == constituent &&
+              !bCorrect ) {
             bCorrect = true;
             ++correct;
          }
@@ -342,7 +343,8 @@ protected:
       while ( it != gold_lb.end() ) {
          if ( (*it).begin == l->lexical_start &&
               (*it).end == r->lexical_end &&
-              (*it).constituent == constituent ) {
+              (*it).constituent == constituent &&
+              !bCorrect ) {
             bCorrect=true;
             ++correct;
          }
