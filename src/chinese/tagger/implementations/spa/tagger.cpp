@@ -19,8 +19,8 @@ using namespace chinese::tagger;
 static const CWord g_emptyWord("");
 static const CTag g_beginTag(CTag::SENTENCE_BEGIN);
 
-#define find_or_replace_word_cache(tmp_start, tmp_end) ( amount ? m_WordCache.replace(tmp_start, tmp_end, sentence) : m_WordCache.find(tmp_start, tmp_end, sentence) )
-#define refer_or_allocate(x, y, z) {if(amount==0) x.refer(&y, &z); else x.allocate(y, z);}
+#define find_or_replace_word_cache(tmp_start, tmp_end) ( std::abs(amount) > 1e-20 ? m_WordCache.replace(tmp_start, tmp_end, sentence) : m_WordCache.find(tmp_start, tmp_end, sentence) )
+#define refer_or_allocate(x, y, z) {if(std::abs(amount) < 1e-20) x.refer(&y, &z); else x.allocate(y, z);}
 
 inline int encodeCharSegmentation(const bool &b, const bool &e) {
    return ( b ? 2 : 0 ) + ( e ? 1 : 0 ) ; // 00 01 10 11
@@ -49,14 +49,14 @@ inline int encodeCharInfoAndPosition(const int &char_info, const int &pos) {
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
-   static SCORE_TYPE nReturn ; 
+SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE& scorew, SCORE_TYPE& scoret, SCORE_TYPE amount, unsigned long round ) {
    static unsigned long start_0; 
    static unsigned long start_1, end_1, length_1; 
    static unsigned long start_2, end_2, length_2; 
+   scorew = 0; scoret = 0;
 
-   // abstd::cout the words
-   assert(amount!=0||index==item->size()-1||index==item->size());
+   // about::cout the words
+   assert(std::abs(amount) > 1e-20 ||index==item->size()-1||index==item->size());
    start_0 = index==item->size() ? 0 : item->getWordStart( index ) ;
 
    start_1 = index > 0 ? item->getWordStart( index-1 ) : 0 ;
@@ -72,11 +72,11 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    const CWord &word_1 = index>0 ? find_or_replace_word_cache( start_1, end_1 ) : g_emptyWord; 
    const CWord &word_2 = index>1 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord; 
 
-   // abstd::cout the length
+   // about::cout the length
    if (length_1>LENGTH_MAX) length_1 = LENGTH_MAX;
    if (length_2>LENGTH_MAX) length_2 = LENGTH_MAX;
 
-   // abstd::cout the chars
+   // about::cout the chars
    const CWord &first_char_0 = index<item->size() ? find_or_replace_word_cache( start_0, start_0 ) : g_emptyWord ;
    const CWord &first_char_1 = index>0 ? find_or_replace_word_cache( start_1, start_1 ) : g_emptyWord;
 
@@ -88,7 +88,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    const CWord &three_char = ( length_1==1 && index>1 && index<item->size() ) ? find_or_replace_word_cache( end_2, start_0 ) : g_emptyWord;
 
    static CTwoWords word_2_word_1, first_char_1_last_char_1, first_char_0_first_char_1, last_char_1_last_char_2 ;
-   if (amount==0&&index>0) {
+   if (std::abs(amount) < 1e-20&&index>0) {
       word_2_word_1.refer( &word_1 , &word_2 ) ;
       first_char_1_last_char_1.refer( &first_char_1 , &last_char_1 ) ;
       first_char_0_first_char_1.refer( &first_char_0 , &first_char_1 ) ;
@@ -101,7 +101,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       last_char_1_last_char_2.allocate( last_char_1, last_char_2 ) ;
    }
 
-   // abstd::cout the tags 
+   // about::cout the tags
    const CTag &tag_0 = index<item->size() ? item->getTag( index ) : g_beginTag;
    const CTag &tag_1 = index>0 ? item->getTag(index-1) : g_beginTag;
    const CTag &tag_2 = index>1 ? item->getTag(index-2) : g_beginTag;
@@ -120,97 +120,109 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    tag_0_tag_1_tag_2.load( encodeTags(tag_0, tag_1, tag_2) );
 
    static int j ; 
+   CWeight* weightw;
+   CWeight* weightt;
+   if(std::abs(amount) > 1e-20)
+   {
+	   weightw = m_delta_word;
+	   weightt = m_delta_tag;
+   }
+   else
+   {
+	   weightw = m_weights;
+	   weightt = m_weights;
+   }
 
    // adding scores with features for last word
    if (index>0) {
-      nReturn = m_weights->m_mapSeenWords.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ; 
-      if (index>1) nReturn += m_weights->m_mapLastWordByWord.getOrUpdateScore( word_2_word_1 , m_nScoreIndex , amount , round ) ;
+      scorew += weightw->m_mapSeenWords.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ;
+      if (index>1) scorew += weightw->m_mapLastWordByWord.getOrUpdateScore( word_2_word_1 , m_nScoreIndex , amount , round ) ;
 
       if ( length_1 == 1 ) {
-         nReturn += m_weights->m_mapOneCharWord.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapOneCharWord.getOrUpdateScore( word_1 , m_nScoreIndex , amount , round ) ;
       }
       else {
-         nReturn += m_weights->m_mapFirstAndLastChars.getOrUpdateScore( first_char_1_last_char_1 , m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapFirstAndLastChars.getOrUpdateScore( first_char_1_last_char_1 , m_nScoreIndex , amount , round ) ;
 
-         nReturn += m_weights->m_mapLengthByFirstChar.getOrUpdateScore( std::make_pair(first_char_1, length_1) , m_nScoreIndex , amount , round ) ;
-         nReturn += m_weights->m_mapLengthByLastChar.getOrUpdateScore( std::make_pair(last_char_1, length_1) , m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapLengthByFirstChar.getOrUpdateScore( std::make_pair(first_char_1, length_1) , m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapLengthByLastChar.getOrUpdateScore( std::make_pair(last_char_1, length_1) , m_nScoreIndex , amount , round ) ;
 
-//         nReturn += m_weights->m_mapLengthByTagAndFirstChar.getOrUpdateScore( std::make_pair(first_char_1, (length_1<<CTag::SIZE)|tag_1.code()) , m_nScoreIndex , amount , round ) ;
-//         nReturn += m_weights->m_mapLengthByTagAndLastChar.getOrUpdateScore( std::make_pair(last_char_1, (length_1<<CTag::SIZE)|tag_1.code()) , m_nScoreIndex , amount , round ) ;
+//         scoret += weightt->m_mapLengthByTagAndFirstChar.getOrUpdateScore( std::make_pair(first_char_1, (length_1<<CTag::SIZE)|tag_1.code()) , m_nScoreIndex , amount , round ) ;
+//         scoret += weightt->m_mapLengthByTagAndLastChar.getOrUpdateScore( std::make_pair(last_char_1, (length_1<<CTag::SIZE)|tag_1.code()) , m_nScoreIndex , amount , round ) ;
       }
 
       if (index>1) {
-         nReturn += m_weights->m_mapCurrentWordLastChar.getOrUpdateScore( word_1_last_char_2 , m_nScoreIndex , amount , round ) ;
-         nReturn += m_weights->m_mapLastWordByLastChar.getOrUpdateScore( last_char_1_last_char_2 , m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapCurrentWordLastChar.getOrUpdateScore( word_1_last_char_2 , m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapLastWordByLastChar.getOrUpdateScore( last_char_1_last_char_2 , m_nScoreIndex , amount , round ) ;
 
-         nReturn += m_weights->m_mapLengthByLastWord.getOrUpdateScore( std::make_pair(word_2, length_1) , m_nScoreIndex , amount , round ) ;
-         nReturn += m_weights->m_mapLastLengthByWord.getOrUpdateScore( std::make_pair(word_1, length_2), m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapLengthByLastWord.getOrUpdateScore( std::make_pair(word_2, length_1) , m_nScoreIndex , amount , round ) ;
+    	  scorew += weightw->m_mapLastLengthByWord.getOrUpdateScore( std::make_pair(word_1, length_2), m_nScoreIndex , amount , round ) ;
       }
 
-      nReturn += m_weights->m_mapCurrentTag.getOrUpdateScore( std::make_pair(word_1, tag_1) , m_nScoreIndex , amount , round ) ; 
+      scoret += weightt->m_mapCurrentTag.getOrUpdateScore( std::make_pair(word_1, tag_1) , m_nScoreIndex , amount , round ) ;
 
-      if ( length_1 <= 2 ) nReturn += m_weights->m_mapLastTagByWord.getOrUpdateScore( std::make_pair(word_1, tag_2) , m_nScoreIndex , amount , round ) ;
+      if ( length_1 <= 2 ) scoret += weightt->m_mapLastTagByWord.getOrUpdateScore( std::make_pair(word_1, tag_2) , m_nScoreIndex , amount , round ) ;
 
       if (index>1) {
-         if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByWordAndPrevChar.getOrUpdateScore( std::make_pair(word_1_last_char_2, tag_1) , m_nScoreIndex , amount , round ) ;
-         if ( length_1 == 1 && index<item->size() ) nReturn += m_weights->m_mapTagOfOneCharWord.getOrUpdateScore( std::make_pair(three_char, tag_1) , m_nScoreIndex , amount , round ) ;
+         if ( length_1 <= 2 ) scoret += weightt->m_mapTagByWordAndPrevChar.getOrUpdateScore( std::make_pair(word_1_last_char_2, tag_1) , m_nScoreIndex , amount , round ) ;
+         if ( length_1 == 1 && index<item->size() ) scoret += weightt->m_mapTagOfOneCharWord.getOrUpdateScore( std::make_pair(three_char, tag_1) , m_nScoreIndex , amount , round ) ;
       }
 
-      nReturn += m_weights->m_mapTagByLastChar.getOrUpdateScore( std::make_pair(last_char_1, tag_1) , m_nScoreIndex , amount , round ) ;
-      nReturn += m_weights->m_mapTagByLastCharCat.getOrUpdateScore( std::make_pair(last_char_cat_1, tag_1) , m_nScoreIndex , amount , round ) ;
+      scoret += weightt->m_mapTagByLastChar.getOrUpdateScore( std::make_pair(last_char_1, tag_1) , m_nScoreIndex , amount , round ) ;
+      scoret += weightt->m_mapTagByLastCharCat.getOrUpdateScore( std::make_pair(last_char_cat_1, tag_1) , m_nScoreIndex , amount , round ) ;
 
       for (j=0; j<length_1-1; ++j) {
          wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
          wt2.load(last_char_1);//
-         if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
-         nReturn += m_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(wt12, m_nScoreIndex, amount, round) ;
+         if (std::abs(amount) < 1e-20) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+         scoret += weightt->m_mapTaggedCharByLastChar.getOrUpdateScore(wt12, m_nScoreIndex, amount, round) ;
       }
    }
 
-   // all abstd::cout the current word
-   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
-   if (index>0) nReturn += m_weights->m_mapTag0Tag1Size1.getOrUpdateScore( std::make_pair( tag_0_tag_1, length_1 ), m_nScoreIndex , amount , round ) ;
-   if (index>0) nReturn += m_weights->m_mapTag1Tag2Size1.getOrUpdateScore( std::make_pair( tag_1_tag_2, length_1 ), m_nScoreIndex , amount , round ) ;
-   if (index>0) nReturn += m_weights->m_mapTag0Tag1Tag2Size1.getOrUpdateScore( std::make_pair( tag_0_tag_1_tag_2, length_1 ), m_nScoreIndex , amount , round ) ;
+   // all about::cout the current word
+   scoret += weightt->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
+   if (index>0) scoret += weightt->m_mapTag0Tag1Size1.getOrUpdateScore( std::make_pair( tag_0_tag_1, length_1 ), m_nScoreIndex , amount , round ) ;
+   if (index>0) scoret += weightt->m_mapTag1Tag2Size1.getOrUpdateScore( std::make_pair( tag_1_tag_2, length_1 ), m_nScoreIndex , amount , round ) ;
+   if (index>0) scoret += weightt->m_mapTag0Tag1Tag2Size1.getOrUpdateScore( std::make_pair( tag_0_tag_1_tag_2, length_1 ), m_nScoreIndex , amount , round ) ;
 
-   if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByLastWord.getOrUpdateScore( std::make_pair(word_1, tag_0) , m_nScoreIndex , amount , round ) ;
+   if ( length_1 <= 2 ) scoret += weightt->m_mapTagByLastWord.getOrUpdateScore( std::make_pair(word_1, tag_0) , m_nScoreIndex , amount , round ) ;
 
    if ( index > 0 ) {
-      nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( tag_0_tag_1_tag_2, m_nScoreIndex , amount , round ) ;
+	   scoret += weightt->m_mapLastTwoTagsByTag.getOrUpdateScore( tag_0_tag_1_tag_2, m_nScoreIndex , amount , round ) ;
    }
 
 if (index<item->size()) {
    if ( index>0 ) {
-      nReturn += m_weights->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ; 
+	   scorew += weightw->m_mapSeparateChars.getOrUpdateScore( two_char , m_nScoreIndex , amount , round ) ;
 
-      nReturn += m_weights->m_mapLastWordFirstChar.getOrUpdateScore( word_1_first_char_0 , m_nScoreIndex , amount , round ) ;
+	   scorew += weightw->m_mapLastWordFirstChar.getOrUpdateScore( word_1_first_char_0 , m_nScoreIndex , amount , round ) ;
 
-      nReturn += m_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore( first_char_0_first_char_1 , m_nScoreIndex , amount , round ) ;
+	   scorew += weightw->m_mapFirstCharLastWordByWord.getOrUpdateScore( first_char_0_first_char_1 , m_nScoreIndex , amount , round ) ;
 
-      if ( length_1 <= 2 ) nReturn += m_weights->m_mapTagByWordAndNextChar.getOrUpdateScore( std::make_pair(word_1_first_char_0, tag_1) , m_nScoreIndex , amount , round ) ;
+      if ( length_1 <= 2 ) scoret += weightt->m_mapTagByWordAndNextChar.getOrUpdateScore( std::make_pair(word_1_first_char_0, tag_1) , m_nScoreIndex , amount , round ) ;
 
-//      nReturn += m_weights->m_mapSepCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache(start_0, start_0==sentence->size()-1?start_0:start_0+1) , m_nScoreIndex , amount , round ) ; 
+//      scorew += weightw->m_mapSepCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache(start_0, start_0==sentence->size()-1?start_0:start_0+1) , m_nScoreIndex , amount , round ) ;
       
    }
   
-   nReturn += m_weights->m_mapTagByFirstChar.getOrUpdateScore( std::make_pair(first_char_0, tag_0) , m_nScoreIndex , amount , round ) ; 
-   nReturn += m_weights->m_mapTagByFirstCharCat.getOrUpdateScore( std::make_pair(first_char_cat_0, tag_0) , m_nScoreIndex , amount , round ) ; 
+   scoret += weightt->m_mapTagByFirstChar.getOrUpdateScore( std::make_pair(first_char_0, tag_0) , m_nScoreIndex , amount , round ) ;
+   scoret += weightt->m_mapTagByFirstCharCat.getOrUpdateScore( std::make_pair(first_char_cat_0, tag_0) , m_nScoreIndex , amount , round ) ;
 
-   nReturn += m_weights->m_mapFirstCharBy2Tags.getOrUpdateScore( std::make_pair(first_char_0, tag_0_tag_1) , m_nScoreIndex , amount , round ) ; 
-   if (index>0)nReturn += m_weights->m_mapFirstCharBy3Tags.getOrUpdateScore( std::make_pair(first_char_0, tag_0_tag_1_tag_2) , m_nScoreIndex , amount , round ) ; 
+   scoret += weightt->m_mapFirstCharBy2Tags.getOrUpdateScore( std::make_pair(first_char_0, tag_0_tag_1) , m_nScoreIndex , amount , round ) ;
+   if (index>0)scoret += weightt->m_mapFirstCharBy3Tags.getOrUpdateScore( std::make_pair(first_char_0, tag_0_tag_1_tag_2) , m_nScoreIndex , amount , round ) ;
 
-   nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( std::make_pair(first_char_0, tag_0), m_nScoreIndex , amount , round ) ;
+   scoret += weightt->m_mapTagByChar.getOrUpdateScore( std::make_pair(first_char_0, tag_0), m_nScoreIndex , amount , round ) ;
 
    if (index>0) {
       wt1.load(last_char_1, tag_1);
       wt2.load(first_char_0, tag_0);
-      if (amount==0) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
-      nReturn += m_weights->m_mapTaggedSeparateChars.getOrUpdateScore( wt12, m_nScoreIndex , amount , round ) ;
+      if (std::abs(amount) < 1e-20) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+      scoret += weightt->m_mapTaggedSeparateChars.getOrUpdateScore( wt12, m_nScoreIndex , amount , round ) ;
 
    }
 
-   if (index>0) nReturn += m_weights->m_mapTagWordTag.getOrUpdateScore( std::make_pair( word_1, tag_0_tag_2 ), m_nScoreIndex, amount, round);
-   if (index>1) nReturn += m_weights->m_mapWordTagTag.getOrUpdateScore( std::make_pair( word_2, tag_0_tag_1 ), m_nScoreIndex, amount, round);
+   if (index>0) scoret += weightt->m_mapTagWordTag.getOrUpdateScore( std::make_pair( word_1, tag_0_tag_2 ), m_nScoreIndex, amount, round);
+   if (index>1) scoret += weightt->m_mapWordTagTag.getOrUpdateScore( std::make_pair( word_2, tag_0_tag_1 ), m_nScoreIndex, amount, round);
 }
 
    // ===================================================================================
@@ -219,22 +231,22 @@ if (index<item->size()) {
 //   char_info = encodeCharSegmentation(start_1==end_1, true);
 //   if (index>0) {
 //      for (j = std::max(0, static_cast<int>(end_1)-1); j < std::min(static_cast<unsigned long>(sentence->size()), end_1+2); ++j) {
-//         nReturn += m_weights->m_mapCharUnigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(j, j), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
+//         scorew += weightw->m_mapCharUnigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(j, j), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
 //         if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatUnigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, j, 1, amount), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
 //      }
    
 //      for (j = std::max(0, static_cast<int>(end_1)-1); j < std::min(static_cast<unsigned long>(sentence->size())-1, end_1+1); ++j) {
-//         nReturn += m_weights->m_mapCharBigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(j, j+1), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
+//         scorew += weightw->m_mapCharBigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(j, j+1), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
 //         if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatBigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, j, 2, amount), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
 //      }
    
 //      for (j = std::max(0, static_cast<int>(end_1)-1); j < std::min(static_cast<unsigned long>(sentence->size())-2, end_1); ++j) {
-//         nReturn += m_weights->m_mapCharTrigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(j, j+2), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
+//         scorew += weightw->m_mapCharTrigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(j, j+2), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
 //         if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatTrigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, j, 3, amount), encodeCharInfoAndPosition(char_info, j-end_1) ), m_nScoreIndex, amount, round);
 //      }
 //   }
 
-   return nReturn;
+   return scorew + scoret;
 }
 
 /*---------------------------------------------------------------
@@ -249,8 +261,8 @@ if (index<item->size()) {
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, unsigned long char_index, SCORE_TYPE amount, unsigned long round ) {
-   static SCORE_TYPE nReturn ; 
+SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, unsigned long char_index, SCORE_TYPE& scorew, SCORE_TYPE& scoret, SCORE_TYPE amount, unsigned long round ) {
+   //static SCORE_TYPE nReturn ;
    assert(char_index>0);
    
    static unsigned long start, length;
@@ -281,52 +293,66 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    static unsigned i;
 
+   scorew = 0;
+   scoret = 0;
+  CWeight* weightw;
+  CWeight* weightt;
+  if(std::abs(amount) > 1e-20)
+  {
+	  weightw = m_delta_word;
+	  weightt = m_delta_tag;
+  }
+  else
+  {
+	  weightw = m_weights;
+	  weightt = m_weights;
+  }
+
    // adding scores with features
-   nReturn = 0;
 
-//   nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
-//   if(index>0)nReturn += m_weights->m_mapLastTwoTagsByTag.getOrUpdateScore( tag_0_tag_1_tag_2, m_nScoreIndex, amount, round);
+//   scoret += weightt->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
+//   if(index>0)scoret += weightt->m_mapLastTwoTagsByTag.getOrUpdateScore( tag_0_tag_1_tag_2, m_nScoreIndex, amount, round);
 
-   nReturn += m_weights->m_mapTagByChar.getOrUpdateScore( std::make_pair(char_unigram, tag_0), m_nScoreIndex , amount , round ) ;
+  scoret += weightt->m_mapTagByChar.getOrUpdateScore( std::make_pair(char_unigram, tag_0), m_nScoreIndex , amount , round ) ;
 
-   wt1.load(char_unigram, tag_0); 
+   wt1.load(char_unigram, tag_0);
    wt2.load(first_char);
    refer_or_allocate(wt12, wt1, wt2);
-   nReturn += m_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore( wt12, m_nScoreIndex, amount, round ) ;
+   scoret += weightt->m_mapTaggedCharByFirstChar.getOrUpdateScore( wt12, m_nScoreIndex, amount, round ) ;
 
 //   if (char_unigram == prev_char) 
-//      nReturn += m_weights->m_mapRepeatedCharByTag.getOrUpdateScore( std::make_pair(char_unigram, tag_0), m_nScoreIndex, amount, round) ;
+//      scoret += weightt->m_mapRepeatedCharByTag.getOrUpdateScore( std::make_pair(char_unigram, tag_0), m_nScoreIndex, amount, round) ;
 
-   nReturn += m_weights->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ; 
+   scorew += weightw->m_mapConsecutiveChars.getOrUpdateScore( char_bigram, m_nScoreIndex, amount, round ) ;
 
-//   nReturn += m_weights->m_mapAppCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache( char_index, char_index==sentence->size()-1?char_index:char_index+1 ), m_nScoreIndex, amount, round );
+//   scorew += weightw->m_mapAppCharAndNextChar.getOrUpdateScore( find_or_replace_word_cache( char_index, char_index==sentence->size()-1?char_index:char_index+1 ), m_nScoreIndex, amount, round );
 
-   nReturn += m_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore( std::make_pair(char_bigram, tag_0), m_nScoreIndex, amount, round ) ; 
+   scoret += weightt->m_mapTaggedConsecutiveChars.getOrUpdateScore( std::make_pair(char_bigram, tag_0), m_nScoreIndex, amount, round ) ;
 
 //   refer_or_allocate(first_char_and_char, first_char, char_unigram);
-//  nReturn += m_weights->m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, m_nScoreIndex , amount , round ) ;
+//  scorew += weightw->m_mapFirstCharAndChar.getOrUpdateScore( first_char_and_char, m_nScoreIndex , amount , round ) ;
 
-   //nReturn += m_weights->m_mapPartialWord.getOrUpdateScore( find_or_replace_word_cache( start, char_index ), m_nScoreIndex, amount, round );
+   //scorew += weightw->m_mapPartialWord.getOrUpdateScore( find_or_replace_word_cache( start, char_index ), m_nScoreIndex, amount, round );
 
    // character scores -- the middle character is char_index-1
 //   static int char_info;
 //   char_info = encodeCharInfoAndPosition(start==prev_char_index, false);
 //   for (i = std::max(0, static_cast<int>(prev_char_index)-1); i < std::min(static_cast<unsigned long>(sentence->size()), prev_char_index+2); ++i) {
-//      nReturn += m_weights->m_mapCharUnigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(i, i), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
+//      scorew += weightw->m_mapCharUnigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(i, i), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
 //      if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatUnigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, i, 1, amount), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
 //   }
 
 //   for (i = std::max(0, static_cast<int>(prev_char_index)-1); i < std::min(static_cast<unsigned long>(sentence->size())-1, prev_char_index+1); ++i) {
-//      nReturn += m_weights->m_mapCharBigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(i, i+1), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
+//      scorew += weightw->m_mapCharBigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(i, i+1), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
 //      if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatBigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, i, 2, amount), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
 //   }
 
 //   for (i = std::max(0, static_cast<int>(prev_char_index)-1); i < std::min(static_cast<unsigned long>(sentence->size())-2, prev_char_index); ++i) {
-//      nReturn += m_weights->m_mapCharTrigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(i, i+2), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
-//      if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatTrigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, i, 3, amount), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
+//      scorew += weightw->m_mapCharTrigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(i, i+2), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
+//      if (hasCharTypeKnowledge()) scorew += weightw->m_mapCharCatTrigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, i, 3, amount), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
 //   }
 
-   return nReturn;
+   return scoret + scorew;
 }
 
 /*---------------------------------------------------------------
@@ -393,8 +419,8 @@ bool CTagger::train( const CStringVector * sentence_input , const CTwoStringVect
    static unsigned total_size, local_size;
    total_size=0;
    // Updates that are common for all example
-   for ( unsigned i=0; i<correct->size(); ++i ) {
 
+   for ( unsigned i=0; i<correct->size(); ++i ) {
       const CWord &word = correct->at(i).first ;
       unsigned long tag = CTag( correct->at(i).second ).code() ;
 
@@ -461,6 +487,7 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
    static unsigned tag;
    static unsigned index, last_tag;
    static unsigned last_nosep;
+   static SCORE_TYPE scorew, scoret;
  
    static CSubStateItem uniqueItems[AGENDA_SIZE];
    unsigned long uniqueIndex;
@@ -514,8 +541,7 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
 //            tmp.clear();
 //            generate( &goldState , sentence , this , &tmp ) ; 
 //            writer.writeSentence(&tmp);
-            updateScoreForState(sentence, pGenerator, -1);
-            updateScoreForState(sentence, &goldState, 1);
+            updateScoreForStates(sentence, &goldState, pGenerator);
             m_bTrainingError = true;
             return;
          }
@@ -531,8 +557,15 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
                ) {
                tempState.copy(pGenerator);
                tempState.replaceIndex(index);
-               tempState.score += getOrUpdateAppendScore(sentence, &tempState, tempState.size()-1, index);
-               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size());
+               tempState.score += getOrUpdateAppendScore(sentence, &tempState, tempState.size()-1, index, scorew, scoret);
+               tempState.scorew += scorew;
+               tempState.scoret += scoret;
+               if (index+1==length)
+               {
+            	   tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), scorew, scoret);
+            	   tempState.scorew += scorew;
+            	   tempState.scoret += scoret;
+               }
                m_Agenda.pushCandidate(&tempState);
             } // if
             pGenerator = m_Agenda.generatorNext();  // next generator
@@ -558,8 +591,15 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
 
                tempState.copy(pGenerator);
                tempState.append(index, tag);
-               tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size()-1);
-               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size());
+               tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size()-1, scorew, scoret);
+               tempState.scorew += scorew;
+               tempState.scoret += scoret;
+               if (index+1==length)
+               {
+            	   tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), scorew, scoret);
+            	   tempState.scorew += scorew;
+            	   tempState.scoret += scoret;
+               }
 
                if (nBest==1) {
                   bUnique = true;
@@ -593,15 +633,41 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
       }//tag
 
       m_Agenda.nextRound(); // move round
-      if (m_bTrain) goldState.follow(m_goldState);
+      if (m_bTrain)
+      {
+    	  goldState.follow(m_goldState);
+    	  if(goldState.isAppendAction())
+    	  {
+    		  goldState.score += getOrUpdateAppendScore(sentence, &goldState, goldState.size()-1, index, scorew, scoret);
+    		  goldState.scorew += scorew;
+    		  goldState.scoret += scoret;
+    	  }
+    	  else if(goldState.isSeparateAction())
+    	  {
+    		  goldState.score += getOrUpdateSeparateScore(sentence, &goldState, goldState.size()-1, scorew, scoret);
+    		  goldState.scorew += scorew;
+    		  goldState.scoret += scoret;
+    	  }
+    	  else
+    	  {
+    		  assert(false);
+    	  }
+
+    	  if (index+1==length)
+    	  {
+    		  goldState.score += getOrUpdateSeparateScore(sentence, &goldState, goldState.size(), scorew, scoret);
+    		  goldState.scorew += scorew;
+    		  goldState.scoret += scoret;
+    	  }
+
+      }
    }
    
    if ( m_bTrain && 1 ) {
       pGenerator = m_Agenda.bestGenerator();
       if ( *pGenerator != goldState ) {
          TRACE("Training error at the last word");
-         updateScoreForState(sentence, pGenerator, -1);
-         updateScoreForState(sentence, &goldState, 1);
+         updateScoreForStates(sentence, &goldState, pGenerator);
          m_bTrainingError = true;
       }
       else {

@@ -49,7 +49,7 @@ public:
          temp.clear();
          for (int i=start; i<=end; ++i) // append the corresponding characters
             temp += sentence->at(i);
-            m_lWordCache[start*m_nMaxSentenceSize+end] = CWord(temp).code();
+            m_lWordCache[start*m_nMaxSentenceSize+end] = CWord(temp,false).code();
       }
       return m_lWordCache[start*m_nMaxSentenceSize+end];
    }
@@ -62,7 +62,7 @@ public:
          temp.clear();
          for (int i=start; i<=end; ++i) // append the corresponding characters
             temp += sentence->at(i);
-         m_lWordCache[start*m_nMaxSentenceSize+end] = CWord(temp).code();
+         m_lWordCache[start*m_nMaxSentenceSize+end] = CWord(temp, true).code();
       }
       return m_lWordCache[start*m_nMaxSentenceSize+end];
    }

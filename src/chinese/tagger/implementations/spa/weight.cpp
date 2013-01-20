@@ -65,6 +65,58 @@ using namespace chinese::tagger;
    left(m_mapTag1Tag2Size1)right\
    left(m_mapTag0Tag1Tag2Size1)right
 
+
+#define iterate_double_templates(left,middle,right) \
+   left m_mapCharUnigram middle m_mapCharUnigram right \
+   left m_mapCharBigram middle m_mapCharBigram right \
+   left m_mapCharTrigram middle m_mapCharTrigram right \
+   left m_mapSeenWords middle m_mapSeenWords right \
+   left m_mapLastWordByWord middle m_mapLastWordByWord right \
+   left m_mapCurrentWordLastChar middle m_mapCurrentWordLastChar right \
+   left m_mapLastWordFirstChar middle m_mapLastWordFirstChar right \
+   left m_mapFirstCharLastWordByWord middle m_mapFirstCharLastWordByWord right \
+   left m_mapLastWordByLastChar middle m_mapLastWordByLastChar right \
+   left m_mapSeparateChars middle m_mapSeparateChars right \
+   left m_mapConsecutiveChars middle m_mapConsecutiveChars right \
+   left m_mapFirstAndLastChars middle m_mapFirstAndLastChars right \
+   left m_mapOneCharWord middle m_mapOneCharWord right \
+   left m_mapLengthByFirstChar middle m_mapLengthByFirstChar right \
+   left m_mapLengthByLastChar middle m_mapLengthByLastChar right \
+   left m_mapLengthByLastWord middle m_mapLengthByLastWord right \
+   left m_mapLastLengthByWord middle m_mapLastLengthByWord right \
+   left m_mapLastTagByTag middle m_mapLastTagByTag right \
+   left m_mapLastTwoTagsByTag middle m_mapLastTwoTagsByTag right \
+   left m_mapCurrentTag middle m_mapCurrentTag right \
+   left m_mapTagByLastWord middle m_mapTagByLastWord right \
+   left m_mapLastTagByWord middle m_mapLastTagByWord right \
+   left m_mapTagByFirstChar middle m_mapTagByFirstChar right \
+   left m_mapTagByLastChar middle m_mapTagByLastChar right \
+   left m_mapTagByChar middle m_mapTagByChar right \
+   left m_mapTagOfOneCharWord middle m_mapTagOfOneCharWord right \
+   left m_mapRepeatedCharByTag middle m_mapRepeatedCharByTag right \
+   left m_mapTagByWordAndPrevChar middle m_mapTagByWordAndPrevChar right \
+   left m_mapTagByWordAndNextChar middle m_mapTagByWordAndNextChar right \
+   left m_mapTaggedCharByFirstChar middle m_mapTaggedCharByFirstChar right \
+   left m_mapTaggedCharByLastChar middle m_mapTaggedCharByLastChar right \
+   left m_mapTagByFirstCharCat middle m_mapTagByFirstCharCat right \
+   left m_mapTagByLastCharCat middle m_mapTagByLastCharCat right \
+   left m_mapTaggedSeparateChars middle m_mapTaggedSeparateChars right \
+   left m_mapTaggedConsecutiveChars middle m_mapTaggedConsecutiveChars right \
+   left m_mapWordTagTag middle m_mapWordTagTag right \
+   left m_mapTagWordTag middle m_mapTagWordTag right \
+   left m_mapFirstCharBy2Tags middle m_mapFirstCharBy2Tags right \
+   left m_mapFirstCharBy3Tags middle m_mapFirstCharBy3Tags right \
+   left m_mapFirstCharAndChar middle m_mapFirstCharAndChar right \
+   left m_mapSepCharAndNextChar middle m_mapSepCharAndNextChar right \
+   left m_mapAppCharAndNextChar middle m_mapAppCharAndNextChar right \
+   left m_mapPartialWord middle m_mapPartialWord right \
+   left m_mapPartialLengthByFirstChar middle m_mapPartialLengthByFirstChar right \
+   left m_mapLengthByTagAndFirstChar middle m_mapLengthByTagAndFirstChar right \
+   left m_mapLengthByTagAndLastChar middle m_mapLengthByTagAndLastChar right \
+   left m_mapTag0Tag1Size1 middle m_mapTag0Tag1Size1 right \
+   left m_mapTag1Tag2Size1 middle m_mapTag1Tag2Size1 right \
+   left m_mapTag0Tag1Tag2Size1 middle m_mapTag0Tag1Tag2Size1 right
+
 /*---------------------------------------------------------------
  *
  * loadScores - load scores from the file specified at constructor
@@ -73,10 +125,12 @@ using namespace chinese::tagger;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
+	if(m_sFeatureDB == "") return;
    std::cout << "Loading scores ..."; std::cout.flush();
    clock_t time_start = clock();
    std::string st;
    std::ifstream is(m_sFeatureDB.c_str());
+
    std::istringstream iss;
 
    if (!is.is_open()) {
@@ -196,5 +250,47 @@ void CWeight::computeAverageFeatureWeights(unsigned long round) {
    iterate_templates(,.computeAverage(round););
    std::cout << " done." << std::endl;
 }
+
+
+/*--------------------------------------------------------------
+ *
+ * addcurrent - add weights
+ *
+ *-------------------------------------------------------------*/
+void CWeight::addCurrent(CWeight *w, const int &round)
+{
+
+	iterate_double_templates(,.addCurrent ID_LRB w->, ID_COMMA round ID_RRB;);
+}
+
+
+/*--------------------------------------------------------------
+ *
+ * scalecurrent - scale weights
+ *
+ *-------------------------------------------------------------*/
+void CWeight::scaleCurrent(const SCORE_TYPE& scale, const int &round)
+{
+	iterate_templates(,ID(.scaleCurrent(scale, round)););
+}
+
+
+/*--------------------------------------------------------------
+ *
+ * norm2 - norm2
+ *
+ *-------------------------------------------------------------*/
+SCORE_TYPE CWeight::norm2()
+{
+	static SCORE_TYPE retval;
+	retval = 0;
+	iterate_templates(retval+=,.squareNorm(););
+	return retval;
+}
+
+void CWeight::clear() {
+    iterate_templates(,.clear(););
+ }
+
 
 
