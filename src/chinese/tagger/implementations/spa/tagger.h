@@ -49,6 +49,220 @@ public:
 //      }
    }
 
+   double hammingloss_word(const CSubStateItem* gold) const
+   {
+	   int character_num_curstate = charactersize();
+	   int character_num_gold = gold->charactersize();
+	   assert(character_num_curstate == character_num_gold);
+	   if(character_num_curstate <= 0) return 0;
+
+	   double loss = 0.0;
+	   for(int i = 0; i < character_num_gold; i++)
+	   {
+
+		   int charTag_cur = 1;
+		   int wordIndex = 0;
+		   while(m_lWords[wordIndex] < i && wordIndex < m_nLength)
+		   {
+			   wordIndex++;
+		   }
+
+		   if( i == 0 || m_lWords[wordIndex-1]+1 == i)
+		   {
+			   charTag_cur = 2;
+		   }
+
+
+		   int charTag_gold = 1;
+
+		   wordIndex = 0;
+		   while(gold->m_lWords[wordIndex] < i && wordIndex < gold->m_nLength)
+		   {
+			   wordIndex++;
+		   }
+
+		   if( i == 0 || gold->m_lWords[wordIndex-1]+1 == i)
+		   {
+			   charTag_gold = 2;
+		   }
+
+
+		   if(charTag_cur != charTag_gold)
+		   {
+			   loss = loss +1;
+		   }
+
+	   }
+
+	   return loss;
+   }
+
+
+
+   // hammingloss tagging
+   double hammingloss_tag(const CSubStateItem* gold) const
+   {
+	   return hammingloss_wordtag(gold) - hammingloss_word(gold);
+   }
+
+
+
+   // hammingloss wordsegmentation and tagging
+
+   double hammingloss_wordtag(const CSubStateItem* gold) const
+   {
+	   int character_num_curstate = charactersize();
+	   int character_num_gold = gold->charactersize();
+	   assert(character_num_curstate == character_num_gold);
+	   if(character_num_curstate <= 0) return 0;
+
+	   double loss = 0.0;
+	   for(int i = 0; i < character_num_gold; i++)
+	   {
+		   int charTag_cur = -1;
+		   int wordIndex = 0;
+		   while(m_lWords[wordIndex] < i && wordIndex < m_nLength)
+		   {
+			   wordIndex++;
+		   }
+
+		   if( i == 0 || m_lWords[wordIndex-1]+1 == i)
+		   {
+			   charTag_cur = 2 * m_lTags[wordIndex].code();
+		   }
+		   else
+		   {
+			   charTag_cur = 2 * m_lTags[wordIndex].code() +1;
+		   }
+
+
+		   int charTag_gold = -1;
+
+		   wordIndex = 0;
+		   while(gold->m_lWords[wordIndex] < i && wordIndex < gold->m_nLength)
+		   {
+			   wordIndex++;
+		   }
+
+		   if( i == 0 || gold->m_lWords[wordIndex-1]+1 == i)
+		   {
+			   charTag_gold = 2 * gold->m_lTags[wordIndex].code();
+		   }
+		   else
+		   {
+			   charTag_gold = 2 * gold->m_lTags[wordIndex].code() + 1;
+		   }
+
+		   if( charTag_cur != charTag_gold )
+		   {
+			   loss = loss +1;
+		   }
+
+	   }
+
+	   return loss;
+   }
+
+
+   double hammingloss_word_prec_recal(const CSubStateItem* gold) const
+   {
+	   int character_num_curstate = charactersize();
+	   int character_num_gold = gold->charactersize();
+	   assert(character_num_curstate == character_num_gold);
+	   if(character_num_curstate <= 0) return 0;
+
+	   double loss = 0.0;
+
+	   int match = 0;
+	   int total = m_nLength + gold->m_nLength;
+	   int last_pStart = 0, last_gStart = 0;
+	   for(int i = 0, j = 0; i < m_nLength && j < gold->m_nLength; )
+	   {
+		   if(m_lWords[i] == gold->m_lWords[j] && last_pStart == last_gStart)
+		   {
+			   last_pStart = m_lWords[i]+1;
+			   last_gStart = gold->m_lWords[j]+1;
+			   i++;j++;
+			   match++;
+		   }
+		   else if (m_lWords[i] == gold->m_lWords[j])
+		   {
+			   last_pStart = m_lWords[i]+1;
+			   last_gStart = gold->m_lWords[j]+1;
+			   i++;j++;
+		   }
+		   else if (m_lWords[i] < gold->m_lWords[j])
+		   {
+			   last_pStart = m_lWords[i]+1; i++;
+		   }
+		   else
+		   {
+			   last_gStart = gold->m_lWords[j]+1;j++;
+		   }
+
+	   }
+
+	   loss = total - 2.0 * match;
+
+	   return loss;
+   }
+
+
+
+   // hammingloss tagging
+   double hammingloss_tag_prec_recal(const CSubStateItem* gold) const
+   {
+	   return hammingloss_wordtag_prec_recal(gold) - hammingloss_word_prec_recal(gold);
+   }
+
+
+
+   // hammingloss wordsegmentation and tagging
+
+   double hammingloss_wordtag_prec_recal(const CSubStateItem* gold) const
+   {
+	   int character_num_curstate = charactersize();
+	   int character_num_gold = gold->charactersize();
+	   assert(character_num_curstate == character_num_gold);
+	   if(character_num_curstate <= 0) return 0;
+
+	   double loss = 0.0;
+
+	   int match = 0;
+	   int total = m_nLength + gold->m_nLength;
+	   int last_pStart = 0, last_gStart = 0;
+	   for(int i = 0, j = 0; i < m_nLength && j < gold->m_nLength; )
+	   {
+		   if(m_lWords[i] == gold->m_lWords[j] && last_pStart == last_gStart)
+		   {
+			   last_pStart = m_lWords[i]+1;
+			   last_gStart = gold->m_lWords[j]+1;
+			   i++;j++;
+			   if(m_lTags[i]==gold->m_lTags[j])match++;
+		   }
+		   else if (m_lWords[i] == gold->m_lWords[j])
+		   {
+			   last_pStart = m_lWords[i]+1;
+			   last_gStart = gold->m_lWords[j]+1;
+			   i++;j++;
+		   }
+		   else if (m_lWords[i] < gold->m_lWords[j])
+		   {
+			   last_pStart = m_lWords[i]+1; i++;
+		   }
+		   else
+		   {
+			   last_gStart = gold->m_lWords[j]+1;j++;
+		   }
+
+	   }
+
+	   loss = total - 2.0 * match;
+
+	   return loss;
+   }
+
+
 };
 
 }
@@ -68,12 +282,24 @@ protected:
    unsigned m_nScoreIndex;
    bool m_bTrainingError;
 
+   tagger::CWeight *m_delta_word;
+   tagger::CWeight *m_delta_tag;
+
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
-      if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
+   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize), m_delta_word(0), m_delta_tag(0){
+      if (bTrain)
+      {
+    	  m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage;
+    	  m_delta_word = new tagger::CWeight("", true, false, 257);
+    	  m_delta_tag = new tagger::CWeight("", true, false, 257);
+      }
+      else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
       ASSERT(sizeof(unsigned long long)>=CTag::SIZE, "The tagger requires the size of unsigned-long greater than" << CTag::SIZE); // tag dict
    }
-   virtual ~CTagger() {}
+   virtual ~CTagger() {
+	   if(m_delta_word) delete m_delta_word;
+	   if(m_delta_tag) delete m_delta_tag;
+   }
    
 protected:
    void loadKnowledge(const std::string &sKnowledgePath) {
@@ -136,14 +362,59 @@ public:
 
    inline void updateScoreForState(const CStringVector *sentence, const tagger::CSubStateItem *item, const tagger::SCORE_TYPE &amount) {
       static unsigned tmp_i, tmp_j;
+      static tagger::SCORE_TYPE scorew, scoret;
       for (tmp_i=0; tmp_i<item->size(); ++tmp_i) {
-         getOrUpdateSeparateScore(sentence, item, tmp_i, amount, m_nTrainingRound);
+         getOrUpdateSeparateScore(sentence, item, tmp_i, scorew, scoret, amount, m_nTrainingRound);
          for (tmp_j=item->getWordStart(tmp_i)+1; tmp_j<item->getWordEnd(tmp_i)+1; ++tmp_j)
-            getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, amount, m_nTrainingRound);
+            getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, scorew, scoret, amount, m_nTrainingRound);
       }
    }
-   tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
-   tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+
+   inline void updateScoreForStates(const CStringVector *sentence, const tagger::CSubStateItem *gold, const tagger::CSubStateItem *item)
+   {
+	   m_delta_word->clear();
+	   m_delta_tag->clear();
+
+	   updateScoreForState(sentence, gold, 1);
+	   updateScoreForState(sentence, item, -1);
+
+
+	   {
+		   static double lossw, losst, fov;
+		   lossw = item->hammingloss_word_prec_recal(gold);
+		   losst = item->hammingloss_wordtag_prec_recal(gold);
+
+		   //may be gold->scorew > item->scorew but gold->score < item->score, similar for tag score.
+		   //if(item->scorew - gold->scorew > -1e-20)
+		   double m_delta_word_norm = m_delta_word->norm2();
+		   if (m_delta_word_norm > 1e-20)
+		   {
+			   fov = (item->scorew - gold->scorew + std::sqrt(lossw))/(m_delta_word_norm + 50.0);
+			   m_delta_word->scaleCurrent(fov, m_nTrainingRound);
+			   m_weights->addCurrent(m_delta_word, m_nTrainingRound);
+		   }
+
+
+		  //if(item->scoret - gold->scoret > -1e-20)
+		   double m_delta_tag_norm = m_delta_tag->norm2();
+		   if(m_delta_tag_norm > 1e-20)
+		   {
+			   fov = (item->scoret - gold->scoret + std::sqrt(losst))/(m_delta_tag_norm + 50.0);
+			   m_delta_tag->scaleCurrent(fov, m_nTrainingRound);
+			   m_weights->addCurrent(m_delta_tag, m_nTrainingRound);
+		   }
+   	   }
+
+	   /*
+	   {
+		   m_weights->addCurrent(m_delta_word, m_nTrainingRound);
+		   m_weights->addCurrent(m_delta_tag, m_nTrainingRound);
+	   }*/
+
+
+   }
+   tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE& scorew, tagger::SCORE_TYPE& scoret, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, tagger::SCORE_TYPE& scorew, tagger::SCORE_TYPE& scoret, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
 };
 

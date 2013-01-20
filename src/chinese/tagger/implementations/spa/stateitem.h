@@ -35,7 +35,7 @@ protected:
 public:
 
    // item score
-   SCORE_TYPE score;
+   SCORE_TYPE score, scorew, scoret;
 
 public:
 
@@ -79,6 +79,8 @@ public:
    void copy(const CStateItem *from) {
       m_nLength = from->m_nLength;
       score = from->score;
+      scorew = from->scorew;
+      scoret = from->scoret;
       for (int i=0; i<m_nLength; ++i) {
          m_lWords[i] = from->m_lWords[i];
          m_lTags[i] = from->m_lTags[i];
@@ -90,7 +92,7 @@ public:
       this->copy(&from);
    }
 
-   inline void clear() { score = 0; m_nLength = 0; m_nAction = eNoAction; }
+   inline void clear() { score = 0; scorew = 0; scoret = 0; m_nLength = 0; m_nAction = eNoAction; }
 
 public:
 
@@ -104,9 +106,12 @@ public:
 
    inline const unsigned long size() const { return m_nLength; }
 
+   inline const unsigned long charactersize() const { return m_lWords[m_nLength-1]+1; }
+
    // the traditional interface
 
    void append(const unsigned long &char_index, const unsigned long &tag) {
+	  m_nAction = eSeparate;
       m_lWords[m_nLength] = char_index;
       m_lTags[m_nLength].load(tag);
       ++m_nLength ;
@@ -118,6 +123,7 @@ public:
    }
 
    inline void replaceIndex(const unsigned long &char_index) {
+	  m_nAction = eAppend;
       m_lWords[m_nLength-1] = char_index;
    }
 
@@ -129,11 +135,13 @@ public:
       return m_lTags[index];
    }
 
+
+
 public:
 
    // action based - appending / separating ? 
 
-   const CTag &getLastTag() const {
+   inline const CTag &getLastTag() const {
       const static CTag begin(CTag::SENTENCE_BEGIN);
       const static CTag none(CTag::NONE);
       if ( m_nLength == 0 ) return begin ;
@@ -146,7 +154,7 @@ public:
       return m_lTags[m_nLength-1];
    }
 
-   int getLastEnd() {
+   inline const int getLastEnd() const {
       if ( m_nLength == 0 ) return -1 ;
       assert( m_nAction != eNoAction ) ;
       if ( m_nAction == eSeparate ) return m_lWords[m_nLength-1] ;
@@ -154,13 +162,22 @@ public:
       return m_lWords[m_nLength-2];
    }
 
-   inline bool canAppend() { return m_nAction != eSeparate; }
 
-   inline bool canSeparate() { return m_nAction != eAppend; }
+   inline const bool canAppend() const { return m_nAction != eSeparate; }
+
+   inline const bool canSeparate() const{ return m_nAction != eAppend; }
+
+   inline const bool isAppendAction() const { return m_nAction == eAppend; }
+
+   inline const bool isSeparateAction() const{ return m_nAction == eSeparate; }
+
+   //inline const ACTION_TYPE getLastAction() const{ return m_nAction; }
 
    inline void setWordEnd( bool bWordEnd ) {
       m_nAction = bWordEnd ? eSeparate : eAppend;
    }
+
+
 
 public:
 
@@ -186,6 +203,28 @@ public:
       }
       return true;
    }
+
+   // hammingloss wordsegmentation
+
+     int getCharacterTag(int index) const
+     {
+  	   if(index < 0 && index > m_lWords[m_nLength-1]) return -1;
+  	   int wordIndex = 0;
+  	   while(m_lWords[wordIndex] < index && wordIndex < m_nLength)
+  	   {
+  		   wordIndex++;
+  	   }
+
+  	   if( index == 0 || m_lWords[wordIndex-1]+1 == index)
+  	   {
+  		   return 2 * m_lTags[wordIndex].code();
+  	   }
+  	   else
+  	   {
+  		   return 2 * m_lTags[wordIndex].code()+1;
+  	   }
+     }
+
 };
 
 }

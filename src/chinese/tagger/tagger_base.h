@@ -47,7 +47,7 @@ protected:
 public:
    CTaggerBase(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) , m_nTrainingRound(0) { 
       // load features
-      m_weights = new tagger::CWeight(sFeatureDBPath, bTrain, bSegmentationRules); 
+      m_weights = new tagger::CWeight(sFeatureDBPath, bTrain, bSegmentationRules, 65537);
       // load knowledge
       if (!bTrain) {
          // when decoding

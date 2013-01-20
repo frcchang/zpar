@@ -16,6 +16,11 @@ namespace chinese {
 
 namespace tagger {
 
+#define ID(x) x
+#define ID_LRB (
+#define ID_RRB )
+#define ID_COMMA ,
+#define ID_POINTER ->
 //
 // TYPE DEFINITIONS
 //
@@ -136,69 +141,69 @@ public:
    // note that m_bSegmentation rules will be covered by load()
    // if there is a model file to load
    // therefore this argument only used first time training
-   CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
+   CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules, unsigned long size) :
             CWeightBase(sFeatureDB, bTrain) ,
             m_Knowledge(0) ,
-            m_mapCharUnigram("CharacterUnigram", 65537) ,
-            m_mapCharBigram("CharacterBigram", 65537) ,
-            m_mapCharTrigram("CharacterTrigram", 65537) ,
-            m_mapSeenWords("WordDictionary", 65537) ,
-            m_mapLastWordByWord("LastWordByWord", 65537) ,
-            m_mapCurrentWordLastChar("CurrentWordLastChar", 65537) , 
-            m_mapLastWordFirstChar("LastWordFirstChar", 65537) ,
-            m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", 65537) ,
-            m_mapLastWordByLastChar("LastWordByLastChar", 65537) ,
-            m_mapSeparateChars("SeparateChars", 65537) , 
-            m_mapConsecutiveChars("ConsecutiveChars", 65537) , 
-            m_mapFirstAndLastChars("FirstAndLastChars", 65537) ,
-            m_mapOneCharWord("OneCharWord", 65537) ,
-            m_mapLengthByFirstChar("LengthByFirstChar", 65537) , 
-            m_mapLengthByLastChar("LengthByLastChar", 65537) , 
-            m_mapLengthByLastWord("LengthByLastWord", 65537) ,
-            m_mapLastLengthByWord("LastLengthByWord", 65537) ,
+            m_mapCharUnigram("CharacterUnigram", size) ,
+            m_mapCharBigram("CharacterBigram", size) ,
+            m_mapCharTrigram("CharacterTrigram", size) ,
+            m_mapSeenWords("WordDictionary", size) ,
+            m_mapLastWordByWord("LastWordByWord", size) ,
+            m_mapCurrentWordLastChar("CurrentWordLastChar", size) ,
+            m_mapLastWordFirstChar("LastWordFirstChar", size) ,
+            m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", size) ,
+            m_mapLastWordByLastChar("LastWordByLastChar", size) ,
+            m_mapSeparateChars("SeparateChars", size) ,
+            m_mapConsecutiveChars("ConsecutiveChars", size) ,
+            m_mapFirstAndLastChars("FirstAndLastChars", size) ,
+            m_mapOneCharWord("OneCharWord", size) ,
+            m_mapLengthByFirstChar("LengthByFirstChar", size) ,
+            m_mapLengthByLastChar("LengthByLastChar", size) ,
+            m_mapLengthByLastWord("LengthByLastWord", size) ,
+            m_mapLastLengthByWord("LastLengthByWord", size) ,
 
-            m_mapLastTagByTag("LastTagByTag", 1627) ,
-            m_mapLastTwoTagsByTag("LastTwoTagsByTag", 16381) ,
-            m_mapCurrentTag("CurrentTag", 65537) ,
-            m_mapTagByLastWord("TagByLastWord", 65537) ,
-            m_mapLastTagByWord("LastTagByWord", 65537) ,
-            m_mapTagByFirstChar("TagByFirstChar", 65537) ,
-            m_mapTagByLastChar("TagByLastChar", 65537) ,
-            m_mapTagByChar("TagByChar", 65537) ,
-            m_mapTagOfOneCharWord("TagOfOneCharWord", 65537) ,
-            m_mapRepeatedCharByTag("RepeatedCharByTag", 65537) ,
-            m_mapTagByWordAndPrevChar("TagByWordAndPrevChar", 65537) ,
-            m_mapTagByWordAndNextChar("TagByWordAndNextChar", 65537) ,
-            m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", 65537) ,
-            m_mapTaggedCharByLastChar("TaggedCharByLastChar", 65537) ,
-            m_mapTagByFirstCharCat("TagByFirstCharCat", 65537) ,
-            m_mapTagByLastCharCat("TagByLastCharCat", 65537) , 
+            m_mapLastTagByTag("LastTagByTag", size) ,
+            m_mapLastTwoTagsByTag("LastTwoTagsByTag", size) ,
+            m_mapCurrentTag("CurrentTag", size) ,
+            m_mapTagByLastWord("TagByLastWord", size) ,
+            m_mapLastTagByWord("LastTagByWord", size) ,
+            m_mapTagByFirstChar("TagByFirstChar", size) ,
+            m_mapTagByLastChar("TagByLastChar", size) ,
+            m_mapTagByChar("TagByChar", size) ,
+            m_mapTagOfOneCharWord("TagOfOneCharWord", size) ,
+            m_mapRepeatedCharByTag("RepeatedCharByTag", size) ,
+            m_mapTagByWordAndPrevChar("TagByWordAndPrevChar", size) ,
+            m_mapTagByWordAndNextChar("TagByWordAndNextChar", size) ,
+            m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", size) ,
+            m_mapTaggedCharByLastChar("TaggedCharByLastChar", size) ,
+            m_mapTagByFirstCharCat("TagByFirstCharCat", size) ,
+            m_mapTagByLastCharCat("TagByLastCharCat", size) ,
 
-            m_mapSeparateCharCat("SeparateCharCat", 16381) , 
-            m_mapConsecutiveCharCat("ConsecutiveCharCat", 16381) ,
+            m_mapSeparateCharCat("SeparateCharCat", size) ,
+            m_mapConsecutiveCharCat("ConsecutiveCharCat", size) ,
 
             m_mapTagDictionary(CTag::COUNT),
             m_mapCharTagDictionary(CTag::COUNT), 
             m_mapCanStart(CTag::COUNT), 
             m_mapWordFrequency(65537),
 
-            m_mapTaggedSeparateChars("TaggedSeparateChars", 65537) , 
-            m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", 65537), 
+            m_mapTaggedSeparateChars("TaggedSeparateChars", size) ,
+            m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", size),
 
-            m_mapWordTagTag("WordByTheNextTwoTag", 65537),
-            m_mapTagWordTag("TagByNextWordSecondNextTag", 65537),
-            m_mapFirstCharBy2Tags("FirstCharByTagAndLastTag", 65537),
-            m_mapFirstCharBy3Tags("FirstCharByTagLastTagAndSecondLastTag", 65537),
-            m_mapFirstCharAndChar("FirstCharAndChar", 65537),
-            m_mapSepCharAndNextChar("SeparatedCharAndNextChar", 65537),
-            m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537),
-            m_mapPartialWord("PartialWord", 65537),
-            m_mapPartialLengthByFirstChar("PartialLengthByFirstChar", 65537),
-            m_mapLengthByTagAndFirstChar("LengthByTagAndFirstChar", 65537) , 
-            m_mapLengthByTagAndLastChar("LengthByTagAndLastChar", 65537) , 
-            m_mapTag0Tag1Size1("Tag0Tag1Size1", 65537),
-            m_mapTag1Tag2Size1("Tag1Tag2Size1", 65537),
-            m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", 65537)
+            m_mapWordTagTag("WordByTheNextTwoTag", size),
+            m_mapTagWordTag("TagByNextWordSecondNextTag", size),
+            m_mapFirstCharBy2Tags("FirstCharByTagAndLastTag", size),
+            m_mapFirstCharBy3Tags("FirstCharByTagLastTagAndSecondLastTag", size),
+            m_mapFirstCharAndChar("FirstCharAndChar", size),
+            m_mapSepCharAndNextChar("SeparatedCharAndNextChar", size),
+            m_mapAppCharAndNextChar("AppendedCharAndNextChar", size),
+            m_mapPartialWord("PartialWord", size),
+            m_mapPartialLengthByFirstChar("PartialLengthByFirstChar", size),
+            m_mapLengthByTagAndFirstChar("LengthByTagAndFirstChar", size) ,
+            m_mapLengthByTagAndLastChar("LengthByTagAndLastChar", size) ,
+            m_mapTag0Tag1Size1("Tag0Tag1Size1", size),
+            m_mapTag1Tag2Size1("Tag1Tag2Size1", size),
+            m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", size)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
@@ -213,6 +218,12 @@ public:
    void loadScores();
    void saveScores();
    void computeAverageFeatureWeights(unsigned long round);
+
+   void addCurrent(CWeight *w, const int &round);
+   void scaleCurrent(const SCORE_TYPE& scale, const int &round);
+   SCORE_TYPE norm2();
+
+   void clear();
 
    void newKnowledge() {
       std::cout << "set character knowledge... " << std::endl;
