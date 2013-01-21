@@ -38,7 +38,7 @@ SEGMENTOR_IMPL = agenda
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = agenda
+CHINESE_TAGGER_IMPL = spa
 
 # Chinese dependency parser
 #
@@ -48,7 +48,7 @@ CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
-CHINESE_CONPARSER_IMPL = enode
+CHINESE_CONPARSER_IMPL = jcad
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = collins
@@ -87,7 +87,7 @@ include Makefile.common
 INCLUDES = -I$(SRC_INCLUDES)
 
 CXX = g++
-CXXFLAGS = -W -O3 $(INCLUDES) $(DEBUG)
+CXXFLAGS = -w -W -O0 $(INCLUDES) $(DEBUG)
 
 LD=$(CXX)
 LDFLAGS =
@@ -157,6 +157,11 @@ OBJECT_ENGLISH_DEPLABELER = $(OBJECT_DIR)/english.deplabeler
 #  conparser
 SRC_COMMON_CONPARSER = $(SRC_COMMON)/conparser
 SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
+ifeq ($(CHINESE_CONPARSER_IMPL), jcad)
+	SRC_CHINESE_CONPARSER = $(SRC_CHINESE)/conparser
+else
+	SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
+endif
 SRC_ENGLISH_CONPARSER = $(SRC_COMMON_CONPARSER)
 DIST_CONPARSER = $(DIST_DIR)/chinese.conparser
 OBJECT_CONPARSER = $(OBJECT_DIR)/chinese.conparser
