@@ -9,7 +9,7 @@ namespace conparser {
 
 #include "tags.h"
 #include "cfg.h"
-#include "linguistics/constituent.h"
+#include "linguistics/jointconstituent.h"
 #include "linguistics/tagset.h"
 #include "options.h"
 

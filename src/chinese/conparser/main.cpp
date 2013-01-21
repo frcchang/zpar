@@ -1,11 +1,11 @@
-// Copyright (C) University of Oxford 2010
+// Copyright (C) SUTD 2013
 /****************************************************************
  *                                                              *
- * main.cpp - main app of the general constituent parser.       *
+ * main.cpp - main app of the chinese joint constituent parser. *
  *                                                              *
- * Author: Yue Zhang                                            *
+ * Author: Yue Zhang, Meishan Zhang                             *
  *                                                              *
- * Computing Laboratory, Oxford. 2007.8                         *
+ * SUTD 2013.1                                                  *
  *                                                              *
  ****************************************************************/
 
@@ -23,7 +23,7 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, const char cInputFormat, int nBest, const bool bScores, const bool bBinary) {
+void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, int nBest, const bool bScores, const bool bBinary) {
 
    std::cout << "Parsing started" << std::endl;
 
@@ -31,17 +31,12 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
 
    CConParser parser(sFeatureFile, false) ;
    CSentenceReader *input_reader=0;
-   std::ifstream *is=0;
-   if (cInputFormat=='c')
-      is = new std::ifstream(sInputFile.c_str());
-   else
-      input_reader = new CSentenceReader(sInputFile);
+   input_reader = new CSentenceReader(sInputFile);
    std::ofstream os(sOutputFile.c_str());
    std::ofstream *os_scores=0;
    conparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
-   static CTwoStringVector raw_input;
-   static CSentenceMultiCon<CConstituent> con_input;
+   static CStringVector raw_input;
    CSentenceParsed *outout_sent; 
 
    int nCount=0;
@@ -55,42 +50,33 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
    outout_sent = new CSentenceParsed[nBest];
  
    // Read the next example
-   if (cInputFormat=='c')
-      bReadSuccessful = ((*is)>>con_input);
-   else
-      bReadSuccessful = input_reader->readTaggedSentence(&raw_input, false, TAG_SEPARATOR);
+  bReadSuccessful = input_reader.readRawSentence(raw_input, true, false);
    while( bReadSuccessful ) {
 
-      std::cout << "Sentence " << nCount << "...";
+      TRACE_WORD("Sentence " << nCount << "...");
       ++ nCount;
 
       // Find decoder outout
-      if (cInputFormat=='c')
-         parser.parse( con_input , outout_sent , nBest , scores ) ;
-      else
+      /*
          parser.parse( raw_input , outout_sent , nBest , scores ) ;
-      
+      */
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
          if (bBinary)
             os << outout_sent[i] ;
          else
-            os << outout_sent[i].str_unbinarized() << std::endl;
+            os << outout_sent[i].str_unbinarizedall() << std::endl;
          if (bScores) *os_scores << scores[i] << std::endl;
       }
 
       std::cout << "done. " << std::endl; 
       
       // Read the next example
-      if (cInputFormat=='c')
-         bReadSuccessful = ((*is)>>con_input);
-      else
-         bReadSuccessful = input_reader->readTaggedSentence(&raw_input, false, TAG_SEPARATOR);
+      bReadSuccessful = input_reader.readRawSentence(raw_input, true, false);
    }
 
    delete [] outout_sent ;
    if (input_reader) delete input_reader;
-   if (is) {is->close(); delete is;}
    os.close();
 
    if (bScores) {
@@ -112,7 +98,6 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("i", "r/c", "input format: r - pos-tagged sentence; c - pos-tagged and a lit of constituents for each word", "r");
       configurations.defineConfiguration("b", "", "outout binarized parse trees", "");
       configurations.defineConfiguration("n", "N", "N best list outout", "1");
       configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
@@ -131,8 +116,8 @@ int main(int argc, char* argv[]) {
       }
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       bool bBinary = configurations.getConfiguration("b").empty() ? false : true;
-      char cInputFormat = configurations.getConfiguration("i") == "c" ? 'c' : 'r';
-      process(options.args[1], options.args[2], options.args[3], cInputFormat, nBest, bScores, bBinary);
+
+      process(options.args[1], options.args[2], options.args[3], nBest, bScores, bBinary);
    } 
    catch (const std::string &e) {
       std::cerr << "Error: " << e << std::endl;

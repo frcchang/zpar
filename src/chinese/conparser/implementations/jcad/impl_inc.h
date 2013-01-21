@@ -35,7 +35,7 @@ typedef CTemporary<CConstituentLabel> CConstituent;
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
-typedef TARGET_LANGUAGE::CCFGTree CSentenceParsed;
+typedef TARGET_LANGUAGE::CJointTree CSentenceParsed;
 
 #include "labeledbracket.h"
 #include "stack.h"
