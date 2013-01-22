@@ -1,0 +1,106 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>ZPar project</title>
+</head>
+
+<p><a href='index.html'>Home</a> &gt; ZPar</p>
+
+<h1>ZPar</h1>
+
+<p><b>Overview</b></p>
+
+<p>ZPar is a statistical natural language parser, which performs syntactic analysis tasks including word segmentation, part-of-speech tagging and parsing. ZPar supports multiple languages and multiple grammar formalisms. ZPar has been most heavily developed for Chinese and English, while it provides generic support for other languages. A Romanian model has been trained for ZPar 0.2, for example. ZPar currently supports context free grammar (CFG), dependency grammar and combinatory categorial grammar (CCG). </p>
+
+<p>ZPar for Chinese, English and ZPar generic (language-independent) are compiled separately into three independent programs: zpar, zpar.en and zpar.ge, respectively. Each program needs to be executed with a set of corresponding statistical models. Some example sets of models are released together with ZPar source so that the public release can be used off-the-shelf. </p>
+
+<p> The current version of ZPar is 0.5. Its release contains a model set for zpar.en, which supports labeled dependency parsing and context-free-grammar parsing. </p>
+
+<p><b>Download and installation</b></p>
+
+<p>The source code and models can be downloaded from <a
+href=http://www.sourceforge.net/projects/zpar>sourceforge</a>. Unzip the source zip file into the source directory and the corresponding model files each into a model directory. To compile ZPar,
+type <i>make</i> in the zpar source directory. The binary file <i>zpar</i> will placed
+in the <i>dist</i> folder. Type <i>make zpar.en</i> and <i>make
+zpar.ge</i> to make ZPar for English and ZPar generic. </p> 
+
+<p><b>Usage of ZPar for Chinese</b></p>
+
+<p>Suppose that the source files are saved in the folder <i>zpar</i> and the models are saved in <i>models</i>. To run zpar, type <i>zpar/dist/zpar models</i>, and wait for the models to be loaded. After all models are loaded, type in Chinese sentences, and the parses will be printed out on the screen. Alternatively, type <i>zpar/dist/zpar models input output</i> to read Chinese sentences from the input and write the corresponding parses to output. </p>
+
+<p>In the following example, inputs were shown in red and outputs were shown in blue. <br>
+<i>bash$ <span style="color:red">zpar/dist/zpar models</span></i><br>
+<i><span style="color:blue">Parsing started</span></i><br>
+<i><span style="color:blue">Loading scores ... done.</span></i><br>
+<i><span style="color:blue">Loading scores... done.</span></i><br>
+<i><span style="color:red">这是一个例子。</span></i><br>
+<i><span style="color:blue">(IP (NP (PN 这)) (VP (VC 是) (NP (QP (CD 一) (CLP (M 个))) (NP (NN 例子)))) (PU
+。))</span></i><br>
+<i><span style="color:red">输入一个句子，程序会给出它的句法分析。</span></i><br>
+<i><span style="color:blue">(IP (IP (VP (VV 输入) (NP (QP (CD 一) (CLP (M 个))) (NP (NN 句子))))) (PU ，)
+(NP (NN 程序)) (VP (VV 会) (VP (VV 给出) (NP (DNP (NP (PN 它)) (DEG 的)) (ADJP
+(JJ 句法)) (NP (NN 分析))))) (PU 。))</span></i><br>
+<i><span style="color:red">ZPar通过机器学习获得知识；虽然大多情况正确，但是也会有分析失误。</span></i><br>
+<i><span style="color:blue">(IP (IP (NP (NN ZPar)) (VP (PP (P 通过) (NP (NN 机器))) (VP (VV 学习) (IP (VP
+(VV 获得) (NP (NN 知识))))))) (PU ；) (CP (ADVP (CS 虽然)) (IP (ADVP (AD 大多))
+(NP (NN 情况)) (VP (VA 正确)))) (PU ，) (VP (ADVP (AD 但是)) (ADVP (AD 也)) (VP
+(VV 会) (VP (VE 有) (IP (NP (NN 分析)) (VP (VV 失误)))))) (PU 。))</span></i><br>
+<i><span style="color:red">^D</span></i><br>
+<i><span style="color:blue">Parsing has finished successfully. </span></i><br>
+</p>
+
+<p><b>Usage of ZPar for English</b></p>
+
+<p>Suppose that the source files are saved in the folder <i>zpar</i> and the models are saved in <i>models.en</i>. To run zpar, type <i>zpar/dist/zpar.en models.en</i>, and wait for the models to be loaded. After all models are loaded, type in English sentences, and the parses will be printed out on the screen. Alternatively, type <i>zpar/dist/zpar.en models.en input output</i> to read English sentences from the input and write the corresponding parses to output. </p>
+
+<p>Run <i>zpar.en</i> without command-line arguments to show options. In particular, the <i>-o</i> option controls the type of output. Use <i>-ot</i> to produce POS-tagged sentences, and <i>-oc</i> to produce constituent structures (brackets). The default option is <i>-od</i>, which produces dependency structures.</p>
+
+<p>In the following example, inputs were shown in red and outputs were shown in blue. <br>
+<i>bash$ <span style="color:red">zpar/dist/zpar.en -oc models.en</span></i><br>
+<i><span style="color:blue">Parsing started</span></i><br>
+<i><span style="color:blue">[tagger] Loading scores ... done.</span></i><br>
+<i><span style="color:blue">[parser] Loading scores... done.</span></i><br>
+<i><span style="color:red"> ZPar is a parser . </span></i><br>
+<i><span style="color:blue"> (S (NP (NNP ZPar)) (VP (VBZ is) (NP (DT a) (NN parser))) (. .)) </span></i><br>
+<i><span style="color:red"> Given a natural language sentence, ZPar produces its syntactic structure .  </span></i><br>
+<i><span style="color:blue"> (S (VP (VBN Given) (NP (NP (DT a) (JJ natural) (NN language)) (SBAR (S (NP (VBN sentence,) (NNP ZPar)) (VP (VBZ produces) (NP (PRP$ its) (NN syntactic) (NN structure))))))) (. .)) </span></i><br>
+<i><span style="color:red"> ZPar works by training a model from annotated data , and making analysis using the model .  </span></i><br>
+<i><span style="color:blue"> (S (NP (NNP ZPar)) (VP (VBZ works) (PP (IN by) (S (VP (VP (VBG training) (NP (DT a) (NN model)) (PP (IN from) (NP (VBN annotated) (NNS data)))) (, ,) (CC and) (VP (VBG making) (NP (NP (NN analysis)) (VP (VBG using) (NP (DT the) (NN model))))))))) (. .)) </span></i><br>
+<i><span style="color:red">^D</span></i><br>
+<i><span style="color:blue">Parsing has finished successfully. </span></i><br>
+</p>
+
+<p><b>Usage of submodels</b></p>
+
+<p>
+ZPar consists of various implementations of a word segmentor, a POS-tagger, a
+joint segmentation and tagging system, a dependency parser and a constituency
+parser. To compile and use each submodel, run <i>make [submodel]</i>, where
+<i>[submodel]</i> can be segmentor, <i>[language]</i>.postagger,
+<i>[language]</i>.depparser or <i>[language]</i>.conparser. <i>[language]</i>
+can be chinese, english or generic. For example, if you want to compile the
+chinese dependency parser, type <i>make chinese.depparser</i>. To change the
+implementation method of
+particular submodels, modify the corresponding configurations from Makefile.
+For example, the macro SEGMENTOR_IMPL in Makefile defines the implementation of
+the segmentor. The corresponding code can be found at
+src/chinese/segmentor/SEGMENTOR_IMPL/. 
+</p>
+
+<p><b>Scripts</b></p>
+
+<p>
+A <a href='scripts/prettyprint.sh'>pretty print script</a> for the output of the constituent parser. Usage is prettyprint.sh conparser_output. Thanks to Silas S. Brown for providing the script.
+</p>
+
+<p><b>Reference</b></p>
+
+<p>
+Yue Zhang and Stephen Clark. 2011. <i>Syntactic Processing Using the Generalized Perceptron and Beam Search</i>. In <i>Computational Linguistics</i>, 37(1), March. <a href=cl11.pdf>[PDF]</a><a href=cl11.bib>[BIB]</a><br>
+</p>
+
+<p><b>License</b></p>
+
+The software source is under GPL (v.3), and a separate commercial license
+issued by Oxford University for non-opensource. Various models available for
+download were trained from different text resources, which may require further
+licenses. 
