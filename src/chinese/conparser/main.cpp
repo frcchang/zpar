@@ -50,7 +50,7 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
    outout_sent = new CSentenceParsed[nBest];
  
    // Read the next example
-  bReadSuccessful = input_reader.readRawSentence(raw_input, true, false);
+  bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);
    while( bReadSuccessful ) {
 
       TRACE_WORD("Sentence " << nCount << "...");
@@ -65,14 +65,14 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
          if (bBinary)
             os << outout_sent[i] ;
          else
-            os << outout_sent[i].str_unbinarizedall() << std::endl;
+            os << outout_sent[i].str_unbinarized() << std::endl;
          if (bScores) *os_scores << scores[i] << std::endl;
       }
 
       std::cout << "done. " << std::endl; 
       
       // Read the next example
-      bReadSuccessful = input_reader.readRawSentence(raw_input, true, false);
+      bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);
    }
 
    delete [] outout_sent ;
@@ -94,7 +94,7 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
  *
  *==============================================================*/
 
-int main(int argc, char* argv[]) {
+int prime_main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
@@ -125,5 +125,10 @@ int main(int argc, char* argv[]) {
    }
 
    return 0;
+}
+
+int main(int argc, char* argv[]) {
+
+	return 0;
 }
 
