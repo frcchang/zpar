@@ -17,26 +17,27 @@ namespace conparser {
 class CRule {
 
 protected:
-   CHashMap< CTuple2<CConstituent, CConstituent>, std::vector<CAction> > *m_mapBinaryRules;
-   CHashMap< CConstituent, std::vector<CAction> > *m_mapUnaryRules;
-   const std::vector< std::vector<CConstituent> > *m_LexConstituents;
-   const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > *m_sent;
+   const unsigned long *m_maxlengthbytag;
+   const unsigned *m_maxwordfreq;
+   const CStringVector *m_sent;
+   const CTagDict<CWord, CTag> *m_tagdict;
+   const CHashMap<CWord, unsigned long> *m_wordfreq;
+   const CTagDict<CWord, CTag> *m_canstartword;
+   CWordCache m_WordCache;
 
 public:
-   CRule(const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> >*sent) : m_mapBinaryRules(0), m_mapUnaryRules(0), m_LexConstituents(0), m_sent(sent) {}
+   CRule(const unsigned long *maxlengthbytag, const unsigned  *maxwordfreq, const CTagDict<CWord, CTag> *tagdict, const CHashMap<CWord, unsigned long> *wordfreq, const CTagDict<CWord, CTag> *canstartword, CWordCache WordCache) :
+   	m_maxlengthbytag(maxlengthbytag), m_maxwordfreq(maxwordfreq), m_tagdict(tagdict), m_wordfreq(wordfreq), m_canstartword(canstartword), m_WordCache(WordCache) {}
    virtual ~CRule() {
-      if (m_mapBinaryRules) 
-         delete m_mapBinaryRules; 
-      if (m_mapUnaryRules) 
-         delete m_mapUnaryRules;
    }
 
 public:
-   void getActions(const CStateItem &item, std::vector<CAction> &actions) {
+   void getActions(const CStateItem &item, const CStringVector *sent, std::vector<CAction> &actions) {
       actions.clear();
 
       static CAction action;
       const unsigned stack_size = item.stacksize();
+      m_sent = sent;
       const unsigned &length = m_sent->size();
 
       // finish
@@ -66,6 +67,11 @@ public:
       // reduce bin
       if ( stack_size > 1 ) {
          getBinaryRules(item, actions);
+         getWordXYZRules(item, actions);
+      }
+      if (stack_size)
+      {
+      	getWordTRules(item, actions);
       }
       // reduce unary
       if ( stack_size && item.unaryreduces()<UNARY_MOVES 
@@ -78,36 +84,94 @@ public:
    }
 
 protected:
+
+   inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
+      return ( m_wordfreq->find( word, 0 ) <
+                  *m_maxwordfreq/5000+5 &&
+               PENN_TAG_CLOSED[ tag ] == false  ) ||
+             m_tagdict->lookup( word, tag );
+   }
+
+   inline bool canStartWord(const unsigned long &tag, const unsigned long &index) {
+      if (PENN_TAG_CLOSED[ tag ] || tag == PENN_TAG_CD ) {
+         static int tmp_i;
+         // if the first character doesn't match, don't search
+         if ( m_canstartword->lookup( m_WordCache.find( index, index, m_sent ), tag ) == false)
+            return false;
+         // if it matches, search from the next characters
+         if ( tag == PENN_TAG_CD ) return true; // don't search for CD assume correct
+         for (tmp_i=0; tmp_i<m_maxlengthbytag[tag]; ++tmp_i) {
+            if ( m_tagdict->lookup( m_WordCache.find( index, std::min(index+tmp_i, static_cast<unsigned long>(m_sent->size())-1), m_sent ), tag ) )
+               return true;
+         }
+         return false;
+      }
+      return true;
+   }
+
+
    void getShiftRules(const CStateItem &item, std::vector<CAction> &actions) {
       static CAction action;
-      // the rules onto lexical item constituents
-      if (m_LexConstituents) {
-         ASSERT(m_LexConstituents->at(item.current_word).size()>0, "no lexical constituents for word "<<item.current_word<<" ("<<m_sent->at(item.current_word)<<") is provided.");
-         for (int i=0; i<m_LexConstituents->at(item.current_word).size(); ++i) {
-//            TRACE("shift "<<m_LexConstituents->at(item.current_word).at(i).str());
-            action.encodeShift(m_LexConstituents->at(item.current_word).at(i).code());
-            actions.push_back(action);
-         }
-         return;
+
+      if(item.stacksize() > 0 && item.node.is_parital())
+      {
+      	unsigned long last_tag = item.node.pos.code();
+      	if(last_tag == PENN_TAG_CD || (item.node.end_c - item.node.begin_c +1 < m_maxlengthbytag[last_tag]))
+      	{
+      		action.encodeShiftA();
+      		actions.push_back(action);
+      	}
       }
-      // the default rules
-      action.encodeShift();
-      actions.push_back(action);
+      else
+      {
+      	for(unsigned long tag = CTag::FIRST; tag < CTag::COUNT; ++tag)
+      	{
+      		if(canStartWord(tag, item.current_word))
+      		{
+      			action.encodeShiftS(tag);
+      			actions.push_back(action);
+      		}
+      	}
+      }
+
    }
+
+   void getWordXYZRules(const CStateItem &item, std::vector<CAction> &actions)
+   {
+   	static CAction action;
+   	if(item.stacksize() > 1 && item.node.is_parital() && item.stackPtr->node.is_parital())
+   	{
+   		action.encodeWORDXYZ('x');
+   		actions.push_back(action);
+   		action.encodeWORDXYZ('y');
+   		actions.push_back(action);
+   		action.encodeWORDXYZ('z');
+   		actions.push_back(action);
+   	}
+   }
+
+   void getWordTRules(const CStateItem &item, std::vector<CAction> &actions)
+	{
+   	static CAction action;
+
+   	if(item.stacksize() > 0 && item.node.is_parital()
+   			&& (!item.stackPtr || !item.stackPtr->node.is_parital()))
+   	{
+   		if(canAssignTag(m_WordCache.find(item.node.begin_c, item.node.end_c, m_sent), item.node.pos.code()))
+   		{
+   			action.encodeWORDT();
+   			actions.push_back(action);
+   		}
+   	}
+
+	}
+
    void getBinaryRules(const CStateItem &item,  std::vector<CAction> &actions) {
       static CAction action;
       const unsigned stack_size = item.stacksize();
       ASSERT(stack_size>0, "Binary reduce required for stack containing one node");
       const CStateNode &right = item.node;
       const CStateNode  &left = item.stackPtr->node;
-      // specified rules
-      if (m_mapBinaryRules) {
-         static CTuple2<CConstituent, CConstituent> tuple2;
-         tuple2.refer(&(left.constituent), &(right.constituent));
-         const std::vector<CAction> &result = m_mapBinaryRules->find(tuple2, std::vector<CAction>());
-         actions.insert(actions.end(), result.begin(), result.end());
-         return;
-      }
       // the normal method
 #ifdef NO_TEMP_CONSTITUENT
       const bool temporary = false;
@@ -143,16 +207,6 @@ protected:
 
    void getUnaryRules(const CStateItem &item,  std::vector<CAction> &actions) {
       const CStateNode &child = item.node;
-      // input rule list
-      if (m_mapUnaryRules) {
-         const std::vector<CAction> &result = m_mapUnaryRules->find(child.constituent, std::vector<CAction>());
-         for (int i=0; i<result.size(); ++i) {
-            if (result.at(i).getConstituent() != child.constituent.code()) {
-               actions.push_back( result.at(i) );
-            }
-         }
-         return;
-      }
       // the normal rules
       static CAction action;
       const unsigned stack_size = item.stacksize();
@@ -166,67 +220,9 @@ protected:
 
 public:
    void loadRules(std::ifstream &is) {
-      // initialization
-      if (!is.is_open()) {
-         return;
-      }
-      static std::string s;
-      getline(is, s);
-      // binary rules
-      ASSERT(s=="Binary rules" or s=="Free binary rules", "Binary rules not found from model.");
-      if (s=="Free binary rules")
-         return;
-      ASSERT(!m_mapBinaryRules, "Binary rules already loaded");
-      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, std::vector<CAction> >(257);
-      is >> (*m_mapBinaryRules);
-      // unary rules
-      getline(is, s);
-      ASSERT(s=="Unary rules" or s=="Free unary rules", "Unary rules not found from model.");
-      if (s=="Free unary rules")
-         return;
-      ASSERT(!m_mapUnaryRules, "Unary rules already loaded");
-      m_mapUnaryRules = new CHashMap< CConstituent, std::vector<CAction> >(257);
-      is >> (*m_mapUnaryRules);
    }
 
    void saveRules(std::ofstream &os) {
-      ASSERT(os.is_open(), "Cannot save rules possibly because the outout file is not accessible.");
-      if (m_mapBinaryRules) {
-         os << "Binary rules" << std::endl;
-         os << (*m_mapBinaryRules);
-      }
-      else {
-         os << "Free binary rules" << std::endl;
-       }
-      if (m_mapUnaryRules) {
-         os << "Unary rules" << std::endl;
-         os << (*m_mapUnaryRules);
-      }
-      else { os << "Free unary rules" << std::endl; }
-      os << std::endl;
-   }
-
-   void LoadBinaryRules(std::ifstream &is) {
-      if (!is.is_open()) {
-         THROW("Loading binary rules failed possibly becaues file not exists.");
-      }
-      m_mapBinaryRules = new CHashMap< CTuple2<CConstituent, CConstituent>, std::vector<CAction> >(257);
-      is >> (*m_mapBinaryRules);
-   }
-
-   void LoadUnaryRules(std::ifstream &is) {
-      if (!is.is_open()) {
-         THROW("Loading unary rules failed possibly becaues file not exists.");
-      }
-      m_mapUnaryRules = new CHashMap< CConstituent, std::vector<CAction> >(257);
-      is >> (*m_mapUnaryRules);
-   }
-
-   void SetLexConstituents(const std::vector<std::vector<CConstituent> > &con_input) {
-      m_LexConstituents = &con_input;
-   }
-   void UnsetLexConstituents() {
-      m_LexConstituents=0;
    }
 
 };

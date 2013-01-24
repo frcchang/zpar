@@ -18,6 +18,8 @@
 
 namespace TARGET_LANGUAGE {
 
+//#include "wordcache.h"
+
 /*===============================================================
  *
  * CConParserBase - the general constituent parser def
