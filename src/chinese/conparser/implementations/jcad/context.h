@@ -15,7 +15,7 @@ class CStateItem;
 const CConstituent g_noneConstituent(CConstituent::NONE);
 const CConstituent g_beginConstituent(CConstituent::SENTENCE_BEGIN);
 const CTag g_noneTag(CTag::NONE);
-const CWord g_noneWord(CWord::EMPTY);
+const CWord g_noneWord(CWord::UNKNOWN);
 
 //#define constituent_or_none(x) ((x).is_constituent() ? (x).constituent.code() : CConstituent::NONE)
 #define constituent_or_none(x) ((x).constituent.code())
@@ -23,8 +23,8 @@ const CWord g_noneWord(CWord::EMPTY);
 #define _encode_two_constituents(x, y) ((x<<CConstituent::SIZE)|y)
 #define _load_char(x) modify ? wrds.replace(x->head_c, x->head_c, &sentence) : wrds.find(x->head_c, x->head_c, &sentence)
 #define _load_char_bypos(x) modify ? wrds.replace(x, x, &sentence) : wrds.find(x, x, &sentence)
-//#define _load_word(x) x->is_partial() ? CWord::NONE : (modify ? wrds.repalce(x->word_head->begin_c, x->word_head->end_c, &sentence) : wrds.find(x->word_head->head_c, x->word_head->end_c, &sentence))
-#define _load_word(x) modify ? wrds.replace(x->word_head->begin_c, x->word_head->end_c, &sentence) : wrds.find(x->word_head->head_c, x->word_head->end_c, &sentence)
+#define _load_word(x) x->is_partial() ? (modify ? wrds.replace(x->begin_c, x->end_c, &sentence) : wrds.find(x->begin_c, x->end_c, &sentence)) : (modify ? wrds.replace(x->word_head->begin_c, x->word_head->end_c, &sentence) : wrds.find(x->word_head->head_c, x->word_head->end_c, &sentence))
+//#define _load_word(x) modify ? wrds.replace(x->word_head->begin_c, x->word_head->end_c, &sentence) : wrds.find(x->word_head->head_c, x->word_head->end_c, &sentence)
 
 //===============================================================
 //
@@ -139,9 +139,13 @@ public:
       s2 = stacksize<3 ? 0 : &(item->stackPtr->stackPtr->node);
       s3 = stacksize<4 ? 0 : &(item->stackPtr->stackPtr->stackPtr->node);
   
-      s0l = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? 0 : s0->left_child) : 0;
-      s0r = s0->is_constituent() ? (s0->single_child()||!s0->head_left() ? 0 : s0->right_child) : 0;
-      s0u = s0->is_constituent() ? (s0->single_child() ? s0->left_child : 0) : 0;
+      //s0l = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? 0 : s0->left_child) : 0;
+      //s0r = s0->is_constituent() ? (s0->single_child()||!s0->head_left() ? 0 : s0->right_child) : 0;
+      //s0u = s0->is_constituent() ? (s0->single_child() ? s0->left_child : 0) : 0;
+
+      s0l = s0->single_child()||s0->head_left() ? 0 : s0->left_child;
+      s0r = s0->single_child()||!s0->head_left() ? 0 : s0->right_child;
+      s0u = s0->single_child() ? s0->left_child : 0;
 //      s0h = s0->is_constituent() ? (s0->single_child()||s0->head_left() ? s0->left_child : s0->right_child) : 0;
 
       //s1l = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? 0 : s1->left_child) : 0 );
@@ -154,50 +158,50 @@ public:
    
       s0c.load( constituent_or_none(*s0) );
       s0w.load(_load_word(s0));
-      s0t = s0->pos;
+      s0t.load(s0->pos);
       s0wt.load(s0w, s0t);
       s0z.load(_load_char(s0));
 
    
       s1c.load( s1==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1) );
       s1w.load(s1 == 0 ? g_noneWord.code() : _load_word(s1));
-      s1t = s1 == 0 ? g_noneTag : s1->pos;
+      s1t.load(s1 == 0 ? g_noneTag.code() : s1->pos);
       s1z.load(s1 == 0 ? g_noneWord.code() : _load_char(s1));
    
       s2c.load( s2==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2) );
       s2w.load(s2 == 0 ? g_noneWord.code() : _load_word(s2));
-      s2t = s2 == 0 ? g_noneTag : s2->pos;
+      s2t.load(s2 == 0 ? g_noneTag.code() : s2->pos);
       s2z.load(s2 == 0 ? g_noneWord.code() : _load_char(s2));
    
       s3c.load( s3==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s3) );
       s3w.load(s3 == 0 ? g_noneWord.code() : _load_word(s3));
-      s3t = s3 == 0 ? g_noneTag : s3->pos;
+      s3t.load(s3 == 0 ? g_noneTag.code() : s3->pos);
       s3z.load(s3 == 0 ? g_noneWord.code() : _load_char(s3));
 
    
       s0lc.load( s0l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0l) );
       s0lw.load(s0l == 0 ? g_noneWord.code() : _load_word(s0l));
-      s0lt = s0l == 0 ? g_noneTag : s0l->pos;
+      s0lt = s0l == 0 ? g_noneTag : CTag(s0l->pos);
 
       s0rc.load(s0r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0r));
       s0rw.load(s0r == 0 ? g_noneWord.code() : _load_word(s0r));
-      s0rt = s0r == 0 ? g_noneTag : s0r->pos;
+      s0rt.load(s0r == 0 ? g_noneTag.code() : s0r->pos);
 
       s0uc.load(s0u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0u));
       s0uw.load(s0u == 0 ? g_noneWord.code() : _load_word(s0u));
-      s0ut = s0u == 0 ? g_noneTag : s0u->pos;
+      s0ut = s0u == 0 ? g_noneTag : CTag(s0u->pos);
 
       s1lc.load( s1l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1l) );
       s1lw.load(s1l == 0 ? g_noneWord.code() : _load_word(s1l));
-      s1lt = s1l == 0 ? g_noneTag : s1l->pos;
+      s1lt.load(s1l == 0 ? g_noneTag.code() : s1l->pos);
 
       s1rc.load(s1r==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1r));
       s1rw.load(s1r == 0 ? g_noneWord.code() : _load_word(s1r));
-      s1rt = s1r == 0 ? g_noneTag : s1r->pos;
+      s1rt.load(s1r == 0 ? g_noneTag.code() : s1r->pos);
 
       s1uc.load(s1u==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1u));
       s1uw.load(s1u == 0 ? g_noneWord.code() : _load_word(s1u));
-      s1ut = s1u == 0 ? g_noneTag : s1u->pos;
+      s1ut.load(s1u == 0 ? g_noneTag.code() : s1u->pos);
 
  /*
 		n0w.load(_load_word(n0));
