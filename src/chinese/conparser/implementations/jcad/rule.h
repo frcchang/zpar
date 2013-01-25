@@ -113,16 +113,16 @@ protected:
    void getShiftRules(const CStateItem &item, std::vector<CAction> &actions) {
       static CAction action;
 
-      if(item.stacksize() > 0 && item.node.is_parital())
+      if(item.stacksize() > 0 && item.node.is_partial())
       {
-      	unsigned long last_tag = item.node.pos.code();
+      	unsigned long last_tag = item.node.pos;
       	if(last_tag == PENN_TAG_CD || (item.node.end_c - item.node.begin_c +1 < m_maxlengthbytag[last_tag]))
       	{
       		action.encodeShiftA();
       		actions.push_back(action);
       	}
       }
-      else
+      else if(item.stacksize() == 0 || !item.node.is_partial())
       {
       	for(unsigned long tag = CTag::FIRST; tag < CTag::COUNT; ++tag)
       	{
@@ -139,7 +139,7 @@ protected:
    void getWordXYZRules(const CStateItem &item, std::vector<CAction> &actions)
    {
    	static CAction action;
-   	if(item.stacksize() > 1 && item.node.is_parital() && item.stackPtr->node.is_parital())
+   	if(item.stacksize() > 1 && item.node.is_partial() && item.stackPtr->node.is_partial())
    	{
    		action.encodeWORDXYZ('x');
    		actions.push_back(action);
@@ -154,10 +154,10 @@ protected:
 	{
    	static CAction action;
 
-   	if(item.stacksize() > 0 && item.node.is_parital()
-   			&& (!item.stackPtr || !item.stackPtr->node.is_parital()))
+   	if(item.stacksize() > 0 && item.node.is_partial()
+   			&& (!item.stackPtr || !item.stackPtr->node.is_partial()))
    	{
-   		if(canAssignTag(m_WordCache.find(item.node.begin_c, item.node.end_c, m_sent), item.node.pos.code()))
+   		if(canAssignTag(m_WordCache.find(item.node.begin_c, item.node.end_c, m_sent), item.node.pos))
    		{
    			action.encodeWORDT();
    			actions.push_back(action);
@@ -181,7 +181,8 @@ protected:
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {
 	    const bool &head_left = static_cast<bool>(i);
-            const CWord &head_wd = m_sent->at((head_left?left:right).lexical_head).word;
+            //const CWord &head_wd = m_sent->at((head_left?left:right).lexical_head).word;
+            const CWord &head_wd = m_WordCache.find( (head_left?left:right).word_head->begin_c, (head_left?left:right).word_head->end_c, m_sent );
 #ifndef NO_TEMP_CONSTITUENT
             for (unsigned j=0; j<=1; ++j) {
                const bool &temporary = static_cast<bool>(j);
