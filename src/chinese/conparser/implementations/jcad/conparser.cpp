@@ -344,7 +344,7 @@ void CConParser::updateScores(const CSentenceParsed & parsed , const CSentencePa
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem *item , const SCORE_UPDATE update) {
+void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem *item , const CStringVector &sentence , const SCORE_UPDATE update) {
 
    static SCORE_TYPE amount;
    amount = (update==eAdd ? 1 : -1);
@@ -376,7 +376,7 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
 
    // for each
    while (count>exc_count) {
-      m_Context.load(states[count], m_lCache, m_lWordLen, true);
+      m_Context.load(states[count], m_lCache, sentence, true);
       // update action
       const CAction &action = states[count-1]->action;
       getOrUpdateStackScore(cast_weights, scores, states[count], action, amount, m_nTrainingRound );
@@ -384,14 +384,13 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
    }
 }
 
-#ifndef TRAIN_MULTI
 /*---------------------------------------------------------------
  *
  * updateScoresForStates - update scores for states
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct ) {
+void CConParser::updateScoresForStates( const CStateItem *outout , const CStringVector &sentence , const CStateItem *correct ) {
 
    TRACE_WORD( "updating parameters ... ") ;
 
@@ -403,12 +402,12 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
 //   F = outout->FLoss(); 
    F = outout->HammingLoss(); 
-   updateScoresForState( m_delta, correct, eAdd );
-   updateScoresForState( m_delta, outout, eSubtract );
+   updateScoresForState( m_delta, correct, sentence, eAdd );
+   updateScoresForState( m_delta, outout, sentence, eSubtract );
 #else
    F = 1.0;
-   updateScoresForState( m_delta, correct, eAdd );
-   updateScoresForState( m_delta, outout, eSubtract );
+   updateScoresForState( m_delta, correct, sentence, eAdd );
+   updateScoresForState( m_delta, outout, sentence, eSubtract );
 #endif
 
 #ifdef TRAIN_MARGIN
@@ -422,119 +421,8 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
    m_nTotalErrors++;
 }
 
-#else
-/*---------------------------------------------------------------
- *
- * updateScoresForMultipleStates - update multi
- *
- *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForMultipleStates( const CStateItem *output_start , const CStateItem *output_end , const CStateItem  *candidate , const CStateItem *correct ) {
-	TRACE_WORD("updating parameters ... ") ;
-   // computateDeltasDist
-   unsigned K = 0;
-   updateScoresForState(m_gold, correct, eAdd, 0);
-   for (const CStateItem *item = output_start; item<output_end; ++item) {
-      if (item->score >= correct->score) {
-         updateScoresForState(m_delta[K], item, eSubtract, 0);
-         m_delta[K]->addCurrent(m_gold, m_nTrainingRound);
-         m_dist[K] = 1.0 + item->score - correct->score;
-         ++K;
-      }
-   }
-   if ( candidate && candidate->score > correct->score ) {
-      updateScoresForState(m_delta[K], candidate, eSubtract, 0);
-      m_delta[K]->addCurrent(m_gold, m_nTrainingRound);
-      m_dist[K] = 1.0 + candidate->score - correct->score;
-      ++K;
-   }
-   assert(K);
-   // compuateAlpha
-   computeAlpha(K);
-   // update
-   for (unsigned i=0; i<K; ++i) {
-      m_delta[i]->scaleCurrent(m_alpha[i], m_nTrainingRound);
-      static_cast<CWeight*>(m_weights)->addCurrent(m_delta[i], m_nTrainingRound);
-   }
-   // clear
-   for (unsigned i=0; i<K; ++i)
-      m_delta[i]->clear();
-   m_gold->clear();
-}
 
-/*---------------------------------------------------------------
- *
- * compuateAlpha - hildreth
- *
- *--------------------------------------------------------------*/
-
-void CConParser::computeAlpha( const unsigned K ) {
-   static unsigned i;
-   static unsigned iter;
-   static double diff_alpha;
-   static double add_alpha;
-
-   static const unsigned max_iter = 1e4;
-   static const double eps = 1e-7;
-   static const double zero = 1e-11;
-
-   static double kkt[MIRA_SIZE];
-   static double max_kkt;
-   static int max_kkt_i;
-   static double A[MIRA_SIZE][MIRA_SIZE];
-   static bool computed[MIRA_SIZE];
-
-   for (i=0; i<K; ++i) {
-      A[i][i] = m_delta[i]->squareNorm();
-      computed[i] = false;
-   }
-
-   for (i=0; i<K; ++i) {
-      m_alpha[i] = 0;
-      kkt[i] = m_dist[i];
-      if (i==0||kkt[i]>max_kkt) {
-         max_kkt = kkt[i];
-         max_kkt_i = i;
-      }
-   }
-
-   iter = 0;
-   while (max_kkt >= eps && iter<max_iter){
-      diff_alpha = A[max_kkt_i][max_kkt_i] <= zero ? 0 : m_dist[max_kkt_i]/A[max_kkt_i][max_kkt_i];
-      if (m_alpha[max_kkt_i]+diff_alpha<0) {
-         add_alpha = -m_alpha[max_kkt_i];
-      }
-      else {
-         add_alpha = diff_alpha;
-      }
-      m_alpha[max_kkt_i] += add_alpha;
-
-      if (!computed[max_kkt_i]) {
-         for (i=0; i<K; ++i) {
-            A[i][max_kkt_i] = m_delta[i]->dotProduct(*(m_delta[max_kkt_i]));
-         }
-         computed[max_kkt_i] = true;
-      }
-
-      for (i=0; i<K; ++i) {
-         m_dist[i] -= (add_alpha * A[i][max_kkt_i]);
-         kkt[i] = m_dist[i];
-         if (m_alpha[i] > zero)
-            kkt[i] = abs(m_dist[i]);
-      }
-
-      for (i=0; i<K; ++i) {
-         kkt[i] = m_dist[i];
-         if (i==0||kkt[i]>max_kkt) {
-            max_kkt_i = i;
-            max_kkt = kkt[i];
-         }
-      }
-
-      ++iter;
-   }
-}
-#endif // TRAIN_MULTI
 
 #ifdef TRAIN_LOSS
 /*---------------------------------------------------------------
@@ -690,7 +578,7 @@ void CConParser::getOrUpdateScore( CPackedScoreType<SCORE_TYPE, CAction::MAX> &r
  *
  *--------------------------------------------------------------*/
 
-void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
+void CConParser::work( const bool bTrain , const CStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
 
    static CStateItem lattice[(MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2)*(AGENDA_SIZE+1)];
    static CStateItem *lattice_index[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
@@ -725,11 +613,6 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    TRACE("Initialising the decoding process ... ") ;
    // initialise word cache
    m_lCache.clear();
-   m_lWordLen.clear();
-   for ( tmp_i=0; tmp_i<length; tmp_i++ ) {
-      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[tmp_i].first , sentence[tmp_i].second) );
-      m_lWordLen.push_back( getUTF8StringLength(sentence[tmp_i].first) );
-   }
    // initialise agenda
    lattice_index[0] = lattice;
    lattice_index[0]->clear();
@@ -776,10 +659,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 #endif
 
          // load context
-         m_Context.load(pGenerator, m_lCache, m_lWordLen, false);
+         m_Context.load(pGenerator, m_lCache, sentence, false);
    
          // get actions
-         m_rule.getActions(*pGenerator, actions);
+         m_rule->getActions(*pGenerator, &sentence, actions);
 
          if (actions.size() > 0)
             getOrUpdateStackScore(static_cast<CWeight*>(m_weights), packedscores, pGenerator);
@@ -841,10 +724,10 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             correctState = lattice_index[index+1];
             lattice_index[index+1]->score = scored_correct_action.score;
             ++lattice_index[index+1];
-            assert(correct_action_scored); // scored_correct_act valid
+            //assert(correct_action_scored); // scored_correct_act valid
 #ifdef EARLY_UPDATE
 //         if (!bCorrect ) {
-            TRACE("Error at the "<<correctState->current_word<<"th word; total is "<<m_lCache.size())
+            //TRACE("Error at the "<<correctState->current_word<<"th word; total is "<<m_lCache.size())
             // update
 #ifdef TRAIN_MULTI
             updateScoresForMultipleStates(lattice_index[index], lattice_index[index+1], candidate_outout, correctState) ; 
@@ -853,7 +736,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
 //            updateScoresByLoss(pBestGen, correctState) ; 
-            updateScoresForStates(pBestGen, correctState) ; 
+            updateScoresForStates(pBestGen, sentence, correctState) ;
 #endif // TRAIN_MULTI
             return ;
 //         } // bCorrect
@@ -880,7 +763,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          correctState->trace(&sentence);
          pBestGen->trace(&sentence);
 //         updateScoresByLoss(pBestGen, correctState) ; 
-         updateScoresForStates(pBestGen, correctState) ; 
+         updateScoresForStates(pBestGen, sentence, correctState) ;
 #endif // TRAIN_MULTI
          return ;
       }
@@ -910,7 +793,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
  *
  *--------------------------------------------------------------*/
 
-void CConParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CConParser::parse( const CStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
 
    static CSentenceParsed empty ;
 
@@ -918,23 +801,7 @@ void CConParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retv
 
 }
 
-/*---------------------------------------------------------------
- *
- * parse - do constituent parsing to a sentence
- *
- * Returns: makes a new instance of CSentenceParsed 
- *
- *--------------------------------------------------------------*/
 
-void CConParser::parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
-
-   static CSentenceParsed empty ;
-
-   m_rule.SetLexConstituents( sentence.constituents );
-   work(false, sentence.words, retval, empty, nBest, scores ) ;
-   m_rule.UnsetLexConstituents();
-
-}
 
 /*---------------------------------------------------------------
  *
@@ -944,7 +811,7 @@ void CConParser::parse( const CSentenceMultiCon<CConstituent> &sentence , CSente
 
 void CConParser::train( const CSentenceParsed &correct , int round ) {
 
-   static CTwoStringVector sentence ;
+   static CStringVector sentence ;
 //   static CSentenceParsed outout ; 
 
    UnparseSentence( &correct, &sentence ) ;
@@ -962,16 +829,6 @@ void CConParser::train( const CSentenceParsed &correct , int round ) {
  *
  *---------------------------------------------------------------*/
 
-void CConParser::train( const CSentenceMultiCon<CConstituent> &con_input, const CSentenceParsed &correct , int round ) {
-
-   // The following code does update for each processing stage
-   m_nTrainingRound = round ;
-
-   m_rule.SetLexConstituents( con_input.constituents );
-   work( true , con_input.words , 0 , correct , 1 , 0 ) ; 
-   m_rule.UnsetLexConstituents();
-
-};
 
 #ifdef NO_NEG_FEATURE
 /*---------------------------------------------------------------
@@ -981,7 +838,7 @@ void CConParser::train( const CSentenceMultiCon<CConstituent> &con_input, const 
  *---------------------------------------------------------------*/
 
 void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
-   static CTwoStringVector sentence;
+   static CStringVector sentence;
    static CStateItem states[MAX_SENTENCE_SIZE*(1+UNARY_MOVES)+2];
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
    static int current;
@@ -991,16 +848,10 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
    current = 0;
    UnparseSentence( &correct, &sentence ) ;
    m_lCache.clear();
-   m_lWordLen.clear();
-   for (unsigned i=0; i<sentence.size(); ++i) {
-      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[i].first , sentence[i].second) );
-      m_lWordLen.push_back( getUTF8StringLength(sentence[i].first) );
-   }
-
    while ( !states[current].IsTerminated() ) {
       states[current].StandardMove(correct, action);
 //std::cout << action << std::endl;
-      m_Context.load(states+current, m_lCache, m_lWordLen, true);
+      m_Context.load(states+current, m_lCache, sentence, true);
       getOrUpdateStackScore(static_cast<CWeight*>(m_weights), scores, states+current, action, 1, -1);
       states[current].Move(states+current+1, action);
       ++current;

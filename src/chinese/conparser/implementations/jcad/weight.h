@@ -515,6 +515,11 @@ public:
    unsigned long m_nMaxWordFrequency;
    CWordToIntMap m_mapWordFrequency;
 
+   CTagDict<CWord, CTag> m_mapTagDictionary;
+   CTagDict<CWord, CTag> m_mapCharTagDictionary;
+   CTagDict<CWord, CTag> m_mapCanStart;
+   unsigned long m_maxlengthByTag[CTag::COUNT+1];
+
 public:
 
    CWeight(bool bTrain, unsigned TABLE_SIZE = DEFAULT_TABLE_SIZE) : 
@@ -522,6 +527,9 @@ public:
 
                           m_nMaxWordFrequency(0) ,
                           m_mapWordFrequency(TABLE_SIZE),
+                          m_mapTagDictionary(CTag::COUNT),
+                          m_mapCharTagDictionary(CTag::COUNT),
+                          m_mapCanStart(CTag::COUNT),
 
                           m_mapS0c("Stack0Constituent", TABLE_SIZE),
                           m_mapS0w("Stack0Word", TABLE_SIZE),

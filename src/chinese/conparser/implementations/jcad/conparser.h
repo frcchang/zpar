@@ -26,14 +26,13 @@ namespace TARGET_LANGUAGE {
 class CConParser : public CConParserBase {
 
 private:
-
-   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   CWordCache m_lCache;
    std::vector<unsigned long> m_lWordLen;
    int m_nTrainingRound;
    int m_nTotalErrors;
    bool m_bScoreModified;
    int m_nScoreIndex;
-   conparser::CRule m_rule;
+   conparser::CRule *m_rule;
    conparser::CContext m_Context;
 #ifdef TRAIN_MULTI
    conparser::CWeight *m_gold;
@@ -46,9 +45,10 @@ private:
 
 public:
    // constructor and destructor
-   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache) { 
+   CConParser( const std::string &sFeatureDBPath, unsigned long nMaxSentSize , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_lCache(nMaxSentSize) {
       // and initialize the weith module loading content
       m_weights = new conparser :: CWeight( bTrain );
+      m_rule = new conparser::CRule(m_weights->m_maxlengthByTag, &m_weights->m_nMaxWordFrequency, &m_weights->m_mapTagDictionary, &m_weights->m_mapWordFrequency, &m_weights->m_mapCanStart, &m_lCache);
       if (bTrain) {
 
 #ifdef TRAIN_MULTI //===
@@ -86,7 +86,6 @@ public:
       m_weights->loadScores(file);
       // load rules
       CConstituent c;
-      m_rule.loadRules(file);
       file.close();
       // initialize 
       if (!bTrain && m_weights->empty()) { // when decoding, model must be found
@@ -110,42 +109,21 @@ public:
 #else
       if (m_delta) { delete m_delta; m_delta=0; }
 #endif
-      delete m_weights; m_weights=0;
+      delete m_rule;
    }
 
-   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache) { 
+   /*
+   CConParser( CConParser &conparser) : CConParserBase(conparser){
       assert(1==0);
+      //m_weights = new conparser :: CWeight( bTrain );
+      //m_rule = new conparser::CRule(m_weights->m_maxlengthByTag,&m_weights->m_mapWordFrequency, &m_weights->m_mapTagDictionary, &m_weights->m_mapWordFrequency, &m_weights->m_mapCanStart, &m_lCache);
+
    }
+*/
 
 public:
-   void LoadBinaryRules(const std::string &sBinaryRulePath) {
-      ASSERT(m_bTrain, "Rules can only be loaded during training!");
-      if (!m_weights->empty() || m_nTrainingRound !=0 ) {
-         WARNING("Ignored binary rules from " << sBinaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
-      }
-      // load rule from the specified file 
-      std::ifstream file ; 
-      file.open(sBinaryRulePath.c_str()) ;
-      m_rule.LoadBinaryRules(file);
-      file.close();
-   }
-   void LoadUnaryRules(const std::string &sUnaryRulePath) {
-      ASSERT(m_bTrain, "Rules can only be loaded during training!");
-      if (!m_weights->empty() || m_nTrainingRound !=0 ) {
-         WARNING("Ignored unary rules from " << sUnaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
-      }
-      // load rule from the file specified
-      std::ifstream file;
-      file.open(sUnaryRulePath.c_str());
-      m_rule.LoadUnaryRules(file);
-      file.close();
-   }
-
-public:
-   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
-   void parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CStringVector &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
-   void train( const CSentenceMultiCon<CConstituent> &con_input, const CSentenceParsed &correct , int round ) ;
 #ifdef NO_NEG_FEATURE
    void getPositiveFeatures( const CSentenceParsed &correct ) ;
 #endif
@@ -158,8 +136,6 @@ public:
       file.open(m_sFeatureDB.c_str()) ;
       static_cast<conparser::CWeight*>(m_weights)->saveScores(file);
       // save rules
-      m_rule.saveRules(file);
-      file.close();
       std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    conparser::SCORE_TYPE getGlobalScore(const CSentenceParsed &parsed);
@@ -168,20 +144,16 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ;
 
    // get the global score for a parsed sentence or section
    inline void getOrUpdateStackScore( conparser::CWeight *cast_weights, CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem *item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
    inline void getOrUpdateScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem &item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
-   void updateScoresForState( conparser::CWeight *cast_weights , const conparser::CStateItem *outout , SCORE_UPDATE update) ;
-#ifdef TRAIN_MULTI
-   void updateScoresForMultipleStates( const conparser::CStateItem *outout_start , const conparser::CStateItem *output_end , const conparser::CStateItem  *candidate , const conparser::CStateItem *correct ) ;
-   void computeAlpha( const unsigned K );
-#else
-   void updateScoresForStates( const conparser::CStateItem *outout , const conparser::CStateItem *correct ) ;
-#endif
+   void updateScoresForState( conparser::CWeight *cast_weights , const conparser::CStateItem *outout , const CStringVector &sentence , SCORE_UPDATE update) ;
+
+   void updateScoresForStates( const conparser::CStateItem *outout , const CStringVector &sentence , const conparser::CStateItem *correct ) ;
 
 #ifdef TRAIN_LOSS
    // loss functions

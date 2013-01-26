@@ -157,6 +157,21 @@ public:
 //      s1h = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? s1->left_child : s1->right_child) : 0 );
    
       s0c.load( constituent_or_none(*s0) );
+      TRACE("x->begin_c:" << s0->begin_c);
+      TRACE("x->end_c:" << s0->end_c);
+      TRACE("x->head_c:" << s0->head_c);
+      for(int i = 0; i < sentence.size(); i++)
+      {
+      	TRACE_WORD(i << "#" << sentence[i] << " ");
+      }
+      TRACE((wrds.m_nMaxSentenceSize));
+      TRACE("x->is_partial()" << s0->is_partial());
+      TRACE(modify);
+      CJointTreeNode tempnode;
+      s0->toCJointTreeNode(tempnode);
+      TRACE(tempnode.str());
+      unsigned ids0w = _load_word(s0);
+      TRACE(ids0w);
       s0w.load(_load_word(s0));
       s0t.load(s0->pos);
       s0wt.load(s0w, s0t);

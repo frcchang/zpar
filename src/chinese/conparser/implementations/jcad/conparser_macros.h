@@ -26,8 +26,8 @@ static const unsigned long AGENDA_SIZE = 16;
 static const unsigned long MIRA_SIZE = AGENDA_SIZE+1;
 
 // The size of a sentence and the words
-static const int MAX_SENTENCE_SIZE = 256 ; 
-static const int MAX_SENTENCE_SIZE_BITS = 8 ; 
+static const int MAX_SENTENCE_SIZE = 512 ;
+static const int MAX_SENTENCE_SIZE_BITS = 9 ;
 
 // normalize numberings
 inline unsigned long normalize3(const unsigned long &x) {

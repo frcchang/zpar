@@ -29,7 +29,7 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
 
    int time_start = clock();
 
-   CConParser parser(sFeatureFile, false) ;
+   CConParser parser(sFeatureFile,  conparser::MAX_SENTENCE_SIZE, false) ;
    CSentenceReader *input_reader=0;
    input_reader = new CSentenceReader(sInputFile);
    std::ofstream os(sOutputFile.c_str());
@@ -57,9 +57,9 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
       ++ nCount;
 
       // Find decoder outout
-      /*
+
          parser.parse( raw_input , outout_sent , nBest , scores ) ;
-      */
+
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
          if (bBinary)
@@ -94,7 +94,7 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
  *
  *==============================================================*/
 
-int prime_main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
@@ -127,8 +127,5 @@ int prime_main(int argc, char* argv[]) {
    return 0;
 }
 
-int main(int argc, char* argv[]) {
 
-	return 0;
-}
 

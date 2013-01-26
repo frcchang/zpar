@@ -26,7 +26,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile)
 
    std::cout << "Training iteration is started... " << std::endl ; std::cout.flush();
 
-   CConParser parser(sFeatureFile, true);
+   CConParser parser(sFeatureFile, conparser::MAX_SENTENCE_SIZE, true);
 
    std::ifstream is(sOutputFile.c_str());
    ASSERT(is.is_open(), "The training file is unaccessible.");
@@ -64,7 +64,7 @@ void extract_features(const std::string &sOutputFile, const std::string &sFeatur
 
    std::cout << "Extracting feature... "; std::cout.flush();
 
-   CConParser parser(sFeatureFile, true);
+   CConParser parser(sFeatureFile,  conparser::MAX_SENTENCE_SIZE, true);
 
    std::ifstream is(sOutputFile.c_str());
    ASSERT(is.is_open(), "The training file is unaccessible.");
@@ -94,7 +94,7 @@ void extract_features(const std::string &sOutputFile, const std::string &sFeatur
  *
  *==============================================================*/
 
-int prime_main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
 
    try {
       COptions options(argc, argv);
@@ -135,7 +135,7 @@ int prime_main(int argc, char* argv[]) {
 
 }
 
-int main(int argc, char* argv[]) {
+int test_main(int argc, char* argv[]) {
 	try {
 	      COptions options(argc, argv);
 	      CConfigurations configurations;

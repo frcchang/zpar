@@ -14,7 +14,7 @@
 
 #include "base_include.h"
 
-#include "weight_base.h"
+#include "weight.h"
 
 namespace TARGET_LANGUAGE {
 
@@ -30,7 +30,7 @@ class CConParserBase {
 
 protected:
 
-   conparser::CWeightBase *m_weights;
+   conparser::CWeight *m_weights;
 
    bool m_bTrain ; // the system runs either at training mode or decoding mode
    std::string m_sFeatureDB;
@@ -41,7 +41,7 @@ public:
       // do nothing
    }
    virtual ~CConParserBase() {
-      // do nothing
+   	delete m_weights;
    }
    CConParserBase( CConParserBase &conparser) { 
       THROW("CConParser does not support copy constructor!"); 
@@ -49,7 +49,7 @@ public:
 
 public:
 
-   virtual void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1, conparser::SCORE_TYPE *scores=0 ) = 0 ;
+   virtual void parse( const CStringVector &sentence , CSentenceParsed *retval , int nBest=1, conparser::SCORE_TYPE *scores=0 ) = 0 ;
    virtual void train( const CSentenceParsed &correct , int round ) = 0 ;
 
    virtual void finishtraining() = 0 ;  
