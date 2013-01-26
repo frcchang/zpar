@@ -18,15 +18,15 @@ class CRule {
 
 protected:
    const unsigned long *m_maxlengthbytag;
-   const unsigned *m_maxwordfreq;
+   const unsigned long *m_maxwordfreq;
    const CStringVector *m_sent;
    const CTagDict<CWord, CTag> *m_tagdict;
    const CHashMap<CWord, unsigned long> *m_wordfreq;
    const CTagDict<CWord, CTag> *m_canstartword;
-   CWordCache m_WordCache;
+   CWordCache *m_WordCache;
 
 public:
-   CRule(const unsigned long *maxlengthbytag, const unsigned  *maxwordfreq, const CTagDict<CWord, CTag> *tagdict, const CHashMap<CWord, unsigned long> *wordfreq, const CTagDict<CWord, CTag> *canstartword, CWordCache WordCache) :
+   CRule(const unsigned long *maxlengthbytag, const unsigned  long *maxwordfreq, const CTagDict<CWord, CTag> *tagdict, const CHashMap<CWord, unsigned long> *wordfreq, const CTagDict<CWord, CTag> *canstartword, CWordCache *WordCache) :
    	m_maxlengthbytag(maxlengthbytag), m_maxwordfreq(maxwordfreq), m_tagdict(tagdict), m_wordfreq(wordfreq), m_canstartword(canstartword), m_WordCache(WordCache) {}
    virtual ~CRule() {
    }
@@ -96,12 +96,12 @@ protected:
       if (PENN_TAG_CLOSED[ tag ] || tag == PENN_TAG_CD ) {
          static int tmp_i;
          // if the first character doesn't match, don't search
-         if ( m_canstartword->lookup( m_WordCache.find( index, index, m_sent ), tag ) == false)
+         if ( m_canstartword->lookup( m_WordCache->find( index, index, m_sent ), tag ) == false)
             return false;
          // if it matches, search from the next characters
          if ( tag == PENN_TAG_CD ) return true; // don't search for CD assume correct
          for (tmp_i=0; tmp_i<m_maxlengthbytag[tag]; ++tmp_i) {
-            if ( m_tagdict->lookup( m_WordCache.find( index, std::min(index+tmp_i, static_cast<unsigned long>(m_sent->size())-1), m_sent ), tag ) )
+            if ( m_tagdict->lookup( m_WordCache->find( index, std::min(index+tmp_i, static_cast<unsigned long>(m_sent->size())-1), m_sent ), tag ) )
                return true;
          }
          return false;
@@ -128,6 +128,7 @@ protected:
       	{
       		if(canStartWord(tag, item.current_word))
       		{
+      			TRACE(tag);
       			action.encodeShiftS(tag);
       			actions.push_back(action);
       		}
@@ -157,7 +158,7 @@ protected:
    	if(item.stacksize() > 0 && item.node.is_partial()
    			&& (!item.stackPtr || !item.stackPtr->node.is_partial()))
    	{
-   		if(canAssignTag(m_WordCache.find(item.node.begin_c, item.node.end_c, m_sent), item.node.pos))
+   		if(canAssignTag(m_WordCache->find(item.node.begin_c, item.node.end_c, m_sent), item.node.pos))
    		{
    			action.encodeWORDT();
    			actions.push_back(action);
@@ -172,6 +173,7 @@ protected:
       ASSERT(stack_size>0, "Binary reduce required for stack containing one node");
       const CStateNode &right = item.node;
       const CStateNode  &left = item.stackPtr->node;
+      if(right.is_partial() || left.is_partial()) return;
       // the normal method
 #ifdef NO_TEMP_CONSTITUENT
       const bool temporary = false;
@@ -182,7 +184,7 @@ protected:
          for (unsigned i=0; i<=1; ++i) {
 	    const bool &head_left = static_cast<bool>(i);
             //const CWord &head_wd = m_sent->at((head_left?left:right).lexical_head).word;
-            const CWord &head_wd = m_WordCache.find( (head_left?left:right).word_head->begin_c, (head_left?left:right).word_head->end_c, m_sent );
+            const CWord &head_wd = m_WordCache->find( (head_left?left:right).word_head->begin_c, (head_left?left:right).word_head->end_c, m_sent );
 #ifndef NO_TEMP_CONSTITUENT
             for (unsigned j=0; j<=1; ++j) {
                const bool &temporary = static_cast<bool>(j);
@@ -208,6 +210,7 @@ protected:
 
    void getUnaryRules(const CStateItem &item,  std::vector<CAction> &actions) {
       const CStateNode &child = item.node;
+      if(child.is_partial())return;
       // the normal rules
       static CAction action;
       const unsigned stack_size = item.stacksize();

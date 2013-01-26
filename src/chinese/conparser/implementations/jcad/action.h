@@ -146,7 +146,7 @@ public:
    }
 
    inline void encodeShiftA() {
-	   action = CActionType::SHIFT_S;
+	   action = CActionType::SHIFT_A;
    }
 
    inline void encodeWORDXYZ(const unsigned char &type) {

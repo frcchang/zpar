@@ -43,7 +43,7 @@ typedef TARGET_LANGUAGE::CJointTree CSentenceParsed;
 namespace TARGET_LANGUAGE { 
 
 #include "linguistics/cfgset.h"
-#include "tagger/wordcache.h"
+#include "wordcache.h"
 
 namespace conparser { 
 

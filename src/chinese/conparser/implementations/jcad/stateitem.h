@@ -33,7 +33,7 @@ public:
    inline bool head_left() const { return type==HEAD_LEFT; }
    inline bool single_child() const { return type==SINGLE_CHILD; }
    inline bool is_constituent() const { return !is_partial() && !is_leaf(); }
-   inline bool is_partial() const { return type==PARTIAL_X||type==PARTIAL_Y||type==PARTIAL_Z; }
+   inline bool is_partial() const { return type==PARTIAL_X||type==PARTIAL_Y||type==PARTIAL_Z||type==CHAR_B||type==CHAR_I; }
    inline bool is_leaf() const { return type==LEAF; }
 
 public:
@@ -346,7 +346,7 @@ public:
       int s = node.id;
       const CJointTreeNode &nd = snt.nodes[s];
       const CJointTreeNode &hd = snt.nodes[snt.parent(s)];
-      assert(!hd.constituent.empty()); // so that reduce and reduce_root are not same
+      //assert(!hd.constituent.empty()); // so that reduce and reduce_root are not same
       bool single_child;
       bool head_left;
       bool temporary;
@@ -528,7 +528,7 @@ public:
 
    //===============================================================================
 
-   void trace(const CTwoStringVector *s=0) const {
+   void trace(const CStringVector *s=0) const {
       static const CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
       static int count;
       const static CStateItem *current;
@@ -540,7 +540,7 @@ public:
          current = current->statePtr;
       }
       TRACE("State item score == " << score);
-      TRACE("State item size == " << size);
+      //TRACE("State item size == " << size);
       --count;
       while (count>=0) {
          if (s) {
