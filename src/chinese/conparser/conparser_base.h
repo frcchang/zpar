@@ -49,7 +49,7 @@ public:
 
 public:
 
-   virtual void parse( const CStringVector &sentence , CSentenceParsed *retval , int nBest=1, conparser::SCORE_TYPE *scores=0 ) = 0 ;
+   virtual bool parse( const CStringVector &sentence , CSentenceParsed *retval , int nBest=1, conparser::SCORE_TYPE *scores=0 ) = 0 ;
    virtual void train( const CSentenceParsed &correct , int round ) = 0 ;
 
    virtual void finishtraining() = 0 ;  

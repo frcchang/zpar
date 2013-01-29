@@ -58,15 +58,28 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
 
       // Find decoder outout
 
-         parser.parse( raw_input , outout_sent , nBest , scores ) ;
+      bool valid = parser.parse( raw_input , outout_sent , nBest , scores ) ;
 
       // Ouptut sent
-      for (int i=0; i<nBest; ++i) {
-         if (bBinary)
-            os << outout_sent[i] ;
-         else
-            os << outout_sent[i].str_unbinarizedall() << std::endl;
-         if (bScores) *os_scores << scores[i] << std::endl;
+      if(valid)
+      {
+			for (int i=0; i<nBest; ++i) {
+				if (bBinary)
+					os << outout_sent[i] ;
+				else
+					os << outout_sent[i].str_unbinarizedall() << std::endl;
+				if (bScores) *os_scores << scores[i] << std::endl;
+			}
+      }
+      else
+      {
+      	os << "( ( ) )" << std::endl;
+      	std::cout << "error" << std::endl;
+			for(int idx = 0; idx < raw_input.size();idx++)
+			{
+				std::cout << raw_input[idx];
+			}
+			std::cout << std::endl;
       }
 
       std::cout << "done. " << std::endl; 
