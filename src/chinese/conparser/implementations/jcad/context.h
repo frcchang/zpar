@@ -72,17 +72,17 @@ public:
    CTwoTaggedWords s0wts1wt;
 
    //tagger
-   unsigned long start_0;
-	unsigned long start_1, end_1;
-	unsigned long start_2, end_2;
-	unsigned long length_1, length_2;
+   int start_0;
+	int start_1, end_1;
+	int start_2, end_2;
+	int length_1, length_2;
    CWord word_1, word_2,  first_char_0, first_char_1, last_char_1, last_char_2, two_char, word_1_first_char_0, word_1_last_char_2, three_char;
-   CTwoWords word_2_word_1, first_char_1_last_char_1, first_char_0_first_char_1, last_char_1_last_char_2 ;
-   CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
+   CTwoWords word_2_word_1, first_char_1_last_char_1, first_char_0_first_char_1, first_char_0_last_char_1, last_char_1_last_char_2 ;
    CTag tag_1,tag_2;
    CTagSet<CTag, 2> tag_1_tag_2;
 
    std::vector<CTwoTaggedWords> wt12_collection;
+   CTwoTaggedWords wt12_app;
 
 
 public:
@@ -273,6 +273,7 @@ public:
 		tag_1_tag_2.load( encodeTags(tag_1, tag_2) );
 
 		static CTwoTaggedWords wt12;
+		CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
       for (int j=0; j<length_1-1; ++j) {
          wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
          wt2.load(last_char_1);//
@@ -282,7 +283,9 @@ public:
 
 
 
-
+      wt1.load(first_char_0, tag_1);
+		wt2.load(first_char_1);
+		refer_or_allocate(wt12_app, wt1, wt2);
 
 
 
