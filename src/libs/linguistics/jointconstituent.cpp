@@ -16,6 +16,7 @@ using namespace TARGET_LANGUAGE;
 int CJointTree::readNode(std::istream &is) {
       int node;
       std::string s, name;
+      static std::string temp;
       is >> s;
       assert(s == "(");
       is >> name;
@@ -29,6 +30,7 @@ int CJointTree::readNode(std::istream &is) {
          temporary = true;
       }
       if (s[0] == 'l' || s[0] == 'r' || s[0] == 'x' || s[0] == 'y' || s[0] == 'z' ) {
+    	 left = readNode(is);
          right = readNode(is);
          node = newNode();
          // l - head left; r / e - head right
@@ -36,22 +38,31 @@ int CJointTree::readNode(std::istream &is) {
          nodes[node].right_child = right;
          nodes[node].label = name;
          nodes[node].type = s[0];
-         // e - no token; l / r - has token
+         // l / r - has token
          nodes[node].temp = temporary;
          nodes[node].token = (s[0]=='l' || s[0] == 'z' || s[0] == 'x') ? nodes.at(left).token : nodes.at(right).token;
          is >> s;
          assert(s==")");
       }
       else if (s[0] == 's' || s[0] == 't') {
+      	int start_char_pos = chars.size();
          left = readNode(is);
          node = newNode();
          nodes[node].left_child = left;
-         nodes[node].constituent.load(name);
          nodes[node].right_child = -1;
          nodes[node].label = name;
          nodes[node].type = s[0];
          nodes[node].token = nodes.at(left).token;
          nodes[node].temp = temporary;
+         int end_char_pos = chars.size();
+
+         if (s[0] == 't')
+         {
+         	temp = "";
+				for (int idx=start_char_pos; idx<end_char_pos; ++idx) // append the corresponding characters
+					temp += chars.at(idx);
+				newWord(temp, name);
+         }
          assert(temporary==false); // single node can't be binarized temp
          is >> s;
          assert(s==")");
@@ -68,7 +79,7 @@ int CJointTree::readNode(std::istream &is) {
             token = token + " " + s;
             is >> s;
          }
-         int word = newWord(token);
+         int word = newChar(token);
          nodes[node].token = word;
          nodes[node].left_child = -1;
          nodes[node].right_child = -1;
@@ -80,15 +91,14 @@ std::string CJointTree::writeNode(int node) const {
       const CJointTreeNode &nd = nodes[node] ;
       std::string name = nd.label;
       char type = nd.type;
+      std::string stype = "";
+      stype += type;
+
       std::string cont;
       if (type == 'l' || type == 'r' || type == 'x' || type == 'y' || type == 'z') { // [1]node type cons
          if (nd.temp)
-            type += "*";
-         if (nd.single_child)
-            cont = writeNode(nd.left_child);
-         else {
-            cont = writeNode(nd.left_child) + " " + writeNode(nd.right_child);
-         }
+        	 stype += "*";
+         	 cont = writeNode(nd.left_child) + " " + writeNode(nd.right_child);
       }
       else if (type == 's' || type == 't') {
     	  cont = writeNode(nd.left_child);
@@ -98,7 +108,7 @@ std::string CJointTree::writeNode(int node) const {
     	  cont = chars[nd.token];
       }
 
-      return "( " + name + " " + type + " " + cont + " )";
+      return "( " + name + " " + stype + " " + cont + " )";
 }
 
 //this output doesn't contain any word strucutre information
@@ -139,14 +149,14 @@ std::string CJointTree::writeNodeUnbinAll(int node) const {
    if (type == 'l' || type == 'r' || type == 's') {
       // do not write node label for temp nodes and NONE nodes (fragmented tree)
       if (nd.is_temporary() ) {
-         return writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
+         return writeNodeUnbinAll(nd.left_child) + " " + writeNodeUnbinAll(nd.right_child);
       }
       else {
          name = nd.label;
          if (nd.single_child())
-            cont = writeNodeUnbin(nd.left_child);
+            cont = writeNodeUnbinAll(nd.left_child);
          else {
-            cont = writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
+            cont = writeNodeUnbinAll(nd.left_child) + " " + writeNodeUnbinAll(nd.right_child);
          }
          return "(" + name + " " + cont + ")";
       }
@@ -154,9 +164,9 @@ std::string CJointTree::writeNodeUnbinAll(int node) const {
    else if (type == 'x' || type == 'y' || type == 'z' || type == 't') {
 	   name = nd.label + "#" + type;
 	   if (nd.single_child())
-		   cont = writeNodeUnbin(nd.left_child);
+		   cont = writeNodeUnbinAll(nd.left_child);
 	   else {
-		   cont = writeNodeUnbin(nd.left_child) + " " + writeNodeUnbin(nd.right_child);
+		   cont = writeNodeUnbinAll(nd.left_child) + " " + writeNodeUnbinAll(nd.right_child);
 	   }
 	   return "(" + name + " " + cont + ")";
    }
@@ -173,6 +183,10 @@ bool CJointTree::nodesEqual(const CJointTree &tree, int i, int tree_i) const {
       const CJointTreeNode &tree_nd = nodes[tree_i];
       if (nd.type != tree_nd.type)
          return false;
+      if (nd.label != tree_nd.label)
+              return false;
+
+      char type = nd.type;
       if (type == 'l' || type == 'r' || type == 'x' || type == 'y' || type == 'z') {
     	  return (nodesEqual(tree, nd.left_child, tree_nd.left_child) && nodesEqual(tree, nd.right_child, tree_nd.right_child));
       }
