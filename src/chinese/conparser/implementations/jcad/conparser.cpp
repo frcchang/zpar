@@ -759,7 +759,7 @@ void CConParser::getOrUpdateScore( CPackedScoreType<SCORE_TYPE, CAction::MAX> &r
  *
  *--------------------------------------------------------------*/
 
-void CConParser::work( const bool bTrain , const CStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
+bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
 
    static CStateItem lattice[(MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2)*(AGENDA_SIZE+1)];
    static CStateItem *lattice_index[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
@@ -789,7 +789,7 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> packedscores;
 
-   if(length >= MAX_SENTENCE_SIZE) return;
+   if(length >= MAX_SENTENCE_SIZE) return false;
    assert(length<MAX_SENTENCE_SIZE);
 
    TRACE("Initialising the decoding process ... ") ;
@@ -824,10 +824,11 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
       lattice_index[index+1] = lattice_index[index];
 
 
-      //if(index == 4)
-     // {
-     // 	TRACE("debug started.....");
+      //if(index == 242)
+      //{
+      //	TRACE("debug started.....");
       //}
+     // TRACE(index << " started");
 
       beam.clear();
 
@@ -866,7 +867,7 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 			//		TRACE_WORD(actions[idx].str() + "\t");
 			//	}
 			//	TRACE("");
-         //}
+        //}
 
 
          if (actions.size() > 0)
@@ -891,10 +892,10 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 			TRACE("error");
 			for(int idx = 0; idx < sentence.size();idx++)
 			{
-				std::cout << sentence[idx];
+				TRACE_WORD(sentence[idx]);
 			}
-			std::cout << std::endl;
-			return;
+			TRACE("");
+			return false;
 		}
       // insertItems
       for (tmp_j=0; tmp_j<beam.size(); ++tmp_j) { // insert from
@@ -947,7 +948,7 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
             updateScoresForStates(pBestGen, sentence, correctState) ;
-            return ;
+            return true;
 #else // EARLY UDPATE
             bSkipLast = true;
 #endif
@@ -971,7 +972,7 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
          pBestGen->trace(&sentence);
 
          updateScoresForStates(pBestGen, sentence, correctState) ;
-         return ;
+         return true;
       }
       else {
          TRACE("correct");
@@ -981,7 +982,7 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
    } 
 
    if (!retval) 
-      return;
+      return true;
 
    TRACE("Outputing sentence");
    pBestGen->GenerateTree( sentence, retval[0] );
@@ -989,6 +990,7 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 
    TRACE("Done, the highest score is: " << pBestGen->score ) ;
    TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
+   return true;
 }
 
 /*---------------------------------------------------------------
@@ -999,14 +1001,14 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
  *
  *--------------------------------------------------------------*/
 
-void CConParser::parse( const CStringVector &sentence_input , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+bool CConParser::parse( const CStringVector &sentence_input , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
 
    static CSentenceParsed empty ;
 
    static CStringVector sentence;
    m_rule->segment(&sentence_input, &sentence);
 
-   work(false, sentence, retval, empty, nBest, scores ) ;
+   return work(false, sentence, retval, empty, nBest, scores ) ;
 
 }
 

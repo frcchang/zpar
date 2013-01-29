@@ -250,9 +250,11 @@ protected:
    	if(mustAppend(item.current_word)) return;
 
    	if(item.stacksize() > 0 && item.node.is_partial()
-   			&& (!item.stackPtr || !item.stackPtr->node.is_partial()))
+   			&& (!item.stackPtr->node.valid() || !item.stackPtr->node.is_partial()))
    	{
-   		if(canAssignTag(m_WordCache->find(item.node.begin_c, item.node.end_c, m_sent), item.node.pos))
+   		if(canAssignTag(m_WordCache->find(item.node.begin_c, item.node.end_c, m_sent), item.node.pos)
+   				|| item.current_word ==  m_sent->size() || mustSeparate(item.current_word)
+   				|| (!(item.node.pos == PENN_TAG_CD) && (item.node.end_c - item.node.begin_c +1 >= m_maxlengthbytag[item.node.pos])) )
    		{
    			action.encodeWORDT();
    			actions.push_back(action);
