@@ -75,8 +75,8 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
 
 //   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
-   if(actionType.code == CActionType::REDUCE_BINARY || actionType.code == CActionType::REDUCE_UNARY
-   || actionType.code == CActionType::POP_ROOT || actionType.code == CActionType::IDLE || actionType.code == CActionType::SHIFT_S)
+   if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::REDUCE_BINARY || actionType.code == CActionType::REDUCE_UNARY
+   || actionType.code == CActionType::POP_ROOT || actionType.code == CActionType::IDLE || actionType.code == CActionType::SHIFT_S))
    {
 		cast_weights->m_mapS0w.getOrUpdateScore(retval, m_Context.s0wt, action.code(), m_nScoreIndex, amount, round);
 		if (!m_Context.s0c.empty()) cast_weights->m_mapS0c.getOrUpdateScore(retval, m_Context.s0c, action.code(), m_nScoreIndex, amount, round);
@@ -306,7 +306,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
    }
 
-   if(actionType.code == CActionType::WORD_XYZ)
+   if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::WORD_XYZ))
    {
    	cast_weights->m_mapWSS0w.getOrUpdateScore(retval, m_Context.s0w, action.code(), m_nScoreIndex, amount, round);
    	cast_weights->m_mapWSS1w.getOrUpdateScore(retval, m_Context.s1w, action.code(), m_nScoreIndex, amount, round);
@@ -331,9 +331,12 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
    }
 
-   if(actionType.code == CActionType::SHIFT_S || actionType.code == CActionType::POP_ROOT)
+
+   if(actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::SHIFT_S ||  actionType.code == CActionType::POP_ROOT)
    {
-   	CTag tag_0 = actionType.code == CActionType::SHIFT_S ? CTag(action.getPOS()) : g_beginTag;
+
+   	//CTag tag_0 = actionType.code == CActionType::SHIFT_S ? CTag(action.getPOS()) : g_beginTag;
+   	CTag tag_0 = g_beginTag;
    	refer_or_allocate_tuple2(bitag, &(tag_0), &(m_Context.tag_1));
       cast_weights->m_mapLastTagByTag.getOrUpdateScore(retval, bitag,  action.code(), m_nScoreIndex , amount , round ) ;
       if (m_Context.start_0 >= 0)
@@ -362,7 +365,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 		if (m_Context.start_0 >= 0) {
 			refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(tag_0));
 			cast_weights->m_mapTagByFirstChar.getOrUpdateScore(retval, wordtag ,  action.code(), m_nScoreIndex , amount , round ) ;
-			unsigned long long first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.first_char_0) | (static_cast<unsigned long long>(1)<<tag_0.code()) ;
+			unsigned long long first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.first_char_0);// | (static_cast<unsigned long long>(1)<<tag_0.code()) ;
 			refer_or_allocate_tuple2(tagint, &(tag_0) , &(first_char_cat_0));
 			cast_weights->m_mapTagByFirstCharCat.getOrUpdateScore(retval, tagint ,  action.code(), m_nScoreIndex , amount , round ) ;
 
@@ -397,7 +400,8 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 		}
    }
 
-   if(actionType.code == CActionType::WORD_T)
+
+   if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::WORD_T))
    {
    	unsigned long long last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.last_char_1) | (static_cast<unsigned long long>(1)<<m_Context.tag_1.code()) ;
       cast_weights->m_mapSeenWords.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
@@ -434,8 +438,8 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
       cast_weights->m_mapTagByLastChar.getOrUpdateScore(retval, std::make_pair(m_Context.last_char_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
       cast_weights->m_mapTagByLastCharCat.getOrUpdateScore(retval, std::make_pair(last_char_cat_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
 
-      for (j=0; j<m_Context.length_1-1; ++j) {
-         cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, m_Context.wt12_collection[j], action.code(), m_nScoreIndex, amount, round) ;
+      for (int idj=0; idj<m_Context.length_1-1; ++idj) {
+         cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, m_Context.wt12_collection[idj], action.code(), m_nScoreIndex, amount, round) ;
       }
 
       if (m_Context.start_1 >= 0)
@@ -458,7 +462,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 		}
    }
 
-   if(actionType.code == CActionType::SHIFT_A)
+   if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::SHIFT_A))
    {
 
    	refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(m_Context.tag_1));
@@ -521,6 +525,8 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
    const CStateItem *current;
 
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> scores;
+   //std::ofstream file ;
+   //file.open("debug.features") ;
 
    count = 0;
    exc_count = 0;
@@ -530,6 +536,12 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
       if (current->IsIdle()) ++exc_count; // exclude idle actions
 #endif
       states[count] = current;
+      //const CAction &action = current->action;
+		//file << action.str() << " ";
+		//if(action.isWordT())
+		//{
+		//	TRACE("debug started...");
+		//}
       ++count ; //updating
       current = current->statePtr;
    }
@@ -544,8 +556,13 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
       // update action
       const CAction &action = states[count-1]->action;
       getOrUpdateStackScore(cast_weights, scores, states[count], action, amount, m_nTrainingRound );
+
       --count;
    }
+
+//   file << "\r\n";
+//	cast_weights->saveScores(file);
+//	file.close();
 }
 
 /*---------------------------------------------------------------
@@ -797,17 +814,21 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
    index=0;
 
    TRACE("Decoding start ... ") ;
+
+
+
+
    while (true) { // for each step
 
       ++index;
       lattice_index[index+1] = lattice_index[index];
 
-      /*
-      if(index == 39)
-      {
-      	TRACE("debug started.....");
-      }
-		*/
+
+      //if(index == 4)
+     // {
+     // 	TRACE("debug started.....");
+      //}
+
       beam.clear();
 
       pBestGen = 0;
@@ -837,16 +858,16 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
          // get actions
          m_rule->getActions(*pGenerator, &sentence, actions);
 
-         /*
-         if(actions.size() > 0)
-         {
-				for(int idx = 0; idx < actions.size(); idx++)
-				{
-					TRACE_WORD(actions[idx].str() + "\t");
-				}
-				TRACE("");
-         }
-			*/
+
+         //if(actions.size() > 0)
+         //{
+			//	for(int idx = 0; idx < actions.size(); idx++)
+			//	{
+			//		TRACE_WORD(actions[idx].str() + "\t");
+			//	}
+			//	TRACE("");
+         //}
+
 
          if (actions.size() > 0)
             getOrUpdateStackScore(static_cast<CWeight*>(m_weights), packedscores, pGenerator);
@@ -919,32 +940,14 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
             lattice_index[index+1]->score = scored_correct_action.score;
             ++lattice_index[index+1];
             assert(correct_action_scored); // scored_correct_act valid
-            /*
-            if(!correct_action_scored)
-            {
-            	TRACE("error");
-					for(int idx = 0; idx < sentence.size();idx++)
-					{
-						std::cout << sentence[idx];
-					}
-					std::cout << std::endl;
-					return;
-            }*/
+            TRACE(index << " updated");
+
 #ifdef EARLY_UPDATE
-//         if (!bCorrect ) {
-            //TRACE("Error at the "<<correctState->current_word<<"th word; total is "<<m_lCache.size())
-            // update
-//#ifdef TRAIN_MULTI
-//            updateScoresForMultipleStates(lattice_index[index], lattice_index[index+1], candidate_outout, correctState) ;
-//#else
             // trace
             correctState->trace(&sentence);
             pBestGen->trace(&sentence);
-//            updateScoresByLoss(pBestGen, correctState) ; 
             updateScoresForStates(pBestGen, sentence, correctState) ;
-#//endif // TRAIN_MULTI
             return ;
-//         } // bCorrect
 #else // EARLY UDPATE
             bSkipLast = true;
 #endif
@@ -960,28 +963,14 @@ void CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
             correctState = lattice_index[index+1];
             lattice_index[index+1]->score = scored_correct_action.score;
             assert(correct_action_scored); // scored_correct_act valid
-            /*
-            if(!correct_action_scored)
-				{
-					TRACE("error");
-					for(int idx = 0; idx < sentence.size();idx++)
-					{
-						std::cout << sentence[idx];
-					}
-					std::cout << std::endl;
-					return;
-				}
-				*/
          }
-         TRACE("The best item is not the correct one")
-//#ifdef TRAIN_MULTI
-//         updateScoresForMultipleStates(lattice_index[index], lattice_index[index+1], pBestGen, correctState) ;
-//#else // TRAIN_MULTI
+         TRACE(index << " updated");
+         TRACE("The best item is not the correct one");
+
          correctState->trace(&sentence);
          pBestGen->trace(&sentence);
-//         updateScoresByLoss(pBestGen, correctState) ; 
+
          updateScoresForStates(pBestGen, sentence, correctState) ;
-//#endif // TRAIN_MULTI
          return ;
       }
       else {
@@ -1089,7 +1078,7 @@ void CConParser::train( const CSentenceParsed &correct , int round ) {
       bool bNoSep=false;
       for ( j=total_size+1; j<total_size+local_size; ++j)
          if (!m_rule->canSeparate(j)) bNoSep = true;
-      if (!bNoSep)
+      //if (!bNoSep)
          m_weights->setMaxLengthByTag( tag , local_size ) ;
 
       total_size += chars.size();
