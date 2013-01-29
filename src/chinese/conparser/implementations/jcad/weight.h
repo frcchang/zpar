@@ -477,6 +477,11 @@ typedef CScoreMapType<CTuple3<CWord, CWord, CConstituent>, SCORE_TYPE, CAction::
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
+typedef CScoreMapType<CTuple3<CTag, CTag, int>, SCORE_TYPE, CAction::MAX> CBiTagIntMap;
+typedef CScoreMapType<CTuple4<CTag, CTag, CTag, int>, SCORE_TYPE, CAction::MAX> CTriTagIntMap;
+typedef CScoreMapType<CTuple4<CWord, CTag, CTag, CTag>, SCORE_TYPE, CAction::MAX> CWordTriTagMap;
+typedef CScoreMapType< CTuple2<CTag, unsigned long long>, SCORE_TYPE , CAction::MAX> CTagIntMap;
+
 
 
 //typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
@@ -714,13 +719,13 @@ public:
 
    // feature templates tag
    CWordTagPairMap m_mapCurrentTag;
-   CTagSet2Map m_mapLastTagByTag;
-   CTagSet3Map m_mapLastTwoTagsByTag;
-   CWordTagPairMap m_mapTagByLastWord;
+   CBiTagMap m_mapLastTagByTag;
+   CTriTagMap m_mapLastTwoTagsByTag;
+   CWordTagMap m_mapTagByLastWord;
    CWordTagPairMap m_mapLastTagByWord;
-   CWordTagPairMap m_mapTagByFirstChar;
+   CWordTagMap m_mapTagByFirstChar;
    CWordTagPairMap m_mapTagByLastChar;
-   CWordTagPairMap m_mapTagByChar;
+   CWordTagMap m_mapTagByChar;
    CWordTagPairMap m_mapTagOfOneCharWord;
    CWordTagPairMap m_mapRepeatedCharByTag;
    CWordTagPairMap m_mapTagByWordAndPrevChar;
@@ -732,10 +737,10 @@ public:
    CTwoTaggedWordsMap m_mapTaggedSeparateChars;
    CWordTagPairMap m_mapTaggedConsecutiveChars;
 
-   CWordTagSet2Map m_mapWordTagTag;
-   CWordTagSet2Map m_mapTagWordTag;
-   CWordTagSet2Map m_mapFirstCharBy2Tags;
-   CWordTagSet3Map m_mapFirstCharBy3Tags;
+   CWordTagTagMap m_mapWordTagTag;
+   CWordTagTagMap m_mapTagWordTag;
+   CWordTagTagMap m_mapFirstCharBy2Tags;
+   CWordTriTagMap m_mapFirstCharBy3Tags;
    CTwoWordsMap m_mapFirstCharAndChar;
 
    CWordMap m_mapSepCharAndNextChar;
@@ -746,12 +751,12 @@ public:
    CWordIntMap m_mapLengthByTagAndFirstChar;
    CWordIntMap m_mapLengthByTagAndLastChar;
 
-   CTagSet2IntMap m_mapTag0Tag1Size1;
+   CBiTagIntMap m_mapTag0Tag1Size1;
    CTagSet2IntMap m_mapTag1Tag2Size1;
-   CTagSet3IntMap m_mapTag0Tag1Tag2Size1;
+   CTriTagIntMap m_mapTag0Tag1Tag2Size1;
 
    // feature templates knowledge
-   CIntTagMap m_mapTagByFirstCharCat;
+   CTagIntMap m_mapTagByFirstCharCat;
    CIntTagMap m_mapTagByLastCharCat;
 
    CIntTagMap m_mapSeparateCharCat;
