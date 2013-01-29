@@ -60,10 +60,9 @@ public:
    CConstituent s1lc, s1rc, s1uc;
    CTag s1lt, s1rt, s1ut;
 
-   unsigned long s0ldt, s0rdt;
-   unsigned long s1ldt, s1rdt;
+
    CTaggedWord<CTag, TAG_SEPARATOR> s0wt, s1wt;
-   CWord s0ldw, s0rdw, s1ldw, s1rdw;
+
 
    unsigned long stacksize;
 
@@ -135,11 +134,13 @@ public:
 			s1c.load( s1==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1) );
 			s1w.load(s1 == 0 ? g_emptyWord.code() : _load_word(s1));
 			s1t.load(s1 == 0 ? g_noneTag.code() : s1->pos);
+			s1wt.load(s1w, s1t);
 			s1z.load(s1 == 0 ? g_emptyWord.code() : _load_char(s1));
 
 			s2c.load( s2==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2) );
 			s2w.load(s2 == 0 ? g_emptyWord.code() : _load_word(s2));
 			s2t.load(s2 == 0 ? g_noneTag.code() : s2->pos);
+			//s2wt.load(s2w, s2t);
 			s2z.load(s2 == 0 ? g_emptyWord.code() : _load_char(s2));
 
 			s3c.load( s3==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s3) );
@@ -224,7 +225,7 @@ public:
 		start_0 = item->current_word < sentence.size() ? item->current_word : -1;
 
 		const CStateNode *p0word_state = stacksize == 0 ? 0 : &(item->node);
-		const CStateNode *p1word_state = p0word_state == 0 ? 0: p0word_state->word_prev;
+		const CStateNode *p1word_state = stacksize<2 ? 0 : item->stackPtr->node.word_last;
 		start_1 = p0word_state == 0 ? -1 : p0word_state->begin_c;
 		end_1 = p0word_state == 0 ? -1 : p0word_state->end_c;
 		length_1 = p0word_state == 0 ? 0 : end_1-start_1+1;
@@ -234,7 +235,7 @@ public:
 		length_2 = p1word_state == 0 ? 0 : end_2-start_2+1;
 
 		word_1 = start_1>=0 ? find_or_replace_word_cache( start_1, end_1 ) : g_emptyWord;
-		word_2 = start_2>=1 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord;
+		word_2 = start_2>=0 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord;
 
 		if (length_1>LENGTH_MAX) length_1 = LENGTH_MAX;
 		if (length_2>LENGTH_MAX) length_2 = LENGTH_MAX;
@@ -247,8 +248,8 @@ public:
 	   last_char_2 = start_2>=0 ? find_or_replace_word_cache( end_2, end_2 ) : g_emptyWord;
 	   two_char = start_1>=0&&start_0>=0 ? find_or_replace_word_cache( end_1, start_0 ) : g_emptyWord ;
 	   word_1_first_char_0 = start_1>=0&&start_0>=0 ? find_or_replace_word_cache( start_1, start_0 ) : g_emptyWord;
-	   word_1_last_char_2 = start_2>=1 ? find_or_replace_word_cache( end_2, end_1 ) : g_emptyWord;
-	   three_char = ( length_1==1 && start_2>=1 && start_0>=0 ) ? find_or_replace_word_cache( end_2, start_0 ) : g_emptyWord;
+	   word_1_last_char_2 = start_2>=0 ? find_or_replace_word_cache( end_2, end_1 ) : g_emptyWord;
+	   three_char = ( length_1==1 && start_2>=0 && start_0>=0 ) ? find_or_replace_word_cache( end_2, start_0 ) : g_emptyWord;
 
 
 		if (!modify&&start_1>=0) {
@@ -274,6 +275,7 @@ public:
 
 		static CTwoTaggedWords wt12;
 		CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
+		wt12_collection.clear();
       for (int j=0; j<length_1-1; ++j) {
          wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
          wt2.load(last_char_1);//
