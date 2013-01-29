@@ -14,7 +14,37 @@ namespace TARGET_LANGUAGE {
 
 namespace conparser {
 
-class CRule {
+class CRuleBase {
+protected:
+   unsigned char m_chars[MAX_SENTENCE_SIZE];
+
+public:
+   enum PRUNE { eNoAction = 0, eAppend, eSeparate };
+   CRuleBase() { reset(); }
+   virtual ~CRuleBase() { }
+
+public:
+   void setSeparate(unsigned long index, bool separate) {
+      m_chars[index] = ( separate ? eSeparate : eAppend ) ;
+   }
+   bool canSeparate(unsigned long index) {
+      return m_chars[index] == eNoAction || m_chars[index] == eSeparate;
+   }
+   bool canAppend(unsigned long index) {
+      return m_chars[index] == eNoAction || m_chars[index] == eAppend;
+   }
+   bool mustSeparate(unsigned long index) {
+      return m_chars[index] == eSeparate;
+   }
+   bool mustAppend(unsigned long index) {
+      return m_chars[index] == eAppend;
+   }
+
+   void reset() { memset(m_chars, 0, MAX_SENTENCE_SIZE*sizeof(char)); }//for (unsigned i=0; i<MAX_SENTENCE_SIZE; ++i) m_chars[i] = 0; }
+};
+
+
+class CRule  : public CRuleBase {
 
 protected:
    const unsigned long *m_maxlengthbytag;
@@ -24,10 +54,11 @@ protected:
    const CHashMap<CWord, unsigned long> *m_wordfreq;
    const CTagDict<CWord, CTag> *m_canstartword;
    CWordCache *m_WordCache;
+   const CCharCatDictionary *m_char_categories; // use rules to segment foreign words?
 
 public:
-   CRule(const unsigned long *maxlengthbytag, const unsigned  long *maxwordfreq, const CTagDict<CWord, CTag> *tagdict, const CHashMap<CWord, unsigned long> *wordfreq, const CTagDict<CWord, CTag> *canstartword, CWordCache *WordCache) :
-   	m_maxlengthbytag(maxlengthbytag), m_maxwordfreq(maxwordfreq), m_tagdict(tagdict), m_wordfreq(wordfreq), m_canstartword(canstartword), m_WordCache(WordCache) {}
+   CRule(const unsigned long *maxlengthbytag, const unsigned  long *maxwordfreq, const CTagDict<CWord, CTag> *tagdict, const CHashMap<CWord, unsigned long> *wordfreq, const CTagDict<CWord, CTag> *canstartword, CWordCache *WordCache, const CCharCatDictionary* char_categories) :
+   	m_maxlengthbytag(maxlengthbytag), m_maxwordfreq(maxwordfreq), m_tagdict(tagdict), m_wordfreq(wordfreq), m_canstartword(canstartword), m_WordCache(WordCache), m_char_categories(char_categories) {}
    virtual ~CRule() {
    }
 
@@ -83,6 +114,62 @@ public:
       }
    }
 
+
+   void segment(const CStringVector *sentence_raw, CStringVector *sentence) {
+
+      // clear outout
+      sentence->clear();
+      reset();
+
+      int index_out = 0;
+      for ( int index_raw = 0; index_raw < sentence_raw->size(); index_raw++ ) {
+         const std::string& current_char = sentence_raw->at(index_raw) ;
+         const std::string& last_char = index_raw>0 ? sentence_raw->at(index_raw-1) : "" ;
+         if (current_char!=" ") {
+            sentence->push_back(current_char);
+            // if input map for character types available then use
+            if ( index_raw > 0 && m_char_categories != 0 &&
+                 ( m_char_categories->isFWorCD( last_char ) &&
+                 m_char_categories->isFWorCD( current_char ) )
+               )
+//            if ( index_raw > 0 && m_char_categories != 0 &&
+//                 ( ( m_char_categories->isFW( last_char ) &&
+//                 m_char_categories->isFW( current_char ) ) ||
+//                 ( m_char_categories->isCD( last_char ) &&
+//                 m_char_categories->isCD( current_char ) ) )
+//               )
+               setSeparate(index_out, false);
+            // always process space
+            if ( index_raw > 0 && last_char == " ")
+               setSeparate(index_out, true);
+            ++index_out ;
+         }
+      }
+   }
+
+   void record(const CTwoStringVector *sent, CStringVector *retval) {
+      assert(retval != 0);
+      retval->clear();
+      if (sent == 0)
+         return;
+      reset();
+      std::string temp;
+      CTwoStringVector::const_iterator it;
+      unsigned size = retval->size();
+      for (it=sent->begin(); it!=sent->end(); ++it) {
+         getCharactersFromUTF8String(it->first, retval);
+         assert(retval->size() > size); // the new word must has characters
+         if (size>0 && m_char_categories && m_char_categories->isFWorCD(retval->at(size)) && m_char_categories->isFWorCD(retval->at(size-1)))
+            setSeparate(size, true);
+         for (int index=size; index<retval->size()-1; ++index) {
+            if (m_char_categories && m_char_categories->isFWorCD(retval->at(index)) && m_char_categories->isFWorCD(retval->at(index+1)))
+               setSeparate(index+1, false);
+         }
+         size = retval->size();
+      }
+   }
+
+
 protected:
 
    inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
@@ -115,23 +202,28 @@ protected:
 
       if(item.stacksize() > 0 && item.node.is_partial())
       {
-      	unsigned long last_tag = item.node.pos;
-      	if(last_tag == PENN_TAG_CD || (item.node.end_c - item.node.begin_c +1 < m_maxlengthbytag[last_tag]))
+      	if(canAppend(item.current_word))
       	{
-      		action.encodeShiftA();
-      		actions.push_back(action);
+				unsigned long last_tag = item.node.pos;
+				if(last_tag == PENN_TAG_CD || (item.node.end_c - item.node.begin_c +1 < m_maxlengthbytag[last_tag]) || mustAppend(item.current_word))
+				{
+					action.encodeShiftA();
+					actions.push_back(action);
+				}
       	}
       }
       else if(item.stacksize() == 0 || !item.node.is_partial())
       {
-      	for(unsigned long tag = CTag::FIRST; tag < CTag::COUNT; ++tag)
+      	if(canSeparate(item.current_word))
       	{
-      		if(canStartWord(tag, item.current_word))
-      		{
-      			TRACE(tag);
-      			action.encodeShiftS(tag);
-      			actions.push_back(action);
-      		}
+				for(unsigned long tag = CTag::FIRST; tag < CTag::COUNT; ++tag)
+				{
+					if(canStartWord(tag, item.current_word))
+					{
+						action.encodeShiftS(tag);
+						actions.push_back(action);
+					}
+				}
       	}
       }
 
@@ -154,6 +246,8 @@ protected:
    void getWordTRules(const CStateItem &item, std::vector<CAction> &actions)
 	{
    	static CAction action;
+
+   	if(mustAppend(item.current_word)) return;
 
    	if(item.stacksize() > 0 && item.node.is_partial()
    			&& (!item.stackPtr || !item.stackPtr->node.is_partial()))
@@ -220,13 +314,6 @@ protected:
             actions.push_back(action);
          }
       } // for constituent
-   }
-
-public:
-   void loadRules(std::ifstream &is) {
-   }
-
-   void saveRules(std::ofstream &os) {
    }
 
 };

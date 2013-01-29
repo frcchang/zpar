@@ -58,6 +58,39 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
 //   iss.str(s);
    iss_f >> m_nMaxWordFrequency;
 
+   m_Knowledge = new CCharCatDictionary();
+
+   getline(file, s);
+	ASSERT(s=="Tag dictionary", "Tag dictionary not found from model.");
+	file >>m_mapTagDictionary;
+	getline(file, s);
+	ASSERT(s=="Char tag dictionary", "Char tag dictionary not found from model.");
+	file >>m_mapCharTagDictionary;
+	getline(file, s);
+	ASSERT(s=="Can start", "Starting character dictionary not found from model.");
+	file >>m_mapCanStart;
+
+	getline(file, s);
+	getline(file, s);
+	ASSERT(s=="Maximum wordlen by tag", "Maximum word length by tag not found from model.");
+	std::string ts;
+	for (int i=0; i<CTag::COUNT; ++i) {
+		std::istringstream iss;
+		getline(file, s);
+		iss.str(s);
+		int j;
+		iss >> ts >> j;
+		m_maxlengthByTag[i] = j;
+		ASSERT(CTag(ts).code()==i, "Maximum word size record loading failed.");
+	}
+	{
+		std::istringstream iss;
+		getline(file, s);
+		iss.str(s);
+		iss >> ts >> m_maxlengthByTag[CTag::COUNT];
+		ASSERT(ts=="All", "Maximum word size record failed loading.");
+	}
+
 //   file.close() ;
    std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
@@ -89,8 +122,19 @@ void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
    file << "Maximum frequency" << std::endl; 
    file << m_nMaxWordFrequency << std::endl;
 
-//   file.close();
-   std::cout<<" done."<<std::endl;
+
+   file <<"Tag dictionary" << std::endl;
+	file <<m_mapTagDictionary;
+	file <<"Char tag dictionary" << std::endl;
+	file <<m_mapCharTagDictionary;
+	file <<"Can start" << std::endl;
+	file <<m_mapCanStart;
+	file <<std::endl << "Maximum wordlen by tag" << std::endl;
+	for (int i=0; i<CTag::COUNT; ++i)
+		file <<CTag(i).str() << "\t" << m_maxlengthByTag[i] << std::endl;
+	file <<"All\t" << m_maxlengthByTag[CTag::COUNT] << std::endl;
+	std::cout << " done." << std::endl;
+
 }
 
 /*--------------------------------------------------------------
