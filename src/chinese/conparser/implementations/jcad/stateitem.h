@@ -313,7 +313,7 @@ protected:
    	assert(stackPtr!=0);
    	assert(!stackPtr->node.valid() || !stackPtr->node.is_partial());
    	assert(node.is_partial());
-		retval->node.set(node.id+1, CStateNode::LEAF, false, CConstituent::NONE, node.pos, &node, 0, (stackPtr->node.valid()?stackPtr->node.word_head:0), &node, &node, node.begin_c, node.end_c, node.head_c);
+		retval->node.set(node.id+1, CStateNode::LEAF, false, CConstituent::NONE, node.pos, &node, 0, (stackPtr->node.valid()?stackPtr->node.word_last:0), &node, &node, node.begin_c, node.end_c, node.head_c);
    	retval->stackPtr = stackPtr;
    	retval->current_word = current_word;
    	assert(!IsTerminated());
@@ -499,7 +499,7 @@ public:
       // generate nodes for out
       static int i,j;
 
-      for(i=sent.size()-1; i>=0; --i)
+      for(i=0; i<sent.size(); ++i)
       {
           out.newChar(sent[i]);
       }
