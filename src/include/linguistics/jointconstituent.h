@@ -58,7 +58,7 @@ public:
 
    std::string str() const {
      std::ostringstream os;
-     os << type;
+     os << type << " " << label;
      return os.str();
    }
 
@@ -84,23 +84,19 @@ public:
 
    bool is_constituent() const
    {
-	   return type == 'l' || type == 'r';
+	   return type == 'l' || type == 'r' || type == 's';
    }
 
-   bool is_token() const
+   bool is_leaf() const
    {
 	   return type == 't';
    }
 
    bool is_parital() const
    {
-	   return type == 'x' || type == 'y' || type == 'z';
+	   return type == 'x' || type == 'y' || type == 'z' || type == 'b' || type == 'i';
    }
 
-   bool is_terminal() const
-   {
-	   return type == 'b' || type == 'i';
-   }
 
    bool is_temporary() const
    {
@@ -128,6 +124,8 @@ class CJointTree {
 public:
    std::vector<CJointTreeNode> nodes;
    CStringVector chars;
+   //just for convenience
+   CTwoStringVector words;
    int root;
 
 public:
@@ -136,10 +134,11 @@ public:
 
 public:
    int newNode() { nodes.push_back(CJointTreeNode()); return nodes.size()-1; }
-   int newChar(const std::string &word) { words.push_back(word); return(words.size()-1); }
+   int newChar(const std::string &word) { chars.push_back(word); return(chars.size()-1); }
+   int newWord(const std::string &word, const std::string &pos) { words.push_back(std::make_pair(word, pos)); return(words.size()-1); }
 
    bool empty() const {return nodes.empty()&&chars.empty();}
-   void clear() {root=-1;nodes.clear(); chars.clear();}
+   void clear() {root=-1;nodes.clear(); chars.clear(); words.clear();}
    int readNode(std::istream &is);
    std::string writeNode(int node) const;
    std::string writeNodeUnbin(int node) const;
@@ -201,6 +200,10 @@ inline std::ostream & operator << (std::ostream &os, const CJointTree &tree) {
 
 inline void UnparseSentence(const CJointTree *parsed, CStringVector *raw) {
    (*raw) = parsed->chars;
+}
+
+inline void UnparseSentence(const CJointTree *parsed, CTwoStringVector *raw) {
+   (*raw) = parsed->words;
 }
 
 }

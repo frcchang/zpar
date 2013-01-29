@@ -75,6 +75,8 @@ public:
    void copy(const CWord &w) { m_nHash = w.m_nHash; }
    void setString(const std::string &s) { m_nHash = getTokenizer().find(s, UNKNOWN); }
    void load/*=*/ (const std::string &s) { m_nHash = getTokenizer().lookup(s); }
+   //addedzms
+   void load/*=*/ (const unsigned long &n) { m_nHash = n; }
    // do not use str() for unknown words!!
    const std::string &str() const { return getTokenizer().key(m_nHash); }
    bool empty() { return m_nHash==EMPTY; }

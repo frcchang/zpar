@@ -94,7 +94,7 @@ public:
    void scaleCurrent(const SCORE_TYPE &scale, const int &round) {
       typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = this->begin();
       while (it != this->end()) {
-         it.second().scaleCurrent(scale);
+         it.second().scaleCurrent(scale, round);
          ++ it;
       }
    }
