@@ -62,13 +62,16 @@ public:
 
 
    CTaggedWord<CTag, TAG_SEPARATOR> s0wt, s1wt;
+   CTaggedWord<CTag, TAG_SEPARATOR> s0zt, s1zt;
 
 
    unsigned long stacksize;
 
    CCFGSet s0cs1c, s0ts1t, s0cs1cs2c, s0cs0rc, s0ts1ts2t, s0cs0lcs1c, s0cs0ljs1j, s0cs0lc, s0cs1cs1rc, s0js1cs1rj,s1cs1rc;
    CTwoWords s0ws1w;
+   CTwoWords s0zs1z;
    CTwoTaggedWords s0wts1wt;
+   CTwoTaggedWords s0zts1zt;
 
    //tagger
    int start_0;
@@ -129,6 +132,7 @@ public:
 			s0t.load(s0->pos);
 			s0wt.load(s0w, s0t);
 			s0z.load(_load_char(s0));
+			s0zt.load(s0z, s0t);
 
 
 			s1c.load( s1==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s1) );
@@ -136,6 +140,7 @@ public:
 			s1t.load(s1 == 0 ? g_noneTag.code() : s1->pos);
 			s1wt.load(s1w, s1t);
 			s1z.load(s1 == 0 ? g_emptyWord.code() : _load_char(s1));
+			s1zt.load(s1z, s1t);
 
 			s2c.load( s2==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2) );
 			s2w.load(s2 == 0 ? g_emptyWord.code() : _load_word(s2));
@@ -182,11 +187,15 @@ public:
 
 			if (modify==false) {
 				if (s1!=0) s0ws1w.refer(&s0w, &s1w);
+				if (s1!=0) s0zs1z.refer(&s0z, &s1z);
 				if (s1!=0) s0wts1wt.refer(&s0wt, &s1wt);
+				if (s1!=0) s0zts1zt.refer(&s0zt, &s1zt);
 			}
 			else {
 				if (s1!=0) s0ws1w.allocate(s0w, s1w);
+				if (s1!=0) s0zs1z.allocate(s0z, s1z);
 				if (s1!=0) s0wts1wt.allocate(s0wt, s1wt);
+				if (s1!=0) s0zts1zt.allocate(s0zt, s1zt);
 			}
 			s0cs1c.load(s0c, s1c);
 			s0ts1t.load(s0t, s1t);

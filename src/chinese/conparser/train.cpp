@@ -38,10 +38,10 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile)
    
    is >> ref_sent;
    while( ! ref_sent.empty() ) {
-      TRACE_WORD("Sentence " << nCount << " ... ");
+//      TRACE_WORD("Sentence " << nCount << " ... ");
       nCount ++;
       parser.train( ref_sent, nCount );
-      TRACE("done.");
+//      TRACE("done.");
       is >> ref_sent;
    }
 

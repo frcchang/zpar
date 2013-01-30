@@ -23,19 +23,25 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 #define iterate_templates(left, right) \
    left(m_mapS0c)right\
    left(m_mapS0w)right\
+   left(m_mapS0z)right\
    left(m_mapS0tc)right\
    left(m_mapS0wc)right\
+   left(m_mapS0zc)right\
 \
    left(m_mapS1c)right\
    left(m_mapS1w)right\
+   left(m_mapS1z)right\
    left(m_mapS1tc)right\
    left(m_mapS1wc)right\
+   left(m_mapS1zc)right\
 \
    left(m_mapS2tc)right\
    left(m_mapS2wc)right\
+   left(m_mapS2zc)right\
 \
    left(m_mapS3tc)right\
    left(m_mapS3wc)right\
+   left(m_mapS3zc)right\
 \
    left(m_mapN0w)right\
    left(m_mapN0t)right\
@@ -72,18 +78,23 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapS1Utc)right\
 \
    left(m_mapS0wcS1wc)right\
+   left(m_mapS0zcS1zc)right\
    left(m_mapS0wS1c)right\
+   left(m_mapS0zS1c)right\
    left(m_mapS0cS1w)right\
+   left(m_mapS0cS1z)right\
    left(m_mapS0cS1c)right\
    left(m_mapBetweenTags)right\
 \
    left(m_mapS0wN0w)right\
+   left(m_mapS0zN0w)right\
    left(m_mapS0cN0w)right\
    left(m_mapS0wN0t)right\
    left(m_mapS0cN0t)right\
    left(m_mapS0cmN0tm)right\
 \
    left(m_mapS1wN0w)right\
+   left(m_mapS1zN0w)right\
    left(m_mapS1cN0w)right\
    left(m_mapS1wN0t)right\
    left(m_mapS1cN0t)right\
@@ -109,8 +120,11 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapS0jN0tN1t)right\
 \
    left(m_mapS0wS1cS2c)right\
+   left(m_mapS0zS1cS2c)right\
    left(m_mapS0cS1wS2c)right\
+   left(m_mapS0cS1zS2c)right\
    left(m_mapS0cS1cS2w)right\
+   left(m_mapS0cS1cS2z)right\
    left(m_mapS0cS1cS2c)right\
    left(m_mapS0tS1tS2t)right\
 \
@@ -140,6 +154,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapS0cS0LjS1j)right\
    left(m_mapS0wS0LcS1c)right\
    left(m_mapS0cS0LcS1w)right\
+   left(m_mapS0cS0LcS1z)right\
    left(m_mapS0cS0RcS1c)right\
    left(m_mapS0wS0RcS1c)right\
    left(m_mapS0cS0RcS1w)right\
@@ -154,6 +169,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapS0cS1cS1Rc)right\
    left(m_mapS0jS1cS1Rj)right\
    left(m_mapS0wS1cS1Rc)right\
+   left(m_mapS0zS1cS1Rc)right\
    left(m_mapS0cS1wS1Rc)right\
    left(m_mapS0cS1cS1Uc)right\
    left(m_mapS0wS1cS1Uc)right\
@@ -230,19 +246,25 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 #define iterate_double_templates(left, middle, right)\
    left m_mapS0c middle m_mapS0c right\
    left m_mapS0w middle m_mapS0w right\
+   left m_mapS0z middle m_mapS0z right\
    left m_mapS0tc middle m_mapS0tc right\
    left m_mapS0wc middle m_mapS0wc right\
+   left m_mapS0zc middle m_mapS0zc right\
 \
    left m_mapS1c middle m_mapS1c right\
    left m_mapS1w middle m_mapS1w right\
+   left m_mapS1z middle m_mapS1z right\
    left m_mapS1tc middle m_mapS1tc right\
    left m_mapS1wc middle m_mapS1wc right\
+   left m_mapS1zc middle m_mapS1zc right\
 \
    left m_mapS2tc middle m_mapS2tc right\
    left m_mapS2wc middle m_mapS2wc right\
+   left m_mapS2zc middle m_mapS2zc right\
 \
    left m_mapS3tc middle m_mapS3tc right\
    left m_mapS3wc middle m_mapS3wc right\
+   left m_mapS3zc middle m_mapS3zc right\
 \
    left m_mapN0w middle m_mapN0w right\
    left m_mapN0t middle m_mapN0t right\
@@ -279,18 +301,23 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapS1Utc middle m_mapS1Utc right\
 \
    left m_mapS0wcS1wc middle m_mapS0wcS1wc right\
+   left m_mapS0zcS1zc middle m_mapS0zcS1zc right\
    left m_mapS0wS1c middle m_mapS0wS1c right\
+   left m_mapS0zS1c middle m_mapS0zS1c right\
    left m_mapS0cS1w middle m_mapS0cS1w right\
+   left m_mapS0cS1z middle m_mapS0cS1z right\
    left m_mapS0cS1c middle m_mapS0cS1c right\
    left m_mapBetweenTags middle m_mapBetweenTags right\
 \
    left m_mapS0wN0w middle m_mapS0wN0w right\
+   left m_mapS0zN0w middle m_mapS0zN0w right\
    left m_mapS0cN0w middle m_mapS0cN0w right\
    left m_mapS0wN0t middle m_mapS0wN0t right\
    left m_mapS0cN0t middle m_mapS0cN0t right\
    left m_mapS0cmN0tm middle m_mapS0cmN0tm right\
 \
    left m_mapS1wN0w middle m_mapS1wN0w right\
+   left m_mapS1zN0w middle m_mapS1zN0w right\
    left m_mapS1cN0w middle m_mapS1cN0w right\
    left m_mapS1wN0t middle m_mapS1wN0t right\
    left m_mapS1cN0t middle m_mapS1cN0t right\
@@ -316,8 +343,11 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapS0jN0tN1t middle m_mapS0jN0tN1t right\
 \
    left m_mapS0wS1cS2c middle m_mapS0wS1cS2c right\
+   left m_mapS0zS1cS2c middle m_mapS0zS1cS2c right\
    left m_mapS0cS1wS2c middle m_mapS0cS1wS2c right\
+   left m_mapS0cS1zS2c middle m_mapS0cS1zS2c right\
    left m_mapS0cS1cS2w middle m_mapS0cS1cS2w right\
+   left m_mapS0cS1cS2z middle m_mapS0cS1cS2z right\
    left m_mapS0cS1cS2c middle m_mapS0cS1cS2c right\
    left m_mapS0tS1tS2t middle m_mapS0tS1tS2t right\
 \
@@ -347,6 +377,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapS0cS0LjS1j middle m_mapS0cS0LjS1j right\
    left m_mapS0wS0LcS1c middle m_mapS0wS0LcS1c right\
    left m_mapS0cS0LcS1w middle m_mapS0cS0LcS1w right\
+   left m_mapS0cS0LcS1z middle m_mapS0cS0LcS1z right\
    left m_mapS0cS0RcS1c middle m_mapS0cS0RcS1c right\
    left m_mapS0wS0RcS1c middle m_mapS0wS0RcS1c right\
    left m_mapS0cS0RcS1w middle m_mapS0cS0RcS1w right\
@@ -361,6 +392,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapS0cS1cS1Rc middle m_mapS0cS1cS1Rc right\
    left m_mapS0jS1cS1Rj middle m_mapS0jS1cS1Rj right\
    left m_mapS0wS1cS1Rc middle m_mapS0wS1cS1Rc right\
+   left m_mapS0zS1cS1Rc middle m_mapS0zS1cS1Rc right\
    left m_mapS0cS1wS1Rc middle m_mapS0cS1wS1Rc right\
    left m_mapS0cS1cS1Uc middle m_mapS0cS1cS1Uc right\
    left m_mapS0wS1cS1Uc middle m_mapS0wS1cS1Uc right\
@@ -508,22 +540,28 @@ public:
    // S0
    CConstituentMap m_mapS0c;
    CTaggedWordMap m_mapS0w;
+   CTaggedWordMap m_mapS0z;  //char 1
    CTagConstituentMap m_mapS0tc;
    CWordConstituentMap m_mapS0wc;
+   CWordConstituentMap m_mapS0zc;  //char 2
 
    // S1
    CConstituentMap m_mapS1c;
    CTaggedWordMap m_mapS1w;
+   CTaggedWordMap m_mapS1z;  //char 3
    CTagConstituentMap m_mapS1tc;
    CWordConstituentMap m_mapS1wc;
+   CWordConstituentMap m_mapS1zc;  //char 4
 
    // S2
    CTagConstituentMap m_mapS2tc;
    CWordConstituentMap m_mapS2wc;
+   CWordConstituentMap m_mapS2zc;  //char 5
 
    // S3
    CTagConstituentMap m_mapS3tc;
    CWordConstituentMap m_mapS3wc;
+   CWordConstituentMap m_mapS3zc;  //char 6
 
    // N0
    CWordMap m_mapN0w;
@@ -576,21 +614,26 @@ public:
 
    // S0 S1
    CTwoWordsCFGSetMap m_mapS0wcS1wc; // the original 
+   CTwoWordsCFGSetMap m_mapS0zcS1zc;  //char 7
    CWordCFGSetMap m_mapS0wS1c;
+   CWordCFGSetMap m_mapS0zS1c;  //char 8
    CWordCFGSetMap m_mapS0cS1w;
+   CWordCFGSetMap m_mapS0cS1z;  //char 9
    CCFGSetMap m_mapS0cS1c;
 
    CCFGSetMap m_mapBetweenTags;
 
    // S0 N0
    CWordWordConstituentMap m_mapS0wN0w;
+   CWordWordConstituentMap m_mapS0zN0w;  //char 10
    CWordConstituentMap m_mapS0cN0w;
-   CWordConstituentMap m_mapS0wN0t;
+   CWordConstituentMap m_mapS0wN0t; //not use
    CCFGSetMap m_mapS0cN0t;  //not use
    CTwoIntMap m_mapS0cmN0tm;  //not use
 
    // S1 N0
    CWordWordConstituentMap m_mapS1wN0w;
+   CWordWordConstituentMap m_mapS1zN0w;  //char 11
    CWordConstituentMap m_mapS1cN0w;
    CWordConstituentMap m_mapS1wN0t; //not use
    CCFGSetMap m_mapS1cN0t;  //not use
@@ -620,8 +663,11 @@ public:
 
    // S0 S1S2
    CWordCFGSetMap m_mapS0wS1cS2c;
+   CWordCFGSetMap m_mapS0zS1cS2c;  //char 12
    CWordCFGSetMap m_mapS0cS1wS2c;
+   CWordCFGSetMap m_mapS0cS1zS2c;  //char 13
    CWordCFGSetMap m_mapS0cS1cS2w;
+   CWordCFGSetMap m_mapS0cS1cS2z;  //char 14
    CCFGSetMap m_mapS0cS1cS2c;
    CCFGSetMap m_mapS0tS1tS2t;
 
@@ -656,6 +702,7 @@ public:
    CCFGSetMap m_mapS0cS0LcS1c;
    CCFGSetMap m_mapS0cS0LjS1j;
    CWordCFGSetMap m_mapS0cS0LcS1w;
+   CWordCFGSetMap m_mapS0cS0LcS1z;  //char 15
 
    CWordCFGSetMap m_mapS0wS0LcS1c;   //not use
    CCFGSetMap m_mapS0cS0RcS1c;   //not use
@@ -669,6 +716,7 @@ public:
    CCFGSetMap m_mapS0cS1cS1Rc;
    CCFGSetMap m_mapS0jS1cS1Rj;
    CWordCFGSetMap m_mapS0wS1cS1Rc;
+   CWordCFGSetMap m_mapS0zS1cS1Rc;  //char 16
 
    CCFGSetMap m_mapS0cS1cS1Lc;   //not use
    CWordCFGSetMap m_mapS0wS1cS1Lc;   //not use
@@ -804,19 +852,25 @@ public:
 
                           m_mapS0c("Stack0Constituent", TABLE_SIZE),
                           m_mapS0w("Stack0Word", TABLE_SIZE),
+                          m_mapS0z("Stack0Char", TABLE_SIZE),
                           m_mapS0tc("Stack0Tag", TABLE_SIZE),
                           m_mapS0wc("Stack0WordConstituent", TABLE_SIZE),
+                          m_mapS0zc("Stack0CharConstituent", TABLE_SIZE),
 
                           m_mapS1c("Stack1Constituent", TABLE_SIZE),
                           m_mapS1w("Stack1Word", TABLE_SIZE),
+                          m_mapS1z("Stack1Char", TABLE_SIZE),
                           m_mapS1tc("Stack1Tag", TABLE_SIZE),
                           m_mapS1wc("Stack1WordConstituent", TABLE_SIZE),
+                          m_mapS1zc("Stack1CharConstituent", TABLE_SIZE),
 
                           m_mapS2tc("Stack2Tag", TABLE_SIZE),
                           m_mapS2wc("Stack2WordConstituent", TABLE_SIZE),
+                          m_mapS2zc("Stack2CharConstituent", TABLE_SIZE),
 
                           m_mapS3tc("Stack3Tag", TABLE_SIZE),
                           m_mapS3wc("Stack3WordConstituent", TABLE_SIZE),
+                          m_mapS3zc("Stack3ChardConstituent", TABLE_SIZE),
 
                           m_mapN0w("Next0Word", TABLE_SIZE),
                           m_mapN0t("Next0Tag", TABLE_SIZE),
@@ -858,18 +912,23 @@ public:
                           m_mapS1Utc("Stack1UniConstituent", TABLE_SIZE), 
 
                           m_mapS0wcS1wc("Stack0WordStack1Word", TABLE_SIZE),
+                          m_mapS0zcS1zc("Stack0CharStack1Char", TABLE_SIZE),
                           m_mapS0wS1c("Stack0WordStack1Constituent", TABLE_SIZE),
+                          m_mapS0zS1c("Stack0CharStack1Constituent", TABLE_SIZE),
                           m_mapS0cS1w("Stack0ConstituentStack1Word", TABLE_SIZE),
+                          m_mapS0cS1z("Stack0ConstituentStack1Char", TABLE_SIZE),
                           m_mapS0cS1c("Stack0ConstituentStack1Constituent", TABLE_SIZE),
                           m_mapBetweenTags("BetweenTags", TABLE_SIZE),
                                             
                           m_mapS0wN0w("Stack0WordNext0Word", TABLE_SIZE),
+                          m_mapS0zN0w("Stack0CharNext0Word", TABLE_SIZE),
                           m_mapS0wN0t("Stack0WordNext0Tag", TABLE_SIZE),
                           m_mapS0cN0w("Stack0ConstituentNext0Word", TABLE_SIZE),
                           m_mapS0cN0t("Stack0ConstituentNext0Tag", TABLE_SIZE),
                           m_mapS0cmN0tm("Stack0ConstituentRhythmNext0TagRhythm", TABLE_SIZE),
 
                           m_mapS1wN0w("Stack1WordNext0Word", TABLE_SIZE),
+                          m_mapS1zN0w("Stack1CharNext0Word", TABLE_SIZE),
                           m_mapS1wN0t("Stack1WordNext0Tag", TABLE_SIZE),
                           m_mapS1cN0w("Stack1ConstituentNext0Word", TABLE_SIZE),
                           m_mapS1cN0t("Stack1ConstituentNext0Tag", TABLE_SIZE),
@@ -895,8 +954,11 @@ public:
                           m_mapS0jN0tN1t("Stack0TagOrConstituentNext0TagNext1Tag", TABLE_SIZE),
 
                           m_mapS0wS1cS2c("Stack0WordStack1ConstituentStack2Constituent", TABLE_SIZE),
+                          m_mapS0zS1cS2c("Stack0CharStack1ConstituentStack2Constituent", TABLE_SIZE),
                           m_mapS0cS1wS2c("Stack0ConstituentStack1WordStack2Constituent", TABLE_SIZE),
+                          m_mapS0cS1zS2c("Stack0ConstituentStack1CharStack2Constituent", TABLE_SIZE),
                           m_mapS0cS1cS2w("Stack0ConstituentStack1ConstituentStack2Word", TABLE_SIZE),
+                          m_mapS0cS1cS2z("Stack0ConstituentStack1ConstituentStack2Char", TABLE_SIZE),
                           m_mapS0cS1cS2c("Stack0ConstituentStack1ConstituentStack2Constituent", TABLE_SIZE),
                           m_mapS0tS1tS2t("Stack0TagStack1TagStack2Tag", TABLE_SIZE),
 
@@ -926,6 +988,7 @@ public:
                           m_mapS0cS0LjS1j("Stack0ConstituentStack0LTagOrConstituentStack1TagOrConstituent", TABLE_SIZE),
                           m_mapS0wS0LcS1c("Stack0WordStack0LConstituentStack1Constituent", TABLE_SIZE),
                           m_mapS0cS0LcS1w("Stack0ConstituentStack0LConstituentStack1Word", TABLE_SIZE),
+                          m_mapS0cS0LcS1z("Stack0ConstituentStack0LConstituentStack1Char", TABLE_SIZE),
                           m_mapS0cS0RcS1c("Stack0ConstituentStack0RConstituentStack1Constituent", TABLE_SIZE),
                           m_mapS0wS0RcS1c("Stack0WordStack0RConstituentStack1Constituent", TABLE_SIZE),
                           m_mapS0cS0RcS1w("Stack0ConstituentStack0RConstituentStack1Word", TABLE_SIZE),
@@ -940,6 +1003,7 @@ public:
                           m_mapS0cS1cS1Rc("Stack0ConstituentStack1ConstituentStack1RConstituent", TABLE_SIZE),
                           m_mapS0jS1cS1Rj("Stack0TagOrConstituentStack1ConstituentStack1RTagOrConstituent", TABLE_SIZE),
                           m_mapS0wS1cS1Rc("Stack0WordStack1ConstituentStack1RConstituent", TABLE_SIZE),
+                          m_mapS0zS1cS1Rc("Stack0CharStack1ConstituentStack1RConstituent", TABLE_SIZE),
                           m_mapS0cS1wS1Rc("Stack0ConstituentStack1WordStack1RConstituent", TABLE_SIZE),
                           m_mapS0cS1cS1Uc("Stack0ConstituentStack1ConstituentStack1UConstituent", TABLE_SIZE),
                           m_mapS0wS1cS1Uc("Stack0WordStack1ConstituentStack1UConstituent", TABLE_SIZE),
