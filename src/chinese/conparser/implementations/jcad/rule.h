@@ -52,13 +52,17 @@ protected:
    const CStringVector *m_sent;
    const CTagDict<CWord, CTag> *m_tagdict;
    const CHashMap<CWord, unsigned long> *m_wordfreq;
+   const CHashMap<CWord, unsigned long> *m_partwordfreq;
+   const CWordDictionary *m_mapwordheaddict;
    const CTagDict<CWord, CTag> *m_canstartword;
    CWordCache *m_WordCache;
    const CCharCatDictionary *m_char_categories; // use rules to segment foreign words?
 
 public:
-   CRule(const unsigned long *maxlengthbytag, const unsigned  long *maxwordfreq, const CTagDict<CWord, CTag> *tagdict, const CHashMap<CWord, unsigned long> *wordfreq, const CTagDict<CWord, CTag> *canstartword, CWordCache *WordCache, const CCharCatDictionary* char_categories) :
-   	m_maxlengthbytag(maxlengthbytag), m_maxwordfreq(maxwordfreq), m_tagdict(tagdict), m_wordfreq(wordfreq), m_canstartword(canstartword), m_WordCache(WordCache), m_char_categories(char_categories) {}
+   CRule(const unsigned long *maxlengthbytag, const unsigned  long *maxwordfreq, const CTagDict<CWord, CTag> *tagdict, const CHashMap<CWord, unsigned long> *wordfreq, const CTagDict<CWord, CTag> *canstartword,
+   		CWordCache *WordCache, const CCharCatDictionary* char_categories, const CHashMap<CWord, unsigned long> *partwordfreq, const CWordDictionary *wordheaddict) :
+   	m_maxlengthbytag(maxlengthbytag), m_maxwordfreq(maxwordfreq), m_tagdict(tagdict), m_wordfreq(wordfreq), m_canstartword(canstartword)
+      , m_WordCache(WordCache), m_char_categories(char_categories), m_partwordfreq(partwordfreq),  m_mapwordheaddict(wordheaddict){}
    virtual ~CRule() {
    }
 
@@ -196,6 +200,17 @@ protected:
       return true;
    }
 
+   inline bool canAssignHead(const CWord &word, const unsigned long &head) {
+   	if(m_partwordfreq->find(word, 0) < *m_maxwordfreq/5000+5) return true;
+
+   	if( ((*m_mapwordheaddict)[word] | head) == (*m_mapwordheaddict)[word])
+   	{
+   		return true;
+   	}
+
+   	return false;
+    }
+
 
    void getShiftRules(const CStateItem &item, std::vector<CAction> &actions) {
       static CAction action;
@@ -234,12 +249,25 @@ protected:
    	static CAction action;
    	if(item.stacksize() > 1 && item.node.is_partial() && item.stackPtr->node.is_partial())
    	{
-   		action.encodeWORDXYZ('x');
-   		actions.push_back(action);
-   		action.encodeWORDXYZ('y');
-   		actions.push_back(action);
-   		action.encodeWORDXYZ('z');
-   		actions.push_back(action);
+   		int iCount = 0;
+   		if(canAssignHead(m_WordCache->find(item.stackPtr->node.begin_c, item.node.end_c, m_sent), 1))
+   		{
+   			action.encodeWORDXYZ('x');
+   			actions.push_back(action);
+   			iCount++;
+   		}
+   		if(canAssignHead(m_WordCache->find(item.stackPtr->node.begin_c, item.node.end_c, m_sent), 2))
+   		{
+				action.encodeWORDXYZ('y');
+				actions.push_back(action);
+				iCount++;
+   		}
+   		if(canAssignHead(m_WordCache->find(item.stackPtr->node.begin_c, item.node.end_c, m_sent), 4))
+   		{
+				action.encodeWORDXYZ('z');
+				actions.push_back(action);
+				iCount++;
+   		}
    	}
    }
 

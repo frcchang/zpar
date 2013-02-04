@@ -178,16 +178,27 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapA1)right\
    left(m_mapA1A2)right\
 \
-	left(m_mapWSS0w)right\
-   left(m_mapWSS1w)right\
-   left(m_mapWSS0wS1w)right\
-   left(m_mapWSS0wTag)right\
-   left(m_mapWSS1wTag)right\
-   left(m_mapWSS0wS1wTag)right\
-   left(m_mapWSS0wS1z)right\
-   left(m_mapWSS0zS1w)right\
-   left(m_mapWSS0zS1z)right\
-   left(m_mapWSS0zS1zTag)right\
+	left(m_mapWSSeenWords)right\
+	left(m_mapWSLastWordByWord)right\
+	left(m_mapWSLastWordByWordCurrentTag)right\
+	left(m_mapWSTwoHeadCharCurrentTag)right\
+	left(m_mapWSCurrentTag)right\
+	left(m_mapWSCurrentWordLastChar)right\
+	left(m_mapWSLastWordByLastChar)right\
+	left(m_mapWSLengthByLastWord)right\
+	left(m_mapWSLastLengthByWord)right\
+	left(m_mapWSTagByWordAndPrevChar)right\
+	left(m_mapWSTagOfOneCharWord)right\
+	left(m_mapWSSeparateChars)right\
+	left(m_mapWSLastWordFirstChar)right\
+	left(m_mapWSFirstCharLastWordByWord)right\
+	left(m_mapWSTagByWordAndNextChar)right\
+	left(m_mapWSOneCharWord)right\
+	left(m_mapWSFirstAndLastChars)right\
+	left(m_mapWSLengthByFirstChar)right\
+	left(m_mapWSLengthByLastChar)right\
+	left(m_mapWSTagByLastCharCat)right\
+	left(m_mapWSTaggedCharByLastChar)right\
 \
 	left(m_mapCharUnigram)right \
 	left(m_mapCharBigram)right \
@@ -237,7 +248,30 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 	left(m_mapLengthByTagAndLastChar)right \
 	left(m_mapTag0Tag1Size1)right\
 	left(m_mapTag1Tag2Size1)right\
-	left(m_mapTag0Tag1Tag2Size1)right
+	left(m_mapTag0Tag1Tag2Size1)right\
+\
+	left(m_mapS2CharTag)right\
+	left(m_mapS3CharTag)right\
+	left(m_mapS0CharTagCont)right\
+	left(m_mapS1CharTagCont)right\
+	left(m_mapS2CharTagCont)right\
+	left(m_mapS3CharTagCont)right\
+\
+	left(m_mapS0ztS1zt)right\
+	left(m_mapS0zS1z)right\
+	left(m_mapS0zS1zS2z)right\
+	left(m_mapS1zS2zS3z)right\
+	left(m_mapS0zS1zS2zS3z)right\
+\
+	left(m_mapS0zN0z)right\
+	left(m_mapS0zN01z)right\
+	left(m_mapS0zN012z)right\
+\
+	left(m_mapS1zN0z)right\
+	left(m_mapS1zN01z)right\
+	left(m_mapS1zN012z)right\
+	left(m_mapS1zS0zN0z)right\
+	left(m_mapS1zS0zN01z)right
 
 
 
@@ -401,16 +435,27 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapA1 middle m_mapA1 right\
    left m_mapA1A2 middle m_mapA1A2 right\
 \
-	left m_mapWSS0w middle m_mapWSS0w right\
-   left m_mapWSS1w middle m_mapWSS1w right\
-   left m_mapWSS0wS1w middle m_mapWSS0wS1w right\
-   left m_mapWSS0wTag middle m_mapWSS0wTag right\
-   left m_mapWSS1wTag middle m_mapWSS1wTag right\
-   left m_mapWSS0wS1wTag middle m_mapWSS0wS1wTag right\
-   left m_mapWSS0wS1z middle m_mapWSS0wS1z right\
-   left m_mapWSS0zS1w middle m_mapWSS0zS1w right\
-   left m_mapWSS0zS1z middle m_mapWSS0zS1z right\
-   left m_mapWSS0zS1zTag middle m_mapWSS0zS1zTag right\
+	left m_mapWSSeenWords middle m_mapWSSeenWords right\
+	left m_mapWSLastWordByWord middle m_mapWSLastWordByWord right\
+	left m_mapWSLastWordByWordCurrentTag middle m_mapWSLastWordByWordCurrentTag right\
+	left m_mapWSTwoHeadCharCurrentTag middle m_mapWSTwoHeadCharCurrentTag right\
+	left m_mapWSCurrentTag middle m_mapWSCurrentTag right\
+	left m_mapWSCurrentWordLastChar middle m_mapWSCurrentWordLastChar right\
+	left m_mapWSLastWordByLastChar middle m_mapWSLastWordByLastChar right\
+	left m_mapWSLengthByLastWord middle m_mapWSLengthByLastWord right\
+	left m_mapWSLastLengthByWord middle m_mapWSLastLengthByWord right\
+	left m_mapWSTagByWordAndPrevChar middle m_mapWSTagByWordAndPrevChar right\
+	left m_mapWSTagOfOneCharWord middle m_mapWSTagOfOneCharWord right\
+	left m_mapWSSeparateChars middle m_mapWSSeparateChars right\
+	left m_mapWSLastWordFirstChar middle m_mapWSLastWordFirstChar right\
+	left m_mapWSFirstCharLastWordByWord middle m_mapWSFirstCharLastWordByWord right\
+	left m_mapWSTagByWordAndNextChar middle m_mapWSTagByWordAndNextChar right\
+	left m_mapWSOneCharWord middle m_mapWSOneCharWord right\
+	left m_mapWSFirstAndLastChars middle m_mapWSFirstAndLastChars right\
+	left m_mapWSLengthByFirstChar middle m_mapWSLengthByFirstChar right\
+	left m_mapWSLengthByLastChar middle m_mapWSLengthByLastChar right\
+	left m_mapWSTagByLastCharCat middle m_mapWSTagByLastCharCat right\
+	left m_mapWSTaggedCharByLastChar middle m_mapWSTaggedCharByLastChar right\
 \
 	left m_mapCharUnigram middle m_mapCharUnigram right \
 	left m_mapCharBigram middle m_mapCharBigram right \
@@ -460,7 +505,31 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 	left m_mapLengthByTagAndLastChar middle m_mapLengthByTagAndLastChar right \
 	left m_mapTag0Tag1Size1 middle m_mapTag0Tag1Size1 right \
 	left m_mapTag1Tag2Size1 middle m_mapTag1Tag2Size1 right \
-	left m_mapTag0Tag1Tag2Size1 middle m_mapTag0Tag1Tag2Size1 right
+	left m_mapTag0Tag1Tag2Size1 middle m_mapTag0Tag1Tag2Size1 right\
+\
+	left m_mapS2CharTag middle m_mapS2CharTag right\
+	left m_mapS3CharTag middle m_mapS3CharTag right\
+	left m_mapS0CharTagCont middle m_mapS0CharTagCont right\
+	left m_mapS1CharTagCont middle m_mapS1CharTagCont right\
+	left m_mapS2CharTagCont middle m_mapS2CharTagCont right\
+	left m_mapS3CharTagCont middle m_mapS3CharTagCont right\
+\
+	left m_mapS0ztS1zt middle m_mapS0ztS1zt right\
+	left m_mapS0zS1z middle m_mapS0zS1z right\
+	left m_mapS0zS1zS2z middle m_mapS0zS1zS2z right\
+	left m_mapS1zS2zS3z middle m_mapS1zS2zS3z right\
+	left m_mapS0zS1zS2zS3z middle m_mapS0zS1zS2zS3z right\
+\
+	left m_mapS0zN0z middle m_mapS0zN0z right\
+	left m_mapS0zN01z middle m_mapS0zN01z right\
+	left m_mapS0zN012z middle m_mapS0zN012z right\
+\
+	left m_mapS1zN0z middle m_mapS1zN0z right\
+	left m_mapS1zN01z middle m_mapS1zN01z right\
+	left m_mapS1zN012z middle m_mapS1zN012z right\
+	left m_mapS1zS0zN0z middle m_mapS1zS0zN0z right\
+	left m_mapS1zS0zN01z middle m_mapS1zS0zN01z right
+
 
 namespace TARGET_LANGUAGE {
 
@@ -474,6 +543,7 @@ namespace conparser {
 typedef CScoreMapType<CWord, SCORE_TYPE, CAction::MAX> CWordMap;
 typedef CScoreMapType<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, CAction::MAX> CTaggedWordMap;
 typedef CScoreMapType<std::pair<CWord, unsigned long>,  SCORE_TYPE, CAction::MAX> CWordIntMap;
+typedef CScoreMapType<std::pair<CConstituent, unsigned long>,  SCORE_TYPE, CAction::MAX> CConstituentIntMap;
 typedef CScoreMapType<unsigned long, SCORE_TYPE, CAction::MAX> CIntMap;
 typedef CScoreMapType<std::pair<unsigned long, unsigned long>, SCORE_TYPE, CAction::MAX> CTwoIntMap;
 typedef CScoreMapType<CTwoWords, SCORE_TYPE, CAction::MAX> CTwoWordsMap;
@@ -489,7 +559,7 @@ typedef CScoreMapType<CTuple2<CWord, CCFGSet>, SCORE_TYPE, CAction::MAX> CWordCF
 typedef CScoreMapType<CTuple3<CWord, CCFGSet, CActionType>, SCORE_TYPE, CAction::MAX> CWordCFGSetActionTypeMap;
 typedef CScoreMapType<std::pair<CWord, CCFGSet>, SCORE_TYPE, CAction::MAX> CWordCFGRuleMap;
 typedef CScoreMapType<std::pair<CTwoWords, CCFGSet>, SCORE_TYPE, CAction::MAX> CTwoWordsCFGRuleMap;
-typedef CScoreMapType<std::pair<CCFGSet, unsigned long>, SCORE_TYPE, CAction::MAX> CCFGSetIntMap;
+//typedef CScoreMapType<std::pair<CCFGSet, unsigned long>, SCORE_TYPE, CAction::MAX> CCFGSetIntMap;
 typedef CScoreMapType<std::pair<CCFGSet, CActionType>, SCORE_TYPE, CAction::MAX> CCFGSetActionTypeMap;
 typedef CScoreMapType<CTuple2<CWord, CConstituent>, SCORE_TYPE, CAction::MAX> CWordConstituentMap;
 typedef CScoreMapType<CTuple2<CTag, CConstituent>, SCORE_TYPE, CAction::MAX> CTagConstituentMap;
@@ -500,6 +570,7 @@ typedef CScoreMapType<CTuple2<CAction, CAction>, SCORE_TYPE, CAction::MAX> CActi
 
 typedef CScoreMapType<CTuple2<CWord, CWord>, SCORE_TYPE, CAction::MAX> CBiWordMap;
 typedef CScoreMapType<CTuple3<CWord, CWord, CWord>, SCORE_TYPE, CAction::MAX> CTriWordMap;
+typedef CScoreMapType<CTuple4<CWord, CWord, CWord, CWord>, SCORE_TYPE, CAction::MAX> CFourWordMap;
 typedef CScoreMapType<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, CAction::MAX> CWordWordTagMap;
 typedef CScoreMapType<CTuple2<CWord, CTag>, SCORE_TYPE, CAction::MAX> CWordTagMap;
 typedef CScoreMapType<CTuple2<CTag, CTag>, SCORE_TYPE, CAction::MAX> CBiTagMap;
@@ -527,6 +598,20 @@ typedef CScoreMapType< std::pair<CWord, CTagSet<CTag, 3> >, SCORE_TYPE , CAction
 typedef CScoreMapType< std::pair<CTagSet<CTag, 2>, int>, SCORE_TYPE , CAction::MAX> CTagSet2IntMap;
 typedef CScoreMapType< std::pair<CTagSet<CTag, 3>, int>, SCORE_TYPE , CAction::MAX> CTagSet3IntMap;
 //typedef CScoreMapType< std::pair<CWord, CTagSet<CTag, 3> >, SCORE_TYPE , CAction::MAX> CWordTagSet3Map;
+
+typedef CScoreMapType<CTuple3<CWord, CTag, CConstituent>, SCORE_TYPE, CAction::MAX> CWordTagConstituentMap;
+typedef CScoreMapType<CTuple4<CWord, CWord, CTag, CConstituent>, SCORE_TYPE, CAction::MAX> CWordWordTagConstituentMap;
+typedef CScoreMapType<CTuple4<CWord, CWord, CWord, CTag>, SCORE_TYPE, CAction::MAX> CTriWordTagMap;
+typedef CScoreMapType<CTuple4<CWord, CWord, CWord, CConstituent>, SCORE_TYPE, CAction::MAX> CTriWordConstituentMap;
+
+typedef CScoreMapType<CTuple4<CWord, CWord, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CTwoWordsTwoIntsMap;
+
+typedef CScoreMapType<CTuple2<CCFGSet, unsigned long long>, SCORE_TYPE, CAction::MAX> CCFGIntMap;
+typedef CScoreMapType<CTuple3<CTag, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CTagTwoIntsMap;
+typedef CScoreMapType<CTuple3<CConstituent, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CConstituentTwoIntsMap;
+typedef CScoreMapType<CTuple4<CWord, CConstituent, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordConstituentTwoIntsMap;
+typedef CScoreMapType<CTuple3<CWord, CCFGSet, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordCfgIntMap;
+typedef CScoreMapType<CTuple3<CConstituent, CTag, unsigned long long>, SCORE_TYPE, CAction::MAX> CConstituentTagIntMap;
 
 /*===============================================================
  *
@@ -566,25 +651,25 @@ public:
    // N0
    CWordMap m_mapN0w;
    CIntMap m_mapN0t;  //not use
-   CTaggedWordMap m_mapN0wt;  //not use
+   CWordIntMap m_mapN0wt;  //not use
 
    // N1
    CWordMap m_mapN1w;
    CIntMap m_mapN1t;  //not use
-   CTaggedWordMap m_mapN1wt;  //not use
+   CWordIntMap m_mapN1wt;  //not use
    CBiWordMap m_mapN01w; 	//added
 
    // N2
    CWordMap m_mapN2w;
    CIntMap m_mapN2t;   //not use
-   CTaggedWordMap m_mapN2wt;  //not use
+   CWordIntMap m_mapN2wt;  //not use
    CBiWordMap m_mapN12w; 	//added
    CTriWordMap m_mapN012w; 	//added
 
    // N3
    CWordMap m_mapN3w;
    CIntMap m_mapN3t;  //not use
-   CTaggedWordMap m_mapN3wt;  //not use
+   CWordIntMap m_mapN3wt;  //not use
    CBiWordMap m_mapN23w; 	//added
    CTriWordMap m_mapN123w; 	//added
 
@@ -627,38 +712,38 @@ public:
    CWordWordConstituentMap m_mapS0wN0w;
    CWordWordConstituentMap m_mapS0zN0w;  //char 10
    CWordConstituentMap m_mapS0cN0w;
-   CWordConstituentMap m_mapS0wN0t; //not use
-   CCFGSetMap m_mapS0cN0t;  //not use
+   CWordIntMap m_mapS0wN0t; //not use
+   CConstituentIntMap m_mapS0cN0t;  //not use
    CTwoIntMap m_mapS0cmN0tm;  //not use
 
    // S1 N0
    CWordWordConstituentMap m_mapS1wN0w;
    CWordWordConstituentMap m_mapS1zN0w;  //char 11
    CWordConstituentMap m_mapS1cN0w;
-   CWordConstituentMap m_mapS1wN0t; //not use
-   CCFGSetMap m_mapS1cN0t;  //not use
+   CWordIntMap m_mapS1wN0t;
+   CConstituentIntMap m_mapS1cN0t;
 
    // N0 N1
-   CTwoWordsConstituentMap m_mapN0wN1w;  //not use
-   CWordConstituentMap m_mapN0tN1w;  //not use
-   CWordConstituentMap m_mapN0wN1t;  //not use
-   CCFGSetMap m_mapN0tN1t;  //not use
+   CTwoWordsTwoIntsMap m_mapN0wN1w;
+   CWordIntMap m_mapN0tN1w;
+   CWordIntMap m_mapN0wN1t;
+   CTwoIntMap m_mapN0tN1t;
 
    // S0 S1N0
-   CWordConstituentMap m_mapS0wS1cN0t;  //not use
-   CWordConstituentMap m_mapS0cS1wN0t;  //not use
+   CWordCfgIntMap m_mapS0wS1cN0t;
+   CWordCfgIntMap m_mapS0cS1wN0t;
    CWordCFGSetMap m_mapS0cS1cN0w;
-   CCFGSetMap m_mapS0cS1cN0t;  //not use
-   CCFGSetMap m_mapS0tS1tN0t;  //not use
-   CCFGSetMap m_mapS0jS1jN0t;  //not use
+   CCFGIntMap m_mapS0cS1cN0t;
+   CConstituentTagIntMap m_mapS0tS1tN0t;
+   CCFGIntMap m_mapS0jS1jN0t;
 
    // S0 N0N1
    CWordConstituentMap m_mapS0cN1w; 	//added
-   CWordCFGSetMap m_mapS0wN0tN1t;  //not use
-   CWordCFGSetMap m_mapS0cN0wN1t;  //not use
-   CWordWordConstituentMap m_mapS0cN0tN1w;
-   CCFGSetMap m_mapS0cN0tN1t;  //not use
-   CCFGSetMap m_mapS0tN0tN1t;  //not use
+   CWordConstituentTwoIntsMap m_mapS0wN0tN1t;  //not use
+   CWordConstituentTwoIntsMap m_mapS0cN0wN1t;  //not use
+   CWordConstituentTwoIntsMap m_mapS0cN0tN1w;
+   CConstituentTwoIntsMap m_mapS0cN0tN1t;  //not use
+   CTagTwoIntsMap m_mapS0tN0tN1t;  //not use
    CCFGSetMap m_mapS0jN0tN1t;  //not use
 
    // S0 S1S2
@@ -686,8 +771,8 @@ public:
    CIntMap m_mapN0tN1tN2t;   //not use
 
    // S0 S0LRUN0
-   CCFGSetMap m_mapS0cS0RcN0t;   //not use
-   CCFGSetMap m_mapS0cS0RjN0t;  //not use
+   CCFGIntMap m_mapS0cS0RcN0t;   //not use
+   CCFGIntMap m_mapS0cS0RjN0t;  //not use
    CWordCFGSetMap m_mapS0cS0RcN0w;
 
    CCFGSetMap m_mapS0cS0LcN0t;   //not use
@@ -731,17 +816,28 @@ public:
    CAction2Map m_mapA1A2;   //not use
 
    //word structure feature
-   CWordMap m_mapWSS0w; 	//added
-   CWordMap m_mapWSS1w; 	//added
-   CBiWordMap m_mapWSS0wS1w; 	//added
-   CWordTagMap m_mapWSS0wTag; 	//added
-   CWordTagMap m_mapWSS1wTag; 	//added
-   CWordWordTagMap m_mapWSS0wS1wTag;   	//added
+   CWordMap m_mapWSSeenWords; 	//added
+   CTwoWordsMap m_mapWSLastWordByWord; 	//added
+   CWordWordTagMap m_mapWSLastWordByWordCurrentTag; //added
+   CWordWordTagMap m_mapWSTwoHeadCharCurrentTag; //added
+   CWordTagPairMap m_mapWSCurrentTag; 	//added
+   CWordMap m_mapWSCurrentWordLastChar; 	//added
+   CTwoWordsMap m_mapWSLastWordByLastChar; 	//added
+   CWordIntMap m_mapWSLengthByLastWord;   	//added
+   CWordIntMap m_mapWSLastLengthByWord; 	//added
+   CWordTagPairMap m_mapWSTagByWordAndPrevChar; 	//added
+   CWordTagPairMap m_mapWSTagOfOneCharWord; 	//added
+   CWordMap m_mapWSSeparateChars;   	//added
+   CWordMap m_mapWSLastWordFirstChar;  //added
+   CTwoWordsMap m_mapWSFirstCharLastWordByWord;  //added
+   CWordTagPairMap m_mapWSTagByWordAndNextChar;  //added
+   CWordMap m_mapWSOneCharWord; 	//added
+   CTwoWordsMap m_mapWSFirstAndLastChars; 	//added
+   CWordIntMap m_mapWSLengthByFirstChar; 	//added
+   CWordIntMap m_mapWSLengthByLastChar; 	//added
+   CIntTagMap m_mapWSTagByLastCharCat; 	//added
+   CTwoTaggedWordsMap m_mapWSTaggedCharByLastChar; 	//added
 
-   CBiWordMap m_mapWSS0wS1z; 	//added
-   CBiWordMap m_mapWSS0zS1w; 	//added
-   CBiWordMap m_mapWSS0zS1z; 	//added
-   CWordWordTagMap m_mapWSS0zS1zTag;   	//added
 
    //segmentation tagging features
 
@@ -811,9 +907,29 @@ public:
    CIntTagMap m_mapConsecutiveCharCat;
 
 
+   //character features
+   CTaggedWordMap m_mapS2CharTag;
+   CTaggedWordMap m_mapS3CharTag;
+   CWordTagConstituentMap m_mapS0CharTagCont;
+   CWordTagConstituentMap m_mapS1CharTagCont;
+   CWordTagConstituentMap m_mapS2CharTagCont;
+   CWordTagConstituentMap m_mapS3CharTagCont;
 
+   CTwoTaggedWordsMap m_mapS0ztS1zt;
+   CBiWordMap m_mapS0zS1z;
+   CTriWordMap m_mapS0zS1zS2z;
+   CTriWordMap m_mapS1zS2zS3z;
+   CFourWordMap m_mapS0zS1zS2zS3z;
 
-   //character features in stack
+   CBiWordMap m_mapS0zN0z;
+   CTriWordMap m_mapS0zN01z;
+   CFourWordMap m_mapS0zN012z;
+
+   CBiWordMap m_mapS1zN0z;
+	CTriWordMap m_mapS1zN01z;
+	CFourWordMap m_mapS1zN012z;
+	CTriWordMap m_mapS1zS0zN0z;
+	CFourWordMap m_mapS1zS0zN01z;
 
 
    //combined features
@@ -821,12 +937,14 @@ public:
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
    CWordToIntMap m_mapWordFrequency;
+   CWordToIntMap m_mapPartWordFrequency;
 
    CTagDict<CWord, CTag> m_mapTagDictionary;
    CTagDict<CWord, CTag> m_mapCharTagDictionary;
    CTagDict<CWord, CTag> m_mapCanStart;
    unsigned long m_maxlengthByTag[CTag::COUNT+1];
    CCharCatDictionary *m_Knowledge;
+   CWordDictionary m_mapWordHeadDictionary;
 
 public:
 
@@ -846,9 +964,11 @@ public:
                           m_nMaxWordFrequency(0) ,
                           m_Knowledge(new CCharCatDictionary()) ,
                           m_mapWordFrequency(65537),
+                          m_mapPartWordFrequency(65537),
                           m_mapTagDictionary(CTag::COUNT),
                           m_mapCharTagDictionary(CTag::COUNT),
                           m_mapCanStart(CTag::COUNT),
+                          m_mapWordHeadDictionary(65537),
 
                           m_mapS0c("Stack0Constituent", TABLE_SIZE),
                           m_mapS0w("Stack0Word", TABLE_SIZE),
@@ -1012,17 +1132,27 @@ public:
                           m_mapA1("PreviousAction", TABLE_SIZE),
                           m_mapA1A2("PreviousActionBigram", TABLE_SIZE),
 
-                          m_mapWSS0w("WORDXYZS0W", TABLE_SIZE), 	//added
-                          m_mapWSS1w("WORDXYZS1W", TABLE_SIZE), 	//added
-                          m_mapWSS0wS1w("WORDXYZS0WS1W", TABLE_SIZE), 	//added
-                          m_mapWSS0wTag("WORDXYZS0WTag", TABLE_SIZE), 	//added
-                          m_mapWSS1wTag("WORDXYZS0WTag", TABLE_SIZE), 	//added
-                          m_mapWSS0wS1wTag("WORDXYZS0WTag", TABLE_SIZE),   	//added
-
-                          m_mapWSS0wS1z("WORDXYZS0WS1Z", TABLE_SIZE), 	//added
-                          m_mapWSS0zS1w("WORDXYZS1WS0Z", TABLE_SIZE), 	//added
-                          m_mapWSS0zS1z("WORDXYZS0ZS1Z", TABLE_SIZE), 	//added
-                          m_mapWSS0zS1zTag("WORDXYZS0ZS1ZTag", TABLE_SIZE), 	//added
+                          m_mapWSSeenWords("WSSeenWords", TABLE_SIZE), 	//added
+                          m_mapWSLastWordByWord("WSLastWordByWord", TABLE_SIZE), 	//added
+                          m_mapWSLastWordByWordCurrentTag("WSLastWordByWordCurrentTag", TABLE_SIZE), //added
+                          m_mapWSTwoHeadCharCurrentTag("WSTwoHeadCharCurrentTag", TABLE_SIZE), //added
+                          m_mapWSCurrentTag("WSCurrentTag", TABLE_SIZE), 	//added
+                          m_mapWSCurrentWordLastChar("WSCurrentWordLastChar", TABLE_SIZE), 	//added
+                          m_mapWSLastWordByLastChar("WSLastWordByLastChar", TABLE_SIZE), 	//added
+                          m_mapWSLengthByLastWord("WSLengthByLastWord", TABLE_SIZE), 	//added
+                          m_mapWSLastLengthByWord("WSLastLengthByWord", TABLE_SIZE), 	//added
+                          m_mapWSTagByWordAndPrevChar("WSTagByWordAndPrevChar", TABLE_SIZE), 	//added
+                          m_mapWSTagOfOneCharWord("WSTagOfOneCharWord", TABLE_SIZE), 	//added
+                          m_mapWSSeparateChars("WSSeparateChars", TABLE_SIZE), 	//added
+                          m_mapWSLastWordFirstChar("WSLastWordFirstChar", TABLE_SIZE), 	//added
+                          m_mapWSFirstCharLastWordByWord("WSFirstCharLastWordByWord", TABLE_SIZE), 	//added
+                          m_mapWSTagByWordAndNextChar("WSTagByWordAndNextChar", TABLE_SIZE), 	//added
+                          m_mapWSOneCharWord("WSOneCharWord", TABLE_SIZE), 	//added
+                          m_mapWSFirstAndLastChars("WSFirstAndLastChars", TABLE_SIZE), 	//added
+                          m_mapWSLengthByFirstChar("WSLengthByFirstChar", TABLE_SIZE), 	//added
+                          m_mapWSLengthByLastChar("WSLengthByLastChar", TABLE_SIZE), 	//added
+                          m_mapWSTagByLastCharCat("WSTagByLastCharCat", TABLE_SIZE), 	//added
+                          m_mapWSTaggedCharByLastChar("WSTaggedCharByLastChar", TABLE_SIZE), 	//added
 
 								m_mapCharUnigram("CharacterUnigram", TABLE_SIZE),
 								m_mapCharBigram("CharacterBigram", TABLE_SIZE),
@@ -1077,7 +1207,30 @@ public:
 				            m_mapLengthByTagAndLastChar("LengthByTagAndLastChar", TABLE_SIZE),
 				            m_mapTag0Tag1Size1("Tag0Tag1Size1", TABLE_SIZE),
 				            m_mapTag1Tag2Size1("Tag1Tag2Size1", TABLE_SIZE),
-				            m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", TABLE_SIZE)
+				            m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", TABLE_SIZE),
+				            m_mapS2CharTag("S2CharTag", TABLE_SIZE),
+				            m_mapS3CharTag("S3CharTag", TABLE_SIZE),
+				            m_mapS0CharTagCont("S0CharTagCont", TABLE_SIZE),
+				            m_mapS1CharTagCont("S1CharTagCont", TABLE_SIZE),
+				            m_mapS2CharTagCont("S2CharTagCont", TABLE_SIZE),
+				            m_mapS3CharTagCont("S3CharTagCont", TABLE_SIZE),
+
+				            m_mapS0ztS1zt("S0ztS1zt", TABLE_SIZE),
+				            m_mapS0zS1z("S0zS1z", TABLE_SIZE),
+				            m_mapS0zS1zS2z("S0zS1zS2z", TABLE_SIZE),
+				            m_mapS1zS2zS3z("S1zS2zS3z", TABLE_SIZE),
+				            m_mapS0zS1zS2zS3z("S0zS1zS2zS3z", TABLE_SIZE),
+
+				            m_mapS0zN0z("S0zN0z", TABLE_SIZE),
+				            m_mapS0zN01z("S0zN01z", TABLE_SIZE),
+				            m_mapS0zN012z("S0zN012z", TABLE_SIZE),
+
+				            m_mapS1zN0z("S1zN0z", TABLE_SIZE),
+				            m_mapS1zN01z("S1zN01z", TABLE_SIZE),
+				            m_mapS1zN012z("S1zN012z", TABLE_SIZE),
+				            m_mapS1zS0zN0z("S1zS0zN0z", TABLE_SIZE),
+				            m_mapS1zS0zN01z("S1zS0zN01z", TABLE_SIZE)
+
    { }
    ~CWeight() {
    	if (m_Knowledge) delete m_Knowledge;

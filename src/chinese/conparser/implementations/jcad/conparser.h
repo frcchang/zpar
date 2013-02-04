@@ -48,7 +48,8 @@ public:
    CConParser( const std::string &sFeatureDBPath, unsigned long nMaxSentSize , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_lCache(nMaxSentSize) {
       // and initialize the weith module loading content
       m_weights = new conparser :: CWeight( bTrain );
-      m_rule = new conparser::CRule(m_weights->m_maxlengthByTag, &(m_weights->m_nMaxWordFrequency), &(m_weights->m_mapTagDictionary), &(m_weights->m_mapWordFrequency), &(m_weights->m_mapCanStart), &(m_lCache), m_weights->m_Knowledge);
+      m_rule = new conparser::CRule(m_weights->m_maxlengthByTag, &(m_weights->m_nMaxWordFrequency), &(m_weights->m_mapTagDictionary), &(m_weights->m_mapWordFrequency), &(m_weights->m_mapCanStart)
+      		, &(m_lCache), m_weights->m_Knowledge, &(m_weights->m_mapPartWordFrequency), &(m_weights->m_mapWordHeadDictionary));
       if (bTrain) {
 
 #ifdef TRAIN_MULTI //===

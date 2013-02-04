@@ -52,6 +52,14 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
    file >> m_mapWordFrequency;
 
    getline(file, s);
+	ASSERT(s=="Part Word frequency", "Part Word frequency not found from model.");
+	file >> m_mapPartWordFrequency;
+
+   getline(file, s);
+	ASSERT(s=="Word head category", "Word head category not found from model.");
+	file >> m_mapWordHeadDictionary;
+
+   getline(file, s);
    ASSERT(s=="Maximum frequency", "Maximum frequency not found from model.");
    getline(file, s);
    std::istringstream iss_f(s);
@@ -119,6 +127,10 @@ void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
 
    file << "Word frequency" << std::endl; 
    file << m_mapWordFrequency;
+   file << "Part Word frequency" << std::endl;
+   file << m_mapPartWordFrequency;
+   file << "Word head category" << std::endl;
+   file << m_mapWordHeadDictionary;
    file << "Maximum frequency" << std::endl; 
    file << m_nMaxWordFrequency << std::endl;
 

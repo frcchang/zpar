@@ -42,7 +42,7 @@ public:
    const CStateNode *s0l, *s0r, *s0u, *s0h;
    const CStateNode *s1l, *s1r, *s1u, *s1h;
 
-   int p1, p2, n0, n1, n2, n3;
+   int n0, n1, n2, n3;
    int s0ld, s0rd;
    int s1ld, s1rd;
 
@@ -51,7 +51,7 @@ public:
    CTag s0t, s1t, s2t, s3t;
    CWord s0z, s1z, s2z, s3z;
 
-   CWord p1z, p2z, n0z, n1z, n2z, n3z; //addzms
+   CWord n0z, n1z, n2z, n3z; //addzms
 
 
    CWord s0lw, s0rw, s0uw, s1lw, s1rw, s1uw;
@@ -62,7 +62,7 @@ public:
 
 
    CTaggedWord<CTag, TAG_SEPARATOR> s0wt, s1wt;
-   CTaggedWord<CTag, TAG_SEPARATOR> s0zt, s1zt;
+   CTaggedWord<CTag, TAG_SEPARATOR> s0zt, s1zt, s2zt, s3zt;
 
 
    unsigned long stacksize;
@@ -96,8 +96,6 @@ public:
       static int i, j;
       if(stacksize > 0)
       {
-			p1 = item->current_word-1 > 0 ? -1 : item->current_word-1;
-			p2 = item->current_word-2 > 0 ? -1 : item->current_word-2;
 			n0 = item->current_word >= sentence.size() ? -1 : item->current_word;
 			n1 = item->current_word+1 >= sentence.size() ? -1 : item->current_word+1;
 			n2 = item->current_word+2 >= sentence.size() ? -1 : item->current_word+2;
@@ -147,11 +145,13 @@ public:
 			s2t.load(s2 == 0 ? g_noneTag.code() : s2->pos);
 			//s2wt.load(s2w, s2t);
 			s2z.load(s2 == 0 ? g_emptyWord.code() : _load_char(s2));
+			s2zt.load(s2z, s2t);
 
 			s3c.load( s3==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s3) );
 			s3w.load(s3 == 0 ? g_emptyWord.code() : _load_word(s3));
 			s3t.load(s3 == 0 ? g_noneTag.code() : s3->pos);
 			s3z.load(s3 == 0 ? g_emptyWord.code() : _load_char(s3));
+			s3zt.load(s3z, s3t);
 
 
 			s0lc.load( s0l==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s0l) );
@@ -178,8 +178,7 @@ public:
 			s1uw.load(s1u == 0 ? g_emptyWord.code() : _load_word(s1u));
 			s1ut.load(s1u == 0 ? g_noneTag.code() : s1u->pos);
 
-			p2z = p2 == -1 ? g_emptyWord : _load_char_bypos(p2);
-			p1z = p1 == -1 ? g_emptyWord : _load_char_bypos(p1);
+
 			n0z = n0 == -1 ? g_emptyWord : _load_char_bypos(n0);
 			n1z = n1 == -1 ? g_emptyWord : _load_char_bypos(n1);
 			n2z = n2 == -1 ? g_emptyWord : _load_char_bypos(n2);

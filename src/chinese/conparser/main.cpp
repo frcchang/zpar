@@ -53,7 +53,7 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
   bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);
    while( bReadSuccessful ) {
 
-      TRACE_WORD("Sentence " << nCount << "...");
+      //TRACE_WORD("Sentence " << nCount << "...");
       ++ nCount;
 
       // Find decoder outout
@@ -82,7 +82,7 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
 			std::cout << std::endl;
       }
 
-      std::cout << "done. " << std::endl; 
+      //TRACE("done. ");
       
       // Read the next example
       bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);

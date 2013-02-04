@@ -47,6 +47,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
    static CTuple2<CWord, CWord> biword;
    static CTuple3<CWord, CWord, CWord> triword;
+   static CTuple4<CWord, CWord, CWord, CWord> fourword;
 
    static CTuple2<CTag, CTag> bitag;
    static CTuple3<CTag, CTag, CTag> tritag;
@@ -54,13 +55,23 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static CTuple2<CWord, CTag> wordtag;
    static CTuple3<CWord, CTag, CTag> wordtagtag;
    static CTuple3<CWord, CWord, CTag> wordwordtag;
+   static CTuple4<CWord, CWord, CWord, CTag> wordwordwordtag;
    static CTuple4<CTag, CTag, CTag, int> tritagint;
    static CTuple4<CWord, CTag, CTag, CTag> wordtagtagtag;
 
    static CTuple3<CWord, CWord, CConstituent> biword_constituent;
+   static CTuple3<CWord, CTag, CConstituent> wordtag_constituent;
 
    static CTuple3<CTag, CTag, int> bitag_int;
    static CTuple2<CTag, unsigned long long> tagint;
+   static CTuple2<CCFGSet, unsigned long long> cfgint;
+   static CTuple3<CTag, unsigned long long, unsigned long long> tagintint;
+   static CTuple3<CConstituent, unsigned long long, unsigned long long> constituentintint;
+
+   static CTuple4<CWord, CWord, unsigned long long, unsigned long long> wordwordintint;
+   static CTuple4<CWord, CConstituent, unsigned long long, unsigned long long> wordconstituentintint;
+   static CTuple3<CWord, CCFGSet, unsigned long long> wordcfgint;
+   static CTuple3<CConstituent, CTag, unsigned long long> constituenttagint;
 
 
    static CActionType actionType;
@@ -79,27 +90,28 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 //   || actionType.code == CActionType::POP_ROOT || actionType.code == CActionType::IDLE || actionType.code == CActionType::SHIFT_S))
    if(m_Context.stacksize> 0)
    {
+   	//init
+   	unsigned long long last_char_cat_n0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n0z);
+   	unsigned long long last_char_cat_n1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n1z);
+   	unsigned long long last_char_cat_n2 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n2z);
+   	unsigned long long last_char_cat_n3 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n3z);
+
 		cast_weights->m_mapS0w.getOrUpdateScore(retval, m_Context.s0wt, action.code(), m_nScoreIndex, amount, round);
-		cast_weights->m_mapS0z.getOrUpdateScore(retval, m_Context.s0zt, action.code(), m_nScoreIndex, amount, round);
 		if (!m_Context.s0c.empty()) cast_weights->m_mapS0c.getOrUpdateScore(retval, m_Context.s0c, action.code(), m_nScoreIndex, amount, round);
 		refer_or_allocate_tuple2(tag_constituent, &(m_Context.s0t), &(m_Context.s0c));
 		cast_weights->m_mapS0tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
 		refer_or_allocate_tuple2(word_constituent, &(m_Context.s0w), &(m_Context.s0c));
 		cast_weights->m_mapS0wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-		refer_or_allocate_tuple2(word_constituent, &(m_Context.s0z), &(m_Context.s0c));
-		cast_weights->m_mapS0zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+
 
 		if (m_Context.s1!=0) {
 		      cast_weights->m_mapS1w.getOrUpdateScore(retval, m_Context.s1wt, action.code(), m_nScoreIndex, amount, round);
-		      cast_weights->m_mapS1z.getOrUpdateScore(retval, m_Context.s1zt, action.code(), m_nScoreIndex, amount, round);
 		      if (!m_Context.s1c.empty()) cast_weights->m_mapS1c.getOrUpdateScore(retval, m_Context.s1c, action.code(), m_nScoreIndex, amount, round);
 		      refer_or_allocate_tuple2(tag_constituent, &(m_Context.s1t), &(m_Context.s1c));
 		      cast_weights->m_mapS1tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
 		      refer_or_allocate_tuple2(word_constituent, &(m_Context.s1w), &(m_Context.s1c));
 		      cast_weights->m_mapS1wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-		      refer_or_allocate_tuple2(word_constituent, &(m_Context.s1z), &(m_Context.s1c));
-		      cast_weights->m_mapS1zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-		   }
+		}
 
 	   if (m_Context.s2!=0) {
 	//      cast_weights->m_mapS2w.getOrUpdateScore(retval, *(m_Context.s2w), action.code(), m_nScoreIndex, amount, round);
@@ -108,8 +120,6 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	      cast_weights->m_mapS2tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_constituent, &(m_Context.s2w), &(m_Context.s2c));
 	      cast_weights->m_mapS2wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(word_constituent, &(m_Context.s2z), &(m_Context.s2c));
-	      cast_weights->m_mapS2zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
 	   }
 
 	   if (m_Context.s3!=0) {
@@ -119,13 +129,14 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	      cast_weights->m_mapS3tc.getOrUpdateScore(retval, tag_constituent, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_constituent, &(m_Context.s3w), &(m_Context.s3c));
 	      cast_weights->m_mapS3wc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(word_constituent, &(m_Context.s3z), &(m_Context.s3c));
-	      cast_weights->m_mapS3zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
 	   }
 
 	   // N0
 	   if (m_Context.n0!=-1) {
 	   	cast_weights->m_mapN0w.getOrUpdateScore(retval, m_Context.n0z, action.code(), m_nScoreIndex, amount, round);
+	   	unsigned long long last_char_cat_n0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n0z);
+	   	cast_weights->m_mapN0t.getOrUpdateScore(retval, last_char_cat_n0, action.code(), m_nScoreIndex, amount, round);
+	   	cast_weights->m_mapN0wt.getOrUpdateScore(retval, std::make_pair(m_Context.n0z, last_char_cat_n0), action.code(), m_nScoreIndex, amount, round);
 	//      cast_weights->m_mapN0t.getOrUpdateScore(retval, n0t_action, action.code(), m_nScoreIndex, amount, round);
 	      //cast_weights->m_mapN0wt.getOrUpdateScore(retval, m_Context.n0wt, action.code(), m_nScoreIndex, amount, round);
 	   }
@@ -135,8 +146,8 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	   	cast_weights->m_mapN1w.getOrUpdateScore(retval, m_Context.n1z, action.code(), m_nScoreIndex, amount, round);
 	   	refer_or_allocate_tuple2(biword, &(m_Context.n0z), &(m_Context.n1z));
 	   	cast_weights->m_mapN01w.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
-	//      cast_weights->m_mapN1t.getOrUpdateScore(retval, n1t_action, action.code(), m_nScoreIndex, amount, round);
-	     // cast_weights->m_mapN1wt.getOrUpdateScore(retval, m_Context.n1wt, action.code(), m_nScoreIndex, amount, round);
+		   cast_weights->m_mapN1t.getOrUpdateScore(retval, last_char_cat_n1, action.code(), m_nScoreIndex, amount, round);
+	      cast_weights->m_mapN1wt.getOrUpdateScore(retval, std::make_pair(m_Context.n1z, last_char_cat_n1), action.code(), m_nScoreIndex, amount, round);
 	   }
 
 	   // N2
@@ -146,8 +157,8 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	      cast_weights->m_mapN12w.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple3(triword, &(m_Context.n0z), &(m_Context.n1z), &(m_Context.n2z));
 	      cast_weights->m_mapN012w.getOrUpdateScore(retval, triword, action.code(), m_nScoreIndex, amount, round);
-	//      cast_weights->m_mapN2t.getOrUpdateScore(retval, n2t_action, action.code(), m_nScoreIndex, amount, round);
-	      //cast_weights->m_mapN2wt.getOrUpdateScore(retval, m_Context.n2wt, action.code(), m_nScoreIndex, amount, round);
+	   	cast_weights->m_mapN0t.getOrUpdateScore(retval, last_char_cat_n2, action.code(), m_nScoreIndex, amount, round);
+	      cast_weights->m_mapN2wt.getOrUpdateScore(retval, std::make_pair(m_Context.n2z, last_char_cat_n2), action.code(), m_nScoreIndex, amount, round);
 	   }
 
 	   // N3
@@ -157,9 +168,8 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	      cast_weights->m_mapN23w.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple3(triword, &(m_Context.n1z), &(m_Context.n2z), &(m_Context.n3z));
 	      cast_weights->m_mapN123w.getOrUpdateScore(retval, triword, action.code(), m_nScoreIndex, amount, round);
-	//      cast_weights->m_mapN3w.getOrUpdateScore(retval, *(m_Context.n3w), action.code(), m_nScoreIndex, amount, round);
-	//      cast_weights->m_mapN3t.getOrUpdateScore(retval, n3t_action, action.code(), m_nScoreIndex, amount, round);
-	      //cast_weights->m_mapN3wt.getOrUpdateScore(retval, m_Context.n3wt, action.code(), m_nScoreIndex, amount, round);
+	   	cast_weights->m_mapN0t.getOrUpdateScore(retval, last_char_cat_n3, action.code(), m_nScoreIndex, amount, round);
+	      cast_weights->m_mapN3wt.getOrUpdateScore(retval, std::make_pair(m_Context.n3z, last_char_cat_n3), action.code(), m_nScoreIndex, amount, round);
 	   }
 
 	   if (m_Context.s0l!=0) {
@@ -214,18 +224,11 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	   if (m_Context.s1!=0) {
 	      refer_or_allocate_tuple2(twoword_cfgset, &(m_Context.s0ws1w), &(m_Context.s0cs1c));
 	      cast_weights->m_mapS0wcS1wc.getOrUpdateScore(retval, twoword_cfgset, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(twoword_cfgset, &(m_Context.s0zs1z), &(m_Context.s0cs1c));
-	      cast_weights->m_mapS0zcS1zc.getOrUpdateScore(retval, twoword_cfgset, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1w), &(m_Context.s0cs1c));
 	      cast_weights->m_mapS0cS1w.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1z), &(m_Context.s0cs1c));
-	      cast_weights->m_mapS0cS1z.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0w), &(m_Context.s0cs1c));
 	      cast_weights->m_mapS0wS1c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0z), &(m_Context.s0cs1c));
-	      cast_weights->m_mapS0zS1c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	      cast_weights->m_mapS0cS1c.getOrUpdateScore(retval, m_Context.s0cs1c, action.code(), m_nScoreIndex, amount, round);
-
 	   }
 
 
@@ -233,84 +236,85 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	   if (m_Context.n0!=-1) {
 	      refer_or_allocate_tuple3(biword_constituent, &(m_Context.s0w), &(m_Context.n0z), &(m_Context.s0c));
 	      cast_weights->m_mapS0wN0w.getOrUpdateScore(retval, biword_constituent, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple3(biword_constituent, &(m_Context.s0z), &(m_Context.n0z), &(m_Context.s0c));
-	      cast_weights->m_mapS0zN0w.getOrUpdateScore(retval, biword_constituent, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_constituent, &(m_Context.n0z), &(m_Context.s0c));
 	      cast_weights->m_mapS0cN0w.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-	      //refer_or_allocate_tuple2(word_constituent, m_Context.s0w, &(m_Context.s0c));
-	      //cast_weights->m_mapS0wN0t.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-	      //cast_weights->m_mapS0cN0t.getOrUpdateScore(retval, m_Context.s0cn0t, action.code(), m_nScoreIndex, amount, round);
+	   	cast_weights->m_mapS0wN0t.getOrUpdateScore(retval, std::make_pair(m_Context.s0w, last_char_cat_n0), action.code(), m_nScoreIndex, amount, round);
+	   	cast_weights->m_mapS0cN0t.getOrUpdateScore(retval, std::make_pair(m_Context.s0c, last_char_cat_n0), action.code(), m_nScoreIndex, amount, round);
 	   }
 
 	   // S1 N0
 	   if (m_Context.s1!=0 && m_Context.n0!=-1) {
 	      refer_or_allocate_tuple3(biword_constituent, &(m_Context.s1w), &(m_Context.n0z), &(m_Context.s1c));
 	      cast_weights->m_mapS1wN0w.getOrUpdateScore(retval, biword_constituent, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple3(biword_constituent, &(m_Context.s1z), &(m_Context.n0z), &(m_Context.s1c));
-	      cast_weights->m_mapS1zN0w.getOrUpdateScore(retval, biword_constituent, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_constituent, &(m_Context.n0z), &(m_Context.s1c));
 	      cast_weights->m_mapS1cN0w.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-	      //refer_or_allocate_tuple2(word_constituent, m_Context.s1w, &(m_Context.s1c));
-	      //cast_weights->m_mapS1wN0t.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-	      //cast_weights->m_mapS1cN0t.getOrUpdateScore(retval, m_Context.s1cn0t, action.code(), m_nScoreIndex, amount, round);
+	   	cast_weights->m_mapS1wN0t.getOrUpdateScore(retval, std::make_pair(m_Context.s1w, last_char_cat_n0), action.code(), m_nScoreIndex, amount, round);
+	   	cast_weights->m_mapS1cN0t.getOrUpdateScore(retval, std::make_pair(m_Context.s1c, last_char_cat_n0), action.code(), m_nScoreIndex, amount, round);
+
+	   }
+
+	   if (m_Context.n1!=-1) {
+	      refer_or_allocate_tuple4(wordwordintint, &(m_Context.n0z), &(m_Context.n1z), &(last_char_cat_n0), &(last_char_cat_n1));
+	      cast_weights->m_mapN0wN1w.getOrUpdateScore(retval, wordwordintint, action.code(), m_nScoreIndex, amount, round);
+	      cast_weights->m_mapN0tN1w.getOrUpdateScore(retval, std::make_pair(m_Context.n1z, last_char_cat_n0), action.code(), m_nScoreIndex, amount, round);
+	      cast_weights->m_mapN0wN1t.getOrUpdateScore(retval, std::make_pair(m_Context.n0z, last_char_cat_n1), action.code(), m_nScoreIndex, amount, round);
+	      cast_weights->m_mapN0tN1t.getOrUpdateScore(retval, std::make_pair(last_char_cat_n0, last_char_cat_n1), action.code(), m_nScoreIndex, amount, round);
 	   }
 
 	   // S0 S1 N0
-	   //refer_or_allocate_tuple2(word_cfgset, m_Context.s0w, &(m_Context.s0cs1cn0t));
-	   //cast_weights->m_mapS0wS1cN0t.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	   //if (m_Context.s1!=0)  {
-	   //   refer_or_allocate_tuple2(word_cfgset, m_Context.s1w, &(m_Context.s0cs1cn0t));
-	   //   cast_weights->m_mapS0cS1wN0t.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	   //}
+	   refer_or_allocate_tuple3(wordcfgint, &(m_Context.s0w), &(m_Context.s0cs1c), &(last_char_cat_n0));
+	   cast_weights->m_mapS0wS1cN0t.getOrUpdateScore(retval, wordcfgint, action.code(), m_nScoreIndex, amount, round);
+	   if (m_Context.s1!=0)  {
+	      refer_or_allocate_tuple3(wordcfgint, &(m_Context.s1w), &(m_Context.s0cs1c), &(last_char_cat_n0));
+	      cast_weights->m_mapS0cS1wN0t.getOrUpdateScore(retval, wordcfgint, action.code(), m_nScoreIndex, amount, round);
+	   }
 	   if (m_Context.n0!=-1) {
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.n0z), &(m_Context.s0cs1c));
 	      cast_weights->m_mapS0cS1cN0w.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	   }
-	  // cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(retval, m_Context.s0cs1cn0t, action.code(), m_nScoreIndex, amount, round);
 
-	  // cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(retval, m_Context.s0ts1tn0t, action.code(), m_nScoreIndex, amount, round);
+	   refer_or_allocate_tuple2(cfgint, &(m_Context.s0cs1c), &(last_char_cat_n0));
+	   cast_weights->m_mapS0cS1cN0t.getOrUpdateScore(retval, cfgint, action.code(), m_nScoreIndex, amount, round);
+
+	   refer_or_allocate_tuple3(constituenttagint, &(m_Context.s0c), &(m_Context.s1t), &(last_char_cat_n0));
+	   cast_weights->m_mapS0tS1tN0t.getOrUpdateScore(retval, constituenttagint, action.code(), m_nScoreIndex, amount, round);
 
 	   // S0 N0 N1
 	   if (m_Context.n0!=-1) {
-	      //refer_or_allocate_tuple2(word_cfgset, m_Context.s0w, &(m_Context.s0cn0tn1t));
-	      //cast_weights->m_mapS0wN0tN1t.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	      //refer_or_allocate_tuple2(word_cfgset, m_Context.n0w, &(m_Context.s0cn0tn1t));
-	      //cast_weights->m_mapS0cN0wN1t.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple4(wordconstituentintint, &(m_Context.s0w), &(m_Context.s0c), &(last_char_cat_n0), &(last_char_cat_n1));
+	      cast_weights->m_mapS0wN0tN1t.getOrUpdateScore(retval, wordconstituentintint, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple4(wordconstituentintint, &(m_Context.n0z), &(m_Context.s0c), &(last_char_cat_n0), &(last_char_cat_n1));
+	      cast_weights->m_mapS0cN0wN1t.getOrUpdateScore(retval, wordconstituentintint, action.code(), m_nScoreIndex, amount, round);
 	      if (m_Context.n1!=-1) {
-	         refer_or_allocate_tuple2(word_constituent, &(m_Context.n1z), &(m_Context.s0c));
-	         cast_weights->m_mapS0cN1w.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
-	         refer_or_allocate_tuple3(biword_constituent, &(m_Context.n0z), &(m_Context.n1z), &(m_Context.s0c));
-	         cast_weights->m_mapS0cN0tN1w.getOrUpdateScore(retval, biword_constituent, action.code(), m_nScoreIndex, amount, round);
+	         refer_or_allocate_tuple4(wordconstituentintint, &(m_Context.n1z), &(m_Context.s0c), &(last_char_cat_n0), &(last_char_cat_n1));
+	         cast_weights->m_mapS0cN0tN1w.getOrUpdateScore(retval, wordconstituentintint, action.code(), m_nScoreIndex, amount, round);
 	      }
-	      //cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(retval, m_Context.s0cn0tn1t, action.code(), m_nScoreIndex, amount, round); // m_Context.n0
 
-	      //cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(retval, m_Context.s0tn0tn1t, action.code(), m_nScoreIndex, amount, round); // m_Context.n0
+	      refer_or_allocate_tuple3(constituentintint, &(m_Context.s0c), &(last_char_cat_n0), &(last_char_cat_n1));
+	      cast_weights->m_mapS0cN0tN1t.getOrUpdateScore(retval, constituentintint, action.code(), m_nScoreIndex, amount, round); // m_Context.n0
+	      refer_or_allocate_tuple3(tagintint, &(m_Context.s0t), &(last_char_cat_n0), &(last_char_cat_n1));
+	      cast_weights->m_mapS0tN0tN1t.getOrUpdateScore(retval, tagintint, action.code(), m_nScoreIndex, amount, round); // m_Context.n0
 	   }
 
 	   // S0 S1 S2
 	   if (m_Context.s1!=0) {
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0w), &(m_Context.s0cs1cs2c));
 	      cast_weights->m_mapS0wS1cS2c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0z), &(m_Context.s0cs1cs2c));
-	      cast_weights->m_mapS0zS1cS2c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1w), &(m_Context.s0cs1cs2c));
 	      cast_weights->m_mapS0cS1wS2c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1z), &(m_Context.s0cs1cs2c));
-	      cast_weights->m_mapS0cS1zS2c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	      if (m_Context.s2!=0) {
 	         refer_or_allocate_tuple2(word_cfgset, &(m_Context.s2w), &(m_Context.s0cs1cs2c));
 	         cast_weights->m_mapS0cS1cS2w.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	         refer_or_allocate_tuple2(word_cfgset, &(m_Context.s2z), &(m_Context.s0cs1cs2c));
-	         cast_weights->m_mapS0cS1cS2z.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	      }
 	      cast_weights->m_mapS0cS1cS2c.getOrUpdateScore(retval, m_Context.s0cs1cs2c, action.code(), m_nScoreIndex, amount, round);
-
 	      cast_weights->m_mapS0tS1tS2t.getOrUpdateScore(retval, m_Context.s0ts1ts2t, action.code(), m_nScoreIndex, amount, round);
 	   }
 
 		if (m_Context.n0!=-1 && m_Context.s0r!=0) {
-			//cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(retval, m_Context.s0cs0rcn0t, action.code(), m_nScoreIndex, amount, round);
-			//cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(retval, m_Context.s0cs0rjn0t, action.code(), m_nScoreIndex, amount, round);
+			refer_or_allocate_tuple2(cfgint, &(m_Context.s0cs0rc), &(last_char_cat_n0));
+			cast_weights->m_mapS0cS0RcN0t.getOrUpdateScore(retval, cfgint, action.code(), m_nScoreIndex, amount, round);
+			refer_or_allocate_tuple2(cfgint, &(m_Context.s0cs0rc), &(last_char_cat_n0));
+			cast_weights->m_mapS0cS0RjN0t.getOrUpdateScore(retval, cfgint, action.code(), m_nScoreIndex, amount, round);
 			refer_or_allocate_tuple2(word_cfgset, &(m_Context.n0z), &(m_Context.s0cs0rc));
 			cast_weights->m_mapS0cS0RcN0w.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 		}
@@ -321,190 +325,367 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	      cast_weights->m_mapS0cS0LjS1j.getOrUpdateScore(retval, m_Context.s0cs0ljs1j, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1w), &(m_Context.s0cs0lc));
 	      cast_weights->m_mapS0cS0LcS1w.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
-	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1z), &(m_Context.s0cs0lc));
-	      cast_weights->m_mapS0cS0LcS1z.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	   }
 	   if (m_Context.s1 != 0 && m_Context.s1r != 0) {
 	      cast_weights->m_mapS0cS1cS1Rc.getOrUpdateScore(retval, m_Context.s0cs1cs1rc, action.code(), m_nScoreIndex, amount, round);
 	      cast_weights->m_mapS0jS1cS1Rj.getOrUpdateScore(retval, m_Context.s0js1cs1rj, action.code(), m_nScoreIndex, amount, round);
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0w), &(m_Context.s1cs1rc));
 	      cast_weights->m_mapS0wS1cS1Rc.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+	   }
+
+	   //character features new
+
+	   cast_weights->m_mapS0z.getOrUpdateScore(retval, m_Context.s0zt, action.code(), m_nScoreIndex, amount, round);
+	   refer_or_allocate_tuple2(word_constituent, &(m_Context.s0z), &(m_Context.s0c));
+		cast_weights->m_mapS0zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+
+	   if(m_Context.s2 != 0)
+	   {
+	   	cast_weights->m_mapS2CharTag.getOrUpdateScore(retval, m_Context.s2zt, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple2(word_constituent, &(m_Context.s2z), &(m_Context.s2c));
+	      cast_weights->m_mapS2zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+	   }
+	   if(m_Context.s3 != 0)
+		{
+			cast_weights->m_mapS3CharTag.getOrUpdateScore(retval, m_Context.s3zt, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple2(word_constituent, &(m_Context.s3z), &(m_Context.s3c));
+	      cast_weights->m_mapS3zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+		}
+
+   	refer_or_allocate_tuple3(wordtag_constituent, &(m_Context.s0z), &(m_Context.s0t), &(m_Context.s0c))
+   	cast_weights->m_mapS0CharTagCont.getOrUpdateScore(retval, wordtag_constituent, action.code(), m_nScoreIndex, amount, round);
+	   if(m_Context.s1 != 0)
+	   {
+	   	cast_weights->m_mapS1z.getOrUpdateScore(retval, m_Context.s1zt, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple2(word_constituent, &(m_Context.s1z), &(m_Context.s1c));
+	      cast_weights->m_mapS1zc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
+	   	refer_or_allocate_tuple3(wordtag_constituent, &(m_Context.s1z), &(m_Context.s1t), &(m_Context.s1c))
+	   	cast_weights->m_mapS1CharTagCont.getOrUpdateScore(retval, wordtag_constituent, action.code(), m_nScoreIndex, amount, round);
+	   }
+	   if(m_Context.s2 != 0)
+	   {
+	   	refer_or_allocate_tuple3(wordtag_constituent, &(m_Context.s2z), &(m_Context.s2t), &(m_Context.s2c))
+	   	cast_weights->m_mapS2CharTagCont.getOrUpdateScore(retval, wordtag_constituent, action.code(), m_nScoreIndex, amount, round);
+	   }
+	   if(m_Context.s3 != 0)
+	   {
+	   	refer_or_allocate_tuple3(wordtag_constituent, &(m_Context.s3z), &(m_Context.s3t), &(m_Context.s3c))
+	   	cast_weights->m_mapS3CharTagCont.getOrUpdateScore(retval, wordtag_constituent, action.code(), m_nScoreIndex, amount, round);
+	   }
+
+	   if(m_Context.s1 != 0)
+	   {
+	   	wt1.load(m_Context.s0z, m_Context.s0t);
+			wt2.load(m_Context.s1z, m_Context.s1t);
+			if (std::abs(amount) < 1e-20) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+			cast_weights->m_mapS0ztS1zt.getOrUpdateScore(retval, wt12,  action.code(), m_nScoreIndex , amount , round ) ;
+	   }
+
+	   if(m_Context.s1 != 0)
+		{
+	   	refer_or_allocate_tuple2(biword, &(m_Context.s0z), &(m_Context.s1z));
+	   	cast_weights->m_mapS0zS1z.getOrUpdateScore(retval, biword,  action.code(), m_nScoreIndex , amount , round ) ;
+	      refer_or_allocate_tuple2(twoword_cfgset, &(m_Context.s0zs1z), &(m_Context.s0cs1c));
+	      cast_weights->m_mapS0zcS1zc.getOrUpdateScore(retval, twoword_cfgset, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1z), &(m_Context.s0cs1c));
+	      cast_weights->m_mapS0cS1z.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0z), &(m_Context.s0cs1c));
+	      cast_weights->m_mapS0zS1c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+
+		}
+
+	   if(m_Context.s1 != 0 && m_Context.s2 != 0)
+		{
+			refer_or_allocate_tuple3(triword, &(m_Context.s0z), &(m_Context.s1z), &(m_Context.s2z));
+			cast_weights->m_mapS0zS1zS2z.getOrUpdateScore(retval,triword,  action.code(), m_nScoreIndex , amount , round ) ;
+			refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0z), &(m_Context.s0cs1cs2c));
+			cast_weights->m_mapS0zS1cS2c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+			refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1z), &(m_Context.s0cs1cs2c));
+			cast_weights->m_mapS0cS1zS2c.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+         refer_or_allocate_tuple2(word_cfgset, &(m_Context.s2z), &(m_Context.s0cs1cs2c));
+         cast_weights->m_mapS0cS1cS2z.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+
+		}
+
+	   if(m_Context.s1 != 0 && m_Context.s2 != 0 && m_Context.s3 != 0)
+		{
+			refer_or_allocate_tuple3(triword, &(m_Context.s1z), &(m_Context.s2z), &(m_Context.s3z));
+			cast_weights->m_mapS1zS2zS3z.getOrUpdateScore(retval,triword,  action.code(), m_nScoreIndex , amount , round ) ;
+			refer_or_allocate_tuple4(fourword, &(m_Context.s0z), &(m_Context.s1z), &(m_Context.s2z), &(m_Context.s3z));
+			cast_weights->m_mapS0zS1zS2zS3z.getOrUpdateScore(retval, fourword,  action.code(), m_nScoreIndex , amount , round ) ;
+		}
+
+	   if (m_Context.n0!=-1) {
+			refer_or_allocate_tuple2(biword, &(m_Context.n0z), &(m_Context.s0z));
+			cast_weights->m_mapS0zN0z.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
+	      refer_or_allocate_tuple3(biword_constituent, &(m_Context.s0z), &(m_Context.n0z), &(m_Context.s0c));
+	      cast_weights->m_mapS0zN0w.getOrUpdateScore(retval, biword_constituent, action.code(), m_nScoreIndex, amount, round);
+			if(m_Context.n1!=-1)
+			{
+				refer_or_allocate_tuple3(triword, &(m_Context.n0z), &(m_Context.n1z), &(m_Context.s0z));
+				cast_weights->m_mapS0zN01z.getOrUpdateScore(retval, triword, action.code(), m_nScoreIndex, amount, round);
+				if(m_Context.n2!=-1)
+				{
+					refer_or_allocate_tuple4(fourword, &(m_Context.n0z), &(m_Context.n1z), &(m_Context.n2z), &(m_Context.s0z));
+					cast_weights->m_mapS0zN012z.getOrUpdateScore(retval, fourword, action.code(), m_nScoreIndex, amount, round);
+				}
+			}
+		}
+
+	   if(m_Context.s1 != 0)
+	   {
+			if (m_Context.n0!=-1) {
+				refer_or_allocate_tuple2(biword, &(m_Context.n0z), &(m_Context.s1z));
+				cast_weights->m_mapS0zN0z.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
+		      refer_or_allocate_tuple3(biword_constituent, &(m_Context.s1z), &(m_Context.n0z), &(m_Context.s1c));
+		      cast_weights->m_mapS1zN0w.getOrUpdateScore(retval, biword_constituent, action.code(), m_nScoreIndex, amount, round);
+				if(m_Context.n1!=-1)
+				{
+					refer_or_allocate_tuple3(triword, &(m_Context.n0z), &(m_Context.n1z), &(m_Context.s1z));
+					cast_weights->m_mapS0zN01z.getOrUpdateScore(retval, triword, action.code(), m_nScoreIndex, amount, round);
+					if(m_Context.n2!=-1)
+					{
+						refer_or_allocate_tuple4(fourword, &(m_Context.n0z), &(m_Context.n1z), &(m_Context.n2z), &(m_Context.s1z));
+						cast_weights->m_mapS0zN012z.getOrUpdateScore(retval, fourword, action.code(), m_nScoreIndex, amount, round);
+					}
+				}
+			}
+	   }
+
+	   if(m_Context.s1 != 0 )
+	   {
+			if (m_Context.n0!=-1) {
+				refer_or_allocate_tuple3(triword, &(m_Context.n0z), &(m_Context.s0z), &(m_Context.s1z));
+				cast_weights->m_mapS1zS0zN0z.getOrUpdateScore(retval, triword, action.code(), m_nScoreIndex, amount, round);
+				if(m_Context.n1!=-1)
+				{
+					refer_or_allocate_tuple4(fourword, &(m_Context.n0z), &(m_Context.n1z), &(m_Context.s0z), &(m_Context.s1z));
+					cast_weights->m_mapS1zS0zN01z.getOrUpdateScore(retval, fourword, action.code(), m_nScoreIndex, amount, round);
+
+				}
+			}
+	   }
+
+
+	   if (m_Context.s1!=0 && m_Context.s0l!=0) {
+	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s1z), &(m_Context.s0cs0lc));
+	      cast_weights->m_mapS0cS0LcS1z.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
+	   }
+	   if (m_Context.s1 != 0 && m_Context.s1r != 0) {
 	      refer_or_allocate_tuple2(word_cfgset, &(m_Context.s0z), &(m_Context.s1cs1rc));
 	      cast_weights->m_mapS0zS1cS1Rc.getOrUpdateScore(retval, word_cfgset, action.code(), m_nScoreIndex, amount, round);
 	   }
 
-
-
    }
-/*
-   if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::WORD_XYZ))
+
+
+ //  for(int repeat = 0; repeat < MORPHE_WEIGHT; repeat++)
    {
-   	cast_weights->m_mapWSS0w.getOrUpdateScore(retval, m_Context.s0w, action.code(), m_nScoreIndex, amount, round);
-   	cast_weights->m_mapWSS1w.getOrUpdateScore(retval, m_Context.s1w, action.code(), m_nScoreIndex, amount, round);
-   	refer_or_allocate_tuple2(biword, &(m_Context.s0w), &(m_Context.s1w));
-   	cast_weights->m_mapWSS0wS1w.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
+		if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::WORD_XYZ))
+		{
+			unsigned long long last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.last_char_1);
+			cast_weights->m_mapWSSeenWords.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
+			cast_weights->m_mapWSLastWordByWord.getOrUpdateScore(retval, m_Context.word_2_word_1 , action.code(), m_nScoreIndex , amount , round ) ;
+			cast_weights->m_mapWSCurrentTag.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.tag_1), action.code(), m_nScoreIndex , amount , round ) ;
+			refer_or_allocate_tuple3(wordwordtag, &(m_Context.word_1), &(m_Context.word_2), &(m_Context.tag_1));
+			cast_weights->m_mapWSLastWordByWordCurrentTag.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex , amount , round ) ;
 
-   	refer_or_allocate_tuple2(wordtag, &(m_Context.s0w), &(m_Context.s0t));
-   	cast_weights->m_mapWSS0wTag.getOrUpdateScore(retval, wordtag, action.code(), m_nScoreIndex, amount, round);
-   	refer_or_allocate_tuple2(wordtag, &(m_Context.s1w), &(m_Context.s0t));
-		cast_weights->m_mapWSS1wTag.getOrUpdateScore(retval, wordtag, action.code(), m_nScoreIndex, amount, round);
-		refer_or_allocate_tuple3(wordwordtag, &(m_Context.s0w), &(m_Context.s1w), &(m_Context.s0t));
-		cast_weights->m_mapWSS0wS1wTag.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round);
+			refer_or_allocate_tuple3(wordwordtag, &(m_Context.s0z), &(m_Context.s1z), &(m_Context.tag_1));
+			cast_weights->m_mapWSTwoHeadCharCurrentTag.getOrUpdateScore(retval, wordwordtag,  action.code(), m_nScoreIndex , amount , round ) ;
 
-		refer_or_allocate_tuple2(biword, &(m_Context.s0z), &(m_Context.s1w));
-		cast_weights->m_mapWSS0zS1w.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
-		refer_or_allocate_tuple2(biword, &(m_Context.s0w), &(m_Context.s1z));
-		cast_weights->m_mapWSS0wS1z.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
-		refer_or_allocate_tuple2(biword, &(m_Context.s0z), &(m_Context.s1z));
-		cast_weights->m_mapWSS0zS1z.getOrUpdateScore(retval, biword, action.code(), m_nScoreIndex, amount, round);
-		refer_or_allocate_tuple3(wordwordtag, &(m_Context.s0z), &(m_Context.s1z), &(m_Context.s0t));
-		cast_weights->m_mapWSS0zS1zTag.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round);
+			if ( m_Context.length_1 == 1 ) {
+			  cast_weights->m_mapWSOneCharWord.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
+			}
+			else {
+			  cast_weights->m_mapWSFirstAndLastChars.getOrUpdateScore(retval, m_Context.first_char_1_last_char_1 , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapWSLengthByFirstChar.getOrUpdateScore(retval, std::make_pair(m_Context.first_char_1, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapWSLengthByLastChar.getOrUpdateScore(retval, std::make_pair(m_Context.last_char_1, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			}
 
-   }
-*/
+			cast_weights->m_mapWSTagByLastCharCat.getOrUpdateScore(retval, std::make_pair(last_char_cat_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
 
-   if(actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::SHIFT_S ||  actionType.code == CActionType::POP_ROOT)
-   {
+			for (int idj=0; idj<m_Context.length_1-1; ++idj) {
+				cast_weights->m_mapWSTaggedCharByLastChar.getOrUpdateScore(retval, m_Context.wt12_collection[idj], action.code(), m_nScoreIndex, amount, round) ;
+			}
 
-   	//CTag tag_0 = actionType.code == CActionType::SHIFT_S ? CTag(action.getPOS()) : g_beginTag;
-   	CTag tag_0 = g_beginTag;
-   	refer_or_allocate_tuple2(bitag, &(tag_0), &(m_Context.tag_1));
-      cast_weights->m_mapLastTagByTag.getOrUpdateScore(retval, bitag,  action.code(), m_nScoreIndex , amount , round ) ;
-      if (m_Context.start_0 >= 0)
-   	{
-      	int length_1 = m_Context.length_1;
-   		refer_or_allocate_tuple3(bitag_int, &(tag_0), &(m_Context.tag_1), &(length_1));
-   		cast_weights->m_mapTag0Tag1Size1.getOrUpdateScore(retval, bitag_int,  action.code(), m_nScoreIndex , amount , round ) ;
-   	}
-   	if (m_Context.start_1 >= 0)
-   	{
-   		int length_1 = m_Context.length_1;
-   		refer_or_allocate_tuple4(tritagint, &(tag_0), &(m_Context.tag_1), &(m_Context.tag_2), &(length_1));
-   		cast_weights->m_mapTag0Tag1Tag2Size1.getOrUpdateScore(retval, tritagint,  action.code(), m_nScoreIndex , amount , round ) ;
-   	}
+			cast_weights->m_mapWSTagByLastCharCat.getOrUpdateScore(retval, std::make_pair(last_char_cat_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
 
-		if ( m_Context.length_1 <= 2 )
-      {
-			refer_or_allocate_tuple2(wordtag, &(m_Context.word_1), &(tag_0));
-      	cast_weights->m_mapTagByLastWord.getOrUpdateScore(retval, wordtag ,  action.code(), m_nScoreIndex , amount , round ) ;
-      }
+			for (int idj=0; idj<m_Context.length_1-1; ++idj) {
+				cast_weights->m_mapWSTaggedCharByLastChar.getOrUpdateScore(retval, m_Context.wt12_collection[idj], action.code(), m_nScoreIndex, amount, round) ;
+			}
 
-		if ( m_Context.start_1 >= 0 ) {
-			refer_or_allocate_tuple3(tritag, &(tag_0), &(m_Context.tag_1), &(m_Context.tag_2));
-		   cast_weights->m_mapLastTwoTagsByTag.getOrUpdateScore(retval, tritag,  action.code(), m_nScoreIndex , amount , round ) ;
+
+			if (m_Context.length_2 > 0) {
+			  cast_weights->m_mapWSCurrentWordLastChar.getOrUpdateScore(retval, m_Context.word_1_last_char_2 , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapWSLastWordByLastChar.getOrUpdateScore(retval, m_Context.last_char_1_last_char_2 , action.code(), m_nScoreIndex , amount , round ) ;
+
+			  cast_weights->m_mapWSLengthByLastWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_2, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapWSLastLengthByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.length_2), action.code(), m_nScoreIndex , amount , round ) ;
+			}
+
+			if (m_Context.length_2 > 0) {
+				if ( m_Context.length_1 <= 2 ) cast_weights->m_mapWSTagByWordAndPrevChar.getOrUpdateScore(retval, std::make_pair(m_Context.word_1_last_char_2, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
+				if ( m_Context.length_1 == 1 && m_Context.start_0 > 0 ) cast_weights->m_mapWSTagOfOneCharWord.getOrUpdateScore(retval, std::make_pair(m_Context.three_char, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			}
+
+			if (m_Context.start_0 >= 0) {
+				if ( m_Context.start_1 >= 0 ) {
+					cast_weights->m_mapWSSeparateChars.getOrUpdateScore(retval, m_Context.two_char ,  action.code(), m_nScoreIndex , amount , round ) ;
+
+					cast_weights->m_mapWSLastWordFirstChar.getOrUpdateScore(retval, m_Context.word_1_first_char_0 ,  action.code(), m_nScoreIndex , amount , round ) ;
+
+					cast_weights->m_mapWSFirstCharLastWordByWord.getOrUpdateScore(retval, m_Context.first_char_0_first_char_1 ,  action.code(), m_nScoreIndex , amount , round ) ;
+
+					if ( m_Context.length_1 <= 2 ) cast_weights->m_mapWSTagByWordAndNextChar.getOrUpdateScore(retval, std::make_pair(m_Context.word_1_first_char_0, m_Context.tag_1) ,  action.code(), m_nScoreIndex , amount , round ) ;
+				}
+			}
+
 		}
-		if (m_Context.start_0 >= 0) {
-			refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(tag_0));
-			cast_weights->m_mapTagByFirstChar.getOrUpdateScore(retval, wordtag ,  action.code(), m_nScoreIndex , amount , round ) ;
-			unsigned long long first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.first_char_0);// | (static_cast<unsigned long long>(1)<<tag_0.code()) ;
-			refer_or_allocate_tuple2(tagint, &(tag_0) , &(first_char_cat_0));
-			cast_weights->m_mapTagByFirstCharCat.getOrUpdateScore(retval, tagint ,  action.code(), m_nScoreIndex , amount , round ) ;
 
-			refer_or_allocate_tuple3(wordtagtag, &(m_Context.first_char_0), &(tag_0), &(m_Context.tag_1));
-			cast_weights->m_mapFirstCharBy2Tags.getOrUpdateScore(retval, wordtagtag ,  action.code(), m_nScoreIndex , amount , round ) ;
+		if(actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::SHIFT_S || (actionType.code == CActionType::WORD_T && m_Context.start_0 == -1))
+		{
+
+			//CTag tag_0 = actionType.code == CActionType::SHIFT_S ? CTag(action.getPOS()) : g_beginTag;
+			CTag tag_0 = g_beginTag;
+			refer_or_allocate_tuple2(bitag, &(tag_0), &(m_Context.tag_1));
+			cast_weights->m_mapLastTagByTag.getOrUpdateScore(retval, bitag,  action.code(), m_nScoreIndex , amount , round ) ;
+			if (m_Context.start_0 >= 0)
+			{
+				int length_1 = m_Context.length_1;
+				refer_or_allocate_tuple3(bitag_int, &(tag_0), &(m_Context.tag_1), &(length_1));
+				cast_weights->m_mapTag0Tag1Size1.getOrUpdateScore(retval, bitag_int,  action.code(), m_nScoreIndex , amount , round ) ;
+			}
 			if (m_Context.start_1 >= 0)
 			{
-				refer_or_allocate_tuple4(wordtagtagtag, &(m_Context.first_char_0), &(tag_0), &(m_Context.tag_1), &(m_Context.tag_2));
-				cast_weights->m_mapFirstCharBy3Tags.getOrUpdateScore(retval, wordtagtagtag ,  action.code(), m_nScoreIndex , amount , round ) ;
+				int length_1 = m_Context.length_1;
+				refer_or_allocate_tuple4(tritagint, &(tag_0), &(m_Context.tag_1), &(m_Context.tag_2), &(length_1));
+				cast_weights->m_mapTag0Tag1Tag2Size1.getOrUpdateScore(retval, tritagint,  action.code(), m_nScoreIndex , amount , round ) ;
 			}
 
-			refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(tag_0));
-			cast_weights->m_mapTagByChar.getOrUpdateScore(retval, wordtag,  action.code(), m_nScoreIndex , amount , round ) ;
-
-			if (m_Context.start_1 >= 0) {
-				wt1.load(m_Context.last_char_1, m_Context.tag_1);
-				wt2.load(m_Context.first_char_0, tag_0);
-				if (std::abs(amount) < 1e-20) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
-				cast_weights->m_mapTaggedSeparateChars.getOrUpdateScore(retval, wt12,  action.code(), m_nScoreIndex , amount , round ) ;
-			}
-
-			if (m_Context.start_1 >= 0)
+			if ( m_Context.length_1 <= 2 )
 			{
-				refer_or_allocate_tuple3(wordtagtag, &(m_Context.word_1), &(tag_0), &(m_Context.tag_2));
-				cast_weights->m_mapTagWordTag.getOrUpdateScore(retval, wordtagtag,  action.code(), m_nScoreIndex, amount, round);
+				refer_or_allocate_tuple2(wordtag, &(m_Context.word_1), &(tag_0));
+				cast_weights->m_mapTagByLastWord.getOrUpdateScore(retval, wordtag ,  action.code(), m_nScoreIndex , amount , round ) ;
 			}
-			if (m_Context.start_2 >= 0)
-			{
-				refer_or_allocate_tuple3(wordtagtag, &(m_Context.word_2), &(tag_0), &(m_Context.tag_1));
-				cast_weights->m_mapWordTagTag.getOrUpdateScore(retval, wordtagtag,  action.code(), m_nScoreIndex, amount, round);
-			}
-		}
-   }
 
-
-   if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::WORD_T))
-   {
-   	unsigned long long last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.last_char_1) | (static_cast<unsigned long long>(1)<<m_Context.tag_1.code()) ;
-      cast_weights->m_mapSeenWords.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
-      cast_weights->m_mapLastWordByWord.getOrUpdateScore(retval, m_Context.word_2_word_1 , action.code(), m_nScoreIndex , amount , round ) ;
-
-      if ( m_Context.length_1 == 1 ) {
-    	  cast_weights->m_mapOneCharWord.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
-      }
-      else {
-    	  cast_weights->m_mapFirstAndLastChars.getOrUpdateScore(retval, m_Context.first_char_1_last_char_1 , action.code(), m_nScoreIndex , amount , round ) ;
-
-    	  cast_weights->m_mapLengthByFirstChar.getOrUpdateScore(retval, std::make_pair(m_Context.first_char_1, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
-    	  cast_weights->m_mapLengthByLastChar.getOrUpdateScore(retval, std::make_pair(m_Context.last_char_1, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
-
-      }
-
-      if (m_Context.length_2 > 0) {
-    	  cast_weights->m_mapCurrentWordLastChar.getOrUpdateScore(retval, m_Context.word_1_last_char_2 , action.code(), m_nScoreIndex , amount , round ) ;
-    	  cast_weights->m_mapLastWordByLastChar.getOrUpdateScore(retval, m_Context.last_char_1_last_char_2 , action.code(), m_nScoreIndex , amount , round ) ;
-
-    	  cast_weights->m_mapLengthByLastWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_2, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
-    	  cast_weights->m_mapLastLengthByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.length_2), action.code(), m_nScoreIndex , amount , round ) ;
-      }
-
-      cast_weights->m_mapCurrentTag.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.tag_1), action.code(), m_nScoreIndex , amount , round ) ;
-
-      if ( m_Context.length_1 <= 2 ) cast_weights->m_mapLastTagByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.tag_2), action.code(), m_nScoreIndex , amount , round ) ;
-
-      if (m_Context.length_2 > 0) {
-         if ( m_Context.length_1 <= 2 ) cast_weights->m_mapTagByWordAndPrevChar.getOrUpdateScore(retval, std::make_pair(m_Context.word_1_last_char_2, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
-         if ( m_Context.length_1 == 1 && m_Context.start_0 > 0 ) cast_weights->m_mapTagOfOneCharWord.getOrUpdateScore(retval, std::make_pair(m_Context.three_char, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
-      }
-
-      cast_weights->m_mapTagByLastChar.getOrUpdateScore(retval, std::make_pair(m_Context.last_char_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
-      cast_weights->m_mapTagByLastCharCat.getOrUpdateScore(retval, std::make_pair(last_char_cat_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
-
-      for (int idj=0; idj<m_Context.length_1-1; ++idj) {
-         cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, m_Context.wt12_collection[idj], action.code(), m_nScoreIndex, amount, round) ;
-      }
-
-      if (m_Context.start_1 >= 0)
-      {
-      	cast_weights->m_mapTag1Tag2Size1.getOrUpdateScore(retval, std::make_pair( m_Context.tag_1_tag_2, m_Context.length_1 ),  action.code(), m_nScoreIndex , amount , round ) ;
-      }
-
-
-		if (m_Context.start_0 >= 0) {
 			if ( m_Context.start_1 >= 0 ) {
-				cast_weights->m_mapSeparateChars.getOrUpdateScore(retval, m_Context.two_char ,  action.code(), m_nScoreIndex , amount , round ) ;
+				refer_or_allocate_tuple3(tritag, &(tag_0), &(m_Context.tag_1), &(m_Context.tag_2));
+				cast_weights->m_mapLastTwoTagsByTag.getOrUpdateScore(retval, tritag,  action.code(), m_nScoreIndex , amount , round ) ;
+			}
+			if (m_Context.start_0 >= 0) {
+				refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(tag_0));
+				cast_weights->m_mapTagByFirstChar.getOrUpdateScore(retval, wordtag ,  action.code(), m_nScoreIndex , amount , round ) ;
+				unsigned long long first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.first_char_0);// | (static_cast<unsigned long long>(1)<<tag_0.code()) ;
+				refer_or_allocate_tuple2(tagint, &(tag_0) , &(first_char_cat_0));
+				cast_weights->m_mapTagByFirstCharCat.getOrUpdateScore(retval, tagint ,  action.code(), m_nScoreIndex , amount , round ) ;
 
-				cast_weights->m_mapLastWordFirstChar.getOrUpdateScore(retval, m_Context.word_1_first_char_0 ,  action.code(), m_nScoreIndex , amount , round ) ;
+				refer_or_allocate_tuple3(wordtagtag, &(m_Context.first_char_0), &(tag_0), &(m_Context.tag_1));
+				cast_weights->m_mapFirstCharBy2Tags.getOrUpdateScore(retval, wordtagtag ,  action.code(), m_nScoreIndex , amount , round ) ;
+				if (m_Context.start_1 >= 0)
+				{
+					refer_or_allocate_tuple4(wordtagtagtag, &(m_Context.first_char_0), &(tag_0), &(m_Context.tag_1), &(m_Context.tag_2));
+					cast_weights->m_mapFirstCharBy3Tags.getOrUpdateScore(retval, wordtagtagtag ,  action.code(), m_nScoreIndex , amount , round ) ;
+				}
 
-				cast_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore(retval, m_Context.first_char_0_first_char_1 ,  action.code(), m_nScoreIndex , amount , round ) ;
+				refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(tag_0));
+				cast_weights->m_mapTagByChar.getOrUpdateScore(retval, wordtag,  action.code(), m_nScoreIndex , amount , round ) ;
 
-				if ( m_Context.length_1 <= 2 ) cast_weights->m_mapTagByWordAndNextChar.getOrUpdateScore(retval, std::make_pair(m_Context.word_1_first_char_0, m_Context.tag_1) ,  action.code(), m_nScoreIndex , amount , round ) ;
+				if (m_Context.start_1 >= 0) {
+					wt1.load(m_Context.last_char_1, m_Context.tag_1);
+					wt2.load(m_Context.first_char_0, tag_0);
+					if (std::abs(amount) < 1e-20) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
+					cast_weights->m_mapTaggedSeparateChars.getOrUpdateScore(retval, wt12,  action.code(), m_nScoreIndex , amount , round ) ;
+				}
 
+				if (m_Context.start_1 >= 0)
+				{
+					refer_or_allocate_tuple3(wordtagtag, &(m_Context.word_1), &(tag_0), &(m_Context.tag_2));
+					cast_weights->m_mapTagWordTag.getOrUpdateScore(retval, wordtagtag,  action.code(), m_nScoreIndex, amount, round);
+				}
+				if (m_Context.start_2 >= 0)
+				{
+					refer_or_allocate_tuple3(wordtagtag, &(m_Context.word_2), &(tag_0), &(m_Context.tag_1));
+					cast_weights->m_mapWordTagTag.getOrUpdateScore(retval, wordtagtag,  action.code(), m_nScoreIndex, amount, round);
+				}
 			}
 		}
-   }
-
-   if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::SHIFT_A))
-   {
-
-   	refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(m_Context.tag_1));
-   	cast_weights->m_mapTagByChar.getOrUpdateScore(retval, wordtag, action.code(), m_nScoreIndex , amount , round ) ;
 
 
-		cast_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore(retval, m_Context.wt12_app, action.code(), m_nScoreIndex, amount, round ) ;
 
-		cast_weights->m_mapConsecutiveChars.getOrUpdateScore(retval, m_Context.two_char, action.code(), m_nScoreIndex, amount, round ) ;
+		if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::WORD_T))// || actionType.code == CActionType::WORD_XYZ))
+		{
+			unsigned long long last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.last_char_1);
+			cast_weights->m_mapSeenWords.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
+			cast_weights->m_mapLastWordByWord.getOrUpdateScore(retval, m_Context.word_2_word_1 , action.code(), m_nScoreIndex , amount , round ) ;
 
-		cast_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore(retval, std::make_pair(m_Context.two_char, m_Context.tag_1), action.code(), m_nScoreIndex, amount, round ) ;
+
+			if ( m_Context.length_1 == 1 ) {
+			  cast_weights->m_mapOneCharWord.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
+			}
+			else {
+			  cast_weights->m_mapFirstAndLastChars.getOrUpdateScore(retval, m_Context.first_char_1_last_char_1 , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapLengthByFirstChar.getOrUpdateScore(retval, std::make_pair(m_Context.first_char_1, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapLengthByLastChar.getOrUpdateScore(retval, std::make_pair(m_Context.last_char_1, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			}
+
+			if (m_Context.length_2 > 0) {
+			  cast_weights->m_mapCurrentWordLastChar.getOrUpdateScore(retval, m_Context.word_1_last_char_2 , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapLastWordByLastChar.getOrUpdateScore(retval, m_Context.last_char_1_last_char_2 , action.code(), m_nScoreIndex , amount , round ) ;
+
+			  cast_weights->m_mapLengthByLastWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_2, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			  cast_weights->m_mapLastLengthByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.length_2), action.code(), m_nScoreIndex , amount , round ) ;
+			}
+
+			cast_weights->m_mapCurrentTag.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.tag_1), action.code(), m_nScoreIndex , amount , round ) ;
+
+			if ( m_Context.length_1 <= 2 ) cast_weights->m_mapLastTagByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.tag_2), action.code(), m_nScoreIndex , amount , round ) ;
+
+			if (m_Context.length_2 > 0) {
+				if ( m_Context.length_1 <= 2 ) cast_weights->m_mapTagByWordAndPrevChar.getOrUpdateScore(retval, std::make_pair(m_Context.word_1_last_char_2, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
+				if ( m_Context.length_1 == 1 && m_Context.start_0 > 0 ) cast_weights->m_mapTagOfOneCharWord.getOrUpdateScore(retval, std::make_pair(m_Context.three_char, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			}
+
+			cast_weights->m_mapTagByLastChar.getOrUpdateScore(retval, std::make_pair(m_Context.last_char_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
+			cast_weights->m_mapTagByLastCharCat.getOrUpdateScore(retval, std::make_pair(last_char_cat_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
+
+			for (int idj=0; idj<m_Context.length_1-1; ++idj) {
+				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, m_Context.wt12_collection[idj], action.code(), m_nScoreIndex, amount, round) ;
+			}
+
+			if (m_Context.start_1 >= 0)
+			{
+				cast_weights->m_mapTag1Tag2Size1.getOrUpdateScore(retval, std::make_pair( m_Context.tag_1_tag_2, m_Context.length_1 ),  action.code(), m_nScoreIndex , amount , round ) ;
+			}
+
+
+			if (m_Context.start_0 >= 0) {
+				if ( m_Context.start_1 >= 0 ) {
+					cast_weights->m_mapSeparateChars.getOrUpdateScore(retval, m_Context.two_char ,  action.code(), m_nScoreIndex , amount , round ) ;
+
+					cast_weights->m_mapLastWordFirstChar.getOrUpdateScore(retval, m_Context.word_1_first_char_0 ,  action.code(), m_nScoreIndex , amount , round ) ;
+
+					cast_weights->m_mapFirstCharLastWordByWord.getOrUpdateScore(retval, m_Context.first_char_0_first_char_1 ,  action.code(), m_nScoreIndex , amount , round ) ;
+
+					if ( m_Context.length_1 <= 2 ) cast_weights->m_mapTagByWordAndNextChar.getOrUpdateScore(retval, std::make_pair(m_Context.word_1_first_char_0, m_Context.tag_1) ,  action.code(), m_nScoreIndex , amount , round ) ;
+
+				}
+			}
+		}
+
+		if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::SHIFT_A))
+		{
+
+			refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(m_Context.tag_1));
+			cast_weights->m_mapTagByChar.getOrUpdateScore(retval, wordtag, action.code(), m_nScoreIndex , amount , round ) ;
+
+
+			cast_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore(retval, m_Context.wt12_app, action.code(), m_nScoreIndex, amount, round ) ;
+
+			cast_weights->m_mapConsecutiveChars.getOrUpdateScore(retval, m_Context.two_char, action.code(), m_nScoreIndex, amount, round ) ;
+
+			cast_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore(retval, std::make_pair(m_Context.two_char, m_Context.tag_1), action.code(), m_nScoreIndex, amount, round ) ;
+		}
+
    }
 
 }
@@ -1012,12 +1193,12 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
    if (!retval) 
       return true;
 
-   TRACE("Outputing sentence");
+   //TRACE("Outputing sentence");
    pBestGen->GenerateTree( sentence, retval[0] );
    if (scores) scores[0] = pBestGen->score;
 
-   TRACE("Done, the highest score is: " << pBestGen->score ) ;
-   TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
+   //TRACE("Done, the highest score is: " << pBestGen->score ) ;
+   //TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
    return true;
 }
 
@@ -1053,10 +1234,12 @@ void CConParser::train( const CSentenceParsed &correct , int round ) {
    static CStringVector sentence_input ;
    static CStringVector sentence;
    static CTwoStringVector wordtags;
+   static CTwoStringVector partwords;
 //   static CSentenceParsed outout ; 
 
    UnparseSentence( &correct, &sentence_input ) ;
    UnparseSentence( &correct, &wordtags ) ;
+   GetSentencePartWords(&correct, &partwords);
 
    m_rule->record(&wordtags, &sentence );
 
@@ -1112,6 +1295,34 @@ void CConParser::train( const CSentenceParsed &correct , int round ) {
          m_weights->setMaxLengthByTag( tag , local_size ) ;
 
       total_size += chars.size();
+   }
+
+   for ( unsigned i=0; i<partwords.size(); ++i )
+   {
+      const CWord &word = partwords.at(i).first ;
+      const CWord &wordtype = partwords.at(i).second;
+      unsigned long intWordType = 0;
+      if(wordtype.code() == CWord("x").code())
+      {
+      	intWordType = 1;
+      }
+      else if(wordtype.code() == CWord("y").code())
+      {
+      	intWordType = 2;
+      }
+      else if(wordtype.code() == CWord("z").code())
+		{
+      	intWordType = 4;
+		}
+      else
+      {
+      	TRACE("error training data");
+      	return;
+      }
+
+      m_weights->m_mapPartWordFrequency[word]++;
+      m_weights->m_mapWordHeadDictionary[word] = m_weights->m_mapWordHeadDictionary[word] | intWordType;
+
    }
 
    // The following code does update for each processing stage
