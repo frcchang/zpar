@@ -245,7 +245,7 @@ protected:
       //TRACE("shift");
       assert(!IsTerminated());
       assert(stacksize() == 0 || !node.is_partial());
-      retval->node.set(node.id+1, CStateNode::CHAR_B, false, CConstituent::NONE, pos, 0, 0, 0, 0, 0, current_word, current_word, current_word);
+      retval->node.set(node.id+1, CStateNode::CHAR_B, false, CConstituent::NONE, pos, 0, 0, ( (stackPtr != 0 && stackPtr->node.valid())?stackPtr->node.word_last:0), &(retval->node), &(retval->node), current_word, current_word, current_word);
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///  
       assert(!retval->IsTerminated());
@@ -255,7 +255,7 @@ protected:
       //TRACE("shift_empty");
       assert(!IsTerminated());
       assert(node.is_partial());
-      retval->node.set(node.id+1, CStateNode::CHAR_I, false, CConstituent::NONE, node.pos, 0, 0, 0, 0, 0, current_word, current_word, current_word);
+      retval->node.set(node.id+1, CStateNode::CHAR_I, false, CConstituent::NONE, node.pos, 0, 0, (stackPtr->node.valid()?stackPtr->node.word_last:0), &(retval->node), &(retval->node), current_word, current_word, current_word);
       retval->current_word = current_word+1;
       retval->stackPtr = this; ///
       assert(!retval->IsTerminated());
@@ -301,7 +301,7 @@ protected:
 		l = &(stackPtr->node);
 		assert(l->is_partial() && r->is_partial());
 		assert(l->pos == r->pos);
-		retval->node.set(node.id+1, (no_head?CStateNode::PARTIAL_X:(head_left?CStateNode::PARTIAL_Z:CStateNode::PARTIAL_Y)), false, CConstituent::NONE, l->pos, l, r, 0, 0, 0, l->begin_c, r->end_c, (head_left?l->head_c: r->head_c));
+		retval->node.set(node.id+1, (no_head?CStateNode::PARTIAL_X:(head_left?CStateNode::PARTIAL_Z:CStateNode::PARTIAL_Y)), false, CConstituent::NONE, l->pos, l, r, (stackPtr->node.valid()?stackPtr->node.word_last:0), &(retval->node), &(retval->node), l->begin_c, r->end_c, (no_head?l->head_c:(head_left?l->head_c: r->head_c)));
 		retval->stackPtr = stackPtr->stackPtr;
 		retval->current_word = current_word;
 
@@ -313,7 +313,7 @@ protected:
    	assert(stackPtr!=0);
    	assert(!stackPtr->node.valid() || !stackPtr->node.is_partial());
    	assert(node.is_partial());
-		retval->node.set(node.id+1, CStateNode::LEAF, false, CConstituent::NONE, node.pos, &node, 0, (stackPtr->node.valid()?stackPtr->node.word_last:0), &node, &node, node.begin_c, node.end_c, node.head_c);
+		retval->node.set(node.id+1, CStateNode::LEAF, false, CConstituent::NONE, node.pos, &node, 0, (stackPtr->node.valid()?stackPtr->node.word_last:0), &(retval->node), &(retval->node), node.begin_c, node.end_c, node.head_c);
    	retval->stackPtr = stackPtr;
    	retval->current_word = current_word;
    	assert(!IsTerminated());
