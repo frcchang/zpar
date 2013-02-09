@@ -47,7 +47,7 @@ namespace TARGET_LANGUAGE {
 
 namespace conparser { 
 
-typedef double SCORE_TYPE ;
+typedef long SCORE_TYPE ;
 
 // labeled brackets
 typedef CTuple3<int, int, CConstituent> CBracketTuple;

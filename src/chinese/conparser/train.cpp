@@ -40,6 +40,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile)
    while( ! ref_sent.empty() ) {
 //      TRACE_WORD("Sentence " << nCount << " ... ");
       nCount ++;
+      if(nCount > 1)break;
       parser.train( ref_sent, nCount );
 //      TRACE("done.");
       is >> ref_sent;

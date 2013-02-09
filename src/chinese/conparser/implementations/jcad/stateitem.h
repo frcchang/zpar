@@ -30,15 +30,16 @@ public:
 
 
 public:
-   inline bool head_left() const { return type==HEAD_LEFT; }
-   inline bool single_child() const { return type==SINGLE_CHILD; }
-   inline bool is_constituent() const { return !is_partial() && !is_leaf(); }
-   inline bool is_partial() const { return type==PARTIAL_X||type==PARTIAL_Y||type==PARTIAL_Z||type==CHAR_B||type==CHAR_I; }
+   inline bool head_left() const { return type==HEAD_LEFT || type==PARTIAL_X || type==PARTIAL_Z; }
+   inline bool single_child() const { return type==SINGLE_CHILD || type==LEAF; }
+   inline bool is_constituent() const { return type==SINGLE_CHILD||type==HEAD_LEFT||type==HEAD_RIGHT; }
+   inline bool is_partial() const { return !is_constituent() && !is_leaf(); }
    inline bool is_leaf() const { return type==LEAF; }
+   //inline unsigned long nodetype() const{ return  type + 1;  }
 
 public:
    CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const unsigned &pos, const CStateNode *left_child, const CStateNode *right_child, const CStateNode *word_prev, const CStateNode *word_last, const CStateNode *word_head, const unsigned &begin_c, const unsigned &end_c, const unsigned &head_c) : id(id), type(type), temp(temp), constituent(constituent), pos(pos), left_child(left_child), right_child(right_child), word_prev(word_prev), word_last(word_last), word_head(word_head) {}
-   CStateNode() : id(-1), type(), temp(0), constituent(), pos(-1), left_child(0), right_child(0), word_prev(0), word_last(0), word_head(0), begin_c(0), end_c(0), head_c(0) {}
+   CStateNode() : id(-1), type(CHAR_B), temp(0), constituent(CConstituent::NONE), pos(CTag::NONE), left_child(0), right_child(0), word_prev(0), word_last(0), word_head(0), begin_c(0), end_c(0), head_c(0) {}
    virtual ~CStateNode() {}
 public:
    bool valid() const { return id!=-1; }
