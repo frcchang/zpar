@@ -21,514 +21,466 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 #define ID_POINTER ->
 
 #define iterate_templates(left, right) \
-   left(m_mapS0c)right\
-   left(m_mapS0w)right\
-   left(m_mapS0z)right\
-   left(m_mapS0tc)right\
-   left(m_mapS0wc)right\
-   left(m_mapS0zc)right\
-\
-   left(m_mapS1c)right\
-   left(m_mapS1w)right\
-   left(m_mapS1z)right\
-   left(m_mapS1tc)right\
-   left(m_mapS1wc)right\
-   left(m_mapS1zc)right\
-\
-   left(m_mapS2tc)right\
-   left(m_mapS2wc)right\
-   left(m_mapS2zc)right\
-\
-   left(m_mapS3tc)right\
-   left(m_mapS3wc)right\
-   left(m_mapS3zc)right\
-\
-   left(m_mapN0w)right\
-   left(m_mapN0t)right\
-   left(m_mapN0wt)right\
-\
-   left(m_mapN1w)right\
-   left(m_mapN1t)right\
-   left(m_mapN1wt)right\
-   left(m_mapN01w)right\
-\
-   left(m_mapN2w)right\
-   left(m_mapN2t)right\
-   left(m_mapN2wt)right\
-   left(m_mapN12w)right\
-   left(m_mapN012w)right\
-\
-   left(m_mapN3w)right\
-   left(m_mapN3t)right\
-   left(m_mapN3wt)right\
-   left(m_mapN23w)right\
-   left(m_mapN123w)right\
-\
-   left(m_mapS0Lwc)right\
-   left(m_mapS0Ltc)right\
-   left(m_mapS0Rwc)right\
-   left(m_mapS0Rtc)right\
-   left(m_mapS0Uwc)right\
-   left(m_mapS0Utc)right\
-   left(m_mapS1Lwc)right\
-   left(m_mapS1Ltc)right\
-   left(m_mapS1Rwc)right\
-   left(m_mapS1Rtc)right\
-   left(m_mapS1Uwc)right\
-   left(m_mapS1Utc)right\
-\
-   left(m_mapS0wcS1wc)right\
-   left(m_mapS0zcS1zc)right\
-   left(m_mapS0wS1c)right\
-   left(m_mapS0zS1c)right\
-   left(m_mapS0cS1w)right\
-   left(m_mapS0cS1z)right\
-   left(m_mapS0cS1c)right\
-   left(m_mapBetweenTags)right\
-\
-   left(m_mapS0wN0w)right\
-   left(m_mapS0zN0w)right\
-   left(m_mapS0cN0w)right\
-   left(m_mapS0wN0t)right\
-   left(m_mapS0cN0t)right\
-   left(m_mapS0cmN0tm)right\
-\
-   left(m_mapS1wN0w)right\
-   left(m_mapS1zN0w)right\
-   left(m_mapS1cN0w)right\
-   left(m_mapS1wN0t)right\
-   left(m_mapS1cN0t)right\
-\
-   left(m_mapN0wN1w)right\
-   left(m_mapN0tN1w)right\
-   left(m_mapN0wN1t)right\
-   left(m_mapN0tN1t)right\
-\
-   left(m_mapS0wS1cN0t)right\
-   left(m_mapS0cS1wN0t)right\
-   left(m_mapS0cS1cN0w)right\
-   left(m_mapS0cS1cN0t)right\
-   left(m_mapS0tS1tN0t)right\
-   left(m_mapS0jS1jN0t)right\
-\
-   left(m_mapS0cN1w)right\
-   left(m_mapS0wN0tN1t)right\
-   left(m_mapS0cN0wN1t)right\
-   left(m_mapS0cN0tN1w)right\
-   left(m_mapS0cN0tN1t)right\
-   left(m_mapS0tN0tN1t)right\
-   left(m_mapS0jN0tN1t)right\
-\
-   left(m_mapS0wS1cS2c)right\
-   left(m_mapS0zS1cS2c)right\
-   left(m_mapS0cS1wS2c)right\
-   left(m_mapS0cS1zS2c)right\
-   left(m_mapS0cS1cS2w)right\
-   left(m_mapS0cS1cS2z)right\
-   left(m_mapS0cS1cS2c)right\
-   left(m_mapS0tS1tS2t)right\
-\
-   left(m_mapS1cS2c)right\
-   left(m_mapS2cS3c)right\
-   left(m_mapN1tN2t)right\
-   left(m_mapN2tN3t)right\
-\
-   left(m_mapS0cS2c)right\
-   left(m_mapS1cS3c)right\
-   left(m_mapS0cN1t)right\
-   left(m_mapN0tN2t)right\
-   left(m_mapN1tN3t)right\
-\
-   left(m_mapS0cS0LcN0t)right\
-   left(m_mapS0wS0LcN0t)right\
-   left(m_mapS0cS0LcN0w)right\
-   left(m_mapS0cS0RcN0t)right\
-   left(m_mapS0cS0RjN0t)right\
-   left(m_mapS0wS0RcN0t)right\
-   left(m_mapS0cS0RcN0w)right\
-   left(m_mapS0cS0UcN0t)right\
-   left(m_mapS0wS0UcN0t)right\
-   left(m_mapS0cS0UcN0w)right\
-\
-   left(m_mapS0cS0LcS1c)right\
-   left(m_mapS0cS0LjS1j)right\
-   left(m_mapS0wS0LcS1c)right\
-   left(m_mapS0cS0LcS1w)right\
-   left(m_mapS0cS0LcS1z)right\
-   left(m_mapS0cS0RcS1c)right\
-   left(m_mapS0wS0RcS1c)right\
-   left(m_mapS0cS0RcS1w)right\
-   left(m_mapS0cS0UcS1c)right\
-   left(m_mapS0wS0UcS1c)right\
-   left(m_mapS0cS0UcS1w)right\
-\
-   left(m_mapN0tN1tN2t)right\
-   left(m_mapS0cS1cS1Lc)right\
-   left(m_mapS0wS1cS1Lc)right\
-   left(m_mapS0cS1wS1Lc)right\
-   left(m_mapS0cS1cS1Rc)right\
-   left(m_mapS0jS1cS1Rj)right\
-   left(m_mapS0wS1cS1Rc)right\
-   left(m_mapS0zS1cS1Rc)right\
-   left(m_mapS0cS1wS1Rc)right\
-   left(m_mapS0cS1cS1Uc)right\
-   left(m_mapS0wS1cS1Uc)right\
-   left(m_mapS0cS1wS1Uc)right\
-\
-   left(m_mapA1)right\
-   left(m_mapA1A2)right\
-\
-	left(m_mapWSSeenWords)right\
-	left(m_mapWSLastWordByWord)right\
-	left(m_mapWSLastWordByWordCurrentTag)right\
-	left(m_mapWSTwoHeadCharCurrentTag)right\
-	left(m_mapWSCurrentTag)right\
-	left(m_mapWSCurrentWordLastChar)right\
+   left(m_mapSYNS0w)right\
+   left(m_mapSYNS0c)right\
+   left(m_mapSYNS0tc)right\
+   left(m_mapSYNS0wc)right\
+   left(m_mapSYNS1w)right\
+   left(m_mapSYNS1c)right\
+   left(m_mapSYNS1tc)right\
+   left(m_mapSYNS1wc)right\
+   left(m_mapSYNS2tc)right\
+   left(m_mapSYNS2wc)right\
+   left(m_mapSYNS3tc)right\
+   left(m_mapSYNS3wc)right\
+   left(m_mapSYNN0w)right\
+   left(m_mapSYNN1w)right\
+   left(m_mapSYNN01w)right\
+   left(m_mapSYNN2w)right\
+   left(m_mapSYNN12w)right\
+   left(m_mapSYNN012w)right\
+   left(m_mapSYNN3w)right\
+   left(m_mapSYNN23w)right\
+   left(m_mapSYNN123w)right\
+   left(m_mapSYNS0Ltc)right\
+   left(m_mapSYNS0Lwc)right\
+   left(m_mapSYNS0Rtc)right\
+   left(m_mapSYNS0Rwc)right\
+   left(m_mapSYNS0Utc)right\
+   left(m_mapSYNS0Uwc)right\
+   left(m_mapSYNS1Ltc)right\
+   left(m_mapSYNS1Lwc)right\
+   left(m_mapSYNS1Rtc)right\
+   left(m_mapSYNS1Rwc)right\
+   left(m_mapSYNS1Utc)right\
+   left(m_mapSYNS1Uwc)right\
+   left(m_mapSYNS0wcS1wc)right\
+   left(m_mapSYNS0cS1w)right\
+   left(m_mapSYNS0wS1c)right\
+   left(m_mapSYNS0cS1c)right\
+   left(m_mapSYNS0wcN0w)right\
+   left(m_mapSYNS0cN0w)right\
+   left(m_mapSYNS1wcN0w)right\
+   left(m_mapSYNS1cN0w)right\
+   left(m_mapSYNS0cS1cN0w)right\
+   left(m_mapSYNS0wS1cS2c)right\
+   left(m_mapSYNS0cS1wS2c)right\
+   left(m_mapSYNS0cS1cS2w)right\
+   left(m_mapSYNS0cS1cS2c)right\
+   left(m_mapSYNS0tS1tS2t)right\
+   left(m_mapSYNS0cS0RcN0w)right\
+   left(m_mapSYNS0cS0LcS1c)right\
+   left(m_mapSYNS0cS0LjS1j)right\
+   left(m_mapSYNS0cS0LcS1w)right\
+   left(m_mapSYNS0cS1cS1Rc)right\
+   left(m_mapSYNS0jS1cS1Rj)right\
+   left(m_mapSYNS0wS1cS1Rc)right\
+   left(m_mapSYNS0z)right\
+   left(m_mapSYNS0zc)right\
+   left(m_mapSYNS0CharTagCont)right\
+   left(m_mapSYNS1z)right\
+   left(m_mapSYNS1zc)right\
+   left(m_mapSYNS1CharTagCont)right\
+   left(m_mapSYNS2CharTag)right\
+   left(m_mapSYNS2zc)right\
+   left(m_mapSYNS2CharTagCont)right\
+   left(m_mapSYNS3CharTag)right\
+   left(m_mapSYNS3zc)right\
+   left(m_mapSYNS3CharTagCont)right\
+   left(m_mapSYNS0ztS1zt)right\
+   left(m_mapSYNS0zS1z)right\
+   left(m_mapSYNS0zcS1zc)right\
+   left(m_mapSYNS0cS1zc)right\
+   left(m_mapSYNS0zcS1c)right\
+   left(m_mapSYNS0zS1zS2z)right\
+   left(m_mapSYNS0zS1cS2c)right\
+   left(m_mapSYNS0cS1zS2c)right\
+   left(m_mapSYNS0cS1cS2z)right\
+   left(m_mapSYNS1zS2zS3z)right\
+   left(m_mapSYNS0zS1zS2zS3z)right\
+   left(m_mapSYNS0zN0z)right\
+   left(m_mapSYNS0zcN0z)right\
+   left(m_mapSYNS0zN01z)right\
+   left(m_mapSYNS0zN012z)right\
+   left(m_mapSYNS1zN0z)right\
+   left(m_mapSYNS1zcN0z)right\
+   left(m_mapSYNS1zN01z)right\
+   left(m_mapSYNS1zN012z)right\
+   left(m_mapSYNS1zS0zN0z)right\
+   left(m_mapSYNS1zS0zN01z)right\
+   left(m_mapPSYNS0w)right\
+   left(m_mapPSYNS0c)right\
+   left(m_mapPSYNS0tc)right\
+   left(m_mapPSYNS0wc)right\
+   left(m_mapPSYNS1w)right\
+   left(m_mapPSYNS1c)right\
+   left(m_mapPSYNS1tc)right\
+   left(m_mapPSYNS1wc)right\
+   left(m_mapPSYNS2tc)right\
+   left(m_mapPSYNS2wc)right\
+   left(m_mapPSYNS3tc)right\
+   left(m_mapPSYNS3wc)right\
+   left(m_mapPSYNS0Ltc)right\
+   left(m_mapPSYNS0Lwc)right\
+   left(m_mapPSYNS0Rtc)right\
+   left(m_mapPSYNS0Rwc)right\
+   left(m_mapPSYNS0Utc)right\
+   left(m_mapPSYNS0Uwc)right\
+   left(m_mapPSYNS1Ltc)right\
+   left(m_mapPSYNS1Lwc)right\
+   left(m_mapPSYNS1Rtc)right\
+   left(m_mapPSYNS1Rwc)right\
+   left(m_mapPSYNS1Utc)right\
+   left(m_mapPSYNS1Uwc)right\
+   left(m_mapPPSYNS0wcS1wc)right\
+   left(m_mapPPSYNS0cS1wc)right\
+   left(m_mapPPSYNS0wcS1c)right\
+   left(m_mapPPSYNS0cS1c)right\
+   left(m_mapPSYNS0wcS1wc)right\
+   left(m_mapPSYNS0cS1wc)right\
+   left(m_mapPSYNS0wcS1c)right\
+   left(m_mapPSYNS0cS1c)right\
+   left(m_mapPSYNS0wcN0w)right\
+   left(m_mapPSYNS0cN0w)right\
+   left(m_mapPSYNS0wN0t)right\
+   left(m_mapPSYNS0cN0t)right\
+   left(m_mapPSYNS1wcN0w)right\
+   left(m_mapPSYNS1cN0w)right\
+   left(m_mapPSYNS1wN0t)right\
+   left(m_mapPSYNS1cN0t)right\
+   left(m_mapSYNN0t)right\
+   left(m_mapSYNN1t)right\
+   left(m_mapSYNN2t)right\
+   left(m_mapSYNN3t)right\
+   left(m_mapSYNS0wN0t)right\
+   left(m_mapSYNS0cN0t)right\
+   left(m_mapSYNS1wN0t)right\
+   left(m_mapSYNS1cN0t)right\
+   left(m_mapSYNN0tN1w)right\
+   left(m_mapSYNN0wN1t)right\
+   left(m_mapSYNN0tN1t)right\
+   left(m_mapSYNS0wS1cN0t)right\
+   left(m_mapSYNS0cS1wN0t)right\
+   left(m_mapSYNS0cS1cN0t)right\
+   left(m_mapSYNS0cS1tN0t)right\
+   left(m_mapSYNS0wcN0tN1t)right\
+   left(m_mapSYNS0cN0wtN1t)right\
+   left(m_mapSYNS0cN0tN1wt)right\
+   left(m_mapSYNS0cN0tN1t)right\
+   left(m_mapSYNS0tN0tN1t)right\
+   left(m_mapPSYNS0z)right\
+   left(m_mapPSYNS0zc)right\
+   left(m_mapPSYNS0CharTagCont)right\
+   left(m_mapPSYNS1z)right\
+   left(m_mapPSYNS1zc)right\
+   left(m_mapPSYNS1CharTagCont)right\
+   left(m_mapPSYNS2zc)right\
+   left(m_mapPSYNS2CharTagCont)right\
+   left(m_mapPSYNS3zc)right\
+   left(m_mapPSYNS3CharTagCont)right\
+   left(m_mapPPSYNS0ztS1zt)right\
+   left(m_mapPPSYNS0zS1z)right\
+   left(m_mapPPSYNS0zcS1zc)right\
+   left(m_mapPPSYNS0cS1zc)right\
+   left(m_mapPPSYNS0zcS1c)right\
+   left(m_mapPSYNS0ztS1zt)right\
+   left(m_mapPSYNS0zS1z)right\
+   left(m_mapPSYNS0zcS1zc)right\
+   left(m_mapPSYNS0cS1zc)right\
+   left(m_mapPSYNS0zcS1c)right\
+   left(m_mapPSYNS0zN0z)right\
+   left(m_mapPSYNS0zcN0z)right\
+   left(m_mapPSYNS0zN01z)right\
+   left(m_mapPSYNS0zN012z)right\
+   left(m_mapPSYNS1zN0z)right\
+   left(m_mapPSYNS1zcN0z)right\
+   left(m_mapPSYNS1zN01z)right\
+   left(m_mapPSYNS1zN012z)right\
+   left(m_mapPPSYNS1zS0zN0z)right\
+   left(m_mapPPSYNS1zS0zN01z)right\
+   left(m_mapPSYNS1zS0zN0z)right\
+   left(m_mapPSYNS1zS0zN01z)right\
 	left(m_mapWSLastWordByLastChar)right\
 	left(m_mapWSLengthByLastWord)right\
 	left(m_mapWSLastLengthByWord)right\
-	left(m_mapWSTagByWordAndPrevChar)right\
-	left(m_mapWSTagOfOneCharWord)right\
 	left(m_mapWSSeparateChars)right\
-	left(m_mapWSLastWordFirstChar)right\
 	left(m_mapWSFirstCharLastWordByWord)right\
-	left(m_mapWSTagByWordAndNextChar)right\
-	left(m_mapWSOneCharWord)right\
-	left(m_mapWSFirstAndLastChars)right\
-	left(m_mapWSLengthByFirstChar)right\
-	left(m_mapWSLengthByLastChar)right\
-	left(m_mapWSTagByLastCharCat)right\
-	left(m_mapWSTaggedCharByLastChar)right\
-\
-	left(m_mapCharUnigram)right \
-	left(m_mapCharBigram)right \
-	left(m_mapCharTrigram)right \
-	left(m_mapSeenWords)right \
-	left(m_mapLastWordByWord)right \
-	left(m_mapCurrentWordLastChar)right \
-	left(m_mapLastWordFirstChar)right \
-	left(m_mapFirstCharLastWordByWord)right \
-	left(m_mapLastWordByLastChar)right \
-	left(m_mapSeparateChars)right \
-	left(m_mapConsecutiveChars)right \
-	left(m_mapFirstAndLastChars)right \
-	left(m_mapOneCharWord)right \
-	left(m_mapLengthByFirstChar)right \
-	left(m_mapLengthByLastChar)right \
-	left(m_mapLengthByLastWord)right \
-	left(m_mapLastLengthByWord)right \
-	left(m_mapLastTagByTag)right \
-	left(m_mapLastTwoTagsByTag)right \
-	left(m_mapCurrentTag)right \
-	left(m_mapTagByLastWord)right \
-	left(m_mapLastTagByWord)right \
-	left(m_mapTagByFirstChar)right \
-	left(m_mapTagByLastChar)right \
-	left(m_mapTagByChar)right \
-	left(m_mapTagOfOneCharWord)right \
-	left(m_mapRepeatedCharByTag)right \
-	left(m_mapTagByWordAndPrevChar)right \
-	left(m_mapTagByWordAndNextChar)right \
-	left(m_mapTaggedCharByFirstChar)right \
-	left(m_mapTaggedCharByLastChar)right \
-	left(m_mapTagByFirstCharCat)right \
-	left(m_mapTagByLastCharCat)right \
-	left(m_mapTaggedSeparateChars)right \
-	left(m_mapTaggedConsecutiveChars)right\
-	left(m_mapWordTagTag)right\
-	left(m_mapTagWordTag)right\
-	left(m_mapFirstCharBy2Tags)right\
-	left(m_mapFirstCharBy3Tags)right\
-	left(m_mapFirstCharAndChar)right\
-	left(m_mapSepCharAndNextChar)right\
-	left(m_mapAppCharAndNextChar)right\
-	left(m_mapPartialWord)right\
-	left(m_mapPartialLengthByFirstChar)right \
-	left(m_mapLengthByTagAndFirstChar)right \
-	left(m_mapLengthByTagAndLastChar)right \
-	left(m_mapTag0Tag1Size1)right\
-	left(m_mapTag1Tag2Size1)right\
-	left(m_mapTag0Tag1Tag2Size1)right\
-\
-	left(m_mapS2CharTag)right\
-	left(m_mapS3CharTag)right\
-	left(m_mapS0CharTagCont)right\
-	left(m_mapS1CharTagCont)right\
-	left(m_mapS2CharTagCont)right\
-	left(m_mapS3CharTagCont)right\
-\
-	left(m_mapS0ztS1zt)right\
-	left(m_mapS0zS1z)right\
-	left(m_mapS0zS1zS2z)right\
-	left(m_mapS1zS2zS3z)right\
-	left(m_mapS0zS1zS2zS3z)right\
-\
-	left(m_mapS0zN0z)right\
-	left(m_mapS0zN01z)right\
-	left(m_mapS0zN012z)right\
-\
-	left(m_mapS1zN0z)right\
-	left(m_mapS1zN01z)right\
-	left(m_mapS1zN012z)right\
-	left(m_mapS1zS0zN0z)right\
-	left(m_mapS1zS0zN01z)right
+   left(m_mapLastTagByTag)right\
+   left(m_mapTag0Tag1Size1)right\
+   left(m_mapTag0Tag1Tag2Size1)right\
+   left(m_mapTagByLastWord)right\
+   left(m_mapLastTwoTagsByTag)right\
+   left(m_mapTagByFirstChar)right\
+   left(m_mapTagByFirstCharCat)right\
+   left(m_mapFirstCharBy2Tags)right\
+   left(m_mapFirstCharBy3Tags)right\
+   left(m_mapTagByChar)right\
+   left(m_mapTaggedSeparateChars)right\
+   left(m_mapTagWordTag)right\
+   left(m_mapWordTagTag)right\
+   left(m_mapSeenWords)right\
+   left(m_mapLastWordByWord)right\
+   left(m_mapOneCharWord)right\
+   left(m_mapFirstAndLastChars)right\
+   left(m_mapLengthByFirstChar)right\
+   left(m_mapLengthByLastChar)right\
+   left(m_mapLeftPartWordTag)right\
+   left(m_mapRightPartWordTag)right\
+   left(m_mapCurrentWordLastChar)right\
+   left(m_mapLastWordByLastChar)right\
+   left(m_mapLengthByLastWord)right\
+   left(m_mapLastLengthByWord)right\
+   left(m_mapCurrentTag)right\
+   left(m_mapLastTagByWord)right\
+   left(m_mapTagByWordAndPrevChar)right\
+   left(m_mapTagOfOneCharWord)right\
+   left(m_mapTagByLastChar)right\
+   left(m_mapTagByLastCharCat)right\
+   left(m_mapTaggedCharByLastChar)right\
+   left(m_mapTag1Tag2Size1)right\
+   left(m_mapSeparateChars)right\
+   left(m_mapLastWordFirstChar)right\
+   left(m_mapFirstCharLastWordByWord)right\
+   left(m_mapTagByWordAndNextChar)right\
+   left(m_mapAPPTagByChar)right\
+   left(m_mapTaggedCharByFirstChar)right\
+   left(m_mapConsecutiveChars)right\
+   left(m_mapTaggedConsecutiveChars)right
 
 
 
 
 
 #define iterate_double_templates(left, middle, right)\
-   left m_mapS0c middle m_mapS0c right\
-   left m_mapS0w middle m_mapS0w right\
-   left m_mapS0z middle m_mapS0z right\
-   left m_mapS0tc middle m_mapS0tc right\
-   left m_mapS0wc middle m_mapS0wc right\
-   left m_mapS0zc middle m_mapS0zc right\
-\
-   left m_mapS1c middle m_mapS1c right\
-   left m_mapS1w middle m_mapS1w right\
-   left m_mapS1z middle m_mapS1z right\
-   left m_mapS1tc middle m_mapS1tc right\
-   left m_mapS1wc middle m_mapS1wc right\
-   left m_mapS1zc middle m_mapS1zc right\
-\
-   left m_mapS2tc middle m_mapS2tc right\
-   left m_mapS2wc middle m_mapS2wc right\
-   left m_mapS2zc middle m_mapS2zc right\
-\
-   left m_mapS3tc middle m_mapS3tc right\
-   left m_mapS3wc middle m_mapS3wc right\
-   left m_mapS3zc middle m_mapS3zc right\
-\
-   left m_mapN0w middle m_mapN0w right\
-   left m_mapN0t middle m_mapN0t right\
-   left m_mapN0wt middle m_mapN0wt right\
-\
-   left m_mapN1w middle m_mapN1w right\
-   left m_mapN1t middle m_mapN1t right\
-   left m_mapN1wt middle m_mapN1wt right\
-   left m_mapN01w middle m_mapN01w right\
-\
-   left m_mapN2w middle m_mapN2w right\
-   left m_mapN2t middle m_mapN2t right\
-   left m_mapN2wt middle m_mapN2wt right\
-   left m_mapN12w middle m_mapN12w right\
-   left m_mapN012w middle m_mapN012w right\
-\
-   left m_mapN3w middle m_mapN3w right\
-   left m_mapN3t middle m_mapN3t right\
-   left m_mapN3wt middle m_mapN3wt right\
-   left m_mapN23w middle m_mapN23w right\
-   left m_mapN123w middle m_mapN123w right\
-\
-   left m_mapS0Lwc middle m_mapS0Lwc right\
-   left m_mapS0Ltc middle m_mapS0Ltc right\
-   left m_mapS0Rwc middle m_mapS0Rwc right\
-   left m_mapS0Rtc middle m_mapS0Rtc right\
-   left m_mapS0Uwc middle m_mapS0Uwc right\
-   left m_mapS0Utc middle m_mapS0Utc right\
-   left m_mapS1Lwc middle m_mapS1Lwc right\
-   left m_mapS1Ltc middle m_mapS1Ltc right\
-   left m_mapS1Rwc middle m_mapS1Rwc right\
-   left m_mapS1Rtc middle m_mapS1Rtc right\
-   left m_mapS1Uwc middle m_mapS1Uwc right\
-   left m_mapS1Utc middle m_mapS1Utc right\
-\
-   left m_mapS0wcS1wc middle m_mapS0wcS1wc right\
-   left m_mapS0zcS1zc middle m_mapS0zcS1zc right\
-   left m_mapS0wS1c middle m_mapS0wS1c right\
-   left m_mapS0zS1c middle m_mapS0zS1c right\
-   left m_mapS0cS1w middle m_mapS0cS1w right\
-   left m_mapS0cS1z middle m_mapS0cS1z right\
-   left m_mapS0cS1c middle m_mapS0cS1c right\
-   left m_mapBetweenTags middle m_mapBetweenTags right\
-\
-   left m_mapS0wN0w middle m_mapS0wN0w right\
-   left m_mapS0zN0w middle m_mapS0zN0w right\
-   left m_mapS0cN0w middle m_mapS0cN0w right\
-   left m_mapS0wN0t middle m_mapS0wN0t right\
-   left m_mapS0cN0t middle m_mapS0cN0t right\
-   left m_mapS0cmN0tm middle m_mapS0cmN0tm right\
-\
-   left m_mapS1wN0w middle m_mapS1wN0w right\
-   left m_mapS1zN0w middle m_mapS1zN0w right\
-   left m_mapS1cN0w middle m_mapS1cN0w right\
-   left m_mapS1wN0t middle m_mapS1wN0t right\
-   left m_mapS1cN0t middle m_mapS1cN0t right\
-\
-   left m_mapN0wN1w middle m_mapN0wN1w right\
-   left m_mapN0tN1w middle m_mapN0tN1w right\
-   left m_mapN0wN1t middle m_mapN0wN1t right\
-   left m_mapN0tN1t middle m_mapN0tN1t right\
-\
-   left m_mapS0wS1cN0t middle m_mapS0wS1cN0t right\
-   left m_mapS0cS1wN0t middle m_mapS0cS1wN0t right\
-   left m_mapS0cS1cN0w middle m_mapS0cS1cN0w right\
-   left m_mapS0cS1cN0t middle m_mapS0cS1cN0t right\
-   left m_mapS0tS1tN0t middle m_mapS0tS1tN0t right\
-   left m_mapS0jS1jN0t middle m_mapS0jS1jN0t right\
-\
-	left m_mapS0cN1w middle m_mapS0cN1w right\
-   left m_mapS0wN0tN1t middle m_mapS0wN0tN1t right\
-   left m_mapS0cN0wN1t middle m_mapS0cN0wN1t right\
-   left m_mapS0cN0tN1w middle m_mapS0cN0tN1w right\
-   left m_mapS0cN0tN1t middle m_mapS0cN0tN1t right\
-   left m_mapS0tN0tN1t middle m_mapS0tN0tN1t right\
-   left m_mapS0jN0tN1t middle m_mapS0jN0tN1t right\
-\
-   left m_mapS0wS1cS2c middle m_mapS0wS1cS2c right\
-   left m_mapS0zS1cS2c middle m_mapS0zS1cS2c right\
-   left m_mapS0cS1wS2c middle m_mapS0cS1wS2c right\
-   left m_mapS0cS1zS2c middle m_mapS0cS1zS2c right\
-   left m_mapS0cS1cS2w middle m_mapS0cS1cS2w right\
-   left m_mapS0cS1cS2z middle m_mapS0cS1cS2z right\
-   left m_mapS0cS1cS2c middle m_mapS0cS1cS2c right\
-   left m_mapS0tS1tS2t middle m_mapS0tS1tS2t right\
-\
-   left m_mapS1cS2c middle m_mapS1cS2c right\
-   left m_mapS2cS3c middle m_mapS2cS3c right\
-   left m_mapN1tN2t middle m_mapN1tN2t right\
-   left m_mapN2tN3t middle m_mapN2tN3t right\
-\
-   left m_mapS0cS2c middle m_mapS0cS2c right\
-   left m_mapS1cS3c middle m_mapS1cS3c right\
-   left m_mapS0cN1t middle m_mapS0cN1t right\
-   left m_mapN0tN2t middle m_mapN0tN2t right\
-   left m_mapN1tN3t middle m_mapN1tN3t right\
-\
-   left m_mapS0cS0LcN0t middle m_mapS0cS0LcN0t right\
-   left m_mapS0wS0LcN0t middle m_mapS0wS0LcN0t right\
-   left m_mapS0cS0LcN0w middle m_mapS0cS0LcN0w right\
-   left m_mapS0cS0RcN0t middle m_mapS0cS0RcN0t right\
-   left m_mapS0cS0RjN0t middle m_mapS0cS0RjN0t right\
-   left m_mapS0wS0RcN0t middle m_mapS0wS0RcN0t right\
-   left m_mapS0cS0RcN0w middle m_mapS0cS0RcN0w right\
-   left m_mapS0cS0UcN0t middle m_mapS0cS0UcN0t right\
-   left m_mapS0wS0UcN0t middle m_mapS0wS0UcN0t right\
-   left m_mapS0cS0UcN0w middle m_mapS0cS0UcN0w right\
-\
-   left m_mapS0cS0LcS1c middle m_mapS0cS0LcS1c right\
-   left m_mapS0cS0LjS1j middle m_mapS0cS0LjS1j right\
-   left m_mapS0wS0LcS1c middle m_mapS0wS0LcS1c right\
-   left m_mapS0cS0LcS1w middle m_mapS0cS0LcS1w right\
-   left m_mapS0cS0LcS1z middle m_mapS0cS0LcS1z right\
-   left m_mapS0cS0RcS1c middle m_mapS0cS0RcS1c right\
-   left m_mapS0wS0RcS1c middle m_mapS0wS0RcS1c right\
-   left m_mapS0cS0RcS1w middle m_mapS0cS0RcS1w right\
-   left m_mapS0cS0UcS1c middle m_mapS0cS0UcS1c right\
-   left m_mapS0wS0UcS1c middle m_mapS0wS0UcS1c right\
-   left m_mapS0cS0UcS1w middle m_mapS0cS0UcS1w right\
-\
-   left m_mapN0tN1tN2t middle m_mapN0tN1tN2t right\
-   left m_mapS0cS1cS1Lc middle m_mapS0cS1cS1Lc right\
-   left m_mapS0wS1cS1Lc middle m_mapS0wS1cS1Lc right\
-   left m_mapS0cS1wS1Lc middle m_mapS0cS1wS1Lc right\
-   left m_mapS0cS1cS1Rc middle m_mapS0cS1cS1Rc right\
-   left m_mapS0jS1cS1Rj middle m_mapS0jS1cS1Rj right\
-   left m_mapS0wS1cS1Rc middle m_mapS0wS1cS1Rc right\
-   left m_mapS0zS1cS1Rc middle m_mapS0zS1cS1Rc right\
-   left m_mapS0cS1wS1Rc middle m_mapS0cS1wS1Rc right\
-   left m_mapS0cS1cS1Uc middle m_mapS0cS1cS1Uc right\
-   left m_mapS0wS1cS1Uc middle m_mapS0wS1cS1Uc right\
-   left m_mapS0cS1wS1Uc middle m_mapS0cS1wS1Uc right\
-\
-   left m_mapA1 middle m_mapA1 right\
-   left m_mapA1A2 middle m_mapA1A2 right\
-\
-	left m_mapWSSeenWords middle m_mapWSSeenWords right\
-	left m_mapWSLastWordByWord middle m_mapWSLastWordByWord right\
-	left m_mapWSLastWordByWordCurrentTag middle m_mapWSLastWordByWordCurrentTag right\
-	left m_mapWSTwoHeadCharCurrentTag middle m_mapWSTwoHeadCharCurrentTag right\
-	left m_mapWSCurrentTag middle m_mapWSCurrentTag right\
-	left m_mapWSCurrentWordLastChar middle m_mapWSCurrentWordLastChar right\
-	left m_mapWSLastWordByLastChar middle m_mapWSLastWordByLastChar right\
+   left m_mapSYNS0w middle m_mapSYNS0w right\
+   left m_mapSYNS0c middle m_mapSYNS0c right\
+   left m_mapSYNS0tc middle m_mapSYNS0tc right\
+   left m_mapSYNS0wc middle m_mapSYNS0wc right\
+   left m_mapSYNS1w middle m_mapSYNS1w right\
+   left m_mapSYNS1c middle m_mapSYNS1c right\
+   left m_mapSYNS1tc middle m_mapSYNS1tc right\
+   left m_mapSYNS1wc middle m_mapSYNS1wc right\
+   left m_mapSYNS2tc middle m_mapSYNS2tc right\
+   left m_mapSYNS2wc middle m_mapSYNS2wc right\
+   left m_mapSYNS3tc middle m_mapSYNS3tc right\
+   left m_mapSYNS3wc middle m_mapSYNS3wc right\
+   left m_mapSYNN0w middle m_mapSYNN0w right\
+   left m_mapSYNN1w middle m_mapSYNN1w right\
+   left m_mapSYNN01w middle m_mapSYNN01w right\
+   left m_mapSYNN2w middle m_mapSYNN2w right\
+   left m_mapSYNN12w middle m_mapSYNN12w right\
+   left m_mapSYNN012w middle m_mapSYNN012w right\
+   left m_mapSYNN3w middle m_mapSYNN3w right\
+   left m_mapSYNN23w middle m_mapSYNN23w right\
+   left m_mapSYNN123w middle m_mapSYNN123w right\
+   left m_mapSYNS0Ltc middle m_mapSYNS0Ltc right\
+   left m_mapSYNS0Lwc middle m_mapSYNS0Lwc right\
+   left m_mapSYNS0Rtc middle m_mapSYNS0Rtc right\
+   left m_mapSYNS0Rwc middle m_mapSYNS0Rwc right\
+   left m_mapSYNS0Utc middle m_mapSYNS0Utc right\
+   left m_mapSYNS0Uwc middle m_mapSYNS0Uwc right\
+   left m_mapSYNS1Ltc middle m_mapSYNS1Ltc right\
+   left m_mapSYNS1Lwc middle m_mapSYNS1Lwc right\
+   left m_mapSYNS1Rtc middle m_mapSYNS1Rtc right\
+   left m_mapSYNS1Rwc middle m_mapSYNS1Rwc right\
+   left m_mapSYNS1Utc middle m_mapSYNS1Utc right\
+   left m_mapSYNS1Uwc middle m_mapSYNS1Uwc right\
+   left m_mapSYNS0wcS1wc middle m_mapSYNS0wcS1wc right\
+   left m_mapSYNS0cS1w middle m_mapSYNS0cS1w right\
+   left m_mapSYNS0wS1c middle m_mapSYNS0wS1c right\
+   left m_mapSYNS0cS1c middle m_mapSYNS0cS1c right\
+   left m_mapSYNS0wcN0w middle m_mapSYNS0wcN0w right\
+   left m_mapSYNS0cN0w middle m_mapSYNS0cN0w right\
+   left m_mapSYNS1wcN0w middle m_mapSYNS1wcN0w right\
+   left m_mapSYNS1cN0w middle m_mapSYNS1cN0w right\
+   left m_mapSYNS0cS1cN0w middle m_mapSYNS0cS1cN0w right\
+   left m_mapSYNS0wS1cS2c middle m_mapSYNS0wS1cS2c right\
+   left m_mapSYNS0cS1wS2c middle m_mapSYNS0cS1wS2c right\
+   left m_mapSYNS0cS1cS2w middle m_mapSYNS0cS1cS2w right\
+   left m_mapSYNS0cS1cS2c middle m_mapSYNS0cS1cS2c right\
+   left m_mapSYNS0tS1tS2t middle m_mapSYNS0tS1tS2t right\
+   left m_mapSYNS0cS0RcN0w middle m_mapSYNS0cS0RcN0w right\
+   left m_mapSYNS0cS0LcS1c middle m_mapSYNS0cS0LcS1c right\
+   left m_mapSYNS0cS0LjS1j middle m_mapSYNS0cS0LjS1j right\
+   left m_mapSYNS0cS0LcS1w middle m_mapSYNS0cS0LcS1w right\
+   left m_mapSYNS0cS1cS1Rc middle m_mapSYNS0cS1cS1Rc right\
+   left m_mapSYNS0jS1cS1Rj middle m_mapSYNS0jS1cS1Rj right\
+   left m_mapSYNS0wS1cS1Rc middle m_mapSYNS0wS1cS1Rc right\
+   left m_mapSYNS0z middle m_mapSYNS0z right\
+   left m_mapSYNS0zc middle m_mapSYNS0zc right\
+   left m_mapSYNS0CharTagCont middle m_mapSYNS0CharTagCont right\
+   left m_mapSYNS1z middle m_mapSYNS1z right\
+   left m_mapSYNS1zc middle m_mapSYNS1zc right\
+   left m_mapSYNS1CharTagCont middle m_mapSYNS1CharTagCont right\
+   left m_mapSYNS2CharTag middle m_mapSYNS2CharTag right\
+   left m_mapSYNS2zc middle m_mapSYNS2zc right\
+   left m_mapSYNS2CharTagCont middle m_mapSYNS2CharTagCont right\
+   left m_mapSYNS3CharTag middle m_mapSYNS3CharTag right\
+   left m_mapSYNS3zc middle m_mapSYNS3zc right\
+   left m_mapSYNS3CharTagCont middle m_mapSYNS3CharTagCont right\
+   left m_mapSYNS0ztS1zt middle m_mapSYNS0ztS1zt right\
+   left m_mapSYNS0zS1z middle m_mapSYNS0zS1z right\
+   left m_mapSYNS0zcS1zc middle m_mapSYNS0zcS1zc right\
+   left m_mapSYNS0cS1zc middle m_mapSYNS0cS1zc right\
+   left m_mapSYNS0zcS1c middle m_mapSYNS0zcS1c right\
+   left m_mapSYNS0zS1zS2z middle m_mapSYNS0zS1zS2z right\
+   left m_mapSYNS0zS1cS2c middle m_mapSYNS0zS1cS2c right\
+   left m_mapSYNS0cS1zS2c middle m_mapSYNS0cS1zS2c right\
+   left m_mapSYNS0cS1cS2z middle m_mapSYNS0cS1cS2z right\
+   left m_mapSYNS1zS2zS3z middle m_mapSYNS1zS2zS3z right\
+   left m_mapSYNS0zS1zS2zS3z middle m_mapSYNS0zS1zS2zS3z right\
+   left m_mapSYNS0zN0z middle m_mapSYNS0zN0z right\
+   left m_mapSYNS0zcN0z middle m_mapSYNS0zcN0z right\
+   left m_mapSYNS0zN01z middle m_mapSYNS0zN01z right\
+   left m_mapSYNS0zN012z middle m_mapSYNS0zN012z right\
+   left m_mapSYNS1zN0z middle m_mapSYNS1zN0z right\
+   left m_mapSYNS1zcN0z middle m_mapSYNS1zcN0z right\
+   left m_mapSYNS1zN01z middle m_mapSYNS1zN01z right\
+   left m_mapSYNS1zN012z middle m_mapSYNS1zN012z right\
+   left m_mapSYNS1zS0zN0z middle m_mapSYNS1zS0zN0z right\
+   left m_mapSYNS1zS0zN01z middle m_mapSYNS1zS0zN01z right\
+   left m_mapPSYNS0w middle m_mapPSYNS0w right\
+   left m_mapPSYNS0c middle m_mapPSYNS0c right\
+   left m_mapPSYNS0tc middle m_mapPSYNS0tc right\
+   left m_mapPSYNS0wc middle m_mapPSYNS0wc right\
+   left m_mapPSYNS1w middle m_mapPSYNS1w right\
+   left m_mapPSYNS1c middle m_mapPSYNS1c right\
+   left m_mapPSYNS1tc middle m_mapPSYNS1tc right\
+   left m_mapPSYNS1wc middle m_mapPSYNS1wc right\
+   left m_mapPSYNS2tc middle m_mapPSYNS2tc right\
+   left m_mapPSYNS2wc middle m_mapPSYNS2wc right\
+   left m_mapPSYNS3tc middle m_mapPSYNS3tc right\
+   left m_mapPSYNS3wc middle m_mapPSYNS3wc right\
+   left m_mapPSYNS0Ltc middle m_mapPSYNS0Ltc right\
+   left m_mapPSYNS0Lwc middle m_mapPSYNS0Lwc right\
+   left m_mapPSYNS0Rtc middle m_mapPSYNS0Rtc right\
+   left m_mapPSYNS0Rwc middle m_mapPSYNS0Rwc right\
+   left m_mapPSYNS0Utc middle m_mapPSYNS0Utc right\
+   left m_mapPSYNS0Uwc middle m_mapPSYNS0Uwc right\
+   left m_mapPSYNS1Ltc middle m_mapPSYNS1Ltc right\
+   left m_mapPSYNS1Lwc middle m_mapPSYNS1Lwc right\
+   left m_mapPSYNS1Rtc middle m_mapPSYNS1Rtc right\
+   left m_mapPSYNS1Rwc middle m_mapPSYNS1Rwc right\
+   left m_mapPSYNS1Utc middle m_mapPSYNS1Utc right\
+   left m_mapPSYNS1Uwc middle m_mapPSYNS1Uwc right\
+   left m_mapPPSYNS0wcS1wc middle m_mapPPSYNS0wcS1wc right\
+   left m_mapPPSYNS0cS1wc middle m_mapPPSYNS0cS1wc right\
+   left m_mapPPSYNS0wcS1c middle m_mapPPSYNS0wcS1c right\
+   left m_mapPPSYNS0cS1c middle m_mapPPSYNS0cS1c right\
+   left m_mapPSYNS0wcS1wc middle m_mapPSYNS0wcS1wc right\
+   left m_mapPSYNS0cS1wc middle m_mapPSYNS0cS1wc right\
+   left m_mapPSYNS0wcS1c middle m_mapPSYNS0wcS1c right\
+   left m_mapPSYNS0cS1c middle m_mapPSYNS0cS1c right\
+   left m_mapPSYNS0wcN0w middle m_mapPSYNS0wcN0w right\
+   left m_mapPSYNS0cN0w middle m_mapPSYNS0cN0w right\
+   left m_mapPSYNS0wN0t middle m_mapPSYNS0wN0t right\
+   left m_mapPSYNS0cN0t middle m_mapPSYNS0cN0t right\
+   left m_mapPSYNS1wcN0w middle m_mapPSYNS1wcN0w right\
+   left m_mapPSYNS1cN0w middle m_mapPSYNS1cN0w right\
+   left m_mapPSYNS1wN0t middle m_mapPSYNS1wN0t right\
+   left m_mapPSYNS1cN0t middle m_mapPSYNS1cN0t right\
+   left m_mapSYNN0t middle m_mapSYNN0t right\
+   left m_mapSYNN1t middle m_mapSYNN1t right\
+   left m_mapSYNN2t middle m_mapSYNN2t right\
+   left m_mapSYNN3t middle m_mapSYNN3t right\
+   left m_mapSYNS0wN0t middle m_mapSYNS0wN0t right\
+   left m_mapSYNS0cN0t middle m_mapSYNS0cN0t right\
+   left m_mapSYNS1wN0t middle m_mapSYNS1wN0t right\
+   left m_mapSYNS1cN0t middle m_mapSYNS1cN0t right\
+   left m_mapSYNN0tN1w middle m_mapSYNN0tN1w right\
+   left m_mapSYNN0wN1t middle m_mapSYNN0wN1t right\
+   left m_mapSYNN0tN1t middle m_mapSYNN0tN1t right\
+   left m_mapSYNS0wS1cN0t middle m_mapSYNS0wS1cN0t right\
+   left m_mapSYNS0cS1wN0t middle m_mapSYNS0cS1wN0t right\
+   left m_mapSYNS0cS1cN0t middle m_mapSYNS0cS1cN0t right\
+   left m_mapSYNS0cS1tN0t middle m_mapSYNS0cS1tN0t right\
+   left m_mapSYNS0wcN0tN1t middle m_mapSYNS0wcN0tN1t right\
+   left m_mapSYNS0cN0wtN1t middle m_mapSYNS0cN0wtN1t right\
+   left m_mapSYNS0cN0tN1wt middle m_mapSYNS0cN0tN1wt right\
+   left m_mapSYNS0cN0tN1t middle m_mapSYNS0cN0tN1t right\
+   left m_mapSYNS0tN0tN1t middle m_mapSYNS0tN0tN1t right\
+   left m_mapPSYNS0z middle m_mapPSYNS0z right\
+   left m_mapPSYNS0zc middle m_mapPSYNS0zc right\
+   left m_mapPSYNS0CharTagCont middle m_mapPSYNS0CharTagCont right\
+   left m_mapPSYNS1z middle m_mapPSYNS1z right\
+   left m_mapPSYNS1zc middle m_mapPSYNS1zc right\
+   left m_mapPSYNS1CharTagCont middle m_mapPSYNS1CharTagCont right\
+   left m_mapPSYNS2zc middle m_mapPSYNS2zc right\
+   left m_mapPSYNS2CharTagCont middle m_mapPSYNS2CharTagCont right\
+   left m_mapPSYNS3zc middle m_mapPSYNS3zc right\
+   left m_mapPSYNS3CharTagCont middle m_mapPSYNS3CharTagCont right\
+   left m_mapPPSYNS0ztS1zt middle m_mapPPSYNS0ztS1zt right\
+   left m_mapPPSYNS0zS1z middle m_mapPPSYNS0zS1z right\
+   left m_mapPPSYNS0zcS1zc middle m_mapPPSYNS0zcS1zc right\
+   left m_mapPPSYNS0cS1zc middle m_mapPPSYNS0cS1zc right\
+   left m_mapPPSYNS0zcS1c middle m_mapPPSYNS0zcS1c right\
+   left m_mapPSYNS0ztS1zt middle m_mapPSYNS0ztS1zt right\
+   left m_mapPSYNS0zS1z middle m_mapPSYNS0zS1z right\
+   left m_mapPSYNS0zcS1zc middle m_mapPSYNS0zcS1zc right\
+   left m_mapPSYNS0cS1zc middle m_mapPSYNS0cS1zc right\
+   left m_mapPSYNS0zcS1c middle m_mapPSYNS0zcS1c right\
+   left m_mapPSYNS0zN0z middle m_mapPSYNS0zN0z right\
+   left m_mapPSYNS0zcN0z middle m_mapPSYNS0zcN0z right\
+   left m_mapPSYNS0zN01z middle m_mapPSYNS0zN01z right\
+   left m_mapPSYNS0zN012z middle m_mapPSYNS0zN012z right\
+   left m_mapPSYNS1zN0z middle m_mapPSYNS1zN0z right\
+   left m_mapPSYNS1zcN0z middle m_mapPSYNS1zcN0z right\
+   left m_mapPSYNS1zN01z middle m_mapPSYNS1zN01z right\
+   left m_mapPSYNS1zN012z middle m_mapPSYNS1zN012z right\
+   left m_mapPPSYNS1zS0zN0z middle m_mapPPSYNS1zS0zN0z right\
+   left m_mapPPSYNS1zS0zN01z middle m_mapPPSYNS1zS0zN01z right\
+   left m_mapPSYNS1zS0zN0z middle m_mapPSYNS1zS0zN0z right\
+   left m_mapPSYNS1zS0zN01z middle m_mapPSYNS1zS0zN01z right\ 
 	left m_mapWSLengthByLastWord middle m_mapWSLengthByLastWord right\
 	left m_mapWSLastLengthByWord middle m_mapWSLastLengthByWord right\
-	left m_mapWSTagByWordAndPrevChar middle m_mapWSTagByWordAndPrevChar right\
-	left m_mapWSTagOfOneCharWord middle m_mapWSTagOfOneCharWord right\
 	left m_mapWSSeparateChars middle m_mapWSSeparateChars right\
-	left m_mapWSLastWordFirstChar middle m_mapWSLastWordFirstChar right\
 	left m_mapWSFirstCharLastWordByWord middle m_mapWSFirstCharLastWordByWord right\
-	left m_mapWSTagByWordAndNextChar middle m_mapWSTagByWordAndNextChar right\
-	left m_mapWSOneCharWord middle m_mapWSOneCharWord right\
-	left m_mapWSFirstAndLastChars middle m_mapWSFirstAndLastChars right\
-	left m_mapWSLengthByFirstChar middle m_mapWSLengthByFirstChar right\
-	left m_mapWSLengthByLastChar middle m_mapWSLengthByLastChar right\
-	left m_mapWSTagByLastCharCat middle m_mapWSTagByLastCharCat right\
-	left m_mapWSTaggedCharByLastChar middle m_mapWSTaggedCharByLastChar right\
-\
-	left m_mapCharUnigram middle m_mapCharUnigram right \
-	left m_mapCharBigram middle m_mapCharBigram right \
-	left m_mapCharTrigram middle m_mapCharTrigram right \
-	left m_mapSeenWords middle m_mapSeenWords right \
-	left m_mapLastWordByWord middle m_mapLastWordByWord right \
-	left m_mapCurrentWordLastChar middle m_mapCurrentWordLastChar right \
-	left m_mapLastWordFirstChar middle m_mapLastWordFirstChar right \
-	left m_mapFirstCharLastWordByWord middle m_mapFirstCharLastWordByWord right \
-	left m_mapLastWordByLastChar middle m_mapLastWordByLastChar right \
-	left m_mapSeparateChars middle m_mapSeparateChars right \
-	left m_mapConsecutiveChars middle m_mapConsecutiveChars right \
-	left m_mapFirstAndLastChars middle m_mapFirstAndLastChars right \
-	left m_mapOneCharWord middle m_mapOneCharWord right \
-	left m_mapLengthByFirstChar middle m_mapLengthByFirstChar right \
-	left m_mapLengthByLastChar middle m_mapLengthByLastChar right \
-	left m_mapLengthByLastWord middle m_mapLengthByLastWord right \
-	left m_mapLastLengthByWord middle m_mapLastLengthByWord right \
-	left m_mapLastTagByTag middle m_mapLastTagByTag right \
-	left m_mapLastTwoTagsByTag middle m_mapLastTwoTagsByTag right \
-	left m_mapCurrentTag middle m_mapCurrentTag right \
-	left m_mapTagByLastWord middle m_mapTagByLastWord right \
-	left m_mapLastTagByWord middle m_mapLastTagByWord right \
-	left m_mapTagByFirstChar middle m_mapTagByFirstChar right \
-	left m_mapTagByLastChar middle m_mapTagByLastChar right \
-	left m_mapTagByChar middle m_mapTagByChar right \
-	left m_mapTagOfOneCharWord middle m_mapTagOfOneCharWord right \
-	left m_mapRepeatedCharByTag middle m_mapRepeatedCharByTag right \
-	left m_mapTagByWordAndPrevChar middle m_mapTagByWordAndPrevChar right \
-	left m_mapTagByWordAndNextChar middle m_mapTagByWordAndNextChar right \
-	left m_mapTaggedCharByFirstChar middle m_mapTaggedCharByFirstChar right \
-	left m_mapTaggedCharByLastChar middle m_mapTaggedCharByLastChar right \
-	left m_mapTagByFirstCharCat middle m_mapTagByFirstCharCat right \
-	left m_mapTagByLastCharCat middle m_mapTagByLastCharCat right \
-	left m_mapTaggedSeparateChars middle m_mapTaggedSeparateChars right \
-	left m_mapTaggedConsecutiveChars middle m_mapTaggedConsecutiveChars right \
-	left m_mapWordTagTag middle m_mapWordTagTag right \
-	left m_mapTagWordTag middle m_mapTagWordTag right \
-	left m_mapFirstCharBy2Tags middle m_mapFirstCharBy2Tags right \
-	left m_mapFirstCharBy3Tags middle m_mapFirstCharBy3Tags right \
-	left m_mapFirstCharAndChar middle m_mapFirstCharAndChar right \
-	left m_mapSepCharAndNextChar middle m_mapSepCharAndNextChar right \
-	left m_mapAppCharAndNextChar middle m_mapAppCharAndNextChar right \
-	left m_mapPartialWord middle m_mapPartialWord right \
-	left m_mapPartialLengthByFirstChar middle m_mapPartialLengthByFirstChar right \
-	left m_mapLengthByTagAndFirstChar middle m_mapLengthByTagAndFirstChar right \
-	left m_mapLengthByTagAndLastChar middle m_mapLengthByTagAndLastChar right \
-	left m_mapTag0Tag1Size1 middle m_mapTag0Tag1Size1 right \
-	left m_mapTag1Tag2Size1 middle m_mapTag1Tag2Size1 right \
-	left m_mapTag0Tag1Tag2Size1 middle m_mapTag0Tag1Tag2Size1 right\
-\
-	left m_mapS2CharTag middle m_mapS2CharTag right\
-	left m_mapS3CharTag middle m_mapS3CharTag right\
-	left m_mapS0CharTagCont middle m_mapS0CharTagCont right\
-	left m_mapS1CharTagCont middle m_mapS1CharTagCont right\
-	left m_mapS2CharTagCont middle m_mapS2CharTagCont right\
-	left m_mapS3CharTagCont middle m_mapS3CharTagCont right\
-\
-	left m_mapS0ztS1zt middle m_mapS0ztS1zt right\
-	left m_mapS0zS1z middle m_mapS0zS1z right\
-	left m_mapS0zS1zS2z middle m_mapS0zS1zS2z right\
-	left m_mapS1zS2zS3z middle m_mapS1zS2zS3z right\
-	left m_mapS0zS1zS2zS3z middle m_mapS0zS1zS2zS3z right\
-\
-	left m_mapS0zN0z middle m_mapS0zN0z right\
-	left m_mapS0zN01z middle m_mapS0zN01z right\
-	left m_mapS0zN012z middle m_mapS0zN012z right\
-\
-	left m_mapS1zN0z middle m_mapS1zN0z right\
-	left m_mapS1zN01z middle m_mapS1zN01z right\
-	left m_mapS1zN012z middle m_mapS1zN012z right\
-	left m_mapS1zS0zN0z middle m_mapS1zS0zN0z right\
-	left m_mapS1zS0zN01z middle m_mapS1zS0zN01z right
+	left m_mapWSLastWordByLastChar middle m_mapWSLastWordByLastChar right\
+   left m_mapLastTagByTag middle m_mapLastTagByTag right\
+   left m_mapTag0Tag1Size1 middle m_mapTag0Tag1Size1 right\
+   left m_mapTag0Tag1Tag2Size1 middle m_mapTag0Tag1Tag2Size1 right\
+   left m_mapTagByLastWord middle m_mapTagByLastWord right\
+   left m_mapLastTwoTagsByTag middle m_mapLastTwoTagsByTag right\
+   left m_mapTagByFirstChar middle m_mapTagByFirstChar right\
+   left m_mapTagByFirstCharCat middle m_mapTagByFirstCharCat right\
+   left m_mapFirstCharBy2Tags middle m_mapFirstCharBy2Tags right\
+   left m_mapFirstCharBy3Tags middle m_mapFirstCharBy3Tags right\
+   left m_mapTagByChar middle m_mapTagByChar right\
+   left m_mapTaggedSeparateChars middle m_mapTaggedSeparateChars right\
+   left m_mapTagWordTag middle m_mapTagWordTag right\
+   left m_mapWordTagTag middle m_mapWordTagTag right\
+   left m_mapSeenWords middle m_mapSeenWords right\
+   left m_mapLastWordByWord middle m_mapLastWordByWord right\
+   left m_mapOneCharWord middle m_mapOneCharWord right\
+   left m_mapFirstAndLastChars middle m_mapFirstAndLastChars right\
+   left m_mapLengthByFirstChar middle m_mapLengthByFirstChar right\
+   left m_mapLengthByLastChar middle m_mapLengthByLastChar right\
+   left m_mapLeftPartWordTag middle m_mapLeftPartWordTag right\
+   left m_mapRightPartWordTag middle m_mapRightPartWordTag right\
+   left m_mapCurrentWordLastChar middle m_mapCurrentWordLastChar right\
+   left m_mapLastWordByLastChar middle m_mapLastWordByLastChar right\
+   left m_mapLengthByLastWord middle m_mapLengthByLastWord right\
+   left m_mapLastLengthByWord middle m_mapLastLengthByWord right\
+   left m_mapCurrentTag middle m_mapCurrentTag right\
+   left m_mapLastTagByWord middle m_mapLastTagByWord right\
+   left m_mapTagByWordAndPrevChar middle m_mapTagByWordAndPrevChar right\
+   left m_mapTagOfOneCharWord middle m_mapTagOfOneCharWord right\
+   left m_mapTagByLastChar middle m_mapTagByLastChar right\
+   left m_mapTagByLastCharCat middle m_mapTagByLastCharCat right\
+   left m_mapTaggedCharByLastChar middle m_mapTaggedCharByLastChar right\
+   left m_mapTag1Tag2Size1 middle m_mapTag1Tag2Size1 right\
+   left m_mapSeparateChars middle m_mapSeparateChars right\
+   left m_mapLastWordFirstChar middle m_mapLastWordFirstChar right\
+   left m_mapFirstCharLastWordByWord middle m_mapFirstCharLastWordByWord right\
+   left m_mapTagByWordAndNextChar middle m_mapTagByWordAndNextChar right\
+   left m_mapAPPTagByChar middle m_mapAPPTagByChar right\
+   left m_mapTaggedCharByFirstChar middle m_mapTaggedCharByFirstChar right\
+   left m_mapConsecutiveChars middle m_mapConsecutiveChars right\
+   left m_mapTaggedConsecutiveChars middle m_mapTaggedConsecutiveChars right
+   
+
+
+
 
 
 namespace TARGET_LANGUAGE {
@@ -543,6 +495,7 @@ namespace conparser {
 typedef CScoreMapType<CWord, SCORE_TYPE, CAction::MAX> CWordMap;
 typedef CScoreMapType<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, CAction::MAX> CTaggedWordMap;
 typedef CScoreMapType<std::pair<CWord, unsigned long>,  SCORE_TYPE, CAction::MAX> CWordIntMap;
+typedef CScoreMapType<std::pair<CTag, unsigned long>,  SCORE_TYPE, CAction::MAX> CTagIntPairMap;
 typedef CScoreMapType<std::pair<CConstituent, unsigned long>,  SCORE_TYPE, CAction::MAX> CConstituentIntMap;
 typedef CScoreMapType<unsigned long, SCORE_TYPE, CAction::MAX> CIntMap;
 typedef CScoreMapType<std::pair<unsigned long, unsigned long>, SCORE_TYPE, CAction::MAX> CTwoIntMap;
@@ -563,7 +516,7 @@ typedef CScoreMapType<std::pair<CTwoWords, CCFGSet>, SCORE_TYPE, CAction::MAX> C
 typedef CScoreMapType<std::pair<CCFGSet, CActionType>, SCORE_TYPE, CAction::MAX> CCFGSetActionTypeMap;
 typedef CScoreMapType<CTuple2<CWord, CConstituent>, SCORE_TYPE, CAction::MAX> CWordConstituentMap;
 typedef CScoreMapType<CTuple2<CTag, CConstituent>, SCORE_TYPE, CAction::MAX> CTagConstituentMap;
-typedef CScoreMapType<CTuple3<CTag, CTag, unsigned long>, SCORE_TYPE, CAction::MAX> CWordTagIntMap;
+typedef CScoreMapType<CTuple3<CWord, CTag, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordTagIntMap;
 typedef CScoreMapType<CConstituent, SCORE_TYPE, CAction::MAX> CConstituentMap;
 typedef CScoreMapType<CAction, SCORE_TYPE, CAction::MAX> CActionMap;
 typedef CScoreMapType<CTuple2<CAction, CAction>, SCORE_TYPE, CAction::MAX> CAction2Map;
@@ -584,6 +537,7 @@ typedef CScoreMapType<CTuple3<CTag, CTag, int>, SCORE_TYPE, CAction::MAX> CBiTag
 typedef CScoreMapType<CTuple4<CTag, CTag, CTag, int>, SCORE_TYPE, CAction::MAX> CTriTagIntMap;
 typedef CScoreMapType<CTuple4<CWord, CTag, CTag, CTag>, SCORE_TYPE, CAction::MAX> CWordTriTagMap;
 typedef CScoreMapType< CTuple2<CTag, unsigned long long>, SCORE_TYPE , CAction::MAX> CTagIntMap;
+typedef CScoreMapType< CTuple2<CWord, unsigned long long>, SCORE_TYPE , CAction::MAX> CWord2IntMap;
 
 
 
@@ -591,6 +545,7 @@ typedef CScoreMapType< CTuple2<CTag, unsigned long long>, SCORE_TYPE , CAction::
 
 typedef CScoreMapType< std::pair<CWord, CTag>, SCORE_TYPE , CAction::MAX > CWordTagPairMap;
 typedef CScoreMapType< std::pair<unsigned long long, CTag>, SCORE_TYPE , CAction::MAX> CIntTagMap;
+typedef CScoreMapType< std::pair<unsigned long long, unsigned long long>, SCORE_TYPE , CAction::MAX> CIntIntPairMap;
 typedef CScoreMapType< CTagSet<CTag, 2>, SCORE_TYPE , CAction::MAX> CTagSet2Map;
 typedef CScoreMapType< CTagSet<CTag, 3>, SCORE_TYPE , CAction::MAX> CTagSet3Map;
 typedef CScoreMapType< std::pair<CWord, CTagSet<CTag, 2> >, SCORE_TYPE , CAction::MAX> CWordTagSet2Map;
@@ -605,6 +560,10 @@ typedef CScoreMapType<CTuple4<CWord, CWord, CWord, CTag>, SCORE_TYPE, CAction::M
 typedef CScoreMapType<CTuple4<CWord, CWord, CWord, CConstituent>, SCORE_TYPE, CAction::MAX> CTriWordConstituentMap;
 
 typedef CScoreMapType<CTuple4<CWord, CWord, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CTwoWordsTwoIntsMap;
+typedef CScoreMapType<CTuple4<CWord, CWord, CConstituent, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordWordConstituentIntMap;
+typedef CScoreMapType<CTuple3<CWord, CConstituent, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordConstituentIntMap;
+typedef CScoreMapType<CTuple2<CConstituent, unsigned long long>, SCORE_TYPE, CAction::MAX> CConstituentIntTupleMap;
+typedef CScoreMapType<CTuple3<CWord, CWord, unsigned long long>, SCORE_TYPE, CAction::MAX> CTwoWordsIntMap;
 
 typedef CScoreMapType<CTuple2<CCFGSet, unsigned long long>, SCORE_TYPE, CAction::MAX> CCFGIntMap;
 typedef CScoreMapType<CTuple3<CTag, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CTagTwoIntsMap;
@@ -612,6 +571,11 @@ typedef CScoreMapType<CTuple3<CConstituent, unsigned long long, unsigned long lo
 typedef CScoreMapType<CTuple4<CWord, CConstituent, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordConstituentTwoIntsMap;
 typedef CScoreMapType<CTuple3<CWord, CCFGSet, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordCfgIntMap;
 typedef CScoreMapType<CTuple3<CConstituent, CTag, unsigned long long>, SCORE_TYPE, CAction::MAX> CConstituentTagIntMap;
+typedef CScoreMapType<CTuple4<CWord, CWord, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordWordTwoIntsMap;
+typedef CScoreMapType<CTuple3<CWord, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CWordTwoIntsMap;
+typedef CScoreMapType<CTuple4<CTag, CTag, unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CTagTagTwoIntsMap;
+typedef CScoreMapType<CTuple2<unsigned long long, unsigned long long>, SCORE_TYPE, CAction::MAX> CTwoIntsMap;
+
 
 /*===============================================================
  *
@@ -622,317 +586,231 @@ typedef CScoreMapType<CTuple3<CConstituent, CTag, unsigned long long>, SCORE_TYP
 class CWeight : public CWeightBase {
 
 public:
-   // S0
-   CConstituentMap m_mapS0c;
-   CTaggedWordMap m_mapS0w;
-   CTaggedWordMap m_mapS0z;  //char 1
-   CTagConstituentMap m_mapS0tc;
-   CWordConstituentMap m_mapS0wc;
-   CWordConstituentMap m_mapS0zc;  //char 2
-
-   // S1
-   CConstituentMap m_mapS1c;
-   CTaggedWordMap m_mapS1w;
-   CTaggedWordMap m_mapS1z;  //char 3
-   CTagConstituentMap m_mapS1tc;
-   CWordConstituentMap m_mapS1wc;
-   CWordConstituentMap m_mapS1zc;  //char 4
-
-   // S2
-   CTagConstituentMap m_mapS2tc;
-   CWordConstituentMap m_mapS2wc;
-   CWordConstituentMap m_mapS2zc;  //char 5
-
-   // S3
-   CTagConstituentMap m_mapS3tc;
-   CWordConstituentMap m_mapS3wc;
-   CWordConstituentMap m_mapS3zc;  //char 6
-
-   // N0
-   CWordMap m_mapN0w;
-   CIntMap m_mapN0t;  //not use
-   CWordIntMap m_mapN0wt;  //not use
-
-   // N1
-   CWordMap m_mapN1w;
-   CIntMap m_mapN1t;  //not use
-   CWordIntMap m_mapN1wt;  //not use
-   CBiWordMap m_mapN01w; 	//added
-
-   // N2
-   CWordMap m_mapN2w;
-   CIntMap m_mapN2t;   //not use
-   CWordIntMap m_mapN2wt;  //not use
-   CBiWordMap m_mapN12w; 	//added
-   CTriWordMap m_mapN012w; 	//added
-
-   // N3
-   CWordMap m_mapN3w;
-   CIntMap m_mapN3t;  //not use
-   CWordIntMap m_mapN3wt;  //not use
-   CBiWordMap m_mapN23w; 	//added
-   CTriWordMap m_mapN123w; 	//added
-
-   // S0L
-   CWordConstituentMap m_mapS0Lwc;
-   CTagConstituentMap m_mapS0Ltc;
-
-   // S0R
-   CWordConstituentMap m_mapS0Rwc;
-   CTagConstituentMap m_mapS0Rtc;
-
-   // S0U
-   CWordConstituentMap m_mapS0Uwc;
-   CTagConstituentMap m_mapS0Utc;
-
-   // S1L
-   CWordConstituentMap m_mapS1Lwc;
-   CTagConstituentMap m_mapS1Ltc;
-
-   // S1R
-   CWordConstituentMap m_mapS1Rwc;
-   CTagConstituentMap m_mapS1Rtc;
-
-   // S1U
-   CWordConstituentMap m_mapS1Uwc;
-   CTagConstituentMap m_mapS1Utc;
-
-   // S0 S1
-   CTwoWordsCFGSetMap m_mapS0wcS1wc; // the original 
-   CTwoWordsCFGSetMap m_mapS0zcS1zc;  //char 7
-   CWordCFGSetMap m_mapS0wS1c;
-   CWordCFGSetMap m_mapS0zS1c;  //char 8
-   CWordCFGSetMap m_mapS0cS1w;
-   CWordCFGSetMap m_mapS0cS1z;  //char 9
-   CCFGSetMap m_mapS0cS1c;
-
-   CCFGSetMap m_mapBetweenTags;
-
-   // S0 N0
-   CWordWordConstituentMap m_mapS0wN0w;
-   CWordWordConstituentMap m_mapS0zN0w;  //char 10
-   CWordConstituentMap m_mapS0cN0w;
-   CWordIntMap m_mapS0wN0t; //not use
-   CConstituentIntMap m_mapS0cN0t;  //not use
-   CTwoIntMap m_mapS0cmN0tm;  //not use
-
-   // S1 N0
-   CWordWordConstituentMap m_mapS1wN0w;
-   CWordWordConstituentMap m_mapS1zN0w;  //char 11
-   CWordConstituentMap m_mapS1cN0w;
-   CWordIntMap m_mapS1wN0t;
-   CConstituentIntMap m_mapS1cN0t;
-
-   // N0 N1
-   CTwoWordsTwoIntsMap m_mapN0wN1w;
-   CWordIntMap m_mapN0tN1w;
-   CWordIntMap m_mapN0wN1t;
-   CTwoIntMap m_mapN0tN1t;
-
-   // S0 S1N0
-   CWordCfgIntMap m_mapS0wS1cN0t;
-   CWordCfgIntMap m_mapS0cS1wN0t;
-   CWordCFGSetMap m_mapS0cS1cN0w;
-   CCFGIntMap m_mapS0cS1cN0t;
-   CConstituentTagIntMap m_mapS0tS1tN0t;
-   CCFGIntMap m_mapS0jS1jN0t;
-
-   // S0 N0N1
-   CWordConstituentMap m_mapS0cN1w; 	//added
-   CWordConstituentTwoIntsMap m_mapS0wN0tN1t;  //not use
-   CWordConstituentTwoIntsMap m_mapS0cN0wN1t;  //not use
-   CWordConstituentTwoIntsMap m_mapS0cN0tN1w;
-   CConstituentTwoIntsMap m_mapS0cN0tN1t;  //not use
-   CTagTwoIntsMap m_mapS0tN0tN1t;  //not use
-   CCFGSetMap m_mapS0jN0tN1t;  //not use
-
-   // S0 S1S2
-   CWordCFGSetMap m_mapS0wS1cS2c;
-   CWordCFGSetMap m_mapS0zS1cS2c;  //char 12
-   CWordCFGSetMap m_mapS0cS1wS2c;
-   CWordCFGSetMap m_mapS0cS1zS2c;  //char 13
-   CWordCFGSetMap m_mapS0cS1cS2w;
-   CWordCFGSetMap m_mapS0cS1cS2z;  //char 14
-   CCFGSetMap m_mapS0cS1cS2c;
-   CCFGSetMap m_mapS0tS1tS2t;
-
-   // tag bigram
-   CIntMap m_mapS1cS2c;   //not use
-   CIntMap m_mapS2cS3c;   //not use
-   CIntMap m_mapN1tN2t;   //not use
-   CIntMap m_mapN2tN3t;   //not use
-   
-   CIntMap m_mapS0cS2c;   //not use
-   CIntMap m_mapS1cS3c;   //not use
-   CIntMap m_mapS0cN1t;   //not use
-   CIntMap m_mapN0tN2t;   //not use
-   CIntMap m_mapN1tN3t;   //not use
-
-   CIntMap m_mapN0tN1tN2t;   //not use
-
-   // S0 S0LRUN0
-   CCFGIntMap m_mapS0cS0RcN0t;   //not use
-   CCFGIntMap m_mapS0cS0RjN0t;  //not use
-   CWordCFGSetMap m_mapS0cS0RcN0w;
-
-   CCFGSetMap m_mapS0cS0LcN0t;   //not use
-   CWordCFGSetMap m_mapS0wS0LcN0t;   //not use
-   CWordCFGSetMap m_mapS0cS0LcN0w;   //not use
-   CWordCFGSetMap m_mapS0wS0RcN0t;   //not use
-   CCFGSetMap m_mapS0cS0UcN0t;   //not use
-   CWordCFGSetMap m_mapS0wS0UcN0t;   //not use
-   CWordCFGSetMap m_mapS0cS0UcN0w;   //not use
-
-   // S0 S0LRUS1
-   CCFGSetMap m_mapS0cS0LcS1c;
-   CCFGSetMap m_mapS0cS0LjS1j;
-   CWordCFGSetMap m_mapS0cS0LcS1w;
-   CWordCFGSetMap m_mapS0cS0LcS1z;  //char 15
-
-   CWordCFGSetMap m_mapS0wS0LcS1c;   //not use
-   CCFGSetMap m_mapS0cS0RcS1c;   //not use
-   CWordCFGSetMap m_mapS0wS0RcS1c;   //not use
-   CWordCFGSetMap m_mapS0cS0RcS1w;   //not use
-   CCFGSetMap m_mapS0cS0UcS1c;   //not use
-   CWordCFGSetMap m_mapS0wS0UcS1c;   //not use
-   CWordCFGSetMap m_mapS0cS0UcS1w;   //not use
-
-   // S0 S1LRUS1
-   CCFGSetMap m_mapS0cS1cS1Rc;
-   CCFGSetMap m_mapS0jS1cS1Rj;
-   CWordCFGSetMap m_mapS0wS1cS1Rc;
-   CWordCFGSetMap m_mapS0zS1cS1Rc;  //char 16
-
-   CCFGSetMap m_mapS0cS1cS1Lc;   //not use
-   CWordCFGSetMap m_mapS0wS1cS1Lc;   //not use
-   CWordCFGSetMap m_mapS0cS1wS1Lc;   //not use
-   CWordCFGSetMap m_mapS0cS1wS1Rc;   //not use
-   CCFGSetMap m_mapS0cS1cS1Uc;   //not use
-   CWordCFGSetMap m_mapS0wS1cS1Uc;   //not use
-   CWordCFGSetMap m_mapS0cS1wS1Uc;   //not use
-
-   // past action
-   CActionMap m_mapA1;   //not use
-   CAction2Map m_mapA1A2;   //not use
-
-   //word structure feature
-   CWordMap m_mapWSSeenWords; 	//added
-   CTwoWordsMap m_mapWSLastWordByWord; 	//added
-   CWordWordTagMap m_mapWSLastWordByWordCurrentTag; //added
-   CWordWordTagMap m_mapWSTwoHeadCharCurrentTag; //added
-   CWordTagPairMap m_mapWSCurrentTag; 	//added
-   CWordMap m_mapWSCurrentWordLastChar; 	//added
-   CTwoWordsMap m_mapWSLastWordByLastChar; 	//added
-   CWordIntMap m_mapWSLengthByLastWord;   	//added
-   CWordIntMap m_mapWSLastLengthByWord; 	//added
-   CWordTagPairMap m_mapWSTagByWordAndPrevChar; 	//added
-   CWordTagPairMap m_mapWSTagOfOneCharWord; 	//added
-   CWordMap m_mapWSSeparateChars;   	//added
-   CWordMap m_mapWSLastWordFirstChar;  //added
-   CTwoWordsMap m_mapWSFirstCharLastWordByWord;  //added
-   CWordTagPairMap m_mapWSTagByWordAndNextChar;  //added
-   CWordMap m_mapWSOneCharWord; 	//added
-   CTwoWordsMap m_mapWSFirstAndLastChars; 	//added
-   CWordIntMap m_mapWSLengthByFirstChar; 	//added
-   CWordIntMap m_mapWSLengthByLastChar; 	//added
-   CIntTagMap m_mapWSTagByLastCharCat; 	//added
-   CTwoTaggedWordsMap m_mapWSTaggedCharByLastChar; 	//added
-
-
-   //segmentation tagging features
-
-   CWordIntMap m_mapCharUnigram;
-   CWordIntMap m_mapCharBigram;
-   CWordIntMap m_mapCharTrigram;
-
-   // feature templates abstd::cout words
-   CWordMap m_mapSeenWords;
-   CTwoWordsMap m_mapLastWordByWord;
-   CWordMap m_mapCurrentWordLastChar;
-   CWordMap m_mapLastWordFirstChar;
-   CTwoWordsMap m_mapFirstCharLastWordByWord;
-   CTwoWordsMap m_mapLastWordByLastChar;
-   CWordMap m_mapSeparateChars;
-   CWordMap m_mapConsecutiveChars;
-   CTwoWordsMap m_mapFirstAndLastChars;
-   CWordMap m_mapOneCharWord;
-   CWordIntMap m_mapLengthByFirstChar;
-   CWordIntMap m_mapLengthByLastChar;
-   CWordIntMap m_mapLengthByLastWord;
-   CWordIntMap m_mapLastLengthByWord;
-
-   // feature templates tag
-   CWordTagPairMap m_mapCurrentTag;
+   CTaggedWordMap m_mapSYNS0w;
+   CConstituentMap m_mapSYNS0c;
+   CTagConstituentMap m_mapSYNS0tc;
+   CWordConstituentMap m_mapSYNS0wc;
+   CTaggedWordMap m_mapSYNS1w;
+   CConstituentMap m_mapSYNS1c;
+   CTagConstituentMap m_mapSYNS1tc;
+   CWordConstituentMap m_mapSYNS1wc;
+   CTagConstituentMap m_mapSYNS2tc;
+   CWordConstituentMap m_mapSYNS2wc;
+   CTagConstituentMap m_mapSYNS3tc;
+   CWordConstituentMap m_mapSYNS3wc;
+   CWordMap m_mapSYNN0w;
+   CWordMap m_mapSYNN1w;
+   CBiWordMap m_mapSYNN01w;
+   CWordMap m_mapSYNN2w;
+   CBiWordMap m_mapSYNN12w;
+   CTriWordMap m_mapSYNN012w;
+   CWordMap m_mapSYNN3w;
+   CBiWordMap m_mapSYNN23w;
+   CTriWordMap m_mapSYNN123w;
+   CTagConstituentMap m_mapSYNS0Ltc;
+   CWordConstituentMap m_mapSYNS0Lwc;
+   CTagConstituentMap m_mapSYNS0Rtc;
+   CWordConstituentMap m_mapSYNS0Rwc;
+   CTagConstituentMap m_mapSYNS0Utc;
+   CWordConstituentMap m_mapSYNS0Uwc;
+   CTagConstituentMap m_mapSYNS1Ltc;
+   CWordConstituentMap m_mapSYNS1Lwc;
+   CTagConstituentMap m_mapSYNS1Rtc;
+   CWordConstituentMap m_mapSYNS1Rwc;
+   CTagConstituentMap m_mapSYNS1Utc;
+   CWordConstituentMap m_mapSYNS1Uwc;
+   CTwoWordsCFGSetMap m_mapSYNS0wcS1wc;
+   CWordCFGSetMap m_mapSYNS0cS1w;
+   CWordCFGSetMap m_mapSYNS0wS1c;
+   CCFGSetMap m_mapSYNS0cS1c;
+   CWordWordConstituentMap m_mapSYNS0wcN0w;
+   CWordConstituentMap m_mapSYNS0cN0w;
+   CWordWordConstituentMap m_mapSYNS1wcN0w;
+   CWordConstituentMap m_mapSYNS1cN0w;
+   CWordCFGSetMap m_mapSYNS0cS1cN0w;
+   CWordCFGSetMap m_mapSYNS0wS1cS2c;
+   CWordCFGSetMap m_mapSYNS0cS1wS2c;
+   CWordCFGSetMap m_mapSYNS0cS1cS2w;
+   CCFGSetMap m_mapSYNS0cS1cS2c;
+   CCFGSetMap m_mapSYNS0tS1tS2t;
+   CWordCFGSetMap m_mapSYNS0cS0RcN0w;
+   CCFGSetMap m_mapSYNS0cS0LcS1c;
+   CCFGSetMap m_mapSYNS0cS0LjS1j;
+   CWordCFGSetMap m_mapSYNS0cS0LcS1w;
+   CCFGSetMap m_mapSYNS0cS1cS1Rc;
+   CCFGSetMap m_mapSYNS0jS1cS1Rj;
+   CWordCFGSetMap m_mapSYNS0wS1cS1Rc;
+   CTaggedWordMap m_mapSYNS0z;
+   CWordConstituentMap m_mapSYNS0zc;
+   CWordTagConstituentMap m_mapSYNS0CharTagCont;
+   CTaggedWordMap m_mapSYNS1z;
+   CWordConstituentMap m_mapSYNS1zc;
+   CWordTagConstituentMap m_mapSYNS1CharTagCont;
+   CTaggedWordMap m_mapSYNS2CharTag;
+   CWordConstituentMap m_mapSYNS2zc;
+   CWordTagConstituentMap m_mapSYNS2CharTagCont;
+   CTaggedWordMap m_mapSYNS3CharTag;
+   CWordConstituentMap m_mapSYNS3zc;
+   CWordTagConstituentMap m_mapSYNS3CharTagCont;
+   CTwoTaggedWordsMap m_mapSYNS0ztS1zt;
+   CBiWordMap m_mapSYNS0zS1z;
+   CTwoWordsCFGSetMap m_mapSYNS0zcS1zc;
+   CWordCFGSetMap m_mapSYNS0cS1zc;
+   CWordCFGSetMap m_mapSYNS0zcS1c;
+   CTriWordMap m_mapSYNS0zS1zS2z;
+   CWordCFGSetMap m_mapSYNS0zS1cS2c;
+   CWordCFGSetMap m_mapSYNS0cS1zS2c;
+   CWordCFGSetMap m_mapSYNS0cS1cS2z;
+   CTriWordMap m_mapSYNS1zS2zS3z;
+   CFourWordMap m_mapSYNS0zS1zS2zS3z;
+   CBiWordMap m_mapSYNS0zN0z;
+   CWordWordConstituentMap m_mapSYNS0zcN0z;
+   CTriWordMap m_mapSYNS0zN01z;
+   CFourWordMap m_mapSYNS0zN012z;
+   CBiWordMap m_mapSYNS1zN0z;
+   CWordWordConstituentMap m_mapSYNS1zcN0z;
+   CTriWordMap m_mapSYNS1zN01z;
+   CFourWordMap m_mapSYNS1zN012z;
+   CTriWordMap m_mapSYNS1zS0zN0z;
+   CFourWordMap m_mapSYNS1zS0zN01z;
+   CTaggedWordMap m_mapPSYNS0w;
+   CIntMap m_mapPSYNS0c;
+   CTagIntPairMap m_mapPSYNS0tc;
+   CWordIntMap m_mapPSYNS0wc;
+   CTaggedWordMap m_mapPSYNS1w;
+   CIntMap m_mapPSYNS1c;
+   CTagIntPairMap m_mapPSYNS1tc;
+   CWordIntMap m_mapPSYNS1wc;
+   CTagIntPairMap m_mapPSYNS2tc;
+   CWordIntMap m_mapPSYNS2wc;
+   CTagIntPairMap m_mapPSYNS3tc;
+   CWordIntMap m_mapPSYNS3wc;
+   CTagIntPairMap m_mapPSYNS0Ltc;
+   CWordIntMap m_mapPSYNS0Lwc;
+   CTagIntPairMap m_mapPSYNS0Rtc;
+   CWordIntMap m_mapPSYNS0Rwc;
+   CTagIntPairMap m_mapPSYNS0Utc;
+   CWordIntMap m_mapPSYNS0Uwc;
+   CTagIntPairMap m_mapPSYNS1Ltc;
+   CWordIntMap m_mapPSYNS1Lwc;
+   CTagIntPairMap m_mapPSYNS1Rtc;
+   CWordIntMap m_mapPSYNS1Rwc;
+   CTagIntPairMap m_mapPSYNS1Utc;
+   CWordIntMap m_mapPSYNS1Uwc;
+   CWordWordTwoIntsMap m_mapPPSYNS0wcS1wc;
+   CWordTwoIntsMap m_mapPPSYNS0cS1wc;
+   CWordTwoIntsMap m_mapPPSYNS0wcS1c;
+   CTwoIntsMap m_mapPPSYNS0cS1c;
+   CWordWordConstituentIntMap m_mapPSYNS0wcS1wc;
+   CWordConstituentIntMap m_mapPSYNS0cS1wc;
+   CWordConstituentIntMap m_mapPSYNS0wcS1c;
+   CConstituentIntTupleMap m_mapPSYNS0cS1c;
+   CTwoWordsIntMap m_mapPSYNS0wcN0w;
+   CWordIntMap m_mapPSYNS0cN0w;
+   CWordIntMap m_mapPSYNS0wN0t;
+   CIntIntPairMap m_mapPSYNS0cN0t;
+   CTwoWordsIntMap m_mapPSYNS1wcN0w;
+   CWordIntMap m_mapPSYNS1cN0w;
+   CWordIntMap m_mapPSYNS1wN0t;
+   CIntIntPairMap m_mapPSYNS1cN0t;
+   CIntMap m_mapSYNN0t;
+   CIntMap m_mapSYNN1t;
+   CIntMap m_mapSYNN2t;
+   CIntMap m_mapSYNN3t;
+   CWordIntMap m_mapSYNS0wN0t;
+   CConstituentIntMap m_mapSYNS0cN0t;
+   CWordIntMap m_mapSYNS1wN0t;
+   CConstituentIntMap m_mapSYNS1cN0t;
+   CWordIntMap m_mapSYNN0tN1w;
+   CWordIntMap m_mapSYNN0wN1t;
+   CTwoIntMap m_mapSYNN0tN1t;
+   CWordCfgIntMap m_mapSYNS0wS1cN0t;
+   CWordCfgIntMap m_mapSYNS0cS1wN0t;
+   CCFGIntMap m_mapSYNS0cS1cN0t;
+   CConstituentTagIntMap m_mapSYNS0cS1tN0t;
+   CWordConstituentTwoIntsMap m_mapSYNS0wcN0tN1t;
+   CWordConstituentTwoIntsMap m_mapSYNS0cN0wtN1t;
+   CWordConstituentTwoIntsMap m_mapSYNS0cN0tN1wt;
+   CConstituentTwoIntsMap m_mapSYNS0cN0tN1t;
+   CTagTwoIntsMap m_mapSYNS0tN0tN1t;
+   CTaggedWordMap m_mapPSYNS0z;
+   CWordIntMap m_mapPSYNS0zc;
+   CWordTagIntMap m_mapPSYNS0CharTagCont;
+   CTaggedWordMap m_mapPSYNS1z;
+   CWordIntMap m_mapPSYNS1zc;
+   CWordTagIntMap m_mapPSYNS1CharTagCont;
+   CWordIntMap m_mapPSYNS2zc;
+   CWordTagIntMap m_mapPSYNS2CharTagCont;
+   CWordIntMap m_mapPSYNS3zc;
+   CWordTagIntMap m_mapPSYNS3CharTagCont;
+   CTwoTaggedWordsMap m_mapPPSYNS0ztS1zt;
+   CBiWordMap m_mapPPSYNS0zS1z;
+   CWordWordTwoIntsMap m_mapPPSYNS0zcS1zc;
+   CWordTwoIntsMap m_mapPPSYNS0cS1zc;
+   CWordTwoIntsMap m_mapPPSYNS0zcS1c;
+   CTwoTaggedWordsMap m_mapPSYNS0ztS1zt;
+   CBiWordMap m_mapPSYNS0zS1z;
+   CWordWordConstituentIntMap m_mapPSYNS0zcS1zc;
+   CWordConstituentIntMap m_mapPSYNS0cS1zc;
+   CWordConstituentIntMap m_mapPSYNS0zcS1c;
+   CBiWordMap m_mapPSYNS0zN0z;
+   CTwoWordsIntMap m_mapPSYNS0zcN0z;
+   CTriWordMap m_mapPSYNS0zN01z;
+   CFourWordMap m_mapPSYNS0zN012z;
+   CBiWordMap m_mapPSYNS1zN0z;
+   CTwoWordsIntMap m_mapPSYNS1zcN0z;
+   CTriWordMap m_mapPSYNS1zN01z;
+   CFourWordMap m_mapPSYNS1zN012z;
+   CTriWordMap m_mapPPSYNS1zS0zN0z;
+   CFourWordMap m_mapPPSYNS1zS0zN01z;
+   CTriWordMap m_mapPSYNS1zS0zN0z;
+   CFourWordMap m_mapPSYNS1zS0zN01z;
+   CTwoWordsMap m_mapWSFirstCharLastWordByWord;
+   CTwoWordsMap m_mapWSLastWordByLastChar;
+   CWordIntMap m_mapWSLengthByLastWord;
+   CWordIntMap m_mapWSLastLengthByWord;
+   CWordMap m_mapWSSeparateChars;
    CBiTagMap m_mapLastTagByTag;
-   CTriTagMap m_mapLastTwoTagsByTag;
+   CBiTagIntMap m_mapTag0Tag1Size1;
+   CTriTagIntMap m_mapTag0Tag1Tag2Size1;
    CWordTagMap m_mapTagByLastWord;
-   CWordTagPairMap m_mapLastTagByWord;
+   CTriTagMap m_mapLastTwoTagsByTag;
    CWordTagMap m_mapTagByFirstChar;
-   CWordTagPairMap m_mapTagByLastChar;
-   CWordTagMap m_mapTagByChar;
-   CWordTagPairMap m_mapTagOfOneCharWord;
-   CWordTagPairMap m_mapRepeatedCharByTag;
-   CWordTagPairMap m_mapTagByWordAndPrevChar;
-   CWordTagPairMap m_mapTagByWordAndNextChar;
-   CTwoTaggedWordsMap m_mapTaggedCharByFirstChar;
-   CTwoTaggedWordsMap m_mapTaggedCharByLastChar;
-
-   // extra features
-   CTwoTaggedWordsMap m_mapTaggedSeparateChars;
-   CWordTagPairMap m_mapTaggedConsecutiveChars;
-
-   CWordTagTagMap m_mapWordTagTag;
-   CWordTagTagMap m_mapTagWordTag;
+   CTagIntMap m_mapTagByFirstCharCat;
    CWordTagTagMap m_mapFirstCharBy2Tags;
    CWordTriTagMap m_mapFirstCharBy3Tags;
-   CTwoWordsMap m_mapFirstCharAndChar;
-
-   CWordMap m_mapSepCharAndNextChar;
-   CWordMap m_mapAppCharAndNextChar;
-
-   CWordMap m_mapPartialWord;
-   CWordIntMap m_mapPartialLengthByFirstChar;
-   CWordIntMap m_mapLengthByTagAndFirstChar;
-   CWordIntMap m_mapLengthByTagAndLastChar;
-
-   CBiTagIntMap m_mapTag0Tag1Size1;
-   CTagSet2IntMap m_mapTag1Tag2Size1;
-   CTriTagIntMap m_mapTag0Tag1Tag2Size1;
-
-   // feature templates knowledge
-   CTagIntMap m_mapTagByFirstCharCat;
+   CWordTagMap m_mapTagByChar;
+   CTwoTaggedWordsMap m_mapTaggedSeparateChars;
+   CWordTagTagMap m_mapTagWordTag;
+   CWordTagTagMap m_mapWordTagTag;
+   CWordMap m_mapSeenWords;
+   CTwoWordsMap m_mapLastWordByWord;
+   CWordMap m_mapOneCharWord;
+   CTwoWordsMap m_mapFirstAndLastChars;
+   CWordIntMap m_mapLengthByFirstChar;
+   CWordIntMap m_mapLengthByLastChar;
+   CWordTagPairMap m_mapLeftPartWordTag;
+   CWordTagPairMap m_mapRightPartWordTag;
+   CWordMap m_mapCurrentWordLastChar;
+   CTwoWordsMap m_mapLastWordByLastChar;
+   CWordIntMap m_mapLengthByLastWord;
+   CWordIntMap m_mapLastLengthByWord;
+   CWordTagPairMap m_mapCurrentTag;
+   CWordTagPairMap m_mapLastTagByWord;
+   CWordTagPairMap m_mapTagByWordAndPrevChar;
+   CWordTagPairMap m_mapTagOfOneCharWord;
+   CWordTagPairMap m_mapTagByLastChar;
    CIntTagMap m_mapTagByLastCharCat;
-
-   CIntTagMap m_mapSeparateCharCat;
-   CIntTagMap m_mapConsecutiveCharCat;
-
-
-   //character features
-   CTaggedWordMap m_mapS2CharTag;
-   CTaggedWordMap m_mapS3CharTag;
-   CWordTagConstituentMap m_mapS0CharTagCont;
-   CWordTagConstituentMap m_mapS1CharTagCont;
-   CWordTagConstituentMap m_mapS2CharTagCont;
-   CWordTagConstituentMap m_mapS3CharTagCont;
-
-   CTwoTaggedWordsMap m_mapS0ztS1zt;
-   CBiWordMap m_mapS0zS1z;
-   CTriWordMap m_mapS0zS1zS2z;
-   CTriWordMap m_mapS1zS2zS3z;
-   CFourWordMap m_mapS0zS1zS2zS3z;
-
-   CBiWordMap m_mapS0zN0z;
-   CTriWordMap m_mapS0zN01z;
-   CFourWordMap m_mapS0zN012z;
-
-   CBiWordMap m_mapS1zN0z;
-	CTriWordMap m_mapS1zN01z;
-	CFourWordMap m_mapS1zN012z;
-	CTriWordMap m_mapS1zS0zN0z;
-	CFourWordMap m_mapS1zS0zN01z;
-
-
-   //combined features
+   CTwoTaggedWordsMap m_mapTaggedCharByLastChar;
+   CTagSet2IntMap m_mapTag1Tag2Size1;
+   CWordMap m_mapSeparateChars;
+   CWordMap m_mapLastWordFirstChar;
+   CTwoWordsMap m_mapFirstCharLastWordByWord;
+   CWordTagPairMap m_mapTagByWordAndNextChar;
+   CWordTagMap m_mapAPPTagByChar;
+   CTwoTaggedWordsMap m_mapTaggedCharByFirstChar;
+   CWordMap m_mapConsecutiveChars;
+   CWordTagPairMap m_mapTaggedConsecutiveChars;
 
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
@@ -970,267 +848,231 @@ public:
                           m_mapCanStart(CTag::COUNT),
                           m_mapWordHeadDictionary(65537),
 
-                          m_mapS0c("Stack0Constituent", TABLE_SIZE),
-                          m_mapS0w("Stack0Word", TABLE_SIZE),
-                          m_mapS0z("Stack0Char", TABLE_SIZE),
-                          m_mapS0tc("Stack0Tag", TABLE_SIZE),
-                          m_mapS0wc("Stack0WordConstituent", TABLE_SIZE),
-                          m_mapS0zc("Stack0CharConstituent", TABLE_SIZE),
-
-                          m_mapS1c("Stack1Constituent", TABLE_SIZE),
-                          m_mapS1w("Stack1Word", TABLE_SIZE),
-                          m_mapS1z("Stack1Char", TABLE_SIZE),
-                          m_mapS1tc("Stack1Tag", TABLE_SIZE),
-                          m_mapS1wc("Stack1WordConstituent", TABLE_SIZE),
-                          m_mapS1zc("Stack1CharConstituent", TABLE_SIZE),
-
-                          m_mapS2tc("Stack2Tag", TABLE_SIZE),
-                          m_mapS2wc("Stack2WordConstituent", TABLE_SIZE),
-                          m_mapS2zc("Stack2CharConstituent", TABLE_SIZE),
-
-                          m_mapS3tc("Stack3Tag", TABLE_SIZE),
-                          m_mapS3wc("Stack3WordConstituent", TABLE_SIZE),
-                          m_mapS3zc("Stack3ChardConstituent", TABLE_SIZE),
-
-                          m_mapN0w("Next0Word", TABLE_SIZE),
-                          m_mapN0t("Next0Tag", TABLE_SIZE),
-                          m_mapN0wt("Next0WordTag", TABLE_SIZE),
-                                            
-                          m_mapN1w("Next1Word", TABLE_SIZE),
-                          m_mapN1t("Next1Tag", TABLE_SIZE),
-                          m_mapN1wt("Next1WordTag", TABLE_SIZE),
-                          m_mapN01w("Next01Word", TABLE_SIZE),
-
-                          m_mapN2w("Next2Word", TABLE_SIZE),
-                          m_mapN2t("Next2Tag", TABLE_SIZE),
-                          m_mapN2wt("Next2WordTag", TABLE_SIZE),
-                          m_mapN12w("Next12Word", TABLE_SIZE),
-                          m_mapN012w("Next012Word", TABLE_SIZE),
-
-                          m_mapN3w("Next3Word", TABLE_SIZE),
-                          m_mapN3t("Next3Tag", TABLE_SIZE),
-                          m_mapN3wt("Next3WordTag", TABLE_SIZE),
-                          m_mapN23w("Next23Word", TABLE_SIZE),
-                          m_mapN123w("Next123Word", TABLE_SIZE),
-
-                          m_mapS0Lwc("Stack0LeftWord", TABLE_SIZE),
-                          m_mapS0Ltc("Stack0LeftConstituent", TABLE_SIZE), 
-
-                          m_mapS0Rwc("Stack0RightWord", TABLE_SIZE),
-                          m_mapS0Rtc("Stack0RightConstituent", TABLE_SIZE), 
-
-                          m_mapS0Uwc("Stack0UniWord", TABLE_SIZE),
-                          m_mapS0Utc("Stack0UniConstituent", TABLE_SIZE), 
-
-                          m_mapS1Lwc("Stack1LeftWord", TABLE_SIZE),
-                          m_mapS1Ltc("Stack1LeftConstituent", TABLE_SIZE), 
-
-                          m_mapS1Rwc("Stack1RightWord", TABLE_SIZE),
-                          m_mapS1Rtc("Stack1RightConstituent", TABLE_SIZE), 
-
-                          m_mapS1Uwc("Stack1UniWord", TABLE_SIZE),
-                          m_mapS1Utc("Stack1UniConstituent", TABLE_SIZE), 
-
-                          m_mapS0wcS1wc("Stack0WordStack1Word", TABLE_SIZE),
-                          m_mapS0zcS1zc("Stack0CharStack1Char", TABLE_SIZE),
-                          m_mapS0wS1c("Stack0WordStack1Constituent", TABLE_SIZE),
-                          m_mapS0zS1c("Stack0CharStack1Constituent", TABLE_SIZE),
-                          m_mapS0cS1w("Stack0ConstituentStack1Word", TABLE_SIZE),
-                          m_mapS0cS1z("Stack0ConstituentStack1Char", TABLE_SIZE),
-                          m_mapS0cS1c("Stack0ConstituentStack1Constituent", TABLE_SIZE),
-                          m_mapBetweenTags("BetweenTags", TABLE_SIZE),
-                                            
-                          m_mapS0wN0w("Stack0WordNext0Word", TABLE_SIZE),
-                          m_mapS0zN0w("Stack0CharNext0Word", TABLE_SIZE),
-                          m_mapS0wN0t("Stack0WordNext0Tag", TABLE_SIZE),
-                          m_mapS0cN0w("Stack0ConstituentNext0Word", TABLE_SIZE),
-                          m_mapS0cN0t("Stack0ConstituentNext0Tag", TABLE_SIZE),
-                          m_mapS0cmN0tm("Stack0ConstituentRhythmNext0TagRhythm", TABLE_SIZE),
-
-                          m_mapS1wN0w("Stack1WordNext0Word", TABLE_SIZE),
-                          m_mapS1zN0w("Stack1CharNext0Word", TABLE_SIZE),
-                          m_mapS1wN0t("Stack1WordNext0Tag", TABLE_SIZE),
-                          m_mapS1cN0w("Stack1ConstituentNext0Word", TABLE_SIZE),
-                          m_mapS1cN0t("Stack1ConstituentNext0Tag", TABLE_SIZE),
-
-                          m_mapN0wN1w("Next0WordNext1Word", TABLE_SIZE),
-                          m_mapN0tN1w("Next0TagNext1Word", TABLE_SIZE),
-                          m_mapN0wN1t("Next0WordNext1Tag", TABLE_SIZE),
-                          m_mapN0tN1t("Next0TagNext1Tag", TABLE_SIZE),
-
-                          m_mapS0wS1cN0t("Stack0WordStack1ConstituentNext0Tag", TABLE_SIZE),
-                          m_mapS0cS1wN0t("Stack0ConstituentStack1WordNext0Tag", TABLE_SIZE),
-                          m_mapS0cS1cN0w("Stack0ConstituentStack1ConstituentNext0Word", TABLE_SIZE),
-                          m_mapS0cS1cN0t("Stack0ConstituentStack1ConstituentNext0Tag", TABLE_SIZE),
-                          m_mapS0tS1tN0t("Stack0TagStack1TagNext0Tag", TABLE_SIZE),
-                          m_mapS0jS1jN0t("Stack0TagOrConstituentStack1TagOrConstituentNext0Tag", TABLE_SIZE),
-
-                          m_mapS0cN1w("Stack0ConstituentNext0WordNext", TABLE_SIZE),
-                          m_mapS0wN0tN1t("Stack0WordNext0TagNext", TABLE_SIZE),
-                          m_mapS0cN0wN1t("Stack0ConstituentNext0WordNext1Tag", TABLE_SIZE),
-                          m_mapS0cN0tN1w("Stack0ConstituentNext0TagNext1Word", TABLE_SIZE),
-                          m_mapS0cN0tN1t("Stack0ConstituentNext0TagNext1Tag", TABLE_SIZE),
-                          m_mapS0tN0tN1t("Stack0TagNext0TagNext1Tag", TABLE_SIZE),
-                          m_mapS0jN0tN1t("Stack0TagOrConstituentNext0TagNext1Tag", TABLE_SIZE),
-
-                          m_mapS0wS1cS2c("Stack0WordStack1ConstituentStack2Constituent", TABLE_SIZE),
-                          m_mapS0zS1cS2c("Stack0CharStack1ConstituentStack2Constituent", TABLE_SIZE),
-                          m_mapS0cS1wS2c("Stack0ConstituentStack1WordStack2Constituent", TABLE_SIZE),
-                          m_mapS0cS1zS2c("Stack0ConstituentStack1CharStack2Constituent", TABLE_SIZE),
-                          m_mapS0cS1cS2w("Stack0ConstituentStack1ConstituentStack2Word", TABLE_SIZE),
-                          m_mapS0cS1cS2z("Stack0ConstituentStack1ConstituentStack2Char", TABLE_SIZE),
-                          m_mapS0cS1cS2c("Stack0ConstituentStack1ConstituentStack2Constituent", TABLE_SIZE),
-                          m_mapS0tS1tS2t("Stack0TagStack1TagStack2Tag", TABLE_SIZE),
-
-                          m_mapS1cS2c("Stack1ConstituentStack2Constituent", TABLE_SIZE),
-                          m_mapS2cS3c("Stack2ConstituentStack3Constituent", TABLE_SIZE),
-                          m_mapN1tN2t("Next1TagNext2Tag", TABLE_SIZE),
-                          m_mapN2tN3t("Next2TagNext3Tag", TABLE_SIZE),
-                                               
-                          m_mapS0cS2c("Stack0ConstituentStack2Constituent", TABLE_SIZE),
-                          m_mapS1cS3c("Stack1ConstituentStack3Constituent", TABLE_SIZE),
-                          m_mapS0cN1t("Stack0ConstituentNext1Tag", TABLE_SIZE),
-                          m_mapN0tN2t("Next0TagNext2Tag", TABLE_SIZE),
-                          m_mapN1tN3t("Next1TagNextTag", TABLE_SIZE),
-
-                          m_mapS0cS0LcN0t("Stack0ConstituentStack0LConstituentNex0tTag", TABLE_SIZE),
-                          m_mapS0wS0LcN0t("Stack0WordStack0LConstituentNex0tTag", TABLE_SIZE),
-                          m_mapS0cS0LcN0w("Stack0ConstituentStack0LConstituentNex0tWord", TABLE_SIZE),
-                          m_mapS0cS0RcN0t("Stack0ConstituentStack0RConstituentNex0tTag", TABLE_SIZE),
-                          m_mapS0cS0RjN0t("Stack0ConstituentStack0RTagOrConstituentNex0tTag", TABLE_SIZE),
-                          m_mapS0wS0RcN0t("Stack0WordStack0RConstituentNex0tTag", TABLE_SIZE),
-                          m_mapS0cS0RcN0w("Stack0ConstituentStack0RConstituentNex0tWord", TABLE_SIZE),
-                          m_mapS0cS0UcN0t("Stack0ConstituentStack0UConstituentNex0tTag", TABLE_SIZE),
-                          m_mapS0wS0UcN0t("Stack0WordStack0UConstituentNex0tTag", TABLE_SIZE),
-                          m_mapS0cS0UcN0w("Stack0ConstituentStack0UConstituentNex0tWord", TABLE_SIZE),
-
-                          m_mapS0cS0LcS1c("Stack0ConstituentStack0LConstituentStack1Constituent", TABLE_SIZE),
-                          m_mapS0cS0LjS1j("Stack0ConstituentStack0LTagOrConstituentStack1TagOrConstituent", TABLE_SIZE),
-                          m_mapS0wS0LcS1c("Stack0WordStack0LConstituentStack1Constituent", TABLE_SIZE),
-                          m_mapS0cS0LcS1w("Stack0ConstituentStack0LConstituentStack1Word", TABLE_SIZE),
-                          m_mapS0cS0LcS1z("Stack0ConstituentStack0LConstituentStack1Char", TABLE_SIZE),
-                          m_mapS0cS0RcS1c("Stack0ConstituentStack0RConstituentStack1Constituent", TABLE_SIZE),
-                          m_mapS0wS0RcS1c("Stack0WordStack0RConstituentStack1Constituent", TABLE_SIZE),
-                          m_mapS0cS0RcS1w("Stack0ConstituentStack0RConstituentStack1Word", TABLE_SIZE),
-                          m_mapS0cS0UcS1c("Stack0ConstituentStack0UConstituentStack1Constituent", TABLE_SIZE),
-                          m_mapS0wS0UcS1c("Stack0WordStack0UConstituentStack1Constituent", TABLE_SIZE),
-                          m_mapS0cS0UcS1w("Stack0ConstituentStack0UConstituentStack1Word", TABLE_SIZE),
-
-                          m_mapN0tN1tN2t("NextTagTrigram", TABLE_SIZE),
-                          m_mapS0cS1cS1Lc("Stack0ConstituentStack1ConstituentStack1LConstituent", TABLE_SIZE),
-                          m_mapS0wS1cS1Lc("Stack0WordStack1ConstituentStack1LConstituent", TABLE_SIZE),
-                          m_mapS0cS1wS1Lc("Stack0ConstituentStack1WordStack1LConstituent", TABLE_SIZE),
-                          m_mapS0cS1cS1Rc("Stack0ConstituentStack1ConstituentStack1RConstituent", TABLE_SIZE),
-                          m_mapS0jS1cS1Rj("Stack0TagOrConstituentStack1ConstituentStack1RTagOrConstituent", TABLE_SIZE),
-                          m_mapS0wS1cS1Rc("Stack0WordStack1ConstituentStack1RConstituent", TABLE_SIZE),
-                          m_mapS0zS1cS1Rc("Stack0CharStack1ConstituentStack1RConstituent", TABLE_SIZE),
-                          m_mapS0cS1wS1Rc("Stack0ConstituentStack1WordStack1RConstituent", TABLE_SIZE),
-                          m_mapS0cS1cS1Uc("Stack0ConstituentStack1ConstituentStack1UConstituent", TABLE_SIZE),
-                          m_mapS0wS1cS1Uc("Stack0WordStack1ConstituentStack1UConstituent", TABLE_SIZE),
-                          m_mapS0cS1wS1Uc("Stack0ConstituentStack1WordStack1UConstituent", TABLE_SIZE),
-
-                          m_mapA1("PreviousAction", TABLE_SIZE),
-                          m_mapA1A2("PreviousActionBigram", TABLE_SIZE),
-
-                          m_mapWSSeenWords("WSSeenWords", TABLE_SIZE), 	//added
-                          m_mapWSLastWordByWord("WSLastWordByWord", TABLE_SIZE), 	//added
-                          m_mapWSLastWordByWordCurrentTag("WSLastWordByWordCurrentTag", TABLE_SIZE), //added
-                          m_mapWSTwoHeadCharCurrentTag("WSTwoHeadCharCurrentTag", TABLE_SIZE), //added
-                          m_mapWSCurrentTag("WSCurrentTag", TABLE_SIZE), 	//added
-                          m_mapWSCurrentWordLastChar("WSCurrentWordLastChar", TABLE_SIZE), 	//added
-                          m_mapWSLastWordByLastChar("WSLastWordByLastChar", TABLE_SIZE), 	//added
-                          m_mapWSLengthByLastWord("WSLengthByLastWord", TABLE_SIZE), 	//added
-                          m_mapWSLastLengthByWord("WSLastLengthByWord", TABLE_SIZE), 	//added
-                          m_mapWSTagByWordAndPrevChar("WSTagByWordAndPrevChar", TABLE_SIZE), 	//added
-                          m_mapWSTagOfOneCharWord("WSTagOfOneCharWord", TABLE_SIZE), 	//added
-                          m_mapWSSeparateChars("WSSeparateChars", TABLE_SIZE), 	//added
-                          m_mapWSLastWordFirstChar("WSLastWordFirstChar", TABLE_SIZE), 	//added
-                          m_mapWSFirstCharLastWordByWord("WSFirstCharLastWordByWord", TABLE_SIZE), 	//added
-                          m_mapWSTagByWordAndNextChar("WSTagByWordAndNextChar", TABLE_SIZE), 	//added
-                          m_mapWSOneCharWord("WSOneCharWord", TABLE_SIZE), 	//added
-                          m_mapWSFirstAndLastChars("WSFirstAndLastChars", TABLE_SIZE), 	//added
-                          m_mapWSLengthByFirstChar("WSLengthByFirstChar", TABLE_SIZE), 	//added
-                          m_mapWSLengthByLastChar("WSLengthByLastChar", TABLE_SIZE), 	//added
-                          m_mapWSTagByLastCharCat("WSTagByLastCharCat", TABLE_SIZE), 	//added
-                          m_mapWSTaggedCharByLastChar("WSTaggedCharByLastChar", TABLE_SIZE), 	//added
-
-								m_mapCharUnigram("CharacterUnigram", TABLE_SIZE),
-								m_mapCharBigram("CharacterBigram", TABLE_SIZE),
-								m_mapCharTrigram("CharacterTrigram", TABLE_SIZE),
-								m_mapSeenWords("WordDictionary", TABLE_SIZE),
-								m_mapLastWordByWord("LastWordByWord", TABLE_SIZE),
-								m_mapCurrentWordLastChar("CurrentWordLastChar", TABLE_SIZE),
-								m_mapLastWordFirstChar("LastWordFirstChar", TABLE_SIZE),
-								m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", TABLE_SIZE),
-								m_mapLastWordByLastChar("LastWordByLastChar", TABLE_SIZE),
-								m_mapSeparateChars("SeparateChars", TABLE_SIZE),
-								m_mapConsecutiveChars("ConsecutiveChars", TABLE_SIZE),
-								m_mapFirstAndLastChars("FirstAndLastChars", TABLE_SIZE),
-								m_mapOneCharWord("OneCharWord", TABLE_SIZE),
-								m_mapLengthByFirstChar("LengthByFirstChar", TABLE_SIZE),
-								m_mapLengthByLastChar("LengthByLastChar", TABLE_SIZE),
-								m_mapLengthByLastWord("LengthByLastWord", TABLE_SIZE),
-								m_mapLastLengthByWord("LastLengthByWord", TABLE_SIZE),
-
-								m_mapLastTagByTag("LastTagByTag", TABLE_SIZE),
-								m_mapLastTwoTagsByTag("LastTwoTagsByTag", TABLE_SIZE),
-								m_mapCurrentTag("CurrentTag", TABLE_SIZE),
-								m_mapTagByLastWord("TagByLastWord", TABLE_SIZE),
-								m_mapLastTagByWord("LastTagByWord", TABLE_SIZE),
-								m_mapTagByFirstChar("TagByFirstChar", TABLE_SIZE),
-								m_mapTagByLastChar("TagByLastChar", TABLE_SIZE),
-								m_mapTagByChar("TagByChar", TABLE_SIZE),
-								m_mapTagOfOneCharWord("TagOfOneCharWord", TABLE_SIZE),
-								m_mapRepeatedCharByTag("RepeatedCharByTag", TABLE_SIZE),
-								m_mapTagByWordAndPrevChar("TagByWordAndPrevChar", TABLE_SIZE),
-								m_mapTagByWordAndNextChar("TagByWordAndNextChar", TABLE_SIZE),
-								m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", TABLE_SIZE),
-								m_mapTaggedCharByLastChar("TaggedCharByLastChar", TABLE_SIZE),
-								m_mapTagByFirstCharCat("TagByFirstCharCat", TABLE_SIZE),
-								m_mapTagByLastCharCat("TagByLastCharCat", TABLE_SIZE),
-
-								m_mapSeparateCharCat("SeparateCharCat", TABLE_SIZE),
-								m_mapConsecutiveCharCat("ConsecutiveCharCat", TABLE_SIZE),
-				            m_mapTaggedSeparateChars("TaggedSeparateChars", TABLE_SIZE),
-				            m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", TABLE_SIZE),
-
-				            m_mapWordTagTag("WordByTheNextTwoTag", TABLE_SIZE),
-				            m_mapTagWordTag("TagByNextWordSecondNextTag", TABLE_SIZE),
-				            m_mapFirstCharBy2Tags("FirstCharByTagAndLastTag", TABLE_SIZE),
-				            m_mapFirstCharBy3Tags("FirstCharByTagLastTagAndSecondLastTag", TABLE_SIZE),
-				            m_mapFirstCharAndChar("FirstCharAndChar", TABLE_SIZE),
-				            m_mapSepCharAndNextChar("SeparatedCharAndNextChar", TABLE_SIZE),
-				            m_mapAppCharAndNextChar("AppendedCharAndNextChar", TABLE_SIZE),
-				            m_mapPartialWord("PartialWord", TABLE_SIZE),
-				            m_mapPartialLengthByFirstChar("PartialLengthByFirstChar", TABLE_SIZE),
-				            m_mapLengthByTagAndFirstChar("LengthByTagAndFirstChar", TABLE_SIZE),
-				            m_mapLengthByTagAndLastChar("LengthByTagAndLastChar", TABLE_SIZE),
-				            m_mapTag0Tag1Size1("Tag0Tag1Size1", TABLE_SIZE),
-				            m_mapTag1Tag2Size1("Tag1Tag2Size1", TABLE_SIZE),
-				            m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", TABLE_SIZE),
-				            m_mapS2CharTag("S2CharTag", TABLE_SIZE),
-				            m_mapS3CharTag("S3CharTag", TABLE_SIZE),
-				            m_mapS0CharTagCont("S0CharTagCont", TABLE_SIZE),
-				            m_mapS1CharTagCont("S1CharTagCont", TABLE_SIZE),
-				            m_mapS2CharTagCont("S2CharTagCont", TABLE_SIZE),
-				            m_mapS3CharTagCont("S3CharTagCont", TABLE_SIZE),
-
-				            m_mapS0ztS1zt("S0ztS1zt", TABLE_SIZE),
-				            m_mapS0zS1z("S0zS1z", TABLE_SIZE),
-				            m_mapS0zS1zS2z("S0zS1zS2z", TABLE_SIZE),
-				            m_mapS1zS2zS3z("S1zS2zS3z", TABLE_SIZE),
-				            m_mapS0zS1zS2zS3z("S0zS1zS2zS3z", TABLE_SIZE),
-
-				            m_mapS0zN0z("S0zN0z", TABLE_SIZE),
-				            m_mapS0zN01z("S0zN01z", TABLE_SIZE),
-				            m_mapS0zN012z("S0zN012z", TABLE_SIZE),
-
-				            m_mapS1zN0z("S1zN0z", TABLE_SIZE),
-				            m_mapS1zN01z("S1zN01z", TABLE_SIZE),
-				            m_mapS1zN012z("S1zN012z", TABLE_SIZE),
-				            m_mapS1zS0zN0z("S1zS0zN0z", TABLE_SIZE),
-				            m_mapS1zS0zN01z("S1zS0zN01z", TABLE_SIZE)
-
+                           m_mapSYNS0w("SYNS0w", TABLE_SIZE),	
+                           m_mapSYNS0c("SYNS0c", TABLE_SIZE),	
+                           m_mapSYNS0tc("SYNS0tc", TABLE_SIZE),	
+                           m_mapSYNS0wc("SYNS0wc", TABLE_SIZE),	
+                           m_mapSYNS1w("SYNS1w", TABLE_SIZE),	
+                           m_mapSYNS1c("SYNS1c", TABLE_SIZE),	
+                           m_mapSYNS1tc("SYNS1tc", TABLE_SIZE),	
+                           m_mapSYNS1wc("SYNS1wc", TABLE_SIZE),	
+                           m_mapSYNS2tc("SYNS2tc", TABLE_SIZE),	
+                           m_mapSYNS2wc("SYNS2wc", TABLE_SIZE),	
+                           m_mapSYNS3tc("SYNS3tc", TABLE_SIZE),	
+                           m_mapSYNS3wc("SYNS3wc", TABLE_SIZE),	
+                           m_mapSYNN0w("SYNN0w", TABLE_SIZE),	
+                           m_mapSYNN1w("SYNN1w", TABLE_SIZE),	
+                           m_mapSYNN01w("SYNN01w", TABLE_SIZE),	
+                           m_mapSYNN2w("SYNN2w", TABLE_SIZE),	
+                           m_mapSYNN12w("SYNN12w", TABLE_SIZE),	
+                           m_mapSYNN012w("SYNN012w", TABLE_SIZE),	
+                           m_mapSYNN3w("SYNN3w", TABLE_SIZE),	
+                           m_mapSYNN23w("SYNN23w", TABLE_SIZE),	
+                           m_mapSYNN123w("SYNN123w", TABLE_SIZE),	
+                           m_mapSYNS0Ltc("SYNS0Ltc", TABLE_SIZE),	
+                           m_mapSYNS0Lwc("SYNS0Lwc", TABLE_SIZE),	
+                           m_mapSYNS0Rtc("SYNS0Rtc", TABLE_SIZE),	
+                           m_mapSYNS0Rwc("SYNS0Rwc", TABLE_SIZE),	
+                           m_mapSYNS0Utc("SYNS0Utc", TABLE_SIZE),	
+                           m_mapSYNS0Uwc("SYNS0Uwc", TABLE_SIZE),	
+                           m_mapSYNS1Ltc("SYNS1Ltc", TABLE_SIZE),	
+                           m_mapSYNS1Lwc("SYNS1Lwc", TABLE_SIZE),	
+                           m_mapSYNS1Rtc("SYNS1Rtc", TABLE_SIZE),	
+                           m_mapSYNS1Rwc("SYNS1Rwc", TABLE_SIZE),	
+                           m_mapSYNS1Utc("SYNS1Utc", TABLE_SIZE),	
+                           m_mapSYNS1Uwc("SYNS1Uwc", TABLE_SIZE),	
+                           m_mapSYNS0wcS1wc("SYNS0wcS1wc", TABLE_SIZE),	
+                           m_mapSYNS0cS1w("SYNS0cS1w", TABLE_SIZE),	
+                           m_mapSYNS0wS1c("SYNS0wS1c", TABLE_SIZE),	
+                           m_mapSYNS0cS1c("SYNS0cS1c", TABLE_SIZE),	
+                           m_mapSYNS0wcN0w("SYNS0wcN0w", TABLE_SIZE),	
+                           m_mapSYNS0cN0w("SYNS0cN0w", TABLE_SIZE),	
+                           m_mapSYNS1wcN0w("SYNS1wcN0w", TABLE_SIZE),	
+                           m_mapSYNS1cN0w("SYNS1cN0w", TABLE_SIZE),	
+                           m_mapSYNS0cS1cN0w("SYNS0cS1cN0w", TABLE_SIZE),	
+                           m_mapSYNS0wS1cS2c("SYNS0wS1cS2c", TABLE_SIZE),	
+                           m_mapSYNS0cS1wS2c("SYNS0cS1wS2c", TABLE_SIZE),	
+                           m_mapSYNS0cS1cS2w("SYNS0cS1cS2w", TABLE_SIZE),	
+                           m_mapSYNS0cS1cS2c("SYNS0cS1cS2c", TABLE_SIZE),	
+                           m_mapSYNS0tS1tS2t("SYNS0tS1tS2t", TABLE_SIZE),	
+                           m_mapSYNS0cS0RcN0w("SYNS0cS0RcN0w", TABLE_SIZE),	
+                           m_mapSYNS0cS0LcS1c("SYNS0cS0LcS1c", TABLE_SIZE),	
+                           m_mapSYNS0cS0LjS1j("SYNS0cS0LjS1j", TABLE_SIZE),	
+                           m_mapSYNS0cS0LcS1w("SYNS0cS0LcS1w", TABLE_SIZE),	
+                           m_mapSYNS0cS1cS1Rc("SYNS0cS1cS1Rc", TABLE_SIZE),	
+                           m_mapSYNS0jS1cS1Rj("SYNS0jS1cS1Rj", TABLE_SIZE),	
+                           m_mapSYNS0wS1cS1Rc("SYNS0wS1cS1Rc", TABLE_SIZE),	
+                           m_mapSYNS0z("SYNS0z", TABLE_SIZE),	
+                           m_mapSYNS0zc("SYNS0zc", TABLE_SIZE),	
+                           m_mapSYNS0CharTagCont("SYNS0CharTagCont", TABLE_SIZE),	
+                           m_mapSYNS1z("SYNS1z", TABLE_SIZE),	
+                           m_mapSYNS1zc("SYNS1zc", TABLE_SIZE),	
+                           m_mapSYNS1CharTagCont("SYNS1CharTagCont", TABLE_SIZE),	
+                           m_mapSYNS2CharTag("SYNS2CharTag", TABLE_SIZE),	
+                           m_mapSYNS2zc("SYNS2zc", TABLE_SIZE),	
+                           m_mapSYNS2CharTagCont("SYNS2CharTagCont", TABLE_SIZE),	
+                           m_mapSYNS3CharTag("SYNS3CharTag", TABLE_SIZE),	
+                           m_mapSYNS3zc("SYNS3zc", TABLE_SIZE),	
+                           m_mapSYNS3CharTagCont("SYNS3CharTagCont", TABLE_SIZE),	
+                           m_mapSYNS0ztS1zt("SYNS0ztS1zt", TABLE_SIZE),	
+                           m_mapSYNS0zS1z("SYNS0zS1z", TABLE_SIZE),	
+                           m_mapSYNS0zcS1zc("SYNS0zcS1zc", TABLE_SIZE),	
+                           m_mapSYNS0cS1zc("SYNS0cS1zc", TABLE_SIZE),	
+                           m_mapSYNS0zcS1c("SYNS0zcS1c", TABLE_SIZE),	
+                           m_mapSYNS0zS1zS2z("SYNS0zS1zS2z", TABLE_SIZE),	
+                           m_mapSYNS0zS1cS2c("SYNS0zS1cS2c", TABLE_SIZE),	
+                           m_mapSYNS0cS1zS2c("SYNS0cS1zS2c", TABLE_SIZE),	
+                           m_mapSYNS0cS1cS2z("SYNS0cS1cS2z", TABLE_SIZE),	
+                           m_mapSYNS1zS2zS3z("SYNS1zS2zS3z", TABLE_SIZE),	
+                           m_mapSYNS0zS1zS2zS3z("SYNS0zS1zS2zS3z", TABLE_SIZE),	
+                           m_mapSYNS0zN0z("SYNS0zN0z", TABLE_SIZE),	
+                           m_mapSYNS0zcN0z("SYNS0zcN0z", TABLE_SIZE),	
+                           m_mapSYNS0zN01z("SYNS0zN01z", TABLE_SIZE),	
+                           m_mapSYNS0zN012z("SYNS0zN012z", TABLE_SIZE),	
+                           m_mapSYNS1zN0z("SYNS1zN0z", TABLE_SIZE),	
+                           m_mapSYNS1zcN0z("SYNS1zcN0z", TABLE_SIZE),
+                           m_mapSYNS1zN01z("SYNS1zN01z", TABLE_SIZE),	
+                           m_mapSYNS1zN012z("SYNS1zN012z", TABLE_SIZE),	
+                           m_mapSYNS1zS0zN0z("SYNS1zS0zN0z", TABLE_SIZE),	
+                           m_mapSYNS1zS0zN01z("SYNS1zS0zN01z", TABLE_SIZE),	
+                           m_mapPSYNS0w("PSYNS0w", TABLE_SIZE),
+                           m_mapPSYNS0c("PSYNS0c", TABLE_SIZE),
+                           m_mapPSYNS0tc("PSYNS0tc", TABLE_SIZE),
+                           m_mapPSYNS0wc("PSYNS0wc", TABLE_SIZE),
+                           m_mapPSYNS1w("PSYNS1w", TABLE_SIZE),
+                           m_mapPSYNS1c("PSYNS1c", TABLE_SIZE),
+                           m_mapPSYNS1tc("PSYNS1tc", TABLE_SIZE),
+                           m_mapPSYNS1wc("PSYNS1wc", TABLE_SIZE),
+                           m_mapPSYNS2tc("PSYNS2tc", TABLE_SIZE),
+                           m_mapPSYNS2wc("PSYNS2wc", TABLE_SIZE),
+                           m_mapPSYNS3tc("PSYNS3tc", TABLE_SIZE),
+                           m_mapPSYNS3wc("PSYNS3wc", TABLE_SIZE),
+                           m_mapPSYNS0Ltc("PSYNS0Ltc", TABLE_SIZE),
+                           m_mapPSYNS0Lwc("PSYNS0Lwc", TABLE_SIZE),
+                           m_mapPSYNS0Rtc("PSYNS0Rtc", TABLE_SIZE),
+                           m_mapPSYNS0Rwc("PSYNS0Rwc", TABLE_SIZE),
+                           m_mapPSYNS0Utc("PSYNS0Utc", TABLE_SIZE),
+                           m_mapPSYNS0Uwc("PSYNS0Uwc", TABLE_SIZE),
+                           m_mapPSYNS1Ltc("PSYNS1Ltc", TABLE_SIZE),
+                           m_mapPSYNS1Lwc("PSYNS1Lwc", TABLE_SIZE),
+                           m_mapPSYNS1Rtc("PSYNS1Rtc", TABLE_SIZE),
+                           m_mapPSYNS1Rwc("PSYNS1Rwc", TABLE_SIZE),
+                           m_mapPSYNS1Utc("PSYNS1Utc", TABLE_SIZE),
+                           m_mapPSYNS1Uwc("PSYNS1Uwc", TABLE_SIZE),
+                           m_mapPPSYNS0wcS1wc("PPSYNS0wcS1wc", TABLE_SIZE),
+                           m_mapPPSYNS0cS1wc("PPSYNS0cS1wc", TABLE_SIZE),
+                           m_mapPPSYNS0wcS1c("PPSYNS0wcS1c", TABLE_SIZE),
+                           m_mapPPSYNS0cS1c("PPSYNS0cS1c", TABLE_SIZE),
+                           m_mapPSYNS0wcS1wc("PSYNS0wcS1wc", TABLE_SIZE),
+                           m_mapPSYNS0cS1wc("PSYNS0cS1wc", TABLE_SIZE),
+                           m_mapPSYNS0wcS1c("PSYNS0wcS1c", TABLE_SIZE),
+                           m_mapPSYNS0cS1c("PSYNS0cS1c", TABLE_SIZE),
+                           m_mapPSYNS0wcN0w("PSYNS0wcN0w", TABLE_SIZE),
+                           m_mapPSYNS0cN0w("PSYNS0cN0w", TABLE_SIZE),
+                           m_mapPSYNS0wN0t("PSYNS0wN0t", TABLE_SIZE),
+                           m_mapPSYNS0cN0t("PSYNS0cN0t", TABLE_SIZE),
+                           m_mapPSYNS1wcN0w("PSYNS1wcN0w", TABLE_SIZE),
+                           m_mapPSYNS1cN0w("PSYNS1cN0w", TABLE_SIZE),
+                           m_mapPSYNS1wN0t("PSYNS1wN0t", TABLE_SIZE),
+                           m_mapPSYNS1cN0t("PSYNS1cN0t", TABLE_SIZE),
+                           m_mapSYNN0t("SYNN0t", TABLE_SIZE),
+                           m_mapSYNN1t("SYNN1t", TABLE_SIZE),
+                           m_mapSYNN2t("SYNN2t", TABLE_SIZE),
+                           m_mapSYNN3t("SYNN3t", TABLE_SIZE),
+                           m_mapSYNS0wN0t("SYNS0wN0t", TABLE_SIZE),
+                           m_mapSYNS0cN0t("SYNS0cN0t", TABLE_SIZE),
+                           m_mapSYNS1wN0t("SYNS1wN0t", TABLE_SIZE),
+                           m_mapSYNS1cN0t("SYNS1cN0t", TABLE_SIZE),
+                           m_mapSYNN0tN1w("SYNN0tN1w", TABLE_SIZE),
+                           m_mapSYNN0wN1t("SYNN0wN1t", TABLE_SIZE),
+                           m_mapSYNN0tN1t("SYNN0tN1t", TABLE_SIZE),
+                           m_mapSYNS0wS1cN0t("SYNS0wS1cN0t", TABLE_SIZE),
+                           m_mapSYNS0cS1wN0t("SYNS0cS1wN0t", TABLE_SIZE),
+                           m_mapSYNS0cS1cN0t("SYNS0cS1cN0t", TABLE_SIZE),
+                           m_mapSYNS0cS1tN0t("SYNS0cS1tN0t", TABLE_SIZE),
+                           m_mapSYNS0wcN0tN1t("SYNS0wcN0tN1t", TABLE_SIZE),
+                           m_mapSYNS0cN0wtN1t("SYNS0cN0wtN1t", TABLE_SIZE),
+                           m_mapSYNS0cN0tN1wt("SYNS0cN0tN1wt", TABLE_SIZE),
+                           m_mapSYNS0cN0tN1t("SYNS0cN0tN1t", TABLE_SIZE),
+                           m_mapSYNS0tN0tN1t("SYNS0tN0tN1t", TABLE_SIZE),
+                           m_mapPSYNS0z("PSYNS0z", TABLE_SIZE),
+                           m_mapPSYNS0zc("PSYNS0zc", TABLE_SIZE),
+                           m_mapPSYNS0CharTagCont("PSYNS0CharTagCont", TABLE_SIZE),
+                           m_mapPSYNS1z("PSYNS1z", TABLE_SIZE),
+                           m_mapPSYNS1zc("PSYNS1zc", TABLE_SIZE),
+                           m_mapPSYNS1CharTagCont("PSYNS1CharTagCont", TABLE_SIZE),
+                           m_mapPSYNS2zc("PSYNS2zc", TABLE_SIZE),
+                           m_mapPSYNS2CharTagCont("PSYNS2CharTagCont", TABLE_SIZE),
+                           m_mapPSYNS3zc("PSYNS3zc", TABLE_SIZE),
+                           m_mapPSYNS3CharTagCont("PSYNS3CharTagCont", TABLE_SIZE),
+                           m_mapPPSYNS0ztS1zt("PPSYNS0ztS1zt", TABLE_SIZE),
+                           m_mapPPSYNS0zS1z("PPSYNS0zS1z", TABLE_SIZE),
+                           m_mapPPSYNS0zcS1zc("PPSYNS0zcS1zc", TABLE_SIZE),
+                           m_mapPPSYNS0cS1zc("PPSYNS0cS1zc", TABLE_SIZE),
+                           m_mapPPSYNS0zcS1c("PPSYNS0zcS1c", TABLE_SIZE),
+                           m_mapPSYNS0ztS1zt("PSYNS0ztS1zt", TABLE_SIZE),
+                           m_mapPSYNS0zS1z("PSYNS0zS1z", TABLE_SIZE),
+                           m_mapPSYNS0zcS1zc("PSYNS0zcS1zc", TABLE_SIZE),
+                           m_mapPSYNS0cS1zc("PSYNS0cS1zc", TABLE_SIZE),
+                           m_mapPSYNS0zcS1c("PSYNS0zcS1c", TABLE_SIZE),
+                           m_mapPSYNS0zN0z("PSYNS0zN0z", TABLE_SIZE),
+                           m_mapPSYNS0zcN0z("PSYNS0zcN0z", TABLE_SIZE),
+                           m_mapPSYNS0zN01z("PSYNS0zN01z", TABLE_SIZE),
+                           m_mapPSYNS0zN012z("PSYNS0zN012z", TABLE_SIZE),
+                           m_mapPSYNS1zN0z("PSYNS1zN0z", TABLE_SIZE),
+                           m_mapPSYNS1zcN0z("PSYNS1zcN0z", TABLE_SIZE),
+                           m_mapPSYNS1zN01z("PSYNS1zN01z", TABLE_SIZE),
+                           m_mapPSYNS1zN012z("PSYNS1zN012z", TABLE_SIZE),
+                           m_mapPPSYNS1zS0zN0z("PPSYNS1zS0zN0z", TABLE_SIZE),
+                           m_mapPPSYNS1zS0zN01z("PPSYNS1zS0zN01z", TABLE_SIZE),
+                           m_mapPSYNS1zS0zN0z("PSYNS1zS0zN0z", TABLE_SIZE),
+                           m_mapPSYNS1zS0zN01z("PSYNS1zS0zN01z", TABLE_SIZE),
+                           m_mapWSLastWordByLastChar("WSLastWordByLastChar", TABLE_SIZE),
+                           m_mapWSLengthByLastWord("WSLengthByLastWord", TABLE_SIZE),
+                           m_mapWSLastLengthByWord("WSLastLengthByWord", TABLE_SIZE),
+                           m_mapWSSeparateChars("WSSeparateChars", TABLE_SIZE),
+                           m_mapWSFirstCharLastWordByWord("WSFirstCharLastWordByWord", TABLE_SIZE),
+                           m_mapLastTagByTag("LastTagByTag", TABLE_SIZE),	
+                           m_mapTag0Tag1Size1("Tag0Tag1Size1", TABLE_SIZE),	
+                           m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", TABLE_SIZE),	
+                           m_mapTagByLastWord("TagByLastWord", TABLE_SIZE),	
+                           m_mapLastTwoTagsByTag("LastTwoTagsByTag", TABLE_SIZE),	
+                           m_mapTagByFirstChar("TagByFirstChar", TABLE_SIZE),	
+                           m_mapTagByFirstCharCat("TagByFirstCharCat", TABLE_SIZE),	
+                           m_mapFirstCharBy2Tags("FirstCharBy2Tags", TABLE_SIZE),	
+                           m_mapFirstCharBy3Tags("FirstCharBy3Tags", TABLE_SIZE),	
+                           m_mapTagByChar("TagByChar", TABLE_SIZE),	
+                           m_mapTaggedSeparateChars("TaggedSeparateChars", TABLE_SIZE),	
+                           m_mapTagWordTag("TagWordTag", TABLE_SIZE),	
+                           m_mapWordTagTag("WordTagTag", TABLE_SIZE),	
+                           m_mapSeenWords("SeenWords", TABLE_SIZE),	
+                           m_mapLastWordByWord("LastWordByWord", TABLE_SIZE),	
+                           m_mapOneCharWord("OneCharWord", TABLE_SIZE),	
+                           m_mapFirstAndLastChars("FirstAndLastChars", TABLE_SIZE),	
+                           m_mapLengthByFirstChar("LengthByFirstChar", TABLE_SIZE),	
+                           m_mapLengthByLastChar("LengthByLastChar", TABLE_SIZE),	
+                           m_mapLeftPartWordTag("LeftPartWordTag", TABLE_SIZE),	
+                           m_mapRightPartWordTag("RightPartWordTag", TABLE_SIZE),	
+                           m_mapCurrentWordLastChar("CurrentWordLastChar", TABLE_SIZE),	
+                           m_mapLastWordByLastChar("LastWordByLastChar", TABLE_SIZE),	
+                           m_mapLengthByLastWord("LengthByLastWord", TABLE_SIZE),	
+                           m_mapLastLengthByWord("LastLengthByWord", TABLE_SIZE),	
+                           m_mapCurrentTag("CurrentTag", TABLE_SIZE),	
+                           m_mapLastTagByWord("LastTagByWord", TABLE_SIZE),	
+                           m_mapTagByWordAndPrevChar("TagByWordAndPrevChar", TABLE_SIZE),	
+                           m_mapTagOfOneCharWord("TagOfOneCharWord", TABLE_SIZE),	
+                           m_mapTagByLastChar("TagByLastChar", TABLE_SIZE),	
+                           m_mapTagByLastCharCat("TagByLastCharCat", TABLE_SIZE),	
+                           m_mapTaggedCharByLastChar("TaggedCharByLastChar", TABLE_SIZE),	
+                           m_mapTag1Tag2Size1("Tag1Tag2Size1", TABLE_SIZE),	
+                           m_mapSeparateChars("SeparateChars", TABLE_SIZE),	
+                           m_mapLastWordFirstChar("LastWordFirstChar", TABLE_SIZE),	
+                           m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", TABLE_SIZE),	
+                           m_mapTagByWordAndNextChar("TagByWordAndNextChar", TABLE_SIZE),	
+                           m_mapAPPTagByChar("APPTagByChar", TABLE_SIZE),	
+                           m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", TABLE_SIZE),	
+                           m_mapConsecutiveChars("ConsecutiveChars", TABLE_SIZE),	
+                           m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", TABLE_SIZE)
    { }
    ~CWeight() {
    	if (m_Knowledge) delete m_Knowledge;
