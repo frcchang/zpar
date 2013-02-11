@@ -303,6 +303,7 @@ protected:
       const bool temporary = false;
 #else
       const bool prev_temp = stack_size>2 ? item.stackPtr->stackPtr->node.temp:false;
+      //TRACE("prev_temp" << prev_temp);
 #endif
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent) {
          for (unsigned i=0; i<=1; ++i) {

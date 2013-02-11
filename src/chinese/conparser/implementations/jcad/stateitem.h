@@ -45,7 +45,7 @@ public:
    bool valid() const { return id!=-1; }
    void clear() { 
       this->id = -1;
-      this->type = static_cast<NODE_TYPE>(0); 
+      this->type = CHAR_B;
       this->temp = 0; 
       this->constituent.clear();
       this->pos = CTag::NONE;
@@ -53,7 +53,7 @@ public:
       this->right_child = 0; 
       this->word_head = 0;
       this->word_prev = 0;
-      this->word_last = this;
+      this->word_last = 0;
       this->begin_c = -1;
       this->end_c = -1;
       this->head_c = -1;
@@ -553,6 +553,33 @@ public:
          --count;
       }
       TRACE("");
+   }
+
+
+   void debugtrace(const CStringVector *s=0) const {
+      static const CStateItem* states[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+      static int count;
+      const static CStateItem *current;
+      count = 0;
+      current = this;
+      while (current->statePtr) {
+         states[count] = current;
+         ++count ; //updating
+         current = current->statePtr;
+      }
+      std::cout << "State item score == " << score << std::endl;
+      //TRACE("State item size == " << size);
+      --count;
+      while (count>=0) {
+         //if (s) {
+         //   //TRACE(states[count]->action.str()<<" ["<<(states[count]->stacksize()>0?s->at(states[count]->node.lexical_head).first:"")<<"]");
+         //}
+         //else {
+            std::cout << states[count]->action.str() <<" " << states[count]->score << std::endl;
+         //}
+         --count;
+      }
+      //TRACE("");
    }
 
    //===============================================================================
