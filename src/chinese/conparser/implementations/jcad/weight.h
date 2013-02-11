@@ -801,14 +801,14 @@ public:
    CWordTagPairMap m_mapTagOfOneCharWord;
    CWordTagPairMap m_mapTagByLastChar;
    CIntTagMap m_mapTagByLastCharCat;
-   CTwoTaggedWordsMap m_mapTaggedCharByLastChar;
+   CWordWordTagMap m_mapTaggedCharByLastChar;
    CTagSet2IntMap m_mapTag1Tag2Size1;
    CWordMap m_mapSeparateChars;
    CWordMap m_mapLastWordFirstChar;
    CTwoWordsMap m_mapFirstCharLastWordByWord;
    CWordTagPairMap m_mapTagByWordAndNextChar;
    CWordTagMap m_mapAPPTagByChar;
-   CTwoTaggedWordsMap m_mapTaggedCharByFirstChar;
+   CWordWordTagMap m_mapTaggedCharByFirstChar;
    CWordMap m_mapConsecutiveChars;
    CWordTagPairMap m_mapTaggedConsecutiveChars;
 

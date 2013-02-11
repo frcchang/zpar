@@ -40,11 +40,17 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile)
    while( ! ref_sent.empty() ) {
 //      TRACE_WORD("Sentence " << nCount << " ... ");
       nCount ++;
-      if(nCount > 1)break;
       parser.train( ref_sent, nCount );
+      if(nCount%1000==0)
+      {
+      	std::cout << nCount << " ";
+      	std::cout.flush();
+      }
 //      TRACE("done.");
       is >> ref_sent;
    }
+
+   std::cout << std::endl;
 
    parser.finishtraining();
 
@@ -76,6 +82,7 @@ void extract_features(const std::string &sOutputFile, const std::string &sFeatur
    
    is >> ref_sent;
    while( ! ref_sent.empty() ) {
+   	nCount ++;
       parser.getPositiveFeatures( ref_sent );
       is >> ref_sent;
    }

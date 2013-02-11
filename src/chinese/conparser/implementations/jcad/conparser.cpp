@@ -19,6 +19,7 @@ using namespace TARGET_LANGUAGE::conparser;
 #define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
 #define refer_or_allocate_tuple4(x, o1, o2, o3, o4) { if (amount == 0) x.refer(o1, o2, o3, o4); else x.allocate(o1, o2, o3, o4); }
 
+
 /*===============================================================
  *
  * CConParser - the conparser for TARGET_LANGUAGE 
@@ -58,6 +59,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static CTuple4<CWord, CWord, CWord, CTag> wordwordwordtag;
    static CTuple4<CTag, CTag, CTag, int> tritagint;
    static CTuple4<CWord, CTag, CTag, CTag> wordtagtagtag;
+   static CTuple4<CWord, CWord, CTag, CTag> wordwordtagtag;
 
    static CTuple3<CWord, CWord, CConstituent> biword_constituent;
    static CTuple3<CWord, CTag, CConstituent> wordtag_constituent;
@@ -869,7 +871,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
 			if ( m_Context.length_1 <= 2 )
 			{
-			cast_weights->m_mapLastTagByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.tag_2), action.code(), m_nScoreIndex , amount , round ) ;
+				cast_weights->m_mapLastTagByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.tag_2), action.code(), m_nScoreIndex , amount , round ) ;
 			}
 
 			if (m_Context.length_2 > 0) {
@@ -886,9 +888,41 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 			cast_weights->m_mapTagByLastChar.getOrUpdateScore(retval, std::make_pair(m_Context.last_char_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
 			cast_weights->m_mapTagByLastCharCat.getOrUpdateScore(retval, std::make_pair(last_char_cat_1, m_Context.tag_1) , action.code(), m_nScoreIndex , amount , round ) ;
 
-			for (int idj=0; idj<m_Context.length_1-1; ++idj) {
-				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, m_Context.wt12_collection[idj], action.code(), m_nScoreIndex, amount, round) ;
+			//for (int idj=0; idj<m_Context.length_1-1 && j < NORMALIZE_LENGTH_MAX-1; ++idj) {
+			//	//refer_or_allocate_tuple3(wordwordtag, &(m_Context.wors1characters[idj]), &(m_Context.last_char_1), &(m_Context.tag_1));
+			//	//cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round) ;
+			//}
+			if(m_Context.length_1 > 1)
+			{
+				refer_or_allocate_tuple3(wordwordtag, &(m_Context.word1char0), &(m_Context.last_char_1), &(m_Context.tag_1));
+				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round) ;
 			}
+			if(m_Context.length_1 > 2)
+			{
+				refer_or_allocate_tuple3(wordwordtag, &(m_Context.word1char1), &(m_Context.last_char_1), &(m_Context.tag_1));
+				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round) ;
+			}
+			if(m_Context.length_1 > 3)
+			{
+				refer_or_allocate_tuple3(wordwordtag, &(m_Context.word1char2), &(m_Context.last_char_1), &(m_Context.tag_1));
+				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round) ;
+			}
+			if(m_Context.length_1 > 4)
+			{
+				refer_or_allocate_tuple3(wordwordtag, &(m_Context.word1char3), &(m_Context.last_char_1), &(m_Context.tag_1));
+				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round) ;
+			}
+			if(m_Context.length_1 > 5)
+			{
+				refer_or_allocate_tuple3(wordwordtag, &(m_Context.word1char4), &(m_Context.last_char_1), &(m_Context.tag_1));
+				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round) ;
+			}
+			if(m_Context.length_1 > 6)
+			{
+				refer_or_allocate_tuple3(wordwordtag, &(m_Context.word1char5), &(m_Context.last_char_1), &(m_Context.tag_1));
+				cast_weights->m_mapTaggedCharByLastChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round) ;
+			}
+
 
 			if (m_Context.start_1 >= 0)
 			{
@@ -919,12 +953,13 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 			refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(m_Context.tag_1));
 			cast_weights->m_mapAPPTagByChar.getOrUpdateScore(retval, wordtag, action.code(), m_nScoreIndex , amount , round ) ;
 
-
-			cast_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore(retval, m_Context.wt12_app, action.code(), m_nScoreIndex, amount, round ) ;
+			refer_or_allocate_tuple3(wordwordtag, &(m_Context.first_char_1), &(m_Context.first_char_0), &(m_Context.tag_1));
+			cast_weights->m_mapTaggedCharByFirstChar.getOrUpdateScore(retval, wordwordtag, action.code(), m_nScoreIndex, amount, round ) ;
 
 			cast_weights->m_mapConsecutiveChars.getOrUpdateScore(retval, m_Context.two_char, action.code(), m_nScoreIndex, amount, round ) ;
 
 			cast_weights->m_mapTaggedConsecutiveChars.getOrUpdateScore(retval, std::make_pair(m_Context.two_char, m_Context.tag_1), action.code(), m_nScoreIndex, amount, round ) ;
+
 		}
 	}
 
@@ -1003,6 +1038,7 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
       //std::ofstream file ;
       //file.open("debug.features") ;
 		//file << action.str() << " ";
+      //std::cout << action.str() << " ";
 		//cast_weights->clear();
       getOrUpdateStackScore(cast_weights, scores, states[count], action, amount, m_nTrainingRound );
       //file << "\r\n";
@@ -1010,7 +1046,6 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
    	//file.close();
       --count;
    }
-
 
 }
 
@@ -1313,9 +1348,9 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
          //{
 			//	for(int idx = 0; idx < actions.size(); idx++)
 			//	{
-			//		TRACE_WORD(actions[idx].str() + "\t");
+			//		std::cout << actions[idx].str() + " ";
 			//	}
-			//	TRACE("");
+			//	std::cout << std::endl;
         //}
 
 
@@ -1421,6 +1456,18 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
          //pBestGen->trace(&sentence);
 
          updateScoresForStates(pBestGen, sentence, correctState) ;
+
+         //CSentenceParsed outout_sent;
+
+         //pBestGen->GenerateTree( sentence, outout_sent );
+
+         //std::cout << outout_sent  << std::endl;
+
+         //std::cout << pBestGen->score << std::endl;
+
+         //pBestGen->debugtrace();
+
+
          return true;
       }
       else {

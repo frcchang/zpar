@@ -88,8 +88,9 @@ public:
    CTag tag_1,tag_2;
    CTagSet<CTag, 2> tag_1_tag_2;
 
-   std::vector<CTwoTaggedWords> wt12_collection;
-   CTwoTaggedWords wt12_app;
+   CWord word1char0,word1char1,word1char2,word1char3, word1char4, word1char5;
+
+
 
 
 public:
@@ -130,7 +131,7 @@ public:
 	//      s1h = s1==0 ? 0 : ( s1->is_constituent() ? (s1->single_child()||s1->head_left() ? s1->left_child : s1->right_child) : 0 );
 
 
-			s0c.load( constituent_or_none(*s0) );;
+			s0c.load( constituent_or_none(*s0) );
 			s0w.load(_load_word(s0));
 			s0t.load(s0->pos);
 			s0wt.load(s0w, s0t);
@@ -416,21 +417,59 @@ public:
 
 		tag_1_tag_2.load( encodeTags(tag_1, tag_2) );
 
-		static CTwoTaggedWords wt12;
-		CTaggedWord<CTag, TAG_SEPARATOR> wt1, wt2;
-		wt12_collection.clear();
-      for (int j=0; j<length_1-1; ++j) {
-         wt1.load(find_or_replace_word_cache(start_1+j, start_1+j), tag_1);
-         wt2.load(last_char_1);//
-         if (!modify) { wt12.refer(&wt1, &wt2); } else { wt12.allocate(wt1, wt2); }
-         wt12_collection.push_back(wt12);
+      if(length_1 > 1)
+      {
+      	word1char0 = find_or_replace_word_cache(start_1, start_1);
+      }
+      else
+      {
+      	word1char0 = g_emptyWord;
       }
 
+      if(length_1 > 2)
+      {
+      	word1char1 = find_or_replace_word_cache(start_1+1, start_1+1);
+      }
+      else
+      {
+      	word1char1 = g_emptyWord;
+      }
 
+      if(length_1 > 3)
+      {
+      	word1char2 = find_or_replace_word_cache(start_1+2, start_1+2);
+      }
+      else
+      {
+      	word1char2 = g_emptyWord;
+      }
 
-      wt1.load(first_char_0, tag_1);
-		wt2.load(first_char_1);
-		refer_or_allocate(wt12_app, wt1, wt2);
+      if(length_1 > 4)
+      {
+      	word1char3 = find_or_replace_word_cache(start_1+3, start_1+3);
+      }
+      else
+      {
+      	word1char3 = g_emptyWord;
+      }
+
+      if(length_1 > 5)
+      {
+      	word1char4 = find_or_replace_word_cache(start_1+4, start_1+4);
+      }
+      else
+      {
+      	word1char4 = g_emptyWord;
+      }
+
+      if(length_1 > 6)
+      {
+      	word1char5 = find_or_replace_word_cache(start_1+5, start_1+5);
+      }
+      else
+      {
+      	word1char5 = g_emptyWord;
+      }
 
 
       return;
