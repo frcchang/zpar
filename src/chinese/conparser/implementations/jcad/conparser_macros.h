@@ -22,7 +22,7 @@
 //#define SCALE
 
 // The size of agenda
-static const unsigned long AGENDA_SIZE = 4;
+static const unsigned long AGENDA_SIZE = 32;
 static const unsigned long MIRA_SIZE = AGENDA_SIZE+1;
 
 // The size of a sentence and the words
