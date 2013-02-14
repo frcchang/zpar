@@ -245,7 +245,67 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapAPPTagByChar)right\
    left(m_mapTaggedCharByFirstChar)right\
    left(m_mapConsecutiveChars)right\
-   left(m_mapTaggedConsecutiveChars)right
+   left(m_mapTaggedConsecutiveChars)right\
+   left(m_mapSSYNTaggedSeparateChars)right\
+   left(m_mapSSYNS0fzcurz)right\
+   left(m_mapSSYNS0lzcurz)right\
+   left(m_mapSSYNS1fzcurw)right\
+   left(m_mapSSYNS1lzcurw)right\
+   left(m_mapSSYNS1lzcurwlz)right\
+   left(m_mapSSYNS1fzcurwt)right\
+   left(m_mapSSYNS1lzcurwt)right\
+   left(m_mapSSYNS1lzcurwlzt)right\
+   left(m_mapPSYNS1lzcurwlz)right\
+   left(m_mapFiSYNS1z)right\
+   left(m_mapFiSYNS1zc)right\
+   left(m_mapFiSYNS0ztS1zt)right\
+   left(m_mapFiSYNS0zS1z)right\
+   left(m_mapFiSYNS0zcS1zc)right\
+   left(m_mapFiSYNS0cS1zc)right\
+   left(m_mapFiSYNS1zN0z)right\
+   left(m_mapFiSYNS1zcN0z)right\
+   left(m_mapFiSYNS1zN01z)right\
+   left(m_mapFiSYNS1zN012z)right\
+   left(m_mapFiSYNS1zS0zN0z)right\
+   left(m_mapFiSYNS1zS0zN01z)right\
+   left(m_mapFiPSYNS1z)right\
+   left(m_mapFiPSYNS1zc)right\
+   left(m_mapFiPPSYNS0ztS1zt)right\
+   left(m_mapFiPPSYNS0zS1z)right\
+   left(m_mapFiPPSYNS0zcS1zc)right\
+   left(m_mapFiPPSYNS0cS1zc)right\
+   left(m_mapFiPSYNS0ztS1zt)right\
+   left(m_mapFiPSYNS0zS1z)right\
+   left(m_mapFiPSYNS0zcS1zc)right\
+   left(m_mapFiPSYNS0cS1zc)right\
+   left(m_mapFiPSYNS1zN0z)right\
+   left(m_mapFiPSYNS1zcN0z)right\
+   left(m_mapFiPSYNS1zN01z)right\
+   left(m_mapFiPSYNS1zN012z)right\
+   left(m_mapFiPPSYNS1zS0zN0z)right\
+   left(m_mapFiPPSYNS1zS0zN01z)right\
+   left(m_mapFiPSYNS1zS0zN0z)right\
+   left(m_mapFiPSYNS1zS0zN01z)right\
+   left(m_mapFiSYNS0z)right\
+   left(m_mapFiSYNS0zc)right\
+   left(m_mapFiSYNS0zcS1c)right\
+   left(m_mapFiSYNS0zN0z)right\
+   left(m_mapFiSYNS0zcN0z)right\
+   left(m_mapFiSYNS0zN01z)right\
+   left(m_mapFiSYNS0zN012z)right\
+   left(m_mapFiPSYNS0z)right\
+   left(m_mapFiPSYNS0zc)right\
+   left(m_mapFiPPSYNS0zcS1c)right\
+   left(m_mapFiPSYNS0zcS1c)right\
+   left(m_mapFiPSYNS0zN0z)right\
+   left(m_mapFiPSYNS0zcN0z)right\
+   left(m_mapFiPSYNS0zN01z)right\
+   left(m_mapFiPSYNS0zN012z)right\
+   left(m_mapFiPSYNS0CharTagCont)right\
+   left(m_mapFiPSYNS1CharTagCont)right\
+   left(m_mapFiSYNS0CharTagCont)right\
+   left(m_mapFiSYNS1CharTagCont)right
+
 
 
 
@@ -476,7 +536,66 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapAPPTagByChar middle m_mapAPPTagByChar right\
    left m_mapTaggedCharByFirstChar middle m_mapTaggedCharByFirstChar right\
    left m_mapConsecutiveChars middle m_mapConsecutiveChars right\
-   left m_mapTaggedConsecutiveChars middle m_mapTaggedConsecutiveChars right
+   left m_mapTaggedConsecutiveChars middle m_mapTaggedConsecutiveChars right\
+   left m_mapSSYNTaggedSeparateChars middle m_mapSSYNTaggedSeparateChars right\
+   left m_mapSSYNS0fzcurz middle m_mapSSYNS0fzcurz right\
+   left m_mapSSYNS0lzcurz middle m_mapSSYNS0lzcurz right\
+   left m_mapSSYNS1fzcurw middle m_mapSSYNS1fzcurw right\
+   left m_mapSSYNS1lzcurw middle m_mapSSYNS1lzcurw right\
+   left m_mapSSYNS1lzcurwlz middle m_mapSSYNS1lzcurwlz right\
+   left m_mapSSYNS1fzcurwt middle m_mapSSYNS1fzcurwt right\
+   left m_mapSSYNS1lzcurwt middle m_mapSSYNS1lzcurwt right\
+   left m_mapSSYNS1lzcurwlzt middle m_mapSSYNS1lzcurwlzt right\
+   left m_mapPSYNS1lzcurwlz middle m_mapPSYNS1lzcurwlz right\
+   left m_mapFiSYNS1z middle m_mapFiSYNS1z right\
+   left m_mapFiSYNS1zc middle m_mapFiSYNS1zc right\
+   left m_mapFiSYNS0ztS1zt middle m_mapFiSYNS0ztS1zt right\
+   left m_mapFiSYNS0zS1z middle m_mapFiSYNS0zS1z right\
+   left m_mapFiSYNS0zcS1zc middle m_mapFiSYNS0zcS1zc right\
+   left m_mapFiSYNS0cS1zc middle m_mapFiSYNS0cS1zc right\
+   left m_mapFiSYNS1zN0z middle m_mapFiSYNS1zN0z right\
+   left m_mapFiSYNS1zcN0z middle m_mapFiSYNS1zcN0z right\
+   left m_mapFiSYNS1zN01z middle m_mapFiSYNS1zN01z right\
+   left m_mapFiSYNS1zN012z middle m_mapFiSYNS1zN012z right\
+   left m_mapFiSYNS1zS0zN0z middle m_mapFiSYNS1zS0zN0z right\
+   left m_mapFiSYNS1zS0zN01z middle m_mapFiSYNS1zS0zN01z right\
+   left m_mapFiPSYNS1z middle m_mapFiPSYNS1z right\
+   left m_mapFiPSYNS1zc middle m_mapFiPSYNS1zc right\
+   left m_mapFiPPSYNS0ztS1zt middle m_mapFiPPSYNS0ztS1zt right\
+   left m_mapFiPPSYNS0zS1z middle m_mapFiPPSYNS0zS1z right\
+   left m_mapFiPPSYNS0zcS1zc middle m_mapFiPPSYNS0zcS1zc right\
+   left m_mapFiPPSYNS0cS1zc middle m_mapFiPPSYNS0cS1zc right\
+   left m_mapFiPSYNS0ztS1zt middle m_mapFiPSYNS0ztS1zt right\
+   left m_mapFiPSYNS0zS1z middle m_mapFiPSYNS0zS1z right\
+   left m_mapFiPSYNS0zcS1zc middle m_mapFiPSYNS0zcS1zc right\
+   left m_mapFiPSYNS0cS1zc middle m_mapFiPSYNS0cS1zc right\
+   left m_mapFiPSYNS1zN0z middle m_mapFiPSYNS1zN0z right\
+   left m_mapFiPSYNS1zcN0z middle m_mapFiPSYNS1zcN0z right\
+   left m_mapFiPSYNS1zN01z middle m_mapFiPSYNS1zN01z right\
+   left m_mapFiPSYNS1zN012z middle m_mapFiPSYNS1zN012z right\
+   left m_mapFiPPSYNS1zS0zN0z middle m_mapFiPPSYNS1zS0zN0z right\
+   left m_mapFiPPSYNS1zS0zN01z middle m_mapFiPPSYNS1zS0zN01z right\
+   left m_mapFiPSYNS1zS0zN0z middle m_mapFiPSYNS1zS0zN0z right\
+   left m_mapFiPSYNS1zS0zN01z middle m_mapFiPSYNS1zS0zN01z right\
+   left m_mapFiSYNS0z middle m_mapFiSYNS0z right\
+   left m_mapFiSYNS0zc middle m_mapFiSYNS0zc right\
+   left m_mapFiSYNS0zcS1c middle m_mapFiSYNS0zcS1c right\
+   left m_mapFiSYNS0zN0z middle m_mapFiSYNS0zN0z right\
+   left m_mapFiSYNS0zcN0z middle m_mapFiSYNS0zcN0z right\
+   left m_mapFiSYNS0zN01z middle m_mapFiSYNS0zN01z right\
+   left m_mapFiSYNS0zN012z middle m_mapFiSYNS0zN012z right\
+   left m_mapFiPSYNS0z middle m_mapFiPSYNS0z right\
+   left m_mapFiPSYNS0zc middle m_mapFiPSYNS0zc right\
+   left m_mapFiPPSYNS0zcS1c middle m_mapFiPPSYNS0zcS1c right\
+   left m_mapFiPSYNS0zcS1c middle m_mapFiPSYNS0zcS1c right\
+   left m_mapFiPSYNS0zN0z middle m_mapFiPSYNS0zN0z right\
+   left m_mapFiPSYNS0zcN0z middle m_mapFiPSYNS0zcN0z right\
+   left m_mapFiPSYNS0zN01z middle m_mapFiPSYNS0zN01z right\
+   left m_mapFiPSYNS0zN012z middle m_mapFiPSYNS0zN012z right\
+   left m_mapFiPSYNS0CharTagCont middle m_mapFiPSYNS0CharTagCont right\
+   left m_mapFiPSYNS1CharTagCont middle m_mapFiPSYNS1CharTagCont right\
+   left m_mapFiSYNS0CharTagCont middle m_mapFiSYNS0CharTagCont right\
+   left m_mapFiSYNS1CharTagCont middle m_mapFiSYNS1CharTagCont right
    
 
 
@@ -812,6 +931,68 @@ public:
    CWordMap m_mapConsecutiveChars;
    CWordTagPairMap m_mapTaggedConsecutiveChars;
 
+   CTwoTaggedWordsMap m_mapSSYNTaggedSeparateChars;
+   CBiWordMap m_mapSSYNS0fzcurz;
+   CBiWordMap m_mapSSYNS0lzcurz;
+   CBiWordMap m_mapSSYNS1fzcurw;
+   CBiWordMap m_mapSSYNS1lzcurw;
+   CBiWordMap m_mapSSYNS1lzcurwlz;
+   CWordWordTagMap m_mapSSYNS1fzcurwt;
+   CWordWordTagMap m_mapSSYNS1lzcurwt;
+   CWordWordTagMap m_mapSSYNS1lzcurwlzt;
+   CBiWordMap m_mapPSYNS1lzcurwlz;
+   
+   CTaggedWordMap m_mapFiSYNS1z;
+   CWordConstituentMap m_mapFiSYNS1zc;
+   CTwoTaggedWordsMap m_mapFiSYNS0ztS1zt;
+   CBiWordMap m_mapFiSYNS0zS1z;
+   CTwoWordsCFGSetMap m_mapFiSYNS0zcS1zc;
+   CWordCFGSetMap m_mapFiSYNS0cS1zc;
+   CBiWordMap m_mapFiSYNS1zN0z;
+   CWordWordConstituentMap m_mapFiSYNS1zcN0z;
+   CTriWordMap m_mapFiSYNS1zN01z;
+   CFourWordMap m_mapFiSYNS1zN012z;
+   CTriWordMap m_mapFiSYNS1zS0zN0z;
+   CFourWordMap m_mapFiSYNS1zS0zN01z;
+   CTaggedWordMap m_mapFiPSYNS1z;
+   CWordIntMap m_mapFiPSYNS1zc;
+   CTwoTaggedWordsMap m_mapFiPPSYNS0ztS1zt;
+   CBiWordMap m_mapFiPPSYNS0zS1z;
+   CWordWordTwoIntsMap m_mapFiPPSYNS0zcS1zc;
+   CWordTwoIntsMap m_mapFiPPSYNS0cS1zc;
+   CTwoTaggedWordsMap m_mapFiPSYNS0ztS1zt;
+   CBiWordMap m_mapFiPSYNS0zS1z;
+   CWordWordConstituentIntMap m_mapFiPSYNS0zcS1zc;
+   CWordConstituentIntMap m_mapFiPSYNS0cS1zc;
+   CBiWordMap m_mapFiPSYNS1zN0z;
+   CTwoWordsIntMap m_mapFiPSYNS1zcN0z;
+   CTriWordMap m_mapFiPSYNS1zN01z;
+   CFourWordMap m_mapFiPSYNS1zN012z;
+   CTriWordMap m_mapFiPPSYNS1zS0zN0z;
+   CFourWordMap m_mapFiPPSYNS1zS0zN01z;
+   CTriWordMap m_mapFiPSYNS1zS0zN0z;
+   CFourWordMap m_mapFiPSYNS1zS0zN01z;
+   CTaggedWordMap m_mapFiSYNS0z;
+   CWordConstituentMap m_mapFiSYNS0zc;
+   CWordCFGSetMap m_mapFiSYNS0zcS1c;
+   CBiWordMap m_mapFiSYNS0zN0z;
+   CWordWordConstituentMap m_mapFiSYNS0zcN0z;
+   CTriWordMap m_mapFiSYNS0zN01z;
+   CFourWordMap m_mapFiSYNS0zN012z;
+   CTaggedWordMap m_mapFiPSYNS0z;
+   CWordIntMap m_mapFiPSYNS0zc;
+   CWordTwoIntsMap m_mapFiPPSYNS0zcS1c;
+   CWordConstituentIntMap m_mapFiPSYNS0zcS1c;
+   CBiWordMap m_mapFiPSYNS0zN0z;
+   CTwoWordsIntMap m_mapFiPSYNS0zcN0z;
+   CTriWordMap m_mapFiPSYNS0zN01z;
+   CFourWordMap m_mapFiPSYNS0zN012z;
+   CWordTagIntMap m_mapFiPSYNS0CharTagCont;
+   CWordTagIntMap m_mapFiPSYNS1CharTagCont;
+   CWordTagConstituentMap m_mapFiSYNS0CharTagCont;
+   CWordTagConstituentMap m_mapFiSYNS1CharTagCont;
+
+
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
    CWordToIntMap m_mapWordFrequency;
@@ -1072,7 +1253,66 @@ public:
                            m_mapAPPTagByChar("APPTagByChar", TABLE_SIZE),	
                            m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", TABLE_SIZE),	
                            m_mapConsecutiveChars("ConsecutiveChars", TABLE_SIZE),	
-                           m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", TABLE_SIZE)
+                           m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", TABLE_SIZE),
+                           m_mapSSYNTaggedSeparateChars("SSYNTaggedSeparateChars", TABLE_SIZE),
+                           m_mapSSYNS0fzcurz("SSYNS0fzcurz", TABLE_SIZE),
+                           m_mapSSYNS0lzcurz("SSYNS0lzcurz", TABLE_SIZE),
+                           m_mapSSYNS1fzcurw("SSYNS1fzcurw", TABLE_SIZE),
+                           m_mapSSYNS1lzcurw("SSYNS1lzcurw", TABLE_SIZE),
+                           m_mapSSYNS1lzcurwlz("SSYNS1lzcurwlz", TABLE_SIZE),
+                           m_mapSSYNS1fzcurwt("SSYNS1fzcurwt", TABLE_SIZE),
+                           m_mapSSYNS1lzcurwt("SSYNS1lzcurwt", TABLE_SIZE),
+                           m_mapSSYNS1lzcurwlzt("SSYNS1lzcurwlzt", TABLE_SIZE),
+                           m_mapPSYNS1lzcurwlz("PSYNS1lzcurwlz", TABLE_SIZE),
+                           m_mapFiSYNS1z("FiSYNS1z", TABLE_SIZE),
+                           m_mapFiSYNS1zc("FiSYNS1zc", TABLE_SIZE),
+                           m_mapFiSYNS0ztS1zt("FiSYNS0ztS1zt", TABLE_SIZE),
+                           m_mapFiSYNS0zS1z("FiSYNS0zS1z", TABLE_SIZE),
+                           m_mapFiSYNS0zcS1zc("FiSYNS0zcS1zc", TABLE_SIZE),
+                           m_mapFiSYNS0cS1zc("FiSYNS0cS1zc", TABLE_SIZE),
+                           m_mapFiSYNS1zN0z("FiSYNS1zN0z", TABLE_SIZE),
+                           m_mapFiSYNS1zcN0z("FiSYNS1zcN0z", TABLE_SIZE),
+                           m_mapFiSYNS1zN01z("FiSYNS1zN01z", TABLE_SIZE),
+                           m_mapFiSYNS1zN012z("FiSYNS1zN012z", TABLE_SIZE),
+                           m_mapFiSYNS1zS0zN0z("FiSYNS1zS0zN0z", TABLE_SIZE),
+                           m_mapFiSYNS1zS0zN01z("FiSYNS1zS0zN01z", TABLE_SIZE),
+                           m_mapFiPSYNS1z("FiPSYNS1z", TABLE_SIZE),
+                           m_mapFiPSYNS1zc("FiPSYNS1zc", TABLE_SIZE),
+                           m_mapFiPPSYNS0ztS1zt("FiPPSYNS0ztS1zt", TABLE_SIZE),
+                           m_mapFiPPSYNS0zS1z("FiPPSYNS0zS1z", TABLE_SIZE),
+                           m_mapFiPPSYNS0zcS1zc("FiPPSYNS0zcS1zc", TABLE_SIZE),
+                           m_mapFiPPSYNS0cS1zc("FiPPSYNS0cS1zc", TABLE_SIZE),
+                           m_mapFiPSYNS0ztS1zt("FiPSYNS0ztS1zt", TABLE_SIZE),
+                           m_mapFiPSYNS0zS1z("FiPSYNS0zS1z", TABLE_SIZE),
+                           m_mapFiPSYNS0zcS1zc("FiPSYNS0zcS1zc", TABLE_SIZE),
+                           m_mapFiPSYNS0cS1zc("FiPSYNS0cS1zc", TABLE_SIZE),
+                           m_mapFiPSYNS1zN0z("FiPSYNS1zN0z", TABLE_SIZE),
+                           m_mapFiPSYNS1zcN0z("FiPSYNS1zcN0z", TABLE_SIZE),
+                           m_mapFiPSYNS1zN01z("FiPSYNS1zN01z", TABLE_SIZE),
+                           m_mapFiPSYNS1zN012z("FiPSYNS1zN012z", TABLE_SIZE),
+                           m_mapFiPPSYNS1zS0zN0z("FiPPSYNS1zS0zN0z", TABLE_SIZE),
+                           m_mapFiPPSYNS1zS0zN01z("FiPPSYNS1zS0zN01z", TABLE_SIZE),
+                           m_mapFiPSYNS1zS0zN0z("FiPSYNS1zS0zN0z", TABLE_SIZE),
+                           m_mapFiPSYNS1zS0zN01z("FiPSYNS1zS0zN01z", TABLE_SIZE),
+                           m_mapFiSYNS0z("FiSYNS0z", TABLE_SIZE),
+                           m_mapFiSYNS0zc("FiSYNS0zc", TABLE_SIZE),
+                           m_mapFiSYNS0zcS1c("FiSYNS0zcS1c", TABLE_SIZE),
+                           m_mapFiSYNS0zN0z("FiSYNS0zN0z", TABLE_SIZE),
+                           m_mapFiSYNS0zcN0z("FiSYNS0zcN0z", TABLE_SIZE),
+                           m_mapFiSYNS0zN01z("FiSYNS0zN01z", TABLE_SIZE),
+                           m_mapFiSYNS0zN012z("FiSYNS0zN012z", TABLE_SIZE),
+                           m_mapFiPSYNS0z("FiPSYNS0z", TABLE_SIZE),
+                           m_mapFiPSYNS0zc("FiPSYNS0zc", TABLE_SIZE),
+                           m_mapFiPPSYNS0zcS1c("FiPPSYNS0zcS1c", TABLE_SIZE),
+                           m_mapFiPSYNS0zcS1c("FiPSYNS0zcS1c", TABLE_SIZE),
+                           m_mapFiPSYNS0zN0z("FiPSYNS0zN0z", TABLE_SIZE),
+                           m_mapFiPSYNS0zcN0z("FiPSYNS0zcN0z", TABLE_SIZE),
+                           m_mapFiPSYNS0zN01z("FiPSYNS0zN01z", TABLE_SIZE),
+                           m_mapFiPSYNS0zN012z("FiPSYNS0zN012z", TABLE_SIZE),
+                           m_mapFiPSYNS0CharTagCont("FiPSYNS0CharTagCont", TABLE_SIZE),
+                           m_mapFiPSYNS1CharTagCont("FiPSYNS1CharTagCont", TABLE_SIZE),
+                           m_mapFiSYNS0CharTagCont("FiSYNS0CharTagCont", TABLE_SIZE),
+                           m_mapFiSYNS1CharTagCont("FiSYNS1CharTagCont", TABLE_SIZE)
    { }
    ~CWeight() {
    	if (m_Knowledge) delete m_Knowledge;

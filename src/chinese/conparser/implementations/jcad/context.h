@@ -51,6 +51,7 @@ public:
    CTag s0t, s1t, s2t, s3t;
    CWord s0z, s1z, s2z, s3z;
    CWord s0lastz, s1lastz, s0firstz, s1firstz;
+   CTaggedWord<CTag, TAG_SEPARATOR> s0firstzt, s1firstzt;
    int length_s0, length_s1;
 
    CWord n0z, n1z, n2z, n3z; //addzms
@@ -72,6 +73,7 @@ public:
    CCFGSet s0cs1c, s0ts1t, s0cs1cs2c, s0cs0rc, s0ts1ts2t, s0cs0lcs1c, s0cs0ljs1j, s0cs0lc, s0cs1cs1rc, s0js1cs1rj,s1cs1rc;
    CTwoWords s0ws1w;
    CTwoWords s0zs1z;
+   CTwoWords s0firstzs1firstz;
    CTwoTaggedWords s0wts1wt;
    CTwoTaggedWords s0zts1zt;
 
@@ -137,8 +139,9 @@ public:
 			s0wt.load(s0w, s0t);
 			s0z.load(_load_char(s0));
 			s0zt.load(s0z, s0t);
-			s0firstz = find_or_replace_word_cache( s0->begin_c, s0->begin_c ) ;
-			s0lastz = find_or_replace_word_cache( s0->end_c, s0->end_c ) ;
+			s0firstz = find_or_replace_word_cache( s0->word_head->begin_c, s0->word_head->begin_c ) ;
+			s0lastz = find_or_replace_word_cache( s0->word_head->end_c, s0->word_head->end_c ) ;
+			s0firstzt.load(s0firstz, s0t);
 			length_s0 = s0->end_c - s0->begin_c + 1;
 
 
@@ -148,8 +151,9 @@ public:
 			s1wt.load(s1w, s1t);
 			s1z.load(s1 == 0 ? g_emptyWord.code() : _load_char(s1));
 			s1zt.load(s1z, s1t);
-			s1firstz = s1==0 ? g_emptyWord : find_or_replace_word_cache( s1->begin_c, s1->begin_c ) ;
-			s1lastz = s1==0 ? g_emptyWord : find_or_replace_word_cache( s1->end_c, s1->end_c ) ;
+			s1firstz = s1==0 ? g_emptyWord : find_or_replace_word_cache( s1->word_head->begin_c, s1->word_head->begin_c ) ;
+			s1lastz = s1==0 ? g_emptyWord : find_or_replace_word_cache( s1->word_head->end_c, s1->word_head->end_c ) ;
+			s1firstzt.load(s1firstz, s1t);
 			length_s1 = s1==0 ? 0 : (s1->end_c - s1->begin_c + 1);
 
 			s2c.load( s2==0 ? CConstituent::SENTENCE_BEGIN : constituent_or_none(*s2) );
@@ -198,12 +202,14 @@ public:
 			if (modify==false) {
 				if (s1!=0) s0ws1w.refer(&s0w, &s1w);
 				if (s1!=0) s0zs1z.refer(&s0z, &s1z);
+				if (s1!=0) s0firstzs1firstz.refer(&s0firstz, &s1firstz);
 				if (s1!=0) s0wts1wt.refer(&s0wt, &s1wt);
 				if (s1!=0) s0zts1zt.refer(&s0zt, &s1zt);
 			}
 			else {
 				if (s1!=0) s0ws1w.allocate(s0w, s1w);
 				if (s1!=0) s0zs1z.allocate(s0z, s1z);
+				if (s1!=0) s0firstzs1firstz.allocate(s0firstz, s1firstz);
 				if (s1!=0) s0wts1wt.allocate(s0wt, s1wt);
 				if (s1!=0) s0zts1zt.allocate(s0zt, s1zt);
 			}
@@ -251,6 +257,7 @@ public:
 			s0zt.load(s0z, s0t);
 			s0firstz = g_emptyWord ;
 			s0lastz = g_emptyWord ;
+			s0firstzt.load(s0firstz, s0t);
 			length_s0 = 0;
 
 
@@ -262,6 +269,7 @@ public:
 			s1zt.load(s1z, s1t);
 			s1firstz = g_emptyWord;
 			s1lastz = g_emptyWord;
+			s1firstzt.load(s1firstz, s1t);
 			length_s1 = 0;
 
 			s2c.load( CConstituent::SENTENCE_BEGIN );
@@ -310,12 +318,14 @@ public:
 			if (modify==false) {
 				if (s1!=0) s0ws1w.refer(&s0w, &s1w);
 				if (s1!=0) s0zs1z.refer(&s0z, &s1z);
+				if (s1!=0) s0firstzs1firstz.refer(&s0firstz, &s1firstz);
 				if (s1!=0) s0wts1wt.refer(&s0wt, &s1wt);
 				if (s1!=0) s0zts1zt.refer(&s0zt, &s1zt);
 			}
 			else {
 				if (s1!=0) s0ws1w.allocate(s0w, s1w);
 				if (s1!=0) s0zs1z.allocate(s0z, s1z);
+				if (s1!=0) s0firstzs1firstz.allocate(s0firstz, s1firstz);
 				if (s1!=0) s0wts1wt.allocate(s0wt, s1wt);
 				if (s1!=0) s0zts1zt.allocate(s0zt, s1zt);
 			}
