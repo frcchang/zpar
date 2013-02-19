@@ -82,7 +82,7 @@ public:
 	int start_1, end_1;
 	int start_2, end_2;
 	int length_1, length_2;
-   CWord word_1, word_2,  first_char_0, first_char_1, last_char_1, last_char_2, two_char, word_1_first_char_0, word_1_last_char_2, three_char;
+   CWord word_1, word_2,  first_char_0, first_char_1, last_char_1, last_char_2, two_char, word_1_first_char_0, word_1_last_char_2, three_char, twoword;
    CTwoWords word_2_word_1, first_char_1_last_char_1, first_char_0_first_char_1, first_char_0_last_char_1, last_char_1_last_char_2 ;
    CWord first_char_1_last_char_2, first_char_2;
    CTwoWords first_char_1_first_char_2;
@@ -249,6 +249,12 @@ public:
 			n3 = item->current_word+3 >= sentence.size() ? -1 : item->current_word+3;
 
 
+			s0 = 0;
+			s1 = 0;
+			s2 = 0;
+			s3 = 0;
+
+
 			s0c.load( CConstituent::SENTENCE_BEGIN );;
 			s0w.load(g_emptyWord.code());
 			s0t.load(g_beginTag.code());
@@ -377,6 +383,7 @@ public:
 
 		word_1 = start_1>=0 ? find_or_replace_word_cache( start_1, end_1 ) : g_emptyWord;
 		word_2 = start_2>=0 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord;
+		twoword = start_2>=0 ? find_or_replace_word_cache( start_2, end_1 ) : g_emptyWord;
 
 		if (length_1>LENGTH_MAX) length_1 = LENGTH_MAX;
 		if (length_2>LENGTH_MAX) length_2 = LENGTH_MAX;

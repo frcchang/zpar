@@ -71,6 +71,9 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
    getline(file, s);
 	ASSERT(s=="Tag dictionary", "Tag dictionary not found from model.");
 	file >>m_mapTagDictionary;
+   getline(file, s);
+	ASSERT(s=="SubTag dictionary", "SubTag dictionary not found from model.");
+	file >>m_mapSubTagDictionary;
 	getline(file, s);
 	ASSERT(s=="Char tag dictionary", "Char tag dictionary not found from model.");
 	file >>m_mapCharTagDictionary;
@@ -137,6 +140,8 @@ void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
 
    file <<"Tag dictionary" << std::endl;
 	file <<m_mapTagDictionary;
+   file <<"SubTag dictionary" << std::endl;
+	file <<m_mapSubTagDictionary;
 	file <<"Char tag dictionary" << std::endl;
 	file <<m_mapCharTagDictionary;
 	file <<"Can start" << std::endl;
