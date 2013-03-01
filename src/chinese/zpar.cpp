@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("o", "{s|t[d]|d|c}", "outout format; 's' segmented format, 't' pos-tagged format in sentences, 'td' pos-tagged format in documents withstd::cout sentence boundary delimination, 'd' refers to dependency parse tree format, and 'c' refers to constituent parse tree format", "c");
+      configurations.defineConfiguration("o", "{s|t[d]|d|c}", "outout format; 's' segmented format, 't' pos-tagged format in sentences, 'td' pos-tagged format in documents without sentence boundary delimination, 'd' refers to dependency parse tree format, and 'c' refers to constituent parse tree format", "c");
 
       if (options.args.size() < 2 || options.args.size() > 4) {
          std::cout << "\nUsage: " << argv[0] << " feature_path [input_file [outout_file]]" << std::endl;
