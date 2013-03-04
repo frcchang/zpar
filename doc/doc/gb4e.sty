@@ -1,0 +1,385 @@
+% -*- LaTeX -*-
+\def\gbVersion{4e}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Version 4export (= v. 4 minus the compatibility code)
+%  Based on hpk's gb.sty, revised for GM syllabus by ct,
+%  and incorporating macros adapted from J.Frampton, M. van der Goot en M.
+%  Covington. Full documentation in gb4e-doc.tex. Bug-reports
+%  and suggestions for improvements, other used features, please!
+%
+%  The package gb4e may be distributed under the conditions of the LaTeX Project
+%  Public License (LPPL). See the README file for more details.
+%
+%  Notes:
+%  
+%  Various styles for X-bar levels; can be changed, but note that {picture}
+%  environements (e.g. trees) will then come out wrong and have to be
+%  fixed
+%
+%  This file allows _ and ^ to be used in ordinary text, hence must be
+%  loaded AFTER any file that uses them in their TeX meaning. Hence
+%  cgloss(n).sty is loaded early in this file.  This feature is known to
+%  cause some problems with other packages, but is maintained for backward 
+%  compatibility. If you have problems, you can try disabling it by
+%  placing the command \noautomath immediately after loading the gb4e package.
+%  [Added 2009/12/28]
+
+% CHANGE LOG
+%
+% 2010/7/2
+%    - Fixed bug (introduced in previous changes) that discarded spaces 
+%    after sub/superscripts outside math mode. 
+%
+% 2010/01/03 [unreleased]
+%    - Removed stray \bf
+%    - Removed leftover old definition of ^, _
+%
+% 2009/12/28 
+% 	 - Added README.txt with LPPL license statement.
+%    - Updated sub- and superscripts outside of math mode. They now 
+%    combine properly, and the feature can be turned off with \noautomath 
+%    (and back on with \automath).
+%    - Removed references to \rm, for compatibility with memoir.cls
+%    - \@footnotetext is no longer modified destructively; compatible with
+%    other packages that modify it.
+%    - \eachwordone etc. can now be defined to font commands that take
+%    arguments (e.g., to \textit).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%  Format of examples: %
+%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{exe} or \exbegin
+% <examples>                           (arab.)
+% \begin{xlist} or \xlist
+% <subexamples>                        (1st embedding, alph.)
+% \begin{xlisti} or \xlisti
+% <subsubexamples>                     (2st embedding, rom.)
+% \end{xlisti}  or \endxlisti
+% <more examples>
+% \end{xlist} or \endxlist
+% <still more examples>
+% \end{exe} or \exend
+%
+% Other sublist-styles: xlistA (Alph.), xlistI (Rom.), xlistn (arab)
+%
+% \ex                               (produces Number)
+% \ex <sentence>                    (numbered example)
+% \ex[jdgmt]{sentence}              (numbered example with judgement)
+%
+% \exi{ident}                      (produces identifier)
+% \exi{ident} <sentence>           (example numbered with identifier)
+% \exi{ident}[jdgmt]{sentence}     (dito with judgement)
+%                      (\exr, \exp and \sn are defined in terms of \exi)
+%
+% \exr{label}                       (produces cross-referenced Num.)
+% \exr{label} <sentence>            (cross-referenced example)
+% \exr{label}[jdgmt]{sentence}      (cross-referenced example with judgement)
+%
+% \exp{label}                       (same as
+% \exp{label} <sentence>                     \exr but
+% \exp{label}[jdgmt]{sentence}                        with prime)
+%
+% \sn <sentence>                    (unnumbered example)
+% \sn[jdgmt]{sentence}              (unnumbered example with judgement)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% For my own laziness (HANDLE WITH CARE---this works only
+%                                 in boringly normal cases.... ):
+%
+% \ea                works like \begin{exe}\ex or \begin{xlist}\ex,
+%                            depending on context
+% \z                 works like \end{exe} or \end{xlist}, dep on context
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% For any REALLY old distributions without \rmfamily
+\@ifundefined{rmfamily}{\let\rmfamily=\rm \let\bfseries=\bf}
+
+\@ifundefined{new@fontshape}{\def\reset@font{}\let\mathrm\rmfamily\let\mathit\mit}{}
+
+\let\prmbrs=0
+\def\primebars{\let\prmbrs=1}
+\def\obar#1{\ifmmode#1^{0}\else#1$^{0}$\fi}  %% FIX
+\def\mbar#1{\ifmmode#1^{\mathrm{max}}\else#1$^{\mathrm{max}}$\fi}
+\def\ibar#1{\ifx\prmbrs0%
+                 \ifmmode\overline{\mathrm{#1}}\else$\overline{\mbox{#1}}$\fi%
+            \else\ifmmode#1^{'}\else#1$^{'}$\fi\fi}
+\def\iibar#1{\ifx\prmbrs0%
+                  \ifmmode\overline{\overline{\mathrm{#1}}}%
+                  \else$\overline{\overline{\mbox{#1}}}$\fi%
+             \else #1P\fi}
+\def\th{\ifmmode\theta\else$\theta$\fi}
+\def\al{\ifmmode\alpha\else$\alpha$\fi}
+\def\be{\ifmmode\beta\else$\beta$\fi}
+\def\ga{\ifmmode\gamma\else$\gamma$\fi}
+\def\de{\ifmmode\delta\else$\delta$\fi}
+\def\spec#1{[Spec,#1]} %Def. of "Specifier of #1"
+\def\ct#1{{\em #1\/}} %Citation of linguistic material with alternative style:
+%\def\ct#1{`#1'}
+\def\tx{\bfseries} %Introduction of technical terms with alternative style:
+%\def\tx{\em}
+
+\input{cgloss\gbVersion.sty}
+
+\newcommand{\indexgroupmark}[1]{\item{\bfseries #1}}  % ?? -CT
+
+
+%%%%%%%%%%% AUTOMATH 
+
+% this allows _ to be used in horizontal mode (from J.Frampton):
+% Reimplemented to allow this feature to be turned on and off.
+% The new version also combines sub- and superscripts properly.
+% -Alexis
+
+% \automath     Make _ and ^ work outside math mode
+% \noautomath   Restore normal sub/superscript behavior
+
+{ % Temporarily change catcodes
+  \catcode`\_=\active
+  \catcode`\^=\active
+
+  \global\def\automath{%
+    \catcode`\_=\active
+    \catcode`\^=\active
+    \def_##1{\gb@ifnextchar^{\automath@two_{##1}}{\ensuremath{\sb{##1}}}}%
+    \def^##1{\gb@ifnextchar_{\automath@two^{##1}}{\ensuremath{\sp{##1}}}}}
+}
+\def\automath@two#1#2#3#4{\ensuremath{#1{#2}\relax #3{#4}}}
+% Restore default catcodes for ^, _
+\def\noautomath{\catcode`\_=8 \catcode`\^=7 }
+
+% The original \@ifnextchar discards spaces when looking for the next
+% ``character''. This variant accepts any token.
+\long\def\gb@ifnextchar#1#2#3{%
+  \let\reserved@d=#1%
+  \def\reserved@a{#2}%
+  \def\reserved@b{#3}%
+  \futurelet\@let@token\@gbifnch}
+\def\@gbifnch{%
+    \ifx\@let@token\reserved@d
+      \let\reserved@c\reserved@a
+    \else
+      \let\reserved@c\reserved@b
+    \fi
+  \reserved@c}
+
+\automath % On by default, for backward compatibility
+
+%%%%%%%%%
+
+
+\def\lb#1{\@ifnextchar [{\@glarph{#1}}{\@bl{#1}}}
+\def\@glarph#1[#2]{\ifmmode{[}\sb{{\mathrm{#1}}\sb{#2}}\else%
+                           ${[}\sb{{\mathrm{#1}}\sb{#2}}$\fi}
+\def\@bl#1{\ifmmode{[}\sb{\mathrm{#1}}\;\else${[}\sb{\mathrm{#1}}\;$\fi}
+
+\def\rb#1{\@ifnextchar [{\@grarph{#1}}{\@br{#1}}}
+\def\@grarph#1[#2]{\ifmmode{]}\sb{{\mathrm{#1}}\sb{#2}}\else%
+                        ${]}\sb{{\mathrm{#1}}\sb{#2}}$\fi}
+\def\@br#1{\ifmmode{]}\sb{\mathrm{#1}}\;\else${]}\sb{\mathrm{#1}}\;$\fi}
+
+%%% END_NEWSTUFF.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Macros for examples, roughly following Linguistic Inquiry style.   %
+%  From here on best not to tamper, else all the examples and cross-  %
+%  references will come out scrambled! (see also note below) - CT     %
+%  Completely rewritten for more robustness and flexibility. (hpk)    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\qlist{\begin{list}{\Alph{xnum}.}{\usecounter{xnum}%
+\setlength{\rightmargin}{\leftmargin}}}
+\def\endqlist{\end{list}}
+
+\newif\if@noftnote\@noftnotetrue
+\newif\if@xrec\@xrecfalse
+\@definecounter{fnx}
+
+%%%%% Get examples in footnotes right
+% Replaces code in original gb4e.sty: changed 2009/12/28 by Alexis
+% Same function as before, but the old version interacted poorly with
+% other packages that redefine \@footnotetext.
+
+\let\@gbsaved@footnotetext=\@footnotetext
+\long\def\@footnotetext#1{%
+    \@noftnotefalse\setcounter{fnx}{0}%
+    \@gbsaved@footnotetext{#1}%
+    \@noftnotetrue}
+
+\newcount\@xnumdepth \@xnumdepth = 0
+
+\@definecounter{xnumi}
+\@definecounter{xnumii}
+\@definecounter{xnumiii}
+\@definecounter{xnumiv}
+\@definecounter{exx}
+\setcounter{exx}{0}
+\def\thexnumi{\@xsi{xnumi}}
+\def\thexnumii{\@xsii{xnumii}}
+\def\thexnumiii{\@xsiii{xnumiii}}
+\def\thexnumiv{\@xsiv{xnumiv}}
+\def\p@xnumii{\thexnumi}
+\def\p@xnumiii{\thexnumi\thexnumii-}
+\def\p@xnumiv{\thexnumi\thexnumii-\thexnumiii-}
+
+\def\xs@default#1{\csname @@xs#1\endcsname}
+\def\@@xsi{\let\@xsi\arabic}
+\def\@@xsii{\let\@xsii\alph}
+\def\@@xsiii{\let\@xsiii\roman}
+\def\@@xsiv{\let\@xsi\arabic}
+
+\@definecounter{rxnumi}
+\@definecounter{rxnumii}
+\@definecounter{rxnumiii}
+\@definecounter{rxnumiv}
+
+\def\save@counters{%
+\setcounter{rxnumi}{\value{xnumi}}%
+\setcounter{rxnumii}{\value{xnumii}}%
+\setcounter{rxnumiii}{\value{xnumiii}}%
+\setcounter{rxnumiv}{\value{xnumiv}}}%
+
+
+\def\reset@counters{%
+\setcounter{xnumi}{\value{rxnumi}}%
+\setcounter{xnumii}{\value{rxnumii}}%
+\setcounter{xnumiii}{\value{rxnumiii}}%
+\setcounter{xnumiv}{\value{rxnumiv}}}%
+
+
+\def\exewidth#1{\def\@exwidth{#1}} \exewidth{(234)}
+\def\exe{\@ifnextchar [{\@exe}{\@exe[\@exwidth]}}
+
+\def\@exe[#1]{\ifnum \@xnumdepth >0%
+                 \if@xrec\@exrecwarn\fi%
+                 \if@noftnote\@exrecwarn\fi%
+                 \@xnumdepth0\@listdepth0\@xrectrue%
+                 \save@counters%
+              \fi%
+                 \advance\@xnumdepth \@ne \@@xsi%
+                 \begin{list}{(\thexnumi)}%
+                             {\usecounter{xnumi}\@subex{#1}{1em}%
+                              \if@noftnote%
+                                 \setcounter{xnumi}{\value{exx}}%
+                              \else%
+                                 \setcounter{xnumi}{\value{fnx}}%
+                              \fi}}
+
+\def\endexe{\if@noftnote\setcounter{exx}{\value{xnumi}}%
+                   \else\setcounter{fnx}{\value{xnumi}}%
+                        \reset@counters\@xrecfalse\fi\end{list}}
+
+\def\@exrecwarn{\typeout{*** Recursion on "exe"---your
+                example numbering will probably be screwed up!}}
+
+\def\xlist{\@ifnextchar [{\@xlist{}}{\@xlist{}[iv.]}}
+\def\xlista{\@ifnextchar [{\@xlist{\alph}}{\@xlist{\alph}[m.]}}
+\def\xlisti{\@ifnextchar [{\@xlist{\roman}}{\@xlist{\roman}[iv.]}}
+\def\xlistn{\@ifnextchar [{\@xlist{\arabic}}{\@xlist{\arabic}[9.]}}
+\def\xlistA{\@ifnextchar [{\@xlist{\Alph}}{\@xlist{\Alph}[M.]}}
+\def\xlistI{\@ifnextchar [{\@xlist{\Roman}}{\@xlist{\Roman}[IV.]}}
+
+\def\endxlist{\end{list}}
+\def\endxlista{\end{list}}
+\def\endxlistn{\end{list}}
+\def\endxlistA{\end{list}}
+\def\endxlistI{\end{list}}
+\def\endxlisti{\end{list}}
+
+
+%%% a generic sublist-styler
+\def\@xlist#1[#2]{\ifnum \@xnumdepth >3 \@toodeep\else%
+    \advance\@xnumdepth \@ne%
+    \edef\@xnumctr{xnum\romannumeral\the\@xnumdepth}%
+    \def\@bla{#1}
+    \ifx\@bla\empty\xs@default{\romannumeral\the\@xnumdepth}\else%
+      \expandafter\let\csname @xs\romannumeral\the\@xnumdepth\endcsname#1\fi
+    \begin{list}{\csname the\@xnumctr\endcsname.}%
+                {\usecounter{\@xnumctr}\@subex{#2}{1.5ex}}\fi}
+
+\def\@subex#1#2{\settowidth{\labelwidth}{#1}\itemindent\z@\labelsep#2%
+         \ifnum\the\@xnumdepth=1%
+           \topsep 7\p@ plus2\p@ minus3\p@\itemsep3\p@ plus2\p@\else%
+           \topsep1.5\p@ plus\p@\itemsep1.5\p@ plus\p@\fi%
+         \parsep\p@ plus.5\p@ minus.5\p@%
+         \leftmargin\labelwidth\advance\leftmargin#2\relax}
+
+%%% the example-items
+\def\ex{\@ifnextchar [{\@ex}{\item}}
+\def\@ex[#1]#2{\item\@exj[#1]{#2}}
+\def\@exj[#1]#2{\@exjbg{#1} #2 \end{list}}
+\def\exi#1{\item[#1]\@ifnextchar [{\@exj}{}}
+\def\judgewidth#1{\def\@jwidth{#1}}
+\judgewidth{??}
+\def\@exjbg#1{\begin{list}{#1}{\@subex{\@jwidth}{.5ex}}\item}
+\def\exr#1{\exi{{(\ref{#1})}}}
+\def\exp#1{\exi{{(\ref{#1}$'$)}}}
+\def\sn{\exi{}}
+\def\bu{\item[$\bullet$]}
+
+%%% Lazy abbrevs (HANDLE WITH CARE!)
+\def\ea{\ifnum\@xnumdepth=0\begin{exe}[(234)]\else\begin{xlist}[iv.]\fi\ex}
+\def\z{\ifnum\@xnumdepth=1\end{exe}\else\end{xlist}\fi}
+
+
+%%%%%%% \lcomment for breaks in (example-)lists (leaves all counters
+%%%%%%% as they are)    (hpk) 
+\newlength{\lcommentsep}
+\lcommentsep = 1ex
+
+\long\def\lcomment#1%
+   {\vspace{\lcommentsep}
+    \item[]\hspace*{-\leftmargin}%
+    \@tempskipa=\linewidth%
+    \addtolength{\@tempskipa}{\rightmargin}%
+    \addtolength{\@tempskipa}{\leftmargin}%
+    \parbox{\@tempskipa}{#1}%
+    \vspace{\lcommentsep}%
+   }
+
+%%%%%% control the alignment of exampleno. and (picture-)example
+%%%%%%         (by Lex Holt <lex@cogsci.ed.ac.uk>).
+\def\attop#1{\leavevmode\vtop{\strut\vskip-\baselineskip\vbox{#1}}}
+\def\atcenter#1{$\vcenter{#1}$}
+%%%%%%
+
+%-------------------Move Arrows (from J.Frampton):
+
+\def\leaderfill{\leaders\hrule\hfil}
+\def\pointerup{\hbox to 0pt{\hss
+  \vbox{\offinterlineskip\vskip-1pt\hbox{\elevenex\char'170}\null}\hss}}
+\def\pointerdown{\hbox to 0pt{\hss
+  \vtop{\offinterlineskip\null\hbox{\elevenex\char'171}\vskip-1pt}\hss}}
+
+\let\pu=\pointerup
+\let\pd=\pointerdown
+\let\lf=\leaderfill
+
+\def\spacer{\hskip4.5pt}
+\def\fillright#1{\hfil#1\leaderfill}
+\def\fillleft#1{\leaderfill#1\hfil}
+% Changed spelling to \centr, else conflicts with LaTeX \center{} -CT
+\def\centr#1{\leaderfill#1\leaderfill}
+\def\link#1{\multispan#1\leaderfill}
+
+\def\arrowalign#1{\vtop{\baselineskip=0pt \lineskiplimit=0pt \lineskip=2pt
+  \halign{&##\cr#1}}}
+
+\font\elevenex=cmex10 scaled\magstephalf  % just for the arrow!
+      %PS: this may not work on some installations, not sure why. CT
+      %%PPS: (e.g., PCTeX, but it works find works fine with EmTeX)
+%----------------END Move Arrows
+
+\def\pijl{$\rightarrow$\ }
+
+% Special accents for Vata & Gbadi; Navajo coming soon, I hope...:
+%\def\bb#1{$\mathrm{\overline{#1}}$} Following looks better:
+\def\bb#1{\ifmmode\overline{\mathrm{#1}}\else$\bar{\mathrm{#1}}$\fi}
+
+\def\boven#1#2{\raisebox{-0.2pt}{$\stackrel{#1}{\mathrm{#2}}$}}
+\def\bovenop#1#2{\raisebox{-0.06ex}[0ex][0ex]{$\stackrel{#1}{\mathrm{#2}}$}}
+\def\vl{\rule{0.05em}{0.30em}}
+\def\|#1{\ifmmode\vert#1\else\bovenop{\vl}{#1}\fi}
