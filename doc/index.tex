@@ -1,0 +1,55 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\makeindex
+\title{User Manual of ZPar}
+\author{Yue Zhang \\
+frcchang@gmail.com
+}
+\begin{document}
+\maketitle
+
+\section{Overview}
+
+ZPar is a statistical natural language parser, which performs syntactic analysis tasks including word segmentation, part-of-speech tagging and parsing. ZPar supports multiple languages and multiple grammar formalisms. ZPar has been most heavily developed for Chinese and English, while it provides generic support for other languages. A Romanian model has been trained for ZPar 0.2, for example. ZPar currently supports context free grammar (CFG), dependency grammar and combinatory categorial grammar (CCG). 
+
+%\textit{ZPar} is a statistical natural language parser, which performs syntactic analysis tasks including word segmentation, part-of-speech tagging and parsing. \textit{ZPar} supports multiple languages and multiple grammar formalisms. \textit{ZPar} currently supports context free grammar (CFG), dependency grammar and combinatory categorial grammar (CCG).
+
+\section{System Requirements}
+The ZPar software requires the following basic system configuration
+\begin{itemize}
+\item Linux or Mac
+\item GCC
+\item 256MB of RAM minimum
+\item At least 500MB of hard disk space
+\end{itemize}
+
+\section{Download and Installation}
+
+Download the latest tar ball from \href{http://sourceforge.net/projects/zpar/}{sourceforge} and move the tar ball to your work space.
+\\
+You can use ZPar by referring to \href{doc/qs.html}{quick start}, or follow detailed instructions in individual modules for installation and usage.
+\begin{itemize}
+\item \href{doc/segmenter.html}{Chinese word segmentation}
+\item \href{doc/tagger.html}{POS tagging}
+\item \href{doc/deppar.html}{dependency parsing}
+\item  \href{doc/conparser.html}{phrase-structure parsing}
+%\item \href{doc/ccg.html}{combinatory categorial grammar}
+\end{itemize}
+
+\section{License}
+
+The software source is under GPL (v.3), and a separate commercial license
+issued by Oxford University for non-opensource. Various models available for
+download were trained from different text resources, which may require further
+licenses. 
+
+\begin{thebibliography}{99}
+\bibitem{bib-1}
+Yue Zhang and Stephen Clark. 2011. Syntactic Processing Using the Generalized Perceptron and Beam Search. \textit{Computational Linguistics}, 37(1):105-151.
+%\bibitem{bib-2}
+%Yue Zhang and Stephen Clark. 2011. Shift-reduce CCG parsing. In {\em Proc. of ACL 2011}, pages 683-692.
+\end{thebibliography}
+\end{document} 

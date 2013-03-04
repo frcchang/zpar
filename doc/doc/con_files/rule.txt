@@ -1,0 +1,22 @@
+ADJP	: r ADJP JJ AD;r
+ADVP	: l CS; r ADVP AD JJ NP PP P VA VV;r
+CLP	: r CLP M NN NP;r
+CP	: r DEC CP ADVP IP VP;r
+DNP	: r DEG DNP DEC QP;r
+DP	: r QP M CLP; l DP DT OD;l
+DVP	: r DEV AD VP;r
+IP	: r VP IP NP;r
+LCP	: r LCP LC;r
+LST	: r CD NP QP;r
+NP	: r NP NN IP NR NT;r
+NN	: r NP NN IP NR NT;r
+PP	: l P PP;l
+PRN	: l PU;l
+QP	: r M QP CLP CD OD;r
+UCP	: r IP NP VP;r
+VCD	: r VV VA VE;r
+VP	: l VE VC VV VNV VPT VRD VSB VCD VP IP;l
+VPT	: l VA VV;l
+VRD	: l VV VA;l
+VSB	: r VV VE;r
+FRAG	: r VP VV NP NR NN NT; r
