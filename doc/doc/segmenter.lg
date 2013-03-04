@@ -122,17 +122,18 @@ Css: .quotation {margin-bottom:0.25em; margin-top:0.25em; margin-left:1em; }
 Css: .abstract p {margin-left:5%; margin-right:5%;}
 Css: div.abstract {width:100%;}
 Css: .figure img.graphics {margin-left:10%;}
+tex4ht.c error: 21
 --- characters ---
 Font("cmr","12","12","100")
 Font("ptmr7t","","10","120")
 Font("ptmr7t","","10","207")
 Font("ptmr7t","","10","144")
 Font("ptmri7t","","10","120")
-Font("gbksong47","","10","120")
-Font("gbksong61","","10","120")
-Font("gbksong41","","10","120")
-Font("gbksong58","","10","120")
-Font("gbksong64","","10","120")
-Font("gbksong43","","10","120")
-Font("gbksong62","","10","120")
+Font("gbk","47","10","120")
+Font("gbk","61","10","120")
+Font("gbk","41","10","120")
+Font("gbk","58","10","120")
+Font("gbk","64","10","120")
+Font("gbk","43","10","120")
+Font("gbk","62","10","120")
 Font("cmmi","12","12","100")
