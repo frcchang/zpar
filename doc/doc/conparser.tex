@@ -14,7 +14,7 @@
 \section{How to compile}
 Suppose that Zpar has been downloaded to the directory \textit{zpar}. To make a phrase-structure parsing system for English, type \textit{make english.conparser}. This will create a directory \textit{zpar/dist/english.conparser}, in which there are two files: \textit{train} and \textit{conparser}. The file \textit{train} is used to train a parsing model,and the file \textit{conparser} is used to parse new texts using a trained parsing model. Similarly, we can make a phrase-structure parsing system for Chinese by typing \textit{make chinese.conparser}. The \textit{train} and \textit{conparser} files are created under the directory of \textit{zpar/dist/chinese.conparser}. Note that the English and Chinese parsers are designed specifically for \href{http://www.cis.upenn.edu/~treebank/}{Penn Treebanks}.
 \section{Format of inputs and outputs}
-The input file to the \textit{train} file contains a set of parse trees, one for each line. An example parse tree is: 
+The input file to the \textit{train} file contains a set of parse trees, one for each line. An example parse tree is as follows:
 \\
 \\
 %\begin{tabular}{l}
@@ -55,13 +55,13 @@ After training is completed, a new file \textit{model} will be created in the cu
 To apply an existing model to parse new texts, use
 \\
 \\
-\hspace{3cm} zpar/dist/english.conparser/conparser $<$model$>$ $<$input-file$>$ $<$output-file$>$ 
+\hspace{3cm} zpar/dist/english.conparser/conparser $<$model$>$ $<$input-file$>$ $<$output-file$>$
 \\
 \\
 For example, using the model we just trained, we can parse \href{con_files/input.txt}{an example input} by
 \\
 \\
-\hspace{3cm} zpar/dist/english.conparser/conparser model input.txt output.txt 
+\hspace{3cm} zpar/dist/english.conparser/conparser model input.txt output.txt
 \\
 \\
 The output file contains automatically parsed trees. The commands for parsing Chinese texts are the same.
@@ -73,7 +73,7 @@ Manually specified parse trees of the input file are given in \href{con_files/re
 Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
 \\
 \\
-\hspace{3cm} ./evalb -p $<$config.file$>$ output.txt reference.txt 
+\hspace{3cm} ./evalb -p $<$config.file$>$ output.txt reference.txt
 \\
 \\
 Here \textit{config.file} sets running parameters of the evaluation. \href{con_files/COLLINS.prm}{COLLINS.prm} is a widely used configuration file.
