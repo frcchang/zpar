@@ -7,7 +7,7 @@
 <meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <!-- html --> 
 <meta name="src" content="deppar.tex"> 
-<meta name="date" content="2013-03-13 00:09:00"> 
+<meta name="date" content="2013-03-13 12:03:00"> 
 <link rel="stylesheet" type="text/css" href="deppar.css"> 
 </head><body 
 >
@@ -100,7 +100,7 @@ class="cmmi-12">&#x003E;</span>
 class="cmmi-12">&#x003C;</span>number of iterations<span 
 class="cmmi-12">&#x003E; </span><br 
 class="newline" /><br 
-class="newline" />For example, using the <a 
+class="newline" />For example, using the English <a 
 href="eng_dep_files/train.txt" >train file</a>, you can train a model by <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                              zpar/dist/english.depparser/train train.txt model 1
@@ -109,14 +109,18 @@ class="newline" /><br
 class="newline" />After training is completed, a new file <span 
 class="ptmri7t-x-x-120">model </span>will be created in the current directory,
 which can be used to parse POS-tagged sentences. The above command performs
-training with one iteration using the training file. The commands for training Chinese
-parsing models are the same.
-                                                                          
-
-                                                                          
+training with one iteration using the training file. <br 
+class="newline" /><br 
+class="newline" />The commands for training Chinese parsing models are the same. For example, using
+the Chinese <a 
+href="chn_dep_files/train.txt" >train file</a>, you can train a model by <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                              zpar/dist/chinese.depparser/train train.txt model 1
+<br 
+class="newline" />
    <h3 class="sectionHead"><span class="titlemark">4    </span> <a 
  id="x1-40004"></a>How to parse new texts</h3>
-<!--l. 51--><p class="noindent" >To apply an existing model to parse new texts, use <br 
+<!--l. 57--><p class="noindent" >To apply an existing model to parse new texts, use <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/dist/english.depparser/depparser <span 
 class="cmmi-12">&#x003C;</span>model<span 
@@ -134,16 +138,19 @@ class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                      
 <br 
 class="newline" /><br 
 class="newline" />The output file contains automatically parsed trees. The commands for parsing Chinese
-texts are the same.
+texts are the same. See an example of <a 
+href="chn_dep_files/input.txt" >Chinese input file</a>.
    <h3 class="sectionHead"><span class="titlemark">5    </span> <a 
  id="x1-50005"></a>Outputs and evaluation</h3>
-<!--l. 65--><p class="noindent" >In order to evaluate the quality of the outputs, we can manually specify the
+<!--l. 71--><p class="noindent" >In order to evaluate the quality of the outputs, we can manually specify the
 gold parse trees of a sample, and compare the outputs with the correct sample.
 <br 
 class="newline" />Manually specified parse trees of the input file are given in <a 
-href="eng_dep_files/reference.txt" >reference file</a>. Here is a
-<a 
-href="eng_dep_files/evaluate.py" >Python script</a> that performs automatic evaluation. <br 
+href="eng_dep_files/reference.txt" >reference file</a> (find a Chinese
+reference file <a 
+href="chn_dep_files/reference.txt" >here</a>). Here is a <a 
+href="eng_dep_files/evaluate.py" >Python script</a> that performs automatic evaluation.
+<br 
 class="newline" />Using the above <span 
 class="ptmri7t-x-x-120">output.txt </span>and <span 
 class="ptmri7t-x-x-120">reference.txt</span>, we can evaluate the accuracies by typing
@@ -154,15 +161,15 @@ class="newline" /><br
 class="newline" />You can find the precision, recall, and f-score here. See the explanation of these
 measures on <a 
 href="http://en.wikipedia.org/wiki/Precision_and_recall" >Wikipedia</a>.
-   <h3 class="sectionHead"><span class="titlemark">6    </span> <a 
- id="x1-60006"></a>How to tune the performance of a system</h3>
-<!--l. 77--><p class="noindent" >The performance of the system after one training iteration may not be optimal. You can
-try training a model for another few iterations, after each you compare the performance.
-You can choose the model that gives the highest f-score on your test data. We
-conventionally call this test file the development test data, because you develop a
                                                                           
 
                                                                           
+   <h3 class="sectionHead"><span class="titlemark">6    </span> <a 
+ id="x1-60006"></a>How to tune the performance of a system</h3>
+<!--l. 83--><p class="noindent" >The performance of the system after one training iteration may not be optimal. You can
+try training a model for another few iterations, after each you compare the performance.
+You can choose the model that gives the highest f-score on your test data. We
+conventionally call this test file the development test data, because you develop a
 parsing model using this. Here is a <a 
 href="eng_dep_files/test.sh" >a shell script</a> that automatically trains the parser for
 30 iterations, and after the <span 
@@ -178,14 +185,21 @@ class="ptmri7t-x-x-120">zpar/dist/english.depparsr </span>or
 class="ptmri7t-x-x-120">zpar/dist/chinese.depparser</span>.
    <h3 class="likesectionHead"><a 
  id="x1-70006"></a>References</h3>
-<!--l. 78--><p class="noindent" >
+<!--l. 84--><p class="noindent" >
      <div class="thebibliography">
      <p class="bibitem" ><span class="biblabel">
   [1]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
- id="Xbib-1"></a>Yue  Zhang  and  Stephen  Clark.  2009.  Transition-Based  Parsing  of  the
-     Chinese Treebank using a Global Discriminative Model. In <span 
-class="ptmri7t-x-x-120">Proc. of IWPT</span>
-     2009, pages 162-171.</p></div>
+ id="Xbib-1"></a>Yue                                               Zhang                                               and
+     Stephen Clark. 2008. A Tale of Two Parsers: Investigating and Combining
+     Graph-based And transition-based Dependency Parsing Using Beam-search.
+     In <span 
+class="ptmri7t-x-x-120">Proc. of EMNLP </span>2008, pages 562-571.
+     </p>
+     <p class="bibitem" ><span class="biblabel">
+  [2]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xbib-2"></a>Yue  Zhang  and  Joakim  Nivre.  Transition-based  Dependency  Parsing
+     with Rich Non-local Features. In <span 
+class="ptmri7t-x-x-120">Proc. of ACL </span>2011, pages 188-193.</p></div>
     
 </body></html> 
 
