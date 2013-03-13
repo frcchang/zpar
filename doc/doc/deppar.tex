@@ -41,12 +41,18 @@ To train a model, use
 \\
 \hspace{3cm} zpar/dist/english.depparser/train $<$train-file$>$ $<$model-file$>$ $<$number of iterations$>$ \\
 \\
-For example, using the \href{eng_dep_files/train.txt}{train file}, you can train a  model by
+For example, using the English \href{eng_dep_files/train.txt}{train file}, you can train a  model by
 \\
 \\
 \hspace{3cm} zpar/dist/english.depparser/train train.txt model 1 \\
 \\
-After training is completed, a new file \textit{model} will be created in the current directory, which can be used to parse POS-tagged sentences. The above command performs training with one iteration using the training file. The commands for training Chinese parsing models are the same.
+After training is completed, a new file \textit{model} will be created in the current directory, which can be used to parse POS-tagged sentences. The above command performs training with one iteration using the training file. 
+\\
+\\
+The commands for training Chinese parsing models are the same. For example, using the Chinese \href{chn_dep_files/train.txt}{train file}, you can train a model by
+\\
+\\
+\hspace{3cm} zpar/dist/chinese.depparser/train train.txt model 1 \\
 \section{How to parse new texts}
 To apply an existing model to parse new texts, use
 \\
@@ -60,11 +66,11 @@ For example, using the model we just trained, we can parse \href{eng_dep_files/i
 \hspace{3cm} zpar/dist/english.depparser/depparser model input.txt output.txt
 \\
 \\
-The output file contains automatically parsed trees. The commands for parsing Chinese texts are the same.
+The output file contains automatically parsed trees. The commands for parsing Chinese texts are the same. See an example of \href{chn_dep_files/input.txt}{Chinese input file}.
 \section{Outputs and evaluation}
 In order to evaluate the quality of the outputs, we can manually specify the gold parse trees of a sample, and compare the outputs with the correct sample.
 \\
-Manually specified parse trees of the input file are given in \href{eng_dep_files/reference.txt}{reference file}.  Here is a \href{eng_dep_files/evaluate.py}{Python script} that performs automatic evaluation.
+Manually specified parse trees of the input file are given in \href{eng_dep_files/reference.txt}{reference file} (find a Chinese reference file \href{chn_dep_files/reference.txt}{here}).  Here is a \href{eng_dep_files/evaluate.py}{Python script} that performs automatic evaluation.
 \\
 Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
 \\
@@ -77,8 +83,9 @@ You can find the precision, recall, and f-score here. See the explanation of the
 The performance of the system after one training iteration may not be optimal. You can try training a model for another few iterations, after each you compare the performance. You can choose the model that gives the highest f-score on your test data. We conventionally call this test file the development test data, because you develop a parsing model using this. Here is a \href{eng_dep_files/test.sh}{a shell script} that automatically trains the parser for 30 iterations, and after the $i$th iteration, stores the model file to model.$i$. You can compare the f-score of all 30 iterations and choose model.$k$, which gives the best f-score, as the final model. In this file, this is a variable called \textit{zpar}. You need to set this variable to the relative directory of \textit{zpar/dist/english.depparsr} or \textit{zpar/dist/chinese.depparser}.
 \begin{thebibliography}{99}
 \bibitem{bib-1}
-%Yue Zhang and Stephen Clark. 2011. Syntactic Processing Using the Generalized Perceptron and Beam Search. \textit{Computational Linguistics}, 37(1):105-151.
-Yue Zhang and Stephen Clark. 2009. Transition-Based Parsing of the Chinese Treebank using a Global Discriminative Model. In {\em Proc. of IWPT} 2009, pages 162-171.
+Yue Zhang and Stephen Clark. 2008. A Tale of Two Parsers: Investigating and Combining Graph-based And transition-based Dependency Parsing Using Beam-search. In {\em Proc. of EMNLP} 2008, pages 562-571.
+\bibitem{bib-2}
+Yue Zhang and Joakim Nivre. Transition-based Dependency Parsing with Rich Non-local Features. In {\em Proc. of ACL} 2011, pages 188-193.
 \end{thebibliography}
 \end{CJK}
 \end{document}

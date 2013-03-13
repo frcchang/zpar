@@ -7,7 +7,7 @@
 <meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <!-- html --> 
 <meta name="src" content="eng_tagger.tex"> 
-<meta name="date" content="2013-03-13 00:09:00"> 
+<meta name="date" content="2013-03-13 12:04:00"> 
 <link rel="stylesheet" type="text/css" href="eng_tagger.css"> 
 </head><body 
 >
@@ -103,9 +103,9 @@ class="newline" />The output file contains automatically tagged sentences.
 we can manually specify the POS tags of a sample, and compare the outputs with the
 correct sample. <br 
 class="newline" />Manually specified POS tags of the input file are given in <a 
-href="eng_tag_files/reference.txt" >reference file</a>. Here is a
+href="eng_pos_files/reference.txt" >reference file</a>. Here is a
 <a 
-href="eng_tag_files/evaluate.py" >Python script</a> that performs automatic evaluation. <br 
+href="eng_pos_files/evaluate.py" >Python script</a> that performs automatic evaluation. <br 
 class="newline" />Using the above <span 
 class="ptmri7t-x-x-120">output.txt </span>and <span 
 class="ptmri7t-x-x-120">reference.txt</span>, we can evaluate the accuracies by typing
@@ -113,9 +113,10 @@ class="ptmri7t-x-x-120">reference.txt</span>, we can evaluate the accuracies by 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             python evaluate.pl output.txt reference.txt <br 
 class="newline" /><br 
-class="newline" />You can find the precision, recall, and f-score here. See the explanation of these
-measures on <a 
-href="http://en.wikipedia.org/wiki/Precision_and_recall" >Wikipedia</a>.
+class="newline" />The output of the evaluation script is a single number: <span 
+class="ptmri7t-x-x-120">per-token accuracy </span>which is
+defined to be the ratio of correctly POS-tagged words over all the words in
+output.txt.
    <h3 class="sectionHead"><span class="titlemark">6    </span> <a 
  id="x1-60006"></a>How to tune the performance of a system</h3>
 <!--l. 69--><p class="noindent" >The performance of the system after one training iteration may not be optimal. You can
@@ -123,7 +124,7 @@ try training a model for another few iterations, after each you compare the perf
 You can choose the model that gives the highest f-score on your test data. We
 conventionally call this test file the development test data, because you develop
 a parsing model using this. Here is a <a 
-href="eng_tag_files/test.sh" >a shell script</a> that automatically trains
+href="eng_pos_files/test.sh" >a shell script</a> that automatically trains
 the POS tagger for 30 iterations, and after the <span 
 class="cmmi-12">i</span>th iteration, stores the model
 file to model.<span 

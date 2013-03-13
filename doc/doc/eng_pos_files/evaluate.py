@@ -386,5 +386,3 @@ if __name__ == '__main__':
       tag_fmeasure = (2*tag_precision*tag_recall)/(tag_precision+tag_recall)
 
    print "Tag precision:", tag_precision
-   print "Tag recall:", tag_recall
-   print "Tag F-measure:",  tag_fmeasure

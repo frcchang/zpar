@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=latex 2012.3.5)  13 MAR 2013 00:09
+This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=latex 2012.3.5)  13 MAR 2013 12:03
 entering extended mode
 **\makeatletter\def\HCode{\futurelet\HCode\HChar}\def\HChar{\ifx\HCode\def\HCod
 e##1{\Link##1}\expandafter\HCode\else\expandafter\Link\fi}\def\Link#1.a.b.c.{\g
@@ -728,12 +728,12 @@ File: c19song.fd 2009/09/23 4.8.2
 ) [3] [4] [5] [6]
 (C:\Users\wangjing\zpar\zpar\doc\doc\deppar.aux) ) 
 Here is how much of TeX's memory you used:
- 8944 strings out of 495286
- 114739 string characters out of 3181560
- 316770 words of memory out of 3000000
- 11924 multiletter control sequences out of 15000+200000
+ 8946 strings out of 495286
+ 114757 string characters out of 3181560
+ 316773 words of memory out of 3000000
+ 11926 multiletter control sequences out of 15000+200000
  13204 words of font info for 41 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
  37i,6n,27p,1338b,734s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on deppar.dvi (6 pages, 22508 bytes).
+Output written on deppar.dvi (6 pages, 23856 bytes).
