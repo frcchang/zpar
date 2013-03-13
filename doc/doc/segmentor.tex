@@ -36,13 +36,13 @@ Both input and output files must be encoded in \textit{utf8}. Here is a \href{se
 To train a model, use
 \\
 \\
-\hspace{3cm} zpar/dist/segmentor/train $<$train-file$>$ $<$model-file$>$ $<$number of iterations$>$ 
+\hspace{3cm} zpar/dist/segmentor/train $<$train-file$>$ $<$model-file$>$ $<$number of iterations$>$
 \\
 \\
 For example, using the \href{seg_files/train.txt}{train file}, you can train a  model by
 \\
 \\
-\hspace{3cm} zpar/dist/segmentor/train train.txt model 1 
+\hspace{3cm} zpar/dist/segmentor/train train.txt model 1
 \\
 \\
 After training is completed, a new file \textit{model} will be created in the current directory, which can be used to segment Chinese. The above command performs training with one iteration using the training file.
@@ -50,13 +50,13 @@ After training is completed, a new file \textit{model} will be created in the cu
 To apply an existing model to segment new texts, use
 \\
 \\
-\hspace{3cm} zpar/dist/segmentor/segmentor $<$model$>$ $[<$input-file$>]$ $[<$output-file$>]$ 
+\hspace{3cm} zpar/dist/segmentor/segmentor $<$model$>$ $[<$input-file$>]$ $[<$output-file$>]$
 \\
 \\
 where the input file and output file are optional. If the output file is not specified, segmented texts will be printed to the console. If the input file is not specified, raw texts will be read from the console. For example, using the model we just trained, we can segment \href{seg_files/input.txt}{an example input} by
 \\
 \\
-\hspace{3cm} zpar/dist/segmentor/segmentor model input.txt output.txt 
+\hspace{3cm} zpar/dist/segmentor/segmentor model input.txt output.txt
 \\
 \\
 The output file contains automatically segmented texts.
@@ -68,7 +68,7 @@ A manually specified segmentation of the input file is given in \href{seg_files/
 Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
 \\
 \\
-\hspace{3cm} python evaluate.pl output.txt reference.txt 
+\hspace{3cm} python evaluate.py output.txt reference.txt
 \\
 \\
 You can find the precision, recall, and f-score here.
@@ -77,7 +77,7 @@ The performance of the system after one training iteration may not be optimal. Y
 \begin{thebibliography}{99}
 \bibitem{bib-1}
 %Yue Zhang and Stephen Clark. 2011. Syntactic Processing Using the Generalized Perceptron and Beam Search. \textit{Computational Linguistics}, 37(1):105-151.
-Yue Zhang and Stephen Clark. 2007. Chinese Segmentation Using a Word-based Perceptron Algorithm. In {\em Proc. of ACL} 2007. pages 840-847. 
+Yue Zhang and Stephen Clark. 2007. Chinese Segmentation Using a Word-based Perceptron Algorithm. In {\em Proc. of ACL} 2007. pages 840-847.
 %\bibitem{bib-2}
 %Yue Zhang and Stephen Clark. 2011. Shift-reduce CCG parsing. In {\em Proc. of ACL 2011}, pages 683-692.
 \end{thebibliography}

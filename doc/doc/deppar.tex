@@ -46,7 +46,7 @@ For example, using the English \href{eng_dep_files/train.txt}{train file}, you c
 \\
 \hspace{3cm} zpar/dist/english.depparser/train train.txt model 1 \\
 \\
-After training is completed, a new file \textit{model} will be created in the current directory, which can be used to parse POS-tagged sentences. The above command performs training with one iteration using the training file. 
+After training is completed, a new file \textit{model} will be created in the current directory, which can be used to parse POS-tagged sentences. The above command performs training with one iteration using the training file.
 \\
 \\
 The commands for training Chinese parsing models are the same. For example, using the Chinese \href{chn_dep_files/train.txt}{train file}, you can train a model by
@@ -75,7 +75,7 @@ Manually specified parse trees of the input file are given in \href{eng_dep_file
 Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
 \\
 \\
-\hspace{3cm} python evaluate.pl output.txt reference.txt
+\hspace{3cm} python evaluate.py output.txt reference.txt
 \\
 \\
 You can find the precision, recall, and f-score here. See the explanation of these measures on \href{http://en.wikipedia.org/wiki/Precision_and_recall}{Wikipedia}.
