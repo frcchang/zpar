@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=latex 2012.3.5)  13 MAR 2013 12:03
+This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=latex 2012.3.5)  13 MAR 2013 12:53
 entering extended mode
 **\makeatletter\def\HCode{\futurelet\HCode\HChar}\def\HChar{\ifx\HCode\def\HCod
 e##1{\Link##1}\expandafter\HCode\else\expandafter\Link\fi}\def\Link#1.a.b.c.{\g
@@ -6,7 +6,7 @@ e##1{\Link##1}\expandafter\HCode\else\expandafter\Link\fi}\def\Link#1.a.b.c.{\g
 umentstyle\def\documentstyle{\let\documentstyle\HCode\expandafter\def\csname te
 x4ht\endcsname{#1,html}\def\HCode####1{\documentstyle[tex4ht,}\@ifnextchar[{\HC
 ode}{\documentstyle[tex4ht]}}}\makeatother\HCode .a.b.c.\input  conparser
-(C:\Users\wangjing\zpar\zpar\doc\doc\conparser.tex
+(C:\Users\wangjing\zpar\doc\doc\conparser.tex
 (C:\CTEX\MiKTeX\tex\latex\base\article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (C:\CTEX\MiKTeX\tex\latex\base\size12.clo
@@ -241,13 +241,13 @@ File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
 ))
 --- needs --- tex4ht conparser ---
 \tmp:cnt=\count93
-(C:\Users\wangjing\zpar\zpar\doc\doc\conparser.tmp)
+(C:\Users\wangjing\zpar\doc\doc\conparser.tmp)
 \tmp:dim=\skip43
 --------------------------------------
 --- Note --- for XML code, use the command line option `xml' or `xhtml'
 --------------------------------------
 
-(C:\Users\wangjing\zpar\zpar\doc\doc\conparser.xref)
+(C:\Users\wangjing\zpar\doc\doc\conparser.xref)
 \:refout=\write4
 
 (C:\CTEX\MiKTeX\tex\generic\tex4ht\html4.4ht
@@ -596,7 +596,7 @@ version 2009-05-18-23:01
 (C:\CTEX\MiKTeX\tex\generic\tex4ht\html4-math.4ht
 version 2009-05-18-23:01
 ))
-(C:\Users\wangjing\zpar\zpar\doc\doc\conparser.aux)
+(C:\Users\wangjing\zpar\doc\doc\conparser.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
@@ -726,10 +726,10 @@ LaTeX Font Info:    Try loading font information for C19+song on input line 39.
 (C:\CTEX\CTeX\tex\latex\CJK\GB\c19song.fd
 File: c19song.fd 2009/09/23 4.8.2
 ) [3] [4] [5] [6]
-(C:\Users\wangjing\zpar\zpar\doc\doc\conparser.aux) ) 
+(C:\Users\wangjing\zpar\doc\doc\conparser.aux) ) 
 Here is how much of TeX's memory you used:
  8944 strings out of 495286
- 114790 string characters out of 3181560
+ 114735 string characters out of 3181560
  316794 words of memory out of 3000000
  11924 multiletter control sequences out of 15000+200000
  13204 words of font info for 41 fonts, out of 3000000 for 9000
