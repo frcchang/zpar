@@ -7,7 +7,7 @@
 <meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <!-- html --> 
 <meta name="src" content="conparser.tex"> 
-<meta name="date" content="2013-03-13 12:53:00"> 
+<meta name="date" content="2013-03-16 01:04:00"> 
 <link rel="stylesheet" type="text/css" href="conparser.css"> 
 </head><body 
 >
@@ -22,11 +22,11 @@
 <h2 class="titleHead">Phrase-Structure Parsing</h2>
 <div class="author" ></div><br />
 <div class="date" ><span 
-class="ptmr7t-x-x-144">March 13, 2013</span></div>
+class="ptmr7t-x-x-144">March 16, 2013</span></div>
    </div>
    <h3 class="sectionHead"><span class="titlemark">1    </span> <a 
  id="x1-10001"></a>How to compile</h3>
-<!--l. 15--><p class="noindent" >Suppose that Zpar has been downloaded to the directory <span 
+<!--l. 15--><p class="noindent" >Suppose that ZPar has been downloaded to the directory <span 
 class="ptmri7t-x-x-120">zpar</span>. To make a phrase-structure
 parsing system for English, type <span 
 class="ptmri7t-x-x-120">make english.conparser</span>. This will create a directory
@@ -50,15 +50,15 @@ Treebanks</a>.
    <h3 class="sectionHead"><span class="titlemark">2    </span> <a 
  id="x1-20002"></a>Format of inputs and outputs</h3>
 <!--l. 17--><p class="noindent" >The input file to the <span 
-class="ptmri7t-x-x-120">train </span>file contains a set of parse trees, one for each line. An example
-parse tree is as follows: <br 
+class="ptmri7t-x-x-120">train </span>executable contains a set of parse trees, one for each line. An
+example parse tree is as follows: <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             ( S r ( NP r ( NNP t Ms. ) ( NNP t Haag ) ) ( S l* ( VP l ( VBZ t
 plays ) ( NP s ( NNP t Elianti ) ) ) ( . t . ) ) ) <br 
 class="newline" /><br 
 class="newline" />The format is different from the original format used in Penn Treebanks. Here is a
 <a 
-href="con_files/binarize.py" >Python script</a> to convert the original Penn Treebank format to the Zpar format. The
+href="con_files/binarize.py" >Python script</a> to convert the original Penn Treebank format to the ZPar format. The
 usage is <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             python binarize.py <span 
@@ -87,6 +87,7 @@ class="newline" /><br
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;                    <span 
 class="ptmb7t-x-x-120">English</span>: <br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             Ms./NNP Haag/NNP plays/VBZ Elianti/NNP<br 
+class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;                   <span 
 class="ptmb7t-x-x-120">Chinese</span>: <br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             ZPar_NR <span 
@@ -107,7 +108,7 @@ class="ptmri7t-x-x-120">conparser </span>must be encoded in <span
 class="ptmri7t-x-x-120">utf8</span>.
    <h3 class="sectionHead"><span class="titlemark">3    </span> <a 
  id="x1-30003"></a>How to train a model</h3>
-<!--l. 43--><p class="noindent" >To train a model, use <br 
+<!--l. 44--><p class="noindent" >To train a model, use <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/dist/english.conparser/train <span 
 class="cmmi-12">&#x003C;</span>train-file<span 
@@ -118,22 +119,20 @@ class="cmmi-12">&#x003C;</span>number of iterations<span
 class="cmmi-12">&#x003E; </span><br 
 class="newline" /><br 
 class="newline" />For example, using the <a 
-href="con_files/train.txt" >train file</a>, you can train a model by <br 
+href="con_files/train.txt" >example train file</a>, you can train a model by <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                              zpar/dist/english.conparser/train train.txt model 1
 <br 
 class="newline" /><br 
 class="newline" />After training is completed, a new file <span 
 class="ptmri7t-x-x-120">model </span>will be created in the current directory,
-                                                                          
-
-                                                                          
 which can be used to parse POS-tagged sentences. The above command performs
-training with one iteration using the training file. The commands for training Chinese
-parsing models are the same.
+training with one iteration (see Section&#x00A0;<a 
+href="#x1-60006">6<!--tex4ht:ref: tuning --></a>) using the training file. The commands for
+training Chinese parsing models are the same.
    <h3 class="sectionHead"><span class="titlemark">4    </span> <a 
  id="x1-40004"></a>How to parse new texts</h3>
-<!--l. 55--><p class="noindent" >To apply an existing model to parse new texts, use <br 
+<!--l. 56--><p class="noindent" >To apply an existing model to parse new texts, use <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/dist/english.conparser/conparser <span 
 class="cmmi-12">&#x003C;</span>model<span 
@@ -154,13 +153,16 @@ class="newline" />The output file contains automatically parsed trees. The comma
 texts are the same.
    <h3 class="sectionHead"><span class="titlemark">5    </span> <a 
  id="x1-50005"></a>Outputs and evaluation</h3>
-<!--l. 69--><p class="noindent" >In order to evaluate the quality of the outputs, we can manually specify the
+<!--l. 70--><p class="noindent" >In order to evaluate the quality of the outputs, we can manually specify the
 gold parse trees of a sample, and compare the outputs with the correct sample.
 <br 
+class="newline" /><br 
 class="newline" />Manually specified parse trees of the input file are given in <a 
-href="con_files/reference.txt" >reference file</a>. Refer to <a 
-href="http://nlp.cs.nyu.edu/evalb/" >evalb</a>
-to obtain a software that performs automatic evaluation. <br 
+href="con_files/reference.txt" >this example reference
+file</a>. Refer to <a 
+href="http://nlp.cs.nyu.edu/evalb/" >evalb</a> to obtain a software that performs automatic evaluation.
+<br 
+class="newline" /><br 
 class="newline" />Using the above <span 
 class="ptmri7t-x-x-120">output.txt </span>and <span 
 class="ptmri7t-x-x-120">reference.txt</span>, we can evaluate the accuracies by typing
@@ -174,12 +176,9 @@ class="newline" />Here <span
 class="ptmri7t-x-x-120">config.file </span>sets running parameters of the evaluation. <a 
 href="con_files/COLLINS.prm" >COLLINS.prm</a> is a widely
 used configuration file. Evaluation results will be printed to the console.
-                                                                          
-
-                                                                          
    <h3 class="sectionHead"><span class="titlemark">6    </span> <a 
  id="x1-60006"></a>How to tune the performance of a system</h3>
-<!--l. 82--><p class="noindent" >The performance of the system after one training iteration may not be optimal. You can
+<!--l. 86--><p class="noindent" >The performance of the system after one training iteration may not be optimal. You can
 try training a model for another few iterations, after each you compare the performance.
 You can choose the model that gives the highest f-score on your test data. We
 conventionally call this test file the development test data, because you develop a
@@ -196,16 +195,39 @@ to set this variable to the relative directory of <span
 class="ptmri7t-x-x-120">zpar/dist/english.conparsr </span>or
 <span 
 class="ptmri7t-x-x-120">zpar/dist/chinese.conparser</span>.
+   <h3 class="sectionHead"><span class="titlemark">7    </span> <a 
+ id="x1-70007"></a>Source code</h3>
+<!--l. 88--><p class="noindent" >The source code for the English phrase-structure parser can be found at <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/src/common/conparser/implementation/ENGLISH_CONPARSER_IMPL
+<br 
+class="newline" /><br 
+class="newline" />where ENGLISH_CONPARSER_IMPL is a macro defined in <span 
+class="ptmri7t-x-x-120">Makefile</span>, and
+specifies a specific implementation for the English phrase-structure parser.
+<br 
+class="newline" /><br 
+class="newline" />The source code for the Chinese phrase-structure parser can be found at <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/src/common/conparser/implementation/CHINESE_CONPARSER_IMPL
+<br 
+class="newline" /><br 
+class="newline" />where CHINESE_CONPARSER_IMPL is a macro defined in <span 
+class="ptmri7t-x-x-120">Makefile</span>, and specifies a
+specific implementation for the Chinese phrase-structure parser.
+                                                                          
+
+                                                                          
    <h3 class="likesectionHead"><a 
- id="x1-70006"></a>References</h3>
-<!--l. 83--><p class="noindent" >
+ id="x1-80007"></a>References</h3>
+<!--l. 104--><p class="noindent" >
      <div class="thebibliography">
      <p class="bibitem" ><span class="biblabel">
   [1]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
  id="Xbib-1"></a>Yue  Zhang  and  Stephen  Clark.  2009.  Transition-Based  Parsing  of  the
      Chinese Treebank using a Global Discriminative Model. In <span 
-class="ptmri7t-x-x-120">Proc. of IWPT</span>
-     2009, pages 162-171.</p></div>
+class="ptmri7t-x-x-120">Proc. of IWPT</span>,
+     pages 162-171.</p></div>
     
 </body></html> 
 
