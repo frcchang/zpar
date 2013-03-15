@@ -7,7 +7,7 @@
 <meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <!-- html --> 
 <meta name="src" content="eng_tagger.tex"> 
-<meta name="date" content="2013-03-13 12:53:00"> 
+<meta name="date" content="2013-03-16 01:05:00"> 
 <link rel="stylesheet" type="text/css" href="eng_tagger.css"> 
 </head><body 
 >
@@ -22,11 +22,11 @@
 <h2 class="titleHead">English POS Tagging</h2>
 <div class="author" ></div><br />
 <div class="date" ><span 
-class="ptmr7t-x-x-144">March 13, 2013</span></div>
+class="ptmr7t-x-x-144">March 16, 2013</span></div>
    </div>
    <h3 class="sectionHead"><span class="titlemark">1    </span> <a 
  id="x1-10001"></a>How to compile</h3>
-<!--l. 15--><p class="noindent" >Suppose that Zpar has been downloaded to the directory <span 
+<!--l. 15--><p class="noindent" >Suppose that ZPar has been downloaded to the directory <span 
 class="ptmri7t-x-x-120">zpar</span>. To make a POS tagging
 system for English, type <span 
 class="ptmri7t-x-x-120">make english.postagger</span>. This will create a directory
@@ -41,8 +41,8 @@ trained parsing model.
    <h3 class="sectionHead"><span class="titlemark">2    </span> <a 
  id="x1-20002"></a>Format of inputs and outputs</h3>
 <!--l. 17--><p class="noindent" >The input files to the <span 
-class="ptmri7t-x-x-120">tagger </span>are formatted as a sequence of tokenized English sentences.
-An example input is: <br 
+class="ptmri7t-x-x-120">tagger </span>executable are formatted as a sequence of tokenized
+English sentences. An example input is: <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             Ms. Haag plays Elianti . <br 
 class="newline" /><br 
@@ -51,7 +51,7 @@ class="newline" /><br
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             Ms./NNP Haag/NNP plays/VBZ Elianti/NNP ./. <br 
 class="newline" /><br 
 class="newline" />The output format is also the format of training files for the <span 
-class="ptmri7t-x-x-120">train </span>file.
+class="ptmri7t-x-x-120">train </span>executable.
    <h3 class="sectionHead"><span class="titlemark">3    </span> <a 
  id="x1-30003"></a>How to train a model</h3>
 <!--l. 31--><p class="noindent" >To train a model, use <br 
@@ -65,15 +65,17 @@ class="cmmi-12">&#x003C;</span>number of iterations<span
 class="cmmi-12">&#x003E; </span><br 
 class="newline" /><br 
 class="newline" />For example, using the <a 
-href="eng_pos_files/train.txt" >train file</a>, you can train a model by <br 
+href="eng_pos_files/train.txt" >example train file</a>, you can train a model by <br 
 class="newline" /><br 
 class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                              zpar/dist/english.postagger/train train.txt model 1
 <br 
 class="newline" /><br 
 class="newline" />After training is completed, a new file <span 
-class="ptmri7t-x-x-120">model </span>will be created in the current directory,
-which can be used to assign POS tags to tokenized sentences. The above command
-performs training with one iteration using the training file.
+class="ptmri7t-x-x-120">model </span>will be created in the current
+directory, which can be used to assign POS tags to tokenized sentences. The above
+command performs training with one iteration (see Section&#x00A0;<a 
+href="#x1-60006">6<!--tex4ht:ref: tuning --></a>) using the training
+file.
    <h3 class="sectionHead"><span class="titlemark">4    </span> <a 
  id="x1-40004"></a>How to tag new texts</h3>
 <!--l. 43--><p class="noindent" >To apply an existing model to tag new texts, use <br 
@@ -94,18 +96,19 @@ class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                      
 <br 
 class="newline" /><br 
 class="newline" />The output file contains automatically tagged sentences.
-   <h3 class="sectionHead"><span class="titlemark">5    </span> <a 
- id="x1-50005"></a>Outputs and evaluation</h3>
                                                                           
 
                                                                           
+   <h3 class="sectionHead"><span class="titlemark">5    </span> <a 
+ id="x1-50005"></a>Outputs and evaluation</h3>
 <!--l. 57--><p class="noindent" >Automatically tagged texts contain errors. In order to evaluate the quality of the outputs,
 we can manually specify the POS tags of a sample, and compare the outputs with the
 correct sample. <br 
 class="newline" />Manually specified POS tags of the input file are given in <a 
-href="eng_pos_files/reference.txt" >reference file</a>. Here is a
-<a 
+href="eng_pos_files/reference.txt" >this example reference file</a>.
+Here is a <a 
 href="eng_pos_files/evaluate.py" >Python script</a> that performs automatic evaluation. <br 
+class="newline" /><br 
 class="newline" />Using the above <span 
 class="ptmri7t-x-x-120">output.txt </span>and <span 
 class="ptmri7t-x-x-120">reference.txt</span>, we can evaluate the accuracies by typing
@@ -119,7 +122,7 @@ defined to be the ratio of correctly POS-tagged words over all the words in
 output.txt.
    <h3 class="sectionHead"><span class="titlemark">6    </span> <a 
  id="x1-60006"></a>How to tune the performance of a system</h3>
-<!--l. 69--><p class="noindent" >The performance of the system after one training iteration may not be optimal. You can
+<!--l. 71--><p class="noindent" >The performance of the system after one training iteration may not be optimal. You can
 try training a model for another few iterations, after each you compare the performance.
 You can choose the model that gives the highest f-score on your test data. We
 conventionally call this test file the development test data, because you develop
@@ -135,6 +138,16 @@ variable called <span
 class="ptmri7t-x-x-120">zpar</span>. You need to set this variable to the relative directory of
 <span 
 class="ptmri7t-x-x-120">zpar/dist/english.postagger</span>.
+   <h3 class="sectionHead"><span class="titlemark">7    </span> <a 
+ id="x1-70007"></a>Source code</h3>
+<!--l. 73--><p class="noindent" >The source code for the English POS tagger can be found at <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/src/common/tagger/implementation/ENGLISH_TAGGER_IMPL
+<br 
+class="newline" /><br 
+class="newline" />where ENGLISH_TAGGER_IMPL is a macro defined in <span 
+class="ptmri7t-x-x-120">Makefile</span>, and specifies a
+specific implementation for the English POS tagger.
  
 </body></html> 
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=latex 2012.3.5)  13 MAR 2013 12:53
+This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=latex 2012.3.5)  16 MAR 2013 01:04
 entering extended mode
 **\makeatletter\def\HCode{\futurelet\HCode\HChar}\def\HChar{\ifx\HCode\def\HCod
 e##1{\Link##1}\expandafter\HCode\else\expandafter\Link\fi}\def\Link#1.a.b.c.{\g
@@ -6,7 +6,7 @@ e##1{\Link##1}\expandafter\HCode\else\expandafter\Link\fi}\def\Link#1.a.b.c.{\g
 umentstyle\def\documentstyle{\let\documentstyle\HCode\expandafter\def\csname te
 x4ht\endcsname{#1,html}\def\HCode####1{\documentstyle[tex4ht,}\@ifnextchar[{\HC
 ode}{\documentstyle[tex4ht]}}}\makeatother\HCode .a.b.c.\input  deppar
-(C:\Users\wangjing\zpar\doc\doc\deppar.tex
+(C:\Users\wangjing\zpar\zpar\doc\doc\deppar.tex
 (C:\CTEX\MiKTeX\tex\latex\base\article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (C:\CTEX\MiKTeX\tex\latex\base\size12.clo
@@ -241,13 +241,13 @@ File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
 ))
 --- needs --- tex4ht deppar ---
 \tmp:cnt=\count93
-(C:\Users\wangjing\zpar\doc\doc\deppar.tmp)
+(C:\Users\wangjing\zpar\zpar\doc\doc\deppar.tmp)
 \tmp:dim=\skip43
 --------------------------------------
 --- Note --- for XML code, use the command line option `xml' or `xhtml'
 --------------------------------------
 
-(C:\Users\wangjing\zpar\doc\doc\deppar.xref)
+(C:\Users\wangjing\zpar\zpar\doc\doc\deppar.xref)
 \:refout=\write4
 
 (C:\CTEX\MiKTeX\tex\generic\tex4ht\html4.4ht
@@ -596,7 +596,7 @@ version 2009-05-18-23:01
 (C:\CTEX\MiKTeX\tex\generic\tex4ht\html4-math.4ht
 version 2009-05-18-23:01
 ))
-(C:\Users\wangjing\zpar\doc\doc\deppar.aux)
+(C:\Users\wangjing\zpar\zpar\doc\doc\deppar.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
@@ -713,27 +713,27 @@ LaTeX Font Info:    Try loading font information for OT1+pcr on input line 14.
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 32.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 33.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 35.
+(Font)              <12> on input line 37.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 35.
+(Font)              <8> on input line 37.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 35.
-LaTeX Font Info:    Try loading font information for C19+song on input line 35.
+(Font)              <6> on input line 37.
+LaTeX Font Info:    Try loading font information for C19+song on input line 37.
 
 
 (C:\CTEX\CTeX\tex\latex\CJK\GB\c19song.fd
 File: c19song.fd 2009/09/23 4.8.2
-) [3] [4] [5] [6]
-(C:\Users\wangjing\zpar\doc\doc\deppar.aux) ) 
+) [3] [4] [5] [6] [7]
+(C:\Users\wangjing\zpar\zpar\doc\doc\deppar.aux) ) 
 Here is how much of TeX's memory you used:
- 8946 strings out of 495286
- 114702 string characters out of 3181560
- 316773 words of memory out of 3000000
- 11926 multiletter control sequences out of 15000+200000
+ 8950 strings out of 495286
+ 114823 string characters out of 3181560
+ 316776 words of memory out of 3000000
+ 11930 multiletter control sequences out of 15000+200000
  13204 words of font info for 41 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 37i,6n,27p,1338b,734s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 37i,6n,27p,1338b,788s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on deppar.dvi (6 pages, 23860 bytes).
+Output written on deppar.dvi (7 pages, 26036 bytes).
