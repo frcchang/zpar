@@ -1,0 +1,112 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage{CJK}
+\usepackage{times}
+\makeindex
+\title{Dependency Parsing}
+\begin{document}
+\begin{CJK}{GBK}{song}
+\maketitle
+
+\section{How to compile}
+Suppose that ZPar has been downloaded to the directory \textit{zpar}. To make a dependency parsing system for English, type \textit{make english.depparser}. This will create a directory \textit{zpar/dist/english.depparser}, in which there are two files: \textit{train} and \textit{depparser}. The file \textit{train} is used to train a parsing model,and the file \textit{depparser} is used to parse new texts using a trained parsing model. Similarly, we can make a dependency parsing system for Chinese by typing \textit{make chinese.depparser}. The \textit{train} and \textit{depparser} files are created under the directory of \textit{zpar/dist/chinese.depparser}.
+\section{Format of inputs and outputs}
+The input file to the \textit{train} executable contains a set of parse trees. An example parse tree is as follows:
+\\
+\\
+%\begin{tabular}{l}
+\hspace{3cm} Ms. \hspace{2cm} NNP \hspace{2cm} 1 \\
+\hspace{3cm} Haag \hspace{1.6cm} NNP \hspace{2cm} 2 \\
+\hspace{3cm} plays \hspace{1.2cm} VBZ \hspace{2cm} -1 \\
+\hspace{3cm} Elianti \hspace{0.8cm} NNP \hspace{2cm} 2 \\
+\hspace{3cm} . \hspace{2cm} . \hspace{2cm} 2 \\
+\\
+Here the first column represents the words of the sentence; the second column contains POS tags of the words; the third column represents the indices of the heads of the words. Indices start from 0. For example, the head index of the word \textit{Ms.} is 1, which means its head is \textit{Haag}. The head index for the root word of the sentences is -1. Note that, in each line tab characters are used to separate a word, a POS tag, and an index.
+\\
+\\
+The input file to the \textit{depparser} executable contains POS tagged sentences. The formats for English and Chinese are different.
+\\
+\\
+\hspace{2cm} \textbf{English}: \\
+\hspace{3cm} Ms./NNP Haag/NNP plays/VBZ Elianti/NNP\\
+\\
+\hspace{2cm}\textbf{Chinese}: \\
+\hspace{3cm} ZPar$\_$NR 可以$\_$MD 分析$\_$VV 中文$\_$NN 和$\_$CC 英文$\_$NN \\
+\\
+For Chinese, inputs to both \textit{train} and \textit{depparser} must be encoded in \textit{utf8}.
+\section{How to train a model}
+To train a model, use
+\\
+\\
+\hspace{3cm} zpar/dist/english.depparser/train $<$train-file$>$ $<$model-file$>$ $<$number of iterations$>$ \\
+\\
+For example, using the English \href{eng_dep_files/train.txt}{example train file}, you can train a  model by
+\\
+\\
+\hspace{3cm} zpar/dist/english.depparser/train train.txt model 1 \\
+\\
+After training is completed, a new file \textit{model} will be created in the current directory, which can be used to parse POS-tagged sentences. The above command performs training with one iteration (see Section~\ref{tuning}) using the training file.
+\\
+\\
+The commands for training Chinese parsing models are the same. For example, using the Chinese \href{chn_dep_files/train.txt}{example train file}, you can train a model by
+\\
+\\
+\hspace{3cm} zpar/dist/chinese.depparser/train train.txt model 1 \\
+\section{How to parse new texts}
+To apply an existing model to parse new texts, use
+\\
+\\
+\hspace{3cm} zpar/dist/english.depparser/depparser $<$model$>$ $<$input-file$>$ $<$output-file$>$
+\\
+\\
+For example, using the model we just trained, we can parse \href{eng_dep_files/input.txt}{an example input} by
+\\
+\\
+\hspace{3cm} zpar/dist/english.depparser/depparser model input.txt output.txt
+\\
+\\
+The output file contains automatically parsed trees. The commands for parsing Chinese texts are the same. See an example of \href{chn_dep_files/input.txt}{Chinese input file}.
+\section{Outputs and evaluation}
+In order to evaluate the quality of the outputs, we can manually specify the gold parse trees of a sample, and compare the outputs with the correct sample.
+\\
+Manually specified parse trees of the input file are given in \href{eng_dep_files/reference.txt}{this example reference file} (find a Chinese reference file \href{chn_dep_files/reference.txt}{here}).  Here is a \href{eng_dep_files/evaluate.py}{Python script} that performs automatic evaluation.
+\\
+\\
+Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
+\\
+\\
+\hspace{3cm} python evaluate.py output.txt reference.txt
+\\
+\\
+You can find the precision, recall, and f-score here. See the explanation of these measures on \href{http://en.wikipedia.org/wiki/Precision_and_recall}{Wikipedia}.
+\section{How to tune the performance of a system}
+\label{tuning}
+The performance of the system after one training iteration may not be optimal. You can try training a model for another few iterations, after each you compare the performance. You can choose the model that gives the highest f-score on your test data. We conventionally call this test file the development test data, because you develop a parsing model using this. Here is a \href{eng_dep_files/test.sh}{a shell script} that automatically trains the parser for 30 iterations, and after the $i$th iteration, stores the model file to model.$i$. You can compare the f-score of all 30 iterations and choose model.$k$, which gives the best f-score, as the final model. In this file, this is a variable called \textit{zpar}. You need to set this variable to the relative directory of \textit{zpar/dist/english.depparsr} or \textit{zpar/dist/chinese.depparser}.
+\section{Source code}
+The source code for the English dependency parser can be found at
+\\
+\\
+\hspace{3cm} zpar/src/common/depparser/implementation/ENGLISH\_DEPPARSER\_IMPL
+\\
+\\
+where ENGLISH\_DEPPARSER\_IMPL is a macro defined in \textit{Makefile}, and specifies a specific implementation for the English dependency parser.
+\\
+\\
+The source code for the Chinese dependency parser can be found at
+\\
+\\
+\hspace{3cm} zpar/src/common/depparser/implementation/CHINESE\_DEPPARSER\_IMPL
+\\
+\\
+where CHINESE\_DEPPARSER\_IMPL is a macro defined in \textit{Makefile}, and specifies a specific implementation for the Chinese dependency parser.
+\begin{thebibliography}{99}
+\bibitem{bib-1}
+Yue Zhang and Stephen Clark. 2008. A Tale of Two Parsers: Investigating and Combining Graph-based And transition-based Dependency Parsing Using Beam-search. In {\em Proc. of EMNLP}, pages 562-571.
+\bibitem{bib-2}
+Yue Zhang and Joakim Nivre. 2011. Transition-based Dependency Parsing with Rich Non-local Features. In {\em Proc. of ACL}, pages 188-193.
+\end{thebibliography}
+\end{CJK}
+\end{document}

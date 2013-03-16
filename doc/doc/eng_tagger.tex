@@ -1,0 +1,81 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage{CJK}
+\usepackage{times}
+\makeindex
+\title{English POS Tagging}
+\begin{document}
+\begin{CJK}{GBK}{song}
+\maketitle
+
+\section{How to compile}
+Suppose that ZPar has been downloaded to the directory \textit{zpar}. To make a POS tagging system for English, type \textit{make english.postagger}. This will create a directory \textit{zpar/dist/english.postagger}, in which there are two files: \textit{train} and \textit{tagger}. The file \textit{train} is used to train a tagging model,and the file \textit{tagger} is used to tag new texts using a trained parsing model.
+\section{Format of inputs and outputs}
+The input files to the \textit{tagger} executable are formatted as a sequence of tokenized English sentences. An example input is:
+\\
+\\
+\hspace{3cm} Ms. Haag plays Elianti .
+\\
+\\
+The output files contain space-separated words:
+\\
+\\
+\hspace{3cm} Ms./NNP Haag/NNP plays/VBZ Elianti/NNP ./.
+\\
+\\
+The output format is also the format of training files for the \textit{train} executable.
+\section{How to train a model}
+To train a model, use
+\\
+\\
+\hspace{3cm} zpar/dist/english.postagger/train $<$train-file$>$ $<$model-file$>$ $<$number of iterations$>$ \\
+\\
+For example, using the \href{eng_pos_files/train.txt}{example train file}, you can train a model by
+\\
+\\
+\hspace{3cm} zpar/dist/english.postagger/train train.txt model 1 \\
+\\
+After training is completed, a new file \textit{model} will be created in the current directory, which can be used to assign POS tags to tokenized sentences. The above command performs training with one iteration (see Section~\ref{tuning}) using the training file.
+\section{How to tag new texts}
+To apply an existing model to tag new texts, use
+\\
+\\
+\hspace{3cm} zpar/dist/english.postagger/tagger $<$model$>$ $<$input-file$>$ $<$output-file$>$
+\\
+\\
+For example, using the model we just trained, we can tag \href{eng_pos_files/input.txt}{an example input} by
+\\
+\\
+\hspace{3cm} zpar/dist/english.postagger/tagger model input.txt output.txt
+\\
+\\
+The output file contains automatically tagged sentences.
+\section{Outputs and evaluation}
+Automatically tagged texts contain errors. In order to evaluate the quality of the outputs, we can manually specify the POS tags of a sample, and compare the outputs with the correct sample.
+\\
+Manually specified POS tags of the input file are given in \href{eng_pos_files/reference.txt}{this example reference file}. Here is a \href{eng_pos_files/evaluate.py}{Python script} that performs automatic evaluation. 
+\\
+\\
+Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
+\\
+\\
+\hspace{3cm} python evaluate.py output.txt reference.txt
+\\
+\\
+The output of the evaluation script is a single number: \textit{per-token accuracy} which is defined to be the ratio of correctly POS-tagged words over all the words in output.txt.
+\section{How to tune the performance of a system}
+\label{tuning}
+The performance of the system after one training iteration may not be optimal. You can try training a model for another few iterations, after each you compare the performance. You can choose the model that gives the highest f-score on your test data. We conventionally call this test file the development test data, because you develop a parsing model using this. Here is a \href{eng_pos_files/test.sh}{a shell script} that automatically trains the POS tagger for 30 iterations, and after the $i$th iteration, stores the model file to model.$i$. You can compare the f-score of all 30 iterations and choose model.$k$, which gives the best f-score, as the final model. In this file, this is a variable called \textit{zpar}. You need to set this variable to the relative directory of \textit{zpar/dist/english.postagger}.
+\section{Source code}
+The source code for the English POS tagger can be found at
+\\
+\\
+\hspace{3cm} zpar/src/common/tagger/implementation/ENGLISH\_TAGGER\_IMPL
+\\
+\\
+where ENGLISH\_TAGGER\_IMPL is a macro defined in \textit{Makefile}, and specifies a specific implementation for the English POS tagger.
+\end{CJK}
+\end{document}

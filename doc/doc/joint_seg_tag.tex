@@ -1,0 +1,97 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage{CJK}
+\usepackage{times}
+ \DeclareMathSizes{10}{24.88}{20.74}{17.28}
+\makeindex
+\title{Joint Chinese Word Segmentation and POS Tagging}
+%   \author{Yue Zhang \hspace{1cm} Muhua Zhu}
+\begin{document}
+
+\begin{CJK}{GBK}{song}
+\maketitle
+
+\section{How to compile}
+Suppose that ZPar has been downloaded to the directory \textit{zpar}. To make the joint Chinese word segmentor and POS tagger, type \textit{make chinese.postagger}. This will create a directory \textit{zpar/dist/chinese.postagger}, in which there are two files: \textit{train} and {\em tagger}. The file \textit{train} is used to train a joint model of Chinese word segmentation and POS tagging,and the file \textit{tagger} is used to segment and assign POS tags to new texts using a trained joint model.
+\section{Format of inputs and outputs}
+The input files to the \textit{tagger} are formatted as a sequence of Chinese characters. An example input is:
+\\
+\\
+\hspace{3cm} ZPar可以分析中文和英文
+\\
+\\
+The output files contain space-separated words:
+\\
+\\
+\hspace{3cm} ZPar\_NN 可以\_VV 分析\_VV 中文\_NN 和\_CC 英文\_NN
+\\
+\\
+The output format is also the format of training files for the \textit{train} executable.
+\\
+\\
+Both input and output files must be encoded in \textit{utf8}. Here is a \href{joint_files/gb2utf.py}{script} that transfers files that are encoded in \textit{gb} to the \textit{utf8} encoding.
+\section{How to train a model}
+To train a model, use
+\\
+\\
+\hspace{3cm} zpar/dist/chinese.postagger/train $<$train-file$>$ $<$model-file$>$ $<$number of iterations$>$
+\\
+\\
+For example, using the \href{joint_files/train.txt}{example train file}, you can train a  model by
+\\
+\\
+\hspace{3cm} zpar/dist/chinese.postagger/train train.txt model 1
+\\
+\\
+After training is completed, a new file \textit{model} will be created in the current directory, which can be used to do joint segmentation and POS taging to Chinese. The above command performs training with one iteration (see Section~\ref{tuning}) using the training file.
+\section{How to segment and POS-tag new texts}
+To apply an existing model to do joint segmentation and POS tagging to new texts, use
+\\
+\\
+\hspace{3cm} zpar/dist/chinese.postagger/tagger $<$model$>$ $[<$input-file$>]$ $[<$output-file$>]$
+\\
+\\
+where the input file and output file are optional. If the output file is not specified, segmented and POS-tagged texts will be printed to the console. If the input file is not specified, raw texts will be read from the console. For example, using the model we just trained, we can segment and POS-tag \href{joint_files/input.txt}{an example input} by
+\\
+\\
+\hspace{3cm} zpar/dist/chinese.postagger/tagger model input.txt output.txt
+\\
+\\
+The output file contains automatically segmented and POS-tagged texts.
+\section{Outputs and evaluation}
+Automatically segmented and POS-tagged texts contain errors. In order to evaluate the quality of the outputs, we can manually specify the segmentation and POS tags of a sample, and compare the outputs with the correct sample.
+\\
+A manually specified segmentation and POS tagging of the input file is given in \href{joint_files/reference.txt}{this example reference file}. Here is a \href{joint_files/evaluate.py}{Python script} that performs automatic evaluation.
+\\
+Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
+\\
+\\
+\hspace{3cm} python evaluate.py output.txt reference.txt
+\\
+\\
+You can find the precision, recall, and f-score here. See the explanation of these measures on \href{http://en.wikipedia.org/wiki/Precision_and_recall}{Wikipedia}.
+\section{How to tune the performance of a system}
+\label{tuning}
+The performance of the system after one training iteration may not be optimal. You can try training a model for another few iterations, after each you compare the performance. You can choose the model that gives the highest f-score on your test data. We conventionally call this test file the development test data, because you develop a joint segmentation and POS tagging model using this. Here is a \href{joint_files/test.sh}{a shell script} that automatically trains the joint segmentor and POS tagger for 30 iterations, and after the $i$th iteration, stores the model file to model.$i$. You can compare the f-score of all 30 iterations and choose model.$k$, which gives the best f-score, as the final model. In this file, there is a variable called \textit{zpar}. You need to set this variable to the relative directory of \textit{zpar/dist/chinese.postagger}.
+\section{Source code}
+The source code for the joint segmentor and POS tagger can be found at
+\\
+\\
+\hspace{3cm} zpar/src/chinese/tagger/implementation/CHINESE\_TAGGER\_IMPL
+\\
+\\
+where CHINESE\_TAGGER\_IMPL is a macro defined in \textit{Makefile}, and specifies a specific implementation for the joint segmentor and POS tagger.
+\begin{thebibliography}{99}
+\bibitem{bib-1}
+%Yue Zhang and Stephen Clark. 2011. Syntactic Processing Using the Generalized Perceptron and Beam Search. \textit{Computational Linguistics}, 37(1):105-151.
+Yue Zhang and Stephen Clark. 2008. Joint Word Segmentation and POS Tagging Using A Single Perceptron. In {\em Proc. of ACL}. pages 888-896.
+%\bibitem{bib-2}
+%Yue Zhang and Stephen Clark. 2011. Shift-reduce CCG parsing. In {\em Proc. of ACL 2011}, pages 683-692.
+\bibitem{bib-2}
+Yue Zhang and Stephen Clark. 2010. A Fast Decoder for Joint Word Segmentation and POS-tagging Using a Single Discriminative Model. In {\em Proc. of EMNLP}. pages 843-852.
+\end{thebibliography}
+\end{CJK}
+\end{document}
