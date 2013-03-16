@@ -1,0 +1,64 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage{CJK}
+\makeindex
+\title{Chinese Word Segmentation}
+%   \author{Yue Zhang \hspace{1cm} Muhua Zhu}
+\begin{document}
+\begin{CJK}{GBK}{song}
+\maketitle
+
+\section{How to compile}
+Suppose that Zpar has been downloaded to the directory \textit{zpar}. To make the segmenter system, type \textit{make segmentor}. This will create a directory \textit{zpar/dist/segmentor}, in which there are two files: \textit{train} and {\em segmenter}. The file \textit{train} is used to train a segmentation model,and the file \textit{segmentor} is used to segment new texts using a trained segmentation model.
+\section{Format of inputs and outputs}
+The input files to the segmentor are formatted as a sequence of Chinese characters. An example input is:
+\begin{tabular}{l}
+ZPar可以分析中文和英文\\
+\end{tabular}
+The output files contain space-separated words:
+\begin{tabular}{l}
+ZPar 可以 分析 中文 和 英文\\
+\end{tabular}
+The output format is also the format of training files for the \textit{train} file.
+\\
+Both input and output files must be encoded in \textit{utf8}. Here is a \href{seg_files/gb2utf.py}{script} that transfers files that are encoded in \textit{gb} to the \textit{utf8} encoding.
+\section{How to train a model}
+To train a model, use
+\begin{tabular}{l}
+zpar/dist/segmentor/train $<$train-file$>$ $<$model-file$>$ $<$number of iterations$>$ \\
+\end{tabular}
+For example, using the \href{seg_files/train.txt}{train file}, you can train a  model by
+\begin{tabular}{l}
+zpar/dist/segmentor/train train.txt model 1 \\
+\end{tabular}
+After training is completed, a new file \textit{model} will be created in the current directory, which can be used to segment Chinese. The above command performs training with one iteration using the training file.
+\section{How to segment new texts}
+To apply an existing model to segment new texts, use
+\begin{tabular}{l}
+zpar/dist/segmentor/segmentor $<$model$>$ $[<$input-file$>]$ $[<$output-file$>]$ \\
+\end{tabular}
+where the input file and output file are optional. If the output file is not specified, segmented texts will be printed to the console. If the input file is not specified, raw texts will be read from the console. For example, using the model we just trained, we can segment \href{seg_files/input.txt}{an example input} by
+\begin{tabular}{l}
+zpar/dist/segmentor/segmentor model input.txt output.txt \\
+\end{tabular}
+The output file contains automatically segmented texts.
+\section{Outputs and evaluation}
+Automatically segmented texts contain errors. In order to evaluate the quality of the outputs, we can manually specify the segmentation of a sample, and compare the outputs with the correct sample.
+\\
+A manually specified segmentation of the input file is given in \href{seg_files/reference.txt}{reference file}. Here is a \href{seg_files/evaluate.py}{Python script} that performs automatic evaluation.
+\\
+Using the above \textit{output.txt} and \textit{reference.txt}, we can evaluate the accuracies by typing
+\begin{tabular}{l}
+python evaluate.pl output.txt reference.txt \\
+\end{tabular}
+You can find the precision, recall, and f-score here.
+\[ 
+a = b
+\]
+\section{How to tune the performance of a system}
+The performance of the system after one training iteration may not be optimal. You can try training a model for another few iterations, after each you compare the performance. You can choose the model that gives the highest f-score on your test data. We conventionally call this test file the development test data, because you develop a segmentation model using this. Here is a \href{seg_files/test.sh}{a shell script} that automatically trains the segmentor for 30 iterations, and after the $i$th iteration, stores the model file to model.$i$. You can compare the f-score of all 30 iterations and choose model.$k$, which gives the best f-score, as the final model. In this file, this is a variable called \textit{segmentor}. You need to set this variable to the relative directory of \textit{zpar/dist/segmentor}.
+\end{CJK}
+\end{document}
