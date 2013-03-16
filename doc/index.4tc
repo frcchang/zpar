@@ -1,6 +1,0 @@
-\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi
-\doTocEntry\tocsection{1}{\csname a:TocLink\endcsname{1}{x1-10001}{QQ2-1-1}{Overview}}{3}\relax 
-\doTocEntry\tocsection{2}{\csname a:TocLink\endcsname{1}{x1-20002}{QQ2-1-2}{System Requirements}}{3}\relax 
-\doTocEntry\tocsection{3}{\csname a:TocLink\endcsname{1}{x1-30003}{QQ2-1-3}{Download and Installation}}{4}\relax 
-\doTocEntry\tocsection{4}{\csname a:TocLink\endcsname{1}{x1-40004}{QQ2-1-4}{License}}{4}\relax 
-\doTocEntry\toclikesection{}{\csname a:TocLink\endcsname{1}{x1-50004}{QQ2-1-5}{References}}{5}\relax 
