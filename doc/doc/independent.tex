@@ -1,0 +1,25 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\makeindex
+\title{Language- and Treebank-Independent Parsers}
+%\author{Yue Zhang \\
+%frcchang@gmail.com
+%}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The Chinese and English parsers are specifically designed to process the two languages, and by default use the \href{http://www.cis.upenn.edu/~chinese/}{Penn Chinese Treebank} and \href{http://www.cis.upenn.edu/~treebank/}{Penn Treebank} labels. You can specify alternative label sets by modifying \textit{zpar/src/chinese/tags.h} for POS tags, \textit{zpar/src/chinese/dep.h} for dependency labels, and \textit{zpar/src/chinese/cfg.h} for constituent labels. These are hard-coded; the English version are placed in \textit{zpar/src/english}.
+\\
+\\
+On the other hand, you can compile a \textit{generic} version of ZPar, which takes any tags in the training data, and compile them into tag sets automatically. The speed of the generic tag sets are significantly slower when compared with the hard-coded tag sets. The files are placed in \textit{zpar/src/generic}.
+\\
+\\
+To compile individual models with these tags, use \textit{generic} in the place of \textit{chinese} or \textit{english}. For example, \textit{make generic.conparser}. The implementations are found from src/common/GENERIC\_CONPARSER\_IMPL. The generic ZPar can be compiled by \textit{make zpar.ge}. 
+\\
+\\
+The generic parsers are used by different languages and treebank formats, for example, the generic depparser can be used to process CoNLL data in 13 languages.
+\end{document}

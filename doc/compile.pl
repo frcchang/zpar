@@ -32,3 +32,11 @@ system($command);
 $command = "$compiler eng_tagger";
 print "$command\n";
 system($command);
+
+$command = "$compiler independent";
+print "$command\n";
+system($command);
+
+$command = "$compiler ccg";
+print "$command\n";
+system($command);
