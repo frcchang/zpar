@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Language- and Treebank-Independent Parsers</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html --> 
+<meta name="src" content="independent.tex"> 
+<meta name="date" content="2013-03-20 22:31:00"> 
+<link rel="stylesheet" type="text/css" href="independent.css"> 
+</head><body 
+>
+   <div class="maketitle">
+                                                                          
+
+                                                                          
+                                                                          
+
+                                                                          
+
+<h2 class="titleHead">Language- and Treebank-Independent Parsers</h2>
+<div class="author" ></div><br />
+<div class="date" ><span 
+class="cmr-12x-x-120">March 20, 2013</span></div>
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Introduction</h3>
+<!--l. 15--><p class="noindent" >The Chinese and English parsers are specifically designed to process the
+two languages, and by default use the <a 
+href="http://www.cis.upenn.edu/~chinese/" >Penn Chinese Treebank</a> and <a 
+href="http://www.cis.upenn.edu/~treebank/" >Penn
+Treebank</a> labels. You can specify alternative label sets by modifying
+<span 
+class="cmti-12">zpar/src/chinese/tags.h </span>for POS tags, <span 
+class="cmti-12">zpar/src/chinese/dep.h </span>for dependency
+labels, and <span 
+class="cmti-12">zpar/src/chinese/cfg.h </span>for constituent labels. These are hard-coded;
+the English version are placed in <span 
+class="cmti-12">zpar/src/english</span>. <br 
+class="newline" /><br 
+class="newline" />On the other hand, you can compile a <span 
+class="cmti-12">generic </span>version of ZPar, which takes any
+tags in the training data, and compile them into tag sets automatically.
+The speed of the generic tag sets are significantly slower when compared
+with the hard-coded tag sets. The files are placed in <span 
+class="cmti-12">zpar/src/generic</span>.
+<br 
+class="newline" /><br 
+class="newline" />To compile individual models with these tags, use <span 
+class="cmti-12">generic </span>in the place of <span 
+class="cmti-12">chinese</span>
+or <span 
+class="cmti-12">english</span>. For example, <span 
+class="cmti-12">make generic.conparser</span>. The implementations are found
+from src/common/GENERIC_CONPARSER_IMPL. The generic ZPar can be
+compiled by <span 
+class="cmti-12">make zpar.ge</span>. <br 
+class="newline" /><br 
+class="newline" />The generic parsers are used by different languages and treebank formats, for
+example, the generic depparser can be used to process CoNLL data in 13
+languages.  
+</body></html> 
+
+                                                                          
+
+

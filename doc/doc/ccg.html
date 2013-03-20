@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>CCG Parsing</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html --> 
+<meta name="src" content="ccg.tex"> 
+<meta name="date" content="2013-03-20 22:31:00"> 
+<link rel="stylesheet" type="text/css" href="ccg.css"> 
+</head><body 
+>
+   <div class="maketitle">
+                                                                          
+
+                                                                          
+                                                                          
+
+                                                                          
+
+<h2 class="titleHead">CCG Parsing</h2>
+<div class="author" ></div><br />
+<div class="date" ><span 
+class="cmr-12x-x-120">March 20, 2013</span></div>
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Introduction</h3>
+<!--l. 15--><p class="noindent" >The ZPar CCG parser is essentially the ZPar <a 
+href="independent.html" >generic version</a> of the
+phrase-structure parser with special processing of lexical categories and
+combinatorial rules (including unary rules). The source code are located
+at zpar/src/common/conparser/GENERIC_CCGPARSER_IMPL. The
+implementation macro is located at zpar/Makefile.ccg. <br 
+class="newline" /><br 
+class="newline" />To compile the parser, type <span 
+class="cmti-12">make generic.ccgparser</span>. The target binary
+<span 
+class="cmti-12">zpar/dist/generic.ccgparser/train </span>takes three additional arguments compared to
+the phrase-structure parsers.
+      <ul class="itemize1">
+      <li class="itemize">-b binary rules (<a 
+href="ccg_files/rules.binary" >example</a>)
+      </li>
+      <li class="itemize">-u unary rules (<a 
+href="ccg_files/rules.unary" >example</a>)
+      </li>
+      <li class="itemize">-c lexical category files (<a 
+href="ccg_files/train.input" >example</a>)</li></ul>
+                                                                          
+
+                                                                          
+<!--l. 24--><p class="noindent" >Usage of the target binary zpar/dist/generic.ccgparser/conparser is similar to the
+English phrase-structure parser, except that the input file contains lexical
+categories in addition to POS (<a 
+href="ccg_files/input.txt" >an example</a>). <br 
+class="newline" /><br 
+class="newline" />The output files are binarized derivations, in the same format as conparser. Here
+are <a 
+href="ccg_files/train.txt" >an example training file</a> and <a 
+href="ccg_files/reference.txt" >an example reference file</a>. <br 
+class="newline" /><br 
+class="newline" />The CCG parser is tuned in a similar way to the conparser, where a certain
+number of training iterations are performed and the best iteration is decided using
+a set of development data. Here is <a 
+href="ccg_files/test.sh" >an example script</a> for tuning experiments. Note
+that the <a 
+href="http://svn.ask.it.usyd.edu.au/trac/candc/wiki" >C&amp;C</a> parser is used to convert derivations to CCG dependencies, which
+are the normal objectives of evaluations.
+   <h3 class="likesectionHead"><a 
+ id="x1-20001"></a>References</h3>
+<!--l. 31--><p class="noindent" >
+     <div class="thebibliography">
+     <p class="bibitem" ><span class="biblabel">
+  [1]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xbib-1"></a>Yue Zhang and Stephen Clark. 2011. Shift-Reduce CCG Parsing. In
+     <span 
+class="cmti-12">Proc. of ACL</span>, pages 683-692.</p></div>
+    
+</body></html> 
+
+                                                                          
+
+

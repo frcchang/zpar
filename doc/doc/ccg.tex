@@ -1,0 +1,37 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\makeindex
+\title{CCG Parsing}
+%\author{Yue Zhang \\
+%frcchang@gmail.com
+%}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The ZPar CCG parser is essentially the ZPar \href{independent.html}{generic version} of the phrase-structure parser with special processing of lexical categories and combinatorial rules (including unary rules). The source code are located at zpar/src/common/conparser/GENERIC\_CCGPARSER\_IMPL. The implementation macro is located at zpar/Makefile.ccg.
+\\
+\\
+To compile the parser, type \textit{make generic.ccgparser}. The target binary \textit{zpar/dist/generic.ccgparser/train} takes three additional arguments compared to the phrase-structure parsers.
+\begin{itemize}
+\item -b binary rules (\href{ccg_files/rules.binary}{example})
+\item -u unary rules (\href{ccg_files/rules.unary}{example})
+\item -c lexical category files (\href{ccg_files/train.input}{example})
+\end{itemize}
+Usage of the target binary zpar/dist/generic.ccgparser/conparser is similar to the English phrase-structure parser, except that the input file contains lexical categories in addition to POS (\href{ccg_files/input.txt}{an example}). 
+\\
+\\
+The output files are binarized derivations, in the same format as conparser. Here are \href{ccg_files/train.txt}{an example training file} and \href{ccg_files/reference.txt}{an example reference file}. 
+\\
+\\
+The CCG parser is tuned in a similar way to the conparser, where a certain number of training iterations are performed and the best iteration is decided using a set of development data. Here is \href{ccg_files/test.sh}{an example script} for tuning experiments. Note that the \href{http://svn.ask.it.usyd.edu.au/trac/candc/wiki}{C\&C} parser is used to convert derivations to CCG dependencies, which are the normal objectives of evaluations.
+\begin{thebibliography}{99}
+\bibitem{bib-1}
+Yue Zhang and Stephen Clark. 2011. Shift-Reduce CCG Parsing. In {\em Proc. of ACL}, pages 683-692.
+%\bibitem{bib-2}
+%Yue Zhang and Stephen Clark. 2011. Shift-reduce CCG parsing. In {\em Proc. of ACL 2011}, pages 683-692.
+\end{thebibliography}
+\end{document}
