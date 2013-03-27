@@ -84,6 +84,15 @@ The source code for the joint segmentor and POS tagger can be found at
 \\
 \\
 where CHINESE\_TAGGER\_IMPL is a macro defined in \textit{Makefile}, and specifies a specific implementation for the joint segmentor and POS tagger.
+\\
+\\
+The Chinese POS-tagger by default performs segmentation and tagging
+simultaneously. This means that if the input sentence has been
+segmented, the system will resegment the sentence. There is one
+implementation that performs POS-tagging on segmented sentences. The
+name of the implementation is \textit{segmented}, and you can compile this
+system by setting CHINESE\_TAGGER\_IMPL to \textit{segmented} in \textit{Makefile}. The
+compilation, training, and usage are the same as the other taggers.
 \begin{thebibliography}{99}
 \bibitem{bib-1}
 %Yue Zhang and Stephen Clark. 2011. Syntactic Processing Using the Generalized Perceptron and Beam Search. \textit{Computational Linguistics}, 37(1):105-151.
