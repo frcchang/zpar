@@ -7,7 +7,7 @@
 <meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
 <!-- html --> 
 <meta name="src" content="joint_seg_tag.tex"> 
-<meta name="date" content="2013-03-24 11:42:00"> 
+<meta name="date" content="2013-03-28 00:53:00"> 
 <link rel="stylesheet" type="text/css" href="joint_seg_tag.css"> 
 </head><body 
 >
@@ -23,7 +23,7 @@
 Tagging</h2>
 <div class="author" ></div><br />
 <div class="date" ><span 
-class="ptmr7t-x-x-144">March 24, 2013</span></div>
+class="ptmr7t-x-x-144">March 28, 2013</span></div>
    </div>
    <h3 class="sectionHead"><span class="titlemark">1    </span> <a 
  id="x1-10001"></a>How to compile</h3>
@@ -188,10 +188,21 @@ class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                      
 class="newline" /><br 
 class="newline" />where CHINESE_TAGGER_IMPL is a macro defined in <span 
 class="ptmri7t-x-x-120">Makefile</span>, and specifies a
-specific implementation for the joint segmentor and POS tagger.
+specific implementation for the joint segmentor and POS tagger. <br 
+class="newline" /><br 
+class="newline" />The Chinese POS-tagger by default performs segmentation and tagging simultaneously.
+This means that if the input sentence has been segmented, the system will
+resegment the sentence. There is one implementation that performs POS-tagging on
+segmented sentences. The name of the implementation is <span 
+class="ptmri7t-x-x-120">segmented</span>, and you
+can compile this system by setting CHINESE_TAGGER_IMPL to <span 
+class="ptmri7t-x-x-120">segmented</span>
+in <span 
+class="ptmri7t-x-x-120">Makefile</span>. The compilation, training, and usage are the same as the other
+taggers.
    <h3 class="likesectionHead"><a 
  id="x1-80007"></a>References</h3>
-<!--l. 87--><p class="noindent" >
+<!--l. 96--><p class="noindent" >
      <div class="thebibliography">
      <p class="bibitem" ><span class="biblabel">
   [1]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
@@ -205,6 +216,9 @@ class="ptmri7t-x-x-120">Proc. of ACL</span>. pages 888-896.
      Segmentation  and  POS-tagging  Using  a  Single  Discriminative  Model.  In
      <span 
 class="ptmri7t-x-x-120">Proc. of EMNLP</span>. pages 843-852.</p></div>
+                                                                          
+
+                                                                          
     
 </body></html> 
 
