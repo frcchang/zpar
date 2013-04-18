@@ -18,11 +18,13 @@
 // early update? 
 #define EARLY_UPDATE
 
+#define USE_CHARACTER
+
 // scale scores? this must be used with TRAIN_MARGIN or undefined
 //#define SCALE
 
 // The size of agenda
-static const unsigned long AGENDA_SIZE = 16;
+static const unsigned long AGENDA_SIZE = 64;
 static const unsigned long MIRA_SIZE = AGENDA_SIZE+1;
 
 // The size of a sentence and the words

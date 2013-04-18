@@ -259,7 +259,27 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapInSubWordDictionary)right\
 	left(m_mapInSubWordTagDictionary)right\
 	left(m_mapInWordDictionary)right\
-	left(m_mapInWordTagDictionary)right
+	left(m_mapInWordTagDictionary)right\
+	left(m_mapPSYNS2z)right\
+	left(m_mapSYNS2z)right\
+	left(m_mapPSYNS0zS1zS2z)right\
+	left(m_mapPPSYNS0zS1zS2z)right\
+	left(m_mapPPPSYNS0zS1zS2z)right\
+	left(m_mapPSYNS0zS1cS2c)right\
+	left(m_mapPSYNS0cS1zS2c)right\
+	left(m_mapPSYNS0cS1cS2z)right\
+	left(m_mapPPSYNS0zS1cS2c)right\
+	left(m_mapPPSYNS0cS1zS2c)right\
+	left(m_mapPPSYNS0cS1cS2z)right\
+	left(m_mapPPPSYNS0zS1cS2c)right\
+	left(m_mapPPPSYNS0cS1zS2c)right\
+	left(m_mapPPPSYNS0cS1cS2z)right\
+	left(m_mapSubWordHeadCharType)right\
+	left(m_mapSubWordHeadCharTypeTag)right\
+	left(m_mapSubWordHeadCharEqual)right\
+	left(m_mapSubWordHeadCharEqualTag)right\
+	left(m_mapInSubWordDictionaryTag)right\
+	left(m_mapInSubWordTagDictionaryTag)right
 
 
 
@@ -504,7 +524,27 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapInSubWordDictionary middle m_mapInSubWordDictionary right\
 	left m_mapInSubWordTagDictionary middle m_mapInSubWordTagDictionary right\
 	left m_mapInWordDictionary middle m_mapInWordDictionary right\
-	left m_mapInWordTagDictionary middle m_mapInWordTagDictionary right
+	left m_mapInWordTagDictionary middle m_mapInWordTagDictionary right\
+	left m_mapPSYNS2z middle m_mapPSYNS2z right\
+	left m_mapSYNS2z middle m_mapSYNS2z right\
+	left m_mapPSYNS0zS1zS2z middle m_mapPSYNS0zS1zS2z right\
+	left m_mapPPSYNS0zS1zS2z middle m_mapPPSYNS0zS1zS2z right\
+	left m_mapPPPSYNS0zS1zS2z middle m_mapPPPSYNS0zS1zS2z right\
+	left m_mapPSYNS0zS1cS2c middle m_mapPSYNS0zS1cS2c right\
+	left m_mapPSYNS0cS1zS2c middle m_mapPSYNS0cS1zS2c right\
+	left m_mapPSYNS0cS1cS2z middle m_mapPSYNS0cS1cS2z right\
+	left m_mapPPSYNS0zS1cS2c middle m_mapPPSYNS0zS1cS2c right\
+	left m_mapPPSYNS0cS1zS2c middle m_mapPPSYNS0cS1zS2c right\
+	left m_mapPPSYNS0cS1cS2z middle m_mapPPSYNS0cS1cS2z right\
+	left m_mapPPPSYNS0zS1cS2c middle m_mapPPPSYNS0zS1cS2c right\
+	left m_mapPPPSYNS0cS1zS2c middle m_mapPPPSYNS0cS1zS2c right\
+	left m_mapPPPSYNS0cS1cS2z middle m_mapPPPSYNS0cS1cS2z right\
+	left m_mapSubWordHeadCharType middle m_mapSubWordHeadCharType right\
+	left m_mapSubWordHeadCharTypeTag middle m_mapSubWordHeadCharTypeTag right\
+	left m_mapSubWordHeadCharEqual middle m_mapSubWordHeadCharEqual right\
+	left m_mapSubWordHeadCharEqualTag middle m_mapSubWordHeadCharEqualTag right\
+	left m_mapInSubWordDictionaryTag middle m_mapInSubWordDictionaryTag right\
+	left m_mapInSubWordTagDictionaryTag middle m_mapInSubWordTagDictionaryTag right
    
 
 
@@ -857,6 +897,31 @@ public:
    CIntMap m_mapInWordDictionary;
    CIntMap m_mapInWordTagDictionary;
 
+
+   CTaggedWordMap m_mapPSYNS2z;
+   CTaggedWordMap m_mapSYNS2z;
+   CTriWordMap m_mapPSYNS0zS1zS2z;
+   CTriWordMap m_mapPPSYNS0zS1zS2z;
+   CTriWordMap m_mapPPPSYNS0zS1zS2z;
+   CWordCfgIntMap m_mapPSYNS0zS1cS2c;
+   CWordCfgIntMap m_mapPSYNS0cS1zS2c;
+   CWordCfgIntMap m_mapPSYNS0cS1cS2z;
+   CWordCfgIntMap m_mapPPSYNS0zS1cS2c;
+   CWordCfgIntMap m_mapPPSYNS0cS1zS2c;
+   CWordCfgIntMap m_mapPPSYNS0cS1cS2z;
+   CWordCfgIntMap m_mapPPPSYNS0zS1cS2c;
+   CWordCfgIntMap m_mapPPPSYNS0cS1zS2c;
+   CWordCfgIntMap m_mapPPPSYNS0cS1cS2z;
+
+   CIntMap m_mapSubWordHeadCharType;
+   CTagIntMap m_mapSubWordHeadCharTypeTag;
+   CIntMap m_mapSubWordHeadCharEqual;
+   CTagIntMap m_mapSubWordHeadCharEqualTag;
+   CTagIntMap m_mapInSubWordDictionaryTag;
+   CTagIntMap m_mapInSubWordTagDictionaryTag;
+
+
+
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
    CWordToIntMap m_mapWordFrequency;
@@ -1133,7 +1198,27 @@ public:
                            m_mapInSubWordDictionary("InSubWordDictionary", TABLE_SIZE),
                            m_mapInSubWordTagDictionary("InSubWordTagDictionary", TABLE_SIZE),
                            m_mapInWordDictionary("InWordDictionary", TABLE_SIZE),
-                           m_mapInWordTagDictionary("InWordTagDictionary", TABLE_SIZE)
+                           m_mapInWordTagDictionary("InWordTagDictionary", TABLE_SIZE),
+                           m_mapPSYNS2z("PSYNS2z", TABLE_SIZE),
+                           m_mapSYNS2z("SYNS2z", TABLE_SIZE),
+                           m_mapPSYNS0zS1zS2z("PSYNS0zS1zS2z", TABLE_SIZE),
+                           m_mapPPSYNS0zS1zS2z("PPSYNS0zS1zS2z", TABLE_SIZE),
+                           m_mapPPPSYNS0zS1zS2z("PPPSYNS0zS1zS2z", TABLE_SIZE),
+                           m_mapPSYNS0zS1cS2c("PSYNS0zS1cS2c", TABLE_SIZE),
+                           m_mapPSYNS0cS1zS2c("PSYNS0cS1zS2c", TABLE_SIZE),
+                           m_mapPSYNS0cS1cS2z("PSYNS0cS1cS2z", TABLE_SIZE),
+                           m_mapPPSYNS0zS1cS2c("PPSYNS0zS1cS2c", TABLE_SIZE),
+                           m_mapPPSYNS0cS1zS2c("PPSYNS0cS1zS2c", TABLE_SIZE),
+                           m_mapPPSYNS0cS1cS2z("PPSYNS0cS1cS2z", TABLE_SIZE),
+                           m_mapPPPSYNS0zS1cS2c("PPPSYNS0zS1cS2c", TABLE_SIZE),
+                           m_mapPPPSYNS0cS1zS2c("PPPSYNS0cS1zS2c", TABLE_SIZE),
+                           m_mapPPPSYNS0cS1cS2z("PPPSYNS0cS1cS2z", TABLE_SIZE),
+                           m_mapSubWordHeadCharType("SubWordHeadCharType", TABLE_SIZE),
+                           m_mapSubWordHeadCharTypeTag("SubWordHeadCharTypeTag", TABLE_SIZE),
+                           m_mapSubWordHeadCharEqual("SubWordHeadCharEqual", TABLE_SIZE),
+                           m_mapSubWordHeadCharEqualTag("SubWordHeadCharEqualTag", TABLE_SIZE),
+                           m_mapInSubWordDictionaryTag("InSubWordDictionaryTag", TABLE_SIZE),
+                           m_mapInSubWordTagDictionaryTag("InSubWordTagDictionaryTag", TABLE_SIZE)
    { }
    ~CWeight() {
    	if (m_Knowledge) delete m_Knowledge;

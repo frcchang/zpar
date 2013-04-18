@@ -67,7 +67,7 @@ public:
    }
 
 public:
-   void getActions(const CStateItem &item, const CStringVector *sent, std::vector<CAction> &actions) {
+   void getActions(const CStateItem &item, const CStringVector *sent, std::vector<CAction> &actions, const CStringVector *charcandpos) {
       actions.clear();
 
       static CAction action;
@@ -94,7 +94,7 @@ public:
          }
          else {
 #endif // NO_TEMP_CONSTITUENT
-             getShiftRules(item, actions);
+             getShiftRules(item, actions, charcandpos);
 #ifndef NO_TEMP_CONSTITUENT
          }
 #endif // NO_TEMP_CONSTITUENT
@@ -117,6 +117,27 @@ public:
          getUnaryRules(item, actions);
       }
    }
+
+   void setsegboundary(const CStringVector *words, const CStringVector *sentence_raw)
+   {
+   	static CStringVector chars;
+   	reset();
+
+   	for( int index = 0; index < sentence_raw->size(); index++)
+   	{
+   		setSeparate(index, false);
+   	}
+   	int length = 0;
+   	for( int index = 0; index < words->size(); index++)
+   	{
+   		setSeparate(length, true);
+   		chars.clear();
+         getCharactersFromUTF8String(words->at(index), &chars);
+   		length = length + chars.size();
+   	}
+   }
+
+
 
 
    void segment(const CStringVector *sentence_raw, CStringVector *sentence) {
@@ -212,8 +233,9 @@ protected:
     }
 
 
-   void getShiftRules(const CStateItem &item, std::vector<CAction> &actions) {
+   void getShiftRules(const CStateItem &item, std::vector<CAction> &actions, const CStringVector *charcandpos) {
       static CAction action;
+      static CTag tmptag;
 
       if(item.stacksize() > 0 && item.node.is_partial())
       {
@@ -231,9 +253,21 @@ protected:
       {
       	if(canSeparate(item.current_word))
       	{
+      		int wordsize = 0;
+				for(int idx = 0; idx < item.current_word; idx++)
+				{
+					if(canSeparate(idx))wordsize++;
+				}
+            bool fixedpos = false;
+            if(charcandpos != NULL)
+            {
+            	fixedpos = tmptag.loadcheck((*charcandpos)[wordsize]);
+            }
+
 				for(unsigned long tag = CTag::FIRST; tag < CTag::COUNT; ++tag)
 				{
-					if(canStartWord(tag, item.current_word))
+					if(fixedpos && tag != tmptag.code())continue;
+					if(canStartWord(tag, item.current_word) || fixedpos)
 					{
 						action.encodeShiftS(tag);
 						actions.push_back(action);

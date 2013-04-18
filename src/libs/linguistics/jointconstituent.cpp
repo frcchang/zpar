@@ -17,6 +17,7 @@ int CJointTree::readNode(std::istream &is) {
       int node;
       std::string s, name;
       static std::string temp;
+      static std::string type;
       is >> s;
       assert(s == "(");
       is >> name;
@@ -30,7 +31,8 @@ int CJointTree::readNode(std::istream &is) {
          temporary = true;
       }
       if (s[0] == 'l' || s[0] == 'r' || s[0] == 'x' || s[0] == 'y' || s[0] == 'z' ) {
-    	 left = readNode(is);
+      	int start_char_pos = chars.size();
+      	left = readNode(is);
          right = readNode(is);
          node = newNode();
          // l - head left; r / e - head right
@@ -40,6 +42,19 @@ int CJointTree::readNode(std::istream &is) {
          nodes[node].type = s[0];
          // l / r - has token
          nodes[node].temp = temporary;
+         int end_char_pos = chars.size();
+
+         if (s[0] == 'x' || s[0] == 'y' || s[0] == 'z')
+			{
+         	type = "";
+         	type += s[0];
+				temp = "";
+				for (int idx=start_char_pos; idx<end_char_pos; ++idx) // append the corresponding characters
+					temp += chars.at(idx);
+				newPartWord(temp, type);
+				newSubWord(temp, name);
+			}
+
          nodes[node].token = (s[0]=='l' || s[0] == 'z' || s[0] == 'x') ? nodes.at(left).token : nodes.at(right).token;
          is >> s;
          assert(s==")");
@@ -68,7 +83,11 @@ int CJointTree::readNode(std::istream &is) {
          assert(s==")");
       }
       else {
-         ASSERT(s[0]=='b' || s[0]=='i', "A leaf node must be tagged b or i, not "<<s[0]);
+         //ASSERT(s[0]=='b' || s[0]=='i', "A leaf node must be tagged b or i, not "<<s[0]);
+      	if(s[0] !='b' && s[0] !='i')
+      	{
+      		ASSERT(s[0]=='b' || s[0]=='i', "A leaf node must be tagged b or i, not "<<s[0]);
+      	}
          std::string token;
          node = newNode();
          nodes[node].label = name;

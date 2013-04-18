@@ -60,6 +60,7 @@ def __find_name(sSentence, nStartIndex):
       lToken.append(sSentence[nIndex])
       nIndex = nIndex+1
    if lToken == []:
+      print "aa"
       raise "No token found after a bracket:\n" + sSentence 
    return "".join(lToken).strip(), nIndex
 
@@ -74,6 +75,7 @@ def __find_token(sSentence, nStartIndex):
       lToken.append(sSentence[nLastIndex:nIndex])
       nLastIndex = nIndex
    if lToken == []:
+      print "aa"
       raise "No token found after a bracket:\n" + sSentence 
    return "".join(lToken).strip(), nIndex
 

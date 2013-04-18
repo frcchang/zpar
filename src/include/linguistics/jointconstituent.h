@@ -126,6 +126,8 @@ public:
    CStringVector chars;
    //just for convenience
    CTwoStringVector words;
+   CTwoStringVector partwords;
+   CTwoStringVector subwords;
    int root;
 
 public:
@@ -136,9 +138,11 @@ public:
    int newNode() { nodes.push_back(CJointTreeNode()); return nodes.size()-1; }
    int newChar(const std::string &word) { chars.push_back(word); return(chars.size()-1); }
    int newWord(const std::string &word, const std::string &pos) { words.push_back(std::make_pair(word, pos)); return(words.size()-1); }
+   int newPartWord(const std::string &word, const std::string &type) { partwords.push_back(std::make_pair(word, type)); return(partwords.size()-1); }
+   int newSubWord(const std::string &word, const std::string &pos) { subwords.push_back(std::make_pair(word, pos)); return(subwords.size()-1); }
 
    bool empty() const {return nodes.empty()&&chars.empty();}
-   void clear() {root=-1;nodes.clear(); chars.clear(); words.clear();}
+   void clear() {root=-1;nodes.clear(); chars.clear(); words.clear(); partwords.clear(); subwords.clear();}
    int readNode(std::istream &is);
    std::string writeNode(int node) const;
    std::string writeNodeUnbin(int node) const;
@@ -204,6 +208,14 @@ inline void UnparseSentence(const CJointTree *parsed, CStringVector *raw) {
 
 inline void UnparseSentence(const CJointTree *parsed, CTwoStringVector *raw) {
    (*raw) = parsed->words;
+}
+
+inline void GetSentencePartWords(const CJointTree *parsed, CTwoStringVector *raw) {
+   (*raw) = parsed->partwords;
+}
+
+inline void GetSentenceSubWords(const CJointTree *parsed, CTwoStringVector *raw) {
+   (*raw) = parsed->subwords;
 }
 
 }

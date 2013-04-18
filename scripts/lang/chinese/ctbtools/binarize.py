@@ -46,10 +46,30 @@ class CBinarizedTreeNode(object):
       elif self.type == 'token':
          if self.pos == '':
             sType = 't'
-            sContent = gb2utf(self.token)
+            sContent = self.token
          else:
             sType = 'c'
-            sContent = self.pos + ' ' + gb2utf(self.token)
+            sContent = self.pos + ' ' + self.token
+      else:
+         raise "Type not defined for node"
+      if self.temporary:
+         sType += "*"
+      return "( %s %s %s ) " % (self.name, sType, sContent)
+
+   def utf8print(self):
+      if self.type == 'constituent':
+         sType = self.head_child
+         if self.head_child == 's':
+            sContent = self.left_child.utf8print()
+         else:
+            sContent = self.left_child.utf8print() + " " + self.right_child.utf8print()
+      elif self.type == 'token':
+         if self.pos == '':
+            sType = 't'
+            sContent = self.token
+         else:
+            sType = 'c'
+            sContent = self.pos + ' ' + self.token
       else:
          raise "Type not defined for node"
       if self.temporary:
@@ -377,6 +397,32 @@ class CBinarizer(object):
             outh = fidtree.CTreeNode()
             self.build_node(outh, head)
             print outh
+
+   def process_noroot(self, sSentence, wfile):
+      # don't process empty sentences
+      if sSentence.strip() == "":
+         return
+      # find the cfg node
+      head = fidtree.parse_object(sSentence)
+      if head.name == "ROOT":
+          head = head.children[0]
+      if type(head) == list:
+         lHead = head
+      else:
+         lHead = [head]                         
+      # output the dep node
+      for head in lHead:
+        # print head
+         if self.m_bBinarize:
+            outh = CBinarizedTreeNode()
+      #      print outh
+            self.build_binarized_node(outh, head)
+            wfile.write(outh.utf8print()+"\n")
+            #print outh.utf8print()
+         else:
+            outh = fidtree.CTreeNode()
+            self.build_node(outh, head)
+            wfile.write(outh.utf8print()+"\n")
 
 #================================================================
 
