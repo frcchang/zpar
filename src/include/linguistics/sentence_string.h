@@ -87,6 +87,33 @@ void UntagSentence(const CTwoStringVector *tagged, CStringVector *retval) {
       retval->push_back(it->first);
 }
 
+
+/*---------------------------------------------------------------
+ *
+ * UntagSentence - remove tags
+ *
+ * Input: sTagged - tagged sentence as input to methods
+ *
+ * Return: segmented form, tags
+ *
+ *--------------------------------------------------------------*/
+
+inline
+void UntagSentenceSaveTag(const CTwoStringVector *tagged, CStringVector *retval, CStringVector *retvalpos) {
+   assert(retval != 0);
+   retval->clear();
+   assert(retvalpos != 0);
+   retvalpos->clear();
+   if (tagged == 0)
+      return;
+   CTwoStringVector::const_iterator it;
+   for (it=tagged->begin(); it!=tagged->end(); ++it)
+   {
+      retval->push_back(it->first);
+      retvalpos->push_back(it->second);
+   }
+}
+
 /*---------------------------------------------------------------
  *
  * UntagAndDesegmentSentence - remove tags and join

@@ -23,7 +23,7 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, int nBest, const bool bScores, const bool bBinary) {
+void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, int nBest, const bool bScores, const bool bBinary, const int bUseGoldSeg) {
 
    std::cout << "Parsing started" << std::endl;
 
@@ -48,17 +48,48 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
    }
 
    outout_sent = new CSentenceParsed[nBest];
+
+   CTwoStringVector *in_senttag;
+   CStringVector *in_tags;
+   if (bUseGoldSeg == 2)
+   {
+		in_senttag = new CTwoStringVector;
+		in_tags = new CStringVector;
+   }
  
    // Read the next example
-  bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);
+   if(bUseGoldSeg == 0)
+   {
+   	bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);
+   }
+   else if(bUseGoldSeg == 1)
+   {
+   	bReadSuccessful = input_reader->readSegmentedSentence(&raw_input, true);
+   }
+   else if(bUseGoldSeg == 2)
+   {
+   	bReadSuccessful = input_reader->readTaggedSentence(in_senttag);
+   }
    while( bReadSuccessful ) {
 
       //TRACE_WORD("Sentence " << nCount << "...");
       ++ nCount;
 
       // Find decoder outout
+      if(bUseGoldSeg == 2)
+		{
+      	UntagSentenceSaveTag(in_senttag, &raw_input, in_tags);
+		}
 
-      bool valid = parser.parse( raw_input , outout_sent , nBest , scores ) ;
+      bool valid = false;
+      if(bUseGoldSeg == 0 || bUseGoldSeg == 1)
+      {
+      	valid = parser.parse( raw_input , outout_sent , bUseGoldSeg , nBest, scores ) ;
+      }
+      else if(bUseGoldSeg == 2)
+      {
+      	valid = parser.parse( raw_input , outout_sent , bUseGoldSeg , nBest, scores, in_tags) ;
+      }
 
       // Ouptut sent
       if(valid)
@@ -85,7 +116,18 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
       //TRACE("done. ");
       
       // Read the next example
-      bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);
+      if(bUseGoldSeg == 0)
+      {
+      	bReadSuccessful = input_reader->readRawSentence(&raw_input, true, false);
+      }
+      else if(bUseGoldSeg == 1)
+      {
+      	bReadSuccessful = input_reader->readSegmentedSentence(&raw_input, true);
+      }
+      else if(bUseGoldSeg == 2)
+      {
+      	bReadSuccessful = input_reader->readTaggedSentence(in_senttag);
+      }
    }
 
    delete [] outout_sent ;
@@ -112,6 +154,7 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("b", "", "outout binarized parse trees", "");
+      configurations.defineConfiguration("m", "M", "decode mode  0(raw) ,1(word),or 2(word_pos)", "0");
       configurations.defineConfiguration("n", "N", "N best list outout", "1");
       configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
       // check arguments
@@ -130,7 +173,18 @@ int main(int argc, char* argv[]) {
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       bool bBinary = configurations.getConfiguration("b").empty() ? false : true;
 
-      process(options.args[1], options.args[2], options.args[3], nBest, bScores, bBinary);
+      unsigned long  bGoldSeg = 0;
+      if (!fromString(bGoldSeg, configurations.getConfiguration("m"))) {
+         std::cout << "The decode mode must be an integer." << std::endl;
+         return 1;
+      }
+      if(bGoldSeg != 0 && bGoldSeg != 1 && bGoldSeg != 2)
+      {
+         std::cout << "The decode mode must be 0(raw) ,1(word),or 2(word_pos)." << std::endl;
+         return 1;
+      }
+
+      process(options.args[1], options.args[2], options.args[3], nBest, bScores, bBinary, bGoldSeg);
    } 
    catch (const std::string &e) {
       std::cerr << "Error: " << e << std::endl;

@@ -113,6 +113,7 @@ class CBinarizedCharLeafTreeNode(object):
       if self.temporary:
          sType += "*"
       return "(%s#%s %s)" % (self.name, sType, sContent)
+   
      
 
 

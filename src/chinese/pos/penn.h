@@ -115,6 +115,16 @@ public:
          }
       THROW("Unknown tag (PENN Treebank): " << s);
    }
+   bool loadcheck(const std::string &s) {
+      //m_code = PENN_TAG_NONE ;
+      for (int i=0; i<PENN_TAG_COUNT; ++i)
+         if (PENN_TAG_STRINGS[i] == s) {
+            m_code = i;
+            return true;
+         }
+      m_code = 0;
+      return false;
+   }
    void load(const unsigned long &n) { m_code = n; }
    void copy(const CTag &t) { m_code = t.m_code; }
 

@@ -123,7 +123,7 @@ public:
 */
 
 public:
-   bool parse( const CStringVector &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
+   bool parse( const CStringVector &sentence , CSentenceParsed *retval , int bUsegGoldSeg, int nBest=1,  conparser::SCORE_TYPE *scores=0, const CStringVector *charcandpos=NULL ) ;
    void train( const CSentenceParsed &correct , int round ) ;
 #ifdef NO_NEG_FEATURE
    void getPositiveFeatures( const CSentenceParsed &correct ) ;
@@ -145,7 +145,7 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   bool work( const bool bTrain, const CStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ;
+   bool work( const bool bTrain, const CStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores, const CStringVector *charcandpos=NULL ) ;
 
    // get the global score for a parsed sentence or section
    inline void getOrUpdateStackScore( conparser::CWeight *cast_weights, CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem *item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );

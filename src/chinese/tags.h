@@ -13,7 +13,7 @@
 #define _CHINESE_TAGS_H 1
 
 //#include <std::string>
-#include "pos/penn.h"
+#include "pos/ctb5.h"
 
 namespace chinese {
 

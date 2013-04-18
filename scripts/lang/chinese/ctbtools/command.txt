@@ -1,0 +1,9 @@
+// gen train corpus for character-level parser.
+python binarize_noroot.py rule.txt train.ctb50.cs train.ctb50.zpar  //train.ctb50.cs; phrase structure corpus, the same as as the input for berkeley parser, not including the extra "ROOT" label tree.
+python append_wordstructure.py -d word.inner.zpar.v3.zpar -i train.ctb50.zpar -o train.ctb50.zpar.wst -r remain.dict.train // -o -r are output variables.
+python unbinarizeclt.py -i train.ctb50.zpar.wst -o train.ctb50.zpar.wst.ber // to berkeley parser format phrase structure tree.
+
+//evaluate 
+java -Xmx1G -jar CLTEvaluate.jar [-dict  train.ctb50.dict]  dev.gold  dev.predict  // dev.gold & dev.predict berkeley parser format
+
+
