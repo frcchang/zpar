@@ -109,6 +109,7 @@
 伊拉克_NR 呼吁_VV 阿拉伯_NR 国家_NN 政府_NN 解除_VV 对_P 伊_NR 制裁_NN 
 新华社_NR 巴格达_NR １２月_NT ２７日_NT 电_NN （_PU 记者_NN 顾正龙_NR ）_PU 
 伊拉克_NR 副总理_NN 阿齐兹_NR ２７日_NT 呼吁_VV 阿拉伯_NR 各_DT 国_NN 政府_NN 采取_VV 果断_JJ 措施_NN ，_PU 立即_AD 解除_VV 对_P 伊_NR 制裁_NN 
+。_PU 
 阿齐兹_NR 在_P 致_VV 阿拉伯_NR 世界_NN 各_DT 政党_NN 的_DEC 一_CD 封_M 信_NN 中_LC 强调_VV ，_PU 对_P 伊_NR 长_AD 达_VV ８_CD 年_M 的_DEC 制裁_NN 已_AD 造成_VV 阿拉伯_NR 世界_NN 的_DEG 严重_JJ 分裂_NN ，_PU 并_CC 对_P 伊拉克_NR 以及_CC 阿拉伯_NR 民族_NN 的_DEG 兴衰_NN 乃至_CC 全_DT 世界_NN 的_DEG 未来_NT 格局_NN 构成_VV 威胁_NN 。_PU 
 他_PN 说_VV ，_PU 美_NR 英_NR 悍然_AD 对_P 伊_NR 发动_VV 的_DEC 侵略_NN 不仅_CC 违反_VV 了_AS 联合国_NR 宪章_NN 和_CC 国际法_NN 准则_NN ，_PU 而且_CC 是_VC 对_P 联合国_NR 安理会_NN 权威_NN 的_DEG 藐视_NN 。_PU 
 阿齐兹_NR 对_P 一些_CD 阿拉伯_NR 国家_NN 在_P 伊拉克_NR 遭受_VV 长_AD 达_VV ８_CD 年_M 制裁_NN 问题_NN 上_LC 所_MSP 持_VV 的_DEC 暧昧_JJ 立场_NN 表示_VV 不满_NN 。_PU 
