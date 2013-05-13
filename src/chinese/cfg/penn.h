@@ -28,13 +28,13 @@ const std::string PENN_CON_STRINGS[] = {
    "QP", 
    "UCP", 
    "VCD", "VCP", "VNV", "VP", "VPT", "VRD", "VSB", 
-   "WHNP", "WHPP", "AA", "INC", "DFL"
+   "WHNP", "WHPP"
 };
 
 
 enum PENN_CON_CONSTANTS {
    PENN_CON_NONE=0,
-   PENN_CON_BEGIN,
+   PENN_CON_BEGIN=0,
    PENN_CON_ADJP, PENN_CON_ADVP, 
    PENN_CON_CLP, PENN_CON_CP, 
    PENN_CON_DNP, PENN_CON_DP, PENN_CON_DVP, 
@@ -48,7 +48,7 @@ enum PENN_CON_CONSTANTS {
    PENN_CON_QP, 
    PENN_CON_UCP, 
    PENN_CON_VCD, PENN_CON_VCP, PENN_CON_VNV, PENN_CON_VP, PENN_CON_VPT, PENN_CON_VRD, PENN_CON_VSB, 
-   PENN_CON_WHNP, PENN_CON_WHPP, PENN_CON_AA, PENN_CON_INC, PENN_CON_DFL,
+   PENN_CON_WHNP, PENN_CON_WHPP,
    PENN_CON_COUNT
 };
 
@@ -68,11 +68,11 @@ const bool PENN_CON_TEMP[] = {
    true, 
    true, 
    true, false, true, true, true, false, false, 
-   false, false, false, true, true
+   false, false
 };
 
 const int PENN_CON_FIRST = 2;
-const int PENN_CON_COUNT_BITS = 6;
+const int PENN_CON_COUNT_BITS = 5; 
 
 //===============================================================
 

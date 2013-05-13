@@ -48,7 +48,7 @@ CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
-CHINESE_CONPARSER_IMPL = jcad
+CHINESE_CONPARSER_IMPL = muhua
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = collins
@@ -58,7 +58,7 @@ ENGLISH_DEPPARSER_IMPL =cad
 ENGLISH_DEPPARSER_LABELED = true
 ENGLISH_DEPLABELER_IMPL = naive
 # currently support sr implementations 
-ENGLISH_CONPARSER_IMPL = cad
+ENGLISH_CONPARSER_IMPL = muhua
 
 #================================================================
 #

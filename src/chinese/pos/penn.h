@@ -27,6 +27,9 @@ const std::string PENN_TAG_STRINGS[] = {
    "NT", "CC", "VA", "LC",  
    "PN", "DT", "VC", "AS", "VE", 
    "OD", 
+   "ON",
+   "X",
+   "IJ",
    "ETC", "MSP", "CS", "BA", 
    "DEV", "SB", "SP", "LB", 
    "FW", "DER", "PU", 
@@ -44,6 +47,9 @@ enum PENN_TAG_CONSTANTS {
    PENN_TAG_NT, PENN_TAG_CC, PENN_TAG_VA, PENN_TAG_LC, 
    PENN_TAG_PN, PENN_TAG_DT, PENN_TAG_VC, PENN_TAG_AS, PENN_TAG_VE, 
    PENN_TAG_OD, 
+   PENN_TAG_ON,
+   PENN_TAG_X,
+   PENN_TAG_IJ,
    PENN_TAG_ETC, PENN_TAG_MSP, PENN_TAG_CS, PENN_TAG_BA,
    PENN_TAG_DEV, PENN_TAG_SB, PENN_TAG_SP, PENN_TAG_LB,
    PENN_TAG_FW, PENN_TAG_DER, PENN_TAG_PU, 
@@ -64,6 +70,9 @@ const bool PENN_TAG_CLOSED[] = {
    false, true, false, true, 
    true, true, true, true, true, 
    false, 
+   false,
+   true,
+   true,
    true, true, true, true, 
    true, true, true, true, 
    false, true, true, 
@@ -114,16 +123,6 @@ public:
             return;
          }
       THROW("Unknown tag (PENN Treebank): " << s);
-   }
-   bool loadcheck(const std::string &s) {
-      //m_code = PENN_TAG_NONE ;
-      for (int i=0; i<PENN_TAG_COUNT; ++i)
-         if (PENN_TAG_STRINGS[i] == s) {
-            m_code = i;
-            return true;
-         }
-      m_code = 0;
-      return false;
    }
    void load(const unsigned long &n) { m_code = n; }
    void copy(const CTag &t) { m_code = t.m_code; }
