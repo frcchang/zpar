@@ -151,6 +151,11 @@ void CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
+   if (m_dump) {
+      m_dump->close();
+      delete m_dump;
+      return;
+   }
    std::cout << "Saving scores ..."; std::cout.flush();
 
    std::ofstream os(m_sFeatureDB.c_str());
@@ -196,5 +201,18 @@ void CWeight::computeAverageFeatureWeights(unsigned long round) {
    iterate_templates(,.computeAverage(round););
    std::cout << " done." << std::endl;
 }
+
+
+/*--------------------------------------------------------------
+ *
+ * dumpFeature - dump dbn feature
+ *
+ *-------------------------------------------------------------*/
+
+void CWeight::dumpFeature(const std::string &s) {
+}
+   if (!m_dump)
+      m_dump = new std::ofstream(m_sFeatureDB.c_str());
+   (*m_dump) << s << std::endl;
 
 
