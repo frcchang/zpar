@@ -55,7 +55,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    static unsigned long start_1, end_1, length_1; 
    static unsigned long start_2, end_2, length_2; 
 
-   // abstd::cout the words
+   // about the words
    assert(amount!=0||index==item->size()-1||index==item->size());
    start_0 = index==item->size() ? 0 : item->getWordStart( index ) ;
 
@@ -72,11 +72,11 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    const CWord &word_1 = index>0 ? find_or_replace_word_cache( start_1, end_1 ) : g_emptyWord; 
    const CWord &word_2 = index>1 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord; 
 
-   // abstd::cout the length
+   // about the length
    if (length_1>LENGTH_MAX) length_1 = LENGTH_MAX;
    if (length_2>LENGTH_MAX) length_2 = LENGTH_MAX;
 
-   // abstd::cout the chars
+   // about the chars
    const CWord &first_char_0 = index<item->size() ? find_or_replace_word_cache( start_0, start_0 ) : g_emptyWord ;
    const CWord &first_char_1 = index>0 ? find_or_replace_word_cache( start_1, start_1 ) : g_emptyWord;
 
@@ -101,7 +101,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       last_char_1_last_char_2.allocate( last_char_1, last_char_2 ) ;
    }
 
-   // abstd::cout the tags 
+   // about the tags 
    const CTag &tag_0 = index<item->size() ? item->getTag( index ) : g_beginTag;
    const CTag &tag_1 = index>0 ? item->getTag(index-1) : g_beginTag;
    const CTag &tag_2 = index>1 ? item->getTag(index-2) : g_beginTag;
@@ -167,7 +167,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
       }
    }
 
-   // all abstd::cout the current word
+   // all about the current word
    nReturn += m_weights->m_mapLastTagByTag.getOrUpdateScore( tag_0_tag_1, m_nScoreIndex , amount , round ) ;
    if (index>0) nReturn += m_weights->m_mapTag0Tag1Size1.getOrUpdateScore( std::make_pair( tag_0_tag_1, length_1 ), m_nScoreIndex , amount , round ) ;
    if (index>0) nReturn += m_weights->m_mapTag1Tag2Size1.getOrUpdateScore( std::make_pair( tag_1_tag_2, length_1 ), m_nScoreIndex , amount , round ) ;
