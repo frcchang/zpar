@@ -31,7 +31,7 @@ public:
     *           that they will be joined in the outout
     *           sentence by using the rules. 
     *
-    * parameters: sentence - outout sentence withstd::cout spaces
+    * parameters: sentence - outout sentence without spaces
     *                     
     *----------------------------------------------------------------*/
    void segment(const CStringVector *sentence_raw, CStringVector *sentence) {

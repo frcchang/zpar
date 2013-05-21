@@ -60,12 +60,12 @@ public:
          m_maxLengthByTag[CTag::COUNT]=length;
    }
 
-   // feature templates abstd::cout characters
+   // feature templates about characters
    CWordIntMap m_mapCharUnigram;
    CWordIntMap m_mapCharBigram;
    CWordIntMap m_mapCharTrigram;
 
-   // feature templates abstd::cout words
+   // feature templates about words
    CWordMap m_mapSeenWords;
    CTwoWordsMap m_mapLastWordByWord;
    CWordMap m_mapCurrentWordLastChar;
@@ -136,7 +136,7 @@ public:
    // note that m_bSegmentation rules will be covered by load()
    // if there is a model file to load
    // therefore this argument only used first time training
-   CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules) : 
+   CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules, int hash_table_size) : 
             CWeightBase(sFeatureDB, bTrain) ,
             m_Knowledge(0) ,
             m_mapCharUnigram("CharacterUnigram", 65537) ,
