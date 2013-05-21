@@ -448,6 +448,15 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
 
 /*---------------------------------------------------------------
  *
+ * dumpfeatures - dump dbn features
+ *
+ *--------------------------------------------------------------*/
+
+void CTagger::dumpfeatures( const CStringVector * sentence_input ) {
+}
+
+/*---------------------------------------------------------------
+ *
  * work - shared between train and tag for running
  *
  *--------------------------------------------------------------*/
