@@ -210,9 +210,9 @@ void CWeight::computeAverageFeatureWeights(unsigned long round) {
  *-------------------------------------------------------------*/
 
 void CWeight::dumpFeature(const std::string &s) {
-}
    if (!m_dump)
       m_dump = new std::ofstream(m_sFeatureDB.c_str());
    (*m_dump) << s << std::endl;
+}
 
 

@@ -47,6 +47,7 @@ class CWeight : public CWeightBase {
 public: 
    unsigned long m_maxLengthByTag[CTag::COUNT+1];
    CCharCatDictionary *m_Knowledge;
+   std::ofstream *m_dump;
    unsigned long m_nMaxWordFrequency;
    CRule m_rules;
 
@@ -138,6 +139,7 @@ public:
    // therefore this argument only used first time training
    CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules, int hash_table_size) : 
             CWeightBase(sFeatureDB, bTrain) ,
+            m_dump(0) ,
             m_Knowledge(0) ,
             m_mapCharUnigram("CharacterUnigram", 65537) ,
             m_mapCharBigram("CharacterBigram", 65537) ,
@@ -213,6 +215,7 @@ public:
    void loadScores();
    void saveScores();
    void computeAverageFeatureWeights(unsigned long round);
+   void dumpFeature(const std::string &s);
 
    void newKnowledge() {
       std::cout << "set character knowledge... " << std::endl;

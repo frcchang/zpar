@@ -94,7 +94,7 @@ public:
 
 public:
 
-   // information abstd::cout segmentation
+   // information about segmentation
 
    inline const unsigned long getWordStart(const unsigned long &i) const { return i>0?m_lWords[i-1]+1:0; }
 
