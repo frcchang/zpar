@@ -93,6 +93,43 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 
 /*===============================================================
  *
+ * dumpfeatures
+ *
+ *==============================================================*/
+
+void dumpfeatures(const std::string &sOutputFile, const std::string &sFeatureFile, const unsigned long &nMaxSentSize, const std::string &sKnowledgePath, const bool &bFWCDRule) {
+   static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
+
+   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, bFWCDRule);
+   CSentenceReader outout_reader(sOutputFile);
+   CStringVector *input_sent = new CStringVector;
+   CTwoStringVector *outout_sent = new CTwoStringVector; 
+
+   unsigned nCount=0;
+   unsigned nErrorCount=0;
+
+   //
+   // Read the next sentence
+   //
+   while( outout_reader.readTaggedSentence(outout_sent) ) {
+      if (bFWCDRule)
+         UntagAndDesegmentSentence(outout_sent, input_sent, charcat);
+      else
+         UntagAndDesegmentSentence(outout_sent, input_sent);
+      TRACE("Sentence " << nCount);
+      ++nCount;
+      //
+      // Dump features now
+      //
+      decoder.dumpfeatures(input_sent);
+   }
+   delete input_sent;
+   decoder.finishTraining(nCount);
+   std::cout << "Done. " << std::endl;
+}
+
+/*===============================================================
+ *
  * train
  *
  *==============================================================*/
@@ -221,6 +258,7 @@ int main(int argc, char* argv[]) {
       configurations.defineConfiguration("n", "N", "N best list train", "1");
       configurations.defineConfiguration("u", "", "early update", "");
       configurations.defineConfiguration("r", "", "do not use rules to segment numbers and letters", "");
+      configurations.defineConfiguration("f", "", "dump features", "");
 
       if (options.args.size() != 4) {
          std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
@@ -242,6 +280,7 @@ int main(int argc, char* argv[]) {
       bool bEarlyUpdate = configurations.getConfiguration("u").empty() ? false : true;
       bool bFWCDRule = configurations.getConfiguration("r").empty() ? true : false;
       std::string sKnowledgePath = configurations.getConfiguration("k");
+      bool bDumpFeatures = configurations.getConfiguration("f").empty() ? false : true;
       bool bSegmented = false;
 #ifdef SEGMENTED
       bSegmented = true; // compile option
@@ -254,7 +293,12 @@ int main(int argc, char* argv[]) {
       }
       std::cout << "Training started." << std::endl;
       unsigned time_start = clock();
-      if (bSegmented) {
+   if (bDumpFeatures) {
+         // one single iteration: load knowledge
+      std::cout << "Dumping features; only one iteration; no early update." << std::endl;
+         dumpfeatures(argv[1], argv[2], nMaxSentSize, sKnowledgePath, bFWCDRule);
+   }
+      else if (bSegmented) {
          // the first iteration: load knowledge
          train(argv[1], argv[2], nBest, nMaxSentSize, bEarlyUpdate, bSegmented, sKnowledgePath, bFWCDRule);
          // from the next iteration knowledge will be loaded from the model
