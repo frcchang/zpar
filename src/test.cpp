@@ -23,6 +23,7 @@
 #include "hash.h"
 #include "linguistics/word.h"
 #include "vector_stream.h"
+#include "bitarray.h"
 
 class A {
 public:
@@ -209,6 +210,21 @@ class C {
 public: int i;
 };
 
+void testbitarray() {
+   CBitArray a, b;
+   std::string s = "00101010000000000000000000000000000000000000000000000";
+   std::istringstream iss(s);
+   std::string t = "00101010";
+   std::istringstream ist(t);
+   ist >> a;
+   iss >> b;
+   std::cout << b << std::endl;
+   b.add(a);
+   std::cout << b << std::endl;
+   b.add(1);
+   std::cout << b << std::endl;
+}
+
 int main(int argc, char**argv){
    try {
 //   std::cout << B::C << B::D << std::endl;
@@ -224,9 +240,10 @@ int main(int argc, char**argv){
 //   testinitializer();
 //   testhashmap(argv[1]);
 //      test_word_vector_int_map();
-   C* c = new C();
-   c -> i = 1;
-   delete c;
+//   C* c = new C();
+//   c -> i = 1;
+//   delete c;
+   testbitarray();
    }catch(const std::string &s) { std::cout << s << std::endl; }
 };
 
