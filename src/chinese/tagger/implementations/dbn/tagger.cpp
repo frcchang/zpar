@@ -339,18 +339,12 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
  *
  *--------------------------------------------------------------*/
 
-inline void buildStateItem(const CStringVector *raw, const CTwoStringVector *tagged, CSubStateItem *item) {
+inline void CTagger::buildStateItem(const CStringVector *raw, const CTwoStringVector *tagged, CSubStateItem *item) {
    static int i, ri, rawlen, taggedlen;
    item->clear();
    // add each outout word
    rawlen = 0; ri = 0; // raw index
-//   taggedlen = 0;
    for (i=0; i<tagged->size(); ++i) {
-//      taggedlen += tagged->at(i).first.size();
-//      while ( rawlen < taggedlen ) {
-//         rawlen += raw->at(ri).size();
-//         ++ri;
-//      }
       ri += getUTF8StringLength(tagged->at(i).first);
       item->append(ri-1, CTag(tagged->at(i).second).code());
    }
@@ -444,15 +438,6 @@ void CTagger::tag( const CStringVector * sentence_input , CTwoStringVector * vRe
    static CStringVector sentence;
    m_weights->m_rules.segment(sentence_input, &sentence);
    work( &sentence, vReturn, out_scores, nBest, prunes ) ;
-}
-
-/*---------------------------------------------------------------
- *
- * dumpfeatures - dump dbn features
- *
- *--------------------------------------------------------------*/
-
-void CTagger::dumpfeatures( const CStringVector * sentence_input ) {
 }
 
 /*---------------------------------------------------------------

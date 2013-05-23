@@ -108,6 +108,7 @@ protected:
       }
       return true;
    }
+   void buildStateItem(const CStringVector *raw, const CTwoStringVector *tagged, tagger::CSubStateItem *item);
 
 protected:
    virtual void work(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
@@ -117,7 +118,20 @@ public:
 
    virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
-   void dumpfeatures(const CStringVector *sentence);
+   void dumpfeatures(const CStringVector *sentence, const CTwoStringVector *correct) {
+      static unsigned tmp_i, tmp_j;
+      static CBitArray v(NON_LINEAR_FEAT_SIZE);
+      static tagger::CSubStateItem item;
+      buildStateItem(sentence, correct, &item);
+      for (tmp_i=0; tmp_i<item.size(); ++tmp_i) {
+         getOrUpdateSeparateScore(sentence, &item, tmp_i, v);
+         m_weights->dumpFeature(static_cast<std::string>(v));
+         for (tmp_j=item.getWordStart(tmp_i)+1; tmp_j<item.getWordEnd(tmp_i)+1; ++tmp_j) {
+            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v);
+            m_weights->dumpFeature(static_cast<std::string>(v));
+         }
+      }
+   }
 
    void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);

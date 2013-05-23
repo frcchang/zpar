@@ -86,6 +86,13 @@ class CBitArray {
          m_size = a.m_size;
          std::memcpy(m_array, a.m_array, m_slots);
       }
+      operator std::string () const {
+         std::string retval = "";
+         for (unsigned long int i=0; i<m_size; ++i)
+            //os << (ba.isset(i)?'1':'0');
+            retval += isset(i)  ? '1' : '0';
+         return retval;
+      }
 };
 
 inline
@@ -101,8 +108,7 @@ std::istream & operator >> (std::istream &is, CBitArray &ba) {
 
 inline
 std::ostream & operator << (std::ostream &os, CBitArray &ba) {
-   for (unsigned long int i=0; i<ba.size(); ++i)
-      os << (ba.isset(i)?'1':'0');
+   os << static_cast<std::string>(ba);
    return os;
 }
 

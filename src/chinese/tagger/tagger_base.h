@@ -76,7 +76,7 @@ protected:
 
 public:
    virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct) = 0;
-   void dumpfeatures(const CStringVector *sentence)  {
+   void dumpfeatures(const CStringVector *sentence, const CTwoStringVector *correct)  {
       THROW("Not supported.");
    }
    // The input sentence to tag() must be a raw sentence of characters
