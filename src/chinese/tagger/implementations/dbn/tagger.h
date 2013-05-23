@@ -137,14 +137,16 @@ public:
 
    inline void updateScoreForState(const CStringVector *sentence, const tagger::CSubStateItem *item, const tagger::SCORE_TYPE &amount) {
       static unsigned tmp_i, tmp_j;
+      static CBitArray v(NON_LINEAR_FEAT_SIZE);
       for (tmp_i=0; tmp_i<item->size(); ++tmp_i) {
-         getOrUpdateSeparateScore(sentence, item, tmp_i, amount, m_nTrainingRound);
+         getOrUpdateSeparateScore(sentence, item, tmp_i, v, amount, m_nTrainingRound);
+         // TODO: add non linear feature scores to both step
          for (tmp_j=item->getWordStart(tmp_i)+1; tmp_j<item->getWordEnd(tmp_i)+1; ++tmp_j)
-            getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, amount, m_nTrainingRound);
+            getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, v, amount, m_nTrainingRound);
       }
    }
-   tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
-   tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
 };
 

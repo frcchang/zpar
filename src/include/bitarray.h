@@ -88,6 +88,7 @@ class CBitArray {
       }
 };
 
+inline
 std::istream & operator >> (std::istream &is, CBitArray &ba) {
    std::string s;
    is >> s;
@@ -98,6 +99,7 @@ std::istream & operator >> (std::istream &is, CBitArray &ba) {
    return is;
 }
 
+inline
 std::ostream & operator << (std::ostream &os, CBitArray &ba) {
    for (unsigned long int i=0; i<ba.size(); ++i)
       os << (ba.isset(i)?'1':'0');
