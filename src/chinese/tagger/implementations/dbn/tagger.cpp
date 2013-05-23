@@ -49,7 +49,7 @@ inline int encodeCharInfoAndPosition(const int &char_info, const int &pos) {
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, SCORE_TYPE amount, unsigned long round ) {
+SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, CBitArray &nonlinearfeat, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
    static unsigned long start_0; 
    static unsigned long start_1, end_1, length_1; 
@@ -249,7 +249,7 @@ if (index<item->size()) {
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, unsigned long char_index, SCORE_TYPE amount, unsigned long round ) {
+SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const CSubStateItem *item, unsigned long index, unsigned long char_index, CBitArray &nonlinearfeat, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
    assert(char_index>0);
    
@@ -480,6 +480,8 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
    static CSubStateItem goldState;
    goldState.clear();
 
+   static CBitArray nonlinearfeat(NON_LINEAR_FEAT_SIZE);
+
    TRACE("Initialising the tagging process...");
    m_WordCache.clear(); 
    tempState.clear();
@@ -540,8 +542,8 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
                ) {
                tempState.copy(pGenerator);
                tempState.replaceIndex(index);
-               tempState.score += getOrUpdateAppendScore(sentence, &tempState, tempState.size()-1, index);
-               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size());
+               tempState.score += getOrUpdateAppendScore(sentence, &tempState, tempState.size()-1, index, nonlinearfeat);
+               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
                m_Agenda.pushCandidate(&tempState);
             } // if
             pGenerator = m_Agenda.generatorNext();  // next generator
@@ -567,8 +569,8 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
 
                tempState.copy(pGenerator);
                tempState.append(index, tag);
-               tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size()-1);
-               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size());
+               tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size()-1, nonlinearfeat);
+               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
 
                if (nBest==1) {
                   bUnique = true;
