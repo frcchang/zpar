@@ -121,7 +121,7 @@ void dumpfeatures(const std::string &sOutputFile, const std::string &sFeatureFil
       //
       // Dump features now
       //
-      decoder.dumpfeatures(input_sent);
+      decoder.dumpfeatures(input_sent, outout_sent);
    }
    delete input_sent;
    decoder.finishTraining(nCount);
