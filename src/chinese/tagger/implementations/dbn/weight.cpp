@@ -88,12 +88,14 @@ void CWeight::loadScores() {
    // load tag dictionary
    getline(is, st);
    if (st=="Segmentation rules") {
-      if (m_bTrain) {ASSERT(m_Knowledge, "The model indicates that there is knowledge, but the training parameters did not indicate knowledge");}
-      else newKnowledge();
+      m_bSegmentationRule = true;
+//      if (m_bTrain) {ASSERT(m_Knowledge, "The model indicates that there is knowledge, but the training parameters did not indicate knowledge");}
+//      else newKnowledge();
    }
    else {
       ASSERT(st=="Segmentation rules=0", "Segmentation rules on/off switch not found from model.");
-      ASSERT(m_Knowledge==0, "The model indicates no knowledge but the system parameters indicates knowledge");
+      m_bSegmentationRule = false;
+//      ASSERT(m_Knowledge==0, "The model indicates no knowledge but the system parameters indicates knowledge");
    }
 //   getline(is, st);
 //   if (st=="Knowledge") {

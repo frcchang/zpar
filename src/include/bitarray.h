@@ -69,6 +69,10 @@ class CBitArray {
          clear();
       }
       void setsize(const unsigned long int &size) {
+         assert(size/8<m_slots);
+         if (size>m_size) {
+            std::memset(m_array, 0, size-m_size);
+         }
          m_size = size;
       }
       void add(const bool &s) {
@@ -80,6 +84,13 @@ class CBitArray {
       void add(const CBitArray &a) {
          for (unsigned long int i = 0; i<a.m_size; ++i)
             add(a.isset(i));
+      }
+      void add(int n, const int &size) {
+         assert(n < (1<<size));
+         while (n) {
+            add(n%2);
+            n >>= 1;
+         }
       }
       CBitArray &operator = (const CBitArray &a) {
          assert(m_slots == a.m_slots);
