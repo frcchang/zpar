@@ -40,13 +40,6 @@ public:
          append(last_character+1, gold.getTag(size()).code());
          return;
       }
-//      else { 
-//         const unsigned &last_character = getWordEnd(size()-1);
-//         const unsigned &gold_last = gold.getWordEnd(size()-1);
-//         assert(last_character<gold_last);
-//         replaceIndex(last_character+1);
-//         return;
-//      }
    }
 
 };
@@ -67,24 +60,29 @@ protected:
    tagger::CSubStateItem m_goldState;
    unsigned m_nScoreIndex;
    bool m_bTrainingError;
+   CBitArray m_bitnone;
+   CBitArray m_bitunknown;
 
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
+   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize), m_bitnone(BIT_CHAR_COUNT), m_bitunknown(BIT_CHAR_COUNT) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
       ASSERT(sizeof(unsigned long long)>=CTag::SIZE, "The tagger requires the size of unsigned-long greater than" << CTag::SIZE); // tag dict
+      m_bitnone.setsize(BIT_CHAR_COUNT);
+      m_bitunknown.setsize(BIT_CHAR_COUNT);
+      m_bitunknown.set(0);
    }
    virtual ~CTagger() {}
    
 protected:
    void loadKnowledge(const std::string &sKnowledgePath) {
-      std::cout << "Knowledge is provided but not used." << std::endl;
-//      std::cout << "Loading knowledge ... ";
-//      m_weights->newKnowledge();
-//      std::ifstream ifs(sKnowledgePath.c_str());
-//      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
-//      ifs >> (*m_weights->m_Knowledge); 
-//      ifs.close();
-//      std::cout << "done." << std::endl;
+//      std::cout << "Knowledge is provided but not used." << std::endl;
+      std::cout << "Loading knowledge ... ";
+      m_weights->newKnowledge();
+      std::ifstream ifs(sKnowledgePath.c_str());
+      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
+      ifs >> (*m_weights->m_Knowledge); 
+      ifs.close();
+      std::cout << "done." << std::endl;
    }
    inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
       return ( m_weights->m_mapWordFrequency.find( word, 0 ) < 
@@ -162,12 +160,21 @@ public:
    tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
    tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
+protected:
+
+   void bitAddPOS(const CTag &t, CBitArray &v) {
+      int oldsize = v.size();
+      v.setsize(oldsize + BIT_POS_COUNT);
+      v.set(oldsize + t.code());
+   }
+   void bitAddLen(int l, CBitArray &v) {
+      if (l >= (1<<BIT_LEN_COUNT))
+         l = (1<<BIT_LEN_COUNT);
+      v.add(l, BIT_LEN_COUNT);
+   }
+
 };
 
 } // namespace chinese
-
-
-
-
 
 #endif

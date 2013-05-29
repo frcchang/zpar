@@ -23,18 +23,16 @@ typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 typedef CScoreMap< std::pair<CWord, int>, SCORE_TYPE > CWordIntMap;
 typedef CScoreMap< std::pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
-//typedef CScoreMap< long int, SCORE_TYPE > CIntMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 typedef CScoreMap< std::pair<unsigned long long, CTag>, SCORE_TYPE > CIntTagMap;
 typedef CScoreMap< CTagSet<CTag, 2>, SCORE_TYPE > CTagSet2Map;
 typedef CScoreMap< CTagSet<CTag, 3>, SCORE_TYPE > CTagSet3Map;
 typedef CScoreMap< std::pair<CWord, CTagSet<CTag, 2> >, SCORE_TYPE > CWordTagSet2Map;
 typedef CScoreMap< std::pair<CWord, CTagSet<CTag, 3> >, SCORE_TYPE > CWordTagSet3Map;
-typedef CHashMap< CWord, int > CWordToIntMap;
 typedef CScoreMap< std::pair<CTagSet<CTag, 2>, int>, SCORE_TYPE > CTagSet2IntMap;
 typedef CScoreMap< std::pair<CTagSet<CTag, 3>, int>, SCORE_TYPE > CTagSet3IntMap;
-//typedef CHashMap< std::pair<CWord, int>, int > CWordIntToIntMap;
-//typedef CScoreMap< std::pair<long int, long int>, SCORE_TYPE > CIntPairMap;
+typedef CHashMap< CWord, int > CWordToIntMap;
+typedef CHashMap< CWord, CBitArray > CWordToBitArrayMap;
 
 /*===============================================================
  *
@@ -46,10 +44,11 @@ class CWeight : public CWeightBase {
 
 public: 
    unsigned long m_maxLengthByTag[CTag::COUNT+1];
-   CCharCatDictionary *m_Knowledge;
+   CWordToBitArrayMap *m_Knowledge;
    std::ofstream *m_dump;
    unsigned long m_nMaxWordFrequency;
    CRule m_rules;
+   bool m_bSegmentationRule;
 
 public:
    unsigned long getMaxWordLength() const {return m_maxLengthByTag[CTag::COUNT];}
@@ -141,6 +140,7 @@ public:
             CWeightBase(sFeatureDB, bTrain) ,
             m_dump(0) ,
             m_Knowledge(0) ,
+            m_bSegmentationRule(bSegmentationRules) ,
             m_mapCharUnigram("CharacterUnigram", 65537) ,
             m_mapCharBigram("CharacterBigram", 65537) ,
             m_mapCharTrigram("CharacterTrigram", 65537) ,
@@ -204,7 +204,6 @@ public:
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
-      if(bSegmentationRules)newKnowledge();
       loadScores();
    }
 
@@ -220,8 +219,7 @@ public:
    void newKnowledge() {
       std::cout << "set character knowledge... " << std::endl;
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
-      m_Knowledge = new CCharCatDictionary();
-      m_rules.setKnowledge(m_Knowledge);
+      m_Knowledge = new CWordToBitArrayMap();
    }
 };
 

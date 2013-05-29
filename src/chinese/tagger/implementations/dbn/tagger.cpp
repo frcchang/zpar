@@ -234,6 +234,10 @@ if (index<item->size()) {
 //      }
 //   }
 
+   // ===================================================================================
+   // bitarray
+   v.add(true);
+
    return nReturn;
 }
 
@@ -325,6 +329,8 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 //      nReturn += m_weights->m_mapCharTrigram.getOrUpdateScore( std::make_pair( find_or_replace_word_cache(i, i+2), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
 //      if (hasCharTypeKnowledge()) nReturn += m_weights->m_mapCharCatTrigram.getOrUpdateScore( std::make_pair( groupCharTypes(segmentor, sentence, i, 3, amount), encodeCharInfoAndPosition(char_info, i-prev_char_index) ), m_nScoreIndex, amount, round);
 //   }
+
+   // bitarray for action
 
    return nReturn;
 }
