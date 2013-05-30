@@ -89,18 +89,13 @@ void CWeight::loadScores() {
    getline(is, st);
    if (st=="Segmentation rules") {
       m_rules.setCDorFW(true);
-//      if (m_bTrain) {ASSERT(m_Knowledge, "The model indicates that there is knowledge, but the training parameters did not indicate knowledge");}
-//      else newKnowledge();
    }
    else {
       ASSERT(st=="Segmentation rules=0", "Segmentation rules on/off switch not found from model.");
       m_rules.setCDorFW(false);
-//      ASSERT(m_Knowledge==0, "The model indicates no knowledge but the system parameters indicates knowledge");
    }
    getline(is, st);
    if (st=="Knowledge") {
-//      ASSERT(m_Knowledge==0, "Model loading knowledge but it already exists.")
-//      newKnowledge();
       is >> (*m_Knowledge);
    }
    else {

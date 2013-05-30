@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 #define SIMPLE_HASH
 
-#define NON_LINEAR_FEAT_SIZE 10000
+#define NON_LINEAR_FEAT_SIZE 30000
 
 #define BIT_CHAR_COUNT 3000
 #define BIT_POS_COUNT CTag::COUNT
