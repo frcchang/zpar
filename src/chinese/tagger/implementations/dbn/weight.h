@@ -48,7 +48,9 @@ public:
    std::ofstream *m_dump;
    unsigned long m_nMaxWordFrequency;
    CRule m_rules;
-   bool m_bSegmentationRule;
+   CBitArray m_bitnone;
+   CBitArray m_bitunknown;
+   CWord m_emptyWord;
 
 public:
    unsigned long getMaxWordLength() const {return m_maxLengthByTag[CTag::COUNT];}
@@ -133,14 +135,15 @@ public:
    CTagDict<CWord, CTag> m_mapCanStart;
 
 public:
-   // note that m_bSegmentation rules will be covered by load()
-   // if there is a model file to load
-   // therefore this argument only used first time training
-   CWeight(const std::string &sFeatureDB, bool bTrain, bool bSegmentationRules, int hash_table_size) : 
+   CWeight(const std::string &sFeatureDB, bool bTrain, bool bFWorCD, int hash_table_size) : 
             CWeightBase(sFeatureDB, bTrain) ,
             m_dump(0) ,
             m_Knowledge(0) ,
-            m_bSegmentationRule(bSegmentationRules) ,
+            m_rules(bFWorCD), 
+            m_bitnone(BIT_CHAR_COUNT), 
+            m_bitunknown(BIT_CHAR_COUNT) , 
+            m_emptyWord("") ,
+
             m_mapCharUnigram("CharacterUnigram", 65537) ,
             m_mapCharBigram("CharacterBigram", 65537) ,
             m_mapCharTrigram("CharacterTrigram", 65537) ,
@@ -205,6 +208,9 @@ public:
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
       loadScores();
+      m_bitnone.setsize(BIT_CHAR_COUNT);
+      m_bitunknown.setsize(BIT_CHAR_COUNT);
+      m_bitunknown.set(0);
    }
 
    virtual ~CWeight() { if (m_Knowledge) delete m_Knowledge; }
@@ -219,7 +225,13 @@ public:
    void newKnowledge() {
       std::cout << "set character knowledge... " << std::endl;
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
-      m_Knowledge = new CWordToBitArrayMap();
+      m_Knowledge = new CWordToBitArrayMap(65537);
+      (*m_Knowledge)[m_emptyWord] = m_bitnone;
+   }
+
+   const CBitArray &getBitArray(const CWord &w) const {
+      assert(m_Knowledge!=0);
+      return m_Knowledge->find(w, m_bitunknown);
    }
 };
 

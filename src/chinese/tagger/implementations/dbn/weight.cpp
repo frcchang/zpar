@@ -88,23 +88,24 @@ void CWeight::loadScores() {
    // load tag dictionary
    getline(is, st);
    if (st=="Segmentation rules") {
-      m_bSegmentationRule = true;
+      m_rules.setCDorFW(true);
 //      if (m_bTrain) {ASSERT(m_Knowledge, "The model indicates that there is knowledge, but the training parameters did not indicate knowledge");}
 //      else newKnowledge();
    }
    else {
       ASSERT(st=="Segmentation rules=0", "Segmentation rules on/off switch not found from model.");
-      m_bSegmentationRule = false;
+      m_rules.setCDorFW(false);
 //      ASSERT(m_Knowledge==0, "The model indicates no knowledge but the system parameters indicates knowledge");
    }
-//   getline(is, st);
-//   if (st=="Knowledge") {
+   getline(is, st);
+   if (st=="Knowledge") {
 //      ASSERT(m_Knowledge==0, "Model loading knowledge but it already exists.")
-//      is >> (*m_Knowledge);
-//   }
-//   else {
-//      ASSERT(st=="Knowledge=0", "Knowledge not found from model.");
-//   }
+//      newKnowledge();
+      is >> (*m_Knowledge);
+   }
+   else {
+      ASSERT(st=="Knowledge=0", "Knowledge not found from model.");
+   }
    getline(is, st);
    ASSERT(st=="Tag dictionary", "Tag dictionary not found from model.");
    is >> m_mapTagDictionary;
@@ -167,13 +168,13 @@ void CWeight::saveScores() {
    if (m_Knowledge) os << "Segmentation rules" << std::endl;
    else os << "Segmentation rules=0" << std::endl;
 
-//   if (m_Knowledge==0) {
-//      os << "Knowledge=0" << std::endl;
-//   }
-//   else {
-//      os << "Knowledge" << std::endl;
-//      os << (*m_Knowledge);
-//   }
+   if (m_Knowledge==0) {
+      os << "Knowledge=0" << std::endl;
+   }
+   else {
+      os << "Knowledge" << std::endl;
+      os << (*m_Knowledge);
+   }
 
    os << "Tag dictionary" << std::endl;
    os << m_mapTagDictionary;

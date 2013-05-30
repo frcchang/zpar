@@ -76,7 +76,6 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
       TRACE("Sentence " << nCount);
 #ifdef DEBUG
       outout_writer.writeSentence(input_sent);
-      if (nCount > 100) break;
 #endif
       ++nCount;
       //

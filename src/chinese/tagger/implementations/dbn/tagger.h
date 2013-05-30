@@ -60,16 +60,12 @@ protected:
    tagger::CSubStateItem m_goldState;
    unsigned m_nScoreIndex;
    bool m_bTrainingError;
-   CBitArray m_bitnone;
-   CBitArray m_bitunknown;
 
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize), m_bitnone(BIT_CHAR_COUNT), m_bitunknown(BIT_CHAR_COUNT) {
+   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
+      m_weights->newKnowledge();
       ASSERT(sizeof(unsigned long long)>=CTag::SIZE, "The tagger requires the size of unsigned-long greater than" << CTag::SIZE); // tag dict
-      m_bitnone.setsize(BIT_CHAR_COUNT);
-      m_bitunknown.setsize(BIT_CHAR_COUNT);
-      m_bitunknown.set(0);
    }
    virtual ~CTagger() {}
    
@@ -77,7 +73,6 @@ protected:
    void loadKnowledge(const std::string &sKnowledgePath) {
 //      std::cout << "Knowledge is provided but not used." << std::endl;
       std::cout << "Loading knowledge ... ";
-      m_weights->newKnowledge();
       std::ifstream ifs(sKnowledgePath.c_str());
       if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
       ifs >> (*m_weights->m_Knowledge); 
@@ -122,9 +117,11 @@ public:
       static tagger::CSubStateItem item;
       buildStateItem(sentence, correct, &item);
       for (tmp_i=0; tmp_i<item.size(); ++tmp_i) {
+//         getOrUpdateSeparateScore(sentence, &item, tmp_i, v, 1, m_nTrainingRound);
          getOrUpdateSeparateScore(sentence, &item, tmp_i, v);
          m_weights->dumpFeature(static_cast<std::string>(v));
          for (tmp_j=item.getWordStart(tmp_i)+1; tmp_j<item.getWordEnd(tmp_i)+1; ++tmp_j) {
+//            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v, 1, m_nTrainingRound);
             getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v);
             m_weights->dumpFeature(static_cast<std::string>(v));
          }
@@ -169,7 +166,7 @@ protected:
    }
    void bitAddLen(int l, CBitArray &v) {
       if (l >= (1<<BIT_LEN_COUNT))
-         l = (1<<BIT_LEN_COUNT);
+         l = (1<<BIT_LEN_COUNT)-1;
       v.add(l, BIT_LEN_COUNT);
    }
 
