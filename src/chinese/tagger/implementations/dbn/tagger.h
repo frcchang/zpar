@@ -64,7 +64,6 @@ protected:
 public:
    CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
-      m_weights->newKnowledge();
       ASSERT(sizeof(unsigned long long)>=CTag::SIZE, "The tagger requires the size of unsigned-long greater than" << CTag::SIZE); // tag dict
    }
    virtual ~CTagger() {}
@@ -73,6 +72,7 @@ protected:
    void loadKnowledge(const std::string &sKnowledgePath) {
 //      std::cout << "Knowledge is provided but not used." << std::endl;
       std::cout << "Loading knowledge ... ";
+      m_weights->newKnowledge();
       std::ifstream ifs(sKnowledgePath.c_str());
       if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
       ifs >> (*m_weights->m_Knowledge); 

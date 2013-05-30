@@ -236,8 +236,8 @@ if (index<item->size()) {
 
    // ===================================================================================
    // bitarray
+/*
    nonlinearfeat.clear();
-
    nonlinearfeat.add(true);
    nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // current char
    nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // previous char
@@ -252,6 +252,7 @@ if (index<item->size()) {
    bitAddLen(1, nonlinearfeat);
    bitAddLen(length_1, nonlinearfeat);
    bitAddLen(length_2, nonlinearfeat);
+*/
 
    return nReturn;
 }

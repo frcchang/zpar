@@ -69,6 +69,7 @@ class CBitArray {
          return m_size;
       }
       void init(const unsigned long int &capacity) {
+         TRACE("bitarray.h: Allocating memory.");
          if (m_array)  {
             delete [] m_array;
             m_array = 0;
@@ -91,7 +92,12 @@ class CBitArray {
             }
          }
          else if (size>m_size) {
-            std::memset(m_array, 0, size-m_size);
+            int slot = m_size/8;
+            int bit_in_slot = m_size % 8;
+            int newslot = size/8;
+            std::memset(m_array+slot+1, 0, newslot-slot);
+            for (int i=bit_in_slot+1; i<8; ++i)
+               m_array[slot] &= ~(static_cast<char>(1 << i));
          }
          m_size = size;
       }
