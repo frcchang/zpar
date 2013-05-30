@@ -16,7 +16,6 @@
 using namespace chinese;
 using namespace chinese::tagger;
 
-static const CWord g_emptyWord("");
 static const CTag g_beginTag(CTag::SENTENCE_BEGIN);
 
 #define find_or_replace_word_cache(tmp_start, tmp_end) ( amount ? m_WordCache.replace(tmp_start, tmp_end, sentence) : m_WordCache.find(tmp_start, tmp_end, sentence) )
@@ -56,7 +55,7 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    static unsigned long start_2, end_2, length_2; 
 
    // about the words
-   assert(amount!=0||index==item->size()-1||index==item->size());
+//   assert(amount!=0||index==item->size()-1||index==item->size());
    start_0 = index==item->size() ? 0 : item->getWordStart( index ) ;
 
    start_1 = index > 0 ? item->getWordStart( index-1 ) : 0 ;
@@ -69,23 +68,24 @@ SCORE_TYPE CTagger::getOrUpdateSeparateScore( const CStringVector *sentence, con
    assert(index<2 || end_2 == start_1-1);
    length_2 = index > 1 ? item->getWordLength( index-2 ) : 0;
 
-   const CWord &word_1 = index>0 ? find_or_replace_word_cache( start_1, end_1 ) : g_emptyWord; 
-   const CWord &word_2 = index>1 ? find_or_replace_word_cache( start_2, end_2 ) : g_emptyWord; 
+   const CWord &word_1 = index>0 ? find_or_replace_word_cache( start_1, end_1 ) : m_weights->m_emptyWord; 
+   const CWord &word_2 = index>1 ? find_or_replace_word_cache( start_2, end_2 ) : m_weights->m_emptyWord; 
 
    // about the length
    if (length_1>LENGTH_MAX) length_1 = LENGTH_MAX;
    if (length_2>LENGTH_MAX) length_2 = LENGTH_MAX;
 
    // about the chars
-   const CWord &first_char_0 = index<item->size() ? find_or_replace_word_cache( start_0, start_0 ) : g_emptyWord ;
-   const CWord &first_char_1 = index>0 ? find_or_replace_word_cache( start_1, start_1 ) : g_emptyWord;
+   const CWord &first_char_0 = index<item->size() ? find_or_replace_word_cache( start_0, start_0 ) : m_weights->m_emptyWord ;
+   const CWord &first_char_1 = index>0 ? find_or_replace_word_cache( start_1, start_1 ) : m_weights->m_emptyWord;
+   const CWord &first_char_2 = index>1 ? find_or_replace_word_cache( start_2, start_2 ) : m_weights->m_emptyWord;
 
-   const CWord &last_char_1 = index>0 ? find_or_replace_word_cache( end_1, end_1 ) : g_emptyWord;
-   const CWord &last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_2 ) : g_emptyWord;
-   const CWord &two_char = index>0&&index<item->size() ? find_or_replace_word_cache( end_1, start_0 ) : g_emptyWord ;
-   const CWord &word_1_first_char_0 = index>0&&index<item->size() ? find_or_replace_word_cache( start_1, start_0 ) : g_emptyWord;
-   const CWord &word_1_last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_1 ) : g_emptyWord;
-   const CWord &three_char = ( length_1==1 && index>1 && index<item->size() ) ? find_or_replace_word_cache( end_2, start_0 ) : g_emptyWord;
+   const CWord &last_char_1 = index>0 ? find_or_replace_word_cache( end_1, end_1 ) : m_weights->m_emptyWord;
+   const CWord &last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_2 ) : m_weights->m_emptyWord;
+   const CWord &two_char = index>0&&index<item->size() ? find_or_replace_word_cache( end_1, start_0 ) : m_weights->m_emptyWord ;
+   const CWord &word_1_first_char_0 = index>0&&index<item->size() ? find_or_replace_word_cache( start_1, start_0 ) : m_weights->m_emptyWord;
+   const CWord &word_1_last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_1 ) : m_weights->m_emptyWord;
+   const CWord &three_char = ( length_1==1 && index>1 && index<item->size() ) ? find_or_replace_word_cache( end_2, start_0 ) : m_weights->m_emptyWord;
 
    static CTwoWords word_2_word_1, first_char_1_last_char_1, first_char_0_first_char_1, last_char_1_last_char_2 ;
    if (amount==0&&index>0) {
@@ -236,7 +236,22 @@ if (index<item->size()) {
 
    // ===================================================================================
    // bitarray
-   v.add(true);
+   nonlinearfeat.clear();
+
+   nonlinearfeat.add(true);
+   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // current char
+   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // previous char
+   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // first char
+   nonlinearfeat.add(m_weights->getBitArray(first_char_1)); // first char
+   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // last char
+   nonlinearfeat.add(m_weights->getBitArray(first_char_2)); // first char
+   nonlinearfeat.add(m_weights->getBitArray(last_char_2)); // last char
+   bitAddPOS(tag_0, nonlinearfeat);
+   bitAddPOS(tag_1, nonlinearfeat);
+   bitAddPOS(tag_2, nonlinearfeat);
+   bitAddLen(1, nonlinearfeat);
+   bitAddLen(length_1, nonlinearfeat);
+   bitAddLen(length_2, nonlinearfeat);
 
    return nReturn;
 }

@@ -19,6 +19,14 @@ public:
    virtual ~CRule() {
       if (m_char_categories) delete m_char_categories;
    }
+public:
+   void setCDorFW(const bool &bFWorCD) {
+      if (bFWorCD && m_char_categories==0) m_char_categories = new CCharCatDictionary();
+      else if (!bFWorCD && m_char_categories) {
+         delete m_char_categories;
+         m_char_categories = 0;
+      }
+   }
 
 public:
    /*----------------------------------------------------------------
@@ -62,5 +70,28 @@ public:
          }
       }
    }
+
+   void record(const CTwoStringVector *sent, CStringVector *retval) {
+      assert(retval != 0);
+      retval->clear();
+      if (sent == 0)
+         return;
+      reset();
+      std::string temp;
+      CTwoStringVector::const_iterator it;
+      unsigned size = retval->size();
+      for (it=sent->begin(); it!=sent->end(); ++it) {
+         getCharactersFromUTF8String(it->first, retval); 
+         assert(retval->size() > size); // the new word must has characters
+         if (size>0 && m_char_categories && m_char_categories->isFWorCD(retval->at(size)) && m_char_categories->isFWorCD(retval->at(size-1)))
+            setSeparate(size, true);
+         for (int index=size; index<retval->size()-1; ++index) {
+            if (m_char_categories && m_char_categories->isFWorCD(retval->at(index)) && m_char_categories->isFWorCD(retval->at(index+1)))
+               setSeparate(index+1, false);
+         }
+         size = retval->size();
+      }
+   }
+
 };
 

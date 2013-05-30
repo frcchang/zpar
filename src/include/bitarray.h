@@ -26,14 +26,20 @@ class CBitArray {
       unsigned long int m_size;
       int m_slots; // simply for convenience
    public:
-      CBitArray(unsigned long int capacity = 0) : m_size(0), m_array(0) {
+      CBitArray(unsigned long int capacity = 0) : m_slots(0), m_size(0), m_array(0) {
          if (capacity) init(capacity);
+      }
+      CBitArray(const CBitArray &a) : m_slots(0), m_size(0), m_array(0) {
+         setsize(a.m_size);
+         if (m_array && a.m_array)
+            std::memcpy(m_array, a.m_array, m_slots);
       }
       virtual ~CBitArray() {
          if (m_array) delete [] m_array;
       }
       void clear() {
          std::memset(m_array, 0, m_slots);
+         m_size=0;
       }
       void set(const unsigned long int &index) {
          assert(index<m_size);
@@ -63,23 +69,47 @@ class CBitArray {
          return m_size;
       }
       void init(const unsigned long int &capacity) {
+         if (m_array)  {
+            delete [] m_array;
+            m_array = 0;
+         }
          m_slots = capacity / 8;
          m_slots += capacity%8==0 ? 0 : 1;
-         m_array = new char[m_slots];
+         if (capacity)
+            m_array = new char[m_slots];
          clear();
       }
       void setsize(const unsigned long int &size) {
-         assert(size/8<m_slots);
-         if (size>m_size) {
+         if (size > m_slots*8) {
+            char *tmp = m_array;
+            int oldslots = m_slots;
+            m_array = 0;
+            init(size);
+            if (tmp) {
+               std::memcpy(m_array, tmp, oldslots);
+               delete [] tmp;
+            }
+         }
+         else if (size>m_size) {
             std::memset(m_array, 0, size-m_size);
          }
          m_size = size;
       }
       void add(const bool &s) {
+         if (m_size == m_slots * 8 - 1) {
+            char *tmp = m_array;
+            int oldsize = m_size;
+            m_array = 0;
+            init(m_slots*8*2);
+            std::memcpy(m_array, tmp, m_slots*8);
+            m_size = oldsize;
+            delete [] tmp;
+         }
          if (s)
             set(m_size++);
          else
             unset(m_size++);
+         assert(m_size/8 <= m_slots);
       }
       void add(const CBitArray &a) {
          for (unsigned long int i = 0; i<a.m_size; ++i)
@@ -93,9 +123,9 @@ class CBitArray {
          }
       }
       CBitArray &operator = (const CBitArray &a) {
-         assert(m_slots == a.m_slots);
-         m_size = a.m_size;
-         std::memcpy(m_array, a.m_array, m_slots);
+         setsize(a.m_size);
+         if (m_array && a.m_array)
+            std::memcpy(m_array, a.m_array, m_slots);
       }
       operator std::string () const {
          std::string retval = "";
