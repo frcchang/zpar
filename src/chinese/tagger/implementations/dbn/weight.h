@@ -207,10 +207,11 @@ public:
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;
-      loadScores();
       m_bitnone.setsize(BIT_CHAR_COUNT);
       m_bitunknown.setsize(BIT_CHAR_COUNT);
       m_bitunknown.set(0);
+      newKnowledge();
+      loadScores();
    }
 
    virtual ~CWeight() { if (m_Knowledge) delete m_Knowledge; }

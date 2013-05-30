@@ -72,7 +72,6 @@ protected:
    void loadKnowledge(const std::string &sKnowledgePath) {
 //      std::cout << "Knowledge is provided but not used." << std::endl;
       std::cout << "Loading knowledge ... ";
-      m_weights->newKnowledge();
       std::ifstream ifs(sKnowledgePath.c_str());
       if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
       ifs >> (*m_weights->m_Knowledge); 
