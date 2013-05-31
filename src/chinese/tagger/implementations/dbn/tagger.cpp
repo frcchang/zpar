@@ -236,23 +236,21 @@ if (index<item->size()) {
 
    // ===================================================================================
    // bitarray
-/*
    nonlinearfeat.clear();
    nonlinearfeat.add(true);
-   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // current char
-   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // previous char
-   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // first char
-   nonlinearfeat.add(m_weights->getBitArray(first_char_1)); // first char
-   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // last char
-   nonlinearfeat.add(m_weights->getBitArray(first_char_2)); // first char
-   nonlinearfeat.add(m_weights->getBitArray(last_char_2)); // last char
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // current char
+//   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // previous char
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // first char
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_1)); // first char
+//   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // last char
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_2)); // first char
+//   nonlinearfeat.add(m_weights->getBitArray(last_char_2)); // last char
    bitAddPOS(tag_0, nonlinearfeat);
    bitAddPOS(tag_1, nonlinearfeat);
    bitAddPOS(tag_2, nonlinearfeat);
    bitAddLen(1, nonlinearfeat);
    bitAddLen(length_1, nonlinearfeat);
    bitAddLen(length_2, nonlinearfeat);
-*/
 
    return nReturn;
 }
@@ -301,6 +299,25 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
    static unsigned i;
 
+   static unsigned long start_1, end_1, length_1; 
+   static unsigned long start_2, end_2, length_2; 
+
+   start_1 = index > 0 ? item->getWordStart( index-1 ) : 0 ;
+   end_1 = index > 0 ? item->getWordEnd( index-1 ) : 0 ;
+   assert(index==item->size()||index==0 || end_1 == start-1);
+   length_1 = index > 0 ? item->getWordLength( index-1 ) : 0;
+
+   start_2 = index > 1 ? item->getWordStart( index-2 ) : 0 ;
+   end_2 = index > 1 ? item->getWordEnd( index-2 ) : 0 ;
+   assert(index<2 || end_2 == start_1-1);
+   length_2 = index > 1 ? item->getWordLength( index-2 ) : 0;
+
+   const CWord &first_char_1 = index>0 ? find_or_replace_word_cache( start_1, start_1 ) : m_weights->m_emptyWord;
+   const CWord &first_char_2 = index>1 ? find_or_replace_word_cache( start_2, start_2 ) : m_weights->m_emptyWord;
+
+   const CWord &last_char_1 = index>0 ? find_or_replace_word_cache( end_1, end_1 ) : m_weights->m_emptyWord;
+   const CWord &last_char_2 = index>1 ? find_or_replace_word_cache( end_2, end_2 ) : m_weights->m_emptyWord;
+
    // adding scores with features
    nReturn = 0;
 
@@ -347,6 +364,21 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 //   }
 
    // bitarray for action
+   nonlinearfeat.clear();
+   nonlinearfeat.add(false);
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // current char
+//   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // previous char
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_0)); // first char
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_1)); // first char
+//   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // last char
+//   nonlinearfeat.add(m_weights->getBitArray(first_char_2)); // first char
+//   nonlinearfeat.add(m_weights->getBitArray(last_char_2)); // last char
+   bitAddPOS(tag_0, nonlinearfeat);
+   bitAddPOS(tag_1, nonlinearfeat);
+   bitAddPOS(tag_2, nonlinearfeat);
+   bitAddLen(length, nonlinearfeat);
+   bitAddLen(length_1, nonlinearfeat);
+   bitAddLen(length_2, nonlinearfeat);
 
    return nReturn;
 }

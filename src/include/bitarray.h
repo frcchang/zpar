@@ -117,20 +117,25 @@ class CBitArray {
          assert(m_size/8 <= m_slots);
       }
       void add(const CBitArray &a) {
-//         for (unsigned long int i = 0; i<a.m_size; ++i)
-//            add(a.isset(i));
-         // for efficiency reasons, copy the the next available char slot and leave some empty space
-         int slot = m_size / 8;
-         if (slot + a.m_slots >= m_slots)
-            expand(slot*8*2);
-         std::memcpy(m_array+slot+1, a.m_array, a.m_slots);
-         m_size = (slot + 1) * 8 + a.m_size;
+         if (a.m_size < 32) {
+            for (unsigned long int i = 0; i<a.m_size; ++i)
+               add(a.isset(i));
+         }
+         else {
+            // for efficiency reasons, copy the the next available char slot and leave some empty space
+            int slot = m_size / 8;
+            if (slot + a.m_slots >= m_slots)
+               expand(slot*8*2);
+            std::memcpy(m_array+slot+1, a.m_array, a.m_slots);
+            m_size = (slot + 1) * 8 + a.m_size;
+         }
       }
-      void add(int n, const int &size) {
+      void add(unsigned long int n, unsigned long int size) {
          assert(n < (1<<size));
-         while (n) {
+         while (size) {
             add(n%2);
             n >>= 1;
+            size -= 1;
          }
       }
       CBitArray &operator = (const CBitArray &a) {

@@ -152,7 +152,7 @@ void CWeight::saveScores() {
    if (m_dump) {
       m_dump->close();
       delete m_dump;
-      return;
+//      return;
    }
    std::cout << "Saving scores ..."; std::cout.flush();
 
@@ -209,7 +209,7 @@ void CWeight::computeAverageFeatureWeights(unsigned long round) {
 
 void CWeight::dumpFeature(const std::string &s) {
    if (!m_dump)
-      m_dump = new std::ofstream(m_sFeatureDB.c_str());
+      m_dump = new std::ofstream((m_sFeatureDB+".nonlinear").c_str());
    (*m_dump) << s << std::endl;
 }
 
