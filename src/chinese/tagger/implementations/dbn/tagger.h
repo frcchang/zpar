@@ -116,12 +116,12 @@ public:
       static tagger::CSubStateItem item;
       buildStateItem(sentence, correct, &item);
       for (tmp_i=0; tmp_i<item.size(); ++tmp_i) {
-//         getOrUpdateSeparateScore(sentence, &item, tmp_i, v, 1, m_nTrainingRound);
-         getOrUpdateSeparateScore(sentence, &item, tmp_i, v);
+         getOrUpdateSeparateScore(sentence, &item, tmp_i, v, 1, m_nTrainingRound);
+//         getOrUpdateSeparateScore(sentence, &item, tmp_i, v);
          m_weights->dumpFeature(static_cast<std::string>(v));
          for (tmp_j=item.getWordStart(tmp_i)+1; tmp_j<item.getWordEnd(tmp_i)+1; ++tmp_j) {
-//            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v, 1, m_nTrainingRound);
-            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v);
+            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v, 1, m_nTrainingRound);
+//            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v);
             m_weights->dumpFeature(static_cast<std::string>(v));
          }
       }
