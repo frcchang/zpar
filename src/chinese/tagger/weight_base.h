@@ -25,7 +25,7 @@ namespace tagger {
 
 class CWeightBase {
 
-protected:
+public:
    bool m_bTrain;
    std::string m_sFeatureDB;
 

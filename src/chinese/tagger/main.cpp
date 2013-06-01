@@ -52,7 +52,7 @@ void recordSegmentation(const CStringVector *raw, const CStringVector* segmented
 void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, const unsigned long nBest, const unsigned long nMaxSentSize, const bool bSegmented, bool bScores) {
    std::cout << "Tagging started" << std::endl;
    int time_start = clock();
-   CTagger tagger(sFeatureFile, false, nMaxSentSize, "", false);
+   CTagger tagger(sFeatureFile, false, nMaxSentSize, false);
    CSentenceReader input_reader(sInputFile);
    CSentenceWriter outout_writer(sOutputFile);
    std::ofstream *score_writer;

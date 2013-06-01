@@ -385,6 +385,18 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
 /*---------------------------------------------------------------
  *
+ * getOrUpdateNonLinearScore - get or update the score for non linear features
+ *
+ *--------------------------------------------------------------*/
+
+SCORE_TYPE CTagger::getOrUpdateNonLinearScore( const CBitArray &nonlinearfeat, SCORE_TYPE amount, unsigned long round ) {
+   static SCORE_TYPE nReturn ; 
+   nReturn = 0;
+   return nReturn;
+}
+
+/*---------------------------------------------------------------
+ *
  * buildStateItem - builds item
  *
  * Inputs: the raw sentence in input format
@@ -582,7 +594,11 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
                tempState.copy(pGenerator);
                tempState.replaceIndex(index);
                tempState.score += getOrUpdateAppendScore(sentence, &tempState, tempState.size()-1, index, nonlinearfeat);
-               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
+               tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+               if (index+1==length) {
+                  tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
+                  tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+               }
                m_Agenda.pushCandidate(&tempState);
             } // if
             pGenerator = m_Agenda.generatorNext();  // next generator
@@ -609,7 +625,11 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
                tempState.copy(pGenerator);
                tempState.append(index, tag);
                tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size()-1, nonlinearfeat);
-               if (index+1==length) tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
+               tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+               if (index+1==length) {
+                  tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
+                  tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+               }
 
                if (nBest==1) {
                   bUnique = true;

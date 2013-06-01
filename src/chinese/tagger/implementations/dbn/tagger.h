@@ -62,22 +62,13 @@ protected:
    bool m_bTrainingError;
 
 public:
-   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, const std::string &sKnowledgePath, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, sKnowledgePath, bSegmentationRules) , m_WordCache(nMaxSentSize) {
+   CTagger(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, bSegmentationRules) , m_WordCache(nMaxSentSize) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
       ASSERT(sizeof(unsigned long long)>=CTag::SIZE, "The tagger requires the size of unsigned-long greater than" << CTag::SIZE); // tag dict
    }
    virtual ~CTagger() {}
    
 protected:
-   void loadKnowledge(const std::string &sKnowledgePath) {
-//      std::cout << "Knowledge is provided but not used." << std::endl;
-      std::cout << "Loading knowledge ... ";
-      std::ifstream ifs(sKnowledgePath.c_str());
-      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
-      ifs >> (*m_weights->m_Knowledge); 
-      ifs.close();
-      std::cout << "done." << std::endl;
-   }
    inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
       return ( m_weights->m_mapWordFrequency.find( word, 0 ) < 
                   m_weights->m_nMaxWordFrequency/5000+5 && 
@@ -111,17 +102,16 @@ public:
    virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
    void dumpfeatures(const CStringVector *sentence, const CTwoStringVector *correct) {
+      ++m_nTrainingRound;
       static unsigned tmp_i, tmp_j;
       static CBitArray v(NON_LINEAR_FEAT_SIZE);
       static tagger::CSubStateItem item;
       buildStateItem(sentence, correct, &item);
       for (tmp_i=0; tmp_i<item.size(); ++tmp_i) {
          getOrUpdateSeparateScore(sentence, &item, tmp_i, v, 1, m_nTrainingRound);
-//         getOrUpdateSeparateScore(sentence, &item, tmp_i, v);
          m_weights->dumpFeature(static_cast<std::string>(v));
          for (tmp_j=item.getWordStart(tmp_i)+1; tmp_j<item.getWordEnd(tmp_i)+1; ++tmp_j) {
             getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v, 1, m_nTrainingRound);
-//            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v);
             m_weights->dumpFeature(static_cast<std::string>(v));
          }
       }
@@ -133,12 +123,36 @@ public:
    }
 
 public:
+   virtual void loadKnowledge(const std::string &sKnowledgePath) {
+      std::cout << "Loading knowledge ... ";
+
+      if (!m_bTrain) {
+         // when decoding
+         THROW("CTagger::CTagger received sKnowledgePath file in decoding mode, which is unexpected.");
+      }
+      else {
+         if (FileExists(m_weights->m_sFeatureDB)) {
+            THROW("CTagger::CTagger received sKnowledgePath file, but model exists (with knowledge)");
+         }
+      }
+
+      std::string sCharacterPath = sKnowledgePath + ".chr";
+      std::ifstream ifs(sCharacterPath.c_str());
+      if (!ifs) THROW("Knowledge file " << sCharacterPath << " is not accessible.");
+      ifs >> (*m_weights->m_Knowledge); 
+      ifs.close();
+
+      std::cout << "done." << std::endl;
+   }
+
    tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged) {
       THROW("This method is not supported in this implementation.");
    }
+
    void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round) {
       THROW("This method is not supported in this implementation.");
    }
+
    tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0) {
       THROW("This method is not supported in this implementation.");
    }
@@ -148,13 +162,15 @@ public:
       static CBitArray v(NON_LINEAR_FEAT_SIZE);
       for (tmp_i=0; tmp_i<item->size(); ++tmp_i) {
          getOrUpdateSeparateScore(sentence, item, tmp_i, v, amount, m_nTrainingRound);
-         // TODO: add non linear feature scores to both step
+         getOrUpdateNonLinearScore(v, amount, m_nTrainingRound);
          for (tmp_j=item->getWordStart(tmp_i)+1; tmp_j<item->getWordEnd(tmp_i)+1; ++tmp_j)
             getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, v, amount, m_nTrainingRound);
+            getOrUpdateNonLinearScore(v, amount, m_nTrainingRound);
       }
    }
    tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
    tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdateNonLinearScore(const CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
 protected:
 

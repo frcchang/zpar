@@ -25,23 +25,24 @@ class CBitArray {
       char *m_array;
       unsigned long int m_size;
       int m_slots; // simply for convenience
+      bool m_allocated;
    public:
-      CBitArray(unsigned long int capacity = 0) : m_slots(0), m_size(0), m_array(0) {
+      CBitArray(unsigned long int capacity = 0) : m_slots(0), m_size(0), m_array(0), m_allocated(false) {
          if (capacity) init(capacity);
       }
-      CBitArray(const CBitArray &a) : m_slots(0), m_size(0), m_array(0) {
-         setsize(a.m_size);
-         if (m_array && a.m_array)
-            std::memcpy(m_array, a.m_array, m_slots);
+      CBitArray(const CBitArray &a) : m_slots(0), m_size(0), m_array(0), m_allocated(false) {
+         (*this) = a;
       }
       virtual ~CBitArray() {
-         if (m_array) delete [] m_array;
+         if (m_array && m_allocated) delete [] m_array;
       }
       void clear() {
+         assert(m_allocated);
          std::memset(m_array, 0, m_slots);
          m_size=0;
       }
       void set(const unsigned long int &index) {
+         assert(m_allocated);
          assert(index<m_size);
          int slot = index / 8;
          int bit_in_slot = index % 8;
@@ -70,17 +71,20 @@ class CBitArray {
       }
       void init(const unsigned long int &capacity) {
          TRACE("bitarray.h: Allocating memory.");
-         if (m_array)  {
+         if (m_array&&m_allocated)  {
             delete [] m_array;
             m_array = 0;
          }
          m_slots = capacity / 8;
          m_slots += capacity%8==0 ? 0 : 1;
-         if (capacity)
+         if (capacity) {
             m_array = new char[m_slots];
+            m_allocated = true;
+         }
          clear();
       }
       void setsize(const unsigned long int &size) {
+         assert(m_allocated);
          if (size > m_slots*8) {
             expand(size);
          }
@@ -95,6 +99,7 @@ class CBitArray {
          m_size = size;
       }
       void expand(const unsigned long int &size) {
+         assert(m_allocated);
          char *tmp = m_array;
          int oldslots = m_slots;
          int oldsize = m_size;
@@ -107,6 +112,7 @@ class CBitArray {
          m_size = oldsize;
       }
       void add(const bool &s) {
+         assert(m_allocated);
          if (m_size == m_slots * 8 - 1) {
             expand(m_slots*8*2);
          }
@@ -117,6 +123,7 @@ class CBitArray {
          assert(m_size/8 <= m_slots);
       }
       void add(const CBitArray &a) {
+         assert(m_allocated);
          if (a.m_size < 32) {
             for (unsigned long int i = 0; i<a.m_size; ++i)
                add(a.isset(i));
@@ -131,6 +138,7 @@ class CBitArray {
          }
       }
       void add(unsigned long int n, unsigned long int size) {
+         assert(m_allocated);
          assert(n < (1<<size));
          while (size) {
             add(n%2);
@@ -139,15 +147,40 @@ class CBitArray {
          }
       }
       CBitArray &operator = (const CBitArray &a) {
+         if (m_allocated&&m_array) {
+            delete[]m_array;
+         }
+         m_allocated = false;
+         m_size = a.m_size;
+         m_slots = a.m_slots;
+         m_array = a.m_array;
+      }
+      void copy(const CBitArray &a) {
+         m_allocated = true;
          setsize(a.m_size);
          if (m_array && a.m_array)
             std::memcpy(m_array, a.m_array, m_slots);
+      }
+      bool operator == (const CBitArray &a) const {
+         if (m_array == a.m_array) {
+            assert(m_slots == a.m_slots);
+            assert(m_size == a.m_size);
+            return true;
+         }
+         if (m_size != a.m_size) return false;
+         if (m_slots != a.m_slots) return false;
+         return std::memcmp(m_array, a.m_array, m_slots);
       }
       operator std::string () const {
          std::string retval = "";
          for (unsigned long int i=0; i<m_size; ++i)
             //os << (ba.isset(i)?'1':'0');
             retval += isset(i)  ? '1' : '0';
+         return retval;
+      }
+      unsigned long hash() const{ 
+         unsigned long retval = 0;
+         std::memcpy(&retval, m_array, std::min(static_cast<unsigned long>(m_slots), sizeof(unsigned long))); // use the first few bits as the hash value
          return retval;
       }
 };
@@ -164,7 +197,7 @@ std::istream & operator >> (std::istream &is, CBitArray &ba) {
 }
 
 inline
-std::ostream & operator << (std::ostream &os, CBitArray &ba) {
+std::ostream & operator << (std::ostream &os, const CBitArray &ba) {
    os << static_cast<std::string>(ba);
    return os;
 }

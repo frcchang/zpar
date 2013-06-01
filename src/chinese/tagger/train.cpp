@@ -52,7 +52,8 @@ void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged
 void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const std::string &sKnowledgePath, const bool &bFWCDRule) {
    static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
 
-   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, bFWCDRule);
+   CTagger decoder(sFeatureFile, true, nMaxSentSize, bFWCDRule);
+   if (!sKnowledgePath.empty()) decoder.loadKnowledge(sKnowledgePath);
    CSentenceReader outout_reader(sOutputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *outout_sent = new CTwoStringVector; 
@@ -99,7 +100,8 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 void dumpfeatures(const std::string &sOutputFile, const std::string &sFeatureFile, const unsigned long &nMaxSentSize, const std::string &sKnowledgePath, const bool &bFWCDRule) {
    static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
 
-   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, bFWCDRule);
+   CTagger decoder(sFeatureFile, true, nMaxSentSize, bFWCDRule);
+   if (!sKnowledgePath.empty()) decoder.loadKnowledge(sKnowledgePath);
    CSentenceReader outout_reader(sOutputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *outout_sent = new CTwoStringVector; 
@@ -136,7 +138,7 @@ void dumpfeatures(const std::string &sOutputFile, const std::string &sFeatureFil
 void train(const std::string &sOutputFile, const std::string &sFeatureFile, const unsigned long &nBest, const unsigned long &nMaxSentSize, const bool &bEarlyUpdate, const bool &bSegmented, const std::string &sKnowledgePath, const bool &bFWCDRule) {
    static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
 
-   CTagger decoder(sFeatureFile, true, nMaxSentSize, sKnowledgePath, bFWCDRule);
+   CTagger decoder(sFeatureFile, true, nMaxSentSize, bFWCDRule);
    CSentenceReader outout_reader(sOutputFile);
 #ifdef DEBUG
    CSentenceWriter outout_writer("");
