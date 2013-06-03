@@ -53,6 +53,7 @@ public:
    CBitArray m_bitnone;
    CBitArray m_bitunknown;
    CWord m_emptyWord;
+   DBN *m_dbn;
 
 public:
 
@@ -151,6 +152,7 @@ public:
             m_bitnone(BIT_CHAR_COUNT), 
             m_bitunknown(BIT_CHAR_COUNT) , 
             m_emptyWord("") ,
+            m_dbn(0), // DBN
 
             m_mapCharUnigram("CharacterUnigram", 65537) ,
             m_mapCharBigram("CharacterBigram", 65537) ,
@@ -224,7 +226,12 @@ public:
       loadScores();
    }
 
-   virtual ~CWeight() { if (m_Knowledge) delete m_Knowledge; }
+   virtual ~CWeight() { 
+      if (m_Knowledge) 
+         delete m_Knowledge; 
+      if (m_dbn)
+         delete m_dbn;
+   }
 
 public:
   
@@ -238,6 +245,7 @@ public:
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
       m_Knowledge = new CWordToBitArrayMap(65537);
       (*m_Knowledge)[m_emptyWord] = m_bitnone;
+      m_dbn = new DBN();
    }
 
    const CBitArray &getBitArray(const CWord &w) const {
