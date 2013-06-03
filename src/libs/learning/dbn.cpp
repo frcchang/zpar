@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <math.h>
-#include "DBN.h"
-#include "latest_bitarray.h"
+#include "learning/dbn.h"
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
@@ -782,96 +781,4 @@ DBN::~DBN(){
 }
 
 
-
-int main()
-{    srand(0);
-
-
-
-  //int i,j,l;
-  //double pretrain_lr = 0.1;
-  //int pretraining_epochs = 1000;
-  //double finetune_lr = 0.1;
-  //int finetune_epochs = 1000;
-
-  //int train_N = 804521;
-  //int test_N = 6;
-  //int n_ins = 6;
-  //int n_outs = 2;
-  //int hidden_layer_size[] = {3, 3};
-  //int n_layer = sizeof(hidden_layer_size) / sizeof(hidden_layer_size[0]);
-
-  // training data
-/*  double train_X[6][6] = {
-    {1, 1, 1, 0, 0, 0},
-    {1, 0, 1, 0, 0, 0},
-    {1, 1, 1, 0, 0, 0},
-    {0, 0, 1, 1, 1, 0},
-    {0, 0, 1, 1, 0, 0},
-    {0, 0, 1, 1, 1, 0}
-  };
-
-  double train_Y[6][2] = {
-    {1, 0},
-    {1, 0},
-    {1, 0},
-    {0, 1},
-    {0, 1},
-    {0, 1}
-  }; */
-
-  // construct DBN
-  DBN dbn;
-  //DBN dbn(n_ins, hidden_layer_size, n_outs, n_layer);
-  std::ifstream iss("zero_DBN_input.txt");
-  iss>>dbn;
-  iss.close();
-  //dbn.print_trained_parameters();
-  dbn.train("test_dbn_nonlinear.txt");
-
-  // pretrain
-  //dbn.pretrain(*train_X, pretrain_lr,pretraining_epochs,train_N);
-  dbn.print_trained_parameters();
-
-  // finetune
-  //dbn.finetune(*train_X,*train_Y,finetune_lr,finetune_epochs,train_N);
-  //dbn.print_trained_parameters();
-
-  std::ofstream oss("output_DBN.txt");
-  oss<<dbn;
-
- /*  double test_X[6][6] = {
-    {1, 1, 1, 0, 0, 0},
-    {1, 0, 1, 0, 0, 0},
-    {1, 1, 1, 0, 0, 0},
-    {0, 0, 1, 1, 1, 0},
-    {0, 0, 1, 1, 0, 0},
-    {0, 0, 1, 1, 1, 0}
-  };
-
-
-    std::cout<<"\n\nThe test results are\n\n";
-  // test
-  for(i=0; i<test_N; i++){
-    dbn.predict(test_X[i]);
-    for(j=0;j<n_outs;j++)
-        std::cout<<dbn.rbm_layers[n_layer].h_samples[j][0]<<' ';
-        std::cout<<std::endl;
-  }
-     RBM b;
-     std::ifstream is("read_initial_parameters.txt");
-     is>>b;
-     is.close();
-     b.print_parameters();
-    //b.train_RBM();
-     b.train("RBM_training_set.txt");
-     b.test_RBM();
-     std::ofstream os("output_RBM.txt");
-     os<<b;
-     os.close(); */
-
-     return 0;
-
-
-}
 

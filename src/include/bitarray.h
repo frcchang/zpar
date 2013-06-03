@@ -70,7 +70,7 @@ class CBitArray {
          return m_size;
       }
       void init(const unsigned long int &capacity) {
-         TRACE("bitarray.h: Allocating memory.");
+//         TRACE("bitarray.h: Allocating memory.");
          if (m_array&&m_allocated)  {
             delete [] m_array;
             m_array = 0;

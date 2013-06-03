@@ -9,7 +9,7 @@
 #include "learning/perceptron/hashmap_score.h"
 #include "knowledge/tagdict.h"
 #include "pair_stream.h"
-#include "learning/dbn/dbn.h"
+#include "learning/dbn.h"
 
 namespace chinese {
 
