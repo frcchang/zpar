@@ -100,11 +100,13 @@ LDFLAGS =
 
 # the objects
 LINGUISTICS_OBJECTS = $(OBJECT_DIR)/linguistics/lemma.o $(OBJECT_DIR)/linguistics/conll.o
-OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS)
+LEARNING_OBJECTS = $(OBJECT_DIR)/learning/dbn.o
+OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS) $(LEARNING_OBJECTS)
 
 $(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
 	mkdir -p $(OBJECT_DIR)
 	mkdir -p $(OBJECT_DIR)/linguistics
+	mkdir -p $(OBJECT_DIR)/learning
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all: zpar
