@@ -33,7 +33,7 @@ inline double binomial(int n,double p){
   return c;
 
 }
-inline std::istream& operator>>(std::istream& is,RBM& rbm)
+std::istream& operator>>(std::istream& is,RBM& rbm)
 {
   int i,j,vsize,hsize;
   std::string line;
@@ -68,7 +68,7 @@ inline std::istream& operator>>(std::istream& is,RBM& rbm)
 
 }
 
-inline std::ostream& operator<<(std::ostream& os,RBM& rbm)
+std::ostream& operator<<(std::ostream& os,const RBM& rbm)
 {
     int i,j;
     os<<rbm.v_size<<' '<<rbm.h_size<<std::endl;
@@ -512,14 +512,16 @@ void DBN::finalize()
     delete []rbm_layers;
 }
 
-inline std::istream& operator>>(std::istream &is,DBN &dbn)
+std::istream& operator>>(std::istream &is,DBN &dbn)
 {
-    int nls;
+    int nls=0;
     std::string line;
     if(getline(is,line)){
     std::istringstream iss(line);
     iss>>dbn.n_inputs>>dbn.n_outputs>>nls;
     }
+    else
+      throw("Cannot read file for a DBN definition");
 
     dbn.initialize(nls);
 
@@ -530,7 +532,7 @@ inline std::istream& operator>>(std::istream &is,DBN &dbn)
 
 }
 
-inline std::ostream& operator<<(std:: ostream &os,DBN &dbn)
+std::ostream& operator<<(std:: ostream &os,DBN &dbn)
 {
  for(int l=0;l<dbn.n_layers+1;l++)
     os<<dbn.rbm_layers[l]<<std::endl;;
