@@ -142,6 +142,12 @@ public:
       ifs >> (*m_weights->m_Knowledge); 
       ifs.close();
 
+      std::string sDBNPath = sKnowledgePath + ".dbn";
+      std::ifstream ids(sDBNPath.c_str());
+      if (!ids) THROW("Knowledge file " << sDBNPath << " is not accessible.");
+      ids >> (*m_weights->m_dbn); 
+      ids.close();
+
       std::cout << "done." << std::endl;
    }
 

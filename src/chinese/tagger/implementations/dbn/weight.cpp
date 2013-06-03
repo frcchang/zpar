@@ -104,6 +104,9 @@ void CWeight::loadScores() {
       ASSERT(st=="Knowledge=0", "Knowledge not found from model.");
    }
    getline(is, st);
+   ASSERT(st=="Neural network", "Neural network not found from model.");
+   is >> *m_dbn;
+   getline(is, st);
    ASSERT(st=="Tag dictionary", "Tag dictionary not found from model.");
    is >> m_mapTagDictionary;
    getline(is, st);
@@ -173,6 +176,8 @@ void CWeight::saveScores() {
       os << (*m_Knowledge);
    }
 
+   os << "Neural network" << std::endl;
+   os << *m_dbn;
    os << "Tag dictionary" << std::endl;
    os << m_mapTagDictionary;
    os << "Char tag dictionary" << std::endl;

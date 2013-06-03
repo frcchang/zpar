@@ -23,7 +23,7 @@ class RBM
  void manual_initialize();
  void random_initialize();
  friend std::istream& operator>>(std::istream&,RBM&);
- friend std::ostream& operator<<(std::ostream&,RBM&);
+ friend std::ostream& operator<<(std::ostream&,const RBM&);
  void update(int,int N=1,double learning_rate=0.1);
  void propup(int);
  void propdown(int);
