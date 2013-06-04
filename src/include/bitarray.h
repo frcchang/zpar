@@ -28,6 +28,7 @@ class CBitArray {
       bool m_allocated;
    public:
       CBitArray(unsigned long int capacity = 0) : m_slots(0), m_size(0), m_array(0), m_allocated(false) {
+         // If you want to allocate bitarray, specify non zero!
          if (capacity) init(capacity);
       }
       CBitArray(const CBitArray &a) : m_slots(0), m_size(0), m_array(0), m_allocated(false) {

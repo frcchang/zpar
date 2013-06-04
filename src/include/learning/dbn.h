@@ -18,8 +18,8 @@ class RBM
  //Methods / Functions
  public:
  RBM(int v_size=0,int h_size=0);
- int gethsize() const;
- int getvsize() const;
+ const int &gethsize() const { return h_size; }
+ const int &getvsize() const { return v_size; }
  void manual_initialize();
  void random_initialize();
  friend std::istream& operator>>(std::istream&,RBM&);
@@ -59,6 +59,8 @@ void finetune(double *,double *,double,int,int N=1);
 void logistic_regression_train(double,int,int);
 //void predict(double *);
 void forward_propagation(double *);
+void forward_propagation(const CBitArray &v);
+void forward_propagation();
 void print_trained_parameters();
 void train(const std::string &);
 void gethsamples(const int &,CBitArray &);

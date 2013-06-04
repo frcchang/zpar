@@ -391,7 +391,12 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 
 SCORE_TYPE CTagger::getOrUpdateNonLinearScore( const CBitArray &nonlinearfeat, SCORE_TYPE amount, unsigned long round ) {
    static SCORE_TYPE nReturn ; 
+   static int n;
+   static CBitArray features(128);
    nReturn = 0;
+   m_weights->m_dbn->forward_propagation(nonlinearfeat);
+   m_weights->m_dbn->gethsamples(m_weights->m_dbn->getnlayers()-1, features);
+   std::cout << features << std::endl;
    return nReturn;
 }
 
