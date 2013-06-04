@@ -395,8 +395,8 @@ SCORE_TYPE CTagger::getOrUpdateNonLinearScore( const CBitArray &nonlinearfeat, S
    static CBitArray features(128);
    nReturn = 0;
    m_weights->m_dbn->forward_propagation(nonlinearfeat);
-   m_weights->m_dbn->gethsamples(m_weights->m_dbn->getnlayers()-1, features);
-   std::cout << features << std::endl;
+   m_weights->m_dbn->getsamples(m_weights->m_dbn->getnlayers()-3, features);
+   std::cout << nonlinearfeat << ' ' <<features << std::endl;
    return nReturn;
 }
 
