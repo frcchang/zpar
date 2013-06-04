@@ -23,7 +23,7 @@ class RBM
  void manual_initialize();
  void random_initialize();
  friend std::istream& operator>>(std::istream&,RBM&);
- friend std::ostream& operator<<(std::ostream&,const RBM&);
+ friend std::ostream& operator<<(std::ostream&,RBM&);
  void update(int,int N=1,double learning_rate=0.1);
  void propup(int);
  void propdown(int);
@@ -46,6 +46,7 @@ int *hidden_layer_sizes;
 int n_outputs;
 int n_layers;
 RBM *rbm_layers;
+//double **delta;
 public:
 DBN(int n_inputs=0,int *hidden_layer_size=0,int n_outputs=0,int n_layers=0);
 friend std::istream& operator>>(std::istream&,DBN&);
@@ -54,13 +55,14 @@ void initialize(int);
 void finalize();
 void pretrain(double *,double,int,int N=1);
 void finetune(double *,double *,double,int,int N=1);
-void softmax(double *,int);
+//void softmax(double *,int);
 void logistic_regression_train(double,int,int);
-void predict(double *);
-void forward_sample(double *);
+//void predict(double *);
+void forward_propagation(double *);
 void print_trained_parameters();
 void train(const std::string &);
-void get_hsamples(const int&,CBitArray&);
+void gethsamples(const int &,CBitArray &);
+int getnlayers() const;
 ~DBN();
 };
 #endif
