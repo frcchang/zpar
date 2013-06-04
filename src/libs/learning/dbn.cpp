@@ -103,10 +103,6 @@ RBM::~RBM()
     finalize();
 }
 
-int RBM::gethsize() const {return h_size;}
-
-int RBM::getvsize() const {return v_size;}
-
 void RBM::initialize(int v_size,int h_size)
 {
     if(this->v_size!=0 && this->h_size!=0)
@@ -694,12 +690,29 @@ void DBN::logistic_regression_train(double lr,int index,int N)
 
 void DBN::forward_propagation(double *x)
 {
+   assert (n_layers);
+   for(int j=0; j<rbm_layers[0].getvsize(); j++)  
+      rbm_layers[0].v_samples[j][0] = x[j];
+   forward_propagation();
+}
+
+void DBN::forward_propagation(const CBitArray &v)
+{
+   assert (n_layers);
+   for(int j=0; j<rbm_layers[0].getvsize(); j++)  
+      rbm_layers[0].v_samples[j][0] = v.isset(j) ? 1 : 0;
+   forward_propagation();
+}
+
+void DBN::forward_propagation()
+{
+   assert (n_layers);
     int i,j,k,vsize,hsize;
     for(i=0; i<n_layers; i++){
         vsize=rbm_layers[i].getvsize();
         hsize=rbm_layers[i].gethsize();
         if(i == 0)
-        {for(j=0; j<vsize; j++)  rbm_layers[i].v_samples[j][0] = x[j];
+        {//for(j=0; j<vsize; j++)  rbm_layers[i].v_samples[j][0] = x[j];
         rbm_layers[i].propup(0);
         }
         else{
