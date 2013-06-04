@@ -63,7 +63,7 @@ void forward_propagation(const CBitArray &v);
 void forward_propagation();
 void print_trained_parameters();
 void train(const std::string &);
-void gethsamples(const int &,CBitArray &);
+void getsamples(const int &,CBitArray &);
 int getnlayers() const;
 ~DBN();
 };

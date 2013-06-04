@@ -491,13 +491,15 @@ void RBM::finalize()
         v_size=0;
 }
 
-void DBN::gethsamples(const int &layer,CBitArray &v)
-{v.clear();
- v.setsize(rbm_layers[layer].gethsize());
- for(int i=0;i<rbm_layers[layer].gethsize();i++)
-	{if(rbm_layers[layer].h_samples[i][0]>0.5)
-	 v.set(i);
-	}
+void DBN::getsamples(const int &layer,CBitArray &v)
+{
+   v.clear();
+   v.setsize(rbm_layers[layer].gethsize());
+   for(int i=0;i<rbm_layers[layer].gethsize();i++) {
+      std::cout << rbm_layers[layer].v_samples[i][0] << std::endl;
+      if (rbm_layers[layer].v_samples[i][0]>0.5)	 
+         v.set(i);	
+   }
 
 }
 
@@ -699,8 +701,10 @@ void DBN::forward_propagation(double *x)
 void DBN::forward_propagation(const CBitArray &v)
 {
    assert (n_layers);
-   for(int j=0; j<rbm_layers[0].getvsize(); j++)  
+   for(int j=0; j<rbm_layers[0].getvsize(); j++) {
       rbm_layers[0].v_samples[j][0] = v.isset(j) ? 1 : 0;
+//      std::cout << rbm_layers[0].v_samples[j][0] << std::endl;
+   }
    forward_propagation();
 }
 
