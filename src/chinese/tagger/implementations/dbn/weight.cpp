@@ -90,17 +90,21 @@ void CWeight::loadScores() {
    getline(is, st);
    if (st=="Segmentation rules") {
       m_rules.setCDorFW(true);
+      m_bFWOrCD = true;
    }
    else {
       ASSERT(st=="Segmentation rules=0", "Segmentation rules on/off switch not found from model.");
       m_rules.setCDorFW(false);
+      m_bFWOrCD = false;
    }
    getline(is, st);
    if (st=="Knowledge") {
       is >> (*m_Knowledge);
+      m_bKnowledge = true;
    }
    else {
       ASSERT(st=="Knowledge=0", "Knowledge not found from model.");
+      m_bKnowledge = false;
    }
    getline(is, st);
    ASSERT(st=="Neural network", "Neural network not found from model.");
@@ -164,10 +168,10 @@ void CWeight::saveScores() {
    ASSERT(os.is_open(), "Can't open "<<m_sFeatureDB<<" for saving model.");
    iterate_templates(os<<,;);
 
-   if (m_Knowledge) os << "Segmentation rules" << std::endl;
+   if (m_bFWOrCD) os << "Segmentation rules" << std::endl;
    else os << "Segmentation rules=0" << std::endl;
 
-   if (m_Knowledge==0) {
+   if (!m_bKnowledge) {
       os << "Knowledge=0" << std::endl;
    }
    else {

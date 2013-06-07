@@ -1,38 +1,18 @@
 // Harsh Vardhan Tiwari and Yue Zhang
 
+
 #include <iostream>
 #include <math.h>
 #include "learning/dbn.h"
 #include "bitarray.h"
-#include <cstdlib>
-#include <ctime>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <vector>
 
-inline double uniform(double min,double max)
-{
-    return rand()/(RAND_MAX + 1.0) * (max - min) + min;
-}
 
-inline double sigm(double x)
-{
-    return 1.0/(1.0+exp(-x));
-}
 
-inline double binomial(int n,double p){
-  double c=0;
-  if(p < 0 || p > 1) return 0;
-  double r;
 
-  for(int i=0;i<n;i++){
-     r=rand() / (RAND_MAX + 1.0);
-     if(r < p) c++;
-     }
-  return c;
-
-}
 std::istream& operator>>(std::istream& is,RBM& rbm)
 {
   int i,j,vsize,hsize;
@@ -199,7 +179,8 @@ void RBM::random_initialize()
 void RBM::update(const CBitArray &v,int K,int N)
 {
     for(int i=0;i<v_size;++i)
-        v_samples[i][0] = v.isset(i) ? 1.0 : 0.0;
+        v_samples[i][0] = v.isset(i) ? 1.0 : 0.0; //std::cout<<v_samples[i][0]<<' ';}
+        //std::cout<<std::endl;
     update(K,N);
 
 
@@ -210,15 +191,17 @@ void RBM::train(const std::string &path)
     std::ifstream is(path.c_str());
     CBitArray v;
     std::string line;
-    while(getline(is,line)){
+    while(getline(is,line)){//std::cout<<line<<std::endl;
     std::istringstream iss(line);
     iss>>v;
+    //std::cout<<v<<std::endl;
     training_data.push_back(v);
     }
     is.close();
     int N=training_data.size();
     for(int i=0;i<iterations;i++)
         {for(int j=0;j<N;j++){
+        //std::cout<<training_data[j];
         update(training_data[j],K,N);}
         }
 
@@ -246,60 +229,6 @@ void RBM::print_parameters()
     std::cout<<std::endl;
 }
 
-void RBM::propup(int k)
-
-{
-    int i,j;
-    double count=0;
-
-            //Calculate Q[k]
-            for(i=0;i<h_size;i++)
-                {   count=0;
-                    for(j=0;j<v_size;j++)
-                    {count = count + W[i][j]*v_samples[j][k];}
-
-                    Q[i][k]=sigm(h_bias[i]+count);
-
-
-                }
-
-
-}
-
-void RBM::propdown(int k)
-{
-    int i,j;
-    double count=0;
-    //Calculate P
-            for(j=0;j<v_size;j++)
-                {   count=0;
-                    for(i=0;i<h_size;i++)
-                    {count = count + W[i][j]*h_samples[i][k];}
-
-                    P[j]=sigm(v_bias[j]+count);
-                }
-}
-void RBM::sample_h_given_v(int k)
-{
-            propup(k);
-            //sample H[k]
-            for(int i=0;i<h_size;i++)
-            {
-                h_samples[i][k]=binomial(1,Q[i][k]);
-
-
-            }
-}
-
-void RBM::sample_v_given_h(int k)
-{
-            propdown(k);
-            //sample V[1]
-            for(int i=0;i<v_size;i++)
-
-            {v_samples[i][1]=binomial(1,P[i]); }
-
-}
 
 void RBM::update(int K,int N,double learning_rate)
  {  int i,j;
@@ -320,7 +249,7 @@ void RBM::update(int K,int N,double learning_rate)
 
     for(i=0;i<h_size;i++){
         for(j=0;j<v_size;j++){
-        W[i][j] += learning_rate * (h_samples[i][0] * v_samples[j][0] - Q[i][1] * v_samples[j][1]) / N;
+        W[i][j] += learning_rate * (h_samples[i][0] * v_samples[j][0] - Q[i][1] * v_samples[j][1]) / N; //      std::cout<< (h_samples[i][0] * v_samples[j][0] - Q[i][1] * v_samples[j][1])<<' ';
         }
         h_bias[i] += learning_rate * (h_samples[i][0] - Q[i][1]) / N ;
     }
@@ -328,7 +257,7 @@ void RBM::update(int K,int N,double learning_rate)
     for(i=0;i<v_size;i++){
     v_bias[i] += learning_rate * (v_samples[i][0] - v_samples[i][1]) / N ;
     }
-
+    //std::cout<<std::endl;
 
  }
 void RBM::train_RBM()
@@ -495,9 +424,9 @@ void DBN::getsamples(const int &layer,CBitArray &v)
 {
    v.clear();
    v.setsize(rbm_layers[layer].getvsize());
-   for(int i=0;i<rbm_layers[layer].getvsize();i++) {
-      if (rbm_layers[layer].v_samples[i][0]>0.5)	 
-         v.set(i);	
+   for (int i=0; i<rbm_layers[layer].getvsize(); i++) {
+      if(rbm_layers[layer].v_samples[i][0]>0.5)
+         v.set(i);
    }
 
 }
@@ -583,7 +512,7 @@ DBN::DBN(int n_ins,int *hidden_layer_sizes,int n_outs,int n_ls):n_inputs(n_ins),
 
 void DBN::train(const std::string &path)
 {   double pretraining_lr=0.1;
-    int pretraining_iterations=500,N;
+    int pretraining_iterations=1000,N;
     std::vector<CBitArray> training_data;
     std::ifstream is(path.c_str());
     CBitArray v;
@@ -596,18 +525,23 @@ void DBN::train(const std::string &path)
     is.close();
     N=training_data.size();
     int vsize=training_data[0].size();
-    double *training_v=new double [N*vsize];
+    double ***training_v=new double **[N];
+    for(int i=0;i<N;i++){ 
+     training_v[i]=new double *[vsize];
+    	for(int j=0;j<vsize;j++) training_v[i][j]=new double[2];
+    }
     for(int i=0;i<N;i++)
         for(int j=0;j<vsize;j++)
-        {training_v[i*vsize+j] = training_data[i].isset(j) ? 1.0 : 0.0;}
+        {training_v[i][j][0] = training_data[i].isset(j) ? 1.0 : 0.0;}
 
     pretrain(training_v,pretraining_lr,pretraining_iterations,N);
 }
 
-void DBN::pretrain(double *input,double lr,int iterations,int N)
+void DBN::pretrain(double ***input,double lr,int iterations,int N)
 {
     int  i,j,k,l,t,vsize,hsize;
     int K=1; //CD-K
+    double **temp;
     for(i=0; i<n_layers-1; i++){
         for(j=0; j<iterations; j++){
             for(k=0; k<N ;k++){
@@ -616,18 +550,24 @@ void DBN::pretrain(double *input,double lr,int iterations,int N)
                 hsize=rbm_layers[l].gethsize();
 
                 if(l==0)
-                {   for(t=0; t<n_inputs; t++)
-                    {rbm_layers[l].v_samples[t][0] = input[k*n_inputs + t];}
+                {   //for(t=0; t<n_inputs; t++)
+		    temp=rbm_layers[l].v_samples;
+                    rbm_layers[l].v_samples = input[k];
+		    	
                 }
                 else
-                {
+                {   
                     rbm_layers[l-1].sample_h_given_v(0);
-                    for(t=0; t<vsize; t++)
-                    rbm_layers[l].v_samples[t][0] = rbm_layers[l-1].h_samples[t][0];
+		    rbm_layers[l-1].v_samples=temp;	
+                    //for(t=0; t<vsize; t++)
+		    temp=rbm_layers[l].v_samples;
+                    rbm_layers[l].v_samples = rbm_layers[l-1].h_samples;
+		    	
                 }
 
                 }
                 rbm_layers[i].update(K,N,lr);
+		rbm_layers[i].v_samples=temp;
 
             }
         }
@@ -816,3 +756,7 @@ DBN::~DBN(){
     if(n_layers!=0)
     finalize();
 }
+
+
+
+

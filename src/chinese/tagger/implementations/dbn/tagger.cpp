@@ -245,10 +245,8 @@ if (index<item->size()) {
 //   nonlinearfeat.add(m_weights->getBitArray(last_char_1)); // last char
 //   nonlinearfeat.add(m_weights->getBitArray(first_char_2)); // first char
 //   nonlinearfeat.add(m_weights->getBitArray(last_char_2)); // last char
-   bitAddPOS(tag_0, nonlinearfeat);
    bitAddPOS(tag_1, nonlinearfeat);
    bitAddPOS(tag_2, nonlinearfeat);
-   bitAddLen(1, nonlinearfeat);
    bitAddLen(length_1, nonlinearfeat);
    bitAddLen(length_2, nonlinearfeat);
 
@@ -274,7 +272,7 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
    static unsigned long start, length;
    static unsigned long prev_char_index;
    start = item->getWordStart( index ) ;
-   length = item->getWordLength( index ) ;
+   length = char_index-start+1;//item->getWordLength( index ) ;
    prev_char_index = char_index-1;
    const CTag &tag_0 = item->getTag(index);
 
@@ -375,10 +373,8 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
 //   nonlinearfeat.add(m_weights->getBitArray(last_char_2)); // last char
    bitAddPOS(tag_0, nonlinearfeat);
    bitAddPOS(tag_1, nonlinearfeat);
-   bitAddPOS(tag_2, nonlinearfeat);
-   bitAddLen(length, nonlinearfeat);
+   bitAddLen(length-1, nonlinearfeat);
    bitAddLen(length_1, nonlinearfeat);
-   bitAddLen(length_2, nonlinearfeat);
 
    return nReturn;
 }
@@ -389,7 +385,8 @@ SCORE_TYPE CTagger::getOrUpdateAppendScore( const CStringVector *sentence, const
  *
  *--------------------------------------------------------------*/
 
-SCORE_TYPE CTagger::getOrUpdateNonLinearScore( const CBitArray &nonlinearfeat, SCORE_TYPE amount, unsigned long round ) {
+SCORE_TYPE CTagger::getOrUpdateNonLinearScore( const CBitArray &nonlinearfeat, const int &action, SCORE_TYPE amount, unsigned long round ) {
+   if (!m_weights->m_bKnowledge) return 0;
    static SCORE_TYPE nReturn ; 
    static int i, n;
    static CBitArray features(128);
@@ -401,7 +398,7 @@ SCORE_TYPE CTagger::getOrUpdateNonLinearScore( const CBitArray &nonlinearfeat, S
    for (i=0; i<features.size(); ++i) {
       if (features.isset(i)) n += (1<<i);
    }
-   nReturn+=m_weights->m_mapNonLinear.getOrUpdateScore( std::make_pair(0, n), m_nScoreIndex, amount, round );
+   nReturn+=m_weights->m_mapNonLinear.getOrUpdateScore( std::make_pair(action, n), m_nScoreIndex, amount, round );
    return nReturn;
 }
 
@@ -604,10 +601,10 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
                tempState.copy(pGenerator);
                tempState.replaceIndex(index);
                tempState.score += getOrUpdateAppendScore(sentence, &tempState, tempState.size()-1, index, nonlinearfeat);
-               tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+               tempState.score += getOrUpdateNonLinearScore(nonlinearfeat, CTag::NONE);
                if (index+1==length) {
                   tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
-                  tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+                  tempState.score += getOrUpdateNonLinearScore(nonlinearfeat, CTag::SENTENCE_BEGIN);
                }
                m_Agenda.pushCandidate(&tempState);
             } // if
@@ -635,10 +632,10 @@ void CTagger::work( const CStringVector * sentence , CTwoStringVector * vReturn 
                tempState.copy(pGenerator);
                tempState.append(index, tag);
                tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size()-1, nonlinearfeat);
-               tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+               tempState.score += getOrUpdateNonLinearScore(nonlinearfeat, tag);
                if (index+1==length) {
                   tempState.score += getOrUpdateSeparateScore(sentence, &tempState, tempState.size(), nonlinearfeat);
-                  tempState.score += getOrUpdateNonLinearScore(nonlinearfeat);
+                  tempState.score += getOrUpdateNonLinearScore(nonlinearfeat, CTag::SENTENCE_BEGIN);
                }
 
                if (nBest==1) {

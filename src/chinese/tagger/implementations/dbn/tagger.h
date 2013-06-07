@@ -147,6 +147,7 @@ public:
       if (!ids) THROW("Knowledge file " << sDBNPath << " is not accessible.");
       ids >> (*m_weights->m_dbn); 
       ids.close();
+      m_weights->m_bKnowledge = true;
 
       std::cout << "done." << std::endl;
    }
@@ -166,17 +167,25 @@ public:
    inline void updateScoreForState(const CStringVector *sentence, const tagger::CSubStateItem *item, const tagger::SCORE_TYPE &amount) {
       static unsigned tmp_i, tmp_j;
       static CBitArray v(NON_LINEAR_FEAT_SIZE);
+      bool done;
+      done = false;
       for (tmp_i=0; tmp_i<item->size(); ++tmp_i) {
          getOrUpdateSeparateScore(sentence, item, tmp_i, v, amount, m_nTrainingRound);
-         getOrUpdateNonLinearScore(v, amount, m_nTrainingRound);
-         for (tmp_j=item->getWordStart(tmp_i)+1; tmp_j<item->getWordEnd(tmp_i)+1; ++tmp_j)
+         getOrUpdateNonLinearScore(v, item->getTag(tmp_i).code(), amount, m_nTrainingRound);
+         for (tmp_j=item->getWordStart(tmp_i)+1; tmp_j<item->getWordEnd(tmp_i)+1; ++tmp_j) {
             getOrUpdateAppendScore(sentence, item, tmp_i, tmp_j, v, amount, m_nTrainingRound);
-            getOrUpdateNonLinearScore(v, amount, m_nTrainingRound);
+            getOrUpdateNonLinearScore(v, CTag::NONE, amount, m_nTrainingRound);
+            if (tmp_j == sentence->size()-1) done = true;
+         }
+      }
+      if (done) {
+         getOrUpdateSeparateScore(sentence, item, item->size(), v, amount, m_nTrainingRound);
+         getOrUpdateNonLinearScore(v, CTag::SENTENCE_BEGIN, amount, m_nTrainingRound);
       }
    }
    tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
    tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
-   tagger::SCORE_TYPE getOrUpdateNonLinearScore(const CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
+   tagger::SCORE_TYPE getOrUpdateNonLinearScore(const CBitArray &nonlinearfeat, const int &action, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
 protected:
 
