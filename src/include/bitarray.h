@@ -13,6 +13,7 @@
 #define _BITARRAY_H
 
 #include "assert.h"
+#include <cstring>
 
 /*===============================================================
  *

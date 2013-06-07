@@ -54,6 +54,8 @@ public:
    CBitArray m_bitunknown;
    CWord m_emptyWord;
    DBN *m_dbn;
+   bool m_bKnowledge;
+   bool m_bFWOrCD;
 
 public:
 
@@ -152,6 +154,8 @@ public:
             m_bitunknown(BIT_CHAR_COUNT) , 
             m_emptyWord("") ,
             m_dbn(0), // DBN
+            m_bKnowledge(false),
+            m_bFWOrCD(bFWorCD),
 
             m_mapCharUnigram("CharacterUnigram", 65537) ,
             m_mapCharBigram("CharacterBigram", 65537) ,
