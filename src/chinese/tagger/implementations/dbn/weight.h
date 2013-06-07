@@ -23,7 +23,7 @@ typedef CScoreMap< CWord, SCORE_TYPE > CWordMap;
 typedef CScoreMap< CTwoWords, SCORE_TYPE > CTwoWordsMap;
 typedef CScoreMap< std::pair<CWord, int>, SCORE_TYPE > CWordIntMap;
 typedef CScoreMap< std::pair<int, int>, SCORE_TYPE > CIntIntMap;
-typedef CScoreMap< CBitArray, SCORE_TYPE > CBitArrayMap;
+typedef CScoreMap< CCopyBitArray, SCORE_TYPE > CBitArrayMap;
 typedef CScoreMap< std::pair<CWord, CTag>, SCORE_TYPE > CWordTagMap;
 typedef CScoreMap< CTwoTaggedWords, SCORE_TYPE > CTwoTaggedWordsMap;
 typedef CScoreMap< std::pair<unsigned long long, CTag>, SCORE_TYPE > CIntTagMap;
@@ -69,7 +69,6 @@ public:
 
    // feature template about on-linear feature instances
    CIntIntMap m_mapNonLinear;
-   CBitArrayMap m_mapNonLinearVector;
 
    // feature templates about characters
    CWordIntMap m_mapCharUnigram;
@@ -214,8 +213,7 @@ public:
             m_mapTag0Tag1Size1("Tag0Tag1Size1", 65537),
             m_mapTag1Tag2Size1("Tag1Tag2Size1", 65537),
             m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", 65537),
-            m_mapNonLinear("NoneLinear", 65537),
-            m_mapNonLinearVector("NoneLinearVector", 65537)
+            m_mapNonLinear("NoneLinear", 65537)
    { 
       for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
       m_nMaxWordFrequency=0;

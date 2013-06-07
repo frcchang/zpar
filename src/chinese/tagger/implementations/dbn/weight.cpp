@@ -16,7 +16,6 @@ using namespace chinese::tagger;
 
 #define iterate_templates(left,right) \
    left(m_mapNonLinear)right \
-   left(m_mapNonLinearVector)right \
    left(m_mapCharUnigram)right \
    left(m_mapCharBigram)right \
    left(m_mapCharTrigram)right \

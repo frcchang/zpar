@@ -494,9 +494,8 @@ void RBM::finalize()
 void DBN::getsamples(const int &layer,CBitArray &v)
 {
    v.clear();
-   v.setsize(rbm_layers[layer].gethsize());
-   for(int i=0;i<rbm_layers[layer].gethsize();i++) {
-      std::cout << rbm_layers[layer].v_samples[i][0] << std::endl;
+   v.setsize(rbm_layers[layer].getvsize());
+   for(int i=0;i<rbm_layers[layer].getvsize();i++) {
       if (rbm_layers[layer].v_samples[i][0]>0.5)	 
          v.set(i);	
    }

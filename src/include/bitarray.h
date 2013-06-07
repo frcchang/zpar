@@ -172,6 +172,9 @@ class CBitArray {
          if (m_slots != a.m_slots) return false;
          return std::memcmp(m_array, a.m_array, m_slots);
       }
+      bool operator != (const CBitArray &a) const {
+         return !((*this) == a);
+      }
       operator std::string () const {
          std::string retval = "";
          for (unsigned long int i=0; i<m_size; ++i)
@@ -202,5 +205,37 @@ std::ostream & operator << (std::ostream &os, const CBitArray &ba) {
    os << static_cast<std::string>(ba);
    return os;
 }
+
+
+/*===============================================================
+ *
+ * CCopyBitArray - the bit array class which by default copies 
+ *
+ *==============================================================*/
+ 
+class CCopyBitArray : public CBitArray {
+   public:
+      CCopyBitArray() : CBitArray() {
+      }
+      CCopyBitArray(const CBitArray &a) : CBitArray() {
+         copy(a);
+      }
+      CCopyBitArray(const CCopyBitArray &a) : CBitArray() {
+         copy(a);
+      }
+   public:
+      CCopyBitArray &operator = (const CBitArray &a) {
+         copy(a);
+      }
+      CCopyBitArray &operator = (const CCopyBitArray &a) {
+         copy(a);
+      }
+      bool operator == (const CBitArray &a) const {
+         return static_cast<CBitArray>(*this) == a;
+      }
+      bool operator != (const CBitArray &a) const {
+         return !((*this) == a);
+      }
+};
 
 #endif
