@@ -396,7 +396,10 @@ SCORE_TYPE CTagger::getOrUpdateNonLinearScore( const CBitArray &nonlinearfeat, c
 //   std::cout << nonlinearfeat << ' ' <<features << std::endl;
    n = 0;
    for (i=0; i<features.size(); ++i) {
-      if (features.isset(i)) n += (1<<i);
+      if (features.isset(i)) {
+         n += (1<<i);
+         nReturn+=m_weights->m_mapNonLinear.getOrUpdateScore( std::make_pair(action, (i<<features.size())), m_nScoreIndex, amount, round );
+      }
    }
    nReturn+=m_weights->m_mapNonLinear.getOrUpdateScore( std::make_pair(action, n), m_nScoreIndex, amount, round );
    return nReturn;
