@@ -27,6 +27,11 @@ class CScoreMap : public CHashMap< K , CScore<SCORE_TYPE> > {
 protected:
    const CScore<SCORE_TYPE> m_zero ;
 
+#ifdef NO_NEG_FEATURE
+protected:
+   const CScoreMap *m_positive;
+#endif
+
 public:
    const std::string name ;
    bool initialized ;
@@ -34,7 +39,11 @@ public:
 
 public:
 //   CScoreMap(std::string input_name) : name(input_name) , m_zero() {}
-   CScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) , m_zero() , name(input_name) , initialized(bInitMap) , count(0) { }
+   CScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) , m_zero() , name(input_name) , initialized(bInitMap) , count(0) 
+#ifdef NO_NEG_FEATURE
+, m_positive(this)
+#endif
+{ }
 
 public:
    virtual inline void init() {
@@ -42,15 +51,29 @@ public:
       CHashMap<K, CScore<SCORE_TYPE> >::init();
    }
 
+#ifdef NO_NEG_FEATURE
+   virtual inline void setPositiveFeature(const CScoreMap &positive) { m_positive = &positive; }
+   virtual inline void addPositiveFeature(const K &key) { (*this)[key]; }
+#endif
+
    virtual inline SCORE_TYPE getScore( const K &key , const int &which ) {
       return this->find( key , m_zero ).score( which );
    }
 
    virtual inline void updateScore( const K &key , const SCORE_TYPE &amount , const int &round ) {
+#ifdef NO_NEG_FEATURE
+      if (m_positive->element(key)) 
+#endif // update can only happen with defined features
       (*this)[ key ].updateCurrent( amount , round );
    }
 
    virtual inline SCORE_TYPE getOrUpdateScore( const K &key , const int &which, const SCORE_TYPE &amount=0 , const int &round=0 ) {
+#ifdef NO_NEG_FEATURE
+      if ( round == -1 ) {
+         addPositiveFeature( key );
+         return;
+      }
+#endif
       if ( amount == 0 ) {
          return getScore( key , which ) ;
       }
