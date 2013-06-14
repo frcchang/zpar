@@ -178,10 +178,10 @@ public:
             if (tmp_j == sentence->size()-1) done = true;
          }
       }
-      if (done) {
-         getOrUpdateSeparateScore(sentence, item, item->size(), v, amount, m_nTrainingRound);
-         getOrUpdateNonLinearScore(v, CTag::SENTENCE_BEGIN, amount, m_nTrainingRound);
-      }
+//      if (done) {
+//         getOrUpdateSeparateScore(sentence, item, item->size(), v, amount, m_nTrainingRound);
+//         getOrUpdateNonLinearScore(v, CTag::SENTENCE_BEGIN, amount, m_nTrainingRound);
+//      }
    }
    tagger::SCORE_TYPE getOrUpdateSeparateScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
    tagger::SCORE_TYPE getOrUpdateAppendScore(const CStringVector *tagged, const tagger::CSubStateItem *item, unsigned long index, unsigned long char_index, CBitArray &nonlinearfeat, tagger::SCORE_TYPE amount=0, unsigned long round=0);
