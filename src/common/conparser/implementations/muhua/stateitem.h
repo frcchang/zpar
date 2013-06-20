@@ -543,7 +543,9 @@ public:
          current = current->statePtr;
       }
       TRACE("State item score == " << score);
+#ifdef SCALE
       TRACE("State item size == " << size);
+#endif
 #ifdef TRAIN_LOSS
       TRACE("cor = " << correct_lb << ", plo = " << plost_lb << ", rlo = " << rlost_lb << ", Loss = " << FLoss());
 #endif

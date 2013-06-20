@@ -71,7 +71,7 @@ public:
 #ifdef NO_NEG_FEATURE
       if ( round == -1 ) {
          addPositiveFeature( key );
-         return;
+         return 0;
       }
 #endif
       if ( amount == 0 ) {
@@ -200,8 +200,10 @@ std::ostream & operator << (std::ostream &os, CScoreMap<K, SCORE_TYPE> &score_ma
 
    typename CHashMap< K, CScore<SCORE_TYPE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
+#ifndef NO_NEG_FEATURE
       if ( it.second().score(CScore<SCORE_TYPE>::eNonAverage)!=0 ||
            it.second().score(CScore<SCORE_TYPE>::eAverage)!=0 )
+#endif
          os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;
    }

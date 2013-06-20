@@ -42,7 +42,7 @@ protected:
    unsigned m_nNumberOfCurrentTrainingExample;
    bool m_bTrain;
    const unsigned long m_nMaxSentSize;
-   unsigned m_nTrainingRound;
+   int m_nTrainingRound;
 
 public:
    CTaggerBase(const std::string &sFeatureDBPath, bool bTrain, unsigned long nMaxSentenceSize, bool bSegmentationRules) : m_bTrain(bTrain), m_nMaxSentSize(nMaxSentenceSize), m_nNumberOfCurrentTrainingExample(0) , m_nTrainingRound(0) { 

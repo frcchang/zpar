@@ -6,3 +6,5 @@
 #define BIT_CHAR_COUNT 3000
 #define BIT_POS_COUNT CTag::COUNT
 #define BIT_LEN_COUNT 3
+
+#define NO_NEG_FEATURE

@@ -189,7 +189,7 @@ void RBM::train(const std::string &path)
 {   int K=1,iterations=1000;
     std::vector<CBitArray>training_data;
     std::ifstream is(path.c_str());
-    CBitArray v;
+    CBitArray v(100);
     std::string line;
     while(getline(is,line)){//std::cout<<line<<std::endl;
     std::istringstream iss(line);
@@ -515,7 +515,7 @@ void DBN::train(const std::string &path)
     int pretraining_iterations=1000,N;
     std::vector<CBitArray> training_data;
     std::ifstream is(path.c_str());
-    CBitArray v;
+    CBitArray v(100);
     std::string line;
     while(getline(is,line)){
     std::istringstream iss(line);

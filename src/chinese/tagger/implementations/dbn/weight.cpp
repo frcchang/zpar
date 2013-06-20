@@ -160,6 +160,7 @@ void CWeight::saveScores() {
    if (m_dump) {
       m_dump->close();
       delete m_dump;
+      m_bKnowledge = false;
 //      return;
    }
    std::cout << "Saving scores ..."; std::cout.flush();
