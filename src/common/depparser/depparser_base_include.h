@@ -15,6 +15,7 @@
    typedef CDependencyTree CDependencyParse;
 #endif
 #include "dep.h"
+#include "depparser_impl_inc.h"
 namespace TARGET_LANGUAGE { 
 namespace depparser { 
 #include "depparser_macros.h" 
@@ -22,7 +23,6 @@ namespace depparser {
 }
 
 #include "linguistics/conll.h"
-#include "depparser_impl_inc.h"
 #include "linguistics/tagset.h"
 #include "options.h"
 
