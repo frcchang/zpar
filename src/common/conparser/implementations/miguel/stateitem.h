@@ -3,6 +3,7 @@
 #define _COMMON_CON_PARSER_STATEITEM
 
 #include "action.h"
+#include "linkclass.h"
 
 /*===============================================================
  *
@@ -24,7 +25,9 @@ public:
    // fields for tokens and constituents
    int lexical_head;
    int lexical_start;
-   int lexical_end;
+   int lexical_end; 
+ 
+   CLink* stanfordLinks; //miguel
 
 public:
    inline bool head_left() const { return type==HEAD_LEFT; }
@@ -47,6 +50,8 @@ public:
       this->lexical_head = 0; 
       this->lexical_start = 0; 
       this->lexical_end = 0; 
+
+      this-> stanfordLinks = 0;
    }
    void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) { 
       this->id = id;
@@ -112,9 +117,9 @@ class CContext;
 class CStateItem {
 public:
    SCORE_TYPE score;
-   CStateNode node;
-   const CStateItem *statePtr;
-   const CStateItem *stackPtr;
+   CStateNode node; //head of the stack (top)
+   const CStateItem *statePtr; //points to the state item before the action is applied, (chain of actions)
+   const CStateItem *stackPtr; //tail of the stack
    int current_word;
    CAction action;
 #ifdef TRAIN_LOSS
@@ -229,6 +234,7 @@ protected:
 #endif
       }
       else {
+	 //SOMEWHERE in this else block we MAKE THE stanford LINKS (Miguel)
          static unsigned long fullconst; 
          assert(stacksize()>=2);
          r = &node;
@@ -239,6 +245,8 @@ protected:
          fullconst = CConstituent::encodeTmp(constituent, temporary);
 #endif
          retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, fullconst, l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
+	//l and r are the 2 subtrees.
+
          retval->stackPtr = stackPtr->stackPtr;
 #ifdef TRAIN_LOSS
          retval->bTrain = this->bTrain;
@@ -246,6 +254,8 @@ protected:
 #endif
       }
       retval->current_word = current_word;
+
+
       assert(!IsTerminated());
    }
    void terminate(CStateItem *retval) const {
@@ -529,6 +539,70 @@ public:
       out.root = nodes[0]->id;
    }
 
+  //MIGUEL: new method for generate the STANFORD links as well.
+/*   void GenerateTreeAndLinks(const CTwoStringVector &tagged, CSentenceParsed &out, Std::String &stanfordOut) const {
+      // parsing done?
+      assert(IsTerminated());
+//      assert(tagged.size()==sent->size());
+      out.clear();
+#ifdef FRAGMENTED_TREE
+      if (stacksize()>1) {
+         static const CStateItem *item;
+         item = statePtr;
+         assert(item==stackPtr);
+         static CStateItem *tmp;
+         tmp = new CStateItem[stacksize()];
+         static CStateItem *current;
+         current = tmp;
+         static CAction action;
+         action.encodeReduce(CConstituent::NONE, false, false, false);
+         while (item->stacksize()>1) {
+            // form NONE nodes
+            item->Move(current, action); 
+            item = current;
+            ++ current;
+         }
+         action.encodeReduceRoot();
+         item->Move(current, action);
+         item = current;
+         item->GenerateTreeAndLinks(tagged, out);
+         delete [] tmp;
+         return;
+      }
+#else
+      if (stacksize()>1) { WARNING("Parser failed.");return; }
+#endif
+      // generate nodes for out
+      static int i,j;
+      // first words
+      for (i=0; i<tagged.size(); ++i) 
+         out.newWord(tagged[i].first, tagged[i].second);
+      // second constituents
+      static const CStateNode* nodes[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
+      static int count;
+      count = 0;
+      const static CStateItem *current;
+      current = this;
+      while (current) {
+         if (!current->IsTerminated() && current->node.valid()) {
+            nodes[count] = &current->node;
+            ++count; 
+         }
+         current = current->statePtr; //
+	//stackptr: the tail of the stack.
+      }
+
+      for (i=count-1; i>=0; --i) { //here we get the sequence of stateitems. Left order traver
+         j = out.newNode();
+         // copy node
+         assert(j==nodes[i]->id);
+         nodes[i]->toCCFGTreeNode(out.nodes[j]);
+	 //here we should read the stanford links associated to each node, since it will have been created in the reduce process.
+      }
+      out.root = nodes[0]->id;
+   }*/
+
+
    //===============================================================================
 
    void trace(const CTwoStringVector *s=0) const {
@@ -542,8 +616,10 @@ public:
          ++count ; //updating
          current = current->statePtr;
       }
+      #ifdef SCALE
       TRACE("State item score == " << score);
       TRACE("State item size == " << size);
+      #endif
 #ifdef TRAIN_LOSS
       TRACE("cor = " << correct_lb << ", plo = " << plost_lb << ", rlo = " << rlost_lb << ", Loss = " << FLoss());
 #endif
