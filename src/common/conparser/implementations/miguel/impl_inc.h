@@ -40,6 +40,10 @@ typedef TARGET_LANGUAGE::CCFGTree CSentenceParsed;
 #include "labeledbracket.h"
 #include "stack.h"
 
+#define DEPENDENCY_LINK_NO_HEAD -1
+#define STANFORD_DEPENDENCIES
+#include "dep.h"
+
 namespace TARGET_LANGUAGE { 
 
 #include "linguistics/cfgset.h"

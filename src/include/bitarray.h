@@ -12,6 +12,7 @@
 #ifndef _BITARRAY_H
 #define _BITARRAY_H
 
+#include <algorithm>
 #include "assert.h"
 #include <cstring>
 

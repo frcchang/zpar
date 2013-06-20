@@ -21,6 +21,8 @@
 // scale scores? this must be used with TRAIN_MARGIN or undefined
 //#define SCALE
 
+#define STANFORD_DEPENDENCIES
+
 // The size of agenda
 static const unsigned long AGENDA_SIZE = 16;
 static const unsigned long MIRA_SIZE = AGENDA_SIZE+1;
