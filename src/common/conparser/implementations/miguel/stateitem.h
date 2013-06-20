@@ -234,7 +234,12 @@ protected:
 #endif
       }
       else {
+
 	 //SOMEWHERE in this else block we MAKE THE stanford LINKS (Miguel)
+	 //By using: R and L. Which are the right child and left child. 
+	 //R and L are state nodes. So, the idea is to make links between them. And store them in CLink* stanfordLinks; //miguel
+	 // Take into account that we process it in Inorder (or left order)
+
          static unsigned long fullconst; 
          assert(stacksize()>=2);
          r = &node;
@@ -539,8 +544,9 @@ public:
       out.root = nodes[0]->id;
    }
 
-  //MIGUEL: new method for generate the STANFORD links as well.
-/*   void GenerateTreeAndLinks(const CTwoStringVector &tagged, CSentenceParsed &out, Std::String &stanfordOut) const {
+  //(Miguel) New method for algo generate the STANFORD links
+  //(Miguel) It is just an output process, the hard core thing is in the reduce method.
+   void GenerateTreeAndLinks(const CTwoStringVector &tagged, CSentenceParsed &out, std::string &stanfordOut) const {
       // parsing done?
       assert(IsTerminated());
 //      assert(tagged.size()==sent->size());
@@ -597,10 +603,11 @@ public:
          // copy node
          assert(j==nodes[i]->id);
          nodes[i]->toCCFGTreeNode(out.nodes[j]);
-	 //here we should read the stanford links associated to each node, since it will have been created in the reduce process.
+	 //here we should read the stanford links associated to each node, since it will have been created in the reduce process. (Miguel)
+         //It is just an output process, the hard core thing is in the reduce method (Miguel)
       }
       out.root = nodes[0]->id;
-   }*/
+   }
 
 
    //===============================================================================
