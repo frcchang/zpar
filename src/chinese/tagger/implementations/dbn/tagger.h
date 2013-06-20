@@ -101,17 +101,23 @@ public:
 
    virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
-   void dumpfeatures(const CStringVector *sentence, const CTwoStringVector *correct) {
+   void dumpfeatures(const CStringVector *sentence_raw, const CTwoStringVector *correct) {
+#ifdef NO_NEG_FEATURE
+      m_nTrainingRound = -1;
+#else
       ++m_nTrainingRound;
+#endif
+      static CStringVector sentence;
       static unsigned tmp_i, tmp_j;
       static CBitArray v(NON_LINEAR_FEAT_SIZE);
       static tagger::CSubStateItem item;
-      buildStateItem(sentence, correct, &item);
+      m_weights->m_rules.record(correct, &sentence);
+      buildStateItem(&sentence, correct, &item);
       for (tmp_i=0; tmp_i<item.size(); ++tmp_i) {
-         getOrUpdateSeparateScore(sentence, &item, tmp_i, v, 1, m_nTrainingRound);
+         getOrUpdateSeparateScore(&sentence, &item, tmp_i, v, 1, m_nTrainingRound);
          m_weights->dumpFeature(static_cast<std::string>(v));
          for (tmp_j=item.getWordStart(tmp_i)+1; tmp_j<item.getWordEnd(tmp_i)+1; ++tmp_j) {
-            getOrUpdateAppendScore(sentence, &item, tmp_i, tmp_j, v, 1, m_nTrainingRound);
+            getOrUpdateAppendScore(&sentence, &item, tmp_i, tmp_j, v, 1, m_nTrainingRound);
             m_weights->dumpFeature(static_cast<std::string>(v));
          }
       }
@@ -130,11 +136,11 @@ public:
          // when decoding
          THROW("CTagger::CTagger received sKnowledgePath file in decoding mode, which is unexpected.");
       }
-      else {
-         if (FileExists(m_weights->m_sFeatureDB)) {
-            THROW("CTagger::CTagger received sKnowledgePath file, but model exists (with knowledge)");
-         }
-      }
+//      else {
+//         if (FileExists(m_weights->m_sFeatureDB)) {
+//            THROW("CTagger::CTagger received sKnowledgePath file, but model exists (with knowledge)");
+//         }
+//      }
 
       std::string sCharacterPath = sKnowledgePath + ".chr";
       std::ifstream ifs(sCharacterPath.c_str());
