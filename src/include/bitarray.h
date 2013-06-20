@@ -186,7 +186,7 @@ class CBitArray {
       }
       unsigned long hash() const{ 
          unsigned long retval = 0;
-         std::memcpy(&retval, m_array, std::min(static_cast<unsigned long>(m_slots), sizeof(unsigned long))); // use the first few bits as the hash value
+         std::memcpy(&retval, m_array, std::min(static_cast<unsigned long>(m_slots), static_case<unsigned long>(sizeof(unsigned long)))); // use the first few bits as the hash value
          return retval;
       }
 };
