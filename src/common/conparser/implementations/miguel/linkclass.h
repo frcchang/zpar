@@ -13,14 +13,15 @@
 
 class CLink {
 public:
-   const CDependencyLabel* label; //src/english/dependency/label/stanford.h
+   const CDependencyLabel *label; //src/english/dependency/label/stanford.h
    int dependent;
    //int head; so far, so good.
-   const CLink* next;   
+   const CLink *next;   
 
 public:
    CLink(const CDependencyLabel *label, const int dependent, const CLink* next): label(label), dependent(dependent), next(next) {}   
    CLink(): label(0), dependent(-1), next(0) {}	
+
    virtual ~CLink() {}
 
 public:
@@ -41,9 +42,9 @@ public:
              next == nd.next;
    }
    void operator = (const CLink &nd) {
-	dependent = nd.dependent;
-        label = nd.label; 
-        next = nd.next;   
+	   dependent = nd.dependent;
+       label = nd.label; 
+       next = nd.next;   
    }
 
 /*public:
