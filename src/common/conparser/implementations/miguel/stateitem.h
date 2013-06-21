@@ -27,7 +27,8 @@ public:
    int lexical_start;
    int lexical_end; 
  
-   CLink* stanfordLinks; //miguel
+   const CLink* stanfordTreeCollapsed; //miguel
+   const CLink* stanfordTree; //miguel
 
 public:
    inline bool head_left() const { return type==HEAD_LEFT; }
@@ -35,10 +36,14 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end) {}
-   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0) {}
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end) {
+	   this->stanfordTree = 0; //miguel
+	   this->stanfordTreeCollapsed = 0; //miguel. I think this is better since they are generated on the fly and they will be never like this.
+   }
+   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), stanfordTreeCollapsed(0), stanfordTree(0) {}
    virtual ~CStateNode() {}
 public:
+
    bool valid() const { return id!=-1; }
    void clear() { 
       this->id = -1;
@@ -51,7 +56,8 @@ public:
       this->lexical_start = 0; 
       this->lexical_end = 0; 
 
-      this-> stanfordLinks = 0;
+      this->stanfordTree = 0; //miguel
+      this->stanfordTreeCollapsed = 0; //miguel
    }
    void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) { 
       this->id = id;
@@ -62,8 +68,11 @@ public:
       this->right_child = right_child; 
       this->lexical_head = lexical_head; 
       this->lexical_start = lexical_start; 
-      this->lexical_end = lexical_end; 
+      this->lexical_end = lexical_end;
+      
+       //the stanford links are missing.  Let's see whether there are necessary or not. (Miguel)
    }//{}
+
    bool operator == (const CStateNode &nd) const {
       return id == nd.id &&
              type == nd.type && 
@@ -74,6 +83,8 @@ public:
              lexical_head == nd.lexical_head;
              lexical_start == nd.lexical_start;
              lexical_end == nd.lexical_end;
+             
+             //the stanford links are missing. Let's see whether there are necessary or not. (Miguel)
    }
    void operator = (const CStateNode &nd) {
       id = nd.id;
@@ -85,6 +96,8 @@ public:
       lexical_head = nd.lexical_head;
       lexical_start = nd.lexical_start;
       lexical_end = nd.lexical_end;
+      
+      //the stanford links are missing. Let's see whether there are necessary or not. (Miguel)
    }
 public:
    void toCCFGTreeNode(CCFGTreeNode &node) const {
@@ -103,6 +116,31 @@ public:
       node.right_child = right_child ? right_child->id : -1;
       node.token = lexical_head;
    }
+
+public: //Miguel. added the set method for Stanford links.
+   void setStanfordTree(CLink* stanfordTree) { 
+   	this->stanfordTree = stanfordTree;	   
+   }
+   
+   void setStanfordTreeCollapse(CLink* stanfordTreeCollapsed) { 
+      	this->stanfordTreeCollapsed = stanfordTreeCollapsed;	   
+      }
+   
+   void generateStanford(bool collapse, bool ccProcess, bool includeExtras, bool lemmatize) {
+	   
+	   //TODO MIGUEL
+	   //this method should include the stanford dependencies from the left child and the right child
+	   
+	   //1st, create grammaticalstructure.
+	   //2nd. use semantic head finder.
+	   //3rd. add transformations.
+	   //if a head is not included in the subtree just forget about it... so far, so good. Speak with yue about this.
+	   //ASK TO YUE HOW TO DEBUG THIS WITH A SMALL CORPUS.
+	   
+	   
+   }
+   
+  
 };
 
 /*===============================================================
@@ -235,11 +273,6 @@ protected:
       }
       else {
 
-	 //SOMEWHERE in this else block we MAKE THE stanford LINKS (Miguel)
-	 //By using: R and L. Which are the right child and left child. 
-	 //R and L are state nodes. So, the idea is to make links between them. And store them in CLink* stanfordLinks; //miguel
-	 // Take into account that we process it in Inorder (or left order)
-
          static unsigned long fullconst; 
          assert(stacksize()>=2);
          r = &node;
@@ -250,19 +283,33 @@ protected:
          fullconst = CConstituent::encodeTmp(constituent, temporary);
 #endif
          retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, fullconst, l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
-	//l and r are the 2 subtrees.
+        
 
          retval->stackPtr = stackPtr->stackPtr;
 #ifdef TRAIN_LOSS
          retval->bTrain = this->bTrain;
          computeReduceBinaryLB(&(retval->gold_lb), retval->correct_lb, retval->plost_lb, retval->rlost_lb, fullconst);
 #endif
+	//SOMEWHERE in this else block we MAKE THE stanford LINKS (Miguel)
+	 //By using: R and L. Which are the right child and left child. 
+	 //R and L are state nodes. So, the idea is to make links between them. And store them in CLink* stanfordLinks; //miguel
+	 // Take into account that we process it in Inorder (or left order)
+	
+         //retval->node.generateStanford(); //here we call the method that generates the stanford dependencies which is in CStateNode
+         retval->node.generateStanford(false,false,false,false);
+         retval->node.generateStanford(true,false,false,false);
+    
+
       }
       retval->current_word = current_word;
 
-
       assert(!IsTerminated());
    }
+
+ 
+
+
+
    void terminate(CStateItem *retval) const {
       //TRACE("terminate");
 //      assert(IsComplete());
