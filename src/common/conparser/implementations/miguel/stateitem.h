@@ -144,6 +144,75 @@ public: //Miguel. added the set method for Stanford links.
 };
 
 /*===============================================================
+ * CHeadFinder 
+ * Implements a 'semantic head' variant of the the HeadFinder found
+ * in Michael Collins' 1999 thesis.
+ *  See SemanticHeadFinder in Stanford parser.
+ ===============================================================*/
+ 
+ class CHeadFinder {
+	 
+	 /*
+	  * 
+	  *  private static final String[] auxiliaries = {"will", "wo", "shall", "sha", "may", "might", "should", "would", "can", "could", "ca", "must", "has", "have", "had", "having", "get", "gets", "getting", "got", "gotten", "do", "does", "did", "to", "'ve", "ve", "'d", "d", "'ll", "ll", "na" };
+  private static final String[] beGetVerbs = {"be", "being", "been", "am", "are", "r", "is", "ai", "was", "were", "'m", "'re", "'s", "s", "get", "getting", "gets", "got"};
+  private static final String[] copulaVerbs = {"be", "being", "been", "am", "are", "r", "is", "ai", "was", "were", "'m", "'re", "'s", "s", "seem", "seems", "seemed", "appear", "appears", "appeared", "stay", "stays", "stayed", "remain", "remains", "remained", "resemble", "resembles", "resembled", "become", "becomes", "became"};
+
+  private static final String[] verbTags = {"TO", "MD", "VB", "VBD", "VBP", "VBZ", "VBG", "VBN", "AUX", "AUXG"};
+	  */
+ public:
+	 
+	 //std::m
+	 //SemanticHeadFinder
+	 std::string verbTags[10];
+	 
+	 std::string auxiliaries[32];
+	 std::string copulateVerbs[32];
+	 //std::string beGetVerbs[];
+	 
+ 	public:
+ 		int id;
+ 		
+ 		CHeadFinder() : verbTags({"TO", "MD", "VB", "VBD", "VBP", "VBZ", "VBG", "VBN", "AUX", "AUXG"}), 
+ 					auxiliaries({"will", "wo", "shall", "sha", "may", "might", "should", "would", "can", "could", "ca", "must", "has", "have", "had", "having", "get", "gets", "getting", "got", "gotten", "do", "does", "did", "to", "'ve", "ve", "'d", "d", "'ll", "ll", "na" }),
+ 					copulateVerbs({"be", "being", "been", "am", "are", "r", "is", "ai", "was", "were", "'m", "'re", "'s", "s", "seem", "seems", "seemed", "appear", "appears", "appeared", "stay", "stays", "stayed", "remain", "remains", "remained", "resemble", "resembles", "resembled", "become", "becomes", "became"})
+ 		{
+ 			
+ 		}
+ 		
+ 	public:
+ 		void initialize(){
+ 			//verbtags
+ 			
+ 			//verbTags={"TO", "MD", "VB", "VBD", "VBP", "VBZ", "VBG", "VBN", "AUX", "AUXG"};
+ 			
+ 			/*auxiliaries[0]="will"; auxiliaries[1]="wo"; auxiliaries[2]="shall"; auxiliaries[3]="sha"; 
+ 			auxiliaries[0]="may"; auxiliaries[0]="might"; auxiliaries[0]="should"; auxiliaries[0]="would"; 
+ 			auxiliaries[0]="can"; auxiliaries[0]="could"; auxiliaries[0]="ca"; auxiliaries[0]="must"; 
+ 			auxiliaries[0]="has"; auxiliaries[0]="have"; auxiliaries[0]="had"; auxiliaries[0]="having"; 
+ 			auxiliaries[0]="get"; auxiliaries[0]="gets"; auxiliaries[0]="getting"; auxiliaries[0]="got"; 
+ 			auxiliaries[0]="gotten"; auxiliaries[0]="do"; auxiliaries[0]="does"; auxiliaries[0]="did"; 
+ 			auxiliaries[0]="to"; auxiliaries[0]="'ve"; auxiliaries[0]="ve"; auxiliaries[0]="'d"; 
+ 			auxiliaries[0]="d"; auxiliaries[0]="'ll"; auxiliaries[0]="ll"; auxiliaries[0]="na"*/
+ 			
+ 			/*verbTags[0]="TO";verbTags[1]="MD";verbTags[2]="VB";verbTags[3]="VBD";verbTags[4]="VBP";verbTags[5]="VBZ";
+ 			verbTags[6]="VBG";verbTags[7]="VBN";verbTags[8]="AUX";verbTags[9]="AUXG";*/
+ 			
+ 			
+ 			
+ 		}
+    
+
+ };
+ 
+
+
+
+
+
+
+
+/*===============================================================
  *
  * CStateItem - the search state item, representing a partial
  *              candidate with shift reduce. 
@@ -296,8 +365,8 @@ protected:
 	 // Take into account that we process it in Inorder (or left order)
 	
          //retval->node.generateStanford(); //here we call the method that generates the stanford dependencies which is in CStateNode
-         retval->node.generateStanford(false,false,false,false);
-         retval->node.generateStanford(true,false,false,false);
+         retval->node.generateStanford(false,false,false,false); //not collapsed
+         retval->node.generateStanford(true,false,false,false); //collapsed
     
 
       }
