@@ -3,7 +3,7 @@
 GENERIC_TAGGER_IMPL = collins
 
 # currently support nivre, combined implementations (other implementations are not generalized)
-GENERIC_DEPPARSER_IMPL = koldo
+GENERIC_DEPPARSER_IMPL = miguel
 GENERIC_DEPPARSER_LABELED = true
 # current naive
 GENERIC_DEPLABELER_IMPL = naive

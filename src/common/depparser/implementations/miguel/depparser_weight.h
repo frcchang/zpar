@@ -12,10 +12,18 @@
 
 #include "depparser_weight_base.h"
 
+//added stack1 and stack2 (MIguel)
+
 #define iterate_templates(left, right) \
    left(m_mapSTw)right\
    left(m_mapSTt)right\
    left(m_mapSTwt)right\
+   left(m_mapST1w)right\
+   left(m_mapST1t)right\
+   left(m_mapST1wt)right\
+   left(m_mapST2w)right\
+   left(m_mapST2t)right\
+   left(m_mapST2wt)right\
    left(m_mapN0w)right\
    left(m_mapN0t)right\
    left(m_mapN0wt)right\
@@ -152,7 +160,17 @@ public:
    CWordMap m_mapSTw;
    CTagMap m_mapSTt;
    CTaggedWordMap m_mapSTwt;
-
+   
+   //Miguel
+   CWordMap m_mapST1w;
+   CTagMap m_mapST1t;
+   CTaggedWordMap m_mapST1wt;
+   
+   CWordMap m_mapST2w;
+   CTagMap m_mapST2t;
+   CTaggedWordMap m_mapST2wt;
+   //Miguel
+   
    CWordMap m_mapN0w;
    CTagMap m_mapN0t;
    CTaggedWordMap m_mapN0wt;
@@ -262,6 +280,14 @@ public:
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
                                                m_mapSTt("StackTag", DEP_TABLE_SIZE),
                                                m_mapSTwt("StackWordTag", DEP_TABLE_SIZE),
+                                               
+                                               m_mapST1w("Stack+1Word", DEP_TABLE_SIZE),
+                                               m_mapST1t("Stack+1Tag", DEP_TABLE_SIZE),
+                                               m_mapST1wt("Stack+1WordTag", DEP_TABLE_SIZE),
+                                               
+                                               m_mapST2w("Stack+2Word", DEP_TABLE_SIZE),
+                                               m_mapST2t("Stack+2Tag", DEP_TABLE_SIZE),
+                                               m_mapST2wt("Stack+2WordTag", DEP_TABLE_SIZE),                                               
 
                                                m_mapN0w("NextWord", DEP_TABLE_SIZE),
                                                m_mapN0t("NextTag", DEP_TABLE_SIZE),
