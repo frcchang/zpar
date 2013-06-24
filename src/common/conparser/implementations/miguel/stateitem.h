@@ -182,26 +182,6 @@ public: //Miguel. added the set method for Stanford links.
  		}
  		
  	public:
- 		void initialize(){
- 			//verbtags
- 			
- 			//verbTags={"TO", "MD", "VB", "VBD", "VBP", "VBZ", "VBG", "VBN", "AUX", "AUXG"};
- 			
- 			/*auxiliaries[0]="will"; auxiliaries[1]="wo"; auxiliaries[2]="shall"; auxiliaries[3]="sha"; 
- 			auxiliaries[0]="may"; auxiliaries[0]="might"; auxiliaries[0]="should"; auxiliaries[0]="would"; 
- 			auxiliaries[0]="can"; auxiliaries[0]="could"; auxiliaries[0]="ca"; auxiliaries[0]="must"; 
- 			auxiliaries[0]="has"; auxiliaries[0]="have"; auxiliaries[0]="had"; auxiliaries[0]="having"; 
- 			auxiliaries[0]="get"; auxiliaries[0]="gets"; auxiliaries[0]="getting"; auxiliaries[0]="got"; 
- 			auxiliaries[0]="gotten"; auxiliaries[0]="do"; auxiliaries[0]="does"; auxiliaries[0]="did"; 
- 			auxiliaries[0]="to"; auxiliaries[0]="'ve"; auxiliaries[0]="ve"; auxiliaries[0]="'d"; 
- 			auxiliaries[0]="d"; auxiliaries[0]="'ll"; auxiliaries[0]="ll"; auxiliaries[0]="na"*/
- 			
- 			/*verbTags[0]="TO";verbTags[1]="MD";verbTags[2]="VB";verbTags[3]="VBD";verbTags[4]="VBP";verbTags[5]="VBZ";
- 			verbTags[6]="VBG";verbTags[7]="VBN";verbTags[8]="AUX";verbTags[9]="AUXG";*/
- 			
- 			
- 			
- 		}
     
 
  };
