@@ -157,6 +157,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple2<CWord, CTag> word_tag;
    static CTuple2<CWord, int> word_int;
    static CTuple2<CTag, int> tag_int;
+   static CTuple2<CTag, CDependencyLabel> tag_label;
    static CTuple3<CWord, CTag, CTag> word_tag_tag;
    static CTuple3<CWord, CWord, CTag> word_word_tag;
    static CTuple3<CWord, CWord, int> word_word_int;
@@ -264,6 +265,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTtN0wt.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapSTwN0w.getOrUpdateScore( retval, st_word_n0_word, action, m_nScoreIndex, amount, round ) ; 
       cast_weights->m_mapSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+      //refer_or_allocate_tuple2(tag_label, &st_tag, &sn0_label);
+      //cast_weights->m_mapSTtN0l.getOrUpdateScore( retval, tag_label, action, m_nScoreIndex, amount, round ) ; 
+
    }
 
    if (st_index != -1 && n0_index != -1) {
@@ -339,61 +343,66 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
    }
 
+   //if (false) {
    if (m_bCoNLL) {
 
       static unsigned i;
+      
+      std::cout<<"(conll)\n";
 
       //STACK[0]
       if (st_index!=-1) {
          if (!m_lCacheCoNLLLemma[st_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st_index], action, m_nScoreIndex, amount, round) ;
-         if (m_lCacheCoNLLCPOS[st_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st_index], action, m_nScoreIndex, amount, round) ;
+         //if (m_lCacheCoNLLCPOS[st_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st_index], action, m_nScoreIndex, amount, round) ;
          cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;
-         for (i=1; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
-            cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][i], action, m_nScoreIndex, amount, round) ;
-         //if (!m_lCacheCoNLLFeats[st_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index], action, m_nScoreIndex, amount, round) ;
+         //for (i=1; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
+          //  cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][i], action, m_nScoreIndex, amount, round) ;
          //is this possible?
       } // if (st_index!=-1)
       
       //STACK[1] Miguel
-      if (st1_index!=-1) {
+     /* if (st1_index!=-1) {
                if (!m_lCacheCoNLLLemma[st1_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st1_index], action, m_nScoreIndex, amount, round) ;
-               if (m_lCacheCoNLLCPOS[st1_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st1_index], action, m_nScoreIndex, amount, round) ;
-               for (i=0; i<m_lCacheCoNLLFeats[st1_index].size(); ++i)
-                  cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st1_index][i], action, m_nScoreIndex, amount, round) ;
+               //if (m_lCacheCoNLLCPOS[st1_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st1_index], action, m_nScoreIndex, amount, round) ;
+               //for (i=0; i<m_lCacheCoNLLFeats[st1_index].size(); ++i)
+               //  cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st1_index][i], action, m_nScoreIndex, amount, round) ;
                //if (m_lCacheCoNLLFeats[st1_index] != CCoNLLFEATS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st1_index], action, m_nScoreIndex, amount, round) ;
             } // if (st_index!=-1)
       
       //STACK[2] Miguel
       if (st2_index!=-1) {
                if (!m_lCacheCoNLLLemma[st2_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st2_index], action, m_nScoreIndex, amount, round) ;
-               if (m_lCacheCoNLLCPOS[st2_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st2_index], action, m_nScoreIndex, amount, round) ;
-               for (i=0; i<m_lCacheCoNLLFeats[st2_index].size(); ++i)
-                  cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st2_index][i], action, m_nScoreIndex, amount, round) ;
+               //if (m_lCacheCoNLLCPOS[st2_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st2_index], action, m_nScoreIndex, amount, round) ;
+               //for (i=0; i<m_lCacheCoNLLFeats[st2_index].size(); ++i)
+               //   cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st2_index][i], action, m_nScoreIndex, amount, round) ;
             } // if (st_index!=-1)
-
+	  */
       //INPUT[0]
       if (n0_index!=-1) {
          if (!m_lCacheCoNLLLemma[n0_index].empty()) cast_weights->m_mapN0l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n0_index], action, m_nScoreIndex, amount, round) ;
-         if (m_lCacheCoNLLCPOS[n0_index] != CCoNLLCPOS()) cast_weights->m_mapN0c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n0_index], action, m_nScoreIndex, amount, round) ;
-         for (i=0; i<m_lCacheCoNLLFeats[n0_index].size(); ++i)
+         //if (m_lCacheCoNLLCPOS[n0_index] != CCoNLLCPOS()) cast_weights->m_mapN0c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n0_index], action, m_nScoreIndex, amount, round) ;
+         for (i=1; i<m_lCacheCoNLLFeats[n0_index].size(); ++i)
             cast_weights->m_mapN0f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n0_index][i], action, m_nScoreIndex, amount, round) ;
+         //cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;
       } // if (n0_index!=-1)
 
       //INPUT[1]
       if (n1_index!=-1) {
-         if (!m_lCacheCoNLLLemma[n1_index].empty()) cast_weights->m_mapN1l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n1_index], action, m_nScoreIndex, amount, round) ;
-         if (m_lCacheCoNLLCPOS[n1_index] != CCoNLLCPOS()) cast_weights->m_mapN1c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n1_index], action, m_nScoreIndex, amount, round) ;
-         for (i=0; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
-            cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][i], action, m_nScoreIndex, amount, round) ;
+         //if (!m_lCacheCoNLLLemma[n1_index].empty()) cast_weights->m_mapN1l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n1_index], action, m_nScoreIndex, amount, round) ;
+         //if (m_lCacheCoNLLCPOS[n1_index] != CCoNLLCPOS()) cast_weights->m_mapN1c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n1_index], action, m_nScoreIndex, amount, round) ;
+         //for (i=1; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
+         //   cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][i], action, m_nScoreIndex, amount, round) ;
+         //cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;
       } // if (n1_index!=-1)
       
       //INPUT[2] Miguel
-      if (n2_index!=-1) {
+      /*if (n2_index!=-1) {
          if (!m_lCacheCoNLLLemma[n2_index].empty()) cast_weights->m_mapN1l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n2_index], action, m_nScoreIndex, amount, round) ;
          if (m_lCacheCoNLLCPOS[n2_index] != CCoNLLCPOS()) cast_weights->m_mapN1c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n2_index], action, m_nScoreIndex, amount, round) ;
          for (i=0; i<m_lCacheCoNLLFeats[n2_index].size(); ++i)
             cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n2_index][i], action, m_nScoreIndex, amount, round) ;
          } // if (n1_index!=-1)
+         */
    	}
 }
 
