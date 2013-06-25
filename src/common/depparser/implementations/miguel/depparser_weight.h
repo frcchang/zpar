@@ -68,6 +68,7 @@
    left(m_mapSTwtN0t)right\
    left(m_mapSTwN0w)right\
    left(m_mapSTtN0t)right\
+   left(m_mapSTtN1t)right\
 \
    left(m_mapN0tN1t)right\
    left(m_mapN0tN1tN2t)right\
@@ -226,6 +227,7 @@ public:
    CWordTagTagMap m_mapSTwtN0t;
    CTwoWordsMap m_mapSTwN0w;
    CTagSet2Map m_mapSTtN0t;
+   CTagSet2Map m_mapSTtN1t;
 
    CTagSet2Map m_mapN0tN1t;
    CTagSet3Map m_mapN0tN1tN2t;
@@ -344,6 +346,7 @@ public:
                                                m_mapSTwtN0t("StackWordTagNextTag", DEP_TABLE_SIZE),
                                                m_mapSTwN0w("StackWordNextWord", DEP_TABLE_SIZE),
                                                m_mapSTtN0t("StackTagNextTag", DEP_TABLE_SIZE),
+                                               m_mapSTtN1t("StackTagNextTag", DEP_TABLE_SIZE),
 
                                                m_mapN0tN1t("NextTagNext+1Tag", DEP_TABLE_SIZE),
                                                m_mapN0tN1tN2t("NextTagTrigram", DEP_TABLE_SIZE),
