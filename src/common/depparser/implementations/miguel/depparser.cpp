@@ -347,7 +347,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       if (st_index!=-1) {
          if (!m_lCacheCoNLLLemma[st_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st_index], action, m_nScoreIndex, amount, round) ;
          if (m_lCacheCoNLLCPOS[st_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st_index], action, m_nScoreIndex, amount, round) ;
-         for (i=0; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
+         cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;
+         for (i=1; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
             cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][i], action, m_nScoreIndex, amount, round) ;
          //if (!m_lCacheCoNLLFeats[st_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index], action, m_nScoreIndex, amount, round) ;
          //is this possible?
