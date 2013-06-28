@@ -348,20 +348,20 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
       static unsigned i;
       
-      std::cout<<"(conll)\n";
+      //std::cout<<"(conll)\n";
 
       //STACK[0]
       if (st_index!=-1) {
          if (!m_lCacheCoNLLLemma[st_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st_index], action, m_nScoreIndex, amount, round) ;
          //if (m_lCacheCoNLLCPOS[st_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st_index], action, m_nScoreIndex, amount, round) ;
-         cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;
-         //for (i=1; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
-          //  cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][i], action, m_nScoreIndex, amount, round) ;
+         /*if (!m_lCacheCoNLLFeats[st_index].empty()) cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;*/
+         for (i=1; i<m_lCacheCoNLLFeats[st_index].size(); ++i)
+            cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][i], action, m_nScoreIndex, amount, round) ;
          //is this possible?
       } // if (st_index!=-1)
       
       //STACK[1] Miguel
-     /* if (st1_index!=-1) {
+      if (st1_index!=-1) {
                if (!m_lCacheCoNLLLemma[st1_index].empty()) cast_weights->m_mapSTl.getOrUpdateScore( retval, m_lCacheCoNLLLemma[st1_index], action, m_nScoreIndex, amount, round) ;
                //if (m_lCacheCoNLLCPOS[st1_index] != CCoNLLCPOS()) cast_weights->m_mapSTc.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[st1_index], action, m_nScoreIndex, amount, round) ;
                //for (i=0; i<m_lCacheCoNLLFeats[st1_index].size(); ++i)
@@ -376,23 +376,23 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
                //for (i=0; i<m_lCacheCoNLLFeats[st2_index].size(); ++i)
                //   cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st2_index][i], action, m_nScoreIndex, amount, round) ;
             } // if (st_index!=-1)
-	  */
+	  
       //INPUT[0]
       if (n0_index!=-1) {
          if (!m_lCacheCoNLLLemma[n0_index].empty()) cast_weights->m_mapN0l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n0_index], action, m_nScoreIndex, amount, round) ;
          //if (m_lCacheCoNLLCPOS[n0_index] != CCoNLLCPOS()) cast_weights->m_mapN0c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n0_index], action, m_nScoreIndex, amount, round) ;
          for (i=1; i<m_lCacheCoNLLFeats[n0_index].size(); ++i)
             cast_weights->m_mapN0f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n0_index][i], action, m_nScoreIndex, amount, round) ;
-         //cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;
+         if (!m_lCacheCoNLLFeats[n0_index].empty()) cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n0_index][0], action, m_nScoreIndex, amount, round) ;
       } // if (n0_index!=-1)
 
       //INPUT[1]
       if (n1_index!=-1) {
          //if (!m_lCacheCoNLLLemma[n1_index].empty()) cast_weights->m_mapN1l.getOrUpdateScore( retval, m_lCacheCoNLLLemma[n1_index], action, m_nScoreIndex, amount, round) ;
          //if (m_lCacheCoNLLCPOS[n1_index] != CCoNLLCPOS()) cast_weights->m_mapN1c.getOrUpdateScore( retval, m_lCacheCoNLLCPOS[n1_index], action, m_nScoreIndex, amount, round) ;
-         //for (i=1; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
-         //   cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][i], action, m_nScoreIndex, amount, round) ;
-         //cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[st_index][0], action, m_nScoreIndex, amount, round) ;
+         for (i=1; i<m_lCacheCoNLLFeats[n1_index].size(); ++i)
+            cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][i], action, m_nScoreIndex, amount, round) ;
+         if (!m_lCacheCoNLLFeats[n1_index].empty()) cast_weights->m_mapSTf.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][0], action, m_nScoreIndex, amount, round) ;
       } // if (n1_index!=-1)
       
       //INPUT[2] Miguel
