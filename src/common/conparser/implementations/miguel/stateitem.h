@@ -644,7 +644,6 @@ public:
    	   //2nd. use semantic head finder.
    	   //3rd. add transformations.
    	   //if a head is not included in the subtree just forget about it... so far, so good. Speak with yue about this.
-   	   //ASK TO YUE HOW TO DEBUG THIS WITH A SMALL CORPUS.
    	   generateStanfordLinks();
 	   
    	   /*if (head_left){ 
@@ -713,11 +712,7 @@ public:
 	   
    }
    
-   void buildStanfordLink(CDependencyLabel* label, int dependent, int head) {
-	   CLink* newNode=new CLink(*label, dependent, head, 0);
-	   newNode->next=this->node.cLink;
-	   node.cLink=newNode; //the new node (with the arc and label is added to the list)
-   }
+   
    
    /**
     * Miguel
@@ -802,7 +797,6 @@ public:
 				   if (npadjp==0) npadjp=findInmediateLeftSister(np, PENN_CON_ADJP); 
 				   if (npadjp!=0) {
 					   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-					   
 					   buildStanfordLink(label, np->lexical_head, s->lexical_head);
 					   return true;
 				   }
@@ -811,6 +805,13 @@ public:
 	   }
 	   return false;
    }
+   
+   
+   void buildStanfordLink(CDependencyLabel* label, int dependent, int head) {
+   	   CLink* newNode=new CLink(*label, dependent, head, 0);
+   	   newNode->next=this->node.cLink;
+   	   node.cLink=newNode; //the new node (with the arc and label is added to the list)
+      }
 
    //===============================================================================
 #ifdef TRAIN_LOSS   
