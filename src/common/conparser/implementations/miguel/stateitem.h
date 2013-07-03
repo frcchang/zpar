@@ -667,7 +667,7 @@ public:
 	   
 	   //nsubj
 	   //S < (NP=target $+ NP|ADJP) > VP
-	   if (buildNsubj1(&this->node))  return;
+	   buildNsubj1(&this->node);
 	   //SQ|PRN < (NP=target !< EX $++ VP)
 	   //if (buildNsubj2(this->node))  return;
 	   //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
@@ -745,10 +745,9 @@ public:
    }*/
    
    /**
-    * Miguel 
+    * Miguel  (checked)
     */
-   const CStateNode* findInmediateNode(const CStateNode* node, CConstituent constituent) {
-	   CStateNode* output;
+   const CStateNode* findInmediateChild(const CStateNode* node, CConstituent constituent) {
 	   if (node->type==CStateNode::LEAF) {
 		   return 0;
 	   }
@@ -759,14 +758,13 @@ public:
 		   else {
 			   return 0;
 		   }
-	
 	   }
 	   else if (node->type==CStateNode::HEAD_LEFT) {
 		   if (node->right_child->constituent==constituent) {
 			   return node->right_child;
 		   }
 		   else if (node->left_child->temp) {
-			   return findInmediateNode(node->left_child,constituent); //we have to do this because we have binarize structures.
+			   return findInmediateChild(node->left_child,constituent); //we have to do this because we have binarize structures.
 		   }
 	   }
 	   else if (node->left_child->constituent==constituent) {
@@ -776,6 +774,40 @@ public:
 		   return 0;
 	   }
    }
+   
+   /**
+     * Miguel (unchecked, but seems fine)
+     */
+   const CStateNode* findChild(const CStateNode* node, CConstituent constituent) {
+   	   if (node->type==CStateNode::LEAF) { //it can't have children!
+   		   return 0;
+   	   }
+   	   else if(node->type==CStateNode::SINGLE_CHILD) {
+   		   if (node->left_child->constituent==constituent) {
+   			   return node->left_child;
+   		   }
+   		   else {
+   			   const CStateNode* aux=findInmediateChild(node->left_child,constituent);
+   			   if (aux!=0) return aux;
+   		   }
+   	   }
+   	   else 
+   		{
+   		   if (node->right_child->constituent==constituent) {
+   		   return node->right_child;
+   		   }
+   		   else if (node->left_child->constituent==constituent) {
+   			   return node->left_child;
+   		   }
+   		   else {
+   			   const CStateNode* aux=findInmediateChild(node->left_child,constituent);
+   			   if (aux!=0) return aux;
+   			   aux=findInmediateChild(node->right_child,constituent);
+   			   if (aux!=0) return aux;			   
+   		   }
+   		}
+   	   return 0;
+   	}
    
    /*
     * Miguel 
@@ -789,9 +821,9 @@ public:
     */
    bool buildNsubj1(const CStateNode* node) {
 	   if (node->constituent==PENN_CON_VP) {
-		   const CStateNode* s=findInmediateNode(node, PENN_CON_PENN_CON_S);
+		   const CStateNode* s=findInmediateChild(node, PENN_CON_PENN_CON_S);
 		   if (s!=0) {
-			   const CStateNode* np=findInmediateNode(s, PENN_CON_NP);
+			   const CStateNode* np=findInmediateChild(s, PENN_CON_NP);
 			   if (np!=0) {
 				   const CStateNode* npadjp = findInmediateLeftSister(np, PENN_CON_NP);
 				   if (npadjp==0) npadjp=findInmediateLeftSister(np, PENN_CON_ADJP); 
