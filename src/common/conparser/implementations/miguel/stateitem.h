@@ -39,7 +39,7 @@ public:
    CLink* cLinkCollapsed; //miguel
    CLink* cLink; //miguel
    
-   const CHeadFinder* headFinder;
+   //const CHeadFinder* headFinder;
 
 public:
    inline bool head_left() const { return type==HEAD_LEFT; }
@@ -669,7 +669,7 @@ public:
 	   //S < (NP=target $+ NP|ADJP) > VP
 	   buildNsubj1(&this->node);
 	   //SQ|PRN < (NP=target !< EX $++ VP)
-	   //if (buildNsubj2(this->node))  return;
+	   buildNsubj2(&this->node);
 	   //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
 	   //if (buildNsubj3(this->node))  return;
 	   //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++VP)",
@@ -690,7 +690,7 @@ public:
 	   //"SBAR !< WHNP < (S !< (NP $++ VP)) > (VP > (S $- WHNP=target))",
 	   //if (buildNsubj12(this->node))  return;
 	   //"SQ < ((NP < EX) $++ NP=target)",
-	   //if (buildNsubj13(this->node))  return;
+	   buildNsubj13(&this->node);
 	   //"S < (NP < EX) <+(VP) (VP < NP=target)"
 	   //if (buildNsubj14(this->node))  return;
 	   
@@ -746,8 +746,10 @@ public:
    
    /**
     * Miguel  (checked)
+    * 
+    * A < B (A inmediately dominates B) A: input, B: output
     */
-   const CStateNode* findInmediateChild(const CStateNode* node, CConstituent constituent) {
+   const CStateNode* inmediatelyDominates(const CStateNode* node, CConstituent constituent) {
 	   if (node->type==CStateNode::LEAF) {
 		   return 0;
 	   }
@@ -764,7 +766,7 @@ public:
 			   return node->right_child;
 		   }
 		   else if (node->left_child->temp) {
-			   return findInmediateChild(node->left_child,constituent); //we have to do this because we have binarize structures.
+			   return inmediatelyDominates(node->left_child,constituent); //we have to do this because we have binarize structures. VP* for instance.
 		   }
 	   }
 	   else if (node->left_child->constituent==constituent) {
@@ -777,8 +779,11 @@ public:
    
    /**
      * Miguel (unchecked, but seems fine)
+     * 
+     * A << B 
+     * A (input) dominates B (output)
      */
-   const CStateNode* findChild(const CStateNode* node, CConstituent constituent) {
+   const CStateNode* dominates(const CStateNode* node, CConstituent constituent) {
    	   if (node->type==CStateNode::LEAF) { //it can't have children!
    		   return 0;
    	   }
@@ -787,7 +792,7 @@ public:
    			   return node->left_child;
    		   }
    		   else {
-   			   const CStateNode* aux=findInmediateChild(node->left_child,constituent);
+   			   const CStateNode* aux=dominates(node->left_child,constituent);
    			   if (aux!=0) return aux;
    		   }
    	   }
@@ -800,9 +805,9 @@ public:
    			   return node->left_child;
    		   }
    		   else {
-   			   const CStateNode* aux=findInmediateChild(node->left_child,constituent);
+   			   const CStateNode* aux=dominates(node->left_child,constituent);
    			   if (aux!=0) return aux;
-   			   aux=findInmediateChild(node->right_child,constituent);
+   			   aux=dominates(node->right_child,constituent);
    			   if (aux!=0) return aux;			   
    		   }
    		}
@@ -811,22 +816,36 @@ public:
    
    /*
     * Miguel 
+    * A $+ B
+    * A (input) is the inmediate left sister of B (output)
     */
-   const CStateNode* findInmediateLeftSister(const CStateNode* node, CConstituent constituent) {
+   const CStateNode* inmediateLeftSister(const CStateNode* node, CConstituent constituent) {
    		   return 0;
    }
    
    /*
+    * Miguel 
+    * $++
+    * 
+    * A (input) is a left sister of B (output)
+    */
+    const CStateNode* leftSister(const CStateNode* node, CConstituent constituent) {
+      		   return 0;
+      }
+   
+   /*
     * Miguel
+    * 
+    * //S < (NP=target $+ NP|ADJP) > VP
     */
    bool buildNsubj1(const CStateNode* node) {
 	   if (node->constituent==PENN_CON_VP) {
-		   const CStateNode* s=findInmediateChild(node, PENN_CON_PENN_CON_S);
+		   const CStateNode* s=inmediatelyDominates(node, PENN_CON_PENN_CON_S);
 		   if (s!=0) {
-			   const CStateNode* np=findInmediateChild(s, PENN_CON_NP);
+			   const CStateNode* np=inmediatelyDominates(s, PENN_CON_NP);
 			   if (np!=0) {
-				   const CStateNode* npadjp = findInmediateLeftSister(np, PENN_CON_NP);
-				   if (npadjp==0) npadjp=findInmediateLeftSister(np, PENN_CON_ADJP); 
+				   const CStateNode* npadjp = inmediateLeftSister(np, PENN_CON_NP); //np is the inmediateleftsister of another np ?
+				   if (npadjp==0) npadjp=inmediateLeftSister(np, PENN_CON_ADJP);  //np is the inmediateleftsister of a adjp ?
 				   if (npadjp!=0) {
 					   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
 					   buildStanfordLink(label, np->lexical_head, s->lexical_head);
@@ -837,6 +856,51 @@ public:
 	   }
 	   return false;
    }
+   
+   //"SQ < ((NP < EX) $++ NP=target)",
+   //ASK YUE what he thinks (????)
+   //Doubts: not sure whether the order is fine or not. See comments below.
+   
+   bool buildNsubj13(const CStateNode* node) {
+   	   if (node->constituent==PENN_CON_PENN_CON_SQ) {
+   		   const CStateNode* np=inmediatelyDominates(node, PENN_CON_NP); //is NP the inmediate child of SQ?
+   		   if (np!=0) {
+   			   const CStateNode* ex = inmediatelyDominates(np, PENN_CON_X); //is the child of the first np? IS IT EX???????
+   			   if (ex!=0) {
+   				   const CStateNode* np2=leftSister(np, PENN_CON_NP); //is the sister of np or the sister of ex. I understand that given the parenthesis it is like this,
+   				   if (np2!=0) {
+   					   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+   					   buildStanfordLink(label, np2->lexical_head, node->lexical_head);
+   					   return true;
+   				   }
+   			   }
+   		   } 
+   	   	}
+   	    return false;
+    }
+   
+   
+   //SQ|PRN < (NP=target !< EX $++ VP)
+   
+   //I'm quite sure about this one. ASK YUE
+   
+   bool buildNsubj2(const CStateNode* node) {
+      	   if ((node->constituent==PENN_CON_PENN_CON_SQ)||(node->constituent==PENN_CON_PRN)) {
+      		   const CStateNode* np=inmediatelyDominates(node, PENN_CON_NP);
+      		   if (np!=0) {
+      			   const CStateNode* ex=inmediatelyDominates(np, PENN_CON_X); //is NP the inmediate child of SQ? is X, EX????????????
+      			   if (ex==0) { //negation of <
+      				   const CStateNode* vp = leftSister(np, PENN_CON_VP); //is the sister of the first np, that's for sure
+      				   if (vp!=0) {
+      					   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+      					   buildStanfordLink(label, np->lexical_head, node->lexical_head);
+      					   return true;
+      				   }
+      			   } 
+      		   }
+      	   }
+      	   return false;
+         }
    
    
    void buildStanfordLink(CDependencyLabel* label, int dependent, int head) {
