@@ -13,6 +13,7 @@
 #include "action.h"
 #include "linkclass.h"
 
+
 /*===============================================================
  *
  * CStateNode - tree nodes 
@@ -46,13 +47,16 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end) {
-	   this->cLink = 0; //miguel
-	   this->cLinkCollapsed = 0; //miguel. I think this is better since they are generated on the fly and they will be never included in the constructor.
-	   //headFinder=new CHeadFinder();
-   }
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), cLinkCollapsed(0), cLink(0) {}
    CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), cLinkCollapsed(0), cLink(0) {}
-   virtual ~CStateNode() {}
+   virtual ~CStateNode() {
+	   CLink* temp=cLink;
+	   while (temp!=0) {
+		   CLink* next=temp->next;
+		   delete temp;
+		   temp=next;
+	   }
+   }
 public:
 
    bool valid() const { return id!=-1; }
@@ -68,9 +72,9 @@ public:
       this->lexical_end = 0; 
 
       //this->cLink = 0; //miguel
-      this->cLink = new CLink(); //miguel
+      this->cLink = 0; //miguel
       //this->cLinkCollapsed =0; //miguel
-      this->cLinkCollapsed = new CLink(); //miguel
+      this->cLinkCollapsed = 0; //miguel
    }
    void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) { 
       this->id = id;
@@ -83,7 +87,8 @@ public:
       this->lexical_start = lexical_start; 
       this->lexical_end = lexical_end;
       
-       //the stanford links are missing.  Let's see whether they are necessary or not. (Miguel)
+      this->cLink=0; //Miguel
+      
    }//{}
 
    bool operator == (const CStateNode &nd) const {
@@ -129,57 +134,7 @@ public:
       node.right_child = right_child ? right_child->id : -1;
       node.token = lexical_head;
    }
-
-public: //Miguel. added the set method for Stanford links.
-   /*void setStanfordTree(const CLink* link) { 
-   	this->cLink=link;	   
-   }*/
-   
-   /*void setStanfordTreeCollapse(const CLink* linkCollapsed) { 
-      	this->cLinkCollapsed = linkCollapsed;	   
-      }*/
-   
-   void updateStanfordLink(const CDependencyLabel* label, const int dependent) {
-	   CLink* newNode=new CLink(label, dependent, 0);
-	   newNode->next=this->cLink;
-	   this->cLink=newNode;
-   }
-   
-   
-   
-   void generateStanford(bool collapse, bool ccProcess, bool includeExtras, bool lemmatize, bool head_left) {
-	   
-	   //TODO MIGUEL
-	   //this method should include the stanford dependencies from the left child and the right child
-	   
-	   //1st, create grammaticalstructure.
-	   //2nd. use semantic head finder.
-	   //3rd. add transformations.
-	   //if a head is not included in the subtree just forget about it... so far, so good. Speak with yue about this.
-	   //ASK TO YUE HOW TO DEBUG THIS WITH A SMALL CORPUS.
-	   
-	   if (head_left){ //the head is the left, therefore the right_child is the dependent.
-		   CDependencyLabel* cl=new CDependencyLabel(0);
-		   //find dependency label for this thing. We already have the arcs.
-		   updateStanfordLink(cl,right_child->lexical_head);
-	   
-		   
-	   }
-	   else { //the head is the right, therefore the left_child is the dependent.
-		   CDependencyLabel* cl=new CDependencyLabel(0);
-		   //find dependency label for this thing. We already have the arcs.
-		   updateStanfordLink(cl,left_child->lexical_head);
-	   }
-	   
-	   
-   }
-   
-   //MIguel: is the tree a WH-Question?
-   bool isWHQ(CStateNode* head) {
-	   
-   }
-   
-  
+     
 };
 
 
@@ -195,6 +150,9 @@ class CContext;
 
 class CStateItem {
 public:
+	
+   const std::vector<CTaggedWord<CTag, TAG_SEPARATOR> > *words; //Miguel
+	
    SCORE_TYPE score;
    CStateNode node; //head of the stack (top)
    const CStateItem *statePtr; //points to the state item before the action is applied, (chain of actions)
@@ -301,6 +259,7 @@ protected:
       assert(!IsTerminated());
       const static CStateNode *l, *r;
       assert(stackPtr!=0);
+      retval->current_word = current_word; //modified by Miguel and Yue 3 jul 12.01 pm
       if (single_child) {
          assert(head_left == false);
          assert(temporary == false);
@@ -338,13 +297,10 @@ protected:
 	
          //retval->node.generateStanford(); //here we call the method that generates the stanford dependencies which is in CStateNode
          
-        	 retval->node.generateStanford(false,false, false, false, head_left);
-        	 retval->node.generateStanford(true,false, false, false, head_left);
-        
-
-
+        	 //retval->generateStanford(head_left); //collapsed and then uncollapsed
+         	retval->generateStanfordLinks(); //collapsed and then uncollapsed
+        	 
       }
-      retval->current_word = current_word;
 
       assert(!IsTerminated());
    }
@@ -539,6 +495,9 @@ public:
    void Move(CStateItem *retval, const CAction &action) const {
       retval->action = action; // this makes it necessary for the actions to 
       retval->statePtr = this; // be called by Move
+      
+      retval->words = this->words; // Miguel
+      
       if (action.isIdle()) {
          noact(retval);
 #ifdef SCALE
@@ -630,71 +589,14 @@ public:
          // copy node
          assert(j==nodes[i]->id);
          nodes[i]->toCCFGTreeNode(out.nodes[j]);
-      }
-      out.root = nodes[0]->id;
-   }
-
-  //(Miguel) New method for algo generate the STANFORD links
-  //(Miguel) It is just an output process, the hard core thing is in the reduce method.
-   void GenerateTreeAndLinks(const CTwoStringVector &tagged, CSentenceParsed &out, std::string &stanfordOut) const {
-      // parsing done?
-      assert(IsTerminated());
-//      assert(tagged.size()==sent->size());
-      out.clear();
-#ifdef FRAGMENTED_TREE
-      if (stacksize()>1) {
-         static const CStateItem *item;
-         item = statePtr;
-         assert(item==stackPtr);
-         static CStateItem *tmp;
-         tmp = new CStateItem[stacksize()];
-         static CStateItem *current;
-         current = tmp;
-         static CAction action;
-         action.encodeReduce(CConstituent::NONE, false, false, false);
-         while (item->stacksize()>1) {
-            // form NONE nodes
-            item->Move(current, action); 
-            item = current;
-            ++ current;
+         //iterate through nodes[i] Clink
+        //printing the stanford dependencies
+         const CLink* temp=nodes[i]->cLink;
+         while(temp!=0) {
+        	 //std::cout<<"i="<<i<<": "<<temp->label<<"("<<tagged.at(nodes[i]->lexical_head).first<<", "<<tagged.at(temp->dependent).first<<")\n"; //miguel
+        	 std::cout<<"i="<<i<<": "<<temp->label<<"("<<tagged.at(temp->head).first<<", "<<tagged.at(temp->dependent).first<<")\n"; //miguel
+        	 temp=temp->next;
          }
-         action.encodeReduceRoot();
-         item->Move(current, action);
-         item = current;
-         item->GenerateTreeAndLinks(tagged, out);
-         delete [] tmp;
-         return;
-      }
-#else
-      if (stacksize()>1) { WARNING("Parser failed.");return; }
-#endif
-      // generate nodes for out
-      static int i,j;
-      // first words
-      for (i=0; i<tagged.size(); ++i) 
-         out.newWord(tagged[i].first, tagged[i].second);
-      // second constituents
-      static const CStateNode* nodes[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
-      static int count;
-      count = 0;
-      const static CStateItem *current;
-      current = this;
-      while (current) {
-         if (!current->IsTerminated() && current->node.valid()) {
-            nodes[count] = &current->node;
-            ++count; 
-         }
-         current = current->statePtr; //
-	//stackptr: the tail of the stack.
-      }
-
-      for (i=count-1; i>=0; --i) { //here we get the sequence of stateitems. Left order traver
-         j = out.newNode();
-         // copy node
-         assert(j==nodes[i]->id);
-         nodes[i]->toCCFGTreeNode(out.nodes[j]);
-	 //here we should read the stanford links associated to each node, since it will have been created in the reduce process. (Miguel)
-         //It is just an output process, the hard core thing is in the reduce method (Miguel)
       }
       out.root = nodes[0]->id;
    }
@@ -731,6 +633,183 @@ public:
          --count;
       }
       TRACE("");
+   }
+   
+   /*void generateStanford(bool head_left) {
+   	   
+   	   //TODO MIGUEL
+   	   //this method should include the stanford dependencies from the left child and the right child
+   	   
+   	   //1st, create grammaticalstructure.
+   	   //2nd. use semantic head finder.
+   	   //3rd. add transformations.
+   	   //if a head is not included in the subtree just forget about it... so far, so good. Speak with yue about this.
+   	   //ASK TO YUE HOW TO DEBUG THIS WITH A SMALL CORPUS.
+   	   generateStanfordLinks();
+	   
+   	   /*if (head_left){ 
+   		   //the head is the left, therefore the right_child is the dependent.
+   		   //find dependency label for this thing. We already have the arcs.
+   		   updateStanfordLink(node.right_child->lexical_head);
+   	   }
+   	   else { 
+   		   //the head is the right, therefore the left_child is the dependent.
+   		   //find dependency label for this thing. We already have the arcs.
+   		   updateStanfordLink(node.left_child->lexical_head);
+   	   }*/
+   	   
+   	   
+      //}
+   
+   //Miguel
+   //this method generates the stanford links that are available for the current node.
+   void generateStanfordLinks() {
+	   
+	   
+	   //nsubj
+	   //S < (NP=target $+ NP|ADJP) > VP
+	   if (buildNsubj1(&this->node))  return;
+	   //SQ|PRN < (NP=target !< EX $++ VP)
+	   //if (buildNsubj2(this->node))  return;
+	   //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
+	   //if (buildNsubj3(this->node))  return;
+	   //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++VP)",
+	   //if (buildNsubj4(this->node))  return;
+	   //if (buildNsubj5(this->node))  return;
+	   //"SQ < ((NP=target !< EX) $- /^(?:VB|AUX)/ !$++ VP)",
+	   //if (buildNsubj6(this->node))  return;
+	   //"SQ < ((NP=target !< EX) $- (RB $- /^(?:VB|AUX)/) ![$++ VP])",
+	   //if (buildNsubj7(this->node))  return;
+	   //"SBARQ < WHNP=target < (SQ < (VP ![$-- NP]))",
+	   //if (buildNsubj8(this->node))  return;
+	   //"SBARQ < (SQ=target < /^(?:VB|AUX)/ !< VP)",
+	   //if (buildNsubj9(this->node))  return;
+	   //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
+	   //if (buildNsubj10(this->node))  return;
+	   //"SBAR < WHNP=target [ < (S < (VP !$-- NP) !< SBAR) | < (VP !$-- NP) !< S ]"
+	   //if (buildNsubj11(this->node))  return;
+	   //"SBAR !< WHNP < (S !< (NP $++ VP)) > (VP > (S $- WHNP=target))",
+	   //if (buildNsubj12(this->node))  return;
+	   //"SQ < ((NP < EX) $++ NP=target)",
+	   //if (buildNsubj13(this->node))  return;
+	   //"S < (NP < EX) <+(VP) (VP < NP=target)"
+	   //if (buildNsubj14(this->node))  return;
+	   
+	   //Conj
+	   //if (buildConj1(&this->node))  return;
+	   //if (buildConj2(this->node))  return;
+	   //if (buildConj3(this->node))  return;
+	   //if (buildConj4(this->node))  return;
+	   //if (buildConj5(this->node))  return;
+	   
+	   //Copula
+	   //if (buildCopula1(&this->node))  return;
+	   //if (buildCopula2(this->node))  return;
+	   //if (buildCopula3(this->node))  return;
+	   //if (buildCopula4(this->node))  return;
+	   //if (buildCopula5(this->node))  return;
+	   
+	   //...
+	   
+   }
+   
+   void buildStanfordLink(CDependencyLabel* label, int dependent, int head) {
+	   CLink* newNode=new CLink(*label, dependent, head, 0);
+	   newNode->next=this->node.cLink;
+	   node.cLink=newNode; //the new node (with the arc and label is added to the list)
+   }
+   
+   /**
+    * Miguel
+    */
+   /*void updateStanfordLink(const int dependent) {
+	   //cl=new CDependencyLabel(0);
+	   	   
+	   //this->lexical_start (word).
+	   //this->lexical_end (word)
+	   	   
+	   //start matching patterns. We know the dependent, and we can traverse it.
+	   	   
+	   CDependencyLabel* label;
+	   if (true) {
+		   //Nsubject
+		   //S < (NP=target $+ NP|ADJP) > VP
+		   //WE ALREADY HAVE THE DEPENDENT... so ??? what about pattern matching in which the target is the same one ...???
+		   //words->at(node.lexical_head).word; this is the word
+		   //words->at(node.lexical_head).tag; this is the pos
+		   
+		   label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+	   }
+	   //pattern matching
+	   
+	   CLink* newNode=new CLink(*label, dependent, 0);
+	   	 	  
+	   newNode->next=this->node.cLink;
+	   node.cLink=newNode; //the new node (with the arc and label is added to the list)
+	 
+   }*/
+   
+   /**
+    * Miguel 
+    */
+   const CStateNode* findInmediateNode(const CStateNode* node, CConstituent constituent) {
+	   CStateNode* output;
+	   if (node->type==CStateNode::LEAF) {
+		   return 0;
+	   }
+	   else if(node->type==CStateNode::SINGLE_CHILD) {
+		   if (node->left_child->constituent==constituent) {
+			   return node->left_child;
+		   }
+		   else {
+			   return 0;
+		   }
+	
+	   }
+	   else if (node->type==CStateNode::HEAD_LEFT) {
+		   if (node->right_child->constituent==constituent) {
+			   return node->right_child;
+		   }
+		   else if (node->left_child->temp) {
+			   return findInmediateNode(node->left_child,constituent); //we have to do this because we have binarize structures.
+		   }
+	   }
+	   else if (node->left_child->constituent==constituent) {
+		   return node->left_child;
+	   }
+	   else {
+		   return 0;
+	   }
+   }
+   
+   /*
+    * Miguel 
+    */
+   const CStateNode* findInmediateLeftSister(const CStateNode* node, CConstituent constituent) {
+   		   return 0;
+   }
+   
+   /*
+    * Miguel
+    */
+   bool buildNsubj1(const CStateNode* node) {
+	   if (node->constituent==PENN_CON_VP) {
+		   const CStateNode* s=findInmediateNode(node, PENN_CON_PENN_CON_S);
+		   if (s!=0) {
+			   const CStateNode* np=findInmediateNode(s, PENN_CON_NP);
+			   if (np!=0) {
+				   const CStateNode* npadjp = findInmediateLeftSister(np, PENN_CON_NP);
+				   if (npadjp==0) npadjp=findInmediateLeftSister(np, PENN_CON_ADJP); 
+				   if (npadjp!=0) {
+					   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+					   
+					   buildStanfordLink(label, np->lexical_head, s->lexical_head);
+					   return true;
+				   }
+			   }
+		   }
+	   }
+	   return false;
    }
 
    //===============================================================================
@@ -801,6 +880,12 @@ public:
       return plost-plost_lb + rlost-rlost_lb;
    }
 #endif
+   
+   
+   
+   
+   
+   
 };
 
 /*===============================================================

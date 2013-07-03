@@ -988,6 +988,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
    lattice_index[0]->clear();
 #ifdef TRAIN_LOSS
    lattice_index[0]->bTrain = m_bTrain;
+   
+   lattice_index[0]->words = (&m_lCache);  //Miguel
+   
    getLabeledBrackets(correct, lattice_index[0]->gold_lb);
    TRACE(lattice_index[0]->gold_lb << std::endl);
 #endif

@@ -14,40 +14,44 @@
 
 class CLink {
 public:
-   const CDependencyLabel *label; //src/english/dependency/label/stanford.h
+   CDependencyLabel label; //src/english/dependency/label/stanford.h
    int dependent;
-   //int head; 
-   const CLink *next;   
+   int head; 
+   CLink *next;   
 
 public:
-   CLink(const CDependencyLabel *label, const int dependent, const CLink* next): label(label), dependent(dependent), next(next) {}   
-   CLink(): label(0), dependent(-1), next(0) {}	
+   CLink(const CDependencyLabel label, const int dependent, const int head, CLink* next): label(label), dependent(dependent), head(head), next(next) {}   
+   CLink(): label(0), dependent(-1), head(-1), next(0) {}	
    
    virtual ~CLink() {}
 
 public:
-   bool valid() const { return dependent!=-1 && label!=0; }
+   bool valid() const { return dependent!=-1 && head!=-1 && label!=0; }
    void clear() { 
-      this->label = 0;
+      this->label = CDependencyLabel::NONE;
       this->dependent=-1;
       this->next=0;
+      this->head=-1;
    }
-   void set(const CDependencyLabel *label, const int dependent, const CLink* next) { 
+   void set(const CDependencyLabel label, const int dependent, CLink* next, const int head) { 
       this->label = label;
       this->dependent = dependent; 
-      this->next = next; 
+      this->next = next;
+      this->head=head;
    }
    
    
    bool operator == (const CLink &nd) const {
       return dependent == nd.dependent &&
              label == nd.label && 
+             head == nd.head &&
              next == nd.next;
    }
    void operator = (const CLink &nd) {
 	   dependent = nd.dependent;
        label = nd.label; 
        next = nd.next;   
+       head = nd.head;
    }
     
 
