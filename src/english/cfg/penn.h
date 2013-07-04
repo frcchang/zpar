@@ -27,7 +27,7 @@ const std::string PENN_CON_STRINGS[] = {
    "RRC", 
    "UCP",
    "VP",
-   "WHADJP", "WHADVP", "WHNP", "WHPP", "EX",
+   "WHADJP", "WHADVP", "WHNP", "WHPP", "EX", "VB", "TO",
    "X"
 };
 
@@ -35,7 +35,7 @@ const std::string PENN_CON_STRINGS[] = {
 enum PENN_CON_CONSTANTS {
    PENN_CON_NONE=0,
    PENN_CON_BEGIN=1,
-   PENN_CON_PENN_CON_S, PENN_CON_PENN_CON_SBAR, PENN_CON_PENN_CON_SBARQ, PENN_CON_PENN_CON_SINV, PENN_CON_PENN_CON_SQ, 
+   PENN_CON_S, PENN_CON_SBAR, PENN_CON_SBARQ, PENN_CON_SINV, PENN_CON_SQ, 
    PENN_CON_ADJP, PENN_CON_ADVP, 
    PENN_CON_CONJP, 
    PENN_CON_FRAG, 
@@ -47,7 +47,7 @@ enum PENN_CON_CONSTANTS {
    PENN_CON_RRC, 
    PENN_CON_UCP,
    PENN_CON_VP,
-   PENN_CON_WHADJP, PENN_CON_WHADVP, PENN_CON_WHNP, PENN_CON_WHPP, PENN_CON_EX,
+   PENN_CON_WHADJP, PENN_CON_WHADVP, PENN_CON_WHNP, PENN_CON_WHPP, PENN_CON_EX, PENN_CON_VB, PENN_CON_TO,
    PENN_CON_X, 
    PENN_CON_COUNT
 };
@@ -67,7 +67,7 @@ const bool PENN_CON_TEMP[] = {
    true, 
    true,
    true,
-   true, true, true, true, true,
+   true, true, true, true, true,true,true,
    true
 };
 
