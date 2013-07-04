@@ -9,7 +9,7 @@ namespace TARGET_LANGUAGE {
 typedef CConstituentLabel CConstituent;
 #else
 #include "linguistics/cfgtemp.h"
-typedef CTemporary<CConstituentLabel> CConstituent;
+typedef CTemporary<CConstituentLabel> CConstituent; //SQ*
 #endif
 };
 
