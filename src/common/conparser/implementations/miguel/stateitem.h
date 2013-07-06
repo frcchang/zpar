@@ -37,7 +37,7 @@ class CStateNodeList {
 			/*
 			CStateNodeList* temp=this->next;
 			while(temp!=0) {
-				temp=temp->next;
+				temp=temp->next;  //IF we have the siblings into account
 			}
 			CStateNodeList* list_new=new CStateNodeList();
 			list_new->node=node;
@@ -791,330 +791,29 @@ public:
    }
    
    
+   bool isPos(const CStateNode* node, char* pos) {
+	   return false;
+   }
+   
+   bool isWord(const CStateNode* node, char* word) {
+   	   return false;
+      }
+   
+   
    
 
-   
    
    //===============================================================================
-   
-   
-     /**
-       * Miguel 
-       * 
-       * A < B (A immediately dominates B) A: input, B: output
-       */
-      /*const CStateNode* immediatelyDominates(const CStateNode* node, CConstituent constituent) {
-    	  if (node->type==CStateNode::LEAF) return 0;
-   	   	  CStateNodeList* aux=node->m_umbinarizedSubNodes;
-   	   	  
-   	   	  while(aux!=0) {
-   	   		  
-   	   	  }
-   	   	
-   	   	
-      }*/
-   
-   /**
-    * Miguel  (checked)
-    * 
-    * A < B (A immediately dominates B) A: input, B: output
-    */
-   /*const CStateNode* immediatelyDominates(const CStateNode* node, CConstituent constituent) {
-	   if (node->type==CStateNode::LEAF) {
-		   return 0;
-	   }
-	   else if(node->type==CStateNode::SINGLE_CHILD) {
-		   if (node->left_child->constituent==constituent) {
-			   return node->left_child;
-		   }
-		   else {
-			   return 0;
-		   }
-	   }
-	   else if (node->type==CStateNode::HEAD_LEFT) {
-		   if (node->right_child->constituent==constituent) {
-			   return node->right_child;
-		   }
-		   else if (node->left_child->temp) {
-			   return immediatelyDominates(node->left_child,constituent); //we have to do this because we have binarize structures. VP* for instance.
-		   }
-	   }
-	   else {//if (node->type==CStateNode::HEAD_RIGHT) {
-		   	assert(node->type=CStateNode::HEAD_RIGHT);
-	   		if (node->left_child->constituent==constituent) {
- 			   return node->left_child;
-  		   }
-  		   else if (node->right_child->temp) {
- 			   return immediatelyDominates(node->right_child,constituent); //we have to do this because we have binarize structures. VP* for instance.
- 		   }
-	   		   
-  	   }
-   }
-   
-   
-
-   
-   /*
-    * This method returns a set of nodes that are inmediatey dominated by the node that is on play (in state item)
-    * 
-    */
-   /*const CStateNodeList* immediatelyDominates() {
-   
-	   const CStateNodeList* temp=new CStateNodeList();
-	   
-   }*/
-   
-	   
-   
-   	 /**
-       * Miguel  (checked)
-       * 
-       * A <# B.
-       *  B (output) is the immediate head of phrase A(input)
-       */
-     /* const CStateNode* immediateLexHeadOf(const CStateNode* node, CConstituent constituent) {
-    	  const CStateNode* b=immediatelyDominates(node, constituent);
-    	  if (b!=0) {
-    		  if (b->lexical_head==node->lexical_head) { 
-    			  return b;
-    		  }
-    	  }
-    	  return 0;
-      }
-   
-   /**
-     * Miguel (seems fine)
-     * 
-     * A << B 
-     * A (input) dominates B (output)
-     */
-   /*const CStateNode* dominates(const CStateNode* node, CConstituent constituent) {
-   	   if (node->type==CStateNode::LEAF) { //it can't have children!
-   		   return 0;
-   	   }
-   	   else if(node->type==CStateNode::SINGLE_CHILD) {
-   		   if (node->left_child->constituent==constituent) {
-   			   return node->left_child;
-   		   }
-   		   else {
-   			   const CStateNode* aux=dominates(node->left_child,constituent);
-   			   if (aux!=0) return aux;
-   		   }
-   	   }
-   	   else 
-   		{
-   		   if (node->right_child->constituent==constituent) {
-   		   return node->right_child;
-   		   }
-   		   else if (node->left_child->constituent==constituent) {
-   			   return node->left_child;
-   		   }
-   		   else {
-   			   const CStateNode* aux=dominates(node->left_child,constituent);
-   			   if (aux!=0) return aux;
-   			   aux=dominates(node->right_child,constituent);
-   			   if (aux!=0) return aux;			   
-   		   }
-   		}
-   	   return 0;
-   	}
-   
-   const CStateNode* traverseForRightSister(const CStateNode* root, const CStateNode* parent, const CStateNode* ls, bool &ls_found) {
-   	   
-   	   	if (parent->temp || parent==root) {
-   	   		const CStateNode* aux = traverseForRightSister(root,parent->left_child, ls, ls_found);
-   	   		if (aux!=0) return aux;
-   	   		if (parent->SINGLE_CHILD) {
-   	   			return traverseForRightSister(root,parent->right_child, ls, ls_found);
-   	   		}
-   	   	}
-   	   	else {
-   	   		if (ls_found) {
-   	   			return parent;
-   	   		}
-   	   		else if (!ls_found && parent==ls){
-   	   			ls_found=true;
-   	   		}
-   	   	}
-   	   	return 0;
-      }
-   
-    const CStateNode* traverseForLeftSister(const CStateNode* root, const CStateNode* parent, const CStateNode* rs, bool &rs_found) {
-      	   
-      	   	if (parent->temp || parent==root) {
-      	   		if (!parent->SINGLE_CHILD) {
-      	   				const CStateNode* aux = traverseForLeftSister(root,parent->right_child, rs, rs_found);
-      	   				if (aux!=0) return aux;
-      	   		}
-      	   		return traverseForRightSister(root,parent->left_child, rs, rs_found);
-      	   	}
-      	   	else {
-      	   		if (rs_found) {
-      	   			return parent;
-      	   		}
-      	   		else if (!rs_found && parent==rs){
-      	   			rs_found=true;
-      	   		}
-      	   	}
-      	   	return 0;
-         }
-   
-   
-   /*
-    * Miguel 
-    * A $+ B
-    * A (input) is the immediate left sister of B (output)
-    * 
-    * 
-    */
-   /*const CStateNode* findInmediateRightSister(const CStateNode* parent, const CStateNode* ls) {
-	   	if(parent->type==CStateNode::SINGLE_CHILD) {
-	    		return 0;
-	     	}
-	   		else  {
-	   			bool init=false;
-	   			return traverseForRightSister(parent, parent, ls, init);
-	   		}
-   }
-   
-   
-   
-   /*
-    * Miguel 
-    * A $++ B
-    * 
-    * A (input) is a left sister of B (output)
-    */
-    /*const CStateNode* findRightSister(const CStateNode* parent, const CStateNode* leftSister, CConstituent constituent) {
-    		if(parent->type==CStateNode::SINGLE_CHILD) {
-    			return 0;
-    		}
-    		else if (parent->right_child->constituent==constituent) {
-    			   			return parent->right_child;
-    		}
-    		else return dominates(parent->right_child,constituent);
-      }
+   //LEGEND
+       //A << B:  A dominates B  m_subnodes
+   	   //A < B: A inmediately dominantes B  m_umbinarizedsubnodes.	
+       //A $+ B: A is the inmediately left sister of B
+       //A $++ B: A is a left sister of B
+       //A $- B: A is the inmediately right sister of B.
+       //A $-- B: A is the right sister of B
+   //===============================================================================
     
     
-    	/*
-        * Miguel 
-        * A $- B
-        * A (input) is the immediate right sister of B (output)
-        * 
-        * 
-        */
-    	/*const CStateNode* findInmediateLeftSister(const CStateNode* parent, const CStateNode* inmRightSister) {
-    	   	if(parent->type==CStateNode::SINGLE_CHILD) {
-    	    		return 0;
-    	     	}
-    	   		else  {
-    	   			bool init=false;
-    	   			return traverseForLeftSister(parent, parent, inmRightSister, init); 
-    	   		}
-       }
-    	
-    	
-       
-       /*
-        * Miguel 
-        * A $-- B
-        * This one must be correct.
-        * A (input) is a right sister of B (output)
-        */
-        /*const CStateNode* findLeftSister(const CStateNode* parent, const CStateNode* rightSister, CConstituent constituent) {
-        		if(parent->type==CStateNode::SINGLE_CHILD) {
-        			return 0;
-        		}
-        		else if (parent->left_child->constituent==constituent) {
-        			   			return parent->left_child;
-        		}
-        		else return dominates(parent->left_child,constituent);
-          }
-        
-        
-        CStaeNodeList nodeList dominatesAux(const CStateNode* node, int level, int levelAux) {
-        	
-        	if (node->type==CStateNode::LEAF || level==levelAux) {
-        		return 0;
-        	}
-        	CStateNodeList newNode;
-        	if(node->type==CStateNode::SINGLE_CHILD) {
-        		newNode.current=node->left_child;
-        	    newNode.next=dominates(node->left_child,level, ++levelAux);    
-        	}
-        	else {
-        		if (node->left_child->temp) {
-        			newNode=dominates(node->left_child,level, levelAux);
-        			newNode->next=
-        			
-        		}
-        		else {
-        			newNode->current=node->left_child;
-        			newNode->next=dominates(node->left_child,level, levelAux+1);
-        		}
-        		if (node->right_child->temp) {
-        		      newNode=dominates(node->right_child,level, levelAux);
-        		}
-        		else {
-        			newNode->current=node->right_child;
-        		    newNode->next=dominates(node->right_child,level, levelAux+1);
-        		}
-        	}
-        	return newNode;
-        	
-        }
-        
-        const CStaeNodeList* nodeList dominates(const CStateNode* node, int level, int levelAux) {
-        	return dominatesAux(node,1,0);
-        }
-        
-        
-        const CStateNodeList* nodeList immediatelyDominatesList(const CStateNode* node) {
-        	return dominates(node,1);
-        }
-     	   
-     	   const CStateNodeList* newNode = new CStateNodeList();
-     	   
-        	   if (node->type==CStateNode::LEAF) {
-        		   return 0;
-        	   }
-        	   else if(node->type==CStateNode::SINGLE_CHILD) {
-        		   	newNode->current=node->left_child;
-        		   	newNode->next=0;
-        		   	return;
-        	   }
-        	   else {
-        		   if (!node->left_child->temp) {
-        			   newNode->current=node->left_child;
-        			   newNode->next=this->findInmediateRightSister(node,node->left_child);
-        		   }
-        		   
-        		   
-        		   const CStateNode* aux=node->right_child;
-        		   while (aux->temp) {
-        			   //return node->right_child;
-        			   aux=aux->right_child;
-        		   }
-        		   else {
-        			   const CStateNodeList* newNode=new CStateNodeList();
-        			   newNode->current=node->left_child;
-        			   newNode->next=0;
-        			   nodeList=newNode;
-        		   }
-        		   if (node->left_child->temp) {
-        			   
-        			   immediatelyDominates(node->left_child,constituent); //we have to do this because we have binarize structures. VP* for instance.
-        		   }
-        		   else {
-        			   
-        		   }
-        	   }
-         }
-        
-        
-        
-   
-    //===============================================================================
     
     
     
@@ -1126,39 +825,95 @@ public:
    bool buildNsubj1(const CStateNode* node) {
 	   if (node->constituent==PENN_CON_VP) {
 		   //const CStateNode* s=immediatelyDominates(node, PENN_CON_S);
-		   CStateNodeList* childs=node->m_umbinarizedSubNodes;
-		   while(childs!=0) {
-			   
-			   
-			   
-			   childs=childs->next;
-		   }
-		   /*if (s!=0) {
-			   const CStateNode* np=immediatelyDominates(s, PENN_CON_NP);
-			   if (np!=0) {
-				   const CStateNode* npadjp=this->findInmediateRightSister(s,np); 
-				   //const CStateNode* npadjp = immediateLeftSister(s, np, PENN_CON_NP); //np is the immediateleftsister of another np ?
-				   //if (npadjp==0) npadjp=immediateLeftSister(s, np, PENN_CON_ADJP);  //np is the immediateleftsister of a adjp ?
-				   if (npadjp!=0) {
-					   if (npadjp->constituent==PENN_CON_NP || npadjp->constituent==PENN_CON_ADJP) {
-						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-						   buildStanfordLink(label, np->lexical_head, s->lexical_head);
-						   //std::cout<<"nSubj1"<<" (head: "<<s->lexical_head<<")"<<"(dependent"<<np->lexical_head<<")\n"; //miguel
-						   return true;
+		   CStateNodeList* childsVP=node->m_umbinarizedSubNodes;
+		   while(childsVP!=0) {
+			   const CStateNode* sHead=childsVP->node;
+			   if (sHead->constituent==PENN_CON_S) {
+				   CStateNodeList* childsS=sHead->m_umbinarizedSubNodes;
+				   while(childsS!=0){
+					   const CStateNode* npTarg=childsS->node;
+					   if (npTarg->constituent==PENN_CON_NP) {
+						   CStateNodeList* sistersRightNp=childsS;
+						   if (sistersRightNp!=0) sistersRightNp=sistersRightNp->next;
+						   if(sistersRightNp!=0) { //is the inmediately (just one)
+							   const CStateNode* sister=sistersRightNp->node;
+							   if (sister->constituent==PENN_CON_NP || sister->constituent==PENN_CON_ADJP) { //FIRE RULE
+								   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+								   buildStanfordLink(label, npTarg->lexical_head, sHead->lexical_head);
+								   //std::cout<<"nSubj1"<<" (head: "<<s->lexical_head<<")"<<"(dependent"<<np->lexical_head<<")\n"; //miguel
+								   return true; //DO I HAVE TO RETURN TRUE? CAN I FIRE ANOTHER ONE? NO RIGHT? YUE?
+							   }
+						   }
 					   }
+					   childsS=childsS->next;
 				   }
 			   }
-		  }*/
+			   childsVP=childsVP->next;
+		   }
 	   }
 	   return false;
+	   
+	   /*if (s!=0) {
+	   			   const CStateNode* np=immediatelyDominates(s, PENN_CON_NP);
+	   			   if (np!=0) {
+	   				   const CStateNode* npadjp=this->findInmediateRightSister(s,np); 
+	   				   //const CStateNode* npadjp = immediateLeftSister(s, np, PENN_CON_NP); //np is the immediateleftsister of another np ?
+	   				   //if (npadjp==0) npadjp=immediateLeftSister(s, np, PENN_CON_ADJP);  //np is the immediateleftsister of a adjp ?
+	   				   if (npadjp!=0) {
+	   					   if (npadjp->constituent==PENN_CON_NP || npadjp->constituent==PENN_CON_ADJP) {
+	   						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+	   						   buildStanfordLink(label, np->lexical_head, s->lexical_head);
+	   						   //std::cout<<"nSubj1"<<" (head: "<<s->lexical_head<<")"<<"(dependent"<<np->lexical_head<<")\n"; //miguel
+	   						   return true;
+	   					   }
+	   				   }
+	   			   }
+	   		  }*/
+	   
    }
    
    
    //SQ|PRN < (NP=target !< EX $++ VP)
    
-   //I'm quite sure about this one. ASK YUE, though
-   
    bool buildNsubj2(const CStateNode* node) {
+	   if (node->constituent==PENN_CON_VP || node->constituent==PENN_CON_PRN) {
+		   //const CStateNode* s=immediatelyDominates(node, PENN_CON_S);
+		   CStateNodeList* childs=node->m_umbinarizedSubNodes;
+		   while(childs!=0) {
+			   const CStateNode* npTarg=childs->node;
+			   if (npTarg->constituent==PENN_CON_NP) {
+				   CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
+				   bool noExChild=true;
+				   while(childsNp!=0){
+					   const CStateNode* noex=childsNp->node;
+					   if (isPos(noex,"EX")) {
+						   noExChild=false;
+					   }
+				   }
+				   CStateNodeList* sistersRightNp=childs;
+				   if (sistersRightNp!=0) sistersRightNp=sistersRightNp->next;
+				   while(sistersRightNp!=0) { //old the sisters of NP
+					   const CStateNode* sister=sistersRightNp->node;
+					   if (sister->constituent==PENN_CON_VP && noExChild) { //FIRE RULE
+						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+						   buildStanfordLink(label, npTarg->lexical_head, node->lexical_head);
+						   //std::cout<<"nSubj1"<<" (head: "<<s->lexical_head<<")"<<"(dependent"<<np->lexical_head<<")\n"; //miguel
+						   return true; //DO I HAVE TO RETURN TRUE? CAN I FIRE ANOTHER ONE? NO RIGHT? YUE?
+					   }
+					   sistersRightNp=sistersRightNp->next;
+				   }
+					  
+			   }
+			   childs=childs->next;
+		   }
+	   }
+	   return false;
+	   
+	   
+	   
+	   
+	   
+	   
       	   /*if ((node->constituent==PENN_CON_SQ)||(node->constituent==PENN_CON_PRN)) {
       		   const CStateNode* np=immediatelyDominates(node, PENN_CON_NP);
       		   if (np!=0) {
