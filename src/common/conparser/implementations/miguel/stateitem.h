@@ -908,12 +908,6 @@ public:
 		   }
 	   }
 	   return false;
-	   
-	   
-	   
-	   
-	   
-	   
       	   /*if ((node->constituent==PENN_CON_SQ)||(node->constituent==PENN_CON_PRN)) {
       		   const CStateNode* np=immediatelyDominates(node, PENN_CON_NP);
       		   if (np!=0) {
