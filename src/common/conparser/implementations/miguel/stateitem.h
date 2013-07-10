@@ -174,6 +174,7 @@ public:
    CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end,bool headFound) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0),danglingSubNodes(0) {
 	   m_umbinarizedSubNodes=new CStateNodeList();
 	   danglingSubNodes=new CStateNodeList();
+	   std::cout<<"miguel";
    }
    CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0), danglingSubNodes(0) {}
    virtual ~CStateNode() {
@@ -183,7 +184,6 @@ public:
 		   delete temp;
 		   temp=next;
 	   }
-	   //delete m_subnodes; ?????
    }
 public:
 
