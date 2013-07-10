@@ -13,40 +13,54 @@
 //static copulateVerbs({"be", "being", "been", "am", "are", "r", "is", "ai", "was", "were", "'m", "'re", "'s", "s", "seem", "seems", "seemed", "appear", "appears", "appeared", "stay", "stays", "stayed", "remain", "remains", "remained", "resemble", "resembles", "resembled", "become", "becomes", "became"};
 
 static CWord g_word_mondays("Mondays");
+static CWord g_word_monday("Monday");
 static CWord g_word_tuesdays("Tuesdays");
+static CWord g_word_tuesday("Tuesday");
 static CWord g_word_wednesdays("Wednesdays");
+static CWord g_word_wednesday("Wednesday");
 static CWord g_word_thursdays("Thursdays");
+static CWord g_word_thursday("Thursday");
 static CWord g_word_fridays("Fridays");
+static CWord g_word_friday("Friday");
 static CWord g_word_saturdays("Saturdays");
+static CWord g_word_saturday("Saturday");
 static CWord g_word_sundays("Sundays");
+static CWord g_word_sunday("Sunday");
 static CWord g_word_years("years");
-static CWord g_word_months("months?");
+static CWord g_word_year("year");
+static CWord g_word_months("months");
+static CWord g_word_month("month");
 static CWord g_word_weeks("weeks");
+static CWord g_word_week("week");
 static CWord g_word_days("days");
+static CWord g_word_day("day");
 static CWord g_word_mornings("mornings");
+static CWord g_word_morning("morning");
 static CWord g_word_evenings("evenings");
+static CWord g_word_evening("evening");
 static CWord g_word_nights("nights");
+static CWord g_word_night("night");
 static CWord g_word_january("January");
-static CWord g_word_jan("Jan"); //...Jan+something
+static CWord g_word_jan("Jan."); //...Jan+something
 static CWord g_word_february("February");
-static CWord g_word_feb("Feb");//... Feb+something
+static CWord g_word_feb("Feb.");//... Feb+something
 static CWord g_word_march("March");
-static CWord g_word_mar("Mar");//... Mar+something
+static CWord g_word_mar("Mar.");//... Mar+something
 static CWord g_word_april("April");
-static CWord g_word_apr("Apr");//... Apr+something
+static CWord g_word_apr("Apr.");//... Apr+something
 static CWord g_word_may("May");
 static CWord g_word_june("June");
 static CWord g_word_july("July");
 static CWord g_word_august("August");
-static CWord g_word_aug("Aug");//... Apr+something
+static CWord g_word_aug("Aug.");//... Apr+something
 static CWord g_word_september("September");
-static CWord g_word_sep("Sep");//... Apr+something
+static CWord g_word_sept("Sept.");//... Apr+something
 static CWord g_word_october("October");
-static CWord g_word_oct("Oct");//... Apr+something
+static CWord g_word_oct("Oct.");//... Apr+something
 static CWord g_word_november("November");
-static CWord g_word_nov("Nov");//... Apr+something
+static CWord g_word_nov("Nov.");//... Apr+something
 static CWord g_word_december("December");
-static CWord g_word_dec("Dec");//... Apr+something
+static CWord g_word_dec("Dec.");//... Apr+something
 static CWord g_word_today("today");
 static CWord g_word_yesterday("yesteday");
 static CWord g_word_tomorrow("tomorrow");
@@ -55,6 +69,8 @@ static CWord g_word_summer("summer");
 static CWord g_word_fall("fall");
 static CWord g_word_autumn("autumn");
 static CWord g_word_winter("winter");
+
+static CWord g_word_underunder("__");
 //static CWord g_word_lot("lot"); //?
 
 
@@ -81,25 +97,25 @@ class CStateNodeList {
 		void clear() {node=0; next=0; previous=0;}
 		
 		void add(const CStateNode* new_node) {
-			/*CStateNodeList* temp=new CStateNodeList();
-			temp->node=new_node;
-			temp->next=this->next;
-			this->next=temp;*/
-			
-			CStateNodeList* temp=this->next;
-			while(temp!=0) {
-				temp=temp->next;  //IF we have the siblings into account
+			if (node==0){
+				this->node=new_node;
 			}
-			CStateNodeList* list_new=new CStateNodeList();
-			list_new->node=node;
-			temp->next=list_new;
-			list_new->previous=temp;
+			else {
+				CStateNodeList* temp=this;
+				while(temp->next!=0) {
+					temp=temp->next;  //we iterate until the end of the list
+				}
+				CStateNodeList* list_new=new CStateNodeList();
+				list_new->node=node;
+				temp->next=list_new;
+				list_new->previous=temp;
+			}
 		}
 		
 		void add(CStateNodeList* list) {
-			CStateNodeList* temp=this->next;
-			while(temp!=0) {
-				temp=temp->next;  //IF we have the siblings into account
+			CStateNodeList* temp=this;
+			while(temp->next!=0) {
+				temp=temp->next;  //we iterate until the end of the list
 			}
 			temp->next=list;
 			list->previous=temp;
@@ -134,6 +150,7 @@ public:
    CStateNodeList* m_umbinarizedSubNodes; //list of subnodes of first level //Miguel
    CHashMap<unsigned long, int>* m_subnodes; //list of subnodes //Miguel
    
+   CStateNodeList* danglingSubNodes;
    
    
    // fields for tokens and constituents
@@ -152,8 +169,8 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0) {}
-   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0) {}
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end,bool headFound) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0),danglingSubNodes(0) {}
+   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0), danglingSubNodes(0) {}
    virtual ~CStateNode() {
 	   CLink* temp=stfLinks;
 	   while (temp!=0) {
@@ -181,9 +198,14 @@ public:
       this->stfLinks = 0; //miguel
       //this->stfLinksCollapsed =0; //miguel
       this->stfLinksCollapsed = 0; //miguel
+      
+      m_umbinarizedSubNodes=0;
+      m_subnodes=0;
+      danglingSubNodes=0;
    }
    void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) { 
       this->id = id;
+      
       this->type = type; 
       this->temp = temp; 
       this->constituent = constituent; 
@@ -194,6 +216,9 @@ public:
       this->lexical_end = lexical_end;
       
       this->stfLinks=0; //Miguel
+      this->m_umbinarizedSubNodes=0; //Miguel
+      this->m_subnodes=0; //Miguel
+      this->danglingSubNodes=0; //Miguel
       
    }//{}
 
@@ -223,6 +248,8 @@ public:
       
       //the stanford links are missing. Let's see whether they are necessary or not. (Miguel)
    }
+
+   
 public:
    void toCCFGTreeNode(CCFGTreeNode &node) const {
 //      node.parent = parent->id;
@@ -382,7 +409,7 @@ protected:
          CStateNodeList* aux=retval->node.left_child->m_umbinarizedSubNodes; //MIGUEL
          //unsigned long c=static_cast<unsigned long>(&node);
          while(aux!=0){
-        	 retval->node.m_subnodes[reinterpret_cast<unsigned long> (aux->node)]=1; ///??? ASK YUE
+        	 retval->node.m_subnodes[reinterpret_cast<unsigned long> (aux->node)]=1; ///??? ASK YUE. Miguel
         	 //retval->node.m_subnodes[aux->node]=1;
         	 aux=aux->next;
          }
@@ -433,9 +460,9 @@ protected:
         	 retval->node.m_umbinarizedSubNodes->add(r);//miguel 
          }
          //addToHash(node.m_umbinarizedSubNodes);
-         CStateNodeList* aux=retval->node.left_child->m_umbinarizedSubNodes; //MIGUEL
+         //CStateNodeList* aux=retval->node.left_child->m_umbinarizedSubNodes; //MIGUEL
          //unsigned long c=static_cast<unsigned long>(&node);
-         while(aux!=0){
+         /*while(aux!=0){
         	 retval->node.m_subnodes[reinterpret_cast<unsigned long> (aux->node)]=1; ///??? ASK YUE
              //retval->node.m_subnodes[aux->node]=1;
              aux=aux->next;
@@ -446,7 +473,7 @@ protected:
         	 retval->node.m_subnodes[reinterpret_cast<unsigned long> (aux->node)]=1; ///??? ASK YUE
              //retval->node.m_subnodes[aux->node]=1;
              aux=aux->next;
-         }
+         }*/
          
          
          retval->generateStanfordLinks(); //collapsed and then uncollapsed
@@ -795,6 +822,7 @@ public:
    //this method generates the stanford links that are available for the current node.
    void generateStanfordLinks() {
 	   
+	   //std::cout<<"generating Stanford links ";
 	   
 	   //nsubj
 	   //S < (NP=target $+ NP|ADJP) > VP
@@ -802,9 +830,9 @@ public:
 	   //SQ|PRN < (NP=target !< EX $++ VP)
 	   buildNsubj2();
 	   //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
-	   //if (buildNsubj3(this->node))  return;
+	   buildNsubj3();
 	   //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++VP)",
-	   //if (buildNsubj4(this->node))  return;
+	   buildNsubj4();
 	   //"S < (NP < EX) <+(VP) (VP < NP=target)"
 	   buildNsubj5();
 	   //"SQ < ((NP=target !< EX) $- /^(?:VB|AUX)/ !$++ VP)",
@@ -816,7 +844,7 @@ public:
 	   //"SBARQ < (SQ=target < /^(?:VB|AUX)/ !< VP)",
 	   buildNsubj9();
 	   //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
-	   //if (buildNsubj10(this->node))  return;
+	   buildNsubj10();
 	   //"SBAR < WHNP=target [ < (S < (VP !$-- NP) !< SBAR) | < (VP !$-- NP) !< S ]"
 	   buildNsubj11();
 	   //"SBAR !< WHNP < (S !< (NP $++ VP)) > (VP > (S $- WHNP=target))",
@@ -847,27 +875,62 @@ public:
    bool compareWordToTimeWordRegex(CWord a) {
 	   
 	   if (a==g_word_mondays) return true;
+	   if (a==g_word_monday) return true;
 	   if (a==g_word_tuesdays) return true;
+	   if (a==g_word_tuesday) return true;
 	   if (a==g_word_wednesdays) return true;
+	   if (a==g_word_wednesday) return true;
 	   if (a==g_word_thursdays) return true;
+	   if (a==g_word_thursday) return true;
+	   if (a==g_word_friday) return true;
 	   if (a==g_word_fridays) return true;
+	   if (a==g_word_saturdays) return true;
+	   if (a==g_word_saturday) return true;
+	   if (a==g_word_sundays) return true;
+	   if (a==g_word_sunday) return true;
+	   if (a==g_word_days) return true;
+	   if (a==g_word_day) return true;
+	   if (a==g_word_morning) return true;
+	   if (a==g_word_mornings) return true;
+	   if (a==g_word_evenings) return true;
+	   if (a==g_word_evening) return true;
+	   if (a==g_word_nights) return true;
+	   if (a==g_word_night) return true;
 	   //...
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
-	   if (a==g_word_mondays) return true;
+	   if (a==g_word_january) return true;
+	   if (a==g_word_jan) return true;
+	   
+	   if (a==g_word_february) return true;
+	   if (a==g_word_feb) return true;
+	   	   
+	   if (a==g_word_march) return true;
+	   if (a==g_word_mar) return true;
+	   	
+	   if (a==g_word_april) return true;
+	   if (a==g_word_apr) return true;
+	   
+	   if (a==g_word_may) return true;
+	   if (a==g_word_june) return true;
+	   if (a==g_word_july) return true;
+	   if (a==g_word_august) return true;
+	   if (a==g_word_aug) return true;
+	   if (a==g_word_september) return true;
+	   if (a==g_word_sept) return true;
+	   if (a==g_word_october) return true;
+	   if (a==g_word_oct) return true;
+	   if (a==g_word_november) return true;
+	   if (a==g_word_nov) return true;
+	   if (a==g_word_december) return true;
+	   if (a==g_word_dec) return true;
+	   if (a==g_word_today) return true;
+	   if (a==g_word_yesterday) return true;
+	   if (a==g_word_tomorrow) return true;
+	   if (a==g_word_spring) return true;
+	   if (a==g_word_summer) return true;
+	   if (a==g_word_fall) return true;
+	   if (a==g_word_autumn) return true;
+	   if (a==g_word_winter) return true;
+	   
 	   //fix that....
 	   
 	   
@@ -893,6 +956,7 @@ public:
   		   headChilds=headChilds->next;
   	   }
      } 
+     
    
 
    
@@ -908,8 +972,21 @@ public:
    //===================================================================================================
     
     
+    bool isDangling(const CStateNode* head, const CStateNode* child){
+    	CStateNodeList* danglings=head->danglingSubNodes;
+    	while(danglings!=0){
+    		if (danglings->node==child) return true;
+    		danglings=danglings->next;
+    	}
+    	return false;
+    }
     
+    void addDangling(const CStateNode* head, const CStateNode* child){
+        	CStateNodeList* danglings=head->danglingSubNodes;
+        	danglings->add(child);
+        }
     
+    //===================================================================================================
     
    /*
     * Miguel: RULES FOR NSUBJ. There are 13
@@ -926,16 +1003,20 @@ public:
 				   CStateNodeList* childsS=sHead->m_umbinarizedSubNodes;
 				   while(childsS!=0){
 					   const CStateNode* npTarg=childsS->node;
-					   if (npTarg->constituent==PENN_CON_NP) {
+					   if (npTarg->constituent==PENN_CON_NP && !(isDangling(sHead,npTarg))) {
 						   CStateNodeList* sistersRightNp=childsS;
 						   if (sistersRightNp!=0) sistersRightNp=sistersRightNp->next;
 						   if(sistersRightNp!=0) { //is the inmediately (just one)
 							   const CStateNode* sister=sistersRightNp->node;
 							   if (sister->constituent==PENN_CON_NP || sister->constituent==PENN_CON_ADJP) { //FIRE RULE
 								   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-								   buildStanfordLink(label, npTarg->lexical_head, sHead->lexical_head);
+								   if (buildStanfordLink(label, npTarg->lexical_head, sHead->lexical_head)){
+									   std::cout<<"nSubj1"<<" (head: "<<sHead->lexical_head<<")"<<"(dependent"<<npTarg->lexical_head<<")\n";
+									   addDangling(sHead,npTarg);
+									   return true;
+								   }
 								   //std::cout<<"nSubj1"<<" (head: "<<s->lexical_head<<")"<<"(dependent"<<np->lexical_head<<")\n"; //miguel
-								   return true; //DO I HAVE TO RETURN TRUE? CAN I FIRE ANOTHER ONE? NO RIGHT? YUE?
+								    //DO I HAVE TO RETURN TRUE? CAN I FIRE ANOTHER ONE? NO RIGHT? YUE?
 							   }
 						   }
 					   }
@@ -958,7 +1039,7 @@ public:
 		   CStateNodeList* childs=node.m_umbinarizedSubNodes;
 		   while(childs!=0) {
 			   const CStateNode* npTarg=childs->node;
-			   if (npTarg->constituent==PENN_CON_NP) {
+			   if (npTarg->constituent==PENN_CON_NP && !(isDangling(&node,npTarg))) {
 				   CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
 				   bool noExChild=true;
 				   while(childsNp!=0){
@@ -979,9 +1060,12 @@ public:
 						   const CStateNode* sister=sistersRightNp->node;
 						   if (sister->constituent==PENN_CON_VP) { //FIRE RULE
 							   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-							   buildStanfordLink(label, npTarg->lexical_head, node.lexical_head);
-							   //std::cout<<"nSubj1"<<" (head: "<<s->lexical_head<<")"<<"(dependent"<<np->lexical_head<<")\n"; //miguel
-							   return true; //DO I HAVE TO RETURN TRUE? CAN I FIRE ANOTHER ONE? NO RIGHT? YUE?
+							   if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+								   std::cout<<"nSubj2"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npTarg->lexical_head<<")\n";
+								   addDangling(&node,npTarg);
+								   return true;
+							   }
+							    //DO I HAVE TO RETURN TRUE? CAN I FIRE ANOTHER ONE? NO RIGHT? YUE?
 						   }
 						   sistersRightNp=sistersRightNp->next;
 					   }
@@ -993,7 +1077,109 @@ public:
 	   }
 	   return false;  	  
     }
+   
+   //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
+   bool buildNsubj3() {
+	   if (node.constituent==PENN_CON_S) {
+		   CStateNodeList* childsS=node.m_umbinarizedSubNodes;
+		   while(childsS!=0){
+			   const CStateNode* npwhnpTarg=childsS->node;
+			   if ((npwhnpTarg->constituent==PENN_CON_NP ||npwhnpTarg->constituent==PENN_CON_WHNP)&& !(isDangling(&node, npwhnpTarg))){
+				   bool vpSister=false;
+				   CStateNodeList* rightSistersNp=childsS;
+				   while(rightSistersNp!=0){
+					   if (rightSistersNp->node->constituent==PENN_CON_VP){
+						   vpSister=true;
+				   		}
+				   		rightSistersNp=rightSistersNp->next;
+				   	}
+				   if (vpSister) {
+					   CStateNodeList* childsNpwhnp=npwhnpTarg->m_umbinarizedSubNodes;
+					   bool noEx=true;
+					   bool noNNTime=true;
+					   //NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + ")))
+					   while(childsNpwhnp!=0){
+						   const CStateNode* nnChildNp=childsNpwhnp->node;
+						   if ((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_EX) {
+							   noEx=false;
+						   }
+						   else if ((nnChildNp->type==CStateNode::LEAF)
+								   && (nnChildNp->lexical_head==npwhnpTarg->lexical_head) //<#
+								   && (compareWordToTimeWordRegex((*words)[nnChildNp->lexical_head].word))
+								   && ((((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN))
+								   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER))
+								   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
+								   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
+							   noNNTime=false;
+						   }
+						   childsNpwhnp=childsNpwhnp->next;
+					   }
+					   if (noEx && noNNTime){
+						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+						   if (buildStanfordLink(label, npwhnpTarg->lexical_head, node.lexical_head)) {
+							   addDangling(&node,npwhnpTarg);
+							   std::cout<<"nSubj3"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npwhnpTarg->lexical_head<<")\n";
+						   	   return true;
+						   	}     
+					   }
+				   }
+			   }
+			   childsS=childsS->next;
+		   }
+	   }
+	   return false;
+   }
+   
   
+   //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++ VP)",
+   bool buildNsubj4() {
+	   if (node.constituent==PENN_CON_S){
+		   CStateNodeList* childsS=node.m_umbinarizedSubNodes;
+		   while (childsS!=0){
+			   const CStateNode* npTarg=childsS->node;
+			   if (npTarg->constituent==PENN_CON_NP && !(isDangling(&node, npTarg))) {
+				   //$++ and !$++
+				   bool noNpSister=true;
+				   bool vpSister=false;
+				   CStateNodeList* rightSistersNp=childsS;
+				   while(rightSistersNp!=0){
+					   if (rightSistersNp->node->constituent==PENN_CON_NP){
+						   noNpSister=false;
+					   }
+					   else if (rightSistersNp->node->constituent==PENN_CON_VP){
+						   vpSister=true;
+					   }
+					   rightSistersNp=rightSistersNp->next;
+				   }
+				   
+				   if (noNpSister && vpSister) {
+					   CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
+					   while(childsNp!=0){
+						   const CStateNode* nnChildNp=childsNp->node;
+						   
+						   if ((nnChildNp->type==CStateNode::LEAF)
+							   && (nnChildNp->lexical_head==npTarg->lexical_head) //<#
+							   && (compareWordToTimeWordRegex((*words)[nnChildNp->lexical_head].word))
+							   && ((((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN))
+							   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER))
+							   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
+							   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
+							   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+							   if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+								  addDangling(&node,npTarg);
+								  std::cout<<"nSubj4"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npTarg->lexical_head<<")\n";
+							   	  return true;
+							  }   
+						   }
+						   childsNp=childsNp->next;
+					   }
+				   }
+			   }
+			   childsS=childsS->next;
+		   }
+	   }
+	   return false;
+   }
     
    
    //"S < (NP < EX) <+(VP) (VP < NP=target)"
@@ -1018,10 +1204,13 @@ public:
       									  CStateNodeList* childsOfAVp=vpsChain->node->m_umbinarizedSubNodes;
       									  while(childsOfAVp!=0){
       										  const CStateNode* npTarg=childsOfAVp->node;
-      										  if (npTarg->constituent==PENN_CON_NP) {
+      										  if (npTarg->constituent==PENN_CON_NP && !(isDangling(vpsChain->node,npTarg))) {
       											  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-      											  buildStanfordLink(label, npTarg->lexical_head, node.lexical_head);
-      											  return true; 
+      											  if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+      												  addDangling(vpsChain->node,npTarg);
+      												  std::cout<<"nSubj5"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npTarg->lexical_head<<")\n";
+      												  return true; 
+      											  }
       										  }
       										  childsOfAVp=childsOfAVp->next;
       									  }
@@ -1046,7 +1235,7 @@ public:
    			CStateNodeList* childsSq=node.m_umbinarizedSubNodes;
    			while (childsSq!=0){
    				const CStateNode* npTarg=childsSq->node;
-   				if (npTarg->constituent==PENN_CON_NP){
+   				if (npTarg->constituent==PENN_CON_NP && !(isDangling(&node,npTarg))){
    					bool noEx=true;
    					CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
    					while(childsNp!=0) {
@@ -1070,8 +1259,11 @@ public:
    								if ((*words)[npLeftSister->lexical_head].tag.code()==PENN_TAG_VERB) { //for now, we leave AUX as it is.
    									//std::cout<<(*words)[npLeftSister->lexical_head].word;
    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-   									buildStanfordLink(label, npTarg->lexical_head, node.lexical_head);
-   									return true;
+   									if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+   										addDangling(&node,npTarg);
+   										std::cout<<"nSubj6"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npTarg->lexical_head<<")\n";
+   										return true;
+   									}
    								}
    							}
    						}
@@ -1091,7 +1283,7 @@ public:
    				CStateNodeList* childsSQ=node.m_umbinarizedSubNodes;
    				while(childsSQ!=0){
    					const CStateNode* npTarg=childsSQ->node;
-   					if (npTarg->constituent==PENN_CON_NP){
+   					if (npTarg->constituent==PENN_CON_NP && !(isDangling(&node,npTarg))){
    						bool noEx=true;
    						CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
    						while(childsNp!=0){
@@ -1116,8 +1308,11 @@ public:
    											}
    											if (noVp) {
    												CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-   												buildStanfordLink(label, npTarg->lexical_head, node.lexical_head);
-   												return true;
+   												if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
+   													addDangling(&node,npTarg);
+   													std::cout<<"nSubj7"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npTarg->lexical_head<<")\n";
+   													return true;
+   												}
    											}
    										}
    									}
@@ -1163,10 +1358,13 @@ public:
     			  childsSbarq=node.m_umbinarizedSubNodes;
     			  while(childsSbarq!=0){
     				  const CStateNode* whnpTarg=childsSbarq->node;
-    				  if (whnpTarg->constituent==PENN_CON_WHNP) {
+    				  if (whnpTarg->constituent==PENN_CON_WHNP && !(isDangling(&node,whnpTarg))) {
     					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-    					   buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head);
-    					   return true;
+    					   if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)){
+    						   addDangling(&node,whnpTarg);
+    						   std::cout<<"nSubj8"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<whnpTarg->lexical_head<<")\n";
+    					   	   return true;
+    					   }
     				  }
     				  childsSbarq=childsSbarq->next;
     			  }
@@ -1182,7 +1380,7 @@ public:
    			   CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
    			   while(childsSbarq!=0){
    				   const CStateNode* sqTarg=childsSbarq->node;
-   				   if (sqTarg->constituent==PENN_CON_SQ) {
+   				   if (sqTarg->constituent==PENN_CON_SQ && !(isDangling(&node,sqTarg))) {
    					   bool firstCondition=false;
    					   bool noVp=true;
    					   CStateNodeList* sonsOfSq=sqTarg->m_umbinarizedSubNodes;
@@ -1199,11 +1397,116 @@ public:
    					   }
    					   if (noVp && firstCondition) {
    						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-   						   buildStanfordLink(label, sqTarg->lexical_head, node.lexical_head);
+   						   if (buildStanfordLink(label, sqTarg->lexical_head, node.lexical_head)){
+   							   addDangling(&node,sqTarg);
+   							   std::cout<<"nSubj9"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<sqTarg->lexical_head<<")\n";
+   							   return true;
+   						   }
    						   
    					   }
    				   }
    				   childsSbarq=childsSbarq->next;
+   			   }
+   		   }
+   		   return false;
+   	   }
+   	   
+   	   
+   	   //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
+   	   
+   	   //(NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )
+   	      //2.1 NP|WHNP $- VP... OR
+   	      //2.2 NP|WHNP $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) OR
+   	      //2.3 NP|WHNP !$- __ !$ @NP
+   	   
+   	   bool buildNsubj10() {
+   		   if (node.constituent==PENN_CON_SINV) {
+   			   CStateNodeList* childsSinv=node.m_umbinarizedSubNodes;
+   			   while(childsSinv!=0){
+   				   const CStateNode* npwhnpTarg=childsSinv->node;
+   				   
+   				   if ((npwhnpTarg->constituent==PENN_CON_NP || npwhnpTarg->constituent==PENN_CON_WHNP) && !isDangling(&node,npwhnpTarg)) {
+   					   bool firstCondition=false;
+   					   bool secondCondition=false;
+   					   bool thirdCondition=false;
+   					   
+   					   if (childsSinv->previous!=0){
+   						   const CStateNode* leftSisterNpWhnp=childsSinv->previous->node;
+   						   if ((leftSisterNpWhnp->constituent==PENN_CON_VP) 
+   							   || ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE) 
+   							   || ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_VERB_PAST) 
+   							   || ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_VERB_PRES) 
+   							   || ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_VERB) 
+   							   || ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_MD)) {
+   								
+   								   firstCondition=true;
+   							   }
+   							   
+   							
+   							if ((leftSisterNpWhnp->constituent==PENN_CON_ADVP) 
+   								|| ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_ADVERB)
+   							    || ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE) 
+   							    || ((*words)[leftSisterNpWhnp->lexical_head].tag.code()==PENN_TAG_ADVERB_SUPERLATIVE)) { 
+   							    	
+   							    	if (childsSinv->previous->previous!=0){
+   							    		const CStateNode* leftSisterRbAdvp=childsSinv->previous->node;
+   							    		if ((leftSisterRbAdvp->constituent==PENN_CON_VP)
+   							    		    || ((*words)[leftSisterRbAdvp->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE)
+   							    		    || ((*words)[leftSisterRbAdvp->lexical_head].tag.code()==PENN_TAG_VERB_PAST) 
+   							    		    ||((*words)[leftSisterRbAdvp->lexical_head].tag.code()==PENN_TAG_VERB_PRES) 
+   							    		   	|| ((*words)[leftSisterRbAdvp->lexical_head].tag.code()==PENN_TAG_VERB) 
+   							    		    || ((*words)[leftSisterRbAdvp->lexical_head].tag.code()==PENN_TAG_MD)) {
+   							    		   		 secondCondition=true;
+   							    		   		 
+   							    		   	 }
+   							    	}
+   							  }
+   					   }
+   					   //third condition
+   					   //NP|WHNP !$- __ !$ @NP
+   					   bool firstPart=true;
+   					   bool secondPart=true;
+   					   //first part
+   					   if (childsSinv->previous!=0){
+   						   if ((*words)[childsSinv->previous->node->lexical_head].word==g_word_underunder) {
+   							   firstPart=false;
+   						   } 
+   					   }
+   					   //second part
+   					   CStateNodeList* sisters=childsSinv;
+   					   sisters=sisters->next;
+   					   while(sisters!=0){
+   						   const CStateNode* atnp=sisters->node;
+   						   if (atnp->constituent==PENN_CON_NP){
+   							   secondPart=false;
+   						   }
+   						   sisters=sisters->next;
+   					   }
+   					   sisters=childsSinv;
+   					   sisters=sisters->previous;
+   					   while(sisters!=0){
+   						   const CStateNode* atnp=sisters->node;
+   						   if (atnp->constituent==PENN_CON_NP){
+   							   secondPart=false;
+   						   }
+   						   sisters=sisters->previous;
+   					   }
+   					   
+   					   if (firstPart && secondPart) {
+   						   thirdCondition=true;
+   					   }
+   					   
+   					   if (firstCondition || secondCondition || thirdCondition) {
+   						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
+   						   if (buildStanfordLink(label, npwhnpTarg->lexical_head, node.lexical_head)){
+   							   addDangling(&node,npwhnpTarg);
+   							   std::cout<<"nSubj10"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npwhnpTarg->lexical_head<<")\n";
+   						   	   return true;
+   						   }   
+   					   }
+   					   
+   				   }
+   				   childsSinv=childsSinv->next;
    			   }
    		   }
    		   return false;
@@ -1227,7 +1530,7 @@ public:
    			   CStateNodeList* childsSbar=node.m_umbinarizedSubNodes;
    			   while(childsSbar!=0){
    				   const CStateNode* whnpTarg=childsSbar->node;
-   				   if (whnpTarg->constituent==PENN_CON_WHNP) {
+   				   if (whnpTarg->constituent==PENN_CON_WHNP && !(isDangling(&node, whnpTarg))) {
    					   CStateNodeList* childsSbar2=node.m_umbinarizedSubNodes;
    					   bool secondCondition=true;
    					   bool thereIsVp=false;
@@ -1282,8 +1585,11 @@ public:
    				   
    				   if (secondCondition || firstCondition) {
    					   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-   					   buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head);
-   					   return true;
+   					   if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)){
+   						   addDangling(&node, whnpTarg);
+   						   std::cout<<"nSubj11"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<whnpTarg->lexical_head<<")\n";
+   						   return true;
+   					   }
    				   }
    				   
    				   childsSbar=childsSbar->next;
@@ -1317,7 +1623,7 @@ public:
         			CStateNodeList* leftSisterS=childsNode;
         			if (leftSisterS->previous!=0){
         				const CStateNode* whnpTarg=leftSisterS->node;
-        				if (whnpTarg->constituent==PENN_CON_WHNP) {
+        				if (whnpTarg->constituent==PENN_CON_WHNP && !(isDangling(&node,whnpTarg))) {
         					CStateNodeList* childsS=secondS->m_umbinarizedSubNodes;
         					while(childsS!=0) {
         						const CStateNode* vp=childsS->node;
@@ -1352,8 +1658,11 @@ public:
         											}
         											if (noWhnp && secondCondition){
         												CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-        												buildStanfordLink(label, whnpTarg->lexical_head, sbarHead->lexical_head);
-        												return true;	
+        												if (buildStanfordLink(label, whnpTarg->lexical_head, sbarHead->lexical_head)){
+        													addDangling(&node,whnpTarg);
+        													std::cout<<"nSubj11"<<" (head: "<<sbarHead->lexical_head<<")"<<"(dependent"<<whnpTarg->lexical_head<<")\n";
+        													return true;	
+        												}
         											}
         										}
         										childsSbar=childsSbar->next;
@@ -1386,7 +1695,7 @@ public:
    				   const CStateNode* npTarg;
    				   while(sistersNp!=0) {
    					   npTarg=sistersNp->node;
-   					   if (npTarg->constituent==PENN_CON_NP) {
+   					   if (npTarg->constituent==PENN_CON_NP && !(isDangling(&node,npTarg))) {
    						   sisterIsNp=true;
    					   }
    					   sistersNp=sistersNp->next;
@@ -1399,7 +1708,11 @@ public:
    					   if ((*words)[ex->lexical_head].tag.code()==PENN_TAG_EX) {
    						   if (sisterIsNp) {
    							   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
-   							   buildStanfordLink(label, npTarg->lexical_head, node.lexical_head);
+   							   if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
+   								   addDangling(&node,npTarg);
+   								   std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(dependent"<<npTarg->lexical_head<<")\n";
+   								   return true;
+   							   }
    						   }
    					   }
    					   childsNp=childsNp->next;
@@ -1411,8 +1724,6 @@ public:
    	   return false;
        }
       
-      
-     
      //===============================================================================
       
       //aux rules: there are 4
@@ -1670,11 +1981,13 @@ public:
       
       
       
-   void buildStanfordLink(CDependencyLabel* label, int dependent, int head) {
-	   if (head==dependent) return;
+   bool buildStanfordLink(CDependencyLabel* label, int dependent, int head) {
+	   if (head==dependent) return false;
+	   
    	   CLink* newNode=new CLink(*label, dependent, head, 0);
    	   newNode->next=this->node.stfLinks;
    	   node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
+   	   return true;
       }
 
    //===============================================================================
@@ -1798,5 +2111,8 @@ public:
 };
 
 #endif
+
+
+
 
 
