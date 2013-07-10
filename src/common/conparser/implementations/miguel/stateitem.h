@@ -99,11 +99,13 @@ class CStateNodeList {
 		void add(const CStateNode* new_node) {
 			if (node==0){
 				this->node=new_node;
+				this->next=0;
+				this->previous=0;
 			}
 			else {
 				CStateNodeList* temp=this;
 				while(temp->next!=0) {
-					temp=temp->next;  //we iterate until the end of the list
+					temp=temp->next;  //we iterate just until the very last node.
 				}
 				CStateNodeList* list_new=new CStateNodeList();
 				list_new->node=node;
@@ -115,7 +117,7 @@ class CStateNodeList {
 		void add(CStateNodeList* list) {
 			CStateNodeList* temp=this;
 			while(temp->next!=0) {
-				temp=temp->next;  //we iterate until the end of the list
+				temp=temp->next;  //we iterate just until the very last node.
 			}
 			temp->next=list;
 			list->previous=temp;
@@ -169,7 +171,10 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end,bool headFound) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0),danglingSubNodes(0) {}
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end,bool headFound) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0),danglingSubNodes(0) {
+	   m_umbinarizedSubNodes=new CStateNodeList();
+	   danglingSubNodes=new CStateNodeList();
+   }
    CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),m_subnodes(0), danglingSubNodes(0) {}
    virtual ~CStateNode() {
 	   CLink* temp=stfLinks;
@@ -217,8 +222,10 @@ public:
       
       this->stfLinks=0; //Miguel
       this->m_umbinarizedSubNodes=0; //Miguel
+      m_umbinarizedSubNodes=new CStateNodeList();
       this->m_subnodes=0; //Miguel
       this->danglingSubNodes=0; //Miguel
+      this->danglingSubNodes=new CStateNodeList();
       
    }//{}
 
@@ -406,13 +413,13 @@ protected:
          retval->node.m_umbinarizedSubNodes->add(l);//miguel
          
          //addToHash(retval->node.l->m_umbinarizedSubNodes);//miguel
-         CStateNodeList* aux=retval->node.left_child->m_umbinarizedSubNodes; //MIGUEL
+         /*CStateNodeList* aux=retval->node.left_child->m_umbinarizedSubNodes; //MIGUEL
          //unsigned long c=static_cast<unsigned long>(&node);
          while(aux!=0){
         	 retval->node.m_subnodes[reinterpret_cast<unsigned long> (aux->node)]=1; ///??? ASK YUE. Miguel
         	 //retval->node.m_subnodes[aux->node]=1;
         	 aux=aux->next;
-         }
+         }*/
          
          
 #ifdef TRAIN_LOSS
