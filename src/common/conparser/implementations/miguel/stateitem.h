@@ -396,7 +396,7 @@ protected:
       assert(!retval->IsTerminated());
       
       //retval->node.m_subnodes->clear(); //miguel
-      assert(retval->node.m_umbinarizedSubNodes.empty()); //miguel
+      assert(retval->node.m_umbinarizedSubNodes->empty()); //miguel
    }
    void reduce(CStateItem *retval, const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) const {
       //TRACE("reduce");
