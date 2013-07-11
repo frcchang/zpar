@@ -322,10 +322,12 @@ public:
 #else
 #define SCALE_CON 
 #endif
-   CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node() LOSS_CON SCALE_CON {}
+   CStateItem() : words(0), current_word(0), score(0), action(), stackPtr(0), statePtr(0), node() LOSS_CON SCALE_CON {}
+   CStateItem(const CStateItem&a){THROW("Copy not supported.");}
    virtual ~CStateItem() {}
 public:
    void clear() {
+      words = 0;
       statePtr = 0;
       stackPtr = 0;
       current_word = 0;
@@ -1222,6 +1224,8 @@ public:
       				   const CStateNode* exChildnp=childsNp->node;
       				   std::cout<<"before (lex_head):"<<exChildnp->lexical_head<<"\n";
       				   //std::cout<<"problem?:"<<(*words)[exChildnp->lexical_head]<<"\n";
+                                   assert(words);
+                                   TRACE(words->size());
       				   if ((*words)[exChildnp->lexical_head].tag.code()==PENN_TAG_EX) {
       					   	  std::cout<<"after (lex_head):"<<exChildnp->lexical_head<<"\n";
       					   	  thereIsEx=true;

@@ -48,7 +48,8 @@ public:
    // constructor and destructor
    CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache) { 
       // and initialize the weith module loading content
-      m_weights = new conparser :: CWeight( bTrain );
+      m_weights = new conparser :: CWeight( bTrain ); 
+
       if (bTrain) {
 
 #ifdef TRAIN_MULTI //===
