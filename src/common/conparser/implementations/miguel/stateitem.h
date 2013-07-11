@@ -1454,7 +1454,7 @@ public:
    						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    						   if (buildStanfordLink(label, sqTarg->lexical_head, node.lexical_head)){
    							   addDangling(&node,sqTarg);
-   							   std::cout<<"nSubj9"<<" (head: "<<node.lexical_head<<")"<<"(sqTarg->lexical_head<<")\n";
+   							   //std::cout<<"nSubj9"<<" (head: "<<node.lexical_head<<")"<<"(sqTarg->lexical_head<<")\n";
    							   return true;
    						   }
    						   
@@ -1467,13 +1467,17 @@ public:
    	   }
    	   
    	   
-   	   //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
    	   
-   	   //(NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )
-   	      //2.1 NP|WHNP $- VP... OR
-   	      //2.2 NP|WHNP $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) OR
-   	      //2.3 NP|WHNP !$- __ !$ @NP
-   	   
+   	   /*
+   	   *"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
+   	   *
+   	   *(NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )
+   	   *  //2.1 NP|WHNP $- VP... OR
+   	   *   //2.2 NP|WHNP $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) OR
+   	   *   //2.3 NP|WHNP !$- __ !$ @NP
+   	   * 
+   	   * 
+   	   */
    	   bool buildNsubj10() {
    		   if (node.constituent==PENN_CON_SINV) {
    			   CStateNodeList* childsSinv=node.m_umbinarizedSubNodes;
@@ -1552,7 +1556,7 @@ public:
    						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    						   if (buildStanfordLink(label, npwhnpTarg->lexical_head, node.lexical_head)){
    							   addDangling(&node,npwhnpTarg);
-   							   std::cout<<"nSubj10"<<" (head: "<<node.lexical_head<<")"<<"(npwhnpTarg->lexical_head<<")\n";
+   							   //std::cout<<"nSubj10"<<" (head: "<<node.lexical_head<<")"<<"(npwhnpTarg->lexical_head<<")\n";
    						   	   return true;
    						   }   
    					   }
@@ -1646,7 +1650,7 @@ public:
    						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    						   if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)){
    							   addDangling(&node, whnpTarg);
-   							   std::cout<<"nSubj11"<<" (head: "<<node.lexical_head<<")"<<"(whnpTarg->lexical_head<<")\n";
+   							   //std::cout<<"nSubj11"<<" (head: "<<node.lexical_head<<")"<<"(whnpTarg->lexical_head<<")\n";
    							   return true;
    						   }
    					   }
@@ -1718,7 +1722,7 @@ public:
         												CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
         												if (buildStanfordLink(label, whnpTarg->lexical_head, sbarHead->lexical_head)){
         													addDangling(&node,whnpTarg);
-        													std::cout<<"nSubj11"<<" (head: "<<sbarHead->lexical_head<<")"<<"(whnpTarg->lexical_head<<")\n";
+        													//std::cout<<"nSubj11"<<" (head: "<<sbarHead->lexical_head<<")"<<"(whnpTarg->lexical_head<<")\n";
         													return true;	
         												}
         											}
@@ -1768,7 +1772,7 @@ public:
    							   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    							   if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
    								   addDangling(&node,npTarg);
-   								   std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
+   								   //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
    								   return true;
    							   }
    						   }
