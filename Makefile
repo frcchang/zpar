@@ -66,8 +66,8 @@ ENGLISH_CONPARSER_IMPL = miguel
 #
 #================================================================
 
-#DEBUG = -DDEBUG -g
-DEBUG = -DNDEBUG
+DEBUG = -DDEBUG -g
+#DEBUG = -DNDEBUG
 
 #================================================================
 #

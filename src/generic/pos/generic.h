@@ -20,7 +20,7 @@ const char TAG_SEPARATOR = '/';
 
 /*===============================================================
  *
- * definitions abstd::cout tag 
+ * definitions about tag 
  *
  *==============================================================*/
 
@@ -67,7 +67,7 @@ public:
    CTag() : m_code(NONE) { }
    CTag(const std::string &s) { load(s); }
    CTag(const CTag &t) : m_code(t.m_code) { }
-   CTag(const unsigned &u) { assert(getTokenizer().count()>u); m_code=u; }
+   CTag(const unsigned long &u) { assert(getTokenizer().count()>u); m_code=u; }
    virtual ~CTag() {}
 
 public:
@@ -80,6 +80,7 @@ public:
    bool operator > (const CTag &w) const { return m_code > w.m_code; }
    bool operator <= (const CTag &w) const { return m_code <= w.m_code; }
    bool operator >= (const CTag &w) const { return m_code >= w.m_code; }
+   void operator = (const CTag &a) { m_code = a.m_code; }
 
    void load(const std::string &s) {
       m_code=getTokenizer().lookup(s); 
