@@ -200,7 +200,7 @@ public:
 public:
    void clear() {
       std::vector<CCoNLLOutputNode>::clear();
-      push_back(CCoNLLOutputNode(0, "-NONE-", "-NONE-", "-BEGIN-", "-BEGIN-", "", DEPENDENCY_LINK_NO_HEAD, "ROOT", DEPENDENCY_LINK_NO_HEAD, ""));
+      push_back(CCoNLLOutputNode(0, "-NONE-", "_", "_", "-BEGIN-", "_", DEPENDENCY_LINK_NO_HEAD, "ROOT", DEPENDENCY_LINK_NO_HEAD, ""));
 //      push_back(CCoNLLOutputNode(0, "", "", "-BEGIN-", "-BEGIN-", "", DEPENDENCY_LINK_NO_HEAD, "", DEPENDENCY_LINK_NO_HEAD, ""));
    }
 
