@@ -4,7 +4,7 @@
 
 #define SIMPLE_HASH
 
-//#define NO_NEG_FEATURE
+//#define NO_NEG_FEATURE //THESE FOR GOLD STANDARD TESTING remove!! //FOR GOLD-STD
 
 // using passive aggressive
 //#define TRAIN_MARGIN

@@ -141,9 +141,14 @@ int main(int argc, char* argv[]) {
    
       std::cout << "Training started." << std::endl;
       int time_start = clock();
+      
+      
 #ifdef NO_NEG_FEATURE
+      
       if (!FileExists(options.args[2]))
          extract_features(options.args[1], options.args[2]); 
+      //exit(1); //THESE TWO LINES ARE FOR GOLD-STANDARD DEBUGGING! REMOVE THEM! MIGUEL //FOR GOLD-STD
+
 #endif     
       for (int i=0; i<training_rounds; ++i) {
          auto_train(options.args[1], options.args[2], sBinaryRulePath, sUnaryRulePath, sConInputPath); // set update tag dict false now
