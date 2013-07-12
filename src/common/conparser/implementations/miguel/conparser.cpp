@@ -16,6 +16,7 @@ using namespace TARGET_LANGUAGE;
 using namespace TARGET_LANGUAGE::conparser;
 
 #define refer_or_allocate_tuple2(x, o1, o2) { if (amount == 0) x.refer(o1, o2); else x.allocate(o1, o2); }
+#define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
 
 /*===============================================================
  *
@@ -75,8 +76,25 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    const CAction &a2 = item->statePtr->action;
 
    static CTuple2<CAction, CAction> tuple_action2;
+   
+   //static CTuple3<CTag,CTag,CDependencyLabel> tag_tag_label; //Miguel. Stanford links
 
 //   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
+   
+   
+   
+   //STANFORD LINK FEATURES. MIGUEL (Friday 12th Jul 2013)
+   /*CLink* temp=item->node.stfLinks;
+   while(temp!=0){
+	   refer_or_allocate_tuple3(tag_tag_label, m_lCache[temp->head].tag, m_lCache[temp->dependent].tag, temp->label);
+	   
+	   m_weights->m_mapHtMtl.getOrUpdateScore(retval,tag_tag_label, 0, m_nScoreIndex, amount, round); //is 0 no action?
+	   
+	   temp=temp->next;
+   }*/
+   
+   
+   
 
    // S0
    cast_weights->m_mapS0w.getOrUpdateScore(retval, *(m_Context.s0wt), action.code(), m_nScoreIndex, amount, round);

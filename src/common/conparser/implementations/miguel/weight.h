@@ -20,6 +20,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 #define ID_COMMA ,
 
 #define iterate_templates(left, right) \
+   left(m_mapHtMtl)right\ 
    left(m_mapS0c)right\
    left(m_mapS0w)right\
    left(m_mapS0tc)right\
@@ -212,6 +213,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 
 
 #define iterate_double_templates(left, middle, right)\
+   left m_mapHtMtl middle m_mapHtMtl right\
    left m_mapS0c middle m_mapS0c right\
    left m_mapS0w middle m_mapS0w right\
    left m_mapS0tc middle m_mapS0tc right\
@@ -438,6 +440,8 @@ typedef CScoreMapType<CConstituent, SCORE_TYPE, CAction::MAX> CConstituentMap;
 typedef CScoreMapType<CAction, SCORE_TYPE, CAction::MAX> CActionMap;
 typedef CScoreMapType<CTuple2<CAction, CAction>, SCORE_TYPE, CAction::MAX> CAction2Map;
 
+typedef CScoreMapType<CTuple3<CTag,CTag,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CTagTagLabelMap; //Miguel
+
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
 //! added by zhumuhua
@@ -452,6 +456,9 @@ typedef CScoreMapType<CTuple2<CWord, CTag>, SCORE_TYPE, CAction::MAX> CWordTagMa
 class CWeight : public CWeightBase {
 
 public:
+	
+	//Stanford dependencies. 
+	CTagTagLabelMap m_mapHtMtl; //MIguel
 
    // S0
    CConstituentMap m_mapS0c;
@@ -723,7 +730,9 @@ public:
 
                           m_nMaxWordFrequency(0) ,
                           m_mapWordFrequency(TABLE_SIZE),
-
+                          	
+                          m_mapHtMtl("HeadTafModifierTagDependencyLabel", TABLE_SIZE),
+                          
                           m_mapS0c("Stack0Constituent", TABLE_SIZE),
                           m_mapS0w("Stack0Word", TABLE_SIZE),
                           m_mapS0tc("Stack0Tag", TABLE_SIZE),
