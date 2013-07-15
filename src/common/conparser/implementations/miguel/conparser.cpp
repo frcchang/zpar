@@ -77,21 +77,22 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
    static CTuple2<CAction, CAction> tuple_action2;
    
-   //static CTuple3<CTag,CTag,CDependencyLabel> tag_tag_label; //Miguel. Stanford links
+   static CTuple3<CTag,CTag,CDependencyLabel> tag_tag_label; //Miguel. Stanford links (1)
 
 //   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
    
    
    
    //STANFORD LINK FEATURES. MIGUEL (Friday 12th Jul 2013)
-   /*CLink* temp=item->node.stfLinks;
+   CLink* temp=item->node.stfLinks; //(2) Feature extraction
+   
    while(temp!=0){
-	   refer_or_allocate_tuple3(tag_tag_label, m_lCache[temp->head].tag, m_lCache[temp->dependent].tag, temp->label);
+	   refer_or_allocate_tuple3(tag_tag_label, &m_lCache[temp->head].tag, &m_lCache[temp->dependent].tag, &temp->label);
 	   
-	   m_weights->m_mapHtMtl.getOrUpdateScore(retval,tag_tag_label, 0, m_nScoreIndex, amount, round); //is 0 no action?
+	   cast_weights->m_mapHtMtl.getOrUpdateScore(retval,tag_tag_label, 0, m_nScoreIndex, amount, round); //is 0 no action?
 	   
 	   temp=temp->next;
-   }*/
+   } //Miguel
    
    
    
