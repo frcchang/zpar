@@ -12,6 +12,7 @@
 
 //static copulateVerbs({"be", "being", "been", "am", "are", "r", "is", "ai", "was", "were", "'m", "'re", "'s", "s", "seem", "seems", "seemed", "appear", "appears", "appeared", "stay", "stays", "stayed", "remain", "remains", "remained", "resemble", "resembles", "resembled", "become", "becomes", "became"};
 
+//Miguel
 static CWord g_word_mondays("Mondays");
 static CWord g_word_monday("Monday");
 static CWord g_word_tuesdays("Tuesdays");
@@ -70,7 +71,77 @@ static CWord g_word_fall("fall");
 static CWord g_word_autumn("autumn");
 static CWord g_word_winter("winter");
 
-static CWord g_word_underunder("__");
+
+  /*private static final String beAuxiliaryRegex =
+    "/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai)$/";*/
+
+//Miguel
+static CWord g_word_am("am");
+static CWord g_word_is("is");
+static CWord g_word_are("are");
+static CWord g_word_r("r");
+static CWord g_word_be("be");
+static CWord g_word_being("being");
+static CWord g_word_aps("'s");
+static CWord g_word_apre("'re");
+static CWord g_word_apm("m");
+static CWord g_word_was("was");
+static CWord g_word_were("were");
+static CWord g_word_been("been");
+static CWord g_word_s("s");
+static CWord g_word_ai("ai");
+
+
+//private static final String copularWordRegex =
+//    "/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|seeming|appear|appears|
+//appeared|stay|stays|stayed|remain|remains|remained|resemble|resembles|resembled|resembling|become|becomes|became|becoming)$/";
+//the first ones are already above. Miguel
+static CWord g_word_seem("seem");
+static CWord g_word_seems("seems");
+static CWord g_word_seemed("seemed");
+static CWord g_word_seeming("seeming");
+static CWord g_word_appear("appear");
+static CWord g_word_appears("appears");
+static CWord g_word_appeared("appeared");
+static CWord g_word_stay("stay");
+static CWord g_word_stays("stays");
+static CWord g_word_stayed("stayed");
+static CWord g_word_remain("remain");
+static CWord g_word_remains("remains");
+static CWord g_word_remained("remained");
+static CWord g_word_resemble("resemble");
+static CWord g_word_resembles("resembles");
+static CWord g_word_resembled("resembled");
+static CWord g_word_resembling("resembling");
+static CWord g_word_become("become");
+static CWord g_word_becomes("becomes");
+static CWord g_word_became("became");
+static CWord g_word_becoming("becoming");
+
+
+ /*private static final String haveRegex =
+    "/^(?i:have|had|has|having)$/";*/
+ //Miguel
+ static CWord g_word_have("have");
+ static CWord g_word_had("had");
+ static CWord g_word_has("has");
+ static CWord g_word_having("having");
+ 
+   /*private static final String stopKeepRegex =
+    "/^(?i:stop|stops|stopped|stopping|keep|keeps|kept|keeping)$/";*/
+ 
+ static CWord g_word_stop("stop");
+ static CWord g_word_stops("stops");
+ static CWord g_word_stopped("stopped");
+ static CWord g_word_stopping("stopping");
+ static CWord g_word_keep("keep");
+ static CWord g_word_keeps("keeps");
+ static CWord g_word_kept("kept");
+ static CWord g_word_keeping("keeping");
+ 
+
+
+
 //static CWord g_word_lot("lot"); //?
 
 
@@ -840,51 +911,54 @@ public:
 	   
 	   //nsubj
 	   //S < (NP=target $+ NP|ADJP) > VP
-	   std::cout<<"Rule 1 \n";
+	   //std::cout<<"Rule 1 \n";
 	   buildNsubj1();
 	   //SQ|PRN < (NP=target !< EX $++ VP)
-	   std::cout<<"Rule 2 \n";
+	   //std::cout<<"Rule 2 \n";
 	   buildNsubj2();
 	   //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
-	   std::cout<<"Rule 3 \n";
+	   //std::cout<<"Rule 3 \n";
 	   buildNsubj3();
 	   //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++VP)",
-	   std::cout<<"Rule 4 \n";
+	   //std::cout<<"Rule 4 \n";
 	   buildNsubj4();
 	   //"S < (NP < EX) <+(VP) (VP < NP=target)"
-	   std::cout<<"Rule 5 \n";
+	   //std::cout<<"Rule 5 \n";
 	   buildNsubj5();
 	   //"SQ < ((NP=target !< EX) $- /^(?:VB|AUX)/ !$++ VP)",
-	   std::cout<<"Rule 6 \n";
+	   //std::cout<<"Rule 6 \n";
 	   buildNsubj6();
 	   //"SQ < ((NP=target !< EX) $- (RB $- /^(?:VB|AUX)/) ![$++ VP])",
-	   std::cout<<"Rule 7 \n";
+	   //std::cout<<"Rule 7 \n";
 	   buildNsubj7();
 	   //"SBARQ < WHNP=target < (SQ < (VP ![$-- NP]))",
-	   std::cout<<"Rule 8 \n";
+	   //std::cout<<"Rule 8 \n";
 	   buildNsubj8();
 	   //"SBARQ < (SQ=target < /^(?:VB|AUX)/ !< VP)",
-	   std::cout<<"Rule 9 \n";
+	   //std::cout<<"Rule 9 \n";
 	   buildNsubj9();
 	   //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
-	   std::cout<<"Rule 10 \n";
+	   //std::cout<<"Rule 10 \n";
 	   buildNsubj10();
 	   //"SBAR < WHNP=target [ < (S < (VP !$-- NP) !< SBAR) | < (VP !$-- NP) !< S ]"
-	   std::cout<<"Rule 11 \n";
+	   //std::cout<<"Rule 11 \n";
 	   buildNsubj11(); //REVISE
 	   //"SBAR !< WHNP < (S !< (NP $++ VP)) > (VP > (S $- WHNP=target))",
-	   std::cout<<"Rule 12 \n";
+	   //std::cout<<"Rule 12 \n";
 	   buildNsubj12();
 	   //"SQ < ((NP < EX) $++ NP=target)",
-	   std::cout<<"Rule 13 \n";
+	   //std::cout<<"Rule 13 \n";
 	   buildNsubj13();
 	   
-	   //Conj
-	   //if (buildConj1(&this->node))  return;
-	   //if (buildConj2(this->node))  return;
-	   //if (buildConj3(this->node))  return;
-	   //if (buildConj4(this->node))  return;
-	   //if (buildConj5(this->node))  return;
+	   //aux
+	   //VP < VP < /^(?:TO|MD|VB.*|AUXG?|POS)$/=target
+	   buildAux1();
+	   //SQ|SINV < (/^(?:VB|MD|AUX)/=target $++ /^(?:VP|ADJP)/)
+	   buildAux2();
+	   //"CONJP < TO=target < VB"
+	   buildAux3();
+	   
+	   buildAux4();
 	   
 	   //Copula
 	   //if (buildCopula1(&this->node))  return;
@@ -963,6 +1037,102 @@ public:
 	   
 	   return false;
    }
+   
+   //"/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|
+   //seeming|appear|appears|appeared|stay|stays|stayed|remain|remains|remained|resemble|resembles|resembled|resembling|become|becomes|became|becoming)$/";
+   bool compareWordToCopularWordRegex(CWord a) {
+   	   
+   	   if (a==g_word_am) return true;
+   	   if (a==g_word_is) return true;
+   	   if (a==g_word_are) return true;
+   	   if (a==g_word_r) return true;
+   	   if (a==g_word_be) return true;
+   	   if (a==g_word_being) return true;
+   	   if (a==g_word_aps) return true;
+   	   if (a==g_word_apre) return true;
+   	   if (a==g_word_apm) return true;
+   	   if (a==g_word_was) return true;
+   	   if (a==g_word_were) return true;
+   	   if (a==g_word_been) return true;
+   	   if (a==g_word_s) return true;
+   	   if (a==g_word_ai) return true;
+   	   if (a==g_word_seem) return true;
+   	   if (a==g_word_seems) return true;
+   	   if (a==g_word_seemed) return true;
+   	   if (a==g_word_seeming) return true;
+   	   if (a==g_word_appear) return true;
+   	   if (a==g_word_appears) return true;
+   	   if (a==g_word_appeared) return true;
+   	   if (a==g_word_stay) return true;
+   	   //...
+   	   if (a==g_word_stay) return true;
+   	   if (a==g_word_stays) return true;
+   	   
+   	   if (a==g_word_stayed) return true;
+   	   if (a==g_word_remain) return true;
+   	   if (a==g_word_remains) return true;
+   	   if (a==g_word_remained) return true;
+   	   	
+   	   if (a==g_word_resemble) return true;
+   	   if (a==g_word_resembles) return true;
+   	   
+   	   if (a==g_word_resembled) return true;
+   	   if (a==g_word_resembling) return true;
+   	   if (a==g_word_become) return true;
+   	   if (a==g_word_becomes) return true;
+   	   if (a==g_word_became) return true;
+   	   if (a==g_word_becoming) return true;
+   	    	   
+   	   return false;
+      }
+   
+   
+   //"/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai)$/";
+    bool compareWordToBeAuxiliaryWordRegex(CWord a) {
+   	   
+   	   if (a==g_word_am) return true;
+   	   if (a==g_word_is) return true;
+   	   if (a==g_word_are) return true;
+   	   if (a==g_word_r) return true;
+   	   if (a==g_word_be) return true;
+   	   if (a==g_word_being) return true;
+   	   if (a==g_word_aps) return true;
+   	   if (a==g_word_apre) return true;
+   	   if (a==g_word_apm) return true;
+   	   if (a==g_word_was) return true;
+   	   if (a==g_word_were) return true;
+   	   if (a==g_word_been) return true;
+   	   if (a==g_word_s) return true;
+   	   if (a==g_word_ai) return true;
+   	   return false;
+      }
+    
+    //"/^(?i:have|had|has|having)$/"
+     bool compareWordToHaveWordRegex(CWord a) {
+    	   
+    	   if (a==g_word_have) return true;
+    	   if (a==g_word_had) return true;
+    	   if (a==g_word_has) return true;
+    	   if (a==g_word_having) return true;
+    	   return false;
+       }
+     
+     
+     //"/^(?i:stop|stops|stopped|stopping|keep|keeps|kept|keeping)$/";
+      bool compareWordToStopWordRegex(CWord a) {
+     	   
+     	   if (a==g_word_stop) return true;
+     	   if (a==g_word_stops) return true;
+     	   if (a==g_word_stopped) return true;
+     	   if (a==g_word_stopping) return true;
+     	   if (a==g_word_keep) return true;
+     	   if (a==g_word_keeps) return true;
+     	   if (a==g_word_kept) return true;
+     	   if (a==g_word_keeping) return true;
+     	   return false;
+        }
+   
+   
    //==============================================================================
   
    
@@ -1019,6 +1189,9 @@ public:
   
 	#include "rules/nsubj.cpp"
 	#include "rules/aux.cpp"
+    
+    
+    
             
       
    
