@@ -18,10 +18,16 @@ public:
    int dependent;
    int head; 
    CLink *next;   
+   
+   int nsubjRule;
 
 public:
-   CLink(const CDependencyLabel label, const int dependent, const int head, CLink* next): label(label), dependent(dependent), head(head), next(next) {}   
-   CLink(): label(0), dependent(-1), head(-1), next(0) {}	
+   CLink(const CDependencyLabel label, const int dependent, const int head, CLink* next): label(label), dependent(dependent), head(head), next(next) {
+	   this->nsubjRule=0;
+   }   
+   CLink(): label(0), dependent(-1), head(-1), next(0) {
+	   this->nsubjRule=0;
+   }	
    
    virtual ~CLink() {}
 

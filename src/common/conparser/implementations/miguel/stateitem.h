@@ -140,6 +140,11 @@ static CWord g_word_becoming("becoming");
  static CWord g_word_keeping("keeping");
  
 
+//extras
+ static CWord g_word_either("either");
+ static CWord g_word_neither("neither");
+ static CWord g_word_both("both");
+ 
 
 
 //static CWord g_word_lot("lot"); //?
@@ -861,6 +866,7 @@ public:
         	 while(temp!=0) {
         		 //std::cout<<"i="<<i<<": "<<temp->label<<"("<<tagged.at(nodes[i]->lexical_head).first<<", "<<tagged.at(temp->dependent).first<<")\n"; //miguel
         		 std::cout<<"i="<<i<<": "<<temp->label<<"("<<tagged.at(temp->head).first<<", "<<tagged.at(temp->dependent).first<<")\n"; //miguel
+        		 std::cout<<temp->nsubjRule<<"\n"; //miguel
         		 temp=temp->next;
         	 }
          //}
@@ -949,16 +955,16 @@ public:
 	   //"SQ < ((NP < EX) $++ NP=target)",
 	   //std::cout<<"Rule 13 \n";
 	   buildNsubj13();
-	   
+	  
 	   //aux
 	   //VP < VP < /^(?:TO|MD|VB.*|AUXG?|POS)$/=target
-	   buildAux1();
+	   //buildAux1();
 	   //SQ|SINV < (/^(?:VB|MD|AUX)/=target $++ /^(?:VP|ADJP)/)
-	   buildAux2();
+	   //buildAux2();
 	   //"CONJP < TO=target < VB"
-	   buildAux3();
+	   //buildAux3();
 	   
-	   buildAux4();
+	   //buildAux4();
 	   
 	   //Copula
 	   //if (buildCopula1(&this->node))  return;
@@ -1131,6 +1137,15 @@ public:
      	   if (a==g_word_keeping) return true;
      	   return false;
         }
+      
+      
+      bool compareWordToEitherNeitherBoth(CWord a) {
+          	   
+    	  if (a==g_word_either) return true;
+          if (a==g_word_neither) return true;
+          if (a==g_word_both) return true;
+          return false;
+      }
    
    
    //==============================================================================
@@ -1189,6 +1204,10 @@ public:
   
 	#include "rules/nsubj.cpp"
 	#include "rules/aux.cpp"
+	#include "rules/cc.cpp"
+    
+    
+    
     
     
     
@@ -1428,6 +1447,17 @@ public:
    	   node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
    	   return true;
       }
+   
+   
+   bool buildStanfordLinkForDebug(CDependencyLabel* label, int dependent, int head, int nsubjrule) {
+   	   if (head==dependent) return false;
+   	   
+      	   CLink* newNode=new CLink(*label, dependent, head, 0);
+      	   newNode->nsubjRule=nsubjrule;
+      	   newNode->next=this->node.stfLinks;
+      	   node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
+      	   return true;
+         }
 
    //===============================================================================
 #ifdef TRAIN_LOSS   
