@@ -1285,9 +1285,9 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
       states[current].Move(states+current+1, action);
       ++current;
    }
-   /*CSentenceParsed tmp; //FOR GOLD-std
+   //CSentenceParsed tmp; //FOR GOLD-std
    //states[current].words=&m_lCache; //for GOLD STD
-   states[current].GenerateTree(static_cast<const CTwoStringVector&>(sentence), tmp); //THESE LINE IS FOR GOLD STANDARD CHECKING REMOVE IT! MIGUEL*/
+   //states[current].GenerateTree(static_cast<const CTwoStringVector&>(sentence), tmp); //THESE LINE IS FOR GOLD STANDARD CHECKING REMOVE IT! MIGUEL*/
    //for GOLD STD
 }
 #endif
