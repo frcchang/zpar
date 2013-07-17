@@ -1060,6 +1060,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
          
          for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
             scored_action.load(actions[tmp_j], pGenerator, packedscores[actions[tmp_j].code()]);
+            scored_action.score+=packedscores[CActionType::NO_ACTION];
             beam.insertItem(&scored_action);
             if (bTrain && pGenerator == correctState && actions[tmp_j] == correct_action) {
                scored_correct_action = scored_action;

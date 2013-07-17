@@ -145,6 +145,12 @@ static CWord g_word_becoming("becoming");
  static CWord g_word_neither("neither");
  static CWord g_word_both("both");
  
+ 
+ //only|just|merely
+ static CWord g_word_only("only");
+ static CWord g_word_just("just");
+ static CWord g_word_merely("merely");
+ 
 
 
 //static CWord g_word_lot("lot"); //?
@@ -1144,6 +1150,14 @@ public:
     	  if (a==g_word_either) return true;
           if (a==g_word_neither) return true;
           if (a==g_word_both) return true;
+          return false;
+      }
+      
+      bool compareWordToOnlyJustMerely(CWord a) {
+                	   
+    	  if (a==g_word_only) return true;
+          if (a==g_word_just) return true;
+          if (a==g_word_merely) return true;
           return false;
       }
    

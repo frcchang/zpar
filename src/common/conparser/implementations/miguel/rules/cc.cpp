@@ -1,7 +1,6 @@
 //"__ [ < (CC=target !< /^(?i:either|neither|both)$/ ) | < (CONJP=target !< (RB < /^(?i:not)$/ $+ (RB|JJ < /^(?i:only|just|merely)$/))) ]"
     //I'm going to divide this one in 2, it is clearer and better.
     //1. "__ < (CC=target !< /^(?i:either|neither|both)$/ )
-    //2. "__ < (CONJP=target !< (RB < /^(?i:not)$/ $+ (RB|JJ < /^(?i:only|just|merely)$/))) ]
     //__ matches any node ()
     bool cc1(){
     	CStateNodeList* childs=node.m_umbinarizedSubNodes;
@@ -30,7 +29,11 @@
     	}
     }
     
-    bool cc2(){
-        	
+    //2. "__ < (CONJP=target !< (RB < /^(?i:not)$/ $+ (RB|JJ < /^(?i:only|just|merely)$/))) ]
+    /*bool cc2(){
+    	CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    	while(childs!=0) {
+    		const CStateNode conjpTarg=childs->node;
+    	}
     
-    }
+    }*/
