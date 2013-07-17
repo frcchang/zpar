@@ -78,6 +78,9 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static CTuple2<CAction, CAction> tuple_action2;
    
    static CTuple3<CTag,CTag,CDependencyLabel> tag_tag_label; //Miguel. Stanford links (1)
+   static CTuple3<CWord,CWord,CDependencyLabel> word_word_label; //Miguel. Stanford links (1)
+   static CTuple3<CTag,CWord,CDependencyLabel> tag_word_label; //Miguel. Stanford links (1)
+   static CTuple3<CWord,CTag,CDependencyLabel> word_tag_label; //Miguel. Stanford links (1)
 
 //   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
    
@@ -88,8 +91,16 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    
    while(temp!=0){
 	   refer_or_allocate_tuple3(tag_tag_label, &m_lCache[temp->head].tag, &m_lCache[temp->dependent].tag, &temp->label);
+	   cast_weights->m_mapHtMtl.getOrUpdateScore(retval,tag_tag_label, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
 	   
-	   cast_weights->m_mapHtMtl.getOrUpdateScore(retval,tag_tag_label, 0, m_nScoreIndex, amount, round); //is 0 no action?
+	   refer_or_allocate_tuple3(word_word_label, &m_lCache[temp->head].word, &m_lCache[temp->dependent].word, &temp->label);
+	   cast_weights->m_mapHwMwl.getOrUpdateScore(retval,word_word_label, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
+	   
+	   refer_or_allocate_tuple3(tag_word_label, &m_lCache[temp->head].tag, &m_lCache[temp->dependent].word, &temp->label);
+	   cast_weights->m_mapHtMwl.getOrUpdateScore(retval,tag_word_label, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
+	   
+	   refer_or_allocate_tuple3(word_tag_label, &m_lCache[temp->head].word, &m_lCache[temp->dependent].tag, &temp->label);
+	   cast_weights->m_mapHwMtl.getOrUpdateScore(retval, word_tag_label, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
 	   
 	   temp=temp->next;
    } //Miguel
