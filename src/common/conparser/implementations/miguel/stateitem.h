@@ -91,6 +91,9 @@ static CWord g_word_been("been");
 static CWord g_word_s("s");
 static CWord g_word_ai("ai");
 
+//private static final String passiveAuxWordRegex =
+    //"/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|seeming|appear|appears|appeared|become|becomes|became|becoming|get|got|getting|gets|gotten|remains|remained|remain)$/";
+
 
 //private static final String copularWordRegex =
 //    "/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|seeming|appear|appears|
@@ -118,6 +121,11 @@ static CWord g_word_becomes("becomes");
 static CWord g_word_became("became");
 static CWord g_word_becoming("becoming");
 
+static CWord g_word_get("get");
+static CWord g_word_got("got");
+static CWord g_word_getting("getting");
+static CWord g_word_gets("gets");
+static CWord g_word_gotten("gotten");
 
  /*private static final String haveRegex =
     "/^(?i:have|had|has|having)$/";*/
@@ -150,6 +158,10 @@ static CWord g_word_becoming("becoming");
  static CWord g_word_only("only");
  static CWord g_word_just("just");
  static CWord g_word_merely("merely");
+ 
+ static CWord g_word_not("not");
+ 
+ static CWord g_word_comma(",");
  
 
 
@@ -1098,6 +1110,50 @@ public:
    	   return false;
       }
    
+   //private static final String passiveAuxWordRegex =
+//"/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|seeming|appear|appears|appeared|become|becomes|became|becoming|get|got|getting|gets|gotten|remains|remained|remain)$/";
+   bool compareWordToPassiveAuxWordRegex(CWord a) {
+   	   
+   	   if (a==g_word_am) return true;
+   	   if (a==g_word_is) return true;
+   	   if (a==g_word_are) return true;
+   	   if (a==g_word_r) return true;
+   	   if (a==g_word_be) return true;
+   	   if (a==g_word_being) return true;
+   	   if (a==g_word_aps) return true;
+   	   if (a==g_word_apre) return true;
+   	   if (a==g_word_apm) return true;
+   	   if (a==g_word_was) return true;
+   	   if (a==g_word_were) return true;
+   	   if (a==g_word_been) return true;
+   	   if (a==g_word_s) return true;
+   	   if (a==g_word_ai) return true;
+   	   if (a==g_word_seem) return true;
+   	   if (a==g_word_seems) return true;
+   	   if (a==g_word_seemed) return true;
+   	   if (a==g_word_seeming) return true;
+   	   if (a==g_word_appear) return true;
+   	   if (a==g_word_appears) return true;
+   	   if (a==g_word_appeared) return true;
+   	   if (a==g_word_become) return true;
+   	   //...
+   	   if (a==g_word_becomes) return true;
+   	   if (a==g_word_became) return true;
+   	   if (a==g_word_becoming) return true;
+   	   if (a==g_word_get) return true;
+   	   if (a==g_word_got) return true;
+   	   if (a==g_word_getting) return true;
+   	   	
+   	   if (a==g_word_gets) return true;
+   	   if (a==g_word_gotten) return true;
+   	   
+   	   if (a==g_word_remains) return true;
+   	   if (a==g_word_remained) return true;
+   	   if (a==g_word_remain) return true;
+   	    	   
+   	   return false;
+      }
+   
    
    //"/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai)$/";
     bool compareWordToBeAuxiliaryWordRegex(CWord a) {
@@ -1183,7 +1239,8 @@ public:
   	   }
      } 
      
-   
+     
+     
 
    
    //==================================================================================================
@@ -1215,11 +1272,17 @@ public:
         	danglings->add(child);
         }
     
+    
+
   
 	#include "rules/nsubj.cpp"
+	#include "rules/nsubjpass.cpp"
+	#include "rules/csubj.cpp"
 	#include "rules/aux.cpp"
 	#include "rules/cc.cpp"
+	
     
+
     
     
     
