@@ -27,13 +27,56 @@
     		
     		childs=childs->next;
     	}
+    	return false;
     }
     
-    //2. "__ < (CONJP=target !< (RB < /^(?i:not)$/ $+ (RB|JJ < /^(?i:only|just|merely)$/))) ]
-    /*bool cc2(){
-    	CStateNodeList* childs=node.m_umbinarizedSubNodes;
-    	while(childs!=0) {
-    		const CStateNode conjpTarg=childs->node;
-    	}
     
-    }*/
+    //2. "__ < (CONJP=target !< (RB < /^(?i:not)$/ $+ (RB|JJ < /^(?i:only|just|merely)$/))) ]
+    bool cc2(){
+        	CStateNodeList* childs=node.m_umbinarizedSubNodes;
+        	while(childs!=0) {
+        		const CStateNode* conjpTarg=childs->node;
+        		if (conjpTarg->constituent==PENN_CON_CONJP && (!isDangling(&node,conjpTarg))) {
+        			bool secondCondition=true;
+        			CStateNodeList* childsConj=conjpTarg->m_umbinarizedSubNodes;
+        			while(childsConj!=0) {
+        				const CStateNode* childRb=childsConj->node;
+        				if ((*words)[childRb->lexical_head].tag.code()==PENN_TAG_ADVERB) {
+        					CStateNodeList* childsRb=childRb->m_umbinarizedSubNodes;
+        					while(childsRb!=0){
+        						const CStateNode* childNot=childsRb->node;
+        						if ((*words)[childNot->lexical_head].word==g_word_not) {
+        							if (childsConj->next!=0){
+        								const CStateNode* rightSisterRB=childsConj->next->node;
+        								if (((*words)[rightSisterRB->lexical_head].tag.code()==PENN_TAG_ADVERB) 
+        										|| ((*words)[rightSisterRB->lexical_head].tag.code()==PENN_TAG_ADJECTIVE)) {
+        									CStateNodeList* childsRbJJ=rightSisterRB->m_umbinarizedSubNodes;
+        									while(childsRbJJ!=0){
+        										if (compareWordToOnlyJustMerely((*words)[childsRbJJ->node->lexical_head].word)) {
+        											secondCondition=false;
+        										}
+        										childsRbJJ=childsRbJJ->next;
+        									}
+        								}
+        							}
+        						}
+        						childsRb=childsRb->next;
+        					}
+        					
+        				}
+        				
+        				childsConj=childsConj->next;
+        			}
+        			
+        			if (secondCondition) {
+        				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
+        				if (buildStanfordLink(label, conjpTarg->lexical_head, node.lexical_head)) {
+        					//std::cout<<"nSubj2"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
+        					addDangling(&node,conjpTarg);
+        					return true;
+        				}
+        			}
+        		}
+        	}
+        	return false;
+        }
