@@ -77,12 +77,12 @@
     	    	  					addDangling(&node,targ);
     	    	  				    //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     	    	  				    return true;
-    	    	  			}
-    	    	  			rightSisters=rightSisters->next;
+    	    	  			}	
     	    	  		}
-    	      	  }
-    	      	  childs=childs->next;
+    	    	  		rightSisters=rightSisters->next;
+    	    	  	}
     	      	}
+    	      childs=childs->next;
     		  }
     	  }
     	  return false;
