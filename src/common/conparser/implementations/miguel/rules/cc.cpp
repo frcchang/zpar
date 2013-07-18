@@ -6,16 +6,23 @@
     	CStateNodeList* childs=node.m_umbinarizedSubNodes;
     	while(childs!=0){
     		const CStateNode* ccTarg=childs->node;
+    		std::cerr<<"cctarg 1\n";
     		if ((*words)[ccTarg->lexical_head].tag.code()==PENN_TAG_CC && (!isDangling(&node,ccTarg))) {
+    			std::cerr<<"cctarg 2\n";
     			CStateNodeList* childsCC=ccTarg->m_umbinarizedSubNodes;
     			bool secondCondition=true;
     			while (childsCC!=0){
+    				std::cerr<<"before\n";
+    				std::cerr<<childsCC->node->lexical_head;
+    				std::cerr<<"after\n";
     				if (compareWordToEitherNeitherBoth((*words)[childsCC->node->lexical_head].word)) {
     					secondCondition=false;
     				}
+    				std::cerr<<"while-childscc-2\n";
     				childsCC=childsCC->next;
     			}
     			if (secondCondition) {
+    				std::cerr<<"second condition\n";
     				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
     				if (buildStanfordLink(label, ccTarg->lexical_head, node.lexical_head)) {
     					//std::cout<<"nSubj2"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
@@ -77,6 +84,7 @@
         				}
         			}
         		}
+        		childs=childs->next;
         	}
         	return false;
         }

@@ -973,6 +973,27 @@ public:
 	   //"SQ < ((NP < EX) $++ NP=target)",
 	   //std::cout<<"Rule 13 \n";
 	   buildNsubj13();
+	   
+	   
+	   std::cerr<<"Aux 1 \n";
+	   buildAux1();
+	   std::cerr<<"Aux 2 \n";
+	   buildAux2();
+	   std::cerr<<"Aux 3 \n";
+	   buildAux3();
+	   //std::cerr<<"Aux 4 \n";
+	   //buildAux4();
+	   
+	   std::cerr<<"CC 1 \n";
+	   cc1();
+	   //std::cerr<<"CC 2 \n";
+	   //cc2();
+	   
+	   std::cerr<<"csubj 1 \n";
+	   csubj1();
+	   
+	   std::cerr<<"Nsubjpass 1 \n";
+	   buildNsubjpass1();
 	  
 	   //aux
 	   //VP < VP < /^(?:TO|MD|VB.*|AUXG?|POS)$/=target
@@ -1240,6 +1261,21 @@ public:
      } 
      
      
+     //"S|SQ|SINV < (NP=target <+(NP) EX)"
+     bool buildExpl1() {
+        if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV) {
+     	   CStateNodeList* childsS=node.m_umbinarizedSubNodes;
+     	   while (childsS!=0) {
+     		   const CStateNode* npTarg=childsS->node;
+     		   if (npTarg->constituent==PENN_CON_NP && (!isDangling(&node, npTarg))){
+     			   
+     		   }
+     		   childsS=childsS->next;
+     	   }
+      	}
+       	return false;
+     }
+     
      
 
    
@@ -1282,6 +1318,7 @@ public:
 	#include "rules/cc.cpp"
 	#include "rules/expl.cpp"
 	
+    //"S|SQ|SINV < (NP=target <+(NP) EX)"
     
 
     
