@@ -6,11 +6,10 @@
     	CStateNodeList* childs=node.m_umbinarizedSubNodes;
     	while(childs!=0){
     		const CStateNode* ccTarg=childs->node;
-    		if ((*words)[ccTarg->lexical_head].tag.code()==PENN_TAG_CC && (!isDangling(&node,ccTarg))) {
+    		if ((*words)[ccTarg->lexical_head].tag.code()==PENN_TAG_CC && (!isLinked(&node,ccTarg))) {
     			CStateNodeList* childsCC=ccTarg->m_umbinarizedSubNodes;
     			bool secondCondition=true;
     			while (childsCC!=0){
-    				std::cerr<<childsCC->node->lexical_head;
     				if (compareWordToEitherNeitherBoth((*words)[childsCC->node->lexical_head].word)) {
     					secondCondition=false;
     				}
@@ -20,7 +19,7 @@
     				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
     				if (buildStanfordLink(label, ccTarg->lexical_head, node.lexical_head)) {
     					//std::cout<<"CC1\n";
-    					addDangling(&node,ccTarg);
+    					addLinked(&node,ccTarg);
     					return true;
     				}
     			}
@@ -37,7 +36,7 @@
         	CStateNodeList* childs=node.m_umbinarizedSubNodes;
         	while(childs!=0) {
         		const CStateNode* conjpTarg=childs->node;
-        		if (conjpTarg->constituent==PENN_CON_CONJP && (!isDangling(&node,conjpTarg))) {
+        		if (conjpTarg->constituent==PENN_CON_CONJP && (!isLinked(&node,conjpTarg))) {
         			bool secondCondition=true;
         			CStateNodeList* childsConj=conjpTarg->m_umbinarizedSubNodes;
         			while(childsConj!=0) {
@@ -74,7 +73,7 @@
         				if (buildStanfordLink(label, conjpTarg->lexical_head, node.lexical_head)) {
         					//std::cout<<"nSubj2"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
         					//std::cout<<"CC2\n";
-        					addDangling(&node,conjpTarg);
+        					addLinked(&node,conjpTarg);
         					return true;
         				}
         			}

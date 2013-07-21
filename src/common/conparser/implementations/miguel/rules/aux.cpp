@@ -35,7 +35,7 @@
     	      			((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE) ||
     	      			  ((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_MD) ||
     	      			  ((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_TO)) 
-    	      			  && (!isDangling(&node, childsConjp->node))) { //V
+    	      			  && (!isLinked(&node, childsConjp->node))) { //V
     	      		  child2=true;
     	      		  targ=childsConjp->node;
     	      	  }
@@ -44,7 +44,7 @@
     	        if (child1 && child2) {
     	        	CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
     	      		if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)){
-    	      			addDangling(&node,targ);
+    	      			addLinked(&node,targ);
     	      			//std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     	      			return true;
     	      		}
@@ -66,7 +66,7 @@
     		  const CStateNode* targ=childs->node;
     	      if ((((*words)[targ->lexical_head].tag.code()==PENN_TAG_VERB) ||
     	      		((*words)[targ->lexical_head].tag.code()==PENN_TAG_MD)) 
-    	      			  && (!isDangling(&node, targ))) { 
+    	      			  && (!isLinked(&node, targ))) { 
     	      		  	
     	    	  		CStateNodeList* rightSisters=childs;
     	    	  		while(rightSisters!=0){
@@ -74,7 +74,7 @@
     	    	  			if ((rSis->constituent==PENN_CON_VP) || (rSis->constituent==PENN_CON_ADJP)) {
     	    	  				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
     	    	  				if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)){
-    	    	  					addDangling(&node,targ);
+    	    	  					addLinked(&node,targ);
     	    	  				    //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     	    	  				    return true;
     	    	  			}	
@@ -102,7 +102,7 @@
     		 bool child2=false;
     		 const CStateNode* tOTarg=0;
     		 while(childsConjp!=0){
-    			 if ( ((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_TO) && (!isDangling(&node, childsConjp->node))){
+    			 if ( ((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_TO) && (!isLinked(&node, childsConjp->node))){
     				 tOTarg=childsConjp->node;
     				 child1=true;
     			 }
@@ -114,7 +114,7 @@
     		 if (child1 && child2) {
     			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
     			 if (buildStanfordLink(label, tOTarg->lexical_head, node.lexical_head)){
-    				 addDangling(&node,tOTarg);
+    				 addLinked(&node,tOTarg);
     			    //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     			    return true;
     			 }
@@ -135,7 +135,7 @@
            		 CStateNodeList* childsSinv=node.m_umbinarizedSubNodes;
            		 while (childsSinv!=0){
               		const CStateNode* vpTarg=childsSinv->node;
-              		if (vpTarg->constituent==PENN_CON_VP && (isDangling(&node, vpTarg))) {
+              		if (vpTarg->constituent==PENN_CON_VP && (isLinked(&node, vpTarg))) {
               		CStateNodeList* childsVp=vpTarg->m_umbinarizedSubNodes;
               		bool firstCondVp=false;
               		bool secondCondVp=false;
@@ -174,7 +174,7 @@
               		 if (firstCondVp && secondCondVp) {
               			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
               			 if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)){
-              				 addDangling(&node,vpTarg);
+              				 addLinked(&node,vpTarg);
               				 //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
               				 return true;
               			  }
