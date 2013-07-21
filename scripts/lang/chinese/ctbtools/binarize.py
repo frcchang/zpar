@@ -178,7 +178,9 @@ class CBinarizer(object):
       line = file.readline()
       while line:
          line = line.strip()
-         lPos = line.split(":")
+         if not line: continue
+         lPos = line.split(":",1)
+         #print lPos
          assert len(lPos) == 2
          sHead = lPos[0].strip()
          self.m_dRules[sHead]=[ru.strip().split() for ru in lPos[1].split(";")] # {NP: [[r, NP, VP], [r]]}
@@ -212,9 +214,9 @@ class CBinarizer(object):
    def find_head(self, srcnode):
       sLabel = srcnode.name.split('-')[0]
       for lRuleSet in self.m_dRules.get(sLabel, []):
-         assert lRuleSet[0] in ("l", "r")
+         assert lRuleSet[0] in ("l", "r", "ld", "rd")
          lTemp = srcnode.children[:]
-         if lRuleSet[0] == "r":
+         if lRuleSet[0] in ("r", "rd"):
             lTemp.reverse()
          bFound = False
          if len(lRuleSet) == 1: # only directn
@@ -225,14 +227,25 @@ class CBinarizer(object):
                headchild = lTemp[nIndex]
             bFound = True
          else:
-            for sHead in lRuleSet[1:]:
-               for srcchild in lTemp:
-                  if srcchild.name.split("-")[0] == sHead and self.not_empty(srcchild):
-                     headchild = srcchild
-                     bFound = True
+            if lRuleSet[0] in ('l','r'): #category then position
+               for sHead in lRuleSet[1:]:
+                  for srcchild in lTemp:
+                     if srcchild.name.split("-")[0] == sHead and self.not_empty(srcchild):
+                        headchild = srcchild
+                        bFound = True
+                        break
+                  if bFound:
                      break
-               if bFound:
-                  break
+            else: 
+                if lRuleSet[0] in ("ld","rd"): #position then category /MIguel
+                   for srcchild in lTemp:
+                      if srcchild.name.split("-")[0] in lRuleSet[1:]:
+                         headchild=srcchild
+                         bFound=True
+                         break
+                      if bFound:
+                         break
+                else: assert False #unreachable code 
          if bFound:
             break
       else:

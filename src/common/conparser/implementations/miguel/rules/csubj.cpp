@@ -5,7 +5,7 @@
     		CStateNodeList* childsS=node.m_umbinarizedSubNodes;
     		while (childsS!=0){
     			const CStateNode* sbarsTarg=childsS->node;
-    			if ((sbarsTarg->constituent==PENN_CON_SBAR ||sbarsTarg->constituent==PENN_CON_S) && (!isDangling(&node,sbarsTarg))){ 
+    			if ((sbarsTarg->constituent==PENN_CON_SBAR ||sbarsTarg->constituent==PENN_CON_S) && (!isLinked(&node,sbarsTarg))){ 
     				bool firstCondition=false;
     				bool secondCondition=false;
     				if (childsS->next!=0){
@@ -36,7 +36,7 @@
     				if (firstCondition && secondCondition){
     					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CSUBJ);
     					 if (buildStanfordLink(label, sbarsTarg->lexical_head, node.lexical_head)) {
-    						 addDangling(&node,sbarsTarg);
+    						 addLinked(&node,sbarsTarg);
     					     return true;
     					}   
     				}

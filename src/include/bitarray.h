@@ -44,6 +44,13 @@ class CBitArray {
          std::memset(m_array, 0, m_slots);
          m_size=0;
       }
+      
+      void clearandsize(const unsigned long int& size) {
+    	  assert(m_allocated);
+          std::memset(m_array, 0, m_slots);
+          m_size=size;
+      }
+      
       void set(const unsigned long int &index) {
          assert(m_allocated);
          assert(index<m_size);

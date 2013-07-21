@@ -6,7 +6,7 @@
     		CStateNodeList* childsSSQ=node.m_umbinarizedSubNodes;
     		while(childsSSQ!=0){
     			const CStateNode* whnpnpTarg=childsSSQ->node;
-    			if ((whnpnpTarg->constituent==PENN_CON_WHNP || whnpnpTarg->constituent==PENN_CON_NP) && (!isDangling(&node,whnpnpTarg))){ 
+    			if ((whnpnpTarg->constituent==PENN_CON_WHNP || whnpnpTarg->constituent==PENN_CON_NP) && (!isLinked(&node,whnpnpTarg))){ 
     				CStateNodeList* childsTarg=whnpnpTarg->m_umbinarizedSubNodes;
     				while(childsTarg!=0){
     					if (!((*words)[childsTarg->node->lexical_head].tag.code()==PENN_TAG_EX)) {
@@ -54,7 +54,7 @@
     						 if (firstCondition && secondCondition) {
     							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJPASS);
     							 if (buildStanfordLink(label, whnpnpTarg->lexical_head, node.lexical_head)) {
-    								 addDangling(&node,whnpnpTarg);
+    								 addLinked(&node,whnpnpTarg);
     							 	 return true;
     							 }   
     						 }

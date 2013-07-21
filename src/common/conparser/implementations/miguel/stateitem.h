@@ -273,7 +273,7 @@ public:
    CStateNodeList* m_umbinarizedSubNodes; //list of subnodes of first level //Miguel
    //CHashMap<unsigned long, int>* m_subnodes; //list of subnodes //Miguel
    
-   CStateNodeList* danglingSubNodes;
+   //CStateNodeList* danglingSubNodes;
    
    CBitArray linkedNodes;
    
@@ -294,12 +294,14 @@ public:
    inline bool is_constituent() const { return type!=LEAF; }
 
 public:
-   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end,bool headFound) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),danglingSubNodes(0) {
+   CStateNode(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, CStateNode *left_child, CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end,bool  headFound) : id(id), type(type), temp(temp), constituent(constituent), left_child(left_child), right_child(right_child), lexical_head(lexical_head), lexical_start(lexical_start), lexical_end(lexical_end), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0), linkedNodes(MAX_SENTENCE_SIZE){
 	   //m_umbinarizedSubNodes=new CStateNodeList();
 	   //danglingSubNodes=new CStateNodeList();
-	   linkedNodes=CBitArray(MAX_SENTENCE_SIZE);
+	   linkedNodes.clearandsize(MAX_SENTENCE_SIZE);
    }
-   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0),danglingSubNodes(0) {}
+   CStateNode() : id(-1), type(), temp(0), constituent(), left_child(0), right_child(0), lexical_head(0), lexical_start(0), lexical_end(0), stfLinksCollapsed(0), stfLinks(0), m_umbinarizedSubNodes(0), linkedNodes(MAX_SENTENCE_SIZE) {
+	   linkedNodes.clearandsize(MAX_SENTENCE_SIZE);
+   }
    virtual ~CStateNode() {
 	   CLink* temp=stfLinks;
 	   while (temp!=0) {
@@ -328,8 +330,9 @@ public:
       this->stfLinksCollapsed = 0; //miguel
       
       m_umbinarizedSubNodes=0;
+      
       //m_subnodes=0;
-      danglingSubNodes=0;
+      //danglingSubNodes=0;
    }
    void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const CStateNode *left_child, const CStateNode *right_child, const int &lexical_head, const int &lexical_start, const int &lexical_end) { 
       this->id = id;
@@ -345,9 +348,10 @@ public:
       
       this->stfLinks=0; //Miguel
       this->m_umbinarizedSubNodes=0; //Miguel
+      
       //m_umbinarizedSubNodes=new CStateNodeList();
       //this->m_subnodes=0; //Miguel
-      this->danglingSubNodes=0; //Miguel
+      //this->danglingSubNodes=0; //Miguel
       //this->danglingSubNodes=new CStateNodeList();
       
    }//{}
@@ -375,6 +379,8 @@ public:
       lexical_head = nd.lexical_head;
       lexical_start = nd.lexical_start;
       lexical_end = nd.lexical_end;
+      
+      //linkedNodes=nd.linkedNodes; //Miguel
       
       //the stanford links are missing. Let's see whether they are necessary or not. (Miguel)
    }
@@ -522,7 +528,7 @@ protected:
       
       //retval->node.m_subnodes->clear(); //miguel
       assert(retval->node.m_umbinarizedSubNodes==0); //miguel
-      retval->node.linkedNodes.clear();
+      retval->node.linkedNodes.clearandsize(words->size());
    }
    void reduce(CStateItem *retval, const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) const {
       //TRACE("reduce");
@@ -538,7 +544,9 @@ protected:
          retval->stackPtr = stackPtr;
          
          CStateNodeList::add(retval->node.m_umbinarizedSubNodes,l); //MIGUEL (THU 18 JULY, logic changed)
+         
          retval->node.linkedNodes.copy(l->linkedNodes); //MIguel (Thu 18)
+         
          //retval->node.m_umbinarizedSubNodes->add(l);//miguel
          
          //addToHash(retval->node.l->m_umbinarizedSubNodes);//miguel
@@ -599,8 +607,8 @@ protected:
         	 //retval->node.m_umbinarizedSubNodes->add(r);//miguel
         	 CStateNodeList::add(retval->node.m_umbinarizedSubNodes,r);
          }
-         retval->node.linkedNodes.clear();
-         for (int i=0;i<MAX_SENTENCE_SIZE;++i){
+         retval->node.linkedNodes.clearandsize(words->size());
+         for (int i=0;i<words->size();++i){
         	 if (l->linkedNodes.isset(i) || r->linkedNodes.isset(i))
         		 retval->node.linkedNodes.set(i);
          }//MIguel Thu 18
@@ -1288,7 +1296,7 @@ public:
      	   CStateNodeList* childsS=node.m_umbinarizedSubNodes;
      	   while (childsS!=0) {
      		   const CStateNode* npTarg=childsS->node;
-     		   if (npTarg->constituent==PENN_CON_NP && (!isDangling(&node, npTarg))){
+     		   if (npTarg->constituent==PENN_CON_NP && (!isLinked(&node, npTarg))){
      			   
      		   }
      		   childsS=childsS->next;
@@ -1315,7 +1323,7 @@ public:
      
     
     
-    bool isDangling(const CStateNode* head, const CStateNode* child){
+    /*bool isDangling(const CStateNode* head, const CStateNode* child){
     	CStateNodeList* danglings=head->danglingSubNodes;
     	while(danglings!=0){
     		//std::cout<<"is dangling..."<<(*words)[danglings->node->lexical_head].word;
@@ -1323,26 +1331,22 @@ public:
     		danglings=danglings->next;
     	}
     	return false;
-    }
+    }*/
     
     bool isLinked(const CStateNode* head, const CStateNode* child){
     	return head->linkedNodes.isset(child->lexical_head);
-    }
+    }//Miguel
     
-    void addLinked(const CStateNode* head, const CStateNode* child){
-    	//const unsigned long int& lexHead=child->lexical_head;
-    	//long unsigned int a=child->lexical_head;
-    	//long unsigned int a=static_cast<const long unsigned int>(child->lexical_head);
-    	//int a=1;
+    void addLinked(CStateNode* head, const CStateNode* child){
         head->linkedNodes.set(child->lexical_head);
-    }
+    }//Miguel
     
-    void addDangling(const CStateNode* head, const CStateNode* child){
+    /*void addDangling(const CStateNode* head, const CStateNode* child){
         	CStateNodeList* danglings=head->danglingSubNodes;
         	//danglings->add(child);
         	//CStateNodeList::add(head->danglingSubNodes,child);
         	CStateNodeList::add(danglings,child);
-        }
+        }*/
     
     
 
