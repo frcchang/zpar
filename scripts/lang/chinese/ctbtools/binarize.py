@@ -278,10 +278,12 @@ class CBinarizer(object):
       if not self.m_bEmptyKeep and srcnode.name == '-NONE-':
          return False
       node.type = srcnode.type
-      if srcnode.name != '-NONE-':
+#      if srcnode.name != '-NONE-':
+      if not (srcnode.name[0]=='-' and srcnode.name[-1]=='-'):
           node.name = self.escape(srcnode.name.split("-")[0])
       else:
-          node.name = '-NONE-'
+#          node.name = '-NONE-'
+          node.name = srcnode.name
       node.start_index = srcnode.start_index
       node.end_index = srcnode.end_index
       if node.type == 'token':
@@ -308,10 +310,12 @@ class CBinarizer(object):
 
       if not self.m_bEmptyKeep and srcnode.name == '-NONE-':
          return False
-      if srcnode.name != '-NONE-':
+#      if srcnode.name != '-NONE-':
+       if not (srcnode.name[0]=='-' and srcnode.name[-1]=='-'):
           srcname = srcnode.name.split("-")[0].split("=")[0]
       else:
-          srcname = '-NONE-'
+#          srcname = '-NONE-'
+          srcname = srcnode.name
 
       node.name = srcname
       node.type = srcnode.type
