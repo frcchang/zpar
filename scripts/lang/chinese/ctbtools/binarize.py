@@ -243,8 +243,8 @@ class CBinarizer(object):
                          headchild=srcchild
                          bFound=True
                          break
-                      if bFound:
-                         break
+                   if bFound:
+                      break
                 else: assert False #unreachable code 
          if bFound:
             break
