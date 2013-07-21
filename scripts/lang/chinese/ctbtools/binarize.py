@@ -227,7 +227,7 @@ class CBinarizer(object):
                headchild = lTemp[nIndex]
             bFound = True
          else:
-            if lRuleSet[0] in ('l','r'): #category then position
+            if lRuleSet[0] in ("l","r"): #category then position
                for sHead in lRuleSet[1:]:
                   for srcchild in lTemp:
                      if srcchild.name.split("-")[0] == sHead and self.not_empty(srcchild):
