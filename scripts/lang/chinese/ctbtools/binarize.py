@@ -311,7 +311,7 @@ class CBinarizer(object):
       if not self.m_bEmptyKeep and srcnode.name == '-NONE-':
          return False
 #      if srcnode.name != '-NONE-':
-       if not (srcnode.name[0]=='-' and srcnode.name[-1]=='-'):
+      if not (srcnode.name[0]=='-' and srcnode.name[-1]=='-'):
           srcname = srcnode.name.split("-")[0].split("=")[0]
       else:
 #          srcname = '-NONE-'
