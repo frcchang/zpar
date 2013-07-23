@@ -159,14 +159,14 @@ class CBinarizedTreeNode(object):
 
          if 'head_leaf' in dir(node) : self.head_leaf = node.head_leaf
 
-   def tokens(self):
+   def tokens(self,sep='_'):
       if self.type == 'constituent':
          if(self.head_child=='s'):
             return self.left_child.tokens()
          else:
             return self.left_child.tokens()+" "+self.right_child.tokens()
       elif self.type == 'token':
-         return "%s_%s" % (self.token, self.name)
+         return "%s%s%s" % (self.token, sep,self.name)
 
 #================================================================
 
