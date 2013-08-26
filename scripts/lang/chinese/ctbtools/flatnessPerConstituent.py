@@ -32,6 +32,8 @@ class CFlatness(object):
          nc = 1
          subc = len(srcnode.children)
          
+      if srcnode.name == "NP":
+         print "hola"
       if srcnode.type == "constituent":
          for srcchildnode in srcnode.children:
             x,y=self.count_flatness(srcchildnode)
