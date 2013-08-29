@@ -32,14 +32,17 @@ class CFlatness(object):
          nc = 1
          subc = len(srcnode.children)
          
-      if srcnode.name == "NP":
-         print "hola"
       if srcnode.type == "constituent":
          for srcchildnode in srcnode.children:
             x,y=self.count_flatness(srcchildnode)
-            nc+=x
-            subc+=y
-            return (nc,subc)
+            #nc+=x
+            #subc+=y
+	    if srcnode.name == "VP":
+               nc+=x
+               subc+=y
+               return (nc,subc)
+            else:
+               return (nc,subc)
 
    def process(self, sSentence):
       # don't process empty sentences
@@ -54,7 +57,10 @@ class CFlatness(object):
       # output the dep node
       for head in lHead:
          outh=self.count_flatness(head)
-         print float(outh[1])/float(outh[0])
+         if outh[0] == 0: #avoid division by zero if there is no constituent.
+            print 0.0
+         else:
+            print float(outh[1])/float(outh[0])
 
    
 #================================================================

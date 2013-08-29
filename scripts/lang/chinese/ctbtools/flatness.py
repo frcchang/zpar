@@ -36,7 +36,7 @@ class CFlatness(object):
             x,y=self.count_flatness(srcchildnode)
             nc+=x
             subc+=y
-            return (nc,subc)
+         return (nc,subc)
 
    def process(self, sSentence):
       # don't process empty sentences
