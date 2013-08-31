@@ -67,11 +67,11 @@ class CHeadRules(object):
             other_child.link = head_child.id
             # add label
             sub_cons = tmp.name.split('-')
-            if len(sub_cons)>1 and sub_cons[1] in ['SBJ', 'OBJ']:
+            if len(sub_cons)>1:
                # subjects and objects
-               if sub_cons[1] == 'OBJ':
+               if 'OBJ' in sub_cons[1:]:
                   other_child.label = 'OBJ'
-               elif sub_cons[1] == 'SBJ':
+               elif 'SBJ' in sub_cons[1:]:
                   other_child.label = 'SBJ'
                else:
                   print sub_cons[1], head_child.pos
@@ -146,6 +146,28 @@ class CHeadRules(object):
             if other_child.label == '':
                other_child.label = '???'
 
+   def add_label_simple(self, constituent, children, head_child):
+      """add link and label to words after finding heads"""
+      constituent = constituent.split('-')[0]
+      for other_child, tmp in children:
+         if other_child != head_child:
+            assert other_child.link == -1
+            other_child.link = head_child.id
+            # add label
+            sub_cons = tmp.name.split('-')
+            if len(sub_cons)>1:
+               # subjects and objects
+               if 'OBJ' in sub_cons[1:]:
+                  other_child.label = 'OBJ'
+               elif 'SBJ' in sub_cons[1:]:
+                  other_child.label = 'SBJ'
+               else:
+                  other_child.label = 'DEP'
+#                  print sub_cons[1], head_child.pos
+            else:
+               # any links from inside prepositional phrase
+               other_child.label = 'DEP'
+
    def find_head(self, node, lItems):
       """find head"""
       if node.name == '-NONE-':
@@ -163,23 +185,30 @@ class CHeadRules(object):
          sLabel = node.name.split("-")[0] # NP-PN
          sLabel = sLabel.split("=")[0]
          for lRuleSet in self.m_dRules.get(sLabel, []):
-            assert lRuleSet[0] in ("l", "r")
+            assert lRuleSet[0] in ("l", "r", "le", "re")
             lTemp = lZipped[:] # (dep node, constituent)
-            if lRuleSet[0] == "r":
+            if lRuleSet[0] in ("r", "re"):
                lTemp.reverse()
             bFound = False
             if len(lRuleSet) == 1:
                head_child = lTemp[0][0]
                bFound = True
             else:
-               for sHead in lRuleSet[1:]:
+               if lRuleSet[0] in ("le", "re"):
                   for child, child_node in lTemp:
-                     if child_node.name.split("-")[0]==sHead:
+                     if not child_node.name.split("-")[0] in lRuleSet[1:]:
                         head_child = child
                         bFound = True
                         break
-                  if bFound:
-                     break
+               else:
+                  for sHead in lRuleSet[1:]:
+                     for child, child_node in lTemp:
+                        if child_node.name.split("-")[0]==sHead:
+                           head_child = child
+                           bFound = True
+                           break
+                     if bFound:
+                        break
             if bFound:
                break
          else:
@@ -187,7 +216,8 @@ class CHeadRules(object):
                print >> self.log, "can't find a rule for " + sLabel + " with " + ", ".join([child_node.name for child_node in node.children])
             head_child = lZipped[-1][0]
          if self.m_bLabeled:
-            self.add_label(node.name, lZipped, head_child)
+            self.add_label_simple(node.name, lZipped, head_child)
+#            self.add_label(node.name, lZipped, head_child)
          else:
             self.add_link(lZipped, head_child)
          return head_child
