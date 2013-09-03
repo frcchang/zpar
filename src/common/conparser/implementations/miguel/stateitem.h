@@ -1354,7 +1354,7 @@ public:
 	#include "rules/nsubj.cpp"
 	#include "rules/nsubjpass.cpp"
 	#include "rules/csubj.cpp"
-	#include "rules/aux.cpp"
+	#include "rules/auxi.cpp"
 	#include "rules/cc.cpp"
 	#include "rules/expl.cpp"
 	
