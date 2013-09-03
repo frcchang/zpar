@@ -1288,22 +1288,39 @@ public:
   		   headChilds=headChilds->next;
   	   }
      } 
+
+    void findChainTargetPos(CConstituent via_category, unsigned long target_category, const CStateNode* head, CStateNodeList*& candidates) {
+  	   CStateNodeList* headChilds=head->m_umbinarizedSubNodes;
+  	   while(headChilds) {
+  		   const CStateNode* node=headChilds->node;
+		   if ((*words)[node->lexical_head].tag.code()==target_category){
+  			   //candidates->add(node);
+  			   CStateNodeList::add(candidates,node);
+  		   }
+  		   if (node->constituent==via_category) { 
+  			   findChainTargetPos(via_category,target_category,node,candidates);
+  		   }
+  		   headChilds=headChilds->next;
+  	   }
+     } 
+
+   void findChainViaPos(unsigned long via_category, CConstituent target_category, const CStateNode* head, CStateNodeList*& candidates) {
+  	   CStateNodeList* headChilds=head->m_umbinarizedSubNodes;
+  	   while(headChilds) {
+  		   const CStateNode* node=headChilds->node;
+  		   if (node->constituent==target_category) {
+  			   //candidates->add(node);
+  			   CStateNodeList::add(candidates,node);
+  		   }
+		   if ((*words)[node->lexical_head].tag.code()==via_category){
+  			   findChainViaPos(via_category,target_category,node,candidates);
+  		   }
+  		   headChilds=headChilds->next;
+  	   }
+     } 
      
      
-     //"S|SQ|SINV < (NP=target <+(NP) EX)"
-     bool buildExpl1() {
-        if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV) {
-     	   CStateNodeList* childsS=node.m_umbinarizedSubNodes;
-     	   while (childsS!=0) {
-     		   const CStateNode* npTarg=childsS->node;
-     		   if (npTarg->constituent==PENN_CON_NP && (!isLinked(&node, npTarg))){
-     			   
-     		   }
-     		   childsS=childsS->next;
-     	   }
-      	}
-       	return false;
-     }
+
      
      
 
@@ -1359,6 +1376,9 @@ public:
 	#include "rules/expl.cpp"
 	
     //"S|SQ|SINV < (NP=target <+(NP) EX)"
+
+
+      				 
     
 
     

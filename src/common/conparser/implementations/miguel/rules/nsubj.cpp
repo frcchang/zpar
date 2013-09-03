@@ -211,7 +211,7 @@
    /*
     *"S < (NP < EX) <+(VP) (VP < NP=target)"
     *
-    * Checked and seems fine. 
+    * Checked and seems fine. SEGURO? qué pasa si no hay unbroken chain
     */
    bool buildNsubj5() {
 	   if (node.constituent==PENN_CON_S) {
