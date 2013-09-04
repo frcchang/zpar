@@ -1057,6 +1057,12 @@ public:
 	   buildDobj7();
 	   buildDobj8();
 
+	   builIObj1();
+	   builIObj2();
+
+	   buildAttr1();
+	   buildAttr2();
+
    }
    
    //==============================================================================
@@ -1457,8 +1463,20 @@ public:
 	#include "rules/cc.cpp"
 	#include "rules/expl.cpp"
     #include "rules/dobj.cpp"
+    #include "rules/iobj.cpp"
+	#include "rules/attr.cpp"
 	
 
+    //VP < (NP=target !< /\\$/ !<# (/^NN/ < " + timeWordRegex + ") $+ (NP !<# (/^NN/ < " + timeWordRegex + ")))
+    bool builIObj1() {
+    	if (node.constituent==PENN_CON_VP){
+    		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+    		while(childsVp!=0){
+
+    			childsVp=childsVp->next;
+    		}
+    	}
+    }
 
 
       				 
