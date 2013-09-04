@@ -1049,6 +1049,14 @@ public:
 	   buildExpl1();
 
 	   buildDobj1();
+	   buildDobj2();
+	   buildDobj3();
+	   buildDobj4();
+	   buildDobj5();
+	   buildDobj6();
+	   buildDobj7();
+	   buildDobj8();
+
    }
    
    //==============================================================================
