@@ -71,6 +71,8 @@ static CWord g_word_fall("fall");
 static CWord g_word_autumn("autumn");
 static CWord g_word_winter("winter");
 
+static CWord g_word_lot("lot");
+
 
   /*private static final String beAuxiliaryRegex =
     "/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai)$/";*/
@@ -1041,7 +1043,12 @@ public:
 	   csubj1();
 	   
 	   //std::cerr<<"Nsubjpass 1 \n";
-	   buildNsubjpass1();	   
+	   buildNsubjpass1();
+
+
+	   buildExpl1();
+
+	   buildDobj1();
    }
    
    //==============================================================================
@@ -1111,6 +1118,73 @@ public:
 	   return false;
    }
    
+   bool compareWordToTimeLotWordRegex(CWord a) {
+
+   	   if (a==g_word_mondays) return true;
+   	   if (a==g_word_monday) return true;
+   	   if (a==g_word_tuesdays) return true;
+   	   if (a==g_word_tuesday) return true;
+   	   if (a==g_word_wednesdays) return true;
+   	   if (a==g_word_wednesday) return true;
+   	   if (a==g_word_thursdays) return true;
+   	   if (a==g_word_thursday) return true;
+   	   if (a==g_word_friday) return true;
+   	   if (a==g_word_fridays) return true;
+   	   if (a==g_word_saturdays) return true;
+   	   if (a==g_word_saturday) return true;
+   	   if (a==g_word_sundays) return true;
+   	   if (a==g_word_sunday) return true;
+   	   if (a==g_word_days) return true;
+   	   if (a==g_word_day) return true;
+   	   if (a==g_word_morning) return true;
+   	   if (a==g_word_mornings) return true;
+   	   if (a==g_word_evenings) return true;
+   	   if (a==g_word_evening) return true;
+   	   if (a==g_word_nights) return true;
+   	   if (a==g_word_night) return true;
+   	   //...
+   	   if (a==g_word_january) return true;
+   	   if (a==g_word_jan) return true;
+
+   	   if (a==g_word_february) return true;
+   	   if (a==g_word_feb) return true;
+
+   	   if (a==g_word_march) return true;
+   	   if (a==g_word_mar) return true;
+
+   	   if (a==g_word_april) return true;
+   	   if (a==g_word_apr) return true;
+
+   	   if (a==g_word_may) return true;
+   	   if (a==g_word_june) return true;
+   	   if (a==g_word_july) return true;
+   	   if (a==g_word_august) return true;
+   	   if (a==g_word_aug) return true;
+   	   if (a==g_word_september) return true;
+   	   if (a==g_word_sept) return true;
+   	   if (a==g_word_october) return true;
+   	   if (a==g_word_oct) return true;
+   	   if (a==g_word_november) return true;
+   	   if (a==g_word_nov) return true;
+   	   if (a==g_word_december) return true;
+   	   if (a==g_word_dec) return true;
+   	   if (a==g_word_today) return true;
+   	   if (a==g_word_yesterday) return true;
+   	   if (a==g_word_tomorrow) return true;
+   	   if (a==g_word_spring) return true;
+   	   if (a==g_word_summer) return true;
+   	   if (a==g_word_fall) return true;
+   	   if (a==g_word_autumn) return true;
+   	   if (a==g_word_winter) return true;
+
+   	   if (a==g_word_lot) return true;
+
+   	   //fix that....
+
+
+   	   return false;
+      }
+
    //"/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|
    //seeming|appear|appears|appeared|stay|stays|stayed|remain|remains|remained|resemble|resembles|resembled|resembling|become|becomes|became|becoming)$/";
    bool compareWordToCopularWordRegex(CWord a) {
@@ -1328,10 +1402,10 @@ public:
    //==================================================================================================
    //LEGEND
        //A << B:  A dominates B  m_subnodes
-   	   //A < B: A inmediately dominantes B  m_umbinarizedsubnodes.	
-       //A $+ B: A is the inmediately left sister of B
+   	   //A < B: A immediately dominates B  m_umbinarizedsubnodes.
+       //A $+ B: A is the immediately left sister of B
        //A $++ B: A is a left sister of B
-       //A $- B: A is the inmediately right sister of B.
+       //A $- B: A is the immediately right sister of B.
        //A $-- B: A is the right sister of B
        //A <+(C) B: A dominates B via an unbroken chain of (zero or more) nodes matching description C
    //===================================================================================================
@@ -1374,8 +1448,9 @@ public:
 	#include "rules/auxi.cpp"
 	#include "rules/cc.cpp"
 	#include "rules/expl.cpp"
+    #include "rules/dobj.cpp"
 	
-    //"S|SQ|SINV < (NP=target <+(NP) EX)"
+
 
 
       				 

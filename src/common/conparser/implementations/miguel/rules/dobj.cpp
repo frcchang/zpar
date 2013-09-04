@@ -1,5 +1,5 @@
 /* 
-          "VP < (NP $+ (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))) !<(/^(?:VB|AUX)/ < " + copularWordRegex + ")",  // this time one also included "lot"
+    	"VP < (NP $+ (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))) !<(/^(?:VB|AUX)/ < " + copularWordRegex + ")",  // this time one also included "lot"
           // match "give it next week"
           
           "VP < (NP < (NP $+ (/^(NP|WHNP)$/=target !< (/^NN/ < " + timeWordLotRegex + "))))!< (/^(?:VB|AUX)/ < " + copularWordRegex + ")",  // this time one also included "lot"
@@ -22,3 +22,103 @@
           
           "SBAR !< (WHPP|WHNP|WHADVP) < (S < (@NP $+ (ADVP $+ (VP !< (/^(?:VB|AUX)/ < " + copularWordRegex + " !$+ VP) !<+(VP) (/^(?:VB|AUX)/ < " + copularWordRegex + " $+ (VP < VBN|VBD)) !<+(VP) NP !< SBAR !<+(VP) (PP <- IN))))) !$-- CC $-- NP > NP=target"
 */
+
+
+
+    /*
+       *"VP < (NP $+ (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))) !<(/^(?:VB|AUX)/ < " + copularWordRegex + ")"
+       *
+       */
+       bool buildDobj1() {
+    	   if (node.constituent==PENN_CON_VP) {
+    		   CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+    		   bool secondCondition=true;
+    		   while(childsVp!=0){
+    			   const CStateNode* vbChildVp=childsVp->node;
+    			   if (((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)) {
+    				   CStateNodeList* childsVB=vbChildVp->m_umbinarizedSubNodes;
+    			       while(childsVB!=0){
+    			    	   if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
+    			    		   secondCondition=false;
+    			    	   }
+    			       	   childsVB=childsVB->next;
+    			       	}
+    			   }
+    			   childsVp=childsVp->next;
+    		   }
+
+    		   if (secondCondition) { //VP does not a have child that looks like (/^(?:VB|AUX)/ < " + copularWordRegex + ")
+    			   childsVp=node.m_umbinarizedSubNodes;
+    			   while(childsVp!=0){
+    				   const CStateNode* npChildVp=childsVp->node;
+
+    				   if (npChildVp->constituent==PENN_CON_NP) {
+    					   	  //now the immediate left sister must look like (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))
+    					   	   CStateNodeList* previous=childsVp->previous;
+    					   	   if (previous!=0) {
+    					   		   const CStateNode* leftSisterNpTarg=previous->node;
+
+    					   		   if ((leftSisterNpTarg->constituent==PENN_CON_NP || leftSisterNpTarg->constituent==PENN_CON_WHNP) && !(isLinked(&node, leftSisterNpTarg))) {
+    					   			   bool noChildNNTime=true;
+    					   			   CStateNodeList* childsOfTarg=leftSisterNpTarg->m_umbinarizedSubNodes;
+    					   			   while(childsOfTarg!=0){
+    					   				   const CStateNode* nnChildNp=childsOfTarg->node;
+    					   				   if ((nnChildNp->type==CStateNode::LEAF)
+    					   					   && (nnChildNp->lexical_head==leftSisterNpTarg->lexical_head) //<#
+    					   					   && (compareWordToTimeLotWordRegex((*words)[nnChildNp->lexical_head].word))
+    					   					   && ((((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN))
+    					   					   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER))
+    					   					   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
+    					   					   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
+    					   					   noChildNNTime=false;
+    					   					}
+    					   				   childsOfTarg=childsOfTarg->next;
+    					   			   }
+
+
+    					   			   if (noChildNNTime) {
+    					   				   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DOBJ);
+    					   				   if (buildStanfordLink(label, leftSisterNpTarg->lexical_head, node.lexical_head)) {
+    					   					   addLinked(&node,leftSisterNpTarg);
+    					   					   return true;
+    					   				   }
+    					   			   }
+    					   	   	   }
+    					   	   }
+
+    				   }
+    				   childsVp=childsVp->next;
+    			   }
+    		   }
+    	   }
+    	   return false;
+
+       }
+
+ bool buildDobj2() {
+
+ }
+
+ bool buildDobj3() {
+
+ }
+
+ bool buildDobj4() {
+
+ }
+
+ bool buildDobj5() {
+
+ }
+
+ bool buildDobj6() {
+
+ }
+
+ bool buildDobj7() {
+
+ }
+
+ bool buildDobj8() {
+
+ }
