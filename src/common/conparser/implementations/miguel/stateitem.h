@@ -1062,6 +1062,8 @@ public:
 
 	   buildAttr1();
 	   buildAttr2();
+	   buildAttr3();
+	   buildAttr4();
 
    }
    
@@ -1477,6 +1479,7 @@ public:
     		}
     	}
     }
+
 
 
       				 
