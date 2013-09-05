@@ -892,7 +892,11 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
    static CDependencyParse reference ;
 
    assert( m_bCoNLL ) ;
+
+//todo: is this ifndef correct?
+#ifndef FRAGMENTED_TREE
    assert( IsProjectiveDependencyTree(correct) ) ;
+#endif
 
    initCoNLLCache(correct);
 

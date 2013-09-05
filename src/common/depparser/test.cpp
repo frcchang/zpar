@@ -14,7 +14,7 @@
 #include "reader.h"
 #include "writer.h"
 
-using namespace english;
+using namespace TARGET_LANGUAGE; //not only English now
 
 /*===============================================================
  *
