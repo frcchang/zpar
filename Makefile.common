@@ -20,6 +20,7 @@ SRC_LIBS = $(SRC_DIR)/libs
 SRC_COMMON = $(SRC_DIR)/common
 SRC_CHINESE = $(SRC_DIR)/chinese
 SRC_ENGLISH = $(SRC_DIR)/english
+SRC_SPANISH = $(SRC_DIR)/spanish
 OBJECT_DIR = $(BASE_DIR)/obj
 DIST_DIR = $(BASE_DIR)/dist
 
