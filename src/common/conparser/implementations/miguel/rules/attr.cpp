@@ -68,16 +68,63 @@
     }
 //"SBARQ < (WHNP|WHADJP=target $+ (SQ < (/^(?:VB|AUX)/ < " + copularWordRegex + " !$++ VP) !< (VP <- (PP <:IN)) !<- (PP <: IN)))
 bool buildAttr2() {
-
+// A<:B (B is the only child of A)
 }
 //"SBARQ <, (WHNP|WHADJP=target !< WRB) <+(SQ|SINV|S|VP) (VP !< (S < (VP < TO)) < (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
 bool buildAttr3() {
 
 }
 //"SQ <, (/^(?:VB|AUX)/ < " + copularWordRegex + ") < (NP=target $-- (NP !< EX))"
-bool buildAttr4() {
-
-}
+  bool buildAttr4() {
+  	//A <, B  (B is the FIRST child of A)
+  	if (node.constituent==PENN_CON_SQ) {
+  		const CStateNode* firstChild=node.m_umbinarizedSubNodes->node;
+  		bool firstCondition=false; //SQ<, (/^(?:VB|AUX)/ < " + copularWordRegex + ")
+  		if (firstChild!=0 && ((*words)[firstChild->lexical_head].tag.code()==PENN_TAG_VERB)) {
+  			CStateNodeList* childsVB=firstChild->m_umbinarizedSubNodes;
+  			while(childsVB!=0){
+  				if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
+  					firstCondition=true;
+  				}
+  			    childsVB=childsVB->next;
+  			}
+  		}
+  		if (firstCondition){
+  			CStateNodeList* childsSQ=node.m_umbinarizedSubNodes;
+  			while(childsSQ!=0){
+  				const CStateNode* npTargChildSq=childsSQ->node;
+  				if (npTargChildSq->constituent==PENN_CON_NP && (!isLinked(&node,npTargChildSq))) {
+  					//A $--B (A is RIGHT sister of B)
+  					CStateNodeList* leftSistersNp=childsSQ->previous;
+  					while(leftSistersNp!=0){
+  						const CStateNode* sisterNp=leftSistersNp->node;
+  						if (sisterNp->constituent==PENN_CON_NP) {
+  							CStateNodeList* childsNpNp=sisterNp->m_umbinarizedSubNodes;
+  							bool noEx=true;
+  							while(childsNpNp!=0) {
+  								const CStateNode* exChildNp= childsNpNp->node;
+  								if ((*words)[exChildNp->lexical_head].tag.code()==PENN_TAG_EX) {
+  									noEx=false;
+  								}
+  								childsNpNp=childsNpNp->next;
+  							}
+  							if (noEx){
+  								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
+  								if (buildStanfordLink(label, npTargChildSq->lexical_head, node.lexical_head)) {
+  									addLinked(&node,npTargChildSq);
+  								    return true;
+  								}
+  							}
+  						}
+  						leftSistersNp=leftSistersNp->previous;
+  					}
+  				}
+  				childsSQ=childsSQ->next;
+  			}
+  		}
+  	}
+  	return false;
+  }
 
 
 
