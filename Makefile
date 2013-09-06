@@ -69,6 +69,9 @@ SPANISH_DEPPARSER_IMPL = arceager
 SPANISH_DEPPARSER_LABELED = true
 SPANISH_DEPLABELER_IMPL = naive
 
+# Spanish annotation. Supported: ES06_DEPENDENCIES, ES09_DEPENDENCIES
+SPANISH_ANNOTATION = ES09_DEPENDENCIES
+
 #no Spanish constituency parser at the moment
 
 #================================================================
