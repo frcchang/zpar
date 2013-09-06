@@ -72,7 +72,7 @@ public:
 inline std::istream & operator >> (std::istream &is, CLemma &w) {
    std::string s ;
    is >> s ;
-   assert( s[0]=='[' && s[s.size()-1] == ']') ; // [] avoids empty
+   ASSERT( s[0]=='[' && s[s.size()-1] == ']' ,  "Assertion failed in lemma.h, operator >> for class CLemma: This might be due to a malformed lemma (e.g. containing a space character) in the training set" ) ; // [] avoids empty
    w = s.substr(1,s.size()-2) ;
    return is ;
 }
