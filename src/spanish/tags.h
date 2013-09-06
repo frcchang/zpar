@@ -5,8 +5,12 @@
 #ifndef _SPANISH_TAGS_H
 #define _SPANISH_TAGS_H
 
-//conditional here for es09
+#ifdef ES06_DEPENDENCIES
 #include "pos/es06.h"
+#else
+#include "pos/es09.h"
+#endif
+
 
 namespace spanish {
 
