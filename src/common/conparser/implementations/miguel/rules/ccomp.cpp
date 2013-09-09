@@ -83,7 +83,7 @@ bool buildCComp3() {}
  				}
  				//A !<, B 	B is the first child of A
  				if (childsSbar!=0) { //only the first child
- 					if (childsSbar->node->constituent==PENN_CON_WHADJP || (*words)[childsSbar->node->lexical_head].tag.code()==PENN_TAG_ADVERB) {
+ 					if (childsSbar->node->constituent==PENN_CON_WHADJP || (*words)[childsSbar->node->lexical_head].tag.code()==PENN_TAG_IN) {
  						thirdCondition=false;
  					}
  				}
@@ -123,8 +123,50 @@ bool buildCComp6() {}
 bool buildCComp7() {}
 //"ADVP < (SBAR=target < (IN < /^(?i:as|that)/) < (S < (VP !< TO)))"
 bool buildCComp8() {}
+
 //"ADJP < (SBAR=target !< (IN < as) < S)"
-bool buildCComp9() {}
+    bool buildCComp9() {
+    	if (node.constituent==PENN_CON_ADJP){
+    		CStateNodeList* childsAdjp=node.m_umbinarizedSubNodes;
+    		while(childsAdjp!=0){
+    			const CStateNode* sbarTarg=childsAdjp->node;
+    			if (sbarTarg->constituent==PENN_CON_SBAR && (!isLinked(&node,sbarTarg))) {
+    				bool firstCondition=true;
+    				CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
+    				while(childsSbar!=0){
+    					const CStateNode* inChildSbar=childsSbar->node;
+    					if ((*words)[inChildSbar->lexical_head].tag.code()==PENN_TAG_IN) {
+    						CStateNodeList* childsIn=inChildSbar->m_umbinarizedSubNodes;
+    						while(childsIn!=0){
+    							if ((*words)[inChildSbar->lexical_head].word==g_word_as) {
+
+    							}
+    							childsIn=childsIn->next;
+    						}
+    					}
+    					childsSbar=childsSbar->next;
+    				}
+    				if (firstCondition){
+    					childsSbar=sbarTarg->m_umbinarizedSubNodes;
+    					while(childsSbar!=0){
+    						const CStateNode* schildSbar=childsSbar->node;
+    						if (schildSbar->constituent==PENN_CON_S){
+    							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+    							 if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+    								 addLinked(&node,sbarTarg);
+    							 	 return true;
+    							}
+    						}
+    						childsSbar=childsSbar->next;
+    					}
+    				}
+    			}
+    			childsAdjp=childsAdjp->next;
+    		}
+    	}
+    	return false;
+    }
+
 //"S <, (SBAR=target <, (IN < /^(?i:that|whether)$/) !$+ VP)",
 bool buildCComp10() {}
 //"@NP < JJ|NN|NNS < (SBAR=target [ !<(S < (VP < TO )) | !$-- NP|NN|NNP|NNS ] )"
