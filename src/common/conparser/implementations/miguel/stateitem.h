@@ -1065,6 +1065,18 @@ public:
 	   buildAttr3();
 	   buildAttr4();
 
+	   buildCComp1();
+	   buildCComp2();
+	   buildCComp3();
+	   buildCComp4();
+	   buildCComp5();
+	   buildCComp6();
+	   buildCComp7();
+	   buildCComp8();
+	   buildCComp9();
+	   buildCComp10();
+	   buildCComp11();
+
    }
    
    //==============================================================================
@@ -1467,6 +1479,7 @@ public:
     #include "rules/dobj.cpp"
     #include "rules/iobj.cpp"
 	#include "rules/attr.cpp"
+    #include "rules/ccomp.cpp"
 	
 
     //VP < (NP=target !< /\\$/ !<# (/^NN/ < " + timeWordRegex + ") $+ (NP !<# (/^NN/ < " + timeWordRegex + ")))
@@ -1479,6 +1492,10 @@ public:
     		}
     	}
     }
+
+
+
+
 
 
 
