@@ -121,8 +121,70 @@ bool buildCComp5() {}
 bool buildCComp6() {}
 //"S|SINV < (S|SBARQ=target $+ /^(,|\\.|'')$/ !$- /^(?:CC|:)$/ !< (VP < TO|VBG|VBN))",
 bool buildCComp7() {}
+
+
 //"ADVP < (SBAR=target < (IN < /^(?i:as|that)/) < (S < (VP !< TO)))"
-bool buildCComp8() {}
+bool buildCComp8() {
+	if (node.constituent==PENN_CON_ADVP){
+		CStateNodeList* childsAdvp=node.m_umbinarizedSubNodes;
+		bool secondCondition=false;
+		while(childsAdvp!=0){
+			const CStateNode* sChildAdvp=childsAdvp->node;
+			bool inCondition=true;
+			CStateNodeList* childsS=sChildAdvp->m_umbinarizedSubNodes;
+			while(childsS!=0){
+				const CStateNode* vpChildS=childsS->node;
+				if (vpChildS->constituent==PENN_CON_VP) {
+					CStateNodeList* childsVp=vpChildS->m_umbinarizedSubNodes;
+					while(childsVp!=0){
+						const CStateNode* toChildVp=childsVp->node;
+						if (((*words)[toChildVp->lexical_head].tag.code()==PENN_TAG_TO)) {
+							inCondition=false;
+
+						}
+						childsVp=childsVp->next;
+					}
+					secondCondition=inCondition;
+				}
+				childsS=childsS->next;
+			}
+			childsAdvp=childsAdvp->next;
+		}
+		if (secondCondition) {
+			childsAdvp=node.m_umbinarizedSubNodes;
+			while(childsAdvp!=0){
+				const CStateNode* sbarTarg=childsAdvp->node;
+				if (sbarTarg->constituent==PENN_CON_SBAR && (!isLinked(&node,sbarTarg))) {
+					CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
+					while(childsSbar!=0){
+						const CStateNode* inChildSbar=childsSbar->node;
+						if ((*words)[inChildSbar->lexical_head].tag.code()==PENN_TAG_IN) {
+							CStateNodeList* childsIn=inChildSbar->m_umbinarizedSubNodes;
+							while(childsIn!=0){
+								if (((*words)[childsIn->node->lexical_head].word==g_word_as)&&((*words)[childsIn->node->lexical_head].word==g_word_that)) {
+									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+										addLinked(&node,sbarTarg);
+									    return true;
+									}
+								}
+								childsIn=childsIn->next;
+							}
+						}
+						childsSbar=childsSbar->next;
+					}
+				}
+
+
+						//(*words)[childsSbar->node->lexical_head].tag.code()==PENN_TAG_IN
+				childsAdvp=childsAdvp->next;
+			}
+
+		}
+
+	}
+	return false;
+}
 
 //"ADJP < (SBAR=target !< (IN < as) < S)"
     bool buildCComp9() {
