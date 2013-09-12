@@ -289,7 +289,46 @@ bool buildCComp8() {
     	return false;
     }
 
-//"S <, (SBAR=target <, (IN < /^(?i:that|whether)$/) !$+ VP)",
-bool buildCComp10() {}
+    //"S <, (SBAR=target <, (IN < /^(?i:that|whether)$/) !$+ VP)",
+    bool buildCComp10() {
+    	if (node.constituent==PENN_CON_S){
+    		CStateNodeList* childsS=node.m_umbinarizedSubNodes;
+    		if (childsS!=0){ //<, first child only
+    			const CStateNode* sbarTarg=childsS->node;
+    			if (sbarTarg->constituent==PENN_CON_SBAR && (!isLinked(&node,sbarTarg))) {
+    				CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
+    				if (childsSbar!=0){ //<, first child only
+    					const CStateNode* inChildSbar=childsSbar->node;
+    					if ((*words)[inChildSbar->lexical_head].tag.code()==PENN_TAG_IN) {
+    						// A $+ B. A is the immediate left sister of B
+    						bool secondCondition=true;
+    						if (childsSbar->next!=0){
+    							const CStateNode* leftSisterIn = childsSbar->next->node;
+    							if (leftSisterIn->constituent==PENN_CON_VP){
+    								secondCondition=false;
+    							}
+    						}
+    						if (secondCondition){
+    							CStateNodeList* childsIn=inChildSbar->m_umbinarizedSubNodes;
+    							while(childsIn!=0){
+    								if (((*words)[childsIn->node->lexical_head].word==g_word_whether)&&((*words)[childsIn->node->lexical_head].word==g_word_that)) {
+    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+    									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+    										addLinked(&node,sbarTarg);
+    										return true;
+    									}
+    								}
+    								childsIn=childsIn->next;
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+
+    	}
+    	return false;
+
+    }
 //"@NP < JJ|NN|NNS < (SBAR=target [ !<(S < (VP < TO )) | !$-- NP|NN|NNP|NNS ] )"
 bool buildCComp11() {}
