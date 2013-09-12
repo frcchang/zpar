@@ -168,6 +168,7 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_as("as");
  static CWord g_word_that("that");
  static CWord g_word_how("how");
+ static CWord g_word_whether("whether");
 
 
 
@@ -1496,6 +1497,8 @@ public:
     		}
     	}
     }
+
+
 
 
 
