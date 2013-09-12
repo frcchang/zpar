@@ -166,6 +166,7 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_comma(",");
  
  static CWord g_word_as("as");
+ static CWord g_word_that("that");
 
 
 
