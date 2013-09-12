@@ -115,8 +115,68 @@ bool buildCComp3() {}
  	return false;
 
  }
-//"VP < (SBAR=target < (S < VP) !$-- NP <, (WHADVP < (WRB < /^(?i:how)$/)))",
-bool buildCComp5() {}
+
+ //"VP < (SBAR=target < (S < VP) !$-- NP <, (WHADVP < (WRB < /^(?i:how)$/)))",
+ bool buildCComp5() {
+ 	if (node.constituent==PENN_CON_VP){
+ 		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+ 		while(childsVp!=0){
+ 			const CStateNode* sbarTarg=childsVp->node;
+ 			if (sbarTarg->constituent==PENN_CON_SBAR && (!isLinked(&node,sbarTarg))){
+ 				bool noNpLeftSister=true;
+ 				CStateNodeList* leftSistersSbar=childsVp->previous;
+ 				while(leftSistersSbar!=0){
+ 					if (leftSistersSbar->node->constituent==PENN_CON_NP){
+ 						noNpLeftSister=false;
+ 					}
+ 					leftSistersSbar=leftSistersSbar->previous;
+ 				}
+
+ 				if (noNpLeftSister){
+ 					CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
+ 					while(childsSbar!=0){
+ 						const CStateNode* sChildSbar=childsSbar->node;
+ 						if (sChildSbar->constituent==PENN_CON_S){
+ 							CStateNodeList* childsS=sChildSbar->m_umbinarizedSubNodes;
+ 							while(childsS!=0){
+ 								if (childsS->node->constituent==PENN_CON_VP){
+ 									const CStateNode* firstChildSbar=sbarTarg->m_umbinarizedSubNodes->node;
+ 									if (firstChildSbar->constituent==PENN_CON_WHADVP){
+ 										CStateNodeList* childsWhadvp=firstChildSbar->m_umbinarizedSubNodes;
+ 										while(childsWhadvp!=0){
+ 											const CStateNode* wrbChildWh=childsWhadvp->node;
+ 											if ((*words)[wrbChildWh->lexical_head].tag.code()==PENN_TAG_WRB){
+ 												CStateNodeList* childsWrb=wrbChildWh->m_umbinarizedSubNodes;
+ 												while(childsWrb!=0){
+ 													if (((*words)[childsWrb->node->lexical_head].word==g_word_how)) {
+ 														CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+ 														if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+ 															addLinked(&node,sbarTarg);
+ 															return true;
+ 														}
+ 													}
+ 													childsWrb=childsWrb->next;
+ 												}
+ 											}
+ 											childsWhadvp=childsWhadvp->next;
+ 										}
+ 									}
+ 								}
+ 								childsS=childsS->next;
+ 							}
+ 						}
+ 						childsSbar=childsSbar->next;
+ 					}
+ 				}
+
+ 			}
+ 			childsVp=childsVp->next;
+ 		}
+ 	}
+ 	return false;
+
+ }
+
 //"VP < (/^VB/ < " + haveRegex + ") < (S=target < @NP < VP)",
 bool buildCComp6() {}
 //"S|SINV < (S|SBARQ=target $+ /^(,|\\.|'')$/ !$- /^(?:CC|:)$/ !< (VP < TO|VBG|VBN))",
