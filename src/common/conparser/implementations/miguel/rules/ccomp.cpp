@@ -177,8 +177,62 @@ bool buildCComp3() {}
 
  }
 
-//"VP < (/^VB/ < " + haveRegex + ") < (S=target < @NP < VP)",
-bool buildCComp6() {}
+ //"VP < (/^VB/ < " + haveRegex + ") < (S=target < @NP < VP)",
+   bool buildCComp6() {
+
+   	if (node.constituent==PENN_CON_VP){
+   		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+   		bool firstCondition=false;
+   		while(childsVp!=0){
+   			const CStateNode* vbChildVp=childsVp->node;
+   			if (((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)
+   					|| ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PAST)
+   					|| ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PROG)
+   					|| ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)
+   					|| ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PRES)
+   					|| ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE)) {
+
+   				CStateNodeList* childsVb=vbChildVp->m_umbinarizedSubNodes;
+   				while(childsVb!=0){
+   					const CStateNode* haveChildVb=childsVb->node;
+   					 if (compareWordToHaveWordRegex((*words)[haveChildVb->lexical_head].word)) {
+   						 firstCondition=true;
+   					 }
+   					childsVb=childsVb->next;
+   				}
+   			}
+   			childsVp=childsVp->next;
+   		}
+   		childsVp=node.m_umbinarizedSubNodes;
+   		if (firstCondition){
+   			while(childsVp!=0){
+   				const CStateNode* sTarg=childsVp->node;
+   				if (sTarg->constituent==PENN_CON_S && (!isLinked(&node,sTarg))) {
+   					CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
+   					while(childsS!=0){
+   						const CStateNode* npChildS=childsS->node;
+   						if (npChildS->constituent==PENN_CON_NP){
+   							CStateNodeList* childsNp=npChildS->m_umbinarizedSubNodes;
+   							while(childsNp!=0){
+   								if (childsNp->node->constituent==PENN_CON_VP){
+   									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+   									if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+   										addLinked(&node,sTarg);
+   										return true;
+   									}
+   								}
+   								childsNp=childsNp->next;
+   							}
+   						}
+   						childsS=childsS->next;
+   					}
+   				}
+   				childsVp=childsVp->next;
+   			}
+   		}
+   	}
+   	return false;
+   }
 //"S|SINV < (S|SBARQ=target $+ /^(,|\\.|'')$/ !$- /^(?:CC|:)$/ !< (VP < TO|VBG|VBN))",
 bool buildCComp7() {}
 
