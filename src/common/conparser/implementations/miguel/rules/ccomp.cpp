@@ -1,5 +1,4 @@
 
-//"VP < (S=target < (VP !<, TO|VBG|VBN) !$-- NP)",
  //"VP < (S=target < (VP !<, TO|VBG|VBN) !$-- NP)",
     bool buildCComp1() {
     	if (node.constituent==PENN_CON_VP) {
@@ -53,13 +52,118 @@
     }
 
 
-//"VP < (SBAR=target < (S <+(S) VP) <, (IN|DT < /^(?i:that|whether)$/))",
-bool buildCComp2() {}
+    //"VP < (SBAR=target < (S <+(S) VP) <, (IN|DT < /^(?i:that|whether)$/))",
+      bool buildCComp2() {
+
+      	if (node.constituent==PENN_CON_VP){
+      		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+      		while(childsVp!=0){
+      			const CStateNode* sbarTarg=childsVp->node;
+      			if (sbarTarg->constituent==PENN_CON_SBAR && (!isLinked(&node,sbarTarg))) {
+      				CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
+      				bool secondCondition=false;
+      				if (childsSbar!=0){ //Only first child <,
+      					const CStateNode* firstChildSbar=childsSbar->node;
+      					if (((*words)[firstChildSbar->lexical_head].tag.code()==PENN_TAG_IN)
+      						|| ((*words)[firstChildSbar->lexical_head].tag.code()==PENN_TAG_DT)){
+      						CStateNodeList* childsInDt=firstChildSbar->m_umbinarizedSubNodes;
+      						while(childsInDt!=0){
+      							if (((*words)[childsInDt->node->lexical_head].word==g_word_whether)&&((*words)[childsInDt->node->lexical_head].word==g_word_that)) {
+      								secondCondition=true;
+      							}
+      							childsInDt=childsInDt->next;
+      						}
+      					}
+      				}
+      				if (secondCondition){
+      					while(childsSbar!=0){
+      						const CStateNode* sChildSbar=childsSbar->node;
+      						if (sChildSbar->constituent==PENN_CON_S){
+      							//A dominates B via an unbroken chain of (zero or more) nodes matching description C
+      							CStateNodeList* sChain=new CStateNodeList();
+      							findChain(PENN_CON_S,PENN_CON_VP, sChildSbar, sChain);
+      							while(sChain!=0){
+      								if (sChain->node->constituent==PENN_CON_VP){
+      									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+      									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+      										addLinked(&node,sbarTarg);
+      										return true;
+      									}
+      								}
+      								sChain=sChain->next;
+      							}
+      						}
+      						childsSbar=childsSbar->next;
+      					}
+      				}
+      			}
+      			childsVp=childsVp->next;
+      		}
+      	}
+      	return false;
+      }
 
 
 
-//"VP < (SBAR=target < (SBAR < (S <+(S) VP) <, (IN|DT < /^(?i:that|whether)$/)) < CC|CONJP)",
-bool buildCComp3() {}
+      //"VP < (SBAR=target < (SBAR < (S <+(S) VP) <, (IN|DT < /^(?i:that|whether)$/)) < CC|CONJP)",
+         bool buildCComp3() {
+
+            	if (node.constituent==PENN_CON_VP){
+            		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+            		while(childsVp!=0){
+            			const CStateNode* sbarTarg=childsVp->node;
+            			if (sbarTarg->constituent==PENN_CON_SBAR && (!isLinked(&node,sbarTarg))) {
+            				CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
+            				bool secondCondition=false;
+            				if (childsSbar!=0){ //Only first child <,
+            					const CStateNode* firstChildSbar=childsSbar->node;
+            					if (((*words)[firstChildSbar->lexical_head].tag.code()==PENN_TAG_IN)
+            						|| ((*words)[firstChildSbar->lexical_head].tag.code()==PENN_TAG_DT)){
+            						CStateNodeList* childsInDt=firstChildSbar->m_umbinarizedSubNodes;
+            						while(childsInDt!=0){
+            							if (((*words)[childsInDt->node->lexical_head].word==g_word_whether)&&((*words)[childsInDt->node->lexical_head].word==g_word_that)) {
+            								secondCondition=true;
+            							}
+            							childsInDt=childsInDt->next;
+            						}
+            					}
+            				}
+            				bool thirdCondition=false;
+            				while(childsSbar!=0){
+            					if (((*words)[childsSbar->node->lexical_head].tag.code()==PENN_TAG_CC)
+            					    || (childsSbar->node->constituent==PENN_CON_CONJP)){
+            						thirdCondition=true;
+            					}
+            					childsSbar=childsSbar->next;
+            				}
+            				if (secondCondition && thirdCondition){
+            					childsSbar=sbarTarg->m_umbinarizedSubNodes;
+            					while(childsSbar!=0){
+            						const CStateNode* sChildSbar=childsSbar->node;
+            						if (sChildSbar->constituent==PENN_CON_S){
+            							//A dominates B via an unbroken chain of (zero or more) nodes matching description C
+            							CStateNodeList* sChain=new CStateNodeList();
+            							findChain(PENN_CON_S,PENN_CON_VP, sChildSbar, sChain);
+            							while(sChain!=0){
+            								if (sChain->node->constituent==PENN_CON_VP){
+            									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+            									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+            										addLinked(&node,sbarTarg);
+            										return true;
+            									}
+            								}
+            								sChain=sChain->next;
+            							}
+            						}
+            						childsSbar=childsSbar->next;
+            					}
+            				}
+            			}
+            			childsVp=childsVp->next;
+            		}
+            	}
+            	return false;
+            }
 
 
 //"VP < (SBAR=target < (S < VP) !$-- NP !<, (IN|WHADVP))",
