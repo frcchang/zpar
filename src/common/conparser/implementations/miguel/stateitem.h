@@ -170,6 +170,8 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_how("how");
  static CWord g_word_whether("whether");
 
+ static CWord g_word_order("order");
+
 
 
 //static CWord g_word_lot("lot"); //?
@@ -1082,6 +1084,14 @@ public:
 	   buildCComp10();
 	   buildCComp11();
 
+	   buildXComp1();
+	   buildXComp2();
+	   buildXComp3();
+	   buildXComp4();
+	   buildXComp5();
+	   buildXComp6();
+	   buildXComp7();
+
    }
    
    //==============================================================================
@@ -1218,7 +1228,7 @@ public:
    	   return false;
       }
 
-   //"/^(?i:am|is|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|
+   //"/^(?i:am|isorder|are|r|be|being|'s|'re|'m|was|were|been|s|ai|seem|seems|seemed|
    //seeming|appear|appears|appeared|stay|stays|stayed|remain|remains|remained|resemble|resembles|resembled|resembling|become|becomes|became|becoming)$/";
    bool compareWordToCopularWordRegex(CWord a) {
    	   
@@ -1485,6 +1495,7 @@ public:
     #include "rules/iobj.cpp"
 	#include "rules/attr.cpp"
     #include "rules/ccomp.cpp"
+    #include "rules/xcomp.cpp"
 	
 
     //VP < (NP=target !< /\\$/ !<# (/^NN/ < " + timeWordRegex + ") $+ (NP !<# (/^NN/ < " + timeWordRegex + ")))
