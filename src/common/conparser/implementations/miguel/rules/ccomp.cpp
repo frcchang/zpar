@@ -488,5 +488,79 @@ bool buildCComp8() {
     	return false;
 
     }
-//"@NP < JJ|NN|NNS < (SBAR=target [ !<(S < (VP < TO )) | !$-- NP|NN|NNP|NNS ] )"
-bool buildCComp11() {}
+    //"@NP < JJ|NN|NNS < (SBAR=target [ !<(S < (VP < TO )) | !$-- NP|NN|NNP|NNS ] )"
+
+           	   //SBAR=target !< (S<(VP<TO))      (SBAR does not have a child such as (S<...
+           	   //SBAR=target!$-- NP|NN|NNP|NNS   (SBAR is not a right sister of NP ...)
+        //but this is an OR
+        //so, not at the same time...?
+
+        bool buildCComp11() {
+        	if (node.constituent==PENN_CON_NP){
+        		CStateNodeList* childsNp=node.m_umbinarizedSubNodes;
+        		while(childsNp!=0){
+        			const CStateNode* jjnnnsChildNp=childsNp->node;
+        			if (((*words)[jjnnnsChildNp->lexical_head].tag.code()==PENN_TAG_ADJECTIVE)
+        					||((*words)[jjnnnsChildNp->lexical_head].tag.code()==PENN_TAG_NOUN)
+        					||((*words)[jjnnnsChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL)) {
+
+        				CStateNodeList* childsJJ=jjnnnsChildNp->m_umbinarizedSubNodes;
+        				while(childsJJ!=0){
+        					const CStateNode* sbarTarg=childsJJ->node;
+        					if (sbarTarg->constituent==PENN_CON_SBAR && (!isLinked(&node,sbarTarg))) {
+        						bool childCondition=true;
+        						bool sisterCondition=true; //I assume at first sight that they are true.
+
+        						CStateNodeList* leftSistersSbar=childsJJ->previous;
+        						while(leftSistersSbar!=0){
+        							const CStateNode* sister=leftSistersSbar->node;
+        							if ((sister->constituent==PENN_CON_NP)
+        							     ||((*words)[sister->lexical_head].tag.code()==PENN_TAG_NOUN)
+        							     ||((*words)[sister->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER)
+        							     ||((*words)[sister->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL)) {
+        								childCondition=false;
+        							}
+        							leftSistersSbar=leftSistersSbar->previous;
+        						}
+
+        						//SBAR=target !< (S<(VP<TO))
+        						CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
+        						while(childsSbar!=0){
+        							const CStateNode* schildSbar=childsSbar->node;
+        							if (schildSbar->constituent==PENN_CON_S){
+        								CStateNodeList* childsS=schildSbar->m_umbinarizedSubNodes;
+        								while (childsS!=0){
+        									const CStateNode* vpChild=childsS->node;
+        									if (vpChild->constituent==PENN_CON_VP){
+        										CStateNodeList* childsVp=vpChild->m_umbinarizedSubNodes;
+        										while(childsVp!=0){
+        											if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO)){
+        												childCondition=false;
+        											}
+        											childsVp=childsVp->next;
+        										}
+        									}
+        									childsS=childsS->next;
+        								}
+        							}
+        							childsSbar=childsSbar->next;
+        						}
+
+        						if (childCondition || sisterCondition) { //[] represents an or.
+        							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+        							if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+        								addLinked(&node,sbarTarg);
+        							    return true;
+        							}
+        						}
+        					}
+        					childsJJ=childsJJ->next;
+        				}
+        			}
+        			childsNp=childsNp->next;
+        		}
+        	}
+        	return false;
+
+        }
+
