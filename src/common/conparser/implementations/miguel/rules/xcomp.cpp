@@ -130,9 +130,49 @@ bool buildXComp3() {
 
 }
 
-
 //"VP < (/^(?:VB|AUX)/ $+ (VP=target < VB < NP))",
-bool buildXComp4() {}
+   bool buildXComp4() {
+   	if (node.constituent==PENN_CON_VP){
+   		bool firstCondition=false;
+   		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+   		while(childsVp!=0){
+   			if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB)){
+   				firstCondition=true;
+   			}
+   			childsVp=childsVp->next;
+   		}
+   		if (firstCondition){
+   			//A $+ B 	A is the immediate left sister of B
+   			if (childsVp->next!=0){
+   				const CStateNode* vpTarg=childsVp->next->node;
+   				if ((vpTarg->constituent==PENN_CON_VP) && (!isLinked(&node,vpTarg))){
+   					CStateNodeList* childsVpTarg=vpTarg->m_umbinarizedSubNodes;
+   					while(childsVpTarg!=0){
+   						const CStateNode* vbChildVp=childsVpTarg->node;
+   						if (((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)){
+   							CStateNodeList* childsVb=vbChildVp->m_umbinarizedSubNodes;
+   							while(childsVb!=0){
+   								if (childsVb->node->constituent==PENN_CON_NP){
+   									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+   									if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)) {
+   										addLinked(&node,vpTarg);
+   										return true;
+   									}
+   								}
+   								childsVb=childsVb->next;
+   							}
+   						}
+   						childsVpTarg=childsVpTarg->next;
+   					}
+   				}
+
+   			}
+   		}
+   	}
+   	return false;
+
+   }
+
 
 //"VP < (SBAR=target < (S !$- (NN < order) < (VP < TO))) !> (VP < (VB|AUX < be)) ",
 bool buildXComp5() {}
