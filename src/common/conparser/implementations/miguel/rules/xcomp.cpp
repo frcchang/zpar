@@ -177,8 +177,62 @@ bool buildXComp3() {
 //"VP < (SBAR=target < (S !$- (NN < order) < (VP < TO))) !> (VP < (VB|AUX < be)) ",
 bool buildXComp5() {}
 
+
 //"VP < (S=target !$- (NN < order) <: NP) > VP",
-bool buildXComp6() {}
+//the second vp is the head. Not the first one, because the first one is the one located to the right of >
+
+bool buildXComp6() {
+	if (node.constituent==PENN_CON_VP){
+		CStateNodeList* childsfstVp=node.m_umbinarizedSubNodes;
+		while(childsfstVp!=0){
+			const CStateNode* vpNode=childsfstVp->node;
+			if (vpNode->constituent==PENN_CON_VP){
+				CStateNodeList* childsVp=vpNode->m_umbinarizedSubNodes;
+				while(childsVp!=0){
+					const CStateNode* sTarg=childsVp->node;
+					if (sTarg->constituent==PENN_CON_S && (!isLinked(vpNode,sTarg))) {
+						bool firstCondition=true;
+						//A $- B 	A is the immediate right sister of B
+						if (childsVp->previous!=0){
+							const CStateNode* leftSisterS=childsVp->previous->node;
+							if (((*words)[leftSisterS->lexical_head].tag.code()==PENN_TAG_NOUN)) {
+								CStateNodeList* childsNN=leftSisterS->m_umbinarizedSubNodes;
+								while(childsNN!=0){
+									const CStateNode* orderChild=childsNN->node;
+									if ((*words)[orderChild->lexical_head].word==g_word_order){
+										firstCondition=false;
+									}
+									childsNN=childsNN->next;
+								 }
+							 }
+						}
+						if (firstCondition){
+							//S=target <: NP
+							//A <: B 	B is the only child of A
+							CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
+							if (childsS!=0){
+								if ((childsS->node->constituent==PENN_CON_NP) && (childsS->next ==0)){
+									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+									if (buildStanfordLink(label, sTarg->lexical_head, vpNode->lexical_head)) {
+										//addLinked(vpNode,sTarg);
+										addLinked(&node,sTarg); //I think this is not corrects
+										return true;
+									}
+								}
+							}
+						}
+
+					}
+					childsVp=childsVp->next;
+				}
+			}
+			childsfstVp=childsfstVp->next;
+		}
+	}
+	return false;
+
+}
+
 
 //"(VP < (S=target < (VP < VBG ) !< NP !$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)]) !$-- /^:$/))",
 bool buildXComp7() {}
