@@ -202,9 +202,6 @@ int multextToMorphtag(const std::string &multextTag) //several tags? e.g. there:
 			case ':': return MORPH_TAG_COLON;
 			case '#': return MORPH_TAG_HASH;
 
-			case 'N': return MORPH_TAG_NOUN;
-			case 'V': return MORPH_TAG_VERB;
-			case 'M': return MORPH_TAG_MODAL_VERB;
 			case 'J': return MORPH_TAG_ADJ;
 
 			case 'U': return MORPH_TAG_INTERJ;
