@@ -10,5 +10,16 @@
 //just for tests
 int main ( void )
 {
-	std::cout << english::pennToMorphTag("VBZ");
+	//english::CMorph morph = english::pennToMorph("VBZ");
+	//std::cout << "{" << morph.str() << "}";
+
+	for ( ;; )
+	{
+		std::string input;
+		std::cout << "Input a Penn tag: ";
+		std::cin >> input;
+		english::CMorph morph = english::pennToMorph(input);
+		std::cout << "{" << morph.str() << "}\n";
+	}
+
 }

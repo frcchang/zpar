@@ -63,7 +63,7 @@ const std::string MORPH_FIELD_STRINGS [] = {
 	//MORPH_FIELD_SIZE[i] = name of the field that ends at bit i counting from the right hand side
 	//empty strings are as in MORPH_FIELD_SIZE
 
-	"POSTAG", "","","","",""
+	"POSTAG", "","","","","",
 	"NOUN TYPE", "",
 	"NUMBER", "",
 	"GENDER", "",
@@ -223,11 +223,11 @@ public:
 public:
 
    //get the value of a morphological information field
-   unsigned long getField ( MORPH_FIELDS field )
+   unsigned long getField ( MORPH_FIELDS field ) const
    {
 	   assert(MORPH_FIELD_SIZE[field] > 0);
 	   unsigned long result = morphInfo >> field;
-	   unsigned long mask = ( 1ul << MORPH_FIELD_SIZE[field] - 1);
+	   unsigned long mask = ( (1ul << MORPH_FIELD_SIZE[field]) - 1);
 	   return result & mask;
    }
 
@@ -235,7 +235,7 @@ public:
    void clearField ( MORPH_FIELDS field )
    {
 	   assert(MORPH_FIELD_SIZE[field] > 0);
-	   unsigned long mask = ( 1ul << MORPH_FIELD_SIZE[field] - 1) << field; //1's only in that field
+	   unsigned long mask = ( (1ul << MORPH_FIELD_SIZE[field]) - 1) << field; //1's only in that field
 	   morphInfo = morphInfo & (~mask); //clear the field to zeros
    }
 
@@ -261,7 +261,42 @@ public:
 	   return result;
    }
 
+   std::string str()
+   {
+	   std::vector<CMorphFeat> featVector = getFeatureVector();
+	   std::stringstream stream;
+	   for ( int i = 0 ; i < featVector.size() ; i++ )
+	   {
+		   stream << featVector[i].str() << ", ";
+	   }
+	   return stream.str();
+   }
+
 };
+
+
+/**
+ * Convert a Penn Treebank POS tag into its morphological information
+ */
+CMorph pennToMorph(const std::string &pennTag)
+{
+
+	CMorph morph;
+
+	//set the POS tag
+	morph.setField(MORPH_POSTAG,pennToMorphTag(pennTag));
+
+	//common nouns
+	if ( !pennTag.compare("NN") || !pennTag.compare("NNS") )
+		morph.setField(MORPH_NOUN_TYPE,MORPH_NOUN_TYPE_COMMON);
+
+	//proper nouns
+	if ( !pennTag.compare("NNP") || !pennTag.compare("NNPS") )
+		morph.setField(MORPH_NOUN_TYPE,MORPH_NOUN_TYPE_PROPER);
+
+	return morph;
+
+}
 
 
 
