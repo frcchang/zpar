@@ -276,9 +276,12 @@ public:
 
 
 /**
- * Convert a Penn Treebank POS tag into its morphological information
+ * Convert a Penn Treebank word + POS tag into its morphological information.
+ * The word is used only for some known words.
+ * Use an empty word
+ * Pass the empty string as the word if only tag information is to be used for morphological analysis.
  */
-CMorph pennToMorph(const std::string &pennTag)
+CMorph pennToMorph(const std::string &word , const std::string &pennTag)
 {
 
 	CMorph morph;
@@ -293,6 +296,71 @@ CMorph pennToMorph(const std::string &pennTag)
 	//proper nouns
 	if ( !pennTag.compare("NNP") || !pennTag.compare("NNPS") )
 		morph.setField(MORPH_NOUN_TYPE,MORPH_NOUN_TYPE_PROPER);
+
+	//plural
+	if ( !pennTag.compare("NNS") || !pennTag.compare("NNPS") )
+		morph.setField(MORPH_NUMBER,MORPH_NUMBER_PLURAL);
+
+	if ( !pennTag.compare("PRP") )
+	{
+		if ( !word.compare("they") || !word.compare("them") || !word.compare("we") || !word.compare("ourselves") || !word.compare("themselves") )
+			morph.setField(MORPH_NUMBER,MORPH_NUMBER_PLURAL);
+	}
+
+	//singular
+	if ( !pennTag.compare("NN") || !pennTag.compare("NNP") )
+		morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
+
+	if ( !pennTag.compare("PRP") )
+	{
+		if ( !word.compare("it") || !word.compare("he") || !word.compare("him") || !word.compare("she") || !word.compare("her")
+				|| !word.compare("itself") || !word.compare("himself") || !word.compare("herself") )
+			morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
+	}
+
+	if ( !pennTag.compare("VBZ") )
+		morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
+
+	//plural/singular for numerals
+	if ( !pennTag.compare("CD") && word.length() > 0 )
+	{
+		if ( !word.compare("1") || !word.compare("one") )
+			morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
+		else
+			morph.setField(MORPH_NUMBER,MORPH_NUMBER_PLURAL);
+	}
+
+	//verb type
+	if ( !pennTag.compare("MD") )
+		morph.setField(MORPH_VERB_TYPE,MORPH_VERB_MODAL);
+	if ( pennTag.length() > 0 && pennTag[0] == 'V' )
+		morph.setField(MORPH_VERB_TYPE,MORPH_VERB_MAIN);
+
+	//verb form
+	if ( !pennTag.compare("VBG") )
+		morph.setField(MORPH_VERB_FORM,MORPH_VERB_GERUND);
+	if ( !pennTag.compare("VBN") )
+		morph.setField(MORPH_VERB_FORM,MORPH_VERB_PARTICIPLE);
+	if ( !pennTag.compare("VB") )
+		morph.setField(MORPH_VERB_FORM,MORPH_VERB_INFINITIVE);
+	if ( !pennTag.compare("VBD") || !pennTag.compare("VBP") || pennTag.compare("VBZ") )
+		morph.setField(MORPH_VERB_FORM,MORPH_VERB_PERSONAL);
+
+	//tense
+	if ( !pennTag.compare("VBD") )
+		morph.setField(MORPH_VERB_TENSE,MORPH_VERB_PAST);
+	if ( !pennTag.compare("VBP") || !pennTag.compare("VBZ") )
+		morph.setField(MORPH_VERB_TENSE,MORPH_VERB_PRESENT);
+
+	//verb person
+	if ( !pennTag.compare("VBZ") )
+		morph.setField(MORPH_PERSON,MORPH_PERSON_THIRD);
+	if ( !pennTag.compare("VBP") )
+		morph.setField(MORPH_PERSON,MORPH_PERSON_NOT_THIRD);
+	//we don't do anything for VBD here because it could be any person
+
+
+
 
 	return morph;
 
