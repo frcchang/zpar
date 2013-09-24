@@ -25,14 +25,21 @@ const std::string MORPH_TAG_STRINGS[] = {
 //   "Punct",
 
    "Noun",
-   "Verb",
+   "Verb", "Modal Verb",
    "Adj",
    "PRP", "PRP$", "WP", "WP$", //at the moment we don't split on possessive, wh
-   "DT", "WDT" //at the moment we don't split on wh
-   "Adv",
-   "POS", "IN", "CC", "TO",
+   "Det", "WH Det", //at the moment we don't split on wh
+   "Adv", "WH Adv",
+   "POS", "IN", "Coord Conj", "TO",
    "Num",
-   "Interj"
+   "Interj",
+
+   "Ex",
+   "Foreign",
+   "ListItem",
+   "Predet",
+   "Particle",
+   "Symbol"
 };
 
 enum MORPH_TAG_CONSTANTS {
