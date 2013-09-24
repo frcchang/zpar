@@ -4,8 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <assert.h>
-#include "morph_pos.h"
-#include "morph.h"
+#include "morph.cpp"
 
 //just for tests
 int main ( void )
@@ -15,10 +14,12 @@ int main ( void )
 
 	for ( ;; )
 	{
-		std::string input;
-		std::cout << "Input a Penn tag: ";
-		std::cin >> input;
-		english::CMorph morph = english::pennToMorph(input);
+		std::string inputWord;
+		std::string inputTag;
+		std::cout << "Input a Penn word and tag: ";
+		std::cin >> inputWord;
+		std::cin >> inputTag;
+		english::CMorph morph = english::pennToMorph(inputWord,inputTag);
 		std::cout << "{" << morph.str() << "}\n";
 	}
 
