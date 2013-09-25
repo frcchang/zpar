@@ -1513,7 +1513,17 @@ public:
     //compareWordToHaveWordRegex
     // PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
 
+    //"(VP < (S=target < (VP < VBG ) !< NP !$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)]) !$-- /^:$/))",
+    bool buildXComp7() {
+    	if (node.constituent==PENN_CON_VP){
+    		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+    		while(childsVp!=0){
 
+    			childsVp=childsVp->next;
+    		}
+    	}
+    	return false;
+    }
 
 
 
