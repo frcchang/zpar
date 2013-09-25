@@ -235,4 +235,6 @@ bool buildXComp6() {
 
 
 //"(VP < (S=target < (VP < VBG ) !< NP !$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)]) !$-- /^:$/))",
-bool buildXComp7() {}
+//bool buildXComp7() {
+
+//}
