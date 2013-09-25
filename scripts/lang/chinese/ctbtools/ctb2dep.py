@@ -71,78 +71,81 @@ class CHeadRules(object):
                # subjects and objects
                if 'OBJ' in sub_cons[1:]:
                   other_child.label = 'OBJ'
+                  continue
                elif 'SBJ' in sub_cons[1:]:
                   other_child.label = 'SBJ'
+                  continue
+#               else:
+#                  print sub_cons[1], head_child.pos
+            # any links from inside prepositional phrase
+            if constituent == 'PP':
+               if other_child.id > head_child.id:
+                  other_child.label = 'POBJ'
                else:
-                  print sub_cons[1], head_child.pos
-            else:
-               # any links from inside prepositional phrase
-               if constituent == 'PP':
-                  if other_child.id > head_child.id:
-                     other_child.label = 'POBJ'
-                  else:
-                     other_child.label = 'PMOD'
-               elif constituent in ['NP', 'NN']:
-                  other_child.label = 'NMOD'
-               elif constituent == 'VP':
+                  other_child.label = 'PMOD'
+            elif constituent in ['NP', 'NN']:
+               other_child.label = 'NMOD'
+            elif constituent == 'VP':
+               other_child.label = 'VMOD'
+            elif constituent == 'VRD':
+               other_child.label = 'VRD'
+            elif constituent == 'IP':
+               if head_child.pos in ['VV', 'VE', 'VC', 'VA']:
                   other_child.label = 'VMOD'
-               elif constituent == 'VRD':
-                  other_child.label = 'VRD'
-               elif constituent == 'IP':
-                  if head_child.pos in ['VV', 'VE', 'VC', 'VA']:
-                     other_child.label = 'VMOD'
-                  else:
-                     other_child.label = 'VMOD'
-               elif constituent == 'DNP':
-                  other_child.label = 'DEG'
-               elif constituent == 'DVP':
-                  other_child.label = 'DEV'
-               elif constituent == 'LCP':
-                  other_child.label = 'LC'
-               elif constituent in ['QP', 'DP']:
-                  if head_child.pos == 'CD':
-                     other_child.label = 'NMOD'
-                  elif head_child.pos == 'M':
-                     other_child.label = 'M'
-                  elif head_child.pos == 'OD':
-                     other_child.label = 'NMOD'
-                  elif head_child.pos == 'NN':
-                     other_child.label = 'NMOD'
-                  elif head_child.pos == 'DT':
-                     other_child.label = 'AMOD'
-               elif constituent == 'PRN':
-                  other_child.label = 'PRN'
-               elif constituent == 'VCP':
-                  other_child.label = 'VC'
-               elif constituent in ['VCD', 'UCP']:
-                  other_child.label = 'COOR'
                else:
-                  if head_child.pos in ['VV', 'VC', 'VE', 'VA']:
-                     other_child.label = 'VMOD'
-                  elif head_child.pos in ['NN', 'NR', 'PN', 'NT']:
-                     other_child.label = 'NMOD'
-                  elif head_child.pos == 'CS':
-                     other_child.label = 'CS'
-                  elif head_child.pos == 'AD':
-                     other_child.label = 'AMOD'
-                  elif head_child.pos == 'JJ':
-                     other_child.label = 'AMOD'
-                  elif head_child.pos == 'DEC':
-                     other_child.label = 'DEC'
-                  elif head_child.pos == 'M':
-                     other_child.label = 'M'
-                  elif head_child.pos == 'CD':
-                     other_child.label = 'NMOD'
-                  elif head_child.pos == 'OD':
-                     other_child.label = 'NMOD'
-                  elif head_child.pos == 'PU':
-                     other_child.label = 'NMOD'
-                  elif head_child.pos == 'P':
-                     other_child.label = 'PMOD'
-                  elif head_child.pos == 'IJ':
-                     other_child.label = 'PMOD'
-                  elif head_child.pos == 'LC':
-                     other_child.label = 'LC'
+                  other_child.label = 'VMOD'
+            elif constituent == 'DNP':
+               other_child.label = 'DEG'
+            elif constituent == 'DVP':
+               other_child.label = 'DEV'
+            elif constituent == 'LCP':
+               other_child.label = 'LC'
+            elif constituent in ['QP', 'DP']:
+               if head_child.pos == 'CD':
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'M':
+                  other_child.label = 'M'
+               elif head_child.pos == 'OD':
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'NN':
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'DT':
+                  other_child.label = 'AMOD'
+            elif constituent == 'PRN':
+               other_child.label = 'PRN'
+            elif constituent == 'VCP':
+               other_child.label = 'VC'
+            elif constituent in ['VCD', 'UCP']:
+               other_child.label = 'COOR'
+            else:
+               if head_child.pos in ['VV', 'VC', 'VE', 'VA']:
+                  other_child.label = 'VMOD'
+               elif head_child.pos in ['NN', 'NR', 'PN', 'NT']:
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'CS':
+                  other_child.label = 'CS'
+               elif head_child.pos == 'AD':
+                  other_child.label = 'AMOD'
+               elif head_child.pos == 'JJ':
+                  other_child.label = 'AMOD'
+               elif head_child.pos == 'DEC':
+                  other_child.label = 'DEC'
+               elif head_child.pos == 'M':
+                  other_child.label = 'M'
+               elif head_child.pos == 'CD':
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'OD':
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'DT':
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'PU':
+                  other_child.label = 'NMOD'
+               elif head_child.pos == 'P':
+                  other_child.label = 'PMOD'
+               elif head_child.pos == 'IJ':
+                  other_child.label = 'PMOD'
+               elif head_child.pos == 'LC':
+                  other_child.label = 'LC'
             if other_child.label == '':
                other_child.label = '???'
 
@@ -173,10 +176,19 @@ class CHeadRules(object):
       if node.name == '-NONE-':
          return None
       if node.type == "token":
+         if node.name == 'NP':
+            node.name = 'NN'
+         if node.name == 'VP':
+            node.name = 'VV'
+         elif node.name == 'X':
+            node.name = 'NR'
+         node.token = '-'.join(node.token.split(' '))
          lItems.append(CDependencyNode(node.token, node.name, len(lItems), -1, ''))
          return lItems[-1]
       else:
          assert node.type == "constituent"
+         if node.name == 'NN':
+            node.name = 'NP'
          lChildren = [self.find_head(child_node, lItems) for child_node in node.children]
          lZipped = zip(lChildren, node.children)
          lZipped = filter(lambda x: x[0] != None, lZipped)
@@ -216,8 +228,7 @@ class CHeadRules(object):
                print >> self.log, "can't find a rule for " + sLabel + " with " + ", ".join([child_node.name for child_node in node.children])
             head_child = lZipped[-1][0]
          if self.m_bLabeled:
-            self.add_label_simple(node.name, lZipped, head_child)
-#            self.add_label(node.name, lZipped, head_child)
+            self.add_label(node.name, lZipped, head_child)
          else:
             self.add_link(lZipped, head_child)
          return head_child
