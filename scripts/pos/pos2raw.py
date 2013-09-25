@@ -16,7 +16,7 @@ while line:
    output_line = []
    wordls = line.split(" ")
    for word in wordls:
-      lwordtag = word.split("/")
+      lwordtag = word.split("_")
       if len(lwordtag) > 2:
          lword = lwordtag[:-1]
 #         for sword in lword[:-1]:

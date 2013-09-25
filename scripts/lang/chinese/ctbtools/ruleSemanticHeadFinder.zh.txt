@@ -1,21 +1,21 @@
 IP	: r VP IP NP; r
-CP	: re CP DEC SP PU; l
+CP	: re DEC DEG AS SP ETC PU; l
 ADJP	: r JJ ADJP AD; r
 ADVP	: r AD ADVP CS JJ NP PP P VA VV; r
 CLP	: r M CLP; r
 DP	: l DT DP; l
-DNP	: re DEG DNP DEC; l
-DVP	: re DEV DVP; r
+DNP	: re DEG DEC PU; l
+DVP	: re DEV PU; r
 FRAG	: r VV NN NR NT; re PU; r
-LCP	: re LC LCP; l
-LST	: l
+LCP	: re LC PU; l
+LST	: r
 NP	: r NN NR NT NP IP; r
 NN	: r NN NR NT NP IP; r
-PP	: le P PP; l
+PP	: re P PU; r
 PRN	: le PU; l
-QP	: r CD QP; l
+QP	: r CD OD QP; r
 UCP	: r
-VP	: r VV VC VE VNV VRD VCD VSB VPT VP; r
+VP	: r VV VC VE VA VNV VRD VCD VSB VPT VP; r
 VCD	: r
 VRD	: l
 VSB	: r
