@@ -229,7 +229,7 @@ int multextToMorphtag(const std::string &multextTag) //several tags? e.g. there:
 
 
 
-class CTag {
+class CMorphTag {
 public:
    enum {SENTENCE_BEGIN = MORPH_TAG_BEGIN};
    enum {SENTENCE_END = MORPH_TAG_END};
@@ -244,16 +244,16 @@ protected:
    unsigned long m_code;
 
 public:
-   CTag() : m_code(NONE) {}
-   CTag(MORPH_TAG_CONSTANTS t) : m_code(t) { }
-   CTag(int t) : m_code(t) { }
-   CTag(const std::string &s) { load(s); }
-   virtual ~CTag() {}
+   CMorphTag() : m_code(NONE) {}
+   CMorphTag(MORPH_TAG_CONSTANTS t) : m_code(t) { }
+   CMorphTag(int t) : m_code(t) { }
+   CMorphTag(const std::string &s) { load(s); }
+   virtual ~CMorphTag() {}
 
 public:
    unsigned long code() const { return m_code; }
    unsigned long hash() const { return m_code; }
-   void copy(const CTag &t) { m_code = t.m_code; }
+   void copy(const CMorphTag &t) { m_code = t.m_code; }
    std::string str() const { assert(m_code<MORPH_TAG_COUNT) ; return MORPH_TAG_STRINGS[m_code]; }
    void load(const std::string &s) {
       m_code = MORPH_TAG_NONE ;
@@ -267,12 +267,12 @@ public:
    bool closed() const { return MORPH_TAG_CLOSED[m_code]; }
 
 public:
-   bool operator == (const CTag &t1) const { return m_code == t1.m_code; }
-   bool operator != (const CTag &t1) const { return m_code != t1.m_code; }
-   bool operator < (const CTag &t1) const { return m_code < t1.m_code; }
-   bool operator > (const CTag &t1) const { return m_code > t1.m_code; }
-   bool operator <= (const CTag &t1) const { return m_code <= t1.m_code; }
-   bool operator >= (const CTag &t1) const { return m_code >= t1.m_code; }
+   bool operator == (const CMorphTag &t1) const { return m_code == t1.m_code; }
+   bool operator != (const CMorphTag &t1) const { return m_code != t1.m_code; }
+   bool operator < (const CMorphTag &t1) const { return m_code < t1.m_code; }
+   bool operator > (const CMorphTag &t1) const { return m_code > t1.m_code; }
+   bool operator <= (const CMorphTag &t1) const { return m_code <= t1.m_code; }
+   bool operator >= (const CMorphTag &t1) const { return m_code >= t1.m_code; }
 };
 
 

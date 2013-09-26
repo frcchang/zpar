@@ -345,7 +345,7 @@ public:
 	   morphInfo = morphInfo | ( value << field );
    }
 
-   std::vector<CMorphFeat> getFeatureVector()
+   std::vector<CMorphFeat> getFeatureVector() const
    {
 	   std::vector<CMorphFeat> result;
 	   for ( int field = MORPH_POSTAG ; field <= LAST_MORPH_FIELD ; field++ )
@@ -359,7 +359,7 @@ public:
 	   return result;
    }
 
-   std::string str()
+   std::string str() const
    {
 	   std::vector<CMorphFeat> featVector = getFeatureVector();
 	   std::stringstream stream;
