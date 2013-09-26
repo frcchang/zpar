@@ -23,7 +23,11 @@
 namespace english
 {
 
+//map from words to tags, extracted from the training set
 std::map< std::string , std::set<CTag> > trainingSetLexicon;
+
+//tags that will be assigned to unknown words
+std::set<CTag> tagsForUnknownWords;
 
 bool initLexicon ( const std::string sInputFile , bool bCoNLL )
 {
@@ -85,10 +89,60 @@ bool initLexicon ( const std::string sInputFile , bool bCoNLL )
 	else
 	   delete input_reader;
 
+	//now, initialize the tags for unknown words
+    for (int i=1; i<PENN_TAG_COUNT; i++)
+       if ( !PENN_TAG_CLOSED[i] )
+          tagsForUnknownWords.insert(CTag(i));
+
 	//And we are done.
 	return true;
 
 }
+
+bool isKnown ( const std::string & word )
+{
+	std::set<english::CTag> & setOfTags = trainingSetLexicon[word];
+	return !setOfTags.empty();
+}
+
+
+std::set<CTag> getTagsForUnknownWord ( const std::string & word )
+{
+	//return tagsForUnknownWords;
+
+	//copy the generic set of tags:
+	std::set<CTag> result = std::set<CTag>(tagsForUnknownWords);
+
+	//superlatives must end with st
+	if ( word.length() < 2 || word[word.length()-2] != 's' || word[word.length()-1] != 't' )
+	{
+		result.erase(CTag(PENN_TAG_ADJECTIVE_SUPERLATIVE));
+		result.erase(CTag(PENN_TAG_ADVERB_SUPERLATIVE));
+	}
+
+	//vbz must end with s
+	if ( word.length() < 2 || word[word.length()-1] != 's' )
+	{
+		result.erase(CTag(PENN_TAG_VERB_THIRD_SINGLE));
+	}
+
+	return result;
+
+}
+
+std::set<CTag> getPossibleTags ( const std::string & word )
+{
+	if ( isKnown(word) )
+	{
+		return english::trainingSetLexicon[word];
+	}
+	else
+		return getTagsForUnknownWord ( word );
+}
+
+
+
+
 
 
 } //namespace english
@@ -109,8 +163,9 @@ int main( void )
 		std::string word;
 		std::cout << "Enter a word: ";
 		std::cin >> word;
-		std::cout << "That word can be: ";
-		std::set<english::CTag> & setOfTags = english::trainingSetLexicon[word];
+		std::cout << "That word is " << (english::isKnown(word)?"known":"unknown") << ".\n";
+		std::cout << "And it can be: ";
+		std::set<english::CTag> setOfTags = english::getPossibleTags(word);
 		for ( std::set<english::CTag>::iterator it = setOfTags.begin() ; it != setOfTags.end() ; ++it )
 		{
 			std::cout << " " << *it;
