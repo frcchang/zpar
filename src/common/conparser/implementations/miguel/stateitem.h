@@ -172,6 +172,8 @@ static CWord g_word_gotten("gotten");
 
  static CWord g_word_order("order");
 
+ static CWord g_word_two_dots(":");
+
 
 
 //static CWord g_word_lot("lot"); //?
@@ -1503,7 +1505,10 @@ public:
     	if (node.constituent==PENN_CON_VP){
     		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
     		while(childsVp!=0){
+    			const CStateNode* npTarg=childsVp->node;
+    			if (npTarg->constituent==PENN_CON_NP && !(isLinked(&node,npTarg))){
 
+    			}
     			childsVp=childsVp->next;
     		}
     	}
@@ -1513,17 +1518,7 @@ public:
     //compareWordToHaveWordRegex
     // PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
 
-    //"(VP < (S=target < (VP < VBG ) !< NP !$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)]) !$-- /^:$/))",
-    bool buildXComp7() {
-    	if (node.constituent==PENN_CON_VP){
-    		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
-    		while(childsVp!=0){
 
-    			childsVp=childsVp->next;
-    		}
-    	}
-    	return false;
-    }
 
 
 
