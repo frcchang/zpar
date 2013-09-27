@@ -116,6 +116,7 @@
         						}
         						if (firstCondition && thirdAndFourthConds && fifthCondition) {
         							//internal part.
+        							//$++ (NP !< (/^NN/ < " + timeWordLotRegex + "))
         							CStateNodeList* leftSistersNp=childsNp->previous;
         							while(leftSistersNp!=0){
         								const CStateNode* npSister=leftSistersNp->node;
