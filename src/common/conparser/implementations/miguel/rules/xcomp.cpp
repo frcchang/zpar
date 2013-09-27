@@ -215,7 +215,7 @@ bool buildXComp6() {
 									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
 									if (buildStanfordLink(label, sTarg->lexical_head, vpNode->lexical_head)) {
 										//addLinked(vpNode,sTarg);
-										addLinked(&node,sTarg); //I think this is not corrects
+										addLinked(&node,sTarg); //I think this is not correct, in this specific case.
 										return true;
 									}
 								}
@@ -235,6 +235,76 @@ bool buildXComp6() {
 
 
 //"(VP < (S=target < (VP < VBG ) !< NP !$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)]) !$-- /^:$/))",
-//bool buildXComp7() {
+  bool buildXComp7() {
+  	if (node.constituent==PENN_CON_VP){
+  		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+  		while(childsVp!=0){
+  			const CStateNode* sTarg=childsVp->node;
+  			if (sTarg->constituent==PENN_CON_S && (!isLinked(&node,sTarg))) {
+  				bool secondCondition=true;// !<NP
+  				bool thirdCondition=true; //!$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)])
+  				bool fourthCondition=true; //!$-- /^:$/
+  				CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
+  				while(childsS!=0){
+  					if (childsS->node->constituent==PENN_CON_NP) {
+  						secondCondition=false;
+  					}
+  					childsS=childsS->next;
+  				}
+  				if (secondCondition){
+  					//A $-- B 	A is a right sister of B
+  					CStateNodeList* leftSistersS=childsVp->previous;
+  					while(leftSistersS!=0){
+  						if ((*words)[leftSistersS->node->lexical_head].word==g_word_two_dots){
+  							fourthCondition=false;
+  						}
+  						leftSistersS=leftSistersS->previous;
+  					}
+  					if (fourthCondition){
+  						if (childsVp->previous!=0){
+  							const CStateNode* commaLeftSisterS=childsVp->previous->node;
+  							if ((*words)[commaLeftSisterS->lexical_head].word==g_word_comma){
+  								//and now,
+  								///^,$/ $- @NP $- (@PP $-- @NP )
+  								//or
+  								///^,$/ $- @NP $- (@ADVP $-- @NP)
+  								//how is even possible that the inmediate left sister of comma is at the same time @NP and @PP...
+  								bool firstInCondition=false;
+  								bool secondInCondition=false;
 
-//}
+  								//how come???
+
+  								if (firstInCondition||secondInCondition){
+  									thirdCondition=false;
+  								}
+  							}
+  						}
+  						if (thirdCondition){
+  							childsS=sTarg->m_umbinarizedSubNodes;
+  							while(childsS!=0){
+  								const CStateNode* vpChildS=childsS->node;
+  								if (vpChildS->constituent==PENN_CON_VP){
+  									CStateNodeList* childsVp=vpChildS->m_umbinarizedSubNodes;
+  									while(childsVp!=0){
+  										if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)) {
+  											CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+  											if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+  												//addLinked(vpNode,sTarg);
+  												addLinked(&node,sTarg);
+  												return true;
+  											}
+  										}
+  										childsVp=childsVp->next;
+  									}
+  								}
+  								childsS=childsS->next;
+  							}
+  						}
+  					}
+  				}
+  			}
+  			childsVp=childsVp->next;
+  		}
+  	}
+  	return false;
+  }
