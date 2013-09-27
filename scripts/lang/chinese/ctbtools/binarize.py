@@ -214,9 +214,9 @@ class CBinarizer(object):
    def find_head(self, srcnode):
       sLabel = srcnode.name.split('-')[0]
       for lRuleSet in self.m_dRules.get(sLabel, []):
-         assert lRuleSet[0] in ("l", "r", "ld", "rd")
+         assert lRuleSet[0] in ("l", "r", "ld", "rd", "le", "re")
          lTemp = srcnode.children[:]
-         if lRuleSet[0] in ("r", "rd"):
+         if lRuleSet[0] in ("r", "rd", "re"):
             lTemp.reverse()
          bFound = False
          if len(lRuleSet) == 1: # only directn
@@ -237,15 +237,19 @@ class CBinarizer(object):
                   if bFound:
                      break
             else: 
-                if lRuleSet[0] in ("ld","rd"): #position then category /MIguel
-                   for srcchild in lTemp:
-                      if srcchild.name.split("-")[0] in lRuleSet[1:]:
-                         headchild=srcchild
-                         bFound=True
-                         break
-                   if bFound:
-                      break
-                else: assert False #unreachable code 
+               if lRuleSet[0] in ("ld","rd"): #position then category /MIguel
+                  for srcchild in lTemp:
+                     if srcchild.name.split("-")[0] in lRuleSet[1:]:
+                        headchild=srcchild
+                        bFound=True
+                        break
+               else: 
+                  assert lRuleSet[0] in ("le", "re")
+                  for srcchild in lTemp:
+                     if not srcchild.name.split("-")[0] in lRuleSet[1:]:
+                        headchild = srcchild
+                        bFound = True
+                        break
          if bFound:
             break
       else:
