@@ -10,6 +10,14 @@
 
 #include <assert.h>
 
+#include "definitions.h"
+#include "english/pos/penn.h"
+#include "linguistics/word_tokenized.h"
+#include "linguistics/taggedword.h"
+#include "linguistics/dependency.h"
+#include "linguistics/conll.h"
+#include "linguistics/tagset.h"
+#include "tags.h"
 
 #include "morph_pos.h"
 
@@ -379,136 +387,7 @@ public:
  * Use an empty word
  * Pass the empty string as the word if only tag information is to be used for morphological analysis.
  */
-CMorph pennToMorph(const std::string &word , const std::string &pennTag)
-{
-
-	CMorph morph;
-
-	//set the POS tag
-	morph.setField(MORPH_POSTAG,pennToMorphTag(pennTag));
-
-	//common nouns
-	if ( !pennTag.compare("NN") || !pennTag.compare("NNS") )
-		morph.setField(MORPH_NOUN_TYPE,MORPH_NOUN_TYPE_COMMON);
-
-	//proper nouns
-	if ( !pennTag.compare("NNP") || !pennTag.compare("NNPS") )
-		morph.setField(MORPH_NOUN_TYPE,MORPH_NOUN_TYPE_PROPER);
-
-	//plural
-	if ( !pennTag.compare("NNS") || !pennTag.compare("NNPS") )
-		morph.setField(MORPH_NUMBER,MORPH_NUMBER_PLURAL);
-
-	if ( !pennTag.compare("PRP") )
-	{
-		if ( !word.compare("they") || !word.compare("them") || !word.compare("we") || !word.compare("ourselves") || !word.compare("themselves") )
-			morph.setField(MORPH_NUMBER,MORPH_NUMBER_PLURAL);
-	}
-
-	//singular
-	if ( !pennTag.compare("NN") || !pennTag.compare("NNP") )
-		morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
-
-	if ( !pennTag.compare("PRP") )
-	{
-		if ( !word.compare("it") || !word.compare("he") || !word.compare("him") || !word.compare("she") || !word.compare("her")
-				|| !word.compare("itself") || !word.compare("himself") || !word.compare("herself") )
-			morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
-	}
-
-	if ( !pennTag.compare("VBZ") )
-		morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
-
-	//plural/singular for numerals
-	if ( !pennTag.compare("CD") && word.length() > 0 )
-	{
-		if ( !word.compare("1") || !word.compare("one") )
-			morph.setField(MORPH_NUMBER,MORPH_NUMBER_SINGULAR);
-		else
-			morph.setField(MORPH_NUMBER,MORPH_NUMBER_PLURAL);
-	}
-
-	//pronoun gender
-	if ( !pennTag.compare("PRP") )
-	{
-		if ( !word.compare("he") || !word.compare("him")  )
-			morph.setField(MORPH_GENDER, MORPH_GENDER_MASCULINE);
-		if ( !word.compare("she") || !word.compare("her") )
-			morph.setField(MORPH_GENDER, MORPH_GENDER_FEMININE);
-	}
-	if ( !pennTag.compare("PRP$") )
-	{
-		if ( !word.compare("his") )
-			morph.setField(MORPH_GENDER, MORPH_GENDER_MASCULINE);
-		if ( !word.compare("her") || !word.compare("hers") )
-			morph.setField(MORPH_GENDER, MORPH_GENDER_FEMININE);
-	}
-
-	//verb type
-	if ( !pennTag.compare("MD") )
-		morph.setField(MORPH_VERB_TYPE,MORPH_VERB_MODAL);
-	if ( pennTag.length() > 0 && pennTag[0] == 'V' )
-		morph.setField(MORPH_VERB_TYPE,MORPH_VERB_MAIN);
-
-	//verb form
-	if ( !pennTag.compare("VBG") )
-		morph.setField(MORPH_VERB_FORM,MORPH_VERB_GERUND);
-	if ( !pennTag.compare("VBN") )
-		morph.setField(MORPH_VERB_FORM,MORPH_VERB_PARTICIPLE);
-	if ( !pennTag.compare("VB") )
-		morph.setField(MORPH_VERB_FORM,MORPH_VERB_INFINITIVE);
-	if ( !pennTag.compare("VBD") || !pennTag.compare("VBP") || !pennTag.compare("VBZ") )
-		morph.setField(MORPH_VERB_FORM,MORPH_VERB_PERSONAL);
-
-	//tense
-	if ( !pennTag.compare("VBD") )
-		morph.setField(MORPH_VERB_TENSE,MORPH_VERB_PAST);
-	if ( !pennTag.compare("VBP") || !pennTag.compare("VBZ") )
-		morph.setField(MORPH_VERB_TENSE,MORPH_VERB_PRESENT);
-
-	//verb person
-	if ( !pennTag.compare("VBZ") )
-		morph.setField(MORPH_PERSON,MORPH_PERSON_THIRD);
-	if ( !pennTag.compare("VBP") )
-		morph.setField(MORPH_PERSON,MORPH_PERSON_NOT_THIRD);
-	//we don't do anything for VBD here because it could be any person
-
-	//pronoun person
-	if ( !pennTag.compare("PRP") )
-	{
-		if ( !word.compare("I") || !word.compare("me") || !word.compare("we") || !word.compare("us") || !word.compare("myself")
-				|| !word.compare("ourself") || !word.compare("ourselves") )
-			morph.setField(MORPH_PERSON,MORPH_PERSON_FIRST);
-		if ( !word.compare("you") || !word.compare("yourself") || word.compare("yourselves") )
-				morph.setField(MORPH_PERSON,MORPH_PERSON_SECOND);
-		if ( !word.compare("he") || !word.compare("she") || !word.compare("him") || !word.compare("her") || !word.compare("himself")
-				|| !word.compare("herself") || !word.compare("they") || !word.compare("them") || !word.compare("themselves") )
-			morph.setField(MORPH_PERSON,MORPH_PERSON_THIRD);
-	}
-
-	//adjective degree
-	if ( !pennTag.compare("JJ") || !pennTag.compare("RB") )
-		morph.setField(MORPH_DEGREE,MORPH_DEGREE_POSITIVE);
-	if ( !pennTag.compare("JJR") || !pennTag.compare("RBR") )
-		morph.setField(MORPH_DEGREE,MORPH_DEGREE_COMPARATIVE);
-	if ( !pennTag.compare("JJS") || !pennTag.compare("RBS") )
-		morph.setField(MORPH_DEGREE,MORPH_DEGREE_SUPERLATIVE);
-
-	//pronoun type. Note that this is unused (all enum values are zero)
-	if ( !pennTag.compare("PRP") || !pennTag.compare("WP") )
-		morph.setField(MORPH_IS_POSS,MORPH_NON_POSS);
-	if ( !pennTag.compare("PRP$") || !pennTag.compare("WP$") )
-		morph.setField(MORPH_IS_POSS,MORPH_POSS);
-
-	//pronoun whness. Note that this is unused (all enum values are zero)
-	if ( !pennTag.compare("PRP") || !pennTag.compare("PRP$") || !pennTag.compare("DT") )
-		morph.setField(MORPH_IS_WH,MORPH_NON_WH);
-	if ( !pennTag.compare("WP") || !pennTag.compare("WP$") || !pennTag.compare("WDT") )
-		morph.setField(MORPH_IS_WH,MORPH_WH);
-
-	return morph;
-
-}
+CMorph pennToMorph(const std::string &word , const std::string &pennTag);
 
 
 

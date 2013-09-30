@@ -108,124 +108,13 @@ const int MORPH_TAG_COUNT_BITS = 6;
 /**
  * Convert a Penn Treebank POS tag into one of our morphological analyzer's POS tags.
  */
-int pennToMorphTag(const std::string &pennTag)
-{
-
-	if ( pennTag.length() < 1 ) return MORPH_TAG_NONE;
-
-	switch (pennTag[0])
-	{
-		case '$': return MORPH_TAG_DOLLAR;
-		case '`': return MORPH_TAG_OPEN_QUOTE;
-		case '\'': return MORPH_TAG_CLOSE_QUOTE;
-		case ',': return MORPH_TAG_COMMA;
-		case '.': return MORPH_TAG_PERIOD;
-		case ':': return MORPH_TAG_COLON;
-		case '#': return MORPH_TAG_HASH;
-
-		case 'N': return MORPH_TAG_NOUN;
-		case 'V': return MORPH_TAG_VERB;
-		case 'M': return MORPH_TAG_MODAL_VERB;
-		case 'J': return MORPH_TAG_ADJ;
-
-		case 'U': return MORPH_TAG_INTERJ;
-		case 'L': return MORPH_TAG_LIST;
-		case 'S': return MORPH_TAG_SYM;
-		case 'F': return MORPH_TAG_FOREIGN;
-		case 'E': return MORPH_TAG_EX;
-		case 'T': return MORPH_TAG_TO;
-		case 'I': return MORPH_TAG_IN;
-		case 'D': return MORPH_TAG_DET;
-
-		//if it's none of these, we have to look at 2 characters
-	}
-
-	assert ( pennTag.length() >= 2 );
-
-	if ( pennTag[0] == '-' )
-	{
-		switch (pennTag[1])
-		{
-			case 'N': return MORPH_TAG_NONE;
-			case 'B': return MORPH_TAG_BEGIN;
-			case 'E': return MORPH_TAG_END;
-			case 'L': return MORPH_TAG_LRB;
-			case 'R': return MORPH_TAG_RRB;
-			default: return MORPH_TAG_NONE;
-		}
-	}
-
-	if ( pennTag[0] == 'R' && pennTag[1] == 'B' ) return MORPH_TAG_ADV;
-	if ( pennTag[0] == 'R' && pennTag[1] == 'P' ) return MORPH_TAG_PARTICLE;
-
-	if ( pennTag[0] == 'W' && pennTag[1] == 'D' ) return MORPH_TAG_WH_DET;
-	if ( pennTag[0] == 'W' && pennTag[1] == 'R' ) return MORPH_TAG_WH_ADV;
-	if ( pennTag[0] == 'W' && pennTag[1] == 'P' )
-		return pennTag[pennTag.length()-1] == '$' ? MORPH_TAG_WH_POSS_PRON : MORPH_TAG_WH_PRON;
-
-	if ( pennTag[0] == 'P' && pennTag[1] == 'O' ) return MORPH_TAG_POS;
-	if ( pennTag[0] == 'P' && pennTag[1] == 'D' ) return MORPH_TAG_PREDET;
-	if ( pennTag[0] == 'P' && pennTag[1] == 'R' )
-		return pennTag[pennTag.length()-1] == '$' ? MORPH_TAG_POSS_PRON : MORPH_TAG_PRON;
-
-	if ( pennTag[0] == 'C' && pennTag[1] == 'C' ) return MORPH_TAG_CC;
-	if ( pennTag[0] == 'C' && pennTag[1] == 'D' ) return MORPH_TAG_NUM;
-
-	//default
-	return MORPH_TAG_NONE;
-
-}
+int pennToMorphTag(const std::string &pennTag);
 
 /**
  * Convert a Multext detailed POS tag into one of our morphological analyzer's POS tags.
+ * Unused at the moment.
  */
-int multextToMorphtag(const std::string &multextTag) //several tags? e.g. there: EX, but also adverb
-{
-
-	/*TODO: Pending. Need to generate a list of CMorph, no 1-1 tag correspondence.*/
-
-	if ( multextTag.length() < 1 ) return MORPH_TAG_NONE;
-
-		switch (multextTag[0])
-		{
-
-			case 'N': return MORPH_TAG_NOUN;
-			case 'V': {
-				assert ( multextTag.length() >= 2 );
-				if ( multextTag[1] == 'm' )
-					return MORPH_TAG_MODAL_VERB;
-				else
-					return MORPH_TAG_VERB;
-			}
-			case 'A': return MORPH_TAG_ADJ;
-			case 'P': {
-
-			}
-
-			case '`': return MORPH_TAG_OPEN_QUOTE;
-			case '\'': return MORPH_TAG_CLOSE_QUOTE;
-			case ',': return MORPH_TAG_COMMA;
-			case '.': return MORPH_TAG_PERIOD;
-			case ':': return MORPH_TAG_COLON;
-			case '#': return MORPH_TAG_HASH;
-
-			case 'J': return MORPH_TAG_ADJ;
-
-			case 'U': return MORPH_TAG_INTERJ;
-			case 'L': return MORPH_TAG_LIST;
-			case 'S': return MORPH_TAG_SYM;
-			case 'F': return MORPH_TAG_FOREIGN;
-			case 'E': return MORPH_TAG_EX;
-			case 'T': return MORPH_TAG_TO;
-			case 'I': return MORPH_TAG_IN;
-			case 'D': return MORPH_TAG_DET;
-
-			//if it's none of these, we have to look at 2 characters
-		}
-
-
-}
-
+int multextToMorphtag(const std::string &multextTag); //several tags? e.g. there: EX, but also adverb
 
 
 
