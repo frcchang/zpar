@@ -19,7 +19,8 @@
 #include "linguistics/tagset.h"
 #include "tags.h"
 #include "morph.h"
-#include "penn_lexicon.cpp"
+#include "penn_lexicon.h"
+//#include "penn_lexicon.cpp"
 
 namespace english
 {
@@ -44,7 +45,7 @@ namespace english
 		{
 			case 'V':
 			{
-				ASSERT( !lexiconTag.length() >= 2 , "Bad format for verb lexicon tag" );
+				ASSERT( lexiconTag.length() >= 2 , "Bad format for verb lexicon tag" );
 				if ( lexiconTag[1] == 'm')
 					return MORPH_TAG_MODAL_VERB;
 				else
@@ -83,22 +84,25 @@ namespace english
 			ASSERT(is && !curToken.empty(), "Not well formatted lexicon data (form not found)");
 			form = curToken;
 
-			iss = std::istringstream(rstrip(line));
+			//iss = std::istringstream(rstrip(line));
 			getline(iss, curToken, '\t');
 			ASSERT(is && !curToken.empty(), "Not well formatted lexicon data (lemma not found)");
 			lemma = curToken;
+			if ( lemma == "=" ) lemma = form; //lexicon uses = to represent that lemma equals form
 
-			iss = std::istringstream(rstrip(line));
+			//iss = std::istringstream(rstrip(line));
 			getline(iss, curToken, '\t');
 			ASSERT(is && !curToken.empty(), "Not well formatted lexicon data (tag not found)");
 			tag = curToken;
 
 			//add to the word to lemma map
-			wordToLemma.insert(form,lemma);
+			//wordToLemma.insert(form,lemma);
+			wordToLemma[form]=lemma;
 
 			CMorphTag morphTag = lexiconTagToMorphTag(tag);
 			std::pair<std::string,CMorphTag> wordMorphPair = std::pair<std::string,CMorphTag>(form,morphTag);
-			wordAndTagToLemma.insert( wordMorphPair , lemma );
+
+			wordAndTagToLemma[wordMorphPair] = lemma;
 
 		    getline(*is, line);
 		}
@@ -130,43 +134,3 @@ namespace english
 }
 
 
-
-/**
- * Unit test
- */
-//TODO Complete this.
-int main( void )
-{
-	std::string filename;
-	std::cout << "Enter filename for Penn treebank in CoNLL format: ";
-	std::cin >> filename;
-	bool bSuccess = english::initLexicon(filename,true);
-	std::cout << "Successfully loaded the lexicon? " << bSuccess << "\n";
-	std::cout << "Enter filename for aux lexicon in Multext format: ";
-	std::cin >> filename;
-	bSuccess = english::initLemmaLexicon(filename);
-	std::cout << "Successfully loaded the lexicon? " << bSuccess << "\n";
-	for(;;)
-	{
-		std::string word;
-		std::cout << "Enter a word: ";
-		std::cin >> word;
-		std::cout << "That word is " << (english::isKnown(word)?"known":"unknown") << ".\n";
-		std::cout << "It can have the following Penn tags: \n";
-		std::set<english::CTag> setOfTags = english::getPossibleTags(word);
-		for ( std::set<english::CTag>::iterator it = setOfTags.begin() ; it != setOfTags.end() ; ++it )
-		{
-			std::cout << " " << *it;
-		}
-		std::cout << "\n";
-		std::cout << "And the following morphological analyses: \n";
-		std::set<english::CMorph> setOfMorphs = english::getPossibleMorph(word);
-		for ( std::set<english::CMorph>::iterator it = setOfMorphs.begin() ; it != setOfMorphs.end() ; ++it )
-		{
-			CMorph morph = *it;
-			std::cout << " " << (*it).str();
-			std::cout << english::getLemma(word,(*it).getField(MORPH_POSTAG)) << "\n";
-		}
-		std::cout << "\n";
-	}
-}
