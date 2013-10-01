@@ -20,8 +20,10 @@
 //label
 #ifdef LABELED
 const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
+const unsigned DEP_LABEL_SIZE=CDependencyLabel::SIZE;
 #else
 const unsigned DEP_LABEL_COUNT = 1;
+const unsigned DEP_LABEL_SIZE=0;
 #endif
 
 typedef long SCORE_TYPE ;
