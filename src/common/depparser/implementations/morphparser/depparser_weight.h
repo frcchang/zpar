@@ -14,40 +14,34 @@
 
 #define iterate_templates(left, right) \
    left(m_mapSTw)right\
-   left(m_mapSTt)right\
-   left(m_mapSTwt)right\
+   left(m_mapSTm)right\
+   left(m_mapSTwm)right\
    left(m_mapN0w)right\
-   left(m_mapN0t)right\
-   left(m_mapN0wt)right\
    left(m_mapN1w)right\
-   left(m_mapN1t)right\
-   left(m_mapN1wt)right\
    left(m_mapN2w)right\
-   left(m_mapN2t)right\
-   left(m_mapN2wt)right\
    left(m_mapSTHw)right\
-   left(m_mapSTHt)right\
+   left(m_mapSTHm)right\
    left(m_mapSTi)right\
    left(m_mapSTHHw)right\
-   left(m_mapSTHHt)right\
+   left(m_mapSTHHm)right\
    left(m_mapSTHi)right\
    left(m_mapSTLDw)right\
-   left(m_mapSTLDt)right\
+   left(m_mapSTLDm)right\
    left(m_mapSTLDi)right\
    left(m_mapSTRDw)right\
-   left(m_mapSTRDt)right\
+   left(m_mapSTRDm)right\
    left(m_mapSTRDi)right\
    left(m_mapN0LDw)right\
-   left(m_mapN0LDt)right\
+   left(m_mapN0LDm)right\
    left(m_mapN0LDi)right\
    left(m_mapSTL2Dw)right\
-   left(m_mapSTL2Dt)right\
+   left(m_mapSTL2Dm)right\
    left(m_mapSTL2Di)right\
    left(m_mapSTR2Dw)right\
-   left(m_mapSTR2Dt)right\
+   left(m_mapSTR2Dm)right\
    left(m_mapSTR2Di)right\
    left(m_mapN0L2Dw)right\
-   left(m_mapN0L2Dt)right\
+   left(m_mapN0L2Dm)right\
    left(m_mapN0L2Di)right\
    left(m_mapHTw)right\
    left(m_mapHTt)right\
@@ -119,10 +113,12 @@ const static unsigned DEP_TABLE_SIZE = (1<<17);//1000121;
 typedef CPackedScoreMap<CWord, SCORE_TYPE, action::MAX> CWordMap;
 typedef CPackedScoreMap<CTag, SCORE_TYPE, action::MAX> CTagMap;
 typedef CPackedScoreMap<int, SCORE_TYPE, action::MAX> CIntMap;
+typedef CPackedScoreMap<CMorph, SCORE_TYPE, action::MAX> CMorphMap;
 typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2Map;
 typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3Map;
 typedef CPackedScoreMap<CTagSet<CTag, 4>, SCORE_TYPE, action::MAX> CTagSet4Map;
 typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagMap;
+typedef CPackedScoreMap<CTuple2<CWord, CMorph>, SCORE_TYPE, action::MAX> CWordMorphMap;
 typedef CPackedScoreMap<CTuple3<CWord, CTag, CTag>, SCORE_TYPE, action::MAX> CWordTagTagMap;
 typedef CPackedScoreMap<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, action::MAX> CWordWordTagMap;
 typedef CPackedScoreMap<CTaggedWord<CTag, TAG_SEPARATOR>, SCORE_TYPE, action::MAX> CTaggedWordMap;
@@ -150,51 +146,45 @@ class CWeight : public CWeightBase {
 public:
 
    CWordMap m_mapSTw;
-   CTagMap m_mapSTt;
-   CTaggedWordMap m_mapSTwt;
+   CMorphMap m_mapSTm;
+   CWordMorphMap m_mapSTwm;
 
    CWordMap m_mapN0w;
-   CTagMap m_mapN0t;
-   CTaggedWordMap m_mapN0wt;
 
    CWordMap m_mapN1w;
-   CTagMap m_mapN1t;
-   CTaggedWordMap m_mapN1wt;
 
    CWordMap m_mapN2w;
-   CTagMap m_mapN2t;
-   CTaggedWordMap m_mapN2wt;
 
    CWordMap m_mapSTHw;
-   CTagMap m_mapSTHt;
+   CMorphMap m_mapSTHm;
    CIntMap m_mapSTi;
 
    CWordMap m_mapSTHHw;
-   CTagMap m_mapSTHHt;
+   CMorphMap m_mapSTHHm;
    CIntMap m_mapSTHi;
 
    CWordMap m_mapSTLDw;
-   CTagMap m_mapSTLDt;
+   CMorphMap m_mapSTLDm;
    CIntMap m_mapSTLDi;
 
    CWordMap m_mapSTRDw;
-   CTagMap m_mapSTRDt;
+   CMorphMap m_mapSTRDm;
    CIntMap m_mapSTRDi;
 
    CWordMap m_mapN0LDw;
-   CTagMap m_mapN0LDt;
+   CMorphMap m_mapN0LDm;
    CIntMap m_mapN0LDi;
 
    CWordMap m_mapSTL2Dw;
-   CTagMap m_mapSTL2Dt;
+   CMorphMap m_mapSTL2Dm;
    CIntMap m_mapSTL2Di;
 
    CWordMap m_mapSTR2Dw;
-   CTagMap m_mapSTR2Dt;
+   CMorphMap m_mapSTR2Dm;
    CIntMap m_mapSTR2Di;
 
    CWordMap m_mapN0L2Dw;
-   CTagMap m_mapN0L2Dt;
+   CMorphMap m_mapN0L2Dm;
    CIntMap m_mapN0L2Di;
 
    CWordMap m_mapHTw;
@@ -260,35 +250,29 @@ public:
    CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
 
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
-                                               m_mapSTt("StackTag", DEP_TABLE_SIZE),
-                                               m_mapSTwt("StackWordTag", DEP_TABLE_SIZE),
+                                               m_mapSTm("StackMorph", DEP_TABLE_SIZE),
+                                               m_mapSTwm("StackWordMorph", DEP_TABLE_SIZE),
 
                                                m_mapN0w("NextWord", DEP_TABLE_SIZE),
-                                               m_mapN0t("NextTag", DEP_TABLE_SIZE),
-                                               m_mapN0wt("NextWordTag", DEP_TABLE_SIZE),
 
                                                m_mapN1w("Next+1Word", DEP_TABLE_SIZE),
-                                               m_mapN1t("Next+1Tag", DEP_TABLE_SIZE),
-                                               m_mapN1wt("Next+1WordTag", DEP_TABLE_SIZE),
 
                                                m_mapN2w("Next+2Word", DEP_TABLE_SIZE),
-                                               m_mapN2t("Next+2Tag", DEP_TABLE_SIZE),
-                                               m_mapN2wt("Next+2WordTag", DEP_TABLE_SIZE),
 
                                                m_mapSTHw("StackHeadWord", DEP_TABLE_SIZE),
-                                               m_mapSTHt("StackHeadTag", DEP_TABLE_SIZE),
+                                               m_mapSTHm("StackHeadMorph", DEP_TABLE_SIZE),
                                                m_mapSTi("StackLabel", DEP_TABLE_SIZE),
 
                                                m_mapSTHHw("StackHeadHeadWord", DEP_TABLE_SIZE),
-                                               m_mapSTHHt("StackHeadHeadTag", DEP_TABLE_SIZE),
+                                               m_mapSTHHm("StackHeadHeadMorph", DEP_TABLE_SIZE),
                                                m_mapSTHi("StackLabel", DEP_TABLE_SIZE),
 
                                                m_mapSTLDw("StackLDWord", DEP_TABLE_SIZE),
-                                               m_mapSTLDt("StackLDTag", DEP_TABLE_SIZE),
+                                               m_mapSTLDm("StackLDMorph", DEP_TABLE_SIZE),
                                                m_mapSTLDi("StackLDLabel", DEP_TABLE_SIZE),
 
                                                m_mapSTRDw("StackRDWord", DEP_TABLE_SIZE),
-                                               m_mapSTRDt("StackRDTag", DEP_TABLE_SIZE),
+                                               m_mapSTRDm("StackRDMorph", DEP_TABLE_SIZE),
                                                m_mapSTRDi("StackRDLabel", DEP_TABLE_SIZE),
 
                                                m_mapN0LDw("NextLDWord", DEP_TABLE_SIZE),

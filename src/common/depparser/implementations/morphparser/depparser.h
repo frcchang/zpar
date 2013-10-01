@@ -47,13 +47,22 @@ private:
    CAgendaSimple<depparser::action::CScoredAction> *m_Beam;
 
    // caches for input
-   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+
+   //we don't have input tags in morph parser
+   //std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
+   std::vector<CWord> m_lCache;
+
+
 #ifdef LABELED
    std::vector< CDependencyLabel > m_lCacheLabel;
 #endif
+
+   //unused for input in morph parser, as we'll do our own morphological analysis
+   /*
    std::vector< CLemma > m_lCacheCoNLLLemma; // conll
    std::vector< CCoNLLCPOS > m_lCacheCoNLLCPOS; // conll
    std::vector< std::vector<CCoNLLFeats> > m_lCacheCoNLLFeats; // conll
+    */
 
 
    int m_nTrainingRound;
@@ -104,7 +113,7 @@ private:
    template<typename CCoNLLInputOrOutput>
    void initCoNLLCache( const CCoNLLInputOrOutput &sentence ) ; 
 
-   void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ;
 
    inline void getOrUpdateStackScore( const depparser::CStateItem *item, CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &retval, const unsigned &action, depparser::SCORE_TYPE amount=0, int round=0 );
 

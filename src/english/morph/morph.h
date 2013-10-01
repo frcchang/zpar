@@ -306,6 +306,8 @@ class CMorph
 
 public:
 
+	enum {NONE=0};
+
 	CMorph() : morphInfo(0) {}
 	CMorph(unsigned long morphInfo) : morphInfo(morphInfo) { }
 
