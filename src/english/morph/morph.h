@@ -47,6 +47,7 @@ enum MORPH_FIELDS {
 };
 
 const int LAST_MORPH_FIELD = MORPH_IS_WH;
+const int MORPH_BITS = LAST_MORPH_FIELD+1;
 
 const int MORPH_FIELD_SIZE [] = {
 

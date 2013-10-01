@@ -1,60 +1,117 @@
 #ifndef DEPPARSER_ACTION_H
 #define DEPPARSER_ACTION_H
 
+#include "morph.h"
+
 namespace action {
 
 // SH RE AL AR PR [AL+LABEL] AR+LABEL
-enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT, LABEL_AL_FIRST, LABEL_AR_FIRST=LABEL_AL_FIRST+DEP_LABEL_COUNT-1, MAX=LABEL_AR_FIRST+DEP_LABEL_COUNT-1 };
+//enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT, LABEL_AL_FIRST, LABEL_AR_FIRST=LABEL_AL_FIRST+DEP_LABEL_COUNT-1, MAX=LABEL_AR_FIRST+DEP_LABEL_COUNT-1 };
+
+//Action codes. Additionally, arc actions can have an associated label, and shift actions an associated morph.
+enum STACK_ACTION { NO_ACTION = 0 , SHIFT , REDUCE , ARC_LEFT , ARC_RIGHT , POP_ROOT };
+const int ACTION_TYPE_SIZE = 3; //bits for the action codes
+
+enum ACTION_FIELDS {
+
+	ACTION_TYPE = 0,
+	LEFT_ACTION_LABEL = ACTION_TYPE + ACTION_TYPE_SIZE,
+	RIGHT_ACTION_LABEL = LEFT_ACTION_LABEL + DEP_LABEL_SIZE,
+	SHIFT_ACTION_MORPH = RIGHT_ACTION_LABEL + DEP_LABEL_SIZE,
+	ACTION_CODE_SIZE = SHIFT_ACTION_MORPH + MORPH_BITS
+
+};
+
+//returns -1 for invalid fields
+static unsigned getFieldSize ( ACTION_FIELDS field )
+{
+	if ( field == ACTION_TYPE ) return ACTION_TYPE_SIZE;
+	else if ( field == LEFT_ACTION_LABEL || field == RIGHT_ACTION_LABEL ) return DEP_LABEL_SIZE;
+	else if ( field == SHIFT_ACTION_MORPH ) return MORPH_BITS;
+	else return -1;
+}
+
+//get the value of an action field
+static unsigned long getField ( unsigned long encodedAction , ACTION_FIELDS field )
+{
+	int fieldSize = getFieldSize(field);
+	assert(fieldSize >= 0);
+	unsigned long result = encodedAction >> field;
+	unsigned long mask = ( (1ul << fieldSize) - 1);
+	return result & mask;
+}
+
+//clear an action field to a blank (zero) value
+static void clearField ( unsigned long & encodedAction , ACTION_FIELDS field )
+{
+	int fieldSize = getFieldSize(field);
+	assert(fieldSize >= 0);
+	unsigned long mask = ( (1ul << fieldSize) - 1) << field; //1's only in that field
+	encodedAction = encodedAction & (~mask); //clear the field to zeros
+}
+
+//set the value in an action field
+static void setField ( unsigned long & encodedAction , ACTION_FIELDS field , unsigned long value )
+{
+	unsigned fieldSize = getFieldSize(field);
+	assert(fieldSize >= 0);
+	clearField(encodedAction,field);
+	encodedAction = encodedAction | ( value << field );
+}
+
+
+static unsigned long encodeAction(const STACK_ACTION &action, const unsigned &labelOrMorph=0) {
+	unsigned long result = 0;
+	setField ( result , ACTION_TYPE , action );
+#ifdef LABELED
+	if (action==ARC_LEFT)
+	{
+		assert(labelOrMorph<DEP_LABEL_COUNT);
+		setField ( result , LEFT_ACTION_LABEL , labelOrMorph );
+	}
+	if (action==ARC_RIGHT)
+	{
+		assert(labelOrMorph<DEP_LABEL_COUNT);
+		setField ( result , RIGHT_ACTION_LABEL , labelOrMorph );
+	}
+#endif
+	if (action==SHIFT)
+	{
+		setField ( result , SHIFT_ACTION_MORPH , labelOrMorph );
+	}
+	return result;
+}
 
 #ifdef LABELED
-static unsigned encodeAction(const STACK_ACTION &action, const unsigned &label=0) {
-   assert(label<DEP_LABEL_COUNT);
-   if (action==ARC_LEFT) {
-      if (label==0)
-         return ARC_LEFT;
-      else
-         return LABEL_AL_FIRST+label-1;
-   }
-   else if (action==ARC_RIGHT) {
-      if (label==0)
-         return ARC_RIGHT;
-      else
-         return LABEL_AR_FIRST+label-1;
-   }
-   else
-      assert(label==0);
-   return action;
-}
-static unsigned getUnlabeledAction(const unsigned &action ) {
-   assert(action<MAX);
-   if (action<LABEL_AL_FIRST)
-      return action;
-   else if (action<LABEL_AR_FIRST)
-      return ARC_LEFT;
-   else
-      return ARC_RIGHT;
-}
-static unsigned getLabel(const unsigned &action) {
-   assert(action<MAX);
-   if (action < LABEL_AL_FIRST)
-      return 0;
-   else if (action < LABEL_AR_FIRST)
-      return action-LABEL_AL_FIRST+1;
-   else
-      return action-LABEL_AR_FIRST+1;
+static unsigned long getUnlabeledAction( const unsigned long &action ) {
+	unsigned long result = action;
+	clearField ( result , LEFT_ACTION_LABEL );
+	clearField ( result , RIGHT_ACTION_LABEL );
+	return result;
 }
 #endif
 
+//in unlabelled parsing, this can still be used to obtain the morph info of a shift
+static unsigned long getLabelOrMorph(const unsigned long &action) {
+	int actionType = getField(action,ACTION_TYPE);
+#ifdef LABELED
+	if ( actionType == ARC_LEFT ) return getField(action,LEFT_ACTION_LABEL);
+	if ( actionType == ARC_RIGHT ) return getField(action,RIGHT_ACTION_LABEL);
+#endif
+	if ( actionType == SHIFT ) return getField(action,SHIFT_ACTION_MORPH);
+	return 0;
+}
+
 struct CScoredAction {
-   unsigned action;
-   SCORE_TYPE score;
+	unsigned action;
+	SCORE_TYPE score;
 public:
-   bool operator < (const CScoredAction &a) const {
-      return score < a.score;
-   }
-   bool operator > (const CScoredAction &a) const {
-      return score > a.score;
-   }
+	bool operator < (const CScoredAction &a) const {
+		return score < a.score;
+	}
+	bool operator > (const CScoredAction &a) const {
+		return score > a.score;
+	}
 };
 
 }//namespace
