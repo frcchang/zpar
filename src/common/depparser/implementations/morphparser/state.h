@@ -327,15 +327,13 @@ public:
 
 //-----------------------------------------------------------------------------
 
-//TODO Keep going from here
-
 public:
 
    // returns true is the next word advances -- by shift or arcright. 
 #ifdef LABELED
-   bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel ) {
+   bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel , const std::vector<CMorph>&m_lCacheMorph ) {
 #else
-   bool StandardMoveStep( const CDependencyParse &tree ) {
+   bool StandardMoveStep( const CDependencyParse &tree , const std::vector<CMorph>&m_lCacheMorph ) {
 #endif
       static int top;
       // when the next word is tree.size() it means that the sentence is done already
@@ -374,7 +372,7 @@ public:
       // the second case is that no words on the stack links nextword, and nextword does not link to stack word
       if ( tree[m_nNextWord].head == DEPENDENCY_LINK_NO_HEAD || // the root or
            tree[m_nNextWord].head > m_nNextWord ) { // head on the right
-         Shift(); 
+         Shift(m_lCacheMorph[m_nNextWord].code());
          return true;
       }
       // the last case is that the next words links to stack word
@@ -450,7 +448,7 @@ public:
       // the second case is that no words on the stack links nextword, and nextword does not link to stack word
       if ( item->head(m_nNextWord) == DEPENDENCY_LINK_NO_HEAD || // the root or
            item->head(m_nNextWord) > m_nNextWord ) { // head on the right
-         return action::encodeAction(action::SHIFT);
+         return action::encodeAction(action::SHIFT,item->morph(m_nNextWord));
       }
       // the last case is that the next words links to stack word
       else {                                        // head on the left 

@@ -40,7 +40,11 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    std::ofstream *os_scores=0;
    depparser::SCORE_TYPE *scores=0;
    assert(os.is_open());
+#ifdef JOINT_MORPH
+   CStringVector input_sent;
+#else
    CTwoStringVector input_sent;
+#endif
    CCoNLLInput input_conll;
    CDependencyParse *outout_sent; 
    CCoNLLOutput *output_conll;
@@ -80,7 +84,11 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    if (bCoNLL)
       bReadSuccessful = ( (*is) >> input_conll );
    else
+#ifdef JOINT_MORPH
+	  bReadSuccessful = input_reader->readRawSentence(&input_sent, false, true);
+#else
       bReadSuccessful = input_reader->readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
+#endif
    while( bReadSuccessful ) {
 
       TRACE("Sentence " << nCount);
@@ -129,7 +137,11 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       if (bCoNLL)
          bReadSuccessful = ( (*is) >> input_conll );
       else
-         bReadSuccessful = input_reader->readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
+#ifdef JOINT_MORPH
+	  bReadSuccessful = input_reader->readRawSentence(&input_sent, false, true);
+#else
+      bReadSuccessful = input_reader->readTaggedSentence(&input_sent, false, TAG_SEPARATOR);
+#endif
    }
 
    if (bCoNLL)

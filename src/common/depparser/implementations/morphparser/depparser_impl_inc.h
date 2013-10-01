@@ -18,6 +18,11 @@
 #include "charcat.h"
 #endif
 
+#include "morph/morph.h"
+#include "morph/penn_lexicon.h"
+#include "morph/aux_lexicon.h"
+
+
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
 
