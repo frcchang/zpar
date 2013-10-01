@@ -34,6 +34,10 @@
  *
  *==============================================================*/
 
+#include "morph.h"
+#include "aux_lexicon.h"
+#include "penn_lexicon.h"
+
 class CStateItem {
 
 public:
@@ -56,6 +60,9 @@ protected:
 #endif
    unsigned long m_nLastAction;                  // the last stack action
    const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
+
+   unsigned long m_lMorph[MAX_SENTENCE_SIZE]; //the morphological information for each word
+   CLemma m_lLemma[MAX_SENTENCE_SIZE]; //the lemma for each word
 
 public:
    SCORE_TYPE score;                        // score of stack - predicting how potentially this is the correct one
@@ -83,6 +90,15 @@ public:
          if ( m_lLabels[i] != item.m_lLabels[i] )
             return false;
 #endif
+      for ( i=0; i<m_nNextWord; ++i ) {
+         if ( m_lMorph[i] != item.m_lMorph[i] )
+            return false;
+      }
+      for ( i=0; i<m_nNextWord; ++i ) {
+         if ( m_lLemma[i] != item.m_lLemma[i] )
+            return false;
+      }
+
       if ( m_Stack.size() != item.m_Stack.size() )
          return false;
       if ( m_Stack.size()>0 && m_Stack.back()!=item.m_Stack.back() )
@@ -132,6 +148,9 @@ public:
    inline const CSetOfTags<CDependencyLabel> &lefttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagL[index]; }
    inline const CSetOfTags<CDependencyLabel> &righttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagR[index]; }
 
+   inline unsigned long morph ( const int & index ) const { assert(index<=m_nNextWord); return m_lMorph[index]; }
+   inline CLemma lemma ( const int & index ) const { assert(index<=m_nNextWord); return m_lLemma[index]; }
+
    void clear() { 
       m_nNextWord = 0; m_Stack.clear(); m_HeadStack.clear(); 
       score = 0; 
@@ -155,6 +174,8 @@ public:
          m_lDepTagL[i] = item.m_lDepTagL[i];
          m_lDepTagR[i] = item.m_lDepTagR[i];
          m_lSibling[i] = item.m_lSibling[i];
+         m_lMorph[i] = item.m_lMorph[i];
+         m_lLemma[i] = item.m_lLemma[i];
 #ifdef LABELED
          m_lLabels[i] = item.m_lLabels[i];
 #endif
@@ -219,12 +240,14 @@ public:
    }
 
    // the shift action does pushing
-   void Shift() {
+   void Shift( unsigned long morphInfo ) {
       m_Stack.push_back( m_nNextWord );
       m_HeadStack.push_back( m_nNextWord );
+      m_lMorph[m_nNextWord] = CMorph(morphInfo);
+      m_lLemma[m_nNextWord] = getLemma ( m_lCache[m_nNextWord].word.str() , m_lMorph[m_nNextWord] );
       m_nNextWord ++ ;
       ClearNext();
-      m_nLastAction=action::encodeAction(action::SHIFT);
+      m_nLastAction=action::encodeAction(action::SHIFT,morphInfo);
    }
  
    // the reduce action does popping
@@ -258,6 +281,8 @@ public:
       m_lDepNumR[m_nNextWord] = 0 ;
       m_lDepTagR[m_nNextWord].clear() ;
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
+      m_lLemma[m_nNextWord] = CLemma(); //empty lemma
+      m_lMorph[m_nNextWord] = CMorph(); //empty morph
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
 #endif
@@ -273,21 +298,21 @@ public:
       case action::NO_ACTION:
          return;
       case action::SHIFT:
-         Shift();
+         Shift( action::getLabelOrMorph(ac) );
          return;
       case action::REDUCE:
          Reduce();
          return;
       case action::ARC_LEFT:
 #ifdef LABELED
-         ArcLeft(action::getLabel(ac));
+         ArcLeft(action::getLabelOrMorph(ac));
 #else
          ArcLeft();
 #endif
          return;
       case action::ARC_RIGHT:
 #ifdef LABELED
-         ArcRight(action::getLabel(ac));
+         ArcRight(action::getLabelOrMorph(ac));
 #else
          ArcRight();
 #endif
@@ -301,6 +326,8 @@ public:
    }
 
 //-----------------------------------------------------------------------------
+
+//TODO Keep going from here
 
 public:
 
