@@ -8,18 +8,7 @@
  * The Penn treebank for English is not lemmatized, so we need this resource for lemmas.
  */
 
-#include "definitions.h"
-#include "english/pos/penn.h"
-#include "writer.h"
-#include "reader.h"
-#include "linguistics/word_tokenized.h"
-#include "linguistics/taggedword.h"
-#include "linguistics/dependency.h"
-#include "linguistics/conll.h"
-#include "linguistics/tagset.h"
-#include "tags.h"
-#include "morph.h"
-#include "penn_lexicon.h"
+#include "aux_lexicon.h"
 //#include "penn_lexicon.cpp"
 
 namespace english
@@ -127,6 +116,12 @@ namespace english
 			std::transform( result.begin() , result.end() , result.begin() , ::tolower );
 			return result;
 		}
+	}
+
+	std::string getLemma ( const std::string & form , const CMorph & morph )
+	{
+		CMorphTag morphTag = morph.getField(MORPH_POSTAG);
+		return getLemma ( form , morphTag );
 	}
 
 

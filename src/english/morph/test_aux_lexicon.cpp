@@ -41,7 +41,7 @@ int main( void )
 		{
 			english::CMorph morph = *it;
 			std::cout << " " << (*it).str();
-			std::cout << "LEMMA = " << english::getLemma(word,(*it).getField(english::MORPH_POSTAG)) << "\n";
+			std::cout << "LEMMA = " << english::getLemma(word,(*it)) << "\n";
 		}
 		std::cout << "\n";
 	}
