@@ -235,76 +235,112 @@ bool buildXComp6() {
 
 
 //"(VP < (S=target < (VP < VBG ) !< NP !$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)]) !$-- /^:$/))",
-  bool buildXComp7() {
-  	if (node.constituent==PENN_CON_VP){
-  		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
-  		while(childsVp!=0){
-  			const CStateNode* sTarg=childsVp->node;
-  			if (sTarg->constituent==PENN_CON_S && (!isLinked(&node,sTarg))) {
-  				bool secondCondition=true;// !<NP
-  				bool thirdCondition=true; //!$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)])
-  				bool fourthCondition=true; //!$-- /^:$/
-  				CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
-  				while(childsS!=0){
-  					if (childsS->node->constituent==PENN_CON_NP) {
-  						secondCondition=false;
-  					}
-  					childsS=childsS->next;
-  				}
-  				if (secondCondition){
-  					//A $-- B 	A is a right sister of B
-  					CStateNodeList* leftSistersS=childsVp->previous;
-  					while(leftSistersS!=0){
-  						if ((*words)[leftSistersS->node->lexical_head].word==g_word_two_dots){
-  							fourthCondition=false;
-  						}
-  						leftSistersS=leftSistersS->previous;
-  					}
-  					if (fourthCondition){
-  						if (childsVp->previous!=0){
-  							const CStateNode* commaLeftSisterS=childsVp->previous->node;
-  							if ((*words)[commaLeftSisterS->lexical_head].word==g_word_comma){
-  								//and now,
-  								///^,$/ $- @NP $- (@PP $-- @NP )
-  								//or
-  								///^,$/ $- @NP $- (@ADVP $-- @NP)
-  								//how is even possible that the inmediate left sister of comma is at the same time @NP and @PP...
-  								bool firstInCondition=false;
-  								bool secondInCondition=false;
+     bool buildXComp7() {
+     	if (node.constituent==PENN_CON_VP){
+     		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+     		while(childsVp!=0){
+     			const CStateNode* sTarg=childsVp->node;
+     			if (sTarg->constituent==PENN_CON_S && (!isLinked(&node,sTarg))) {
+     				bool secondCondition=true;// !<NP
+     				bool thirdCondition=true; //!$- (/^,$/ [$- @NP  |$- (@PP $-- @NP ) |$- (@ADVP $-- @NP)])
+     				bool fourthCondition=true; //!$-- /^:$/
+     				CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
+     				while(childsS!=0){
+     					if (childsS->node->constituent==PENN_CON_NP) {
+     						secondCondition=false;
+     					}
+     					childsS=childsS->next;
+     				}
+     				if (secondCondition){
+     					//A $-- B 	A is a right sister of B
+     					CStateNodeList* leftSistersS=childsVp->previous;
+     					while(leftSistersS!=0){
+     						if ((*words)[leftSistersS->node->lexical_head].word==g_word_two_dots){
+     							fourthCondition=false;
+     						}
+     						leftSistersS=leftSistersS->previous;
+     					}
+     					if (fourthCondition){
+     						if (childsVp->previous!=0){
+     							const CStateNode* commaLeftSisterS=childsVp->previous->node;
+     							if ((*words)[commaLeftSisterS->lexical_head].word==g_word_comma){
+     								//and now,
+     								///^,$/ $- @NP
+     								//or
+     								///^,$/ $- (@PP $-- @NP )
+     								//or
+     								///^,$/ $- @NP $- (@ADVP $-- @NP)
+     								bool firstInCondition=false;
+     								bool secondInCondition=false;
+     								bool thirdInCondition=false;
+     								//A $- B. A is the immediate right sister of B
 
-  								//how come???
+     								//In this part of the code I matched the @NP as NP, what is the exact difference, what is the head category?
 
-  								if (firstInCondition||secondInCondition){
-  									thirdCondition=false;
-  								}
-  							}
-  						}
-  						if (thirdCondition){
-  							childsS=sTarg->m_umbinarizedSubNodes;
-  							while(childsS!=0){
-  								const CStateNode* vpChildS=childsS->node;
-  								if (vpChildS->constituent==PENN_CON_VP){
-  									CStateNodeList* childsVp=vpChildS->m_umbinarizedSubNodes;
-  									while(childsVp!=0){
-  										if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)) {
-  											CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-  											if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
-  												//addLinked(vpNode,sTarg);
-  												addLinked(&node,sTarg);
-  												return true;
-  											}
-  										}
-  										childsVp=childsVp->next;
-  									}
-  								}
-  								childsS=childsS->next;
-  							}
-  						}
-  					}
-  				}
-  			}
-  			childsVp=childsVp->next;
-  		}
-  	}
-  	return false;
-  }
+     								if (childsVp->previous->previous!=0){
+     									const CStateNode* leftSisterOfComma=childsVp->previous->previous->node;
+     									if (leftSisterOfComma->constituent==PENN_CON_NP){
+     										firstInCondition=true; // I don't see the difference between matching just one @NP to matching @NP $- (@ADVP $-- @NP), but anyway, let's make the code.
+     										if (childsVp->previous->previous->previous!=0){
+     											const CStateNode* leftSisterOfNp=childsVp->previous->previous->previous->node;
+     											if (leftSisterOfNp->constituent==PENN_CON_ADVP){
+     												CStateNodeList* leftSistersADVP=childsVp->previous->previous->previous->previous;
+     												while(leftSistersADVP!=0){
+     													if (leftSistersADVP->node->constituent==PENN_CON_NP){
+     														thirdInCondition=true;
+     													}
+     													leftSistersADVP=leftSistersADVP->next;
+     												}
+     											}
+     										}
+     									}
+     									if (leftSisterOfComma->constituent==PENN_CON_PP){
+     										CStateNodeList* leftSistersPP=childsVp->previous->previous->previous;
+     										while(leftSistersPP!=0){
+     											if (leftSistersPP->node->constituent==PENN_CON_NP){
+     												secondInCondition=true;
+     											}
+     											leftSistersPP=leftSistersPP->next;
+     										}
+
+     									}
+
+     								}
+
+
+
+     								if (firstInCondition||secondInCondition||thirdInCondition){
+     									thirdCondition=false;
+     								}
+     							}
+     						}
+     						if (thirdCondition){
+     							childsS=sTarg->m_umbinarizedSubNodes;
+     							while(childsS!=0){
+     								const CStateNode* vpChildS=childsS->node;
+     								if (vpChildS->constituent==PENN_CON_VP){
+     									CStateNodeList* childsVp=vpChildS->m_umbinarizedSubNodes;
+     									while(childsVp!=0){
+     										if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)) {
+     											CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+     											if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+     												//addLinked(vpNode,sTarg);
+     												addLinked(&node,sTarg);
+     												return true;
+     											}
+     										}
+     										childsVp=childsVp->next;
+     									}
+     								}
+     								childsS=childsS->next;
+     							}
+     						}
+     					}
+     				}
+     			}
+     			childsVp=childsVp->next;
+     		}
+     	}
+     	return false;
+     }
+
