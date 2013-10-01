@@ -1,7 +1,7 @@
 #ifndef DEPPARSER_ACTION_H
 #define DEPPARSER_ACTION_H
 
-#include "morph.h"
+#include "morph/morph.h"
 
 namespace action {
 

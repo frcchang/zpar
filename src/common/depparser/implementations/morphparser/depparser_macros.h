@@ -7,6 +7,9 @@
 // early update? 
 #define EARLY_UPDATE
 
+// joint morphological analysis and parsaing?
+#define JOINT_MORPH
+
 // local training? it will affect the setting of early update and agenda size
 // if you want to experiment with local training, define this when you train
 // it will automatically set beam1
