@@ -52,10 +52,11 @@ private:
    //std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
    std::vector<CWord> m_lCache;
 
-
 #ifdef LABELED
    std::vector< CDependencyLabel > m_lCacheLabel;
 #endif
+
+   std::vector<CMorph> m_lCacheMorph; //for gold standard training morph
 
    //unused for input in morph parser, as we'll do our own morphological analysis
    /*
@@ -125,6 +126,7 @@ private:
    // helper method
    inline void reduce( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores ) ;
    inline void shift( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
+   inline void shiftcache( const CStateItem *item, unsigned long morph , const CPackedScoreType<SCORE_TYPE, action::MAX> &scores );
    inline void arcleft( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
    inline void arcright( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
    inline void poproot( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;  

@@ -125,6 +125,7 @@ public:
    inline int stackitem( const unsigned &index ) const { assert(index<m_Stack.size()); return m_Stack[index]; }
 
    inline int cachesize() const { return m_nNextUncachedWord - m_nNextWord; }
+   inline int morphanalyzed() const { return m_nNextUncachedWord; }
 
    inline bool headstackempty() const { return m_HeadStack.empty(); }
    inline int headstacktop() const { assert(!m_HeadStack.empty()); return m_HeadStack.back(); }

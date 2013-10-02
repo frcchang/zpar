@@ -545,6 +545,20 @@ inline void CDepParser::shift( const CStateItem *item, const CPackedScoreType<SC
 
 /*---------------------------------------------------------------
  *
+ * shiftcache - help function
+ *
+ *--------------------------------------------------------------*/
+
+inline void CDepParser::shiftcache( const CStateItem *item, unsigned long morph , const CPackedScoreType<SCORE_TYPE, action::MAX> &scores ) {
+   static action::CScoredAction scoredaction;
+   // update stack score
+   scoredaction.action = action::encodeAction(action::SHIFT_CACHE, morph);
+   scoredaction.score = item->score + scores[scoredaction.action];
+   m_Beam->insertItem(&scoredaction);
+}
+
+/*---------------------------------------------------------------
+ *
  * poproot - help function
  *
  *--------------------------------------------------------------*/
@@ -566,7 +580,7 @@ inline void CDepParser::poproot( const CStateItem *item, const CPackedScoreType<
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CDependencyParse *retval , const CDependencyParse &correct , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDependencyParse *retval , const CDependencyParse &correct , int nBest , SCORE_TYPE *scores ) {
 
 #ifdef DEBUG
    clock_t total_start_time = clock();
@@ -590,10 +604,12 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    bContradictsRules = false;
    m_lCache.clear();
    for ( index=0; index<length; ++index ) {
-      m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
+      m_lCache.push_back( CWord(sentence[index]) );
       // filter std::cout training examples with rules
       if (bTrain && m_weights->rules()) {
+    	  //we don't use these rules as they use postags
          // the root
+    	  /*
          if ( correct[index].head == DEPENDENCY_LINK_NO_HEAD && canBeRoot(m_lCache[index].tag.code())==false) {
             TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " can be root.");
             bContradictsRules = true;
@@ -608,6 +624,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
             TRACE("Rule contradiction: " << m_lCache[index].tag.code() << " has right head.");
             bContradictsRules = true;
          }
+         */
       }
    }
 
@@ -637,6 +654,18 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    }
 #endif
 
+   m_lCacheMorph.clear();
+
+   //init gold standard morphs and lemmas
+   if ( bTrain )
+   {
+	   for (index=0; index<length; ++index)
+	   {
+		   CMorph correctMorph = pennToMorph(correct[index].word, correct[index].tag);
+	       m_lCacheMorph.push_back(correctMorph);
+	   }
+   }
+
    // skip the training example if contradicts
    if (bTrain && m_weights->rules() && bContradictsRules) {
       std::cout << "Skipping training example because it contradicts rules..." <<std::endl;
@@ -645,7 +674,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 
    TRACE("Decoding started"); 
    // loop with the next word to process in the sentence
-   for (index=0; index<length*2; ++index) {
+   for (index=0; index<length*3; ++index) { //length*3 due to shiftcache transition
       
       if (bTrain) bCorrect = false ; 
 
@@ -679,6 +708,18 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
          }
          // for the state items that still need more words
          else {  
+        	if ( pGenerator->cachesize() < MORPH_CACHE_LIMIT && pGenerator->morphanalyzed() < length ) {
+
+        		CWord wordToAnalyze = m_lCache[pGenerator->morphanalyzed()]; //morphanalyzed() points to first word that hasn't been subject to morphological analysis
+        		std::set<CMorph> setOfMorphs = getPossibleMorph(word);
+        		for ( std::set<CMorph>::iterator it = setOfMorphs.begin() ; it != setOfMorphs.end() ; ++it )
+        		{
+        			CMorph morph = *it;
+        			shiftcache(pGenerator, morph , packed_scores) ;
+        		}
+
+        	}
+
             if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.               
                if ( 
 #ifndef FRAGMENTED_TREE
