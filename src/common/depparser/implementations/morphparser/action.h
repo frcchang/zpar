@@ -9,7 +9,7 @@ namespace action {
 //enum STACK_ACTION { NO_ACTION=0, SHIFT, REDUCE, ARC_LEFT, ARC_RIGHT, POP_ROOT, LABEL_AL_FIRST, LABEL_AR_FIRST=LABEL_AL_FIRST+DEP_LABEL_COUNT-1, MAX=LABEL_AR_FIRST+DEP_LABEL_COUNT-1 };
 
 //Action codes. Additionally, arc actions can have an associated label, and shift actions an associated morph.
-enum STACK_ACTION { NO_ACTION = 0 , SHIFT , REDUCE , ARC_LEFT , ARC_RIGHT , POP_ROOT };
+enum STACK_ACTION { NO_ACTION = 0 , SHIFT , SHIFT_CACHE, REDUCE , ARC_LEFT , ARC_RIGHT , POP_ROOT };
 const int ACTION_TYPE_SIZE = 3; //bits for the action codes
 
 enum ACTION_FIELDS {
@@ -17,8 +17,8 @@ enum ACTION_FIELDS {
 	ACTION_TYPE = 0,
 	LEFT_ACTION_LABEL = ACTION_TYPE + ACTION_TYPE_SIZE,
 	RIGHT_ACTION_LABEL = LEFT_ACTION_LABEL + DEP_LABEL_SIZE,
-	SHIFT_ACTION_MORPH = RIGHT_ACTION_LABEL + DEP_LABEL_SIZE,
-	ACTION_CODE_SIZE = SHIFT_ACTION_MORPH + MORPH_BITS
+	SHIFT_CACHE_ACTION_MORPH = RIGHT_ACTION_LABEL + DEP_LABEL_SIZE,
+	ACTION_CODE_SIZE = SHIFT_CACHE_ACTION_MORPH + MORPH_BITS
 
 };
 
@@ -27,7 +27,7 @@ static unsigned getFieldSize ( ACTION_FIELDS field )
 {
 	if ( field == ACTION_TYPE ) return ACTION_TYPE_SIZE;
 	else if ( field == LEFT_ACTION_LABEL || field == RIGHT_ACTION_LABEL ) return DEP_LABEL_SIZE;
-	else if ( field == SHIFT_ACTION_MORPH ) return MORPH_BITS;
+	else if ( field == SHIFT_CACHE_ACTION_MORPH ) return MORPH_BITS;
 	else return -1;
 }
 
@@ -75,9 +75,9 @@ static unsigned long encodeAction(const STACK_ACTION &action, const unsigned &la
 		setField ( result , RIGHT_ACTION_LABEL , labelOrMorph );
 	}
 #endif
-	if (action==SHIFT)
+	if (action==SHIFT_CACHE)
 	{
-		setField ( result , SHIFT_ACTION_MORPH , labelOrMorph );
+		setField ( result , SHIFT_CACHE_ACTION_MORPH , labelOrMorph );
 	}
 	return result;
 }
@@ -91,14 +91,14 @@ static unsigned long getUnlabeledAction( const unsigned long &action ) {
 }
 #endif
 
-//in unlabelled parsing, this can still be used to obtain the morph info of a shift
+//in unlabelled parsing, this can still be used to obtain the morph info of a shift cache transition
 static unsigned long getLabelOrMorph(const unsigned long &action) {
 	int actionType = getField(action,ACTION_TYPE);
 #ifdef LABELED
 	if ( actionType == ARC_LEFT ) return getField(action,LEFT_ACTION_LABEL);
 	if ( actionType == ARC_RIGHT ) return getField(action,RIGHT_ACTION_LABEL);
 #endif
-	if ( actionType == SHIFT ) return getField(action,SHIFT_ACTION_MORPH);
+	if ( actionType == SHIFT_CACHE ) return getField(action,SHIFT_CACHE_ACTION_MORPH);
 	return 0;
 }
 
