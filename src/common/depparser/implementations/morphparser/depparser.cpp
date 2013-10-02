@@ -22,6 +22,7 @@ const CTag g_noneTag = CTag::NONE;
 #define cast_weights static_cast<CWeight*>(m_weights)
 #define refer_or_allocate_tuple2(x, o1, o2) { if (amount == 0) x.refer(o1, o2); else x.allocate(o1, o2); }
 #define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
+#define refer_or_allocate_tuple4(x, o1, o2, o3, o4) { if (amount == 0) x.refer(o1, o2, o3, o4); else x.allocate(o1, o2, o3, o4); }
 #define _conll_or_empty(x) (x == "_" ? "" : x)
 
 /*===============================================================
@@ -85,22 +86,15 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &strd_word = strd_index==-1 ? g_emptyWord : item->lemma(strd_index);
    const CWord &stl2d_word = stl2d_index==-1 ? g_emptyWord : item->lemma(stl2d_index);
    const CWord &str2d_word = str2d_index==-1 ? g_emptyWord : item->lemma(str2d_index);
-   const CWord &n0_word = n0_index==-1 ? g_emptyWord : item->lemma(n0_index);
    const CWord &n0ld_word = n0ld_index==-1 ? g_emptyWord : item->lemma(n0ld_index);
    const CWord &n0l2d_word = n0l2d_index==-1 ? g_emptyWord : item->lemma(n0l2d_index);
-
-   //we haven't yet lemmatized this:
-   //TODO alternative: use forms for these four words (m_lCache[n1_index], etc.)
-   const CWord &n1_word = g_emptyWord;
-   const CWord &n2_word = g_emptyWord;
-   const CWord &ht_word = g_emptyWord;
-   const CWord &ht2_word = g_emptyWord;
-   /*
-   const CWord &n1_word = n1_index==-1 ? g_emptyWord : item->lemma(n1_index);
-   const CWord &n2_word = n2_index==-1 ? g_emptyWord : item->lemma(n2_index);
    const CWord &ht_word = ht_index==-1 ? g_emptyWord : item->lemma(ht_index);
    const CWord &ht2_word = ht2_index==-1 ? g_emptyWord : item->lemma(ht2_index);
-	*/
+   //these words may or may not have been lemmatized already, depending on cache size.
+   //TODO alternative: if they haven't, use forms (m_lCache[n1_index], etc.) instead of the empty word.
+   const CWord &n0_word = n0_index==-1 ? g_emptyWord : item->cachesize() > 0 ? item->lemma(n0_index) : g_emptyWord;
+   const CWord &n1_word = n1_index==-1 ? g_emptyWord : item->cachesize() > 1 ? item->lemma(n1_index) : g_emptyWord;
+   const CWord &n2_word = n2_index==-1 ? g_emptyWord : item->cachesize() > 2 ? item->lemma(n2_index) : g_emptyWord;
 
    const int &st_label = st_index==-1 ? CDependencyLabel::NONE : item->label(st_index);
    const int &sth_label = sth_index==-1 ? CDependencyLabel::NONE : item->label(sth_index);
@@ -120,6 +114,10 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int &str2d_morph = str2d_index==-1 ? CMorph::NONE : item->morph(str2d_index);
    const int &n0ld_morph = n0ld_index==-1 ? CMorph::NONE : item->morph(n0ld_index);
    const int &n0l2d_morph = n0l2d_index==-1 ? CMorph::NONE : item->morph(n0l2d_index);
+   //these words may or may not have been lemmatized already, depending on cache size.
+   const int &n0_morph = (n0_index==-1 || item->cachesize()<=0) ? CMorph::NONE : item->morph(n0_index);
+   const int &n1_morph = (n1_index==-1 || item->cachesize()<=1) ? CMorph::NONE : item->morph(n1_index);
+   const int &n2_morph = (n2_index==-1 || item->cachesize()<=2) ? CMorph::NONE : item->morph(n2_index);
 
 
    static int st_n0_dist;
@@ -155,6 +153,18 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple2<CTag, CSetOfTags<CDependencyLabel> > tag_tagset;
 
    static CTuple2<CWord, CMorph> word_morph;
+   static CTuple2<CMorph, CMorph> morph_morph;
+   static CTuple3<CWord, CMorph, CMorph> word_morph_morph;
+   static CTuple3<CWord, CWord, CMorph> word_word_morph;
+   static CTuple4<CWord, CWord, CMorph, CMorph> word_word_morph_morph;
+
+   static CTuple3<CMorph, CMorph, CMorph> morph_morph_morph;
+
+   static CTuple2<CMorph, int> morph_int;
+   static CTuple3<CMorph, CMorph, int> morph_morph_int;
+
+   static CTuple2<CMorph, CSetOfTags<CDependencyLabel> > morph_tagset;
+
 
    //TODO: We are here.
    //Modify together with depparser_weight.h.
@@ -172,14 +182,23 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    if (n0_index != -1) {
       cast_weights->m_mapN0w.getOrUpdateScore( retval, n0_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN0m.getOrUpdateScore( retval, n0_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &n0_word, &n0_morph);
+      cast_weights->m_mapN0wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
 
    if (n1_index != -1) {
       cast_weights->m_mapN1w.getOrUpdateScore( retval, n1_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN1m.getOrUpdateScore( retval, n1_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &n1_word, &n1_morph);
+      cast_weights->m_mapN1wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
 
    if (n2_index != -1) {
       cast_weights->m_mapN2w.getOrUpdateScore( retval, n2_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN2m.getOrUpdateScore( retval, n2_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &n2_word, &n2_morph);
+      cast_weights->m_mapN2wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
 
    if (sth_index != -1) {
@@ -234,94 +253,111 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    // s0 and n0
    if (st_index != -1) {
-      cast_weights->m_mapSTwtN0wt.getOrUpdateScore( retval, st_word_tag_n0_word_tag, action, m_nScoreIndex, amount, round ); 
-      refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &st_tag);
-      cast_weights->m_mapSTwtN0w.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &n0_tag);
-      cast_weights->m_mapSTwN0wt.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(word_tag_tag, &st_word, &st_tag, &n0_tag);
-      cast_weights->m_mapSTwtN0t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &n0_tag);
-      cast_weights->m_mapSTtN0wt.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ;
+	  refer_or_allocate_tuple4(word_word_morph_morph, &st_word, &n0_word, &st_morph, &n0_morph);
+      cast_weights->m_mapSTwmN0wm.getOrUpdateScore( retval, word_word_morph_morph, action, m_nScoreIndex, amount, round );
+      refer_or_allocate_tuple3(word_word_morph, &st_word, &n0_word, &st_morph);
+      cast_weights->m_mapSTwmN0w.getOrUpdateScore( retval, word_word_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(word_word_morph, &st_word, &n0_word, &n0_morph);
+      cast_weights->m_mapSTwN0wm.getOrUpdateScore( retval, word_word_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(word_morph_morph, &st_word, &st_morph, &n0_morph);
+      cast_weights->m_mapSTwmN0m.getOrUpdateScore( retval, word_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(word_morph_morph, &n0_word, &st_morph, &n0_morph);
+      cast_weights->m_mapSTmN0wm.getOrUpdateScore( retval, word_morph_morph, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapSTwN0w.getOrUpdateScore( retval, st_word_n0_word, action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+      refer_or_allocate_tuple2(morph_morph, &st_morph, &n0_morph);
+      cast_weights->m_mapSTmN0m.getOrUpdateScore( retval, morph_morph, action, m_nScoreIndex, amount, round ) ;
    }
 
    if (st_index != -1 && n0_index != -1) {
-      cast_weights->m_mapN0tN1t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(n0_tag,n1_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapN0tN0LDtN0L2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n0ld_tag,n0l2d_tag)), action, m_nScoreIndex, amount, round ) ; 
+	  //TODO: Use a morph set instead of tuples? Probably not, wouldn't fit in an unsigned long.
+	  refer_or_allocate_tuple2(morph_morph, &n0_morph, &n1_morph);
+      cast_weights->m_mapN0mN1m.getOrUpdateScore( retval, morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &n0_morph, &n1_morph, &n2_morph);
+      cast_weights->m_mapN0mN1mN2m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &st_morph, &n0_morph, &n1_morph);
+      cast_weights->m_mapSTmN0mN1m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &st_morph, &n0_morph, &n0ld_morph);
+      cast_weights->m_mapSTmN0mN0LDm.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &n0_morph, &n0ld_morph, &n0l2d_morph);
+      cast_weights->m_mapN0mN0LDmN0L2Dm.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
    }
    if (st_index!=-1) {
-      cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTHHtSTHtSTt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sthh_tag, sth_tag,st_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTLDtSTL2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,stl2d_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTRDtSTR2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,str2d_tag)), action, m_nScoreIndex, amount, round ) ; 
+	  refer_or_allocate_tuple3(morph_morph_morph, &sth_morph, &st_morph, &n0_morph);
+      cast_weights->m_mapSTHmSTmN0m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &sthh_morph, &sth_morph, &st_morph);
+      cast_weights->m_mapSTHHmSTHmSTm.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &st_morph, &stld_morph, &n0_morph);
+      cast_weights->m_mapSTmSTLDmN0m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &st_morph, &stld_morph, &stl2d_morph);
+      cast_weights->m_mapSTmSTLDmSTL2Dm.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &st_morph, &strd_morph, &n0_morph);
+      cast_weights->m_mapSTmSTRDmN0m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &st_morph, &strd_morph, &str2d_morph);
+      cast_weights->m_mapSTmSTRDmSTR2Dm.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
    }
 
    // distance
    if (st_index!=-1 && n0_index!=-1) {
       refer_or_allocate_tuple2(word_int, &st_word, &st_n0_dist);
       cast_weights->m_mapSTwd.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_int, &st_tag, &st_n0_dist);
-      cast_weights->m_mapSTtd.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_int, &st_morph, &st_n0_dist);
+      cast_weights->m_mapSTmd.getOrUpdateScore( retval, morph_int, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple2(word_int, &n0_word, &st_n0_dist);
       cast_weights->m_mapN0wd.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round ) ;
-      refer_or_allocate_tuple2(tag_int, &n0_tag, &st_n0_dist);
-      cast_weights->m_mapN0td.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_int, &n0_morph, &st_n0_dist);
+      cast_weights->m_mapN0md.getOrUpdateScore( retval, morph_int, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(word_word_int, &st_word, &n0_word, &st_n0_dist);
       cast_weights->m_mapSTwN0wd.getOrUpdateScore( retval, word_word_int, action, m_nScoreIndex, amount, round ) ; 
-      refer_or_allocate_tuple3(tag_tag_int, &st_tag, &n0_tag, &st_n0_dist);
-      cast_weights->m_mapSTtN0td.getOrUpdateScore( retval, tag_tag_int, action, m_nScoreIndex, amount, round ) ; 
+      refer_or_allocate_tuple3(morph_morph_int, &st_morph, &n0_morph, &st_n0_dist);
+      cast_weights->m_mapSTmN0md.getOrUpdateScore( retval, morph_morph_int, action, m_nScoreIndex, amount, round ) ;
    }
 
    // st arity
    if (st_index != -1) {
       refer_or_allocate_tuple2(word_int, &st_word, &st_rarity);
       cast_weights->m_mapSTwra.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_int, &st_tag, &st_rarity);
-      cast_weights->m_mapSTtra.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_int, &st_morph, &st_rarity);
+      cast_weights->m_mapSTmra.getOrUpdateScore( retval, morph_int, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple2(word_int, &st_word, &st_larity);
       cast_weights->m_mapSTwla.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_int, &st_tag, &st_larity);
-      cast_weights->m_mapSTtla.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_int, &st_morph, &st_larity);
+      cast_weights->m_mapSTmla.getOrUpdateScore( retval, morph_int, action, m_nScoreIndex, amount, round ) ;
    }
 
    // n0 arity
    if (n0_index!=-1) {
       refer_or_allocate_tuple2(word_int, &n0_word, &n0_larity);
       cast_weights->m_mapN0wla.getOrUpdateScore( retval, word_int, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_int, &n0_tag, &n0_larity);
-      cast_weights->m_mapN0tla.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_int, &n0_morph, &n0_larity);
+      cast_weights->m_mapN0mla.getOrUpdateScore( retval, morph_int, action, m_nScoreIndex, amount, round ) ;
    }
 
    // st labelset
    if (st_index != -1){
       refer_or_allocate_tuple2(word_tagset, &st_word, &st_rtagset);
       cast_weights->m_mapSTwrp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_rtagset);
-      cast_weights->m_mapSTtrp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_tagset, &st_morph, &st_rtagset);
+      cast_weights->m_mapSTmrp.getOrUpdateScore( retval, morph_tagset, action, m_nScoreIndex, amount, round ) ;
 
       refer_or_allocate_tuple2(word_tagset, &st_word, &st_ltagset);
       cast_weights->m_mapSTwlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_tagset, &st_tag, &st_ltagset);
-      cast_weights->m_mapSTtlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_tagset, &st_morph, &st_ltagset);
+      cast_weights->m_mapSTmlp.getOrUpdateScore( retval, morph_tagset, action, m_nScoreIndex, amount, round ) ;
    }
 
    // n0 labelset
    if (n0_index != -1){
       refer_or_allocate_tuple2(word_tagset, &n0_word, &n0_ltagset);
       cast_weights->m_mapN0wlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
-      refer_or_allocate_tuple2(tag_tagset, &n0_tag, &n0_ltagset);
-      cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple2(morph_tagset, &n0_morph, &n0_ltagset);
+      cast_weights->m_mapN0mlp.getOrUpdateScore( retval, morph_tagset, action, m_nScoreIndex, amount, round ) ;
    }
 
    //uncomment to use conll features
 
+   //we don't use them as the morph parser generates its own lemmas and morphological information
+
+   /*
    if (m_bCoNLL) {
 
       static unsigned i;
@@ -347,6 +383,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
             cast_weights->m_mapN1f.getOrUpdateScore( retval, m_lCacheCoNLLFeats[n1_index][i], action, m_nScoreIndex, amount, round) ;
       } // if (n1_index!=-1)
    }
+   */
 
 
 }
