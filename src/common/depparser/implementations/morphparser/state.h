@@ -64,6 +64,8 @@ protected:
    unsigned long m_lMorph[MAX_SENTENCE_SIZE]; //the morphological information for each word
    CLemma m_lLemma[MAX_SENTENCE_SIZE]; //the lemma for each word
 
+   int m_nNextUncachedWord; //the first word that is not in the cache (hasn't been morphologically analyzed yet). The difference m_nNextUncachedWord - m_nNextWord must be <= MORPH_CACHE_LIMIT.
+
 public:
    SCORE_TYPE score;                        // score of stack - predicting how potentially this is the correct one
 
@@ -81,6 +83,8 @@ public:
       int i;
       if ( m_nNextWord != item.m_nNextWord )
          return false;
+      if ( m_nNextUncachedWord != item.m_nNextUncachedWord )
+         return false;
       for ( i=0; i<m_nNextWord; ++i ) {
          if ( m_lHeads[i] != item.m_lHeads[i] )
             return false;
@@ -90,11 +94,11 @@ public:
          if ( m_lLabels[i] != item.m_lLabels[i] )
             return false;
 #endif
-      for ( i=0; i<m_nNextWord; ++i ) {
+      for ( i=0; i<m_nNextUncachedWord; ++i ) {
          if ( m_lMorph[i] != item.m_lMorph[i] )
             return false;
       }
-      for ( i=0; i<m_nNextWord; ++i ) {
+      for ( i=0; i<m_nNextUncachedWord; ++i ) {
          if ( m_lLemma[i] != item.m_lLemma[i] )
             return false;
       }
@@ -119,6 +123,8 @@ public:
    inline int stacktop() const { assert(!m_Stack.empty()); return m_Stack.back(); }
    inline int stackbottom() const { assert(!m_Stack.empty()); return m_Stack.front(); }
    inline int stackitem( const unsigned &index ) const { assert(index<m_Stack.size()); return m_Stack[index]; }
+
+   inline int cachesize() const { return m_nNextUncachedWord - m_nNextWord; }
 
    inline bool headstackempty() const { return m_HeadStack.empty(); }
    inline int headstacktop() const { assert(!m_HeadStack.empty()); return m_HeadStack.back(); }
@@ -148,11 +154,11 @@ public:
    inline const CSetOfTags<CDependencyLabel> &lefttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagL[index]; }
    inline const CSetOfTags<CDependencyLabel> &righttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagR[index]; }
 
-   inline unsigned long morph ( const int & index ) const { assert(index<=m_nNextWord); return m_lMorph[index]; }
-   inline CLemma lemma ( const int & index ) const { assert(index<=m_nNextWord); return m_lLemma[index]; }
+   inline unsigned long morph ( const int & index ) const { assert(index<=m_nNextUncachedWord); return m_lMorph[index]; }
+   inline CLemma lemma ( const int & index ) const { assert(index<=m_nNextUncachedWord); return m_lLemma[index]; }
 
    void clear() { 
-      m_nNextWord = 0; m_Stack.clear(); m_HeadStack.clear(); 
+      m_nNextWord = 0; m_nNextUncachedWord = 0; m_Stack.clear(); m_HeadStack.clear();
       score = 0; 
       m_nLastAction = action::NO_ACTION;
       ClearNext();
@@ -162,6 +168,7 @@ public:
       m_Stack = item.m_Stack;
       m_HeadStack = item.m_HeadStack;
       m_nNextWord = item.m_nNextWord;
+      m_nNextUncachedWord = item.m_nNextUncachedWord;
       m_nLastAction = item.m_nLastAction;
       m_lCache = item.m_lCache;
       score = item.score; 
@@ -240,14 +247,23 @@ public:
    }
 
    // the shift action does pushing
-   void Shift( unsigned long morphInfo ) {
-      m_Stack.push_back( m_nNextWord );
+   void Shift() {
+      assert( cachesize() > 0 ); //must have at least a word in the cache to shift it into the stack
+	  m_Stack.push_back( m_nNextWord );
       m_HeadStack.push_back( m_nNextWord );
-      m_lMorph[m_nNextWord] = CMorph(morphInfo);
-      m_lLemma[m_nNextWord] = getLemma ( m_lCache[m_nNextWord].word.str() , m_lMorph[m_nNextWord] );
       m_nNextWord ++ ;
       ClearNext();
-      m_nLastAction=action::encodeAction(action::SHIFT,morphInfo);
+      m_nLastAction=action::encodeAction(action::SHIFT);
+   }
+
+   // the shift cache action does morphological analysis
+   void ShiftCache( unsigned long morphInfo ) {
+      assert( cachesize() < MORPH_CACHE_LIMIT );
+	  m_lMorph[m_nNextUncachedWord] = CMorph(morphInfo);
+      m_lLemma[m_nNextUncachedWord] = getLemma ( m_lCache[m_nNextUncachedWord].word.str() , m_lMorph[m_nNextUncachedWord] );
+      m_nNextUncachedWord ++ ;
+      ClearNext();
+      m_nLastAction=action::encodeAction(action::SHIFT_CACHE,morphInfo);
    }
  
    // the reduce action does popping
@@ -281,8 +297,8 @@ public:
       m_lDepNumR[m_nNextWord] = 0 ;
       m_lDepTagR[m_nNextWord].clear() ;
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
-      m_lLemma[m_nNextWord] = CLemma(); //empty lemma
-      m_lMorph[m_nNextWord] = CMorph(); //empty morph
+      m_lLemma[m_nNextUncachedWord] = CLemma(); //empty lemma
+      m_lMorph[m_nNextUncachedWord] = CMorph(); //empty morph
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
 #endif
@@ -298,8 +314,11 @@ public:
       case action::NO_ACTION:
          return;
       case action::SHIFT:
-         Shift( action::getLabelOrMorph(ac) );
+         Shift();
          return;
+      case action::SHIFT_CACHE:
+    	  ShiftCache( action::getLabelOrMorph(ac) );
+    	  return;
       case action::REDUCE:
          Reduce();
          return;
@@ -348,6 +367,13 @@ public:
             return false;
          }
       }
+      // the zeroth case is if the morphological cache isn't full and there are words in the buffer to shift into it, then we shift cache
+      if ( cachesize() < MORPH_CACHE_LIMIT && m_nNextUncachedWord < static_cast<int>(tree.size()) )
+      {
+    	  ShiftCache(m_lCacheMorph[m_nNextUncachedWord].code());
+    	  return true;
+      }
+
       // the first case is that there is some words on the stack linking to nextword
       if ( m_Stack.size() > 0 ) {
          top = m_Stack.back();
@@ -372,7 +398,7 @@ public:
       // the second case is that no words on the stack links nextword, and nextword does not link to stack word
       if ( tree[m_nNextWord].head == DEPENDENCY_LINK_NO_HEAD || // the root or
            tree[m_nNextWord].head > m_nNextWord ) { // head on the right
-         Shift(m_lCacheMorph[m_nNextWord].code());
+         Shift();
          return true;
       }
       // the last case is that the next words links to stack word
@@ -414,18 +440,29 @@ public:
 //std::cout << "this dtags" << std::endl; for (int i=0; i<=m_nNextWord; ++i) std::cout << m_lLabels[i] << " "; std::cout << std::endl;
 //std::cout << "that dtags" << std::endl; for (int i=0; i<=item->m_nNextWord; ++i) std::cout << item->m_lLabels[i] << " "; std::cout << std::endl;
 //         }
-         assert( m_Stack.size() > item->m_Stack.size() );
-         top = m_Stack.back();
-         if ( item->m_lHeads[top] == m_nNextWord ) 
+
+    	  if ( m_Stack.size() == item->m_Stack.size() )
+    	  {
+    		  //if next words are equal and stack sizes are equal, it must be cache size that changed
+    		  assert ( m_nNextUncachedWord < item->m_nNextUncachedWord );
+    		  return action::encodeAction(action::SHIFT_CACHE,item->morph(m_nNextUncachedWord));
+    	  }
+    	  else
+    	  {
+			 assert( m_Stack.size() > item->m_Stack.size() );
+
+			 top = m_Stack.back();
+			 if ( item->m_lHeads[top] == m_nNextWord )
 #ifdef LABELED
-            return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
+				return action::encodeAction(action::ARC_LEFT, item->m_lLabels[top]);
 #else
-            return action::ARC_LEFT;
+				return action::ARC_LEFT;
 #endif
-         else if ( item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD ) 
-            return action::encodeAction(action::REDUCE);
-         else 
-            return action::encodeAction(action::POP_ROOT);
+			 else if ( item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD )
+				return action::encodeAction(action::REDUCE);
+			 else
+				return action::encodeAction(action::POP_ROOT);
+    	  }
       }
       // the first case is that there is some words on the stack linking to nextword
       if ( m_Stack.size() > 0 ) {
@@ -448,7 +485,7 @@ public:
       // the second case is that no words on the stack links nextword, and nextword does not link to stack word
       if ( item->head(m_nNextWord) == DEPENDENCY_LINK_NO_HEAD || // the root or
            item->head(m_nNextWord) > m_nNextWord ) { // head on the right
-         return action::encodeAction(action::SHIFT,item->morph(m_nNextWord));
+         return action::encodeAction(action::SHIFT);
       }
       // the last case is that the next words links to stack word
       else {                                        // head on the left 
