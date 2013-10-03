@@ -1,5 +1,6 @@
 /* 
     	"VP < (NP $+ (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))) !<(/^(?:VB|AUX)/ < " + copularWordRegex + ")",  // this time one also included "lot"
+
           // match "give it next week"
           
           "VP < (NP < (NP $+ (/^(NP|WHNP)$/=target !< (/^NN/ < " + timeWordLotRegex + "))))!< (/^(?:VB|AUX)/ < " + copularWordRegex + ")",  // this time one also included "lot"
@@ -163,26 +164,116 @@
 
           }
 
+ //"VP !<(/^(?:VB|AUX)/ < " + copularWordRegex + ") < (NP|WHNP=target [ [ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ] | $+ NP-TMP | $+ (NP <# (/^NN/ < " + timeWordRegex + ")) ] )"
  bool buildDobj3() {
 
  }
 
+
+ //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
  bool buildDobj4() {
 
  }
 
+//"SBAR < (WHNP=target !< WRB) < (S < NP < (VP !< SBAR !<+(VP) (PP <- IN) !< (S < (VP < TO))))",
  bool buildDobj5() {
 
  }
 
+ //"SBAR !< WHNP|WHADVP < (S < (@NP $++ (VP !$++ NP))) > (VP > (S < NP $- WHNP=target))",
  bool buildDobj6() {
+ 	//we do not care about what the head of S is, S is not the the head, but is the "lexical" head of VP, which is the head of SBAR which is the the "stanford" link head of WHNP
+ 	CStateNodeList* childs=node.m_umbinarizedSubNodes;
+ 	while(childs!=0){
+ 		const CStateNode* sChild=childs->node;
+ 		if (sChild->constituent==PENN_CON_S){
+ 			if (childs->previous!=0){
+ 				const CStateNode* whnpTarg=childs->previous->node;
+ 				if (whnpTarg->constituent==PENN_CON_WHNP){ //I'll check whether it is linked when I have the head (SBAR)
+ 					CStateNodeList* childsS=sChild->m_umbinarizedSubNodes;
+ 					bool npFound=false;
+ 					while(childsS!=0){
+ 						if (childsS->node->constituent==PENN_CON_NP){
+ 							npFound=true;
+ 						}
+ 						childsS=childsS->next;
+ 					}
+ 					if (npFound){
+ 						childsS=sChild->m_umbinarizedSubNodes;
+ 						while(childsS!=0){
+ 							const CStateNode* vpChilds=childsS->node;
+ 							if (vpChilds->constituent==PENN_CON_VP){
+ 								CStateNodeList* childsVp=vpChilds->m_umbinarizedSubNodes;
+ 								while(childsVp!=0){
+ 									const CStateNode* sbarHead=childsVp->node;
+ 									if ((sbarHead->constituent==PENN_CON_SBAR) && !(isLinked(sbarHead, whnpTarg))){
+ 										CStateNodeList* childsSbar=sbarHead->m_umbinarizedSubNodes;
+ 										bool firstCondition=true;
+ 										while(childsSbar!=0){
+ 											if (childsSbar->node->constituent==PENN_CON_WHNP ||childsSbar->node->constituent==PENN_CON_WHADVP){
+ 												firstCondition=false;
+ 											}
+ 											childsSbar=childsSbar->next;
+ 										}
+ 										if (firstCondition){
+ 											childsSbar=sbarHead->m_umbinarizedSubNodes;
+ 											while(childsSbar!=0){
+ 												const CStateNode* sChildSbar=childsSbar->node;
+ 												if (sChildSbar->constituent==PENN_CON_S){
+ 													CStateNodeList* childsS=sChildSbar->m_umbinarizedSubNodes;
+ 													while(childsS!=0){
+ 														const CStateNode* npChildS=childsS->node;
+ 														if (npChildS->constituent==PENN_CON_NP){ //again, @NP, basic "class" of NP. how come?
+ 															//A $++ B 	A is a left sister of B
+ 															CStateNodeList* rightSistersNp=childsS;
+ 															while(rightSistersNp!=0){
+ 																if (rightSistersNp->node->constituent==PENN_CON_VP){
+ 																	CStateNodeList* rightSistersVp=rightSistersNp;
+ 																	bool noRightSister=true;
+ 																	while(rightSistersVp!=0){
+ 																		if (rightSistersVp->node->constituent==PENN_CON_NP){
+ 																			noRightSister=false;
+ 																		}
+ 																		rightSistersVp=rightSistersVp->next;
+ 																	}
+ 																	if (noRightSister){
+ 																		CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DOBJ);
+ 																		if (buildStanfordLink(label, whnpTarg->lexical_head, sbarHead->lexical_head)) {
+ 																			addLinked(&node,whnpTarg); //this is not correct! but almost
+ 																			return true;
+ 					          						    			}
 
- }
+ 																	}
+ 																}
+ 																rightSistersNp=rightSistersNp->next;
+ 															}
+ 														}
+ 														childsS=childsS->next;
+ 													}
+ 												}
+ 												childsSbar=childsSbar->next;
+ 											}
+ 										}
+ 									}
+ 									childsVp=childsVp->next;
+ 								}
+ 							}
+ 							childsS=childsS->next;
+ 						}
+ 					}
 
+ 				}
+ 			}
+ 		}
+			childs=childs->next;
+		}
+ 	return false;
+	}
+//"SBAR !< (WHPP|WHNP|WHADVP) < (S < (@NP $+ (VP !< (/^(?:VB|AUX)/ < " + copularWordRegex + " !$+ VP)  !<+(VP) (/^(?:VB|AUX)/ < " + copularWordRegex + " $+ (VP < VBN|VBD)) !<+(VP) NP !< SBAR !<+(VP) (PP <- IN)))) !$-- CC $-- NP > NP=target",
  bool buildDobj7() {
 
  }
-
+//"SBAR !< (WHPP|WHNP|WHADVP) < (S < (@NP $+ (ADVP $+ (VP !< (/^(?:VB|AUX)/ < " + copularWordRegex + " !$+ VP) !<+(VP) (/^(?:VB|AUX)/ < " + copularWordRegex + " $+ (VP < VBN|VBD)) !<+(VP) NP !< SBAR !<+(VP) (PP <- IN))))) !$-- CC $-- NP > NP=target"
  bool buildDobj8() {
 
  }

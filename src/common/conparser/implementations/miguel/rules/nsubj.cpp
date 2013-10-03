@@ -98,18 +98,18 @@
    */
    bool buildNsubj3() {
 	   if (node.constituent==PENN_CON_S) {
-		   std::cout<<"S: "<<(*words)[node.lexical_head].word<<"\n";
+		   //std::cout<<"S: "<<(*words)[node.lexical_head].word<<"\n";
 		   CStateNodeList* childsS=node.m_umbinarizedSubNodes;
 		   while(childsS!=0){
 			   const CStateNode* npwhnpTarg=childsS->node;
 			   if ((npwhnpTarg->constituent==PENN_CON_NP ||npwhnpTarg->constituent==PENN_CON_WHNP)&& !(isLinked(&node, npwhnpTarg))){
-				   std::cout<<"NP|WHNP: "<<(*words)[npwhnpTarg->lexical_head].word<<"\n";
+				   //std::cout<<"NP|WHNP: "<<(*words)[npwhnpTarg->lexical_head].word<<"\n";
 				   bool vpSister=false;
 				   CStateNodeList* rightSistersNp=childsS;
 				   while(rightSistersNp!=0){
 					   if (rightSistersNp->node->constituent==PENN_CON_VP){
 						   vpSister=true;
-						   std::cout<<"VP(sis): "<<(*words)[rightSistersNp->node->lexical_head].word<<"\n";
+						   //std::cout<<"VP(sis): "<<(*words)[rightSistersNp->node->lexical_head].word<<"\n";
 				   		}
 				   		rightSistersNp=rightSistersNp->next;
 				   	}
@@ -120,7 +120,7 @@
 					   //NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + ")))
 					   while(childsNpwhnp!=0){
 						   const CStateNode* nnChildNp=childsNpwhnp->node;
-						   std::cout<<"childsNP: "<<(*words)[nnChildNp->lexical_head].word<<"\n";
+						   //std::cout<<"childsNP: "<<(*words)[nnChildNp->lexical_head].word<<"\n";
 						   if ((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_EX) {
 							   noEx=false;
 						   }

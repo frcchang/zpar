@@ -1478,6 +1478,11 @@ public:
         head->linkedNodes.set(child->lexical_head);
     }//Miguel
     
+    /*void addLinkedConst(const CStateNode* head, const CStateNode* child){
+            head->linkedNodes.set(child->lexical_head);
+        }//Miguel*/
+
+
     /*void addDangling(const CStateNode* head, const CStateNode* child){
         	CStateNodeList* danglings=head->danglingSubNodes;
         	//danglings->add(child);
@@ -1511,7 +1516,6 @@ public:
 
 
 
-      				 
     
 
     
