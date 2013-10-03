@@ -59,10 +59,15 @@ public:
       //assert(index<PACKED_SIZE);
       return scores[index];
    }
+
+   //TODO can't implement as previous one, not const
    const SCORE_TYPE &operator [](const unsigned &index) const {
-      //assert(index<PACKED_SIZE);
-      return scores[index];
+	  if ( scores.find(index) == scores.end() )
+	  	  return 0;
+	  else return scores.find(index)->second;
+	  //return scores[index];
    }
+
    void operator +=(const CPackedScoreType &i) {
 	   typename std::map<unsigned long,SCORE_TYPE>::iterator iter;
 	   for ( iter = scores.begin() ; iter != scores.end() ; ++iter )

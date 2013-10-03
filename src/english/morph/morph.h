@@ -11,7 +11,7 @@
 #include <assert.h>
 
 #include "definitions.h"
-#include "english/pos/penn.h"
+#include "pos/penn.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"
 #include "linguistics/dependency.h"
@@ -382,6 +382,18 @@ public:
    }
 
 };
+
+inline std::istream & operator >> (std::istream &is, CMorph &m) {
+	  unsigned long code;
+	  is >> code;
+	  m.load(code);
+   return is ;
+}
+
+inline std::ostream & operator << (std::ostream &os, const CMorph &m) {
+   os << m.code();
+   return os ;
+}
 
 
 /**

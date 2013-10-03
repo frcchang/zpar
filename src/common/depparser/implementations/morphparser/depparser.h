@@ -92,7 +92,7 @@ public:
    }
 
 public:
-   void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CStringVector &sentence , CDependencyParse *retval , int nBest=1 , depparser::SCORE_TYPE *scores=0 ) ;
    void train( const CDependencyParse &correct , int round ) ;
    void extract_features( const CDependencyParse &input ) ;
 
@@ -126,7 +126,7 @@ private:
    // helper method
    inline void reduce( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores ) ;
    inline void shift( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
-   inline void shiftcache( const CStateItem *item, unsigned long morph , const CPackedScoreType<SCORE_TYPE, action::MAX> &scores );
+   inline void shiftcache( const depparser::CStateItem *item, unsigned long morph , const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores );
    inline void arcleft( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
    inline void arcright( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
    inline void poproot( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;  

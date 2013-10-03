@@ -25,6 +25,7 @@ const CTag g_noneTag = CTag::NONE;
 #define refer_or_allocate_tuple4(x, o1, o2, o3, o4) { if (amount == 0) x.refer(o1, o2, o3, o4); else x.allocate(o1, o2, o3, o4); }
 #define _conll_or_empty(x) (x == "_" ? "" : x)
 
+
 /*===============================================================
  *
  * CDepParser - the depparser for TARGET_LANGUAGE 
@@ -79,22 +80,23 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 */
 
    //version with lemmas as words:
-   const CWord &st_word = st_index == -1 ? g_emptyWord : item->lemma(st_index);
-   const CWord &sth_word = sth_index==-1 ? g_emptyWord : item->lemma(sth_index);
-   const CWord &sthh_word = sthh_index==-1 ? g_emptyWord : item->lemma(sthh_index);
-   const CWord &stld_word = stld_index==-1 ? g_emptyWord : item->lemma(stld_index);
-   const CWord &strd_word = strd_index==-1 ? g_emptyWord : item->lemma(strd_index);
-   const CWord &stl2d_word = stl2d_index==-1 ? g_emptyWord : item->lemma(stl2d_index);
-   const CWord &str2d_word = str2d_index==-1 ? g_emptyWord : item->lemma(str2d_index);
-   const CWord &n0ld_word = n0ld_index==-1 ? g_emptyWord : item->lemma(n0ld_index);
-   const CWord &n0l2d_word = n0l2d_index==-1 ? g_emptyWord : item->lemma(n0l2d_index);
-   const CWord &ht_word = ht_index==-1 ? g_emptyWord : item->lemma(ht_index);
-   const CWord &ht2_word = ht2_index==-1 ? g_emptyWord : item->lemma(ht2_index);
+   //TODO This probably can be optimized by using class CLemma directly and avoiding the conversion
+   const CWord &st_word = st_index == -1 ? g_emptyWord : item->lemmaascword(st_index);
+   const CWord &sth_word = sth_index==-1 ? g_emptyWord : item->lemmaascword(sth_index);
+   const CWord &sthh_word = sthh_index==-1 ? g_emptyWord : item->lemmaascword(sthh_index);
+   const CWord &stld_word = stld_index==-1 ? g_emptyWord : item->lemmaascword(stld_index);
+   const CWord &strd_word = strd_index==-1 ? g_emptyWord : item->lemmaascword(strd_index);
+   const CWord &stl2d_word = stl2d_index==-1 ? g_emptyWord : item->lemmaascword(stl2d_index);
+   const CWord &str2d_word = str2d_index==-1 ? g_emptyWord : item->lemmaascword(str2d_index);
+   const CWord &n0ld_word = n0ld_index==-1 ? g_emptyWord : item->lemmaascword(n0ld_index);
+   const CWord &n0l2d_word = n0l2d_index==-1 ? g_emptyWord : item->lemmaascword(n0l2d_index);
+   const CWord &ht_word = ht_index==-1 ? g_emptyWord : item->lemmaascword(ht_index);
+   const CWord &ht2_word = ht2_index==-1 ? g_emptyWord : item->lemmaascword(ht2_index);
    //these words may or may not have been lemmatized already, depending on cache size.
    //TODO alternative: if they haven't, use forms (m_lCache[n1_index], etc.) instead of the empty word.
-   const CWord &n0_word = n0_index==-1 ? g_emptyWord : item->cachesize() > 0 ? item->lemma(n0_index) : g_emptyWord;
-   const CWord &n1_word = n1_index==-1 ? g_emptyWord : item->cachesize() > 1 ? item->lemma(n1_index) : g_emptyWord;
-   const CWord &n2_word = n2_index==-1 ? g_emptyWord : item->cachesize() > 2 ? item->lemma(n2_index) : g_emptyWord;
+   const CWord &n0_word = n0_index==-1 ? g_emptyWord : item->cachesize() > 0 ? item->lemmaascword(n0_index) : g_emptyWord;
+   const CWord &n1_word = n1_index==-1 ? g_emptyWord : item->cachesize() > 1 ? item->lemmaascword(n1_index) : g_emptyWord;
+   const CWord &n2_word = n2_index==-1 ? g_emptyWord : item->cachesize() > 2 ? item->lemmaascword(n2_index) : g_emptyWord;
 
    const int &st_label = st_index==-1 ? CDependencyLabel::NONE : item->label(st_index);
    const int &sth_label = sth_index==-1 ? CDependencyLabel::NONE : item->label(sth_index);
@@ -106,18 +108,19 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int &n0l2d_label = n0l2d_index==-1 ? CDependencyLabel::NONE : item->label(n0l2d_index);
 
 
-   const int &st_morph = st_index==-1 ? CMorph::NONE : item->morph(st_index);
-   const int &sth_morph = sth_index==-1 ? CMorph::NONE : item->morph(sth_index);
-   const int &stld_morph = stld_index==-1 ? CMorph::NONE : item->morph(stld_index);
-   const int &strd_morph = strd_index==-1 ? CMorph::NONE : item->morph(strd_index);
-   const int &stl2d_morph = stl2d_index==-1 ? CMorph::NONE : item->morph(stl2d_index);
-   const int &str2d_morph = str2d_index==-1 ? CMorph::NONE : item->morph(str2d_index);
-   const int &n0ld_morph = n0ld_index==-1 ? CMorph::NONE : item->morph(n0ld_index);
-   const int &n0l2d_morph = n0l2d_index==-1 ? CMorph::NONE : item->morph(n0l2d_index);
+   const CMorph &st_morph = st_index==-1 ? CMorph::NONE : item->morph(st_index);
+   const CMorph &sth_morph = sth_index==-1 ? CMorph::NONE : item->morph(sth_index);
+   const CMorph &sthh_morph = sth_index==-1 ? CMorph::NONE : item->morph(sthh_index);
+   const CMorph &stld_morph = stld_index==-1 ? CMorph::NONE : item->morph(stld_index);
+   const CMorph &strd_morph = strd_index==-1 ? CMorph::NONE : item->morph(strd_index);
+   const CMorph &stl2d_morph = stl2d_index==-1 ? CMorph::NONE : item->morph(stl2d_index);
+   const CMorph &str2d_morph = str2d_index==-1 ? CMorph::NONE : item->morph(str2d_index);
+   const CMorph &n0ld_morph = n0ld_index==-1 ? CMorph::NONE : item->morph(n0ld_index);
+   const CMorph &n0l2d_morph = n0l2d_index==-1 ? CMorph::NONE : item->morph(n0l2d_index);
    //these words may or may not have been lemmatized already, depending on cache size.
-   const int &n0_morph = (n0_index==-1 || item->cachesize()<=0) ? CMorph::NONE : item->morph(n0_index);
-   const int &n1_morph = (n1_index==-1 || item->cachesize()<=1) ? CMorph::NONE : item->morph(n1_index);
-   const int &n2_morph = (n2_index==-1 || item->cachesize()<=2) ? CMorph::NONE : item->morph(n2_index);
+   const CMorph &n0_morph = (n0_index==-1 || item->cachesize()<=0) ? CMorph::NONE : item->morph(n0_index);
+   const CMorph &n1_morph = (n1_index==-1 || item->cachesize()<=1) ? CMorph::NONE : item->morph(n1_index);
+   const CMorph &n2_morph = (n2_index==-1 || item->cachesize()<=2) ? CMorph::NONE : item->morph(n2_index);
 
 
    static int st_n0_dist;
@@ -490,7 +493,8 @@ inline void CDepParser::arcleft( const CStateItem *item, const CPackedScoreType<
    static unsigned label;
 #ifdef LABELED
    for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-      if ( !m_weights->rules() || canAssignLabel(m_lCache, item->size(), item->stacktop(), label) ) {
+      //if ( !m_weights->rules() || canAssignLabel(m_lCache, item->size(), item->stacktop(), label) )
+      {
          scoredaction.action = action::encodeAction(action::ARC_LEFT, label);
          scoredaction.score = item->score + scores[scoredaction.action];
                                //+scores[action::ARC_LEFT];
@@ -515,7 +519,8 @@ inline void CDepParser::arcright( const CStateItem *item, const CPackedScoreType
    static unsigned label;
 #ifdef LABELED
    for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-      if ( !m_weights->rules() || canAssignLabel(m_lCache, item->stacktop(), item->size(), label) ) {
+      //if ( !m_weights->rules() || canAssignLabel(m_lCache, item->stacktop(), item->size(), label) )
+      {
          scoredaction.action = action::encodeAction(action::ARC_RIGHT, label);
          scoredaction.score = item->score + scores[scoredaction.action];
                               //+scores[action::ARC_RIGHT];
@@ -646,10 +651,10 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
    if (bTrain) {
       for (index=0; index<length; ++index) {
          m_lCacheLabel.push_back(CDependencyLabel(correct[index].label));
-         if (m_weights->rules() && !canAssignLabel(m_lCache, correct[index].head, index, m_lCacheLabel[index])) {
-            TRACE("Rule contradiction: " << correct[index].label << " on link head " << m_lCache[correct[index].head].tag.code() << " dep " << m_lCache[index].tag.code());
-            bContradictsRules = true;
-         }
+//         if (m_weights->rules() && !canAssignLabel(m_lCache, correct[index].head, index, m_lCacheLabel[index])) {
+//            TRACE("Rule contradiction: " << correct[index].label << " on link head " << m_lCache[correct[index].head].tag.code() << " dep " << m_lCache[index].tag.code());
+//            bContradictsRules = true;
+//         }
       }
    }
 #endif
@@ -711,11 +716,11 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
         	if ( pGenerator->cachesize() < MORPH_CACHE_LIMIT && pGenerator->morphanalyzed() < length ) {
 
         		CWord wordToAnalyze = m_lCache[pGenerator->morphanalyzed()]; //morphanalyzed() points to first word that hasn't been subject to morphological analysis
-        		std::set<CMorph> setOfMorphs = getPossibleMorph(word);
+        		std::set<CMorph> setOfMorphs = getPossibleMorph(wordToAnalyze.str());
         		for ( std::set<CMorph>::iterator it = setOfMorphs.begin() ; it != setOfMorphs.end() ; ++it )
         		{
         			CMorph morph = *it;
-        			shiftcache(pGenerator, morph , packed_scores) ;
+        			shiftcache(pGenerator, morph.code() , packed_scores) ;
         		}
 
         	}
@@ -726,7 +731,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
                     ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
 #endif
                     ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) && // supertags
-                    ( pGenerator->stackempty() || !m_weights->rules() || canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
+                    ( pGenerator->stackempty() || !m_weights->rules() /*|| canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code())*/ ) // rules
                   ) {
                   shift(pGenerator, packed_scores) ;
                }
@@ -737,7 +742,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
                     ( pGenerator->size() < length-1 || pGenerator->headstacksize() == 1 ) && // one root
 #endif
                     ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
-                    ( !m_weights->rules() || hasLeftHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
+                    ( !m_weights->rules() /*|| hasLeftHead(m_lCache[pGenerator->size()].tag.code())*/ ) // rules
                   ) { 
                   arcright(pGenerator, packed_scores) ;
                }
@@ -750,7 +755,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
                }
                else {
                   if ( (m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop())) && // supertags
-                       (!m_weights->rules() || hasRightHead(m_lCache[pGenerator->stacktop()].tag.code())) // rules
+                       (!m_weights->rules() /*|| hasRightHead(m_lCache[pGenerator->stacktop()].tag.code())*/ ) // rules
                      ) {
                      arcleft(pGenerator, packed_scores) ;
                   }
@@ -789,7 +794,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
 
          if (bCorrect) {
 #ifdef LABELED
-            correctState.StandardMoveStep(correct, m_lCacheLabel);
+            correctState.StandardMoveStep(correct, m_lCacheLabel, m_lCacheMorph);
 #else
             correctState.StandardMoveStep(correct);
 #endif
@@ -833,7 +838,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest , SCORE_TYPE *scores ) {
+void CDepParser::parse( const CStringVector &sentence , CDependencyParse *retval , int nBest , SCORE_TYPE *scores ) {
 
    static CDependencyParse empty ;
 
@@ -857,7 +862,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 
 void CDepParser::train( const CDependencyParse &correct , int round ) {
 
-   static CTwoStringVector sentence ;
+   static CStringVector sentence ;
    static CDependencyParse outout ; 
 
    assert( !m_bCoNLL );
@@ -894,17 +899,25 @@ void CDepParser::extract_features(const CDependencyParse &input) {
    m_lCacheLabel.clear();
 #endif
    for (int i=0; i<input.size(); ++i) {
-      m_lCache.push_back(CTaggedWord<CTag, TAG_SEPARATOR>(input[i].word, input[i].tag));
+      //m_lCache.push_back(CTaggedWord<CTag, TAG_SEPARATOR>(input[i].word, input[i].tag));
+	   m_lCache.push_back(input[i].word);
 #ifdef LABELED
    m_lCacheLabel.push_back(CDependencyLabel(input[i].label));
 #endif
+   }
+
+   //init gold standard morphs and lemmas
+   for (int index=0; index<input.size(); ++index)
+   {
+	   CMorph correctMorph = pennToMorph(input[index].word, input[index].tag);
+	   m_lCacheMorph.push_back(correctMorph);
    }
 
    // make standard item
    item.clear();
    for (int i=0; i<input.size() * 2; ++i) {
 #ifdef LABELED
-   item.StandardMoveStep(input, m_lCacheLabel);
+   item.StandardMoveStep(input, m_lCacheLabel, m_lCacheMorph);
 #else
    item.StandardMoveStep(input);
 #endif
@@ -927,6 +940,9 @@ void CDepParser::extract_features(const CDependencyParse &input) {
 
 template<typename CCoNLLInputOrOutput>
 void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
+
+	//unneeded, as this version of the parser generates its own lemmas and feats
+	/*
    m_lCacheCoNLLLemma.resize(sentence.size());
    m_lCacheCoNLLCPOS.resize(sentence.size());
    m_lCacheCoNLLFeats.resize(sentence.size());
@@ -937,6 +953,8 @@ void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
       if (sentence.at(i).feats != "_")
          readCoNLLFeats(m_lCacheCoNLLFeats[i], sentence.at(i).feats);
    }
+   	 */
+
 }
 
 /*---------------------------------------------------------------
@@ -950,14 +968,14 @@ void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
 void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval , int nBest, SCORE_TYPE *scores ) {
 
    static CDependencyParse empty ;
-   static CTwoStringVector input ;
+   static CStringVector input ;
    static CDependencyParse outout[AGENDA_SIZE] ;
 
    assert( m_bCoNLL ) ;
 
    initCoNLLCache(sentence);
 
-   sentence.toTwoStringVector(input);
+   sentence.toStringVector(input);
 
    for (int i=0; i<nBest; ++i) {
       // clear the outout sentences
@@ -984,7 +1002,7 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
 
 void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
-   static CTwoStringVector sentence ;
+   static CStringVector sentence ;
    static CDependencyParse outout ; 
    static CDependencyParse reference ;
 

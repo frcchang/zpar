@@ -9,7 +9,7 @@
 #define PENN_LEXICON_H_
 
 #include "definitions.h"
-#include "english/pos/penn.h"
+#include "pos/penn.h"
 #include "reader.h"
 #include "writer.h"
 #include "linguistics/word_tokenized.h"

@@ -34,9 +34,9 @@
  *
  *==============================================================*/
 
-#include "morph.h"
-#include "aux_lexicon.h"
-#include "penn_lexicon.h"
+#include "morph/morph.h"
+#include "morph/aux_lexicon.h"
+#include "morph/penn_lexicon.h"
 
 class CStateItem {
 
@@ -59,9 +59,11 @@ protected:
    unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
 #endif
    unsigned long m_nLastAction;                  // the last stack action
-   const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
 
-   unsigned long m_lMorph[MAX_SENTENCE_SIZE]; //the morphological information for each word
+   //const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
+   const std::vector < CWord >* m_lCache;
+
+   CMorph m_lMorph[MAX_SENTENCE_SIZE]; //the morphological information for each word
    CLemma m_lLemma[MAX_SENTENCE_SIZE]; //the lemma for each word
 
    int m_nNextUncachedWord; //the first word that is not in the cache (hasn't been morphologically analyzed yet). The difference m_nNextUncachedWord - m_nNextWord must be <= MORPH_CACHE_LIMIT.
@@ -71,7 +73,7 @@ public:
 
 public:
    // constructors and destructor
-   CStateItem(const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >*cache=0) : m_lCache(cache) { clear(); }
+   CStateItem(const std::vector < CWord >*cache=0) : m_lCache(cache) { clear(); }
    ~CStateItem() { }
    CStateItem(CStateItem& item) : m_lCache(0) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
@@ -155,8 +157,9 @@ public:
    inline const CSetOfTags<CDependencyLabel> &lefttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagL[index]; }
    inline const CSetOfTags<CDependencyLabel> &righttagset( const int &index ) const { assert(index<=m_nNextWord); return m_lDepTagR[index]; }
 
-   inline unsigned long morph ( const int & index ) const { assert(index<=m_nNextUncachedWord); return m_lMorph[index]; }
+   inline CMorph morph ( const int & index ) const { assert(index<=m_nNextUncachedWord); return m_lMorph[index]; }
    inline CLemma lemma ( const int & index ) const { assert(index<=m_nNextUncachedWord); return m_lLemma[index]; }
+   inline CWord lemmaascword ( const int & index ) const { assert(index<=m_nNextUncachedWord); return CWord(m_lLemma[index].str()); }
 
    void clear() { 
       m_nNextWord = 0; m_nNextUncachedWord = 0; m_Stack.clear(); m_HeadStack.clear();
@@ -260,8 +263,8 @@ public:
    // the shift cache action does morphological analysis
    void ShiftCache( unsigned long morphInfo ) {
       assert( cachesize() < MORPH_CACHE_LIMIT );
-	  m_lMorph[m_nNextUncachedWord] = CMorph(morphInfo);
-      m_lLemma[m_nNextUncachedWord] = getLemma ( m_lCache[m_nNextUncachedWord].word.str() , m_lMorph[m_nNextUncachedWord] );
+	  m_lMorph[m_nNextUncachedWord] = morphInfo;
+      m_lLemma[m_nNextUncachedWord] = getLemma( (*m_lCache)[m_nNextUncachedWord].str() , CMorph(m_lMorph[m_nNextUncachedWord]) );
       m_nNextUncachedWord ++ ;
       ClearNext();
       m_nLastAction=action::encodeAction(action::SHIFT_CACHE,morphInfo);
@@ -299,7 +302,7 @@ public:
       m_lDepTagR[m_nNextWord].clear() ;
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
       m_lLemma[m_nNextUncachedWord] = CLemma(); //empty lemma
-      m_lMorph[m_nNextUncachedWord] = CMorph(); //empty morph
+      m_lMorph[m_nNextUncachedWord] = CMorph().code(); //empty morph
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
 #endif
@@ -446,7 +449,7 @@ public:
     	  {
     		  //if next words are equal and stack sizes are equal, it must be cache size that changed
     		  assert ( m_nNextUncachedWord < item->m_nNextUncachedWord );
-    		  return action::encodeAction(action::SHIFT_CACHE,item->morph(m_nNextUncachedWord));
+    		  return action::encodeAction(action::SHIFT_CACHE,item->morph(m_nNextUncachedWord).code());
     	  }
     	  else
     	  {
@@ -505,13 +508,14 @@ public:
       }
    }
 
-   void GenerateTree( const CTwoStringVector &input, CDependencyParse &output ) const {
+   //TODO perfect this changing CDependencyParse to hold morph, lemma, etc.
+   void GenerateTree( const CStringVector &input, CDependencyParse &output ) const {
       output.clear();
       for ( int i=0; i<size(); ++i ) 
 #ifdef LABELED
-         output.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
+         output.push_back( CLabeledDependencyTreeNode( input.at(i) , m_lLemma[i].str() , m_lHeads[i] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
 #else
-         output.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] ) ) ;
+         output.push_back( CDependencyTreeNode( input.at(i) , m_lLemma[i].str() , m_lHeads[i] ) ) ;
 #endif
    }
 

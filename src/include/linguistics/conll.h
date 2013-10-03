@@ -161,6 +161,13 @@ public:
          out.push_back(std::make_pair(at(i).word, at(i).tag));
       }
    }
+
+   void toStringVector(CStringVector &out) const {
+         out.clear();
+         for (unsigned i=0; i<size(); ++i) {
+            out.push_back(at(i).word);
+      }
+   }
 };
 
 inline std::istream & operator >> (std::istream &is, CCoNLLInput &sent) {
