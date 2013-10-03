@@ -9,7 +9,7 @@
 #define AUX_LEXICON_H_
 
 #include "definitions.h"
-#include "english/pos/penn.h"
+#include "pos/penn.h"
 #include "writer.h"
 #include "reader.h"
 #include "linguistics/word_tokenized.h"

@@ -14,6 +14,10 @@
 
 #include "linguistics/lemma.h"
 
+#include "morph/morph.h"
+#include "morph/penn_lexicon.h"
+#include "morph/aux_lexicon.h"
+
 #ifdef PUNCT
 #include "charcat.h"
 #endif

@@ -6,6 +6,7 @@
  */
 
 #include "penn_lexicon.cpp"
+#include "reader.cpp"
 
 /**
  * Unit test

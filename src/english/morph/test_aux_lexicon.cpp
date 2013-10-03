@@ -6,6 +6,7 @@
  */
 
 #include "aux_lexicon.cpp"
+#include "reader.cpp"
 
 /**
  * Unit test

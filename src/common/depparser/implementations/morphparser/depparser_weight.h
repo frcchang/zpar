@@ -267,17 +267,23 @@ public:
 
 public:
 
-   CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
+   CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain)  ,
 
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
                                                m_mapSTm("StackMorph", DEP_TABLE_SIZE),
                                                m_mapSTwm("StackWordMorph", DEP_TABLE_SIZE),
 
                                                m_mapN0w("NextWord", DEP_TABLE_SIZE),
+                                               m_mapN0m("NextMorph", DEP_TABLE_SIZE),
+                                               m_mapN0wm("NextWordMorph", DEP_TABLE_SIZE),
 
                                                m_mapN1w("Next+1Word", DEP_TABLE_SIZE),
+                                               m_mapN1m("Next+1Morph", DEP_TABLE_SIZE),
+                                               m_mapN1wm("Next+1WordMorph", DEP_TABLE_SIZE),
 
                                                m_mapN2w("Next+2Word", DEP_TABLE_SIZE),
+                                               m_mapN2m("Next+2Morph", DEP_TABLE_SIZE),
+                                               m_mapN2wm("Next+2WordMorph", DEP_TABLE_SIZE),
 
                                                m_mapSTHw("StackHeadWord", DEP_TABLE_SIZE),
                                                m_mapSTHm("StackHeadMorph", DEP_TABLE_SIZE),
@@ -368,6 +374,7 @@ public:
                                                m_mapN1l("Next+1Lemma", DEP_TABLE_SIZE),
                                                m_mapN1c("Next+1CPOS", DEP_TABLE_SIZE),
                                                m_mapN1f("Next+1Feats", DEP_TABLE_SIZE)
+
    { loadScores(); }
 
    virtual ~CWeight() {

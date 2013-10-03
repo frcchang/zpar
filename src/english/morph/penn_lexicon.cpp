@@ -1,5 +1,7 @@
 #include "penn_lexicon.h"
-#include "reader.cpp"
+
+//do it in makefile
+//#include "reader.cpp"
 
 //this should be done in makefile:
 //#include "morph.cpp"
