@@ -12,6 +12,8 @@ namespace action {
 enum STACK_ACTION { NO_ACTION = 0 , SHIFT , SHIFT_CACHE, REDUCE , ARC_LEFT , ARC_RIGHT , POP_ROOT };
 const int ACTION_TYPE_SIZE = 3; //bits for the action codes
 
+const int MAX = 1; //this constant is unused because we use hashmap_score_packed_map, which needs it to be there (at the moment) but doesn't really use it
+
 enum ACTION_FIELDS {
 
 	ACTION_TYPE = 0,
