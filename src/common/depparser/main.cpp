@@ -177,6 +177,16 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
+
+	//TODO This is temporary! Allow user to enter their own lexicons.
+#ifdef JOINT_MORPH
+	std::cout << "Loading lexicons...\n";
+	bool bSuccess = TARGET_LANGUAGE::initLexicon("/home/carlos/Carlos/acl11/acl11/data/en/train.conll",true);
+	std::cout << "Successfully loaded primary lexicon? " << bSuccess << "\n";
+	bSuccess = english::initLemmaLexicon("/home/carlos/multext-lexicons/en/wordform.txt");
+	std::cout << "Successfully loaded the lemma lexicon? " << bSuccess << "\n";
+#endif
+
    try {
       COptions options(argc, argv);
       CConfigurations configurations;

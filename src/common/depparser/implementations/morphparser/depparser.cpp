@@ -715,11 +715,17 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
          else {  
         	if ( pGenerator->cachesize() < MORPH_CACHE_LIMIT && pGenerator->morphanalyzed() < length ) {
 
+        		//std::cout << "I'm in a position to shift cache\n"; std::cout.flush();
+
         		CWord wordToAnalyze = m_lCache[pGenerator->morphanalyzed()]; //morphanalyzed() points to first word that hasn't been subject to morphological analysis
+
+        		//std::cout << "I'm analyzing" << wordToAnalyze.str() << "\n"; std::cout.flush();
+
         		std::set<CMorph> setOfMorphs = getPossibleMorph(wordToAnalyze.str());
         		for ( std::set<CMorph>::iterator it = setOfMorphs.begin() ; it != setOfMorphs.end() ; ++it )
         		{
         			CMorph morph = *it;
+        			//std::cout << "Morph" << morph << "\n"; std::cout.flush();
         			shiftcache(pGenerator, morph.code() , packed_scores) ;
         		}
 
@@ -731,9 +737,13 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
                     ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
 #endif
                     ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) && // supertags
-                    ( pGenerator->stackempty() || !m_weights->rules() /*|| canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code())*/ ) // rules
+                    ( pGenerator->stackempty() || !m_weights->rules() /*|| canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code())*/ ) && // rules
+                    ( pGenerator->cachesize() > 0 ) //need something in the cache to shift
                   ) {
-                  shift(pGenerator, packed_scores) ;
+
+            	   //std::cout << "I'm in a position to just shift\n"; std::cout.flush();
+
+            	   shift(pGenerator, packed_scores) ;
                }
             }
             if ( !pGenerator->stackempty() ) {

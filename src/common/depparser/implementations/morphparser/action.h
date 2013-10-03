@@ -84,14 +84,17 @@ static unsigned long encodeAction(const STACK_ACTION &action, const unsigned &la
 	return result;
 }
 
-#ifdef LABELED
+
 static unsigned long getUnlabeledAction( const unsigned long &action ) {
 	unsigned long result = action;
+#ifdef LABELED
 	clearField ( result , LEFT_ACTION_LABEL );
 	clearField ( result , RIGHT_ACTION_LABEL );
+#endif
+	clearField ( result , SHIFT_CACHE_ACTION_MORPH );
 	return result;
 }
-#endif
+
 
 //in unlabelled parsing, this can still be used to obtain the morph info of a shift cache transition
 static unsigned long getLabelOrMorph(const unsigned long &action) {

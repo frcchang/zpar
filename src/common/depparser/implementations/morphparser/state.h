@@ -318,15 +318,19 @@ public:
       case action::NO_ACTION:
          return;
       case action::SHIFT:
+    	 //std::cout << "Shifting. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
          Shift();
          return;
       case action::SHIFT_CACHE:
+    	  //std::cout << "Shifting cache. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
     	  ShiftCache( action::getLabelOrMorph(ac) );
     	  return;
       case action::REDUCE:
+    	  //std::cout << "Reducing. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
          Reduce();
          return;
       case action::ARC_LEFT:
+    	  //std::cout << "Arc left. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
 #ifdef LABELED
          ArcLeft(action::getLabelOrMorph(ac));
 #else
@@ -334,6 +338,7 @@ public:
 #endif
          return;
       case action::ARC_RIGHT:
+    	  //std::cout << "Arc right. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
 #ifdef LABELED
          ArcRight(action::getLabelOrMorph(ac));
 #else
