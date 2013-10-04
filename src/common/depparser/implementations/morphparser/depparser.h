@@ -116,7 +116,7 @@ private:
 
    void work( const bool bTrain, const CStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ;
 
-   inline void getOrUpdateStackScore( const depparser::CStateItem *item, CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &retval, const unsigned &action, depparser::SCORE_TYPE amount=0, int round=0 );
+   inline void getOrUpdateStackScore( const depparser::CStateItem *item, CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &retval, const unsigned long &action, depparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight std::vector for this feature object specifically
    void updateScoresForStates( const depparser::CStateItem *outout , const depparser::CStateItem *correct , depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;

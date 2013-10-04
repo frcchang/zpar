@@ -78,6 +78,22 @@ public:
    CStateItem(CStateItem& item) : m_lCache(0) { std::cerr<<"CStateItem does not support copy constructor!"; std::cerr.flush(); assert(1==0); }
 
 public:
+   std::string debugstring() const
+   {
+	   std::stringstream ss;
+	   ss << "[[[stacksize " << m_Stack.size();
+	   ss << "nextword " << m_nNextWord;
+	   ss << "nextuncached " << m_nNextUncachedWord;
+	   for ( int i=0; i<m_nNextUncachedWord; ++i )
+	   {
+		   ss << (*m_lCache)[i].str() << " ";
+		   ss << CMorph(m_lMorph[i]).str() << " || ";
+	   }
+	   ss << "]]]";
+	   return ss.str();
+   }
+
+public:
    // comparison
    inline bool operator < (const CStateItem &item) const { return score < item.score; }
    inline bool operator > (const CStateItem &item) const { return score > item.score; }
@@ -98,7 +114,11 @@ public:
 #endif
       for ( i=0; i<m_nNextUncachedWord; ++i ) {
          if ( m_lMorph[i] != item.m_lMorph[i] )
+         {
+        	//std::cout << "False by morph of word " << i << ": " << CMorph(m_lMorph[i]).str() << " vs. " << CMorph(item.m_lMorph[i]).str() << "\n";
+        	//if ( i > 0 ) std::cout << "Previous were: " << CMorph(m_lMorph[i-1]).str() << " vs. " << CMorph(item.m_lMorph[i-1]).str() << "\n";
             return false;
+         }
       }
       for ( i=0; i<m_nNextUncachedWord; ++i ) {
          if ( m_lLemma[i] != item.m_lLemma[i] )
@@ -185,11 +205,14 @@ public:
          m_lDepTagL[i] = item.m_lDepTagL[i];
          m_lDepTagR[i] = item.m_lDepTagR[i];
          m_lSibling[i] = item.m_lSibling[i];
-         m_lMorph[i] = item.m_lMorph[i];
-         m_lLemma[i] = item.m_lLemma[i];
 #ifdef LABELED
          m_lLabels[i] = item.m_lLabels[i];
 #endif
+      }
+      for ( int i = 0 ; i <= m_nNextUncachedWord ; ++i )
+      {
+          m_lMorph[i] = item.m_lMorph[i];
+          m_lLemma[i] = item.m_lLemma[i];
       }
    }
 
@@ -264,6 +287,7 @@ public:
    void ShiftCache( unsigned long morphInfo ) {
       assert( cachesize() < MORPH_CACHE_LIMIT );
 	  m_lMorph[m_nNextUncachedWord] = morphInfo;
+	  //std::cout << "Added morph: " << CMorph(morphInfo).str() << "\n";
       m_lLemma[m_nNextUncachedWord] = getLemma( (*m_lCache)[m_nNextUncachedWord].str() , CMorph(m_lMorph[m_nNextUncachedWord]) );
       m_nNextUncachedWord ++ ;
       ClearNext();
@@ -318,19 +342,22 @@ public:
       case action::NO_ACTION:
          return;
       case action::SHIFT:
-    	 //std::cout << "Shifting. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
+    	 //std::cout << "Shifting. " << debugstring() << "\n";
          Shift();
+         //std::cout << "Result: " << debugstring() << "\n";
          return;
       case action::SHIFT_CACHE:
-    	  //std::cout << "Shifting cache. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
+    	  //std::cout << "Shifting cache. " << debugstring() << "\n";
+    	  //std::cout << "With: " << CMorph(action::getLabelOrMorph(ac)).str() << "\n";
     	  ShiftCache( action::getLabelOrMorph(ac) );
+    	  //std::cout << "Result: " << debugstring() << "\n";
     	  return;
       case action::REDUCE:
-    	  //std::cout << "Reducing. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
+    	  //std::cout << "Reducing. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord << "\n";
          Reduce();
          return;
       case action::ARC_LEFT:
-    	  //std::cout << "Arc left. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
+    	  //std::cout << "Arc left. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord << "\n";
 #ifdef LABELED
          ArcLeft(action::getLabelOrMorph(ac));
 #else
@@ -338,7 +365,7 @@ public:
 #endif
          return;
       case action::ARC_RIGHT:
-    	  //std::cout << "Arc right. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord;
+    	  //std::cout << "Arc right. " << size() << " " << stacksize() << " " << m_nNextWord << " " << m_nNextUncachedWord << "\n";
 #ifdef LABELED
          ArcRight(action::getLabelOrMorph(ac));
 #else
@@ -379,8 +406,10 @@ public:
       // the zeroth case is if the morphological cache isn't full and there are words in the buffer to shift into it, then we shift cache
       if ( cachesize() < MORPH_CACHE_LIMIT && m_nNextUncachedWord < static_cast<int>(tree.size()) )
       {
+    	  //std::cout << "Shifting cache with word " << (*m_lCache)[m_nNextUncachedWord].str() << " morph " << m_lCacheMorph[m_nNextUncachedWord] << ": " << m_lCacheMorph[m_nNextUncachedWord].str() << "\n";
     	  ShiftCache(m_lCacheMorph[m_nNextUncachedWord].code());
-    	  return true;
+    	  //std::cout << "Result of shifting cache: " << debugstring();
+    	  return false;
       }
 
       // the first case is that there is some words on the stack linking to nextword
@@ -437,8 +466,20 @@ public:
       assert( m_Stack.size() == 0 );
    }
 
-   unsigned FollowMove( const CStateItem *item ) {
+   //item does not need to be a direct successor!
+   unsigned long FollowMove( const CStateItem *item ) {
       static int top;
+
+	  //std::cout << "FollowMove to get from " << debugstring() << " to " << item->debugstring() << "\n";
+
+	  //do a shift cache if needed
+	  if ( cachesize() < MORPH_CACHE_LIMIT && m_nNextUncachedWord < item->m_nNextUncachedWord )
+	  {
+		  //std::cout << "Going to do shift cache with morph " << (item->morph(m_nNextUncachedWord)).str() << "\n";
+		  //we need to do a shift cache before anything else
+		  return action::encodeAction(action::SHIFT_CACHE,item->morph(m_nNextUncachedWord).code());
+	  }
+
       // if the next words are same then don't check head because it might be a finished sentence (m_nNextWord==sentence.sz)
       if ( m_nNextWord == item->m_nNextWord ) {
 //std::cout << "this" << std::endl; for (int i=0; i<m_Stack.size(); ++i) std::cout << m_Stack[i] << " "; std::cout << std::endl;
@@ -450,14 +491,7 @@ public:
 //std::cout << "that dtags" << std::endl; for (int i=0; i<=item->m_nNextWord; ++i) std::cout << item->m_lLabels[i] << " "; std::cout << std::endl;
 //         }
 
-    	  if ( m_Stack.size() == item->m_Stack.size() )
-    	  {
-    		  //if next words are equal and stack sizes are equal, it must be cache size that changed
-    		  assert ( m_nNextUncachedWord < item->m_nNextUncachedWord );
-    		  return action::encodeAction(action::SHIFT_CACHE,item->morph(m_nNextUncachedWord).code());
-    	  }
-    	  else
-    	  {
+
 			 assert( m_Stack.size() > item->m_Stack.size() );
 
 			 top = m_Stack.back();
@@ -471,7 +505,7 @@ public:
 				return action::encodeAction(action::REDUCE);
 			 else
 				return action::encodeAction(action::POP_ROOT);
-    	  }
+
       }
       // the first case is that there is some words on the stack linking to nextword
       if ( m_Stack.size() > 0 ) {

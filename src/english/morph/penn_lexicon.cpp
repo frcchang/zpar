@@ -123,12 +123,23 @@ std::set<CTag> getTagsForUnknownWord ( const std::string & word )
 
 }
 
+std::set<CTag> getTagsForNoneWord ( )
+{
+
+	std::set<CTag> result;
+	result.insert(CTag(MORPH_TAG_BEGIN));
+	return result;
+
+}
+
 std::set<CTag> getPossibleTags ( const std::string & word )
 {
 	if ( isKnown(word) )
 	{
 		return english::trainingSetLexicon[word];
 	}
+	else if ( word == "-NONE-" )
+		return getTagsForNoneWord ( );
 	else
 		return getTagsForUnknownWord ( word );
 }
