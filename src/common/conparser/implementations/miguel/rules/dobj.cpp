@@ -175,10 +175,108 @@
 
  }
 
-//"SBAR < (WHNP=target !< WRB) < (S < NP < (VP !< SBAR !<+(VP) (PP <- IN) !< (S < (VP < TO))))",
- bool buildDobj5() {
+ //"SBAR < (WHNP=target !< WRB) < (S < NP < (VP !< SBAR !<+(VP) (PP <- IN) !< (S < (VP < TO))))",
+     bool buildDobj5() {
+    	 if (node.constituent==PENN_CON_SBAR){
+    		bool secondCondition=false;
+    		CStateNodeList* childsSbar=node.m_umbinarizedSubNodes;
+    		while(childsSbar!=0){
+    			const CStateNode* schildSbar=childsSbar->node;
+    			if (schildSbar->constituent==PENN_CON_S){
+    				CStateNodeList* childsS=schildSbar->m_umbinarizedSubNodes;
+    				while(childsS!=0){
+    					const CStateNode* npChildS=childsS->node;
+    					if (npChildS->constituent==PENN_CON_NP){
+    						CStateNodeList* childsNp=npChildS->m_umbinarizedSubNodes;
+    						while(childsNp!=0){
+    							const CStateNode* vpChildNp=childsNp->node;
+    							if (vpChildNp->constituent==PENN_CON_VP){
+    								bool firstInCond=true;
+    								bool secondInCond=true;
+    								bool thirdInCond=true;
+    								CStateNodeList* childsVp=vpChildNp->m_umbinarizedSubNodes;
+    								while(childsVp!=0){
+    									if (childsVp->node->constituent==PENN_CON_SBAR){
+    										firstInCond=false;
+    									}
+    									if (childsVp->node->constituent==PENN_CON_S){
+    										CStateNodeList* childsSvp=childsVp->node->m_umbinarizedSubNodes;
+    										while(childsSvp!=0){
+    											const CStateNode* vpChildS=childsSvp->node;
+    											if (vpChildS->constituent==PENN_CON_VP){
+    												CStateNodeList* childsVpTo=vpChildS->m_umbinarizedSubNodes;
+    												while(childsVpTo!=0){
+    													if (((*words)[childsVpTo->node->lexical_head].tag.code()==PENN_TAG_TO)) {
+    														thirdInCond=false;
+    													}
+    													childsVpTo=childsVpTo->next;
+    												}
+    											}
+    											childsSvp=childsSvp->next;
+    										}
+    									}
+    									childsVp=childsVp->next;
+    								}
+    								//and now, the secondInCond
+    								CStateNodeList* ppsChain=new CStateNodeList();
+    								 findChain(PENN_CON_VP,PENN_CON_PP, vpChildNp, ppsChain);
+    								 if (ppsChain->node==0) {
+    									 ppsChain->clear();
+    								     ppsChain=0;
+    								 }
+    								 //std::cout<<"4\n";
+    								 while(ppsChain!=0){
+    									 CStateNodeList* childsOfAPP=ppsChain->node->m_umbinarizedSubNodes;
+    									 while(childsOfAPP){
+    										 //A <- B 	B is the last child of A
+    										 if (childsOfAPP->next==0 && ((*words)[childsOfAPP->node->lexical_head].tag.code()==PENN_TAG_IN)){
+    											 secondInCond=false;
+    										 }
+    										 childsOfAPP=childsOfAPP->next;
+    									 }
+    									 ppsChain=ppsChain->next;
+    								 }
 
- }
+    								if (firstInCond && secondInCond && thirdInCond){
+    									secondCondition=true;
+    								}
+    							}
+    							childsNp=childsNp->next;
+    						}
+    					}
+    					childsS=childsS->next;
+    				}
+    			}
+    			childsSbar=childsSbar->next;
+    		}
+
+    		if (secondCondition){
+    			childsSbar=node.m_umbinarizedSubNodes;
+    			while(childsSbar!=0){
+    				const CStateNode* whnpTarg=childsSbar->node;
+    				if (whnpTarg->constituent==PENN_CON_WHNP){
+    					bool wrbCond=true;
+    					CStateNodeList* childsWhnp=whnpTarg->m_umbinarizedSubNodes;
+    					while(childsWhnp!=0){
+    						if (((*words)[childsWhnp->node->lexical_head].tag.code()==PENN_TAG_WRB)) {
+    							wrbCond=false;
+    						}
+    						childsWhnp=childsWhnp->next;
+    					}
+    					if (wrbCond){
+    						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DOBJ);
+    						if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)) {
+    							addLinked(&node,whnpTarg); //this is not correct! but almost
+    						 	return true;
+    						}
+    					}
+    				}
+    				childsSbar=childsSbar->next;
+    			}
+    		}
+    	 }
+    	 return false;
+     }
 
  //"SBAR !< WHNP|WHADVP < (S < (@NP $++ (VP !$++ NP))) > (VP > (S < NP $- WHNP=target))",
  bool buildDobj6() {
@@ -241,7 +339,7 @@
  																		if (buildStanfordLink(label, whnpTarg->lexical_head, sbarHead->lexical_head)) {
  																			addLinked(&node,whnpTarg); //this is not correct! but almost
  																			return true;
- 					          						    			}
+ 																		}
 
  																	}
  																}
