@@ -62,7 +62,7 @@ static void setField ( unsigned long & encodedAction , ACTION_FIELDS field , uns
 }
 
 
-static unsigned long encodeAction(const STACK_ACTION &action, const unsigned &labelOrMorph=0) {
+static unsigned long encodeAction(const STACK_ACTION &action, const unsigned long &labelOrMorph=0) {
 	unsigned long result = 0;
 	setField ( result , ACTION_TYPE , action );
 #ifdef LABELED
@@ -79,7 +79,9 @@ static unsigned long encodeAction(const STACK_ACTION &action, const unsigned &la
 #endif
 	if (action==SHIFT_CACHE)
 	{
+//		std::cout << "Before encoding: " << labelOrMorph << "\n";
 		setField ( result , SHIFT_CACHE_ACTION_MORPH , labelOrMorph );
+//		std::cout << "Encoded: " << result << "\n";
 	}
 	return result;
 }
@@ -103,12 +105,17 @@ static unsigned long getLabelOrMorph(const unsigned long &action) {
 	if ( actionType == ARC_LEFT ) return getField(action,LEFT_ACTION_LABEL);
 	if ( actionType == ARC_RIGHT ) return getField(action,RIGHT_ACTION_LABEL);
 #endif
-	if ( actionType == SHIFT_CACHE ) return getField(action,SHIFT_CACHE_ACTION_MORPH);
+	if ( actionType == SHIFT_CACHE )
+	{
+		//std::cout << "Before decoding: " << action << "\n";
+		//std::cout << "Decoded: " << getField(action,SHIFT_CACHE_ACTION_MORPH) << "\n";
+		return getField(action,SHIFT_CACHE_ACTION_MORPH);
+	}
 	return 0;
 }
 
 struct CScoredAction {
-	unsigned action;
+	unsigned long action;
 	SCORE_TYPE score;
 public:
 	bool operator < (const CScoredAction &a) const {

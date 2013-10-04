@@ -28,6 +28,7 @@ namespace english
 bool initLexicon ( const std::string sInputFile , bool bCoNLL );
 bool isKnown ( const std::string & word );
 std::set<CTag> getTagsForUnknownWord ( const std::string & word );
+std::set<CTag> getTagsForNoneWord ( );
 std::set<CTag> getPossibleTags ( const std::string & word );
 std::set<CMorph> getPossibleMorph ( const std::string & word );
 

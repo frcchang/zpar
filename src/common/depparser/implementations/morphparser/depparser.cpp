@@ -38,7 +38,7 @@ const CTag g_noneTag = CTag::NONE;
  *
  *---------------------------------------------------------------*/
 
-inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedScoreType<SCORE_TYPE, action::MAX> &retval, const unsigned &action, SCORE_TYPE amount , int round ) {
+inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedScoreType<SCORE_TYPE, action::MAX> &retval, const unsigned long &action, SCORE_TYPE amount , int round ) {
 
    const int &st_index = item->stackempty() ? -1 : item->stacktop(); // stack top
    const int &sth_index = st_index == -1 ? -1 : item->head(st_index); // stack top head
@@ -427,7 +427,7 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
 inline void CDepParser::updateScoreForState( const CStateItem &from, const CStateItem *outout , const SCORE_TYPE &amount ) {
    static CStateItem item(&m_lCache);
-   static unsigned action;
+   static unsigned long action;
    static CPackedScoreType<SCORE_TYPE, action::MAX> empty;
    item = from;
    while ( item != *outout ) {
@@ -451,7 +451,7 @@ void CDepParser::updateScoresForStates( const CStateItem *outout , const CStateI
 
    // do not update those steps where they are correct
    static CStateItem item(&m_lCache);
-   static unsigned action, correct_action;
+   static unsigned long action, correct_action;
    item.clear();
    while ( item != *outout ) {
       action = item.FollowMove( outout );
@@ -633,6 +633,18 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
       }
    }
 
+   m_lCacheMorph.clear();
+   //init gold standard morphs and lemmas
+   if ( bTrain )
+   {
+	   for (index=0; index<length; ++index)
+	   {
+		   CMorph correctMorph = pennToMorph(correct[index].word, correct[index].tag);
+	       m_lCacheMorph.push_back(correctMorph);
+	       //std::cout << "Correct word/morph: " << m_lCache[index] << ": " << m_lCacheMorph[index].str() << "\n";
+	   }
+   }
+
    // initialise agenda
    m_Agenda->clear();
    pCandidate.clear();                          // restore state using clean
@@ -659,18 +671,6 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
    }
 #endif
 
-   m_lCacheMorph.clear();
-
-   //init gold standard morphs and lemmas
-   if ( bTrain )
-   {
-	   for (index=0; index<length; ++index)
-	   {
-		   CMorph correctMorph = pennToMorph(correct[index].word, correct[index].tag);
-	       m_lCacheMorph.push_back(correctMorph);
-	   }
-   }
-
    // skip the training example if contradicts
    if (bTrain && m_weights->rules() && bContradictsRules) {
       std::cout << "Skipping training example because it contradicts rules..." <<std::endl;
@@ -681,6 +681,9 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
    // loop with the next word to process in the sentence
    for (index=0; index<length*3; ++index) { //length*3 due to shiftcache transition
       
+
+	   //std::cout << "Iter " << index << "\n";
+
       if (bTrain) bCorrect = false ; 
 
       // none can this find with pruning ???
@@ -690,8 +693,13 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
       }
 
       pGenerator = m_Agenda->generatorStart();
+
+      //std::cout << "Our generator: " << pGenerator->debugstring() << "\n";
+
       // iterate generators
       for (int j=0; j<m_Agenda->generatorSize(); ++j) {
+
+    	  //std::cout << "Subiter " << j << " with item " << pGenerator->size() << " " << pGenerator->stacksize() << " " << pGenerator->cachesize() << "\n";
 
          // for the state items that already contain all words
          m_Beam->clear();
@@ -713,7 +721,8 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
          }
          // for the state items that still need more words
          else {  
-        	if ( pGenerator->cachesize() < MORPH_CACHE_LIMIT && pGenerator->morphanalyzed() < length ) {
+        	bool needToShiftCache = ( pGenerator->cachesize() < MORPH_CACHE_LIMIT && pGenerator->morphanalyzed() < length );
+        	if ( needToShiftCache ) {
 
         		//std::cout << "I'm in a position to shift cache\n"; std::cout.flush();
 
@@ -725,7 +734,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
         		for ( std::set<CMorph>::iterator it = setOfMorphs.begin() ; it != setOfMorphs.end() ; ++it )
         		{
         			CMorph morph = *it;
-        			//std::cout << "Morph" << morph << "\n"; std::cout.flush();
+        			//std::cout << "Word " << wordToAnalyze.str() << " Morph" << morph.str() << "\n"; std::cout.flush();
         			shiftcache(pGenerator, morph.code() , packed_scores) ;
         		}
 
@@ -738,7 +747,8 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
 #endif
                     ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) && // supertags
                     ( pGenerator->stackempty() || !m_weights->rules() /*|| canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code())*/ ) && // rules
-                    ( pGenerator->cachesize() > 0 ) //need something in the cache to shift
+                    ( pGenerator->cachesize() > 0 ) && //need something in the cache to shift
+                    ( !needToShiftCache ) //cannot do anything else if there are words pending to shift to cache
                   ) {
 
             	   //std::cout << "I'm in a position to just shift\n"; std::cout.flush();
@@ -752,21 +762,28 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
                     ( pGenerator->size() < length-1 || pGenerator->headstacksize() == 1 ) && // one root
 #endif
                     ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
-                    ( !m_weights->rules() /*|| hasLeftHead(m_lCache[pGenerator->size()].tag.code())*/ ) // rules
+                    ( !m_weights->rules() /*|| hasLeftHead(m_lCache[pGenerator->size()].tag.code())*/ ) && // rules
+                    ( !needToShiftCache ) //cannot do anything else if there are words pending to shift to cache
                   ) { 
+
+            	   //std::cout << "I'm in a position to arc right\n"; std::cout.flush();
+
                   arcright(pGenerator, packed_scores) ;
                }
             }
-            if ( (!m_bCoNLL && !pGenerator->stackempty()) ||
-                 (m_bCoNLL && pGenerator->stacksize()>1) // make sure that for conll the first item is not popped
+            if ( ((!m_bCoNLL && !pGenerator->stackempty()) ||
+                 (m_bCoNLL && pGenerator->stacksize()>1)) && // make sure that for conll the first item is not popped
+            		( !needToShiftCache ) //cannot do anything else if there are words pending to shift to cache
                ) {
                if ( pGenerator->head( pGenerator->stacktop() ) != DEPENDENCY_LINK_NO_HEAD ) {
+            	   //std::cout << "I'm in a position to reduce\n"; std::cout.flush();
                   reduce(pGenerator, packed_scores) ;
                }
                else {
                   if ( (m_supertags == 0 || m_supertags->canArcLeft(pGenerator->size(), pGenerator->stacktop())) && // supertags
                        (!m_weights->rules() /*|| hasRightHead(m_lCache[pGenerator->stacktop()].tag.code())*/ ) // rules
                      ) {
+                	  //std::cout << "I'm in a position to arc left\n"; std::cout.flush();
                      arcleft(pGenerator, packed_scores) ;
                   }
                }
@@ -781,12 +798,20 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
             m_Agenda->pushCandidate(&pCandidate);
          }
 
+     	//std::cout << "Generator " << pGenerator->size() << " " << pGenerator->stacksize() << " " << pGenerator->cachesize() << "\n";
+     	//std::cout << "Correct state " << correctState.size() << " " << correctState.stacksize() << " " << correctState.cachesize() << "\n";
+     	//std::cout << "Equal? " << (*pGenerator == correctState) << "\n";
+
+         //std::cout << "Generator " << pGenerator->debugstring();
+         //std::cout << "Correct state " << correctState.debugstring();
+         //std::cout << "Equal? " << (*pGenerator == correctState) << "\n";
+
          if (bTrain && *pGenerator == correctState) {
             bCorrect = true ;
          }
          pGenerator = m_Agenda->generatorNext() ;
 
-      }
+      } //end for int j...
       // when we are doing training, we need to consider the standard move and update
       if (bTrain) {
 #ifdef EARLY_UPDATE
@@ -812,8 +837,8 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
 #ifdef LOCAL_LEARNING
          ++m_nTrainingRound; // each training round is one transition-action
 #endif
-      } 
-      
+      }
+
       m_Agenda->nextRound(); // move round
    }
 
@@ -900,7 +925,7 @@ void CDepParser::extract_features(const CDependencyParse &input) {
 
    CStateItem item(&m_lCache);
    CStateItem tmp(&m_lCache);
-   unsigned action;
+   unsigned long action;
    CPackedScoreType<SCORE_TYPE, action::MAX> empty;
 
    // word and pos
