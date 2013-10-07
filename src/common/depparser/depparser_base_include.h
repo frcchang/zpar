@@ -9,11 +9,6 @@
 #ifdef LABELED
 #include "linguistics/dependencylabel.h"
 #endif
-#ifdef LABELED
-   typedef CLabeledDependencyTree CDependencyParse;
-#else
-   typedef CDependencyTree CDependencyParse;
-#endif
 #include "dep.h"
 #include "depparser_impl_inc.h"
 namespace TARGET_LANGUAGE { 
@@ -21,6 +16,20 @@ namespace depparser {
 #include "depparser_macros.h" 
 }
 }
+
+#ifdef JOINT_MORPH
+#ifdef LABELED
+   typedef CExtendedLabeledDependencyTree CDependencyParse;
+#else
+   typedef CExtendedDependencyTree CDependencyParse;
+#endif
+#else
+#ifdef LABELED
+   typedef CLabeledDependencyTree CDependencyParse;
+#else
+   typedef CDependencyTree CDependencyParse;
+#endif
+#endif
 
 #include "linguistics/conll.h"
 #include "linguistics/tagset.h"

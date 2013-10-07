@@ -238,16 +238,60 @@ public:
       }
    }
 
+   void copyDependencyHeads(const CExtendedDependencyTree &input) {
+      for (unsigned i=0; i<input.size(); ++i) {
+         at(i).head = input.at(i).head;
+      }
+   }
+
+   void copyDependencyHeads(const CExtendedLabeledDependencyTree &input) {
+      for (unsigned i=0; i<input.size(); ++i) {
+         at(i).head = input.at(i).head;
+         at(i).label = input.at(i).label;
+      }
+   }
+
    void copyDependencyLabels(const CLabeledDependencyTree &input) {
       for (unsigned i=0; i<input.size(); ++i) {
          at(i).label = input.at(i).label;
       }
    }
 
+   void copyTagsFeatsAndLemmas(const CExtendedDependencyTree &input) {
+	      for (unsigned i=0; i<input.size(); ++i) {
+	         at(i).tag = input.at(i).tag;
+	      }
+	      for (unsigned i=0; i<input.size(); ++i) {
+	         at(i).feats = input.at(i).feats;
+	      }
+	      for (unsigned i=0; i<input.size(); ++i) {
+	         at(i).lemma = input.at(i).lemma;
+	      }
+   }
+
+   void copyTagsFeatsAndLemmas(const CExtendedLabeledDependencyTree &input) {
+	      for (unsigned i=0; i<input.size(); ++i) {
+	         at(i).tag = input.at(i).tag;
+	      }
+	      for (unsigned i=0; i<input.size(); ++i) {
+	         at(i).feats = input.at(i).feats;
+	      }
+	      for (unsigned i=0; i<input.size(); ++i) {
+	         at(i).lemma = input.at(i).lemma;
+	      }
+   }
+
    void toDependencyTree(CDependencyTree &out) const {
       out.clear();
       for (unsigned i=0; i<size(); ++i) {
          out.push_back(CDependencyTreeNode(at(i).word, at(i).tag, at(i).head));
+      }
+   }
+
+   void toDependencyTree(CExtendedDependencyTree &out) const {
+      out.clear();
+      for (unsigned i=0; i<size(); ++i) {
+         out.push_back(CExtendedDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).feats, at(i).lemma));
       }
    }
 
@@ -258,12 +302,29 @@ public:
       }
    }
 
+   void toDependencyTree(CExtendedLabeledDependencyTree &out) const {
+      out.clear();
+      for (unsigned i=0; i<size(); ++i) {
+         out.push_back(CExtendedLabeledDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).feats, at(i).lemma, at(i).label));
+      }
+   }
+
    void toLabeledDependencyTree(CLabeledDependencyTree &out) const {
       out.clear();
       for (unsigned i=0; i<size(); ++i) {
-         out.push_back(CLabeledDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).label));
+    	  out.push_back(CLabeledDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).label));
       }
    }
+
+   void toLabeledDependencyTree(CExtendedLabeledDependencyTree &out) const {
+      out.clear();
+      for (unsigned i=0; i<size(); ++i) {
+    	  out.push_back(CExtendedLabeledDependencyTreeNode(at(i).word, at(i).tag, at(i).head, at(i).feats, at(i).lemma, at(i).label));
+      }
+   }
+
+
+
 };
 
 inline std::istream & operator >> (std::istream &is, CCoNLLOutput &sent) {

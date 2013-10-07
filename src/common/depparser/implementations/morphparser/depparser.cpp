@@ -1022,9 +1022,10 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
    work(false, input, outout, empty, nBest, scores ) ;
 
    for (int i=0; i<std::min(nBest, m_Agenda->generatorSize()); ++i) {
-      // now make the conll format stype outout
+      // now make the conll format style outout
       retval[i].fromCoNLLInput(sentence);
       retval[i].copyDependencyHeads(outout[i]);
+      retval[i].copyTagsFeatsAndLemmas(outout[i]); //morph parser can also output this.
    }
 
 }

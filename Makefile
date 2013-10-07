@@ -54,7 +54,7 @@ CHINESE_CONPARSER_IMPL = miguel
 ENGLISH_TAGGER_IMPL = collins
 
 # currently support eisner, covington, nivre, combined implementations 
-ENGLISH_DEPPARSER_IMPL =arceager
+ENGLISH_DEPPARSER_IMPL = morphparser
 ENGLISH_DEPPARSER_LABELED = true
 ENGLISH_DEPLABELER_IMPL = naive
 

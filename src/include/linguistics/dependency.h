@@ -55,6 +55,46 @@ inline std::ostream & operator << (std::ostream &os, const CDependencyTreeNode &
 
 /*==============================================================
  *
+ * CExtendedDependencyTreeNode
+ * A node that includes information about CoNLL feats and lemma
+ *
+ *==============================================================*/
+
+class CExtendedDependencyTreeNode {
+
+public:
+   std::string word;
+   std::string tag;
+   int head;
+   std::string feats;
+   std::string lemma;
+
+public:
+   CExtendedDependencyTreeNode() : word(""), tag(""), head(DEPENDENCY_LINK_NO_HEAD), feats(""), lemma("") { }
+   CExtendedDependencyTreeNode( const std::string &w, const std::string &t, const int &h, const std::string &f, const std::string &l ) : word(w), tag(t), head(h), feats(f), lemma(l) { }
+   virtual ~CExtendedDependencyTreeNode() {}
+
+public:
+   bool operator ==(const CExtendedDependencyTreeNode &item) const {
+      return word == item.word && tag == item.tag && head == item.head && feats == item.feats && lemma == item.lemma;
+   }
+
+};
+
+//==============================================================
+
+inline std::istream & operator >> (std::istream &is, CExtendedDependencyTreeNode &node) {
+   (is) >> node.word >> node.tag >> node.head >> node.feats >> node.lemma;
+   return is ;
+}
+
+inline std::ostream & operator << (std::ostream &os, const CExtendedDependencyTreeNode &node) {
+   os << node.word << "\t" << node.tag << "\t" << node.head << node.feats << node.lemma;
+   return os ;
+}
+
+/*==============================================================
+ *
  * CUnlabeledDependencyTree
  *
  * Note that we must define the dependency as sentencetemplate
@@ -66,6 +106,7 @@ inline std::ostream & operator << (std::ostream &os, const CDependencyTreeNode &
  *==============================================================*/
 
 typedef CSentenceTemplate<CDependencyTreeNode> CDependencyTree ;
+typedef CSentenceTemplate<CExtendedDependencyTreeNode> CExtendedDependencyTree ;
 
 //==============================================================
 
