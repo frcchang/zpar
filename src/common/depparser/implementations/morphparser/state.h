@@ -551,10 +551,12 @@ public:
    void GenerateTree( const CStringVector &input, CDependencyParse &output ) const {
       output.clear();
       for ( int i=0; i<size(); ++i ) 
+
 #ifdef LABELED
-         output.push_back( CLabeledDependencyTreeNode( input.at(i) , m_lLemma[i].str() , m_lHeads[i] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
+    	  output.push_back( CExtendedLabeledDependencyTreeNode( input.at(i) , morphToPenn(m_lMorph[i]).str() , m_lHeads[i], "pending_feats" , m_lLemma[i].str() , CDependencyLabel(m_lLabels[i]).str() ) ) ;
+         //output.push_back( CExtendedLabeledDependencyTreeNode( input.at(i) , m_lLemma[i].str() , m_lHeads[i] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
 #else
-         output.push_back( CDependencyTreeNode( input.at(i) , m_lLemma[i].str() , m_lHeads[i] ) ) ;
+      	  output.push_back( CExtendedDependencyTreeNode( input.at(i) , morphToPenn(m_lMorph[i]).str() , m_lHeads[i], "pending_feats" , m_lLemma[i].str() ) ) ;
 #endif
    }
 

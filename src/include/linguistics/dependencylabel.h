@@ -52,6 +52,43 @@ inline std::ostream & operator << (std::ostream &os, const CLabeledDependencyTre
 
 /*==============================================================
  *
+ * CExtendedLabeledDependencyTreeNode
+ * Same as above, but with feats and lemma information
+ *
+ *==============================================================*/
+
+class CExtendedLabeledDependencyTreeNode : public CExtendedDependencyTreeNode {
+
+public:
+   std::string label;
+
+public:
+   CExtendedLabeledDependencyTreeNode( ) : CExtendedDependencyTreeNode(), label("") { }
+   CExtendedLabeledDependencyTreeNode( const std::string &w, const std::string &t, const int &h, const std::string &f, const std::string &lem, const std::string &lab) : CExtendedDependencyTreeNode(w, t, h, f, lem), label(lab) { }
+   virtual ~CExtendedLabeledDependencyTreeNode() {}
+
+public:
+   bool operator ==(const CExtendedLabeledDependencyTreeNode &item) const {
+      return static_cast<CExtendedDependencyTreeNode>(*this) == static_cast<CExtendedDependencyTreeNode>(item) && label == item.label;
+   }
+
+};
+
+//==============================================================
+
+inline std::istream & operator >> (std::istream &is, CExtendedLabeledDependencyTreeNode &node) {
+   (is) >> static_cast<CExtendedDependencyTreeNode&>(node) >> node.label ;
+   if (node.label.empty()) THROW("dependency label is unavailable for the input: " << node.word);
+   return is ;
+}
+
+inline std::ostream & operator << (std::ostream &os, const CExtendedLabeledDependencyTreeNode &node) {
+   os << static_cast<const CExtendedDependencyTreeNode&>(node) << "\t" << node.label ;
+   return os ;
+}
+
+/*==============================================================
+ *
  * CLabeledDependencyTree
  *
  * Note that we must define the dependency as sentencetemplate
@@ -63,5 +100,6 @@ inline std::ostream & operator << (std::ostream &os, const CLabeledDependencyTre
  *==============================================================*/
 
 typedef CSentenceTemplate<CLabeledDependencyTreeNode> CLabeledDependencyTree ;
+typedef CSentenceTemplate<CExtendedLabeledDependencyTreeNode> CExtendedLabeledDependencyTree ;
 
 #endif

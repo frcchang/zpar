@@ -122,6 +122,117 @@ namespace english
 
 	}
 
+	/**
+	 * Convert morphological information back into a Penn Treebank POS tag.
+	 */
+	CTag morphToPenn(CMorph morph)
+	{
+
+		int result;
+
+		//first, morph tags that do not need the extra morphological information to convert them to penn treebank format, so each morph tag goes into a penn tag.
+		//some do have it in the morph format (e.g. numerals, pronouns) but not in the penn treebank
+		switch ( morph.getField(MORPH_POSTAG) )
+		{
+			case MORPH_TAG_DOLLAR: return CTag ( PENN_TAG_DOLLAR );
+			case MORPH_TAG_OPEN_QUOTE: return CTag ( PENN_TAG_L_QUOTE );
+			case MORPH_TAG_CLOSE_QUOTE: return CTag ( PENN_TAG_R_QUOTE );
+			case MORPH_TAG_COMMA: return CTag ( PENN_TAG_COMMA );
+			case MORPH_TAG_PERIOD: return CTag ( PENN_TAG_PERIOD );
+			case MORPH_TAG_COLON: return CTag ( PENN_TAG_COLUM );
+			case MORPH_TAG_HASH: return CTag ( PENN_TAG_SHART );
+
+			case MORPH_TAG_INTERJ: return CTag ( PENN_TAG_UH );
+			case MORPH_TAG_LIST: return CTag ( PENN_TAG_LS );
+			case MORPH_TAG_SYM: return CTag ( PENN_TAG_SYM );
+			case MORPH_TAG_FOREIGN: return CTag ( PENN_TAG_FW );
+			case MORPH_TAG_EX: return CTag ( PENN_TAG_EX );
+			case MORPH_TAG_TO: return CTag ( PENN_TAG_TO );
+			case MORPH_TAG_IN: return CTag ( PENN_TAG_IN );
+			case MORPH_TAG_DET: return CTag ( PENN_TAG_DT );
+
+			case MORPH_TAG_NONE: return CTag ( PENN_TAG_NONE );
+			case MORPH_TAG_BEGIN: return CTag ( PENN_TAG_BEGIN );
+			case MORPH_TAG_END: return CTag ( PENN_TAG_END );
+			case MORPH_TAG_LRB: return CTag ( PENN_TAG_L_BRACKET );
+			case MORPH_TAG_RRB: return CTag ( PENN_TAG_R_BRACKET );
+
+			case MORPH_TAG_PARTICLE: return CTag ( PENN_TAG_RP );
+
+			case MORPH_TAG_PRON: return CTag( PENN_TAG_PRP );
+			case MORPH_TAG_POSS_PRON: return CTag ( PENN_TAG_PRP_DOLLAR );
+			case MORPH_TAG_WH_PRON: return CTag ( PENN_TAG_WP );
+			case MORPH_TAG_WH_POSS_PRON: return CTag ( PENN_TAG_WP_DOLLAR );
+			case MORPH_TAG_POS: return CTag( PENN_TAG_POS );
+			case MORPH_TAG_PREDET: return CTag( PENN_TAG_PDT );
+			case MORPH_TAG_CC: return CTag( PENN_TAG_CC );
+			case MORPH_TAG_NUM: return CTag( PENN_TAG_CD );
+			case MORPH_TAG_WH_DET: return CTag( PENN_TAG_WDT );
+			case MORPH_TAG_WH_ADV: return CTag( PENN_TAG_WRB );
+
+		}
+
+		//now, morph tags for which we need to access other information to convert them to Penn format.
+
+		if ( morph.getField(MORPH_NOUN_TYPE) == MORPH_NOUN_TYPE_COMMON )
+		{
+			if ( morph.getField(MORPH_NUMBER) == MORPH_NUMBER_SINGULAR )
+				return PENN_TAG_NOUN;
+			else
+				return PENN_TAG_NOUN_PLURAL;
+		}
+		if ( morph.getField(MORPH_NOUN_TYPE) == MORPH_NOUN_TYPE_PROPER )
+		{
+			if ( morph.getField(MORPH_NUMBER) == MORPH_NUMBER_SINGULAR )
+				return PENN_TAG_NOUN_PROPER;
+			else
+				return PENN_TAG_NOUN_PROPER_PLURAL;
+		}
+
+		if ( morph.getField(MORPH_POSTAG) == MORPH_TAG_ADJ )
+		{
+			switch ( morph.getField(MORPH_DEGREE) )
+			{
+				case MORPH_DEGREE_POSITIVE: return PENN_TAG_ADJECTIVE;
+				case MORPH_DEGREE_COMPARATIVE: return PENN_TAG_ADJECTIVE_COMPARATIVE;
+				case MORPH_DEGREE_SUPERLATIVE: return PENN_TAG_ADJECTIVE_SUPERLATIVE;
+			}
+		}
+
+		if ( morph.getField(MORPH_POSTAG) == MORPH_TAG_ADV )
+		{
+			switch ( morph.getField(MORPH_DEGREE) )
+			{
+				case MORPH_DEGREE_POSITIVE: return PENN_TAG_ADVERB;
+				case MORPH_DEGREE_COMPARATIVE: return PENN_TAG_ADVERB_COMPARATIVE;
+				case MORPH_DEGREE_SUPERLATIVE: return PENN_TAG_ADVERB_SUPERLATIVE;
+			}
+		}
+
+		if ( morph.getField(MORPH_VERB_TYPE) == MORPH_VERB_MODAL ) //or also, tag = MORPH_TAG_MODAL_VERB
+			return PENN_TAG_MD;
+
+		if ( morph.getField(MORPH_POSTAG) == MORPH_TAG_VERB )
+		{
+			switch ( morph.getField(MORPH_VERB_FORM) )
+			{
+				case MORPH_VERB_GERUND: return PENN_TAG_VERB_PROG;
+				case MORPH_VERB_PARTICIPLE: return PENN_TAG_VERB_PAST_PARTICIPATE;
+				case MORPH_VERB_INFINITIVE: return PENN_TAG_VERB;
+			}
+			assert (morph.getField(MORPH_VERB_FORM) == MORPH_VERB_PERSONAL );
+			if ( morph.getField(MORPH_VERB_TENSE) == MORPH_VERB_PAST ) return PENN_TAG_VERB_PAST;
+			assert (morph.getField(MORPH_VERB_TENSE) == MORPH_VERB_PRESENT );
+			if ( morph.getField(MORPH_PERSON) == MORPH_PERSON_THIRD ) return PENN_TAG_VERB_THIRD_SINGLE;
+			else return PENN_TAG_VERB_PRES;
+		}
+
+		assert(false); //we shouldn't reach this!
+		return PENN_TAG_NONE;
+
+
+	}
+
 
 	/**
 	 * Convert a Penn Treebank word + POS tag into its morphological information.

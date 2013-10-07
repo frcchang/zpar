@@ -404,6 +404,11 @@ inline std::ostream & operator << (std::ostream &os, const CMorph &m) {
  */
 CMorph pennToMorph(const std::string &word , const std::string &pennTag);
 
+/**
+ * Convert morphological information back into a Penn Treebank POS tag.
+ * Useful to evaluate tagging accuracy.
+ */
+CTag morphToPenn(CMorph morph);
 
 
 } //namespace english
