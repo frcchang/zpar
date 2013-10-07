@@ -175,6 +175,10 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_two_dots(":");
  static CWord g_word_slash("/");
 
+ static CWord g_word_dot(".");
+ static CWord g_word_two_quotes("''");
+
+
 
 
 //static CWord g_word_lot("lot"); //?

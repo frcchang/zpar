@@ -337,8 +337,63 @@
    	}
    	return false;
    }
-//"S|SINV < (S|SBARQ=target $+ /^(,|\\.|'')$/ !$- /^(?:CC|:)$/ !< (VP < TO|VBG|VBN))",
-bool buildCComp7() {}
+
+
+   //"S|SINV < (S|SBARQ=target $+ /^(,|\\.|'')$/ !$- /^(?:CC|:)$/ !< (VP < TO|VBG|VBN))",
+   bool buildCComp7() {
+   	if (node.constituent==PENN_CON_S||node.constituent==PENN_CON_SINV){
+   		CStateNodeList* childsSSinv=node.m_umbinarizedSubNodes;
+   		while(childsSSinv!=0){
+   			const CStateNode* ssbarqTarg=childsSSinv->node;
+   			if ((ssbarqTarg->constituent==PENN_CON_S||ssbarqTarg->constituent==PENN_CON_SBARQ) && (!isLinked(&node,ssbarqTarg))){
+   				bool secondCond=true;
+   				bool thirdCond=true;
+
+   				//A $- B 	A is the immediate right sister of B
+   				if (childsSSinv->previous!=0){
+   					if ((*words)[childsSSinv->previous->node->lexical_head].tag.code()==PENN_TAG_CC) { //:CC, subcategory of CC...¿? how come? I match it with CC ... should be enough.
+   						secondCond=false;
+   					}
+   				}
+
+   				CStateNodeList* childsSSbarq=ssbarqTarg->m_umbinarizedSubNodes;
+   				while(childsSSbarq!=0){
+   					const CStateNode* vpChildssbarq=childsSSbarq->node;
+   					if (vpChildssbarq->constituent==PENN_CON_VP){
+   						CStateNodeList* childsVp=vpChildssbarq->m_umbinarizedSubNodes;
+   						while(childsVp!=0){
+   							if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO)
+   									&& ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)
+   									&& ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)) { //PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE
+   								thirdCond=false;
+
+   							}
+   							childsVp=childsVp->next;
+   						}
+   					}
+   					childsSSbarq=childsSSbarq->next;
+   				}
+
+   				//A $+ B 	A is the immediate left sister of B
+   				if (secondCond && thirdCond && childsSSinv->next!=0){
+   					if (((*words)[childsSSinv->next->node->lexical_head].word==g_word_comma)
+   							&&((*words)[childsSSinv->next->node->lexical_head].word==g_word_dot)
+   							&&((*words)[childsSSinv->next->node->lexical_head].word==g_word_two_quotes)) {
+   						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+   						if (buildStanfordLink(label, ssbarqTarg->lexical_head, node.lexical_head)) {
+   							addLinked(&node,ssbarqTarg);
+   							return true;
+   						}
+   					}
+
+   				}
+
+   			}
+   			childsSSinv=childsSSinv->next;
+   		}
+   	}
+   	return false;
+   }
 
 
 //"ADVP < (SBAR=target < (IN < /^(?i:as|that)/) < (S < (VP !< TO)))"
