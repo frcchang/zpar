@@ -53,6 +53,10 @@
    left(m_mapHTt)right\
    left(m_mapHTwt)right\
 \
+   left(m_mapB0w)right\
+   left(m_mapB1w)right\
+   left(m_mapB2w)right\
+\
    left(m_mapSTwmN0wm)right\
    left(m_mapSTwmN0w)right\
    left(m_mapSTwN0wm)right\
@@ -211,6 +215,10 @@ public:
    CTagMap m_mapHTt;
    CTaggedWordMap m_mapHTwt;
 
+   CWordMap m_mapB0w;
+   CWordMap m_mapB1w;
+   CWordMap m_mapB2w;
+
    CWordWordMorphMorphMap m_mapSTwmN0wm;
    CWordWordMorphMap m_mapSTwmN0w;
    CWordWordMorphMap m_mapSTwN0wm;
@@ -320,6 +328,10 @@ public:
                                                m_mapHTw("HeadStackWord", DEP_TABLE_SIZE),
                                                m_mapHTt("HeadStackTag", DEP_TABLE_SIZE),
                                                m_mapHTwt("HeadStackWordTag", DEP_TABLE_SIZE),
+
+                                               m_mapB0w("NextUnanalyzedWord", DEP_TABLE_SIZE),
+                                               m_mapB1w("NextUnanalyzedWord", DEP_TABLE_SIZE),
+                                               m_mapB2w("NextUnanalyzedWord", DEP_TABLE_SIZE),
 
                                                m_mapSTwmN0wm("StackWordMorphNextWordMorph", DEP_TABLE_SIZE),
                                                m_mapSTwmN0w("StackWordMorphNextWord", DEP_TABLE_SIZE),

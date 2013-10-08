@@ -47,7 +47,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int &strd_index = st_index == -1 ? -1 : item->rightdep(st_index); // rightmost dep st
    const int &stl2d_index = stld_index == -1 ? -1 : item->sibling(stld_index); // left 2ndmost dep of stack
    const int &str2d_index = strd_index == -1 ? -1 : item->sibling(strd_index); // right 2ndmost dep st
-   const int &n0_index = item->size()==m_lCache.size() ? -1 : item->size(); // next
+   const int &n0_index = item->size()==m_lCache.size() ? -1 : item->size(); // next in cache
+   const int &b0_index = (item->size()+item->cachesize()) < m_lCache.size() ? (item->size()+item->cachesize()) : -1; //next in buffer (first word without morph analysis yet)
    assert(n0_index<static_cast<int>(m_lCache.size())); // the next index shouldn't exceed sentence
    const int &n0ld_index = n0_index==-1 ? -1 : item->leftdep(n0_index); // leftmost dep of next
    const int &n0l2d_index = n0ld_index==-1 ? -1 : item->sibling(n0ld_index); // leftmost dep of next
@@ -56,10 +57,15 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static int n1_index;
    static int n2_index;
    static int n3_index;
+   static int b1_index;
+   static int b2_index;
+   static int b3_index;
    n1_index = (n0_index != -1 && n0_index+1<m_lCache.size()) ? n0_index+1 : -1 ;
    n2_index = (n0_index != -1 && n0_index+2<m_lCache.size()) ? n0_index+2 : -1 ;
    n3_index = (n0_index != -1 && n0_index+3<m_lCache.size()) ? n0_index+3 : -1 ;
-
+   b1_index = (b0_index != -1 && b0_index+1<m_lCache.size()) ? b0_index+1 : -1 ;
+   b2_index = (b0_index != -1 && b0_index+2<m_lCache.size()) ? b0_index+2 : -1 ;
+   n3_index = (b0_index != -1 && b0_index+3<m_lCache.size()) ? b0_index+3 : -1 ;
 
    //version without lemmas as words:
 /*
@@ -97,6 +103,10 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &n0_word = n0_index==-1 ? g_emptyWord : item->cachesize() > 0 ? item->lemmaascword(n0_index) : g_emptyWord;
    const CWord &n1_word = n1_index==-1 ? g_emptyWord : item->cachesize() > 1 ? item->lemmaascword(n1_index) : g_emptyWord;
    const CWord &n2_word = n2_index==-1 ? g_emptyWord : item->cachesize() > 2 ? item->lemmaascword(n2_index) : g_emptyWord;
+
+   const CWord &b0_word = b0_index==-1 ? g_emptyWord : m_lCache[b0_index];
+   const CWord &b1_word = b1_index==-1 ? g_emptyWord : m_lCache[b1_index];
+   const CWord &b2_word = b2_index==-1 ? g_emptyWord : m_lCache[b2_index];
 
    const int &st_label = st_index==-1 ? CDependencyLabel::NONE : item->label(st_index);
    const int &sth_label = sth_index==-1 ? CDependencyLabel::NONE : item->label(sth_index);
@@ -252,7 +262,19 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0L2Di.getOrUpdateScore( retval, n0l2d_label, action, m_nScoreIndex, amount, round) ;
    }
 
-   //TODO We are here.
+   //b0, b1, b2 word forms (we have no lemmas or morph yet)
+   if (b0_index != -1) {
+         cast_weights->m_mapB0w.getOrUpdateScore( retval, b0_word, action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (b1_index != -1) {
+	   cast_weights->m_mapB1w.getOrUpdateScore( retval, b1_word, action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (b2_index != -1) {
+         cast_weights->m_mapB2w.getOrUpdateScore( retval, b2_word, action, m_nScoreIndex, amount, round ) ;
+   }
+
 
    // s0 and n0
    if (st_index != -1) {
