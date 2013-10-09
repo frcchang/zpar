@@ -238,7 +238,12 @@ include Makefile.postagger
 #
 #----------------------------------------------------------------
 
+ifeq ($(ENGLISH_DEPPARSER_IMPL),morphparser)
+include Makefile.depparser.morph
+else
 include Makefile.depparser
+endif
+
 include Makefile.deplabeler
 
 #----------------------------------------------------------------
