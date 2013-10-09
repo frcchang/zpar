@@ -1108,6 +1108,19 @@ public:
 	   buildPunct1();
 	   buildPunct2();
 
+	   buildPobj1();
+	   buildPobj2();
+	   buildPobj3();
+	   buildPobj4();
+	   buildPobj5();
+	   buildPobj6();
+	   buildPobj7();
+
+	   buildPComp1();
+	   buildPComp2();
+	   buildPComp3();
+
+
    }
    
    //==============================================================================
@@ -1518,6 +1531,9 @@ public:
     #include "rules/ccomp.cpp"
     #include "rules/xcomp.cpp"
     #include "rules/punct.cpp"
+    #include "rules/pobj.cpp"
+    #include "rules/pcomp.cpp"
+
 	
 
 
@@ -1540,6 +1556,14 @@ public:
 
      }
 
+
+     //"PP < (CC < less) < NP" //THERE IS NO TARGET!!
+     bool buildPobj7() {
+    	 if (node.constituent==PENN_CON_PP){
+
+    	 }
+
+     }
 
 
     
