@@ -178,6 +178,12 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_dot(".");
  static CWord g_word_two_quotes("''");
 
+ static CWord g_word_two_inclquotes("``");
+ static CWord g_word_asterisc("*");
+ static CWord g_word_hyphen("-");
+ static CWord g_word_lowhyphen("_");
+
+
 
 
 
@@ -1099,6 +1105,9 @@ public:
 	   buildXComp6();
 	   buildXComp7();
 
+	   buildPunct1();
+	   buildPunct2();
+
    }
    
    //==============================================================================
@@ -1508,6 +1517,7 @@ public:
 	#include "rules/attr.cpp"
     #include "rules/ccomp.cpp"
     #include "rules/xcomp.cpp"
+    #include "rules/punct.cpp"
 	
 
 
@@ -1517,6 +1527,18 @@ public:
     // PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
 
 
+
+    //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
+     bool buildDobj4() {
+    	 if (node.constituent==PENN_CON_SBARQ){
+    		 CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
+    		 while(childsSbarq!=0){
+
+    			 childsSbarq=childsSbarq->next;
+    		 }
+    	 }
+
+     }
 
 
 
