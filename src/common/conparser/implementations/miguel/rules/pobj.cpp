@@ -27,7 +27,45 @@ bool buildPobj5() {}
 bool buildPobj6() {}
 
 //"XS|ADVP < (IN < /^(?i:at)$/) < JJS|DT=target", // at least, at most, at best, at worst, at all
-//bool buildPobj7() {}
+
+   bool buildPobj7() {
+  	 //what is XS????????? I believe we can safely remove it, since it is not included in the tagset. (YUE?)
+  	 if (node.constituent==PENN_CON_PP){
+  		 bool firstCondition=false;
+  		 CStateNodeList* childsPP=node.m_umbinarizedSubNodes;
+  		 while(childsPP!=0){
+  			 const CStateNode* inChildPP=childsPP->node;
+  			 if (((*words)[inChildPP->lexical_head].tag.code()==PENN_TAG_IN)) {
+  				 CStateNodeList* childsIn=inChildPP->m_umbinarizedSubNodes;
+  				 while(childsIn!=0){
+  					 if (((*words)[childsIn->next->node->lexical_head].word==g_word_at)) {
+  						 firstCondition=true;
+  					 }
+  					 childsIn=childsIn->next;
+  				 }
+  			 }
+  			 childsPP=childsPP->next;
+  		 }
+  		 if (firstCondition){
+  			 childsPP=node.m_umbinarizedSubNodes;
+  			 while(childsPP!=0){
+  				 const CStateNode* jjsdtTarg=childsPP->node;
+  				 if ((!isLinked(&node,jjsdtTarg))
+  						 && (((*words)[jjsdtTarg->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)
+  								 ||((*words)[jjsdtTarg->lexical_head].tag.code()==PENN_TAG_DT))) {
+  					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POBJ);
+  					 if (buildStanfordLink(label, jjsdtTarg->lexical_head, node.lexical_head)) {
+  						 addLinked(&node,jjsdtTarg);
+  						 return true;
+  					 }
+  				 }
+  				 childsPP=childsPP->next;
+  			 }
+  		 }
+
+  	 }
+  	 return false;
+   }
 
 //"PP < (CC < less) < NP"
 //bool buildPobj8() {}
