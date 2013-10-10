@@ -1121,6 +1121,16 @@ public:
 	   buildPComp2();
 	   buildPComp3();
 
+	   buildConj1();
+	   buildConj2();
+	   buildConj3();
+	   buildConj4();
+	   buildConj5();
+	   buildConj6();
+	   buildConj7();
+	   buildConj8();
+
+
 
    }
    
@@ -1534,6 +1544,7 @@ public:
     #include "rules/punct.cpp"
     #include "rules/pobj.cpp"
     #include "rules/pcomp.cpp"
+    #include "rules/conj.cpp"
 
 	
 
