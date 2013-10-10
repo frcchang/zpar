@@ -363,8 +363,8 @@
    						CStateNodeList* childsVp=vpChildssbarq->m_umbinarizedSubNodes;
    						while(childsVp!=0){
    							if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO)
-   									&& ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)
-   									&& ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)) { //PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE
+   									|| ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)
+   									|| ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)) { //PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE
    								thirdCond=false;
 
    							}
@@ -377,8 +377,8 @@
    				//A $+ B 	A is the immediate left sister of B
    				if (secondCond && thirdCond && childsSSinv->next!=0){
    					if (((*words)[childsSSinv->next->node->lexical_head].word==g_word_comma)
-   							&&((*words)[childsSSinv->next->node->lexical_head].word==g_word_dot)
-   							&&((*words)[childsSSinv->next->node->lexical_head].word==g_word_two_quotes)) {
+   							||((*words)[childsSSinv->next->node->lexical_head].word==g_word_dot)
+   							||((*words)[childsSSinv->next->node->lexical_head].tag.code()==PENN_TAG_R_QUOTE)) {
    						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
    						if (buildStanfordLink(label, ssbarqTarg->lexical_head, node.lexical_head)) {
    							addLinked(&node,ssbarqTarg);
