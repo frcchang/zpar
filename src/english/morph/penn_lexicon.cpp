@@ -16,6 +16,9 @@
 namespace english
 {
 
+//the tag dictionary will only contain words that appear more than this amount of times. The rest of the words will be considered unknown.
+#define RARE_WORD_CUTOFF 5
+
 //map from words to tags, extracted from the training set
 std::map< std::string , std::set<CTag> > trainingSetLexicon;
 
@@ -24,6 +27,9 @@ std::set<CTag> tagsForUnknownWords;
 
 bool initLexicon ( const std::string sInputFile , bool bCoNLL )
 {
+
+	std::map< std::string , int > wordFrequencies; //to cutoff rare words from the tag dictionary
+
 	CSentenceReader *input_reader;
 	std::ifstream *is;
 
@@ -57,6 +63,8 @@ bool initLexicon ( const std::string sInputFile , bool bCoNLL )
 				//add tag to the set of tags associated with that word
 				std::set<CTag> & entry = trainingSetLexicon[input_conll[i].word];
 				entry.insert(input_conll[i].tag);
+				//increase word frequency
+				wordFrequencies[input_conll[i].word]++;
 			}
 		}
 		else
@@ -66,6 +74,8 @@ bool initLexicon ( const std::string sInputFile , bool bCoNLL )
 				//add tag to the set of tags associated with that word
 				std::set<CTag> & entry = trainingSetLexicon[input_sent[i].first];
 				entry.insert(input_sent[i].second);
+				//increase word frequency
+				wordFrequencies[input_sent[i].first]++;
 			}
 		}
 
@@ -82,6 +92,15 @@ bool initLexicon ( const std::string sInputFile , bool bCoNLL )
 	else
 	   delete input_reader;
 
+	//remove from the map the words appearing less than RARE_WORD_CUTOFF times
+	for ( std::map< std::string , int >::iterator it = wordFrequencies.begin() ; it != wordFrequencies.end() ; it++ )
+	{
+		if ( it->second < RARE_WORD_CUTOFF )
+		{
+			trainingSetLexicon.erase(it->first);
+		}
+	}
+
 	//now, initialize the tags for unknown words
     for (int i=1; i<PENN_TAG_COUNT; i++)
        if ( !PENN_TAG_CLOSED[i] )
@@ -94,8 +113,10 @@ bool initLexicon ( const std::string sInputFile , bool bCoNLL )
 
 bool isKnown ( const std::string & word )
 {
-	std::set<english::CTag> & setOfTags = trainingSetLexicon[word];
-	return !setOfTags.empty();
+	//std::set<english::CTag> & setOfTags = trainingSetLexicon[word];
+	//return !setOfTags.empty();
+	//should be faster:
+	return trainingSetLexicon.find(word) != trainingSetLexicon.end();
 }
 
 
