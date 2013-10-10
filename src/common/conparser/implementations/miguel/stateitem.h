@@ -181,6 +181,8 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_hyphen("-");
  static CWord g_word_lowhyphen("_");
 
+ static CWord g_word_at("at");
+
 
 
 
@@ -1113,6 +1115,7 @@ public:
 	   buildPobj5();
 	   buildPobj6();
 	   buildPobj7();
+	   buildPobj8();
 
 	   buildPComp1();
 	   buildPComp2();
@@ -1555,17 +1558,13 @@ public:
      }
 
 
-     //"XS|ADVP < (IN < /^(?i:at)$/) < JJS|DT=target", // at least, at most, at best, at worst, at all
 
-     bool buildPobj7() {
-
-
-     }
 
 
      //"PP < (CC < less) < NP" //THERE IS NO TARGET!!
      bool buildPobj8() {
     	 if (node.constituent==PENN_CON_PP){
+    		 bool firstCondition=false;
 
     	 }
 
