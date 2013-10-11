@@ -57,6 +57,15 @@
    left(m_mapB1w)right\
    left(m_mapB2w)right\
 \
+   left(m_mapB0p1)right\
+   left(m_mapB0p2)right\
+   left(m_mapB0p3)right\
+   left(m_mapB0p4)right\
+   left(m_mapB0s1)right\
+   left(m_mapB0s2)right\
+   left(m_mapB0s3)right\
+   left(m_mapB0s4)right\
+\
    left(m_mapSTwmN0wm)right\
    left(m_mapSTwmN0w)right\
    left(m_mapSTwN0wm)right\
@@ -123,6 +132,7 @@ const static unsigned DEP_TABLE_SIZE = (1<<17);//1000121;
 typedef CPackedScoreMap<CWord, SCORE_TYPE, action::MAX> CWordMap;
 typedef CPackedScoreMap<CTag, SCORE_TYPE, action::MAX> CTagMap;
 typedef CPackedScoreMap<int, SCORE_TYPE, action::MAX> CIntMap;
+typedef CPackedScoreMap<bool, SCORE_TYPE, action::MAX> CBoolMap;
 typedef CPackedScoreMap<CMorph, SCORE_TYPE, action::MAX> CMorphMap;
 typedef CPackedScoreMap<CTagSet<CTag, 2>,  SCORE_TYPE, action::MAX> CTagSet2Map;
 typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3Map;
@@ -218,6 +228,15 @@ public:
    CWordMap m_mapB0w;
    CWordMap m_mapB1w;
    CWordMap m_mapB2w;
+
+   CWordMap m_mapB0p1;
+   CWordMap m_mapB0p2;
+   CWordMap m_mapB0p3;
+   CWordMap m_mapB0p4;
+   CWordMap m_mapB0s1;
+   CWordMap m_mapB0s2;
+   CWordMap m_mapB0s3;
+   CWordMap m_mapB0s4;
 
    CWordWordMorphMorphMap m_mapSTwmN0wm;
    CWordWordMorphMap m_mapSTwmN0w;
@@ -332,6 +351,15 @@ public:
                                                m_mapB0w("NextUnanalyzedWord", DEP_TABLE_SIZE),
                                                m_mapB1w("NextUnanalyzedWord", DEP_TABLE_SIZE),
                                                m_mapB2w("NextUnanalyzedWord", DEP_TABLE_SIZE),
+
+                                               m_mapB0p1("NextUnanalyzedPrefix1", DEP_TABLE_SIZE),
+                                               m_mapB0p2("NextUnanalyzedPrefix2", DEP_TABLE_SIZE),
+                                               m_mapB0p3("NextUnanalyzedPrefix3", DEP_TABLE_SIZE),
+                                               m_mapB0p4("NextUnanalyzedPrefix4", DEP_TABLE_SIZE),
+                                               m_mapB0s1("NextUnanalyzedSuffix1", DEP_TABLE_SIZE),
+                                               m_mapB0s2("NextUnanalyzedSuffix2", DEP_TABLE_SIZE),
+                                               m_mapB0s3("NextUnanalyzedSuffix3", DEP_TABLE_SIZE),
+                                               m_mapB0s4("NextUnanalyzedSuffix4", DEP_TABLE_SIZE),
 
                                                m_mapSTwmN0wm("StackWordMorphNextWordMorph", DEP_TABLE_SIZE),
                                                m_mapSTwmN0w("StackWordMorphNextWord", DEP_TABLE_SIZE),

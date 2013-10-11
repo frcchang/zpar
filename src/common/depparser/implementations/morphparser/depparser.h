@@ -58,6 +58,22 @@ private:
 
    std::vector<CMorph> m_lCacheMorph; //for gold standard training morph
 
+   //for prefixes and suffixes:
+   std::vector<CWord> m_lCacheP1;
+   std::vector<CWord> m_lCacheP2;
+   std::vector<CWord> m_lCacheP3;
+   std::vector<CWord> m_lCacheP4;
+   std::vector<CWord> m_lCacheS1;
+   std::vector<CWord> m_lCacheS2;
+   std::vector<CWord> m_lCacheS3;
+   std::vector<CWord> m_lCacheS4;
+
+   //other word features
+   std::vector<bool> m_lCacheHasDigit;
+   std::vector<bool> m_lCacheHasUpper;
+   std::vector<bool> m_lCacheHasHyphen;
+
+
    //unused for input in morph parser, as we'll do our own morphological analysis
    /*
    std::vector< CLemma > m_lCacheCoNLLLemma; // conll
