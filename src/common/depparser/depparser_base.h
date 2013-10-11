@@ -60,7 +60,11 @@ public:
 
 public:
 
+#ifdef JOINT_MORPH
    virtual void parse( const CStringVector &sentence , CDependencyParse *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) = 0 ;
+#else
+   virtual void parse( const CTwoStringVector &sentence , CDependencyParse *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) = 0 ;
+#endif
    virtual void train( const CDependencyParse &correct , int round ) = 0 ;
 
    virtual void parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 ) {
