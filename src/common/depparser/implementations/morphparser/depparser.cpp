@@ -108,6 +108,16 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &b1_word = b1_index==-1 ? g_emptyWord : m_lCache[b1_index];
    const CWord &b2_word = b2_index==-1 ? g_emptyWord : m_lCache[b2_index];
 
+   const CWord &b0_pref1 = b0_index==-1 ? g_emptyWord : m_lCacheP1[b0_index];
+   const CWord &b0_pref2 = b0_index==-1 ? g_emptyWord : m_lCacheP2[b0_index];
+   const CWord &b0_pref3 = b0_index==-1 ? g_emptyWord : m_lCacheP3[b0_index];
+   const CWord &b0_pref4 = b0_index==-1 ? g_emptyWord : m_lCacheP4[b0_index];
+
+   const CWord &b0_suff1 = b0_index==-1 ? g_emptyWord : m_lCacheS1[b0_index];
+   const CWord &b0_suff2 = b0_index==-1 ? g_emptyWord : m_lCacheS2[b0_index];
+   const CWord &b0_suff3 = b0_index==-1 ? g_emptyWord : m_lCacheS3[b0_index];
+   const CWord &b0_suff4 = b0_index==-1 ? g_emptyWord : m_lCacheS4[b0_index];
+
    const int &st_label = st_index==-1 ? CDependencyLabel::NONE : item->label(st_index);
    const int &sth_label = sth_index==-1 ? CDependencyLabel::NONE : item->label(sth_index);
    const int &stld_label = stld_index==-1 ? CDependencyLabel::NONE : item->label(stld_index);
@@ -178,8 +188,6 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    static CTuple2<CMorph, CSetOfTags<CDependencyLabel> > morph_tagset;
 
-
-   //TODO: We are here.
    //Modify together with depparser_weight.h.
 
    //TODO:
@@ -273,6 +281,19 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    if (b2_index != -1) {
          cast_weights->m_mapB2w.getOrUpdateScore( retval, b2_word, action, m_nScoreIndex, amount, round ) ;
+   }
+
+   //prefixes and suffixes of b0 for tagging
+   if (b0_index != -1) {
+         cast_weights->m_mapB0p1.getOrUpdateScore( retval, b0_pref1, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0p2.getOrUpdateScore( retval, b0_pref2, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0p3.getOrUpdateScore( retval, b0_pref3, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0p4.getOrUpdateScore( retval, b0_pref4, action, m_nScoreIndex, amount, round ) ;
+
+         cast_weights->m_mapB0s1.getOrUpdateScore( retval, b0_suff1, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0s2.getOrUpdateScore( retval, b0_suff2, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0s3.getOrUpdateScore( retval, b0_suff3, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0s4.getOrUpdateScore( retval, b0_suff4, action, m_nScoreIndex, amount, round ) ;
    }
 
 
@@ -630,8 +651,25 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
    // initialise word cache
    bContradictsRules = false;
    m_lCache.clear();
+   m_lCacheP1.clear(); m_lCacheP2.clear(); m_lCacheP3.clear(); m_lCacheP4.clear();
+   m_lCacheS1.clear(); m_lCacheS2.clear(); m_lCacheS3.clear(); m_lCacheS4.clear();
    for ( index=0; index<length; ++index ) {
       m_lCache.push_back( CWord(sentence[index]) );
+
+      m_lCacheP1.push_back( CWord(sentence[index].substr(0,1)) );
+      m_lCacheP2.push_back( CWord(sentence[index].substr(0,2)) );
+      m_lCacheP3.push_back( CWord(sentence[index].substr(0,3)) );
+      m_lCacheP4.push_back( CWord(sentence[index].substr(0,4)) );
+
+      m_lCacheS1.push_back( sentence[index].length() < 1 ? CWord(sentence[index]) : CWord(sentence[index].substr(sentence[index].length()-1,1)) );
+      m_lCacheS2.push_back( sentence[index].length() < 2 ? CWord(sentence[index]) : CWord(sentence[index].substr(sentence[index].length()-2,2)) );
+      m_lCacheS3.push_back( sentence[index].length() < 3 ? CWord(sentence[index]) : CWord(sentence[index].substr(sentence[index].length()-3,3)) );
+      m_lCacheS4.push_back( sentence[index].length() < 4 ? CWord(sentence[index]) : CWord(sentence[index].substr(sentence[index].length()-4,4)) );
+
+      m_lCacheHasDigit.push_back ( std::string::npos != sentence[index].find_first_of("0123456789") );
+      m_lCacheHasUpper.push_back ( std::string::npos != sentence[index].find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") );
+      m_lCacheHasHyphen.push_back ( std::string::npos != sentence[index].find_first_of("-") );
+
       // filter std::cout training examples with rules
       if (bTrain && m_weights->rules()) {
     	  //we don't use these rules as they use postags
