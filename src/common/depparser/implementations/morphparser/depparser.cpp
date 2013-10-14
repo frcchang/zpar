@@ -118,6 +118,10 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &b0_suff3 = b0_index==-1 ? g_emptyWord : m_lCacheS3[b0_index];
    const CWord &b0_suff4 = b0_index==-1 ? g_emptyWord : m_lCacheS4[b0_index];
 
+   const bool &b0_hasDigit = b0_index==-1 ? false : m_lCacheHasDigit[b0_index];
+   const bool &b0_hasUpper = b0_index==-1 ? false : m_lCacheHasUpper[b0_index];
+   const bool &b0_hasHyphen = b0_index==-1 ? false : m_lCacheHasHyphen[b0_index];
+
    const int &st_label = st_index==-1 ? CDependencyLabel::NONE : item->label(st_index);
    const int &sth_label = sth_index==-1 ? CDependencyLabel::NONE : item->label(sth_index);
    const int &stld_label = stld_index==-1 ? CDependencyLabel::NONE : item->label(stld_index);
@@ -283,7 +287,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
          cast_weights->m_mapB2w.getOrUpdateScore( retval, b2_word, action, m_nScoreIndex, amount, round ) ;
    }
 
-   //prefixes and suffixes of b0 for tagging
+   //prefixes and suffixes of b0 for tagging, as well as whether it has digits, uppercase or hyphens
    if (b0_index != -1) {
          cast_weights->m_mapB0p1.getOrUpdateScore( retval, b0_pref1, action, m_nScoreIndex, amount, round ) ;
          cast_weights->m_mapB0p2.getOrUpdateScore( retval, b0_pref2, action, m_nScoreIndex, amount, round ) ;
@@ -294,6 +298,10 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
          cast_weights->m_mapB0s2.getOrUpdateScore( retval, b0_suff2, action, m_nScoreIndex, amount, round ) ;
          cast_weights->m_mapB0s3.getOrUpdateScore( retval, b0_suff3, action, m_nScoreIndex, amount, round ) ;
          cast_weights->m_mapB0s4.getOrUpdateScore( retval, b0_suff4, action, m_nScoreIndex, amount, round ) ;
+
+         cast_weights->m_mapB0hd.getOrUpdateScore( retval, b0_hasDigit, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0hu.getOrUpdateScore( retval, b0_hasUpper, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB0hh.getOrUpdateScore( retval, b0_hasHyphen, action, m_nScoreIndex, amount, round ) ;
    }
 
 

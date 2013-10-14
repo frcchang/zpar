@@ -19,6 +19,8 @@ inline unsigned long hash(const unsigned long long &i) {return i;}
 
 inline unsigned long hash(const std::string &s) {unsigned long retval=0; for (unsigned long i=0; i<s.size(); ++i) retval=retval*33+(static_cast<unsigned char>(s[i])&127); return retval;}
 
+inline unsigned long hash(const bool &b) {return b?1ul:0ul;}
+
 template<typename T>
 inline unsigned long hash(const T& t) { return t.hash(); }
 
