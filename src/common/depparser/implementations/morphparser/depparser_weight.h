@@ -65,6 +65,9 @@
    left(m_mapB0s2)right\
    left(m_mapB0s3)right\
    left(m_mapB0s4)right\
+   left(m_mapB0hd)right\
+   left(m_mapB0hu)right\
+   left(m_mapB0hh)right\
 \
    left(m_mapSTwmN0wm)right\
    left(m_mapSTwmN0w)right\
@@ -237,6 +240,9 @@ public:
    CWordMap m_mapB0s2;
    CWordMap m_mapB0s3;
    CWordMap m_mapB0s4;
+   CBoolMap m_mapB0hd;
+   CBoolMap m_mapB0hu;
+   CBoolMap m_mapB0hh;
 
    CWordWordMorphMorphMap m_mapSTwmN0wm;
    CWordWordMorphMap m_mapSTwmN0w;
@@ -360,6 +366,9 @@ public:
                                                m_mapB0s2("NextUnanalyzedSuffix2", DEP_TABLE_SIZE),
                                                m_mapB0s3("NextUnanalyzedSuffix3", DEP_TABLE_SIZE),
                                                m_mapB0s4("NextUnanalyzedSuffix4", DEP_TABLE_SIZE),
+                                               m_mapB0hd("NextUnanalyzedSuffixHasDigit", DEP_TABLE_SIZE),
+                                               m_mapB0hu("NextUnanalyzedSuffixHasUpper", DEP_TABLE_SIZE),
+                                               m_mapB0hh("NextUnanalyzedSuffixHasHyphen", DEP_TABLE_SIZE),
 
                                                m_mapSTwmN0wm("StackWordMorphNextWordMorph", DEP_TABLE_SIZE),
                                                m_mapSTwmN0w("StackWordMorphNextWord", DEP_TABLE_SIZE),
