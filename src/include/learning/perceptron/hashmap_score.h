@@ -64,7 +64,10 @@ public:
 #ifdef NO_NEG_FEATURE
       if (m_positive->element(key)) 
 #endif // update can only happen with defined features
-      (*this)[ key ].updateCurrent( amount , round );
+			{
+//				fprintf(stderr, "update feature by %.2f\n", amount);
+      	(*this)[ key ].updateCurrent( amount , round );
+			}
    }
 
    virtual inline SCORE_TYPE getOrUpdateScore( const K &key , const int &which, const SCORE_TYPE &amount=0 , const int &round=0 ) {
