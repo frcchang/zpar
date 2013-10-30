@@ -1007,128 +1007,197 @@ public:
 	   //S < (NP=target $+ NP|ADJP) > VP
 	   //std::cout<<"Rule 1 \n";
 	   buildNsubj1();
+	   std::cerr<<"Nsubj1 \n";
 	   //SQ|PRN < (NP=target !< EX $++ VP)
 	   //std::cout<<"Rule 2 \n";
 	   buildNsubj2();
+	   std::cerr<<"Nsubj2 \n";
 	   //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
 	   //std::cout<<"Rule 3 \n";
 	   buildNsubj3();
+	   std::cerr<<"Nsubj3 \n";
 	   //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++VP)",
 	   //std::cout<<"Rule 4 \n";
 	   buildNsubj4();
+	   std::cerr<<"Nsubj4 \n";
 	   //"S < (NP < EX) <+(VP) (VP < NP=target)"
 	   //std::cout<<"Rule 5 \n";
 	   buildNsubj5();
+	   std::cerr<<"Nsubj5 \n";
 	   //"SQ < ((NP=target !< EX) $- /^(?:VB|AUX)/ !$++ VP)",
 	   //std::cout<<"Rule 6 \n";
 	   buildNsubj6();
+	   std::cerr<<"Nsubj6 \n";
 	   //"SQ < ((NP=target !< EX) $- (RB $- /^(?:VB|AUX)/) ![$++ VP])",
 	   //std::cout<<"Rule 7 \n";
 	   buildNsubj7();
+	   std::cerr<<"Nsubj7 \n";
 	   //"SBARQ < WHNP=target < (SQ < (VP ![$-- NP]))",
 	   //std::cout<<"Rule 8 \n";
 	   buildNsubj8();
+	   std::cerr<<"Nsubj8 \n";
 	   //"SBARQ < (SQ=target < /^(?:VB|AUX)/ !< VP)",
 	   //std::cout<<"Rule 9 \n";
 	   buildNsubj9();
+	   std::cerr<<"Nsubj9 \n";
 	   //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
 	   //std::cout<<"Rule 10 \n";
 	   buildNsubj10();
+	   std::cerr<<"Nsubj10 \n";
 	   //"SBAR < WHNP=target [ < (S < (VP !$-- NP) !< SBAR) | < (VP !$-- NP) !< S ]"
 	   //std::cout<<"Rule 11 \n";
 	   buildNsubj11(); //REVISE
+	   std::cerr<<"Nsubj11 \n";
 	   //"SBAR !< WHNP < (S !< (NP $++ VP)) > (VP > (S $- WHNP=target))",
 	   //std::cout<<"Rule 12 \n";
 	   buildNsubj12();
+	   std::cerr<<"Nsubj12 \n";
 	   //"SQ < ((NP < EX) $++ NP=target)",
 	   //std::cout<<"Rule 13 \n";
 	   buildNsubj13();
+	   std::cerr<<"Nsubj13 \n";
 	   
-	   
-	   //std::cerr<<"Aux 1 \n";
+
+
 	   buildAux1();
-	   //std::cerr<<"Aux 2 \n";
+	   std::cerr<<"Aux 1 \n";
 	   buildAux2();
-	   //std::cerr<<"Aux 3 \n";
+	   std::cerr<<"Aux 2 \n";
 	   buildAux3();
-	   //std::cerr<<"Aux 4 \n";
+	   std::cerr<<"Aux 3 \n";
 	   buildAux4();
+	   std::cerr<<"Aux 4 \n";
 	   
-	   //std::cerr<<"CC 1 \n";
 	   cc1();
-	   //std::cerr<<"CC 2 \n";
+	   std::cerr<<"CC 1 \n";
 	   cc2();
+	   std::cerr<<"CC 2 \n";
 	   
-	   //std::cerr<<"csubj 1 \n";
 	   csubj1();
+	   std::cerr<<"csubj 1 \n";
 	   
-	   //std::cerr<<"Nsubjpass 1 \n";
+
 	   buildNsubjpass1();
+	   std::cerr<<"Nsubjpass 1 \n";
 
 
-	   buildExpl1();
+	   //buildExpl1();
+	   std::cerr<<"Expl1 \n";
 
 	   buildDobj1();
+	   std::cerr<<"Dobj1 \n";
 	   buildDobj2();
+	   std::cerr<<"Dobj2 \n";
 	   buildDobj3();
+	   std::cerr<<"Dobj3 \n";
 	   buildDobj4();
+	   std::cerr<<"Dobj4 \n";
 	   buildDobj5();
+	   std::cerr<<"Dobj5 \n";
 	   buildDobj6();
+	   std::cerr<<"Dobj6 \n";
 	   buildDobj7();
+	   std::cerr<<"Dobj7 \n";
 	   buildDobj8();
+	   std::cerr<<"Dobj8 \n";
 
 	   builIObj1();
+	   std::cerr<<"Iobj1 \n";
 	   builIObj2();
+	   std::cerr<<"Iobj2 \n";
 
-	   buildAttr1();
-	   buildAttr2();
+	   //buildAttr1();
+	   std::cerr<<"Attr1 \n";
+	   //buildAttr2();
+	   std::cerr<<"Attr2 \n";
 	   buildAttr3();
+	   std::cerr<<"Attr3 \n";
 	   buildAttr4();
+	   std::cerr<<"Attr4 \n";
 
 	   buildCComp1();
+	   std::cerr<<"Ccomp1 \n";
 	   buildCComp2();
+	   std::cerr<<"Ccomp2 \n";
 	   buildCComp3();
+	   std::cerr<<"Ccomp3 \n";
 	   buildCComp4();
+	   std::cerr<<"Ccomp4 \n";
 	   buildCComp5();
+	   std::cerr<<"Ccomp5 \n";
 	   buildCComp6();
+	   std::cerr<<"Ccomp6 \n";
 	   buildCComp7();
+	   std::cerr<<"Ccomp7 \n";
 	   buildCComp8();
+	   std::cerr<<"Ccomp8 \n";
 	   buildCComp9();
+	   std::cerr<<"Ccomp9 \n";
 	   buildCComp10();
+	   std::cerr<<"Ccomp10 \n";
 	   buildCComp11();
+	   std::cerr<<"Ccomp11 \n";
 
 	   buildXComp1();
+	   std::cerr<<"XComp1 \n";
 	   buildXComp2();
+	   std::cerr<<"XComp2 \n";
 	   buildXComp3();
-	   buildXComp4();
+	   std::cerr<<"XComp3 \n";
+	   //buildXComp4();
+	   std::cerr<<"XComp4 \n";
 	   buildXComp5();
+	   std::cerr<<"XComp5 \n";
 	   buildXComp6();
+	   std::cerr<<"XComp6 \n";
 	   buildXComp7();
+	   std::cerr<<"XComp7 \n";
 
 	   buildPunct1();
+	   std::cerr<<"Punct1 \n";
 	   buildPunct2();
+	   std::cerr<<"Punct2 \n";
 
 	   buildPobj1();
+	   std::cerr<<"Pobj1 \n";
 	   buildPobj2();
+	   std::cerr<<"Pobj2 \n";
 	   buildPobj3();
+	   std::cerr<<"Pobj3 \n";
 	   buildPobj4();
+	   std::cerr<<"Pobj4 \n";
 	   buildPobj5();
+	   std::cerr<<"Pobj5 \n";
 	   buildPobj6();
-	   buildPobj7();
+	   std::cerr<<"Pobj6 \n";
+	   //buildPobj7();
+	   std::cerr<<"Pobj7 \n";
 	   buildPobj8();
+	   std::cerr<<"Pobj8 \n";
 
 	   buildPComp1();
+	   std::cerr<<"PComp1 \n";
 	   buildPComp2();
+	   std::cerr<<"PComp2 \n";
 	   buildPComp3();
+	   std::cerr<<"PComp3 \n";
 
 	   buildConj1();
+	   std::cerr<<"Conj1 \n";
 	   buildConj2();
+	   std::cerr<<"Conj2 \n";
 	   buildConj3();
+	   std::cerr<<"Conj3 \n";
 	   buildConj4();
+	   std::cerr<<"Conj4 \n";
 	   buildConj5();
+	   std::cerr<<"Conj5 \n";
 	   buildConj6();
+	   std::cerr<<"Conj6 \n";
 	   buildConj7();
+	   std::cerr<<"Conj7 \n";
 	   buildConj8();
+	   std::cerr<<"Conj8 \n";
 
 
 
