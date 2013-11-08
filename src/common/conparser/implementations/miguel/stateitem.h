@@ -1200,6 +1200,152 @@ public:
 	   std::cerr<<"Conj8 \n";
 
 
+	   buildAComp1();
+
+	   advcl1();
+	   advcl2();
+	   advcl3();
+	   advcl4();
+	   advcl5();
+	   advcl6();
+	   advcl7();
+	   advcl8();
+	   advcl9();
+
+	   advmod1();
+	   advmod2();
+	   advmod3();
+	   advmod4();
+	   advmod5();
+	   advmod6();
+
+	   amod1();
+	   amod2();
+	   amod3();
+
+	   appos1();
+	   appos2();
+	   appos3();
+	   appos4();
+	   appos5();
+
+	   auxpass1();
+	   auxpass2();
+	   auxpass3();
+	   auxpass4();
+
+	   cop1();
+	   cop2();
+
+	   csubjpass1();
+	   csubjpass2();
+
+	   det1();
+	   det2();
+	   det3();
+	   det4();
+	   det5();
+	   det6();
+	   det7();
+
+	   discourse1();
+	   discourse2();
+	   discourse3();
+
+	   goesWith();
+
+	   infmod1();
+	   infmod2();
+
+	   mark1();
+	   mark2();
+
+	   mwe1();
+	   mwe2();
+	   mwe3();
+	   mwe4();
+	   mwe5();
+	   mwe6();
+
+	   neg1();
+	   neg2();
+	   neg3();
+
+	   nn1();
+	   nn2();
+	   nn3();
+
+	   npadvmod1();
+	   npadvmod2();
+	   npadvmod3();
+	   npadvmod4();
+	   npadvmod5();
+
+	   num1();
+	   num2();
+
+	   number1();
+
+	   parataxis1();
+	   parataxis2();
+	   parataxis3();
+	   parataxis4();
+
+	   partmod1();
+	   partmod2();
+	   partmod3();
+	   partmod4();
+
+	   poss1();
+	   poss2();
+	   poss3();
+
+	   possessive1();
+	   possessive2();
+
+	   preconj1();
+	   preconj2();
+	   preconj3();
+	   preconj4();
+	   preconj5();
+
+	   predet1();
+	   predet2();
+	   predet3();
+
+	   prep1();
+	   prep2();
+	   prep3();
+	   prep4();
+
+	   prt1();
+	   prt2();
+
+	   quantmod1();
+
+	   rcmod1();
+	   rcmod2();
+	   rcmod3();
+	   rcmod4();
+	   rcmod5();
+
+	   rel1();
+
+	   tmod1();
+	   tmod2();
+	   tmod3();
+	   tmod4();
+	   tmod5();
+	   tmod6();
+	   tmod7();
+	   tmod8();
+	   tmod9();
+
+
+
+
+
+
 
    }
    
@@ -1607,8 +1753,6 @@ public:
     #include "rules/cop.cpp"
     #include "rules/csubjpass.cpp"
     #include "rules/det.cpp"
-    #include "rules/csubjpass.cpp"
-    #include "rules/det.cpp"
     #include "rules/discourse.cpp"
     #include "rules/goeswith.cpp"
     #include "rules/infmod.cpp"
@@ -1632,6 +1776,21 @@ public:
     #include "rules/pobj.cpp"
     #include "rules/pcomp.cpp"
     #include "rules/conj.cpp"
+    #include "rules/amod.cpp"
+#include "rules/num.cpp"
+#include "rules/number.cpp"
+#include "rules/parataxis.cpp"
+#include "rules/partmod.cpp"
+#include "rules/poss.cpp"
+#include "rules/possessive.cpp"
+#include "rules/preconj.cpp"
+#include "rules/predet.cpp"
+#include "rules/prep.cpp"
+#include "rules/prt.cpp"
+#include "rules/quantmod.cpp"
+#include "rules/rcmod.cpp"
+#include "rules/rel.cpp"
+#include "rules/tmod.cpp"
 
 	
 
