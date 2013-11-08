@@ -1081,7 +1081,7 @@ public:
 	   std::cerr<<"Nsubjpass 1 \n";
 
 
-	   //buildExpl1();
+	   buildExpl1();
 	   std::cerr<<"Expl1 \n";
 
 	   buildDobj1();
@@ -1106,9 +1106,9 @@ public:
 	   builIObj2();
 	   std::cerr<<"Iobj2 \n";
 
-	   //buildAttr1();
+	   buildAttr1();
 	   std::cerr<<"Attr1 \n";
-	   //buildAttr2();
+	   buildAttr2();
 	   std::cerr<<"Attr2 \n";
 	   buildAttr3();
 	   std::cerr<<"Attr3 \n";
@@ -1144,7 +1144,7 @@ public:
 	   std::cerr<<"XComp2 \n";
 	   buildXComp3();
 	   std::cerr<<"XComp3 \n";
-	   //buildXComp4();
+	   buildXComp4();
 	   std::cerr<<"XComp4 \n";
 	   buildXComp5();
 	   std::cerr<<"XComp5 \n";
@@ -1170,7 +1170,7 @@ public:
 	   std::cerr<<"Pobj5 \n";
 	   buildPobj6();
 	   std::cerr<<"Pobj6 \n";
-	   //buildPobj7();
+	   buildPobj7();
 	   std::cerr<<"Pobj7 \n";
 	   buildPobj8();
 	   std::cerr<<"Pobj8 \n";
