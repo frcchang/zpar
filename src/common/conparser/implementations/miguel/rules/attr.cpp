@@ -21,7 +21,7 @@
     							childsExofNp=childsExofNp->next;
     						}
     					}
-    					leftSisters->previous;
+    					leftSisters=leftSisters->previous;
     				}
     				CStateNodeList* rightSisters=childsVp->next;
     				while(rightSisters!=0){
@@ -36,7 +36,7 @@
     				    		childsExofNp=childsExofNp->next;
     				    	}
     				    }
-    				    rightSisters->next;
+    				    rightSisters=rightSisters->next;
     				}
 
     				if (secondCondition){

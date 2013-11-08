@@ -141,7 +141,7 @@ bool buildXComp3() {
    			}
    			childsVp=childsVp->next;
    		}
-   		if (firstCondition){
+   		if (firstCondition && childsVp!=0){
    			//A $+ B 	A is the immediate left sister of B
    			if (childsVp->next!=0){
    				const CStateNode* vpTarg=childsVp->next->node;

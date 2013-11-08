@@ -34,11 +34,12 @@ bool buildPobj6() {}
   		 bool firstCondition=false;
   		 CStateNodeList* childsPP=node.m_umbinarizedSubNodes;
   		 while(childsPP!=0){
+  			std::cerr<<"Entra al while 1 \n";
   			 const CStateNode* inChildPP=childsPP->node;
   			 if (((*words)[inChildPP->lexical_head].tag.code()==PENN_TAG_IN)) {
   				 CStateNodeList* childsIn=inChildPP->m_umbinarizedSubNodes;
   				 while(childsIn!=0){
-  					 if (((*words)[childsIn->next->node->lexical_head].word==g_word_at)) {
+  					 if (((*words)[childsIn->node->lexical_head].word==g_word_at)) {
   						 firstCondition=true;
   					 }
   					 childsIn=childsIn->next;
@@ -47,9 +48,12 @@ bool buildPobj6() {}
   			 childsPP=childsPP->next;
   		 }
   		 if (firstCondition){
-  			 childsPP=node.m_umbinarizedSubNodes;
-  			 while(childsPP!=0){
-  				 const CStateNode* jjsdtTarg=childsPP->node;
+
+  			CStateNodeList* childsPP2=node.m_umbinarizedSubNodes;
+  			 while(childsPP2!=0){
+  				std::cerr<<"Entra al while 2 \n";
+  				 const CStateNode* jjsdtTarg=childsPP2->node;
+  				std::cerr<<jjsdtTarg->constituent;
   				 if ((!isLinked(&node,jjsdtTarg))
   						 && (((*words)[jjsdtTarg->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)
   								 ||((*words)[jjsdtTarg->lexical_head].tag.code()==PENN_TAG_DT))) {
@@ -59,7 +63,7 @@ bool buildPobj6() {}
   						 return true;
   					 }
   				 }
-  				 childsPP=childsPP->next;
+  				 childsPP2=childsPP2->next;
   			 }
   		 }
 

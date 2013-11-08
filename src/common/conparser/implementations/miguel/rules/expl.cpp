@@ -38,8 +38,9 @@
 							npsChain=npsChain->next;
 						}
 					}
+					childsNp=childsNp->next;
      			}
-				childsNp=childsNp->next;
+
      		   }
      		   childsS=childsS->next;
      	   }
