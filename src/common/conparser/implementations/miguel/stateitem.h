@@ -182,6 +182,10 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_lowhyphen("_");
 
  static CWord g_word_at("at");
+ static CWord g_word_in("in");
+ 
+ static CWord g_word_to("to");
+ static CWord g_word_addition("addition");
 
 
 
@@ -1826,6 +1830,8 @@ public:
     	 }
 
      }
+
+     
 
 
     
