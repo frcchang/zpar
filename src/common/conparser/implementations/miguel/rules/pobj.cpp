@@ -39,7 +39,7 @@ bool buildPobj6() {}
   			 if (((*words)[inChildPP->lexical_head].tag.code()==PENN_TAG_IN)) {
   				 CStateNodeList* childsIn=inChildPP->m_umbinarizedSubNodes;
   				 while(childsIn!=0){
-  					 if (((*words)[childsIn->node->lexical_head].word==g_word_at)) {
+  					 if (((*words)[childsIn->node->lexical_head].word==g_word_at)||((*words)[childsIn->node->lexical_head].word==g_word_in)) {
   						 firstCondition=true;
   					 }
   					 childsIn=childsIn->next;
