@@ -17,7 +17,7 @@ namespace english
 {
 
 //the tag dictionary will only contain words that appear more than this amount of times. The rest of the words will be considered unknown.
-#define RARE_WORD_CUTOFF 5
+#define RARE_WORD_CUTOFF 2
 
 //map from words to tags, extracted from the training set
 std::map< std::string , std::set<CTag> > trainingSetLexicon;
