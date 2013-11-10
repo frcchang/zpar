@@ -1205,6 +1205,7 @@ public:
 
 
 	   buildAComp1();
+	   buildAComp2();
 
 	   advcl1();
 	   advcl2();
@@ -1830,6 +1831,12 @@ public:
     	 }
 
      }
+     
+     
+     
+
+     
+
 
      
 
