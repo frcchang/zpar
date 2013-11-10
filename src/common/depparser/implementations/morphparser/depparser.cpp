@@ -127,7 +127,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int &stld_label = stld_index==-1 ? CDependencyLabel::NONE : item->label(stld_index);
    const int &strd_label = strd_index==-1 ? CDependencyLabel::NONE : item->label(strd_index);
    const int &stl2d_label = stl2d_index==-1 ? CDependencyLabel::NONE : item->label(stl2d_index);
-   const int &str2d_label = str2d_index==-1 ? CDependencyLabel::NONE : item->label(strd_index);
+   const int &str2d_label = str2d_index==-1 ? CDependencyLabel::NONE : item->label(str2d_index);
    const int &n0ld_label = n0ld_index==-1 ? CDependencyLabel::NONE : item->label(n0ld_index);
    const int &n0l2d_label = n0l2d_index==-1 ? CDependencyLabel::NONE : item->label(n0l2d_index);
 
