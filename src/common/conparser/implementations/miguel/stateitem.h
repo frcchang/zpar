@@ -1833,9 +1833,7 @@ public:
      }
      
      
-     
-
-     
+          
 
 
      
@@ -1854,7 +1852,8 @@ public:
       
       //conj rules. There are 
       //(stf comment) this is more ugly, but the first 3 patterns are now duplicated and for clausal things, that daughter to the left of the CC/CONJP can't be a PP or RB or ADVP either
-      //(stf comment) non-parenthetical or comma in suitable phrase with conjunction to left
+     
+     //(stf comment) non-parenthetical or comma in suitable phrase with conjunction to left
       //"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
       // non-parenthetical or comma in suitable phrase with conj then adverb to left
       //"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ (ADVP $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target))",
