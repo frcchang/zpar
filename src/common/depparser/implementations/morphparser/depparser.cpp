@@ -60,12 +60,21 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static int b1_index;
    static int b2_index;
    static int b3_index;
-   n1_index = (n0_index != -1 && n0_index+1<m_lCache.size()) ? n0_index+1 : -1 ;
-   n2_index = (n0_index != -1 && n0_index+2<m_lCache.size()) ? n0_index+2 : -1 ;
-   n3_index = (n0_index != -1 && n0_index+3<m_lCache.size()) ? n0_index+3 : -1 ;
-   b1_index = (b0_index != -1 && b0_index+1<m_lCache.size()) ? b0_index+1 : -1 ;
-   b2_index = (b0_index != -1 && b0_index+2<m_lCache.size()) ? b0_index+2 : -1 ;
-   n3_index = (b0_index != -1 && b0_index+3<m_lCache.size()) ? b0_index+3 : -1 ;
+   n1_index = (n0_index != -1 && n0_index+1<m_lCache.size()) ? n0_index+1 : -1 ; //cache 1
+   n2_index = (n0_index != -1 && n0_index+2<m_lCache.size()) ? n0_index+2 : -1 ; //cache 2
+   n3_index = (n0_index != -1 && n0_index+3<m_lCache.size()) ? n0_index+3 : -1 ; //cache 3
+   b1_index = (b0_index != -1 && b0_index+1<m_lCache.size()) ? b0_index+1 : -1 ; //buffer 1
+   b2_index = (b0_index != -1 && b0_index+2<m_lCache.size()) ? b0_index+2 : -1 ; //buffer 2
+   b3_index = (b0_index != -1 && b0_index+3<m_lCache.size()) ? b0_index+3 : -1 ; //buffer 3
+   //buffer -x features
+   static int bm1_index;
+   static int bm2_index;
+   static int bm3_index;
+   bm1_index = (b0_index != -1 && b0_index-1>=0) ? b0_index-1 : -1 ; //buffer -1
+   bm2_index = (b0_index != -1 && b0_index-2>=0) ? b0_index-2 : -1 ; //buffer -2
+   bm3_index = (b0_index != -1 && b0_index-3>=0) ? b0_index-3 : -1 ; //buffer -3
+   const int &bm2h_index = (bm2_index == -1 || bm2_index > item->size()) ? -1 : item->head(bm2_index); // buffer minus 2 head
+   const int &bm3h_index = (bm3_index == -1 || bm3_index > item->size()) ? -1 : item->head(bm3_index); // buffer minus 3 head
 
    //version without lemmas as words:
 /*
@@ -108,6 +117,13 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &b1_word = b1_index==-1 ? g_emptyWord : m_lCache[b1_index];
    const CWord &b2_word = b2_index==-1 ? g_emptyWord : m_lCache[b2_index];
 
+   const CWord &bm1_word = bm1_index==-1 ? g_emptyWord : item->lemmaascword(bm1_index);
+   const CWord &bm2_word = bm2_index==-1 ? g_emptyWord : item->lemmaascword(bm2_index);
+   const CWord &bm3_word = bm3_index==-1 ? g_emptyWord : item->lemmaascword(bm3_index);
+
+   const CWord &bm2h_word = bm2h_index==-1 ? g_emptyWord : item->lemmaascword(bm2h_index);
+   const CWord &bm3h_word = bm3h_index==-1 ? g_emptyWord : item->lemmaascword(bm3h_index);
+
    const CWord &b0_pref1 = b0_index==-1 ? g_emptyWord : m_lCacheP1[b0_index];
    const CWord &b0_pref2 = b0_index==-1 ? g_emptyWord : m_lCacheP2[b0_index];
    const CWord &b0_pref3 = b0_index==-1 ? g_emptyWord : m_lCacheP3[b0_index];
@@ -146,6 +162,12 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CMorph &n1_morph = (n1_index==-1 || item->cachesize()<=1) ? CMorph::NONE : item->morph(n1_index);
    const CMorph &n2_morph = (n2_index==-1 || item->cachesize()<=2) ? CMorph::NONE : item->morph(n2_index);
 
+   const CMorph &bm1_morph = (bm1_index==-1) ? CMorph::NONE : item->morph(bm1_index);
+   const CMorph &bm2_morph = (bm2_index==-1) ? CMorph::NONE : item->morph(bm2_index);
+   const CMorph &bm3_morph = (bm3_index==-1) ? CMorph::NONE : item->morph(bm3_index);
+
+   const CMorph &bm2h_morph = (bm2h_index==-1) ? CMorph::NONE : item->morph(bm2h_index);
+   const CMorph &bm3h_morph = (bm3h_index==-1) ? CMorph::NONE : item->morph(bm3h_index);
 
    static int st_n0_dist;
    st_n0_dist = encodeLinkDistance(st_index, n0_index);
@@ -274,6 +296,42 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0L2Di.getOrUpdateScore( retval, n0l2d_label, action, m_nScoreIndex, amount, round) ;
    }
 
+   //buffer minus x features
+   if (bm1_index != -1) {
+      cast_weights->m_mapBM1w.getOrUpdateScore( retval, bm1_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapBM1m.getOrUpdateScore( retval, bm1_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &bm1_word, &bm1_morph);
+      cast_weights->m_mapBM1wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (bm2_index != -1) {
+      cast_weights->m_mapBM2w.getOrUpdateScore( retval, bm2_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapBM2m.getOrUpdateScore( retval, bm2_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &bm2_word, &bm2_morph);
+      cast_weights->m_mapBM2wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (bm3_index != -1) {
+      cast_weights->m_mapBM3w.getOrUpdateScore( retval, bm3_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapBM3m.getOrUpdateScore( retval, bm3_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &bm3_word, &bm3_morph);
+      cast_weights->m_mapBM3wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (bm2h_index != -1) {
+      cast_weights->m_mapBM2Hw.getOrUpdateScore( retval, bm2h_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapBM2Hm.getOrUpdateScore( retval, bm2h_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &bm2h_word, &bm2h_morph);
+      cast_weights->m_mapBM2Hwm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (bm3h_index != -1) {
+      cast_weights->m_mapBM3Hw.getOrUpdateScore( retval, bm3h_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapBM3Hm.getOrUpdateScore( retval, bm3h_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &bm3h_word, &bm3h_morph);
+      cast_weights->m_mapBM3Hwm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
    //b0, b1, b2 word forms (we have no lemmas or morph yet)
    if (b0_index != -1) {
          cast_weights->m_mapB0w.getOrUpdateScore( retval, b0_word, action, m_nScoreIndex, amount, round ) ;
@@ -322,6 +380,14 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTmN0m.getOrUpdateScore( retval, morph_morph, action, m_nScoreIndex, amount, round ) ;
    }
 
+   //buffer -x morph
+   if (bm1_index != -1 && bm2_index != -1) {
+	  refer_or_allocate_tuple2(morph_morph, &bm1_morph, &bm2_morph);
+      cast_weights->m_mapBM1mBM2m.getOrUpdateScore( retval, morph_morph, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(morph_morph_morph, &bm1_morph, &bm2_morph, &bm3_morph);
+      cast_weights->m_mapBM1mBM2mBM3m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+   }
+
    if (st_index != -1 && n0_index != -1) {
 	  //TODO: Use a morph set instead of tuples? Probably not, wouldn't fit in an unsigned long.
 	  refer_or_allocate_tuple2(morph_morph, &n0_morph, &n1_morph);
@@ -335,6 +401,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       refer_or_allocate_tuple3(morph_morph_morph, &n0_morph, &n0ld_morph, &n0l2d_morph);
       cast_weights->m_mapN0mN0LDmN0L2Dm.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
    }
+
    if (st_index!=-1) {
 	  refer_or_allocate_tuple3(morph_morph_morph, &sth_morph, &st_morph, &n0_morph);
       cast_weights->m_mapSTHmSTmN0m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;

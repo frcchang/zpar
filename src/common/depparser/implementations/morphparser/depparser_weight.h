@@ -53,6 +53,22 @@
    left(m_mapHTt)right\
    left(m_mapHTwt)right\
 \
+   left(m_mapBM1w)right\
+   left(m_mapBM1m)right\
+   left(m_mapBM1wm)right\
+   left(m_mapBM2w)right\
+   left(m_mapBM2m)right\
+   left(m_mapBM2wm)right\
+   left(m_mapBM3w)right\
+   left(m_mapBM3m)right\
+   left(m_mapBM3wm)right\
+   left(m_mapBM2Hw)right\
+   left(m_mapBM2Hm)right\
+   left(m_mapBM2Hwm)right\
+   left(m_mapBM3Hw)right\
+   left(m_mapBM3Hm)right\
+   left(m_mapBM3Hwm)right\
+\
    left(m_mapB0w)right\
    left(m_mapB1w)right\
    left(m_mapB2w)right\
@@ -76,6 +92,9 @@
    left(m_mapSTwmN0m)right\
    left(m_mapSTwN0w)right\
    left(m_mapSTmN0m)right\
+\
+   left(m_mapBM1mBM2m)right\
+   left(m_mapBM1mBM2mBM3m)right\
 \
    left(m_mapN0mN1m)right\
    left(m_mapN0mN1mN2m)right\
@@ -228,6 +247,22 @@ public:
    CTagMap m_mapHTt;
    CTaggedWordMap m_mapHTwt;
 
+   CWordMap m_mapBM1w;
+   CMorphMap m_mapBM1m;
+   CWordMorphMap m_mapBM1wm;
+   CWordMap m_mapBM2w;
+   CMorphMap m_mapBM2m;
+   CWordMorphMap m_mapBM2wm;
+   CWordMap m_mapBM3w;
+   CMorphMap m_mapBM3m;
+   CWordMorphMap m_mapBM3wm;
+   CWordMap m_mapBM2Hw;
+   CMorphMap m_mapBM2Hm;
+   CWordMorphMap m_mapBM2Hwm;
+   CWordMap m_mapBM3Hw;
+   CMorphMap m_mapBM3Hm;
+   CWordMorphMap m_mapBM3Hwm;
+
    CWordMap m_mapB0w;
    CWordMap m_mapB1w;
    CWordMap m_mapB2w;
@@ -251,6 +286,9 @@ public:
    CWordMorphMorphMap m_mapSTwmN0m;
    CTwoWordsMap m_mapSTwN0w;
    CMorphMorphMap m_mapSTmN0m;
+
+   CMorphMorphMap m_mapBM1mBM2m;
+   CMorphMorphMorphMap m_mapBM1mBM2mBM3m;
 
    CMorphMorphMap m_mapN0mN1m;
    CMorphMorphMorphMap m_mapN0mN1mN2m;
@@ -354,9 +392,25 @@ public:
                                                m_mapHTt("HeadStackTag", DEP_TABLE_SIZE),
                                                m_mapHTwt("HeadStackWordTag", DEP_TABLE_SIZE),
 
+                                               m_mapBM1w("Buffer-1Word", DEP_TABLE_SIZE),
+                                               m_mapBM1m("Buffer-1Morph", DEP_TABLE_SIZE),
+                                               m_mapBM1wm("Buffer-1WordMorph", DEP_TABLE_SIZE),
+                                               m_mapBM2w("Buffer-2Word", DEP_TABLE_SIZE),
+                                               m_mapBM2m("Buffer-2Morph", DEP_TABLE_SIZE),
+                                               m_mapBM2wm("Buffer-2WordMorph", DEP_TABLE_SIZE),
+                                               m_mapBM3w("Buffer-3Word", DEP_TABLE_SIZE),
+                                               m_mapBM3m("Buffer-3Morph", DEP_TABLE_SIZE),
+                                               m_mapBM3wm("Buffer-3WordMorph", DEP_TABLE_SIZE),
+                                               m_mapBM2Hw("Buffer-2HeadWord", DEP_TABLE_SIZE),
+                                               m_mapBM2Hm("Buffer-2HeadMorph", DEP_TABLE_SIZE),
+                                               m_mapBM2Hwm("Buffer-2HeadWordMorph", DEP_TABLE_SIZE),
+                                               m_mapBM3Hw("Buffer-3HeadWord", DEP_TABLE_SIZE),
+                                               m_mapBM3Hm("Buffer-3HeadMorph", DEP_TABLE_SIZE),
+                                               m_mapBM3Hwm("Buffer-3HeadWordMorph", DEP_TABLE_SIZE),
+
                                                m_mapB0w("NextUnanalyzedWord", DEP_TABLE_SIZE),
-                                               m_mapB1w("NextUnanalyzedWord", DEP_TABLE_SIZE),
-                                               m_mapB2w("NextUnanalyzedWord", DEP_TABLE_SIZE),
+                                               m_mapB1w("Next+1UnanalyzedWord", DEP_TABLE_SIZE),
+                                               m_mapB2w("Next+2UnanalyzedWord", DEP_TABLE_SIZE),
 
                                                m_mapB0p1("NextUnanalyzedPrefix1", DEP_TABLE_SIZE),
                                                m_mapB0p2("NextUnanalyzedPrefix2", DEP_TABLE_SIZE),
@@ -377,6 +431,9 @@ public:
                                                m_mapSTwmN0m("StackWordMorphNextMorph", DEP_TABLE_SIZE),
                                                m_mapSTwN0w("StackWordNextWord", DEP_TABLE_SIZE),
                                                m_mapSTmN0m("StackMorphNextMorph", DEP_TABLE_SIZE),
+
+                                               m_mapBM1mBM2m("Buffer-1-2Morph", DEP_TABLE_SIZE),
+                                               m_mapBM1mBM2mBM3m("Buffer-1-2-3Morph", DEP_TABLE_SIZE),
 
                                                m_mapN0mN1m("NextMorphNext+1Morph", DEP_TABLE_SIZE),
                                                m_mapN0mN1mN2m("NextMorphTrigram", DEP_TABLE_SIZE),
