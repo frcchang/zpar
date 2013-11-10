@@ -104,9 +104,9 @@ int main(int argc, char* argv[]) {
 //TODO This is temporary! Allow user to enter their own lexicons.
 #ifdef JOINT_MORPH
 	std::cout << "Loading lexicons...\n";
-	bool bSuccess = TARGET_LANGUAGE::initLexicon("/home/carlos/Carlos/acl11/acl11/data/en/train.conll",true);
+	bool bSuccess = TARGET_LANGUAGE::initLexicon("/home/cgomezr/en/train.conll",true);
 	std::cout << "Successfully loaded primary lexicon? " << bSuccess << "\n";
-	bSuccess = english::initLemmaLexicon("/home/carlos/multext-lexicons/en/wordform.txt");
+	bSuccess = english::initLemmaLexicon("/home/cgomezr/multext-lexicons/en/wordform.txt");
 	std::cout << "Successfully loaded the lemma lexicon? " << bSuccess << "\n";
 #endif
 
