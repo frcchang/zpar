@@ -1833,7 +1833,15 @@ public:
      }
      
      
-          
+     //"VP < (/^(?:VB|AUX|POS)/=target < " + passiveAuxWordRegex + " ) < (VP|ADJP [ < VBN|VBD | < (VP|ADJP < VBN|VBD) < CC ] )",
+     bool auxpass1(){
+    	 if (node.constituent==PENN_CON_VP){
+    		 //bool
+    		 
+    	 }
+    	 return false;
+     }
+
 
 
      
