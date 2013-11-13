@@ -1827,7 +1827,26 @@ public:
 
 
 
-    
+     //"WHNP < (NP $-- (WHNP=target < WDT))",
+     bool det6(){
+    	 if (node.constituent==PENN_CON_WHNP){
+    		 CStateNodeList* childsWhnp=node.m_umbinarizedSubNodes;
+    		 while(childsWhnp!=0){
+    			 const CStateNode* npChild=childsWhnp->next;
+    			 if (npChild->constituent==PENN_CON_NP){
+    				 CStateNodeList* leftSisters=childsWhnp->previous;
+    				 while(childsWhnp!=0){
+    					 const CStateNode* whnpTarg=childsWhnp->node;
+    					 if (whnpTarg->constituent==PENN_CON_WHNP && !(isLinked(&node,whnp))){
+
+    					 }
+    					 childsWhnp=childsWhnp->previous;
+    				 }
+    			 }
+    			 childsWhnp=childsWhnp->next;
+    		 }
+    	 }
+     }
     
     
     
