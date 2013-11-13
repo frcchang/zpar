@@ -183,9 +183,11 @@ static CWord g_word_gotten("gotten");
 
  static CWord g_word_at("at");
  static CWord g_word_in("in");
+ static CWord g_word_In("In");
  
  static CWord g_word_to("to");
  static CWord g_word_addition("addition");
+ static CWord g_word_so("so");
 
 
 
@@ -1176,8 +1178,6 @@ public:
 	   std::cerr<<"Pobj6 \n";
 	   buildPobj7();
 	   std::cerr<<"Pobj7 \n";
-	   buildPobj8();
-	   std::cerr<<"Pobj8 \n";
 
 	   buildPComp1();
 	   std::cerr<<"PComp1 \n";
@@ -1279,6 +1279,7 @@ public:
 	   nn1();
 	   nn2();
 	   nn3();
+	   nn4();
 
 	   npadvmod1();
 	   npadvmod2();
@@ -1823,28 +1824,15 @@ public:
 
 
 
-     //"PP < (CC < less) < NP" //THERE IS NO TARGET!!
-     bool buildPobj8() {
-    	 if (node.constituent==PENN_CON_PP){
-    		 bool firstCondition=false;
-
-    	 }
-
-     }
-     
 
 
-
-
-     
 
     
     
     
     
     
-    
-    
+
             
       
    
