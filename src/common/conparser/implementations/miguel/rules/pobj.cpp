@@ -71,5 +71,4 @@ bool buildPobj6() {}
   	 return false;
    }
 
-//"PP < (CC < less) < NP"
-//bool buildPobj8() {}
+
