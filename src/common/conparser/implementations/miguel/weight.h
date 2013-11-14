@@ -24,6 +24,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapHwMwl)right\ 
    left(m_mapHtMwl)right\
    left(m_mapHwMtl)right\
+   left(m_mapHwtMwtl)right\
    left(m_mapS0c)right\
    left(m_mapS0w)right\
    left(m_mapS0tc)right\
@@ -220,6 +221,7 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapHwMwl middle m_mapHwMwl right\
    left m_mapHtMwl middle m_mapHtMwl right\
    left m_mapHwMtl middle m_mapHwMtl right\
+   left m_mapHwtMwtl middle m_mapHwtMwtl right\
    left m_mapS0c middle m_mapS0c right\
    left m_mapS0w middle m_mapS0w right\
    left m_mapS0tc middle m_mapS0tc right\
@@ -450,6 +452,7 @@ typedef CScoreMapType<CTuple3<CTag,CTag,CDependencyLabel>, SCORE_TYPE, CAction::
 typedef CScoreMapType<CTuple3<CWord,CTag,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CWordTagLabelMap; //Miguel
 typedef CScoreMapType<CTuple3<CTag,CWord,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CTagWordLabelMap; //Miguel
 typedef CScoreMapType<CTuple3<CWord,CWord,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CWordWordLabelMap; //Miguel
+typedef CScoreMapType<CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CTaggedWordTaggedWordLabelMap; //Yue
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
@@ -466,13 +469,12 @@ class CWeight : public CWeightBase {
 
 public:
 	
-	//Stanford dependencies. 
-	CTagTagLabelMap m_mapHtMtl; //MIguel
-	
-	CWordWordLabelMap m_mapHwMwl; //MIguel
-	CTagWordLabelMap m_mapHtMwl; //MIguel
-	CWordTagLabelMap m_mapHwMtl; //MIguel
-	
+   //Stanford dependencies. 
+   CTagTagLabelMap m_mapHtMtl; //MIguel
+   CWordWordLabelMap m_mapHwMwl; //MIguel
+   CTagWordLabelMap m_mapHtMwl; //MIguel
+   CWordTagLabelMap m_mapHwMtl; //MIguel
+   CTaggedWordTaggedWordLabelMap m_mapHwtMwtl; // Yue
 
    // S0
    CConstituentMap m_mapS0c;
@@ -749,6 +751,7 @@ public:
                           m_mapHwMwl("HeadWordModifierWordDependencyLabel", TABLE_SIZE),
                           m_mapHtMwl("HeadTagModifierWordDependencyLabel", TABLE_SIZE),
                           m_mapHwMtl("HeadWordModifierTagDependencyLabel", TABLE_SIZE),
+                          m_mapHwtMwtl("HeadWordTagModifierWordTagDependencyLabel", TABLE_SIZE),
                           
                           m_mapS0c("Stack0Constituent", TABLE_SIZE),
                           m_mapS0w("Stack0Word", TABLE_SIZE),
