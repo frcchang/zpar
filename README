@@ -1,0 +1,13 @@
+make zpar for the Chinese zpar for CTB data
+make zpar.en for the English zpar for PTB data
+make zpar.ge for the generic, language and- and tagset-independent system
+
+make postagger for the generic postagger
+make depparser for the generic dependency parser
+make conparser for the generic constituent parser
+
+make segmentor, chinese.postagger, chinese.depparser and chinese.conparser for the word segmentation system, postagger, depparser and conparser for Chinese, respectively.
+
+make english.postagger, english.depparser, english.conparser, english.ccgparser for the postagger, dependency parser, constituent parser and CCG parser for English, respectively. 
+
+Both language specific versions of ZPar have hard coded tagsets. 
