@@ -1824,7 +1824,7 @@ public:
 
      //"QP|ADJP < (/^(?:CD|$|#)$/=target !$- CC)"
      bool number1(){
-    	 if (node.constituent==PENN_CON_ADJP||((*words)[node.constituent->lexical_head].tag.code()==PENN_TAG_IN)){
+    	 if (node.constituent==PENN_CON_ADJP||node.constituent==PENN_CON_QP){
 
     	 }
      }
