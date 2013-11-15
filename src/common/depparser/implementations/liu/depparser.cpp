@@ -1366,4 +1366,3 @@ void CDepParser::extract_features_conll( const CCoNLLOutput &input) {
     extract_features(dep);
 }
 
-#include "depparser_test.cpp"
