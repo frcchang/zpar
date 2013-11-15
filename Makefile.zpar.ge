@@ -41,6 +41,23 @@ OBJECT_GENERIC_CONPARSER = $(OBJECT_DIR)/generic.conparser
 
 #===================================================================
 
+postagger: generic.postagger
+	rm -rf $(DIST_DIR)/postagger
+	mv $(DIST_DIR)/generic.postagger $(DIST_DIR)/postagger
+	@echo The generic part-of-speech tagging system is now located in $(DIST_DIR)/postagger.
+
+depparser: generic.depparser
+	rm -rf $(DIST_DIR)/depparser
+	mv $(DIST_DIR)/generic.depparser $(DIST_DIR)/depparser
+	@echo The generic dependency parser system is now located in $(DIST_DIR)/depparser.
+
+conparser: generic.conparser
+	rm -rf $(DIST_DIR)/conparser
+	mv $(DIST_DIR)/generic.conparser $(DIST_DIR)/conparser
+	@echo The generic constituent parser system is now located in $(DIST_DIR)/conparser.
+
+#===================================================================
+
 # the partofspeech
 $(OBJECT_DIR)/pos.ge.o: $(SRC_GENERIC)/tags.h $(SRC_GENERIC)/pos/generic.h $(SRC_GENERIC)/pos/generic.cpp
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_GENERIC)/pos/generic.cpp -o $@
