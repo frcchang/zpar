@@ -176,6 +176,8 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_slash("/");
 
  static CWord g_word_dot(".");
+ static CWord g_word_dollar("$");
+ static CWord g_word_hash("#");
 
  static CWord g_word_asterisc("*");
  static CWord g_word_hyphen("-");
@@ -1822,12 +1824,6 @@ public:
      
 
 
-     //"QP|ADJP < (/^(?:CD|$|#)$/=target !$- CC)"
-     bool number1(){
-    	 if (node.constituent==PENN_CON_ADJP||node.constituent==PENN_CON_QP){
-
-    	 }
-     }
 
 
 
