@@ -56,14 +56,6 @@ public:
         return this->m_StackTop_Furthest_Grand_Word;
     }
 
-    const int StackTopNumLeftChild() const {
-        return 0;
-    }
-
-    const int StackTopNumRightChild() const {
-        return 0;
-    }
-
     const int StackTopLeftMostWord() const {
         return this->m_StackTop_LeftMostChild_Word;
     }
@@ -414,7 +406,7 @@ public:
 
         if (this->m_Stack) { next->m_StackTop_LeftTags  = m_Stack->m_StackTop_LeftTags; }
         if (this->m_Stack) { next->m_StackTop_RightTags = m_Stack->m_StackTop_RightTags; }
-        next->m_BufferFront_LeftTags.clear();
+        next->m_BufferFront_LeftTags = this->m_BufferFront_LeftTags;
 #endif  //  end for LABELED
 
         next->m_LastAction                  = action::REDUCE;
@@ -601,8 +593,8 @@ public:
 #undef NON_NULL
 
 #define NON_NULL(x) ((this->m_Stack) ? (this->m_Stack->x):0);
-        next->m_StackTop_Number_LeftChildren    = m_Stack->m_StackTop_Number_LeftChildren;
-        next->m_StackTop_Number_RightChildren   = m_Stack->m_StackTop_Number_RightChildren;
+        next->m_StackTop_Number_LeftChildren    = NON_NULL(m_StackTop_Number_LeftChildren);
+        next->m_StackTop_Number_RightChildren   = NON_NULL(m_StackTop_Number_RightChildren);
         next->m_BufferFront_Number_LeftChildren = this->m_BufferFront_Number_LeftChildren+1;
 #undef NON_NULL
 

@@ -734,6 +734,7 @@ void CDepParser::arcleft(
                     item->Size(), 
                     item->StackTopWord(), 
                     label) ) {
+ 
             scoredaction.action = action::encodeAction(action::ARC_LEFT, label);
             scoredaction.score = item->Score() + scores[scoredaction.action];
             //+scores[action::ARC_LEFT];
@@ -973,7 +974,6 @@ void CDepParser::work(
 
     while (round < length * 2) {
         ++ round;
-        // std::cout << "round: " << round << std::endl;
         if (bTrain) {
             bCorrect = false;
             // make a movement of the correct state
@@ -1003,8 +1003,6 @@ void CDepParser::work(
             getOrUpdateStackScore(generator,
                     packed_scores,
                     action::NO_ACTION);
-
-            // std::cout << ">> generator: " << std::endl; generator->Display();
 
             if (generator->BufferFrontWord() == length) {
                 // debug of the state
@@ -1098,13 +1096,6 @@ void CDepParser::work(
 
         }
 
-        /*P(currentBeamSize);
-        for (CStateItem * p = latticeIndex[round];
-                p != (latticeIndex[round] + currentBeamSize);
-                ++ p) {
-            std::cout << ">> candidate: " << std::endl; p->Display();
-        }*/
-
         if (bTrain) {
 #ifdef EARLY_UPDATE
             if (!bCorrect) {
@@ -1152,7 +1143,6 @@ void CDepParser::work(
         // correctStateChain[round].StandardFinish();
     }
 
-    // std::cout << round << std::endl;
     TRACE("Outputing sentence");
     std::sort(latticeIndex[round], latticeIndex[round + 1], StateHeapMore);
     for (int i = 0; i < std::min(nBest, AGENDA_SIZE); ++ i) {
@@ -1376,3 +1366,4 @@ void CDepParser::extract_features_conll( const CCoNLLOutput &input) {
     extract_features(dep);
 }
 
+#include "depparser_test.cpp"
