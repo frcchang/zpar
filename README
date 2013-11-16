@@ -1,3 +1,9 @@
+DOWNLOAD
+========
+ZPar can be downloaded from http://sourceforge.net/projects/zpar/. The default download is the latest version source. For one specific version of ZPar and pretrained models, go to the files tab or visit http://sourceforge.net/projects/zpar/files/?source=navbar directly. 
+
+COMPILE
+=======
 make zpar for the Chinese zpar for CTB data
 make zpar.en for the English zpar for PTB data
 make zpar.ge for the generic, language and- and tagset-independent system
