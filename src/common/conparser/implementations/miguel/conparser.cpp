@@ -17,6 +17,7 @@ using namespace TARGET_LANGUAGE::conparser;
 
 #define refer_or_allocate_tuple2(x, o1, o2) { if (amount == 0) x.refer(o1, o2); else x.allocate(o1, o2); }
 #define refer_or_allocate_tuple3(x, o1, o2, o3) { if (amount == 0) x.refer(o1, o2, o3); else x.allocate(o1, o2, o3); }
+#define refer_or_allocate_tuple4(x, o1, o2, o3, o4) { if (amount == 0) x.refer(o1, o2, o3, o4); else x.allocate(o1, o2, o3, o4); }
 
 /*===============================================================
  *
@@ -65,6 +66,11 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static CTuple3<CWord,CTag,CDependencyLabel> word_tag_label; //Miguel. Stanford links (1)
    static CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel> wordtag_wordtag_label; //Yue. Stanford links (1)
 
+   static CTuple4<CTag,CTag,CDependencyLabel, int> tag_tag_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CWord,CWord,CDependencyLabel, int> word_word_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CTag,CWord,CDependencyLabel, int> tag_word_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CWord,CTag,CDependencyLabel, int> word_tag_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel, int> wordtag_wordtag_label_dist; //Yue. Stanford links (1)
    static int link_dir, link_dist;
 
 //   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);
@@ -94,6 +100,21 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	   
       refer_or_allocate_tuple3(word_tag_label, &m_lCache[temp->head].word, &m_lCache[temp->dependent].tag, &temp->label);
       cast_weights->m_mapHwMtl.getOrUpdateScore(retval, word_tag_label, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
+	   
+      refer_or_allocate_tuple4(wordtag_wordtag_label_dist, &m_lCache[temp->head], &m_lCache[temp->dependent], &temp->label, &link_dist);
+      cast_weights->m_mapHwtMwtld.getOrUpdateScore(retval,wordtag_wordtag_label_dist, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
+
+      refer_or_allocate_tuple4(tag_tag_label_dist,&m_lCache[temp->head].tag, &m_lCache[temp->dependent].tag, &temp->label, &link_dist);
+      cast_weights->m_mapHtMtld.getOrUpdateScore(retval,tag_tag_label_dist, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
+	   
+      refer_or_allocate_tuple4(word_word_label_dist, &m_lCache[temp->head].word, &m_lCache[temp->dependent].word, &temp->label, &link_dist);
+      cast_weights->m_mapHwMwld.getOrUpdateScore(retval,word_word_label_dist, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
+	   
+      refer_or_allocate_tuple4(tag_word_label_dist, &m_lCache[temp->head].tag, &m_lCache[temp->dependent].word, &temp->label, &link_dist);
+      cast_weights->m_mapHtMwld.getOrUpdateScore(retval,tag_word_label_dist, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
+	   
+      refer_or_allocate_tuple4(word_tag_label_dist, &m_lCache[temp->head].word, &m_lCache[temp->dependent].tag, &temp->label, &link_dist);
+      cast_weights->m_mapHwMtld.getOrUpdateScore(retval, word_tag_label_dist, CActionType::NO_ACTION, m_nScoreIndex, amount, round); 
 	   
       temp=temp->next;
    } //Miguel

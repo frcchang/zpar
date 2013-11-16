@@ -25,6 +25,11 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left(m_mapHtMwl)right\
    left(m_mapHwMtl)right\
    left(m_mapHwtMwtl)right\
+   left(m_mapHtMtld)right\
+   left(m_mapHwMwld)right\ 
+   left(m_mapHtMwld)right\
+   left(m_mapHwMtld)right\
+   left(m_mapHwtMwtld)right\
    left(m_mapS0c)right\
    left(m_mapS0w)right\
    left(m_mapS0tc)right\
@@ -222,6 +227,11 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
    left m_mapHtMwl middle m_mapHtMwl right\
    left m_mapHwMtl middle m_mapHwMtl right\
    left m_mapHwtMwtl middle m_mapHwtMwtl right\
+   left m_mapHtMtld middle m_mapHtMtld right\
+   left m_mapHwMwld middle m_mapHwMwld right\
+   left m_mapHtMwld middle m_mapHtMwld right\
+   left m_mapHwMtld middle m_mapHwMtld right\
+   left m_mapHwtMwtld middle m_mapHwtMwtld right\
    left m_mapS0c middle m_mapS0c right\
    left m_mapS0w middle m_mapS0w right\
    left m_mapS0tc middle m_mapS0tc right\
@@ -454,6 +464,12 @@ typedef CScoreMapType<CTuple3<CTag,CWord,CDependencyLabel>, SCORE_TYPE, CAction:
 typedef CScoreMapType<CTuple3<CWord,CWord,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CWordWordLabelMap; //Miguel
 typedef CScoreMapType<CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CTaggedWordTaggedWordLabelMap; //Yue
 
+typedef CScoreMapType<CTuple4<CTag,CTag,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CTagTagLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CWord,CTag,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CWordTagLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CTag,CWord,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CTagWordLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CWord,CWord,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CWordWordLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CTaggedWordTaggedWordLabelIntMap; //Yue
+
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 
 //! added by zhumuhua
@@ -475,6 +491,12 @@ public:
    CTagWordLabelMap m_mapHtMwl; //MIguel
    CWordTagLabelMap m_mapHwMtl; //MIguel
    CTaggedWordTaggedWordLabelMap m_mapHwtMwtl; // Yue
+
+   CTagTagLabelIntMap m_mapHtMtld; //Yue
+   CWordWordLabelIntMap m_mapHwMwld; //Yue
+   CTagWordLabelIntMap m_mapHtMwld; //Yue
+   CWordTagLabelIntMap m_mapHwMtld; //Yue
+   CTaggedWordTaggedWordLabelIntMap m_mapHwtMwtld; // Yue
 
    // S0
    CConstituentMap m_mapS0c;
@@ -752,6 +774,11 @@ public:
                           m_mapHtMwl("HeadTagModifierWordDependencyLabel", TABLE_SIZE),
                           m_mapHwMtl("HeadWordModifierTagDependencyLabel", TABLE_SIZE),
                           m_mapHwtMwtl("HeadWordTagModifierWordTagDependencyLabel", TABLE_SIZE),
+                          m_mapHtMtld("HeadTagModifierTagDependencyDistLabel", TABLE_SIZE),
+                          m_mapHwMwld("HeadWordModifierWordDependencyDistLabel", TABLE_SIZE),
+                          m_mapHtMwld("HeadTagModifierWordDependencyDistLabel", TABLE_SIZE),
+                          m_mapHwMtld("HeadWordModifierTagDependencyDistLabel", TABLE_SIZE),
+                          m_mapHwtMwtld("HeadWordTagModifierWordTagDependencyDistLabel", TABLE_SIZE),
                           
                           m_mapS0c("Stack0Constituent", TABLE_SIZE),
                           m_mapS0w("Stack0Word", TABLE_SIZE),
