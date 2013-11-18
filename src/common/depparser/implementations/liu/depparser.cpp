@@ -160,6 +160,15 @@ inline void CDepParser::getOrUpdateStackScore(
     static CTwoTaggedWords st_word_tag_n0_word_tag ;
     static CTwoWords st_word_n0_word ;
 
+    if (item->Score() == 13.) {
+        P(st_index); P(sth_index); P(sthh_index); 
+        P(stld_index); P(strd_index); P(stl2d_index); P(str2d_index);
+        P(n0_ltagset); P(st_ltagset); P(st_rtagset);
+        P(n0ld_index); P(n0l2d_index);
+        P(st_label); P(sth_label); P(stld_label); P(strd_label);
+        P(stl2d_label); P(str2d_label); P(n0ld_label); P(n0l2d_label);
+    }
+
     if ( amount == 0 ) {
         st_word_tag_n0_word_tag.refer( &st_word_tag, &n0_word_tag );
         st_word_n0_word.refer( &st_word, &n0_word );
@@ -635,15 +644,13 @@ inline void CDepParser::updateScoreForState(
         int                 numStates,
         const SCORE_TYPE &  amount ) {
 
-    // static CStateItem item(&m_lCache);
-    // static unsigned action;
     static CPackedScoreType<SCORE_TYPE, action::MAX> empty;
  
-    for (int i = numStates; i >= 0; -- i) {
+    for (int i = numStates + 1; i > 0; -- i) {
         // item = from;
         getOrUpdateStackScore(reversedStateChain[i], 
                 empty, 
-                reversedStateChain[i]->m_LastAction, 
+                reversedStateChain[i - 1]->m_LastAction, 
                 amount, 
                 m_nTrainingRound);
     }
@@ -737,7 +744,6 @@ void CDepParser::arcleft(
  
             scoredaction.action = action::encodeAction(action::ARC_LEFT, label);
             scoredaction.score = item->Score() + scores[scoredaction.action];
-            //+scores[action::ARC_LEFT];
             m_Beam->insertItem(&scoredaction);
         }
     }
@@ -821,6 +827,10 @@ void CDepParser::poproot(
  * ------------------------------------------------------------- */
 bool StateHeapMore(const CStateItem & x, const CStateItem & y) {
     return x.m_Score > y.m_Score;
+}
+
+bool StateLatticeLess(const CStateItem & x, const CStateItem & y) {
+    return x.m_Score < y.m_Score;
 }
 
 int CDepParser::insertIntoLattice(
@@ -1004,6 +1014,8 @@ void CDepParser::work(
                     packed_scores,
                     action::NO_ACTION);
 
+            generator->Display();
+
             if (generator->BufferFrontWord() == length) {
                 // debug of the state
                 assert(generator->StackSize() != 0);
@@ -1089,14 +1101,20 @@ void CDepParser::work(
                         currentBeamSize,
                         AGENDA_SIZE);
 
-                if (bTrain && ((*candidate) == correctStateChain[round])) {
-                    bCorrect = true;
-                }
             }   //  end for unsigned i = 0 ...
 
         }
 
+        P(currentBeamSize);
         if (bTrain) {
+            for (CStateItem * p = latticeIndex[round];
+                    p != latticeIndex[round] + currentBeamSize;
+                    ++ p) {
+                if (*p == correctStateChain[round]) {
+                    bCorrect = true;
+                }
+            }
+
 #ifdef EARLY_UPDATE
             if (!bCorrect) {
                 TRACE("Error at the "
@@ -1104,14 +1122,10 @@ void CDepParser::work(
                         << "th word; total is "
                         << correct.size());
 
-                const CStateItem * bestGenerator = latticeIndex[round];
-                for (CStateItem * p = latticeIndex[round];
-                        p != latticeIndex[round] + currentBeamSize;
-                        ++ p) {
-                    if (bestGenerator->Score() < p->Score()) {
-                        bestGenerator = p;
-                    }
-                }
+                const CStateItem * bestGenerator = std::max_element(
+                        latticeIndex[round],
+                        latticeIndex[round] + currentBeamSize,
+                        StateLatticeLess);
 
                 updateScoresForStates(
                         bestGenerator,
@@ -1141,6 +1155,14 @@ void CDepParser::work(
 
     if (bTrain) {
         // correctStateChain[round].StandardFinish();
+        const CStateItem * bestGenerator = std::max_element(
+                latticeIndex[round],
+                latticeIndex[round] + currentBeamSize,
+                StateLatticeLess);
+
+        if ((*bestGenerator) != (*(correctStateChain + round))) {
+            updateScoresForStates(bestGenerator, correctStateChain + round, 1, -1);
+        }
     }
 
     TRACE("Outputing sentence");

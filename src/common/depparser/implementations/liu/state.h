@@ -302,6 +302,7 @@ public:
 #endif  //  end for LABELED
 
         m_LastAction                            = action::NO_ACTION;
+        m_Score = 0.;
     }
 
     /*
@@ -495,7 +496,7 @@ public:
 
         next->m_Stack                       = prev;
         next->m_HeadStack                   = prev->m_HeadStack;
-        next->m_Previous                    = prev;
+        next->m_Previous                    = this;
         next->m_Next                        = NULL;
 
         next->m_StackSize                   = prev->m_StackSize + 1;
