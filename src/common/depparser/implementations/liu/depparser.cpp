@@ -160,15 +160,6 @@ inline void CDepParser::getOrUpdateStackScore(
     static CTwoTaggedWords st_word_tag_n0_word_tag ;
     static CTwoWords st_word_n0_word ;
 
-    if (item->Score() == 13.) {
-        P(st_index); P(sth_index); P(sthh_index); 
-        P(stld_index); P(strd_index); P(stl2d_index); P(str2d_index);
-        P(n0_ltagset); P(st_ltagset); P(st_rtagset);
-        P(n0ld_index); P(n0l2d_index);
-        P(st_label); P(sth_label); P(stld_label); P(strd_label);
-        P(stl2d_label); P(str2d_label); P(n0ld_label); P(n0l2d_label);
-    }
-
     if ( amount == 0 ) {
         st_word_tag_n0_word_tag.refer( &st_word_tag, &n0_word_tag );
         st_word_n0_word.refer( &st_word, &n0_word );
@@ -1013,8 +1004,6 @@ void CDepParser::work(
             getOrUpdateStackScore(generator,
                     packed_scores,
                     action::NO_ACTION);
-
-            generator->Display();
 
             if (generator->BufferFrontWord() == length) {
                 // debug of the state
