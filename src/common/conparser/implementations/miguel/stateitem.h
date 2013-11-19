@@ -162,6 +162,7 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_merely("merely");
  
  static CWord g_word_not("not");
+ static CWord g_word_nt("n't");
  
  static CWord g_word_comma(",");
  
@@ -191,6 +192,7 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_addition("addition");
  static CWord g_word_so("so");
 
+ static CWord g_word_quotes("``");
 
 
 
@@ -1823,10 +1825,10 @@ public:
      }
      
 
+     //"S|SQ|SINV < (SBAR|SBAR-TMP=target <, (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/ !$+ VP)",
 
-    
-    
-    
+
+
 
             
       
