@@ -107,17 +107,159 @@
      }
 
 
+     //"S|SQ|SINV < (SBAR|SBAR-TMP=target <, (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/ !$+ VP)",
+        bool advcl2(){
+       	 if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV){
+       		 CStateNodeList* childs=node.m_umbinarizedSubNodes;
+       		 while(childs!=0){
+       			 const CStateNode* sbarTarg=childs->node;
+       			 if (sbarTarg->constituent==PENN_CON_SBAR && !isLinked(&node,sbarTarg)){
+       				 bool firstCond=false; //<, (IN !< /^(?i:that|whether)$/ !$+ (NN < order))
+       				 bool secCond=true; //!$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/
+       				 bool thirdCond=true; //!$+ VP
 
-//"S|SQ|SINV < (SBAR|SBAR-TMP=target <, (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/ !$+ VP)",
-bool advcl2(){
+       				 if (childs->next!=0){
+       					 if (childs->next->node->constituent==PENN_CON_VP){
+       						 thirdCond=false;
+       					 }
+       				 }
+       				 if (thirdCond){
+       					 CStateNodeList* leftSisters=childs->previous;
+       					 while(leftSisters!=0){
+       						 const CStateNode* lSis=leftSisters->node;
+       						 if (lSis->constituent==PENN_CON_CONJP ||lSis->constituent==PENN_CON_INTJ ||lSis->constituent==PENN_CON_PP|| (*words)[lSis->lexical_head].tag.code()==PENN_TAG_CC||
+       								 (*words)[lSis->lexical_head].word==g_word_comma ||(*words)[lSis->lexical_head].word==g_word_quotes){
+       							 secCond=false;
+       						 }
+       						 leftSisters=leftSisters->previous;
+       					 }
+       					 if (secCond){
+       						 CStateNodeList* childsTarg=sbarTarg->m_umbinarizedSubNodes;
+       						if(childsTarg!=0){
+       							const CStateNode* inChild=childsTarg->node;
+       							if ((*words)[inChild->lexical_head].tag.code()==PENN_TAG_IN){
+       								bool secInCond=true;
+       								bool thirdInCond=true;
+       								CStateNodeList* childsIn=inChild->m_umbinarizedSubNodes;
+       								while(childsIn!=0){
+       									if ((*words)[childsIn->node->lexical_head].word==g_word_whether||(*words)[childsIn->node->lexical_head].word==g_word_that){
+       										secInCond=false;
+       									}
+       									childsIn=childsIn->next;
+       								}
+       								if (secInCond){
+       									if (childs->next!=0){
+       										if ((*words)[childs->next->node->lexical_head].tag.code()==PENN_TAG_NOUN){
+       											CStateNodeList* childsNN=childs->next->node->m_umbinarizedSubNodes;
+       											while(childsNN!=0){
+       												if ((*words)[childsNN->node->lexical_head].word==g_word_order){
+       													thirdInCond=false;
+       												}
+       												childsNN=childsNN->next;
+       											}
 
-}
+       									    }
+       									}
+       								}
+       								if (secInCond && thirdInCond){
+       									firstCond=true;
+       								}
+       							}
+       						}
+       					 }
+       				 }
+
+       				 if (firstCond && secCond && thirdCond){
+       					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVCL);
+       					 if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+       						 addLinked(&node,sbarTarg);
+       					     return true;
+       					 }
+       				 }
+       			 }
+       			 childs=childs->next;
+       		 }
+       	 }
+       	 return false;
+        }
+
+       // if ((nnChildNp->type==CStateNode::LEAF)
+   	  // && (nnChildNp->lexical_head==npwhnpTarg->lexical_head) //<#
 
 
-//"S|SQ|SINV < (SBAR|SBAR-TMP=target <2 (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?$).*$/)",
-bool advcl3(){
 
-}
+        //"S|SQ|SINV < (SBAR|SBAR-TMP=target <2 (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?$).*$/)",
+
+             bool advcl3(){
+            	 if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV){
+            		 CStateNodeList* childs=node.m_umbinarizedSubNodes;
+            		 while(childs!=0){
+            			 const CStateNode* sbarTarg=childs->node;
+            			 if (sbarTarg->constituent==PENN_CON_SBAR && !isLinked(&node,sbarTarg)){
+            				 bool firstCond=false; //<, (IN !< /^(?i:that|whether)$/ !$+ (NN < order))
+            				 bool secCond=true; //!$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/
+            				 //bool thirdCond=true; //!$+ VP (this is from advcl2)
+
+            				 CStateNodeList* leftSisters=childs->previous;
+            				 while(leftSisters!=0){
+            					 const CStateNode* lSis=leftSisters->node;
+            					 if (lSis->constituent==PENN_CON_CONJP ||lSis->constituent==PENN_CON_INTJ ||lSis->constituent==PENN_CON_PP|| (*words)[lSis->lexical_head].tag.code()==PENN_TAG_CC||
+            							 (*words)[lSis->lexical_head].word==g_word_comma ||(*words)[lSis->lexical_head].word==g_word_quotes){
+            						 secCond=false;
+            					 }
+            					 leftSisters=leftSisters->previous;
+            			      }
+            				  if (secCond){
+            				  CStateNodeList* childsTarg=sbarTarg->m_umbinarizedSubNodes;
+            				  	  if(childsTarg!=0){
+            				  		  if (childsTarg->next!=0){ //<2
+            							const CStateNode* inChild=childsTarg->next->node;
+            							if ((*words)[inChild->lexical_head].tag.code()==PENN_TAG_IN){
+            								bool secInCond=true;
+            								bool thirdInCond=true;
+            								CStateNodeList* childsIn=inChild->m_umbinarizedSubNodes;
+            								while(childsIn!=0){
+            									if ((*words)[childsIn->node->lexical_head].word==g_word_whether||(*words)[childsIn->node->lexical_head].word==g_word_that){
+            										secInCond=false;
+            									}
+            									childsIn=childsIn->next;
+            								}
+            								if (secInCond){
+            									if (childs->next!=0){
+            										if ((*words)[childs->next->node->lexical_head].tag.code()==PENN_TAG_NOUN){
+            											CStateNodeList* childsNN=childs->next->node->m_umbinarizedSubNodes;
+            											while(childsNN!=0){
+            												if ((*words)[childsNN->node->lexical_head].word==g_word_order){
+            													thirdInCond=false;
+            												}
+            												childsNN=childsNN->next;
+            											}
+
+            									    }
+            									}
+            								}
+            								if (secInCond && thirdInCond){
+            									firstCond=true;
+            								}
+            							}
+            						}
+            					}
+            				  }
+            				 //}
+
+            				 if (firstCond && secCond){
+            					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVCL);
+            					 if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+            						 addLinked(&node,sbarTarg);
+            					     return true;
+            					 }
+            				 }
+            			 }
+            			 childs=childs->next;
+            		 }
+            	 }
+            	 return false;
+             }
 
 //"S|SQ|SINV < (SBAR|SBAR-TMP=target <, (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$+ @VP $+ /^,$/ $++ @NP)"
     bool advcl4(){
