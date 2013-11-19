@@ -164,6 +164,7 @@ bool buildAttr3() {
   bool buildAttr4() {
   	//A <, B  (B is the FIRST child of A)
   	if (node.constituent==PENN_CON_SQ) {
+  		if (node.m_umbinarizedSubNodes!=0) {
   		const CStateNode* firstChild=node.m_umbinarizedSubNodes->node;
   		bool firstCondition=false; //SQ<, (/^(?:VB|AUX)/ < " + copularWordRegex + ")
   		if (firstChild!=0 && ((*words)[firstChild->lexical_head].tag.code()==PENN_TAG_VERB)) {
@@ -209,6 +210,7 @@ bool buildAttr3() {
   			}
   		}
   	}
+  }
   	return false;
   }
 
