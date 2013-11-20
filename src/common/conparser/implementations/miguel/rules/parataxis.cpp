@@ -142,9 +142,40 @@
                }
 
 
+               //"@S < (@S $.. @S=target) !< @CC|CONJP",
+                   bool parataxis4(){
+                  	 if (node.constituent==PENN_CON_S){
+                  		 CStateNodeList* childsS=node.m_umbinarizedSubNodes;
+                  		 bool secCond=true;
+                  		 while(childsS!=0){
+                  			 if (childsS->node->constituent==PENN_CON_CONJP || ((*words)[childsS->node->lexical_head].tag.code()==PENN_TAG_CC)) {
+                  				 secCond=false;
+                  			 }
+                  			 childsS=childsS->next;
+                  		 }
+                  		 if (secCond){
+                  			 childsS=node.m_umbinarizedSubNodes;
+                  		 		while(childsS!=0){
+                  		 			if (childsS->node->constituent==PENN_CON_S){
+                  		 				CStateNodeList* rightSisters=childsS->next;
+                  		 				while(rightSisters!=0){
+                  		 					const CStateNode* sTarg=rightSisters->node;
+                  		 					if (sTarg->constituent==PENN_CON_S && !isLinked(&node,sTarg)){
+                  		 						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
+                  		 						if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+                  		 							addLinked(&node,sTarg);
+                  		 						    return true;
+                  		 						}
+                  		 					}
+                  		 					rightSisters=rightSisters->next;
+                  		 				}
+                  		 			}
+                  		 			childsS=childsS->next;
+                  		 		}
+                  		 	}
+                  	 	}
+                  	 return false;
+                   }
 
                
-               //"@S < (@S $.. @S=target) !< @CC|CONJP",
-               bool parataxis4(){
-
-               }
+               
