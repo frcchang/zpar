@@ -28,8 +28,33 @@ bool advmod5(){
 }
 
 //"CONJP < (RB=target !< " + NOT_PAT + ")",
-bool advmod6(){
+    bool advmod6(){
+   	 if (node.constituent==PENN_CON_CONJP){
+   		 CStateNodeList* childsConjp=node.m_umbinarizedSubNodes;
+   		 while(childsConjp!=0){
+   			 const CStateNode* rbTarg=childsConjp->node;
+   			 if ((*words)[rbTarg->lexical_head].tag.code()==PENN_TAG_ADVERB && !isLinked(&node, rbTarg)){
+   				 bool notCond=true;
+   				 CStateNodeList* childsRb=rbTarg->m_umbinarizedSubNodes;
+   				 while(childsRb!=0){
+   					 if (((*words)[childsRb->node->lexical_head].word==g_word_not) ||((*words)[childsRb->node->lexical_head].word==g_word_nt)){
+   						 notCond=false;
+   					 }
+   					 childsRb=childsRb->next;
+   				 }
+   				 if (notCond){
+   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+   					 if (buildStanfordLink(label, rbTarg->lexical_head, node.lexical_head)) {
+   						 addLinked(&node,rbTarg);
+   					     return true;
+   					 }
+   				 }
+   			 }
+   			 childsConjp=childsConjp->next;
 
-}
+   		 }
+   	 }
+   	 return false;
+    }
 
 
