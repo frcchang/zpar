@@ -101,10 +101,11 @@ public:
 
 protected:
    CEntry **m_buckets;
-
+    CMemoryPool<CEntry> * m_pool;
 public:
    CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0) { 
-      getPool(); // ensure that the pool is constructed.
+      m_pool = new CMemoryPool<CEntry>(TABLE_SIZE);
+        // getPool(); // ensure that the pool is constructed.
       if (initialize) init();
    }
    CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0) { 
@@ -112,7 +113,9 @@ public:
    }
    virtual ~CHashMap() { 
       clear();
-      delete [] m_buckets;
+      delete [] m_buckets; m_buckets = 0;
+      delete m_pool; m_pool = 0;
+      getFreeMemory() = 0;
    }
    void resize(const unsigned long &size) {
       ASSERT(m_buckets==0, "Cannot resize hashmap after initialization");
@@ -130,7 +133,7 @@ protected:
    CEntry *&getEntry(const K &key) { return m_buckets[hash(key)%m_nTableSize]; }
    CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
-   static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
+   // static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
    static CEntry* &getFreeMemory() { static CEntry* c_free = 0; return c_free; }
    
    CEntry *allocate() {
@@ -143,7 +146,8 @@ protected:
          return retval;
       }
       else {
-         return getPool().allocate();
+          return m_pool->allocate();
+         // return getPool().allocate();
       }
    }
 
