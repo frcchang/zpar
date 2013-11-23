@@ -5,8 +5,71 @@ bool det1(){
 
 //"NP|NP-TMP|NP-ADV < (DT=target < /^(?i:either|neither|both)$/ !$+ DT !$++ CC $++ /^(?:NN|NX|NML)/ !$++ (NP < CC))",
 bool det2(){
-
+	 if (node.constituent==PENN_CON_NP){
+		 CStateNodeList* childsNp=node.m_umbinarizedSubNodes;
+		 while(childsNp!=0){
+			 const CStateNode* targ=childsNp->node;
+			 if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_DT && !(isLinked(&node,targ))){
+				 bool firstCond=false;
+				 bool secCond=true;
+				 bool thirdCond=true;
+				 bool fourthCond=false;
+				 bool fifthCond=true;
+				 
+				 CStateNodeList* rightSisters=childsNp->next;
+				 
+				 if (rightSisters!=0){
+					 if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_DT){
+						 secCond=false;
+					 }
+				 }
+				 if (secCond){
+					 while(rightSisters!=0){
+						 if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
+							 thirdCond=false;
+						 }
+						 if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN || rightSisters->node->constituent==PENN_CON_NX){
+							 fourthCond=true;
+						 }
+						 if (rightSisters->node->constituent==PENN_CON_NP){
+							 CStateNodeList* childsNp=rightSisters->node->m_umbinarizedSubNodes;
+							 while(childsNp!=0){
+								 if ((*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_CC){
+									 fifthCond=false;
+								 }
+								 childsNp=childsNp->next;
+							 }
+						 }
+						 rightSisters=rightSisters->next;
+					 }
+					 if (thirdCond && fourthCond && fifthCond){
+						 CStateNodeList* childsDt=targ->m_umbinarizedSubNodes;
+						 while(childsDt!=0){
+							 if (((*words)[childsDt->node->lexical_head].word==g_word_either) 
+									 ||((*words)[childsDt->node->lexical_head].word==g_word_neither)
+									 ||((*words)[childsDt->node->lexical_head].word==g_word_both)){
+								 firstCond=true;
+							 }
+							 childsDt=childsDt->next;
+						 }
+					 }
+				 }
+				 
+				 
+				 if (firstCond && secCond && thirdCond && fourthCond && fifthCond){
+					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+						 addLinked(&node,targ);
+					 	 return true;
+					 }
+				 }
+			 }
+			 childsNp=childsNp->next;
+		 }
+	 }
+	 return false;
 }
+
 
 
 //"NP|NP-TMP|NP-ADV < (DT=target !< /^(?i:either|neither|both)$/ $++ CC $++ /^(?:NN|NX|NML)/)",
