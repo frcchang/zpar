@@ -14,6 +14,10 @@
 #include "hash_small.h"
 #include "score.h"
 
+//changing std::map to std::tr1::unordered_map
+#include <tr1/unordered_map>
+
+
 /*===============================================================
  *
  * CPackedScore - packed score definition
@@ -34,7 +38,7 @@ template <typename SCORE_TYPE, unsigned PACKED_SIZE>
 class CPackedScoreType {
 protected:
    //SCORE_TYPE scores[PACKED_SIZE];
-	std::map<unsigned long,SCORE_TYPE> scores;
+	std::tr1::unordered_map<unsigned long,SCORE_TYPE> scores;
 public:
    void reset() {
 //      memset(scores, 0, sizeof(SCORE_TYPE)*PACKED_SIZE);
@@ -47,7 +51,7 @@ public:
 //         if (scores[index]!=0) return false;
 //      return true;
 	//   return scores.empty();
-	   typename std::map<unsigned long,SCORE_TYPE>::iterator iter;
+	   typename std::tr1::unordered_map<unsigned long,SCORE_TYPE>::iterator iter;
 	   for ( iter = scores.begin() ; iter != scores.end() ; ++iter )
 	   {
 		   if ( iter->second != 0 ) return false;
@@ -69,7 +73,7 @@ public:
    }
 
    void operator +=(const CPackedScoreType &i) {
-	   typename std::map<unsigned long,SCORE_TYPE>::iterator iter;
+	   typename std::tr1::unordered_map<unsigned long,SCORE_TYPE>::iterator iter;
 	   for ( iter = scores.begin() ; iter != scores.end() ; ++iter )
 	   {
 		   //std::pair<unsigned long,SCORE_TYPE> pair = *iter;
@@ -93,7 +97,7 @@ std::istream & operator >> (std::istream &is, CPackedScoreType<SCORE_TYPE, PACKE
    is >> s;
    ASSERT(s=="[", "hashmap_score_packed.h: not well formatted CPackedScore");
 
-   typename std::map<unsigned long,SCORE_TYPE>::iterator iter = score.scores.begin();
+   typename std::tr1::unordered_map<unsigned long,SCORE_TYPE>::iterator iter = score.scores.begin();
    //is >> score[iter->first]; //todo prev
    is >> iter->second;
    iter++;
@@ -125,7 +129,7 @@ std::ostream & operator << (std::ostream &os, CPackedScoreType<SCORE_TYPE, PACKE
    //assert(PACKED_SIZE>0);
    assert(!score.empty());
 
-   typename std::map<unsigned long,SCORE_TYPE>::iterator iter = score.scores.begin();
+   typename std::tr1::unordered_map<unsigned long,SCORE_TYPE>::iterator iter = score.scores.begin();
    os << " [ ";
    //os << score[iter->first]; //todo prev
    os << iter->second;

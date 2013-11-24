@@ -287,7 +287,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    if (str2d_index != -1) {
       cast_weights->m_mapSTR2Dw.getOrUpdateScore( retval, str2d_word, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapSTR2Dm.getOrUpdateScore( retval, str2d_morph, action, m_nScoreIndex, amount, round ) ;
-      cast_weights->m_mapSTR2Di.getOrUpdateScore( retval, str2d_label, action, m_nScoreIndex, amount, round) ;
+      //cast_weights->m_mapSTR2Di.getOrUpdateScore( retval, str2d_label, action, m_nScoreIndex, amount, round) ; //didn't help
    }
 
    if (n0l2d_index != -1) {
@@ -318,6 +318,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapBM3wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
 
+   //didn't help
+   /*
    if (bm2h_index != -1) {
       cast_weights->m_mapBM2Hw.getOrUpdateScore( retval, bm2h_word, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapBM2Hm.getOrUpdateScore( retval, bm2h_morph, action, m_nScoreIndex, amount, round) ;
@@ -331,6 +333,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       refer_or_allocate_tuple2(word_morph, &bm3h_word, &bm3h_morph);
       cast_weights->m_mapBM3Hwm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
+   */
 
    //b0, b1, b2 word forms (we have no lemmas or morph yet)
    if (b0_index != -1) {

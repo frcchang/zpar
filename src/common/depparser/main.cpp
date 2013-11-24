@@ -183,7 +183,7 @@ int main(int argc, char* argv[]) {
 	std::cout << "Loading lexicons...\n";
 	bool bSuccess = TARGET_LANGUAGE::initLexicon("/home/cgomezr/en/train.conll",true);
 	std::cout << "Successfully loaded primary lexicon? " << bSuccess << "\n";
-	bSuccess = english::initLemmaLexicon("/home/cgomezr/multext-lexicons/en/wordform.txt");
+	bSuccess = english::initLemmaLexicon("/home/cgomezr/multext-lexicons/en/wordform-improved.txt");
 	std::cout << "Successfully loaded the lemma lexicon? " << bSuccess << "\n";
 #endif
 
