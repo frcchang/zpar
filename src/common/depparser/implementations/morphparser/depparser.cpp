@@ -76,6 +76,14 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int &bm2h_index = (bm2_index == -1 || bm2_index > item->size()) ? -1 : item->head(bm2_index); // buffer minus 2 head
    const int &bm3h_index = (bm3_index == -1 || bm3_index > item->size()) ? -1 : item->head(bm3_index); // buffer minus 3 head
 
+   //cache -x features
+   static int nm1_index;
+   static int nm2_index;
+   static int nm3_index;
+   nm1_index = (n0_index != -1 && n0_index-1>=0) ? n0_index-1 : -1 ; //cache -1
+   nm2_index = (n0_index != -1 && n0_index-2>=0) ? n0_index-2 : -1 ; //cache -2
+   nm3_index = (n0_index != -1 && n0_index-3>=0) ? n0_index-3 : -1 ; //cache -3
+
    //version without lemmas as words:
 /*
    const CWord &st_word = st_index == -1 ? g_emptyWord : m_lCache[st_index];
@@ -121,6 +129,10 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &bm2_word = bm2_index==-1 ? g_emptyWord : item->lemmaascword(bm2_index);
    const CWord &bm3_word = bm3_index==-1 ? g_emptyWord : item->lemmaascword(bm3_index);
 
+   const CWord &nm1_word = nm1_index==-1 ? g_emptyWord : item->lemmaascword(nm1_index);
+   const CWord &nm2_word = nm2_index==-1 ? g_emptyWord : item->lemmaascword(nm2_index);
+   const CWord &nm3_word = nm3_index==-1 ? g_emptyWord : item->lemmaascword(nm3_index);
+
    const CWord &bm2h_word = bm2h_index==-1 ? g_emptyWord : item->lemmaascword(bm2h_index);
    const CWord &bm3h_word = bm3h_index==-1 ? g_emptyWord : item->lemmaascword(bm3h_index);
 
@@ -165,6 +177,10 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CMorph &bm1_morph = (bm1_index==-1) ? CMorph::NONE : item->morph(bm1_index);
    const CMorph &bm2_morph = (bm2_index==-1) ? CMorph::NONE : item->morph(bm2_index);
    const CMorph &bm3_morph = (bm3_index==-1) ? CMorph::NONE : item->morph(bm3_index);
+
+   const CMorph &nm1_morph = (nm1_index==-1) ? CMorph::NONE : item->morph(nm1_index);
+   const CMorph &nm2_morph = (nm2_index==-1) ? CMorph::NONE : item->morph(nm2_index);
+   const CMorph &nm3_morph = (nm3_index==-1) ? CMorph::NONE : item->morph(nm3_index);
 
    const CMorph &bm2h_morph = (bm2h_index==-1) ? CMorph::NONE : item->morph(bm2h_index);
    const CMorph &bm3h_morph = (bm3h_index==-1) ? CMorph::NONE : item->morph(bm3h_index);
@@ -316,6 +332,28 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapBM3m.getOrUpdateScore( retval, bm3_morph, action, m_nScoreIndex, amount, round) ;
       refer_or_allocate_tuple2(word_morph, &bm3_word, &bm3_morph);
       cast_weights->m_mapBM3wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   //cache minus x features
+   if (nm1_index != -1) {
+      cast_weights->m_mapNM1w.getOrUpdateScore( retval, nm1_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapNM1m.getOrUpdateScore( retval, nm1_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &nm1_word, &nm1_morph);
+      cast_weights->m_mapNM1wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (nm2_index != -1) {
+      cast_weights->m_mapNM2w.getOrUpdateScore( retval, nm2_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapNM2m.getOrUpdateScore( retval, nm2_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &nm2_word, &nm2_morph);
+      cast_weights->m_mapNM2wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (nm3_index != -1) {
+      cast_weights->m_mapNM3w.getOrUpdateScore( retval, nm3_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapNM3m.getOrUpdateScore( retval, nm3_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &nm3_word, &nm3_morph);
+      cast_weights->m_mapNM3wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
 
    //didn't help
