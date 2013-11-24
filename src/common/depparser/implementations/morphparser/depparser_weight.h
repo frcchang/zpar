@@ -69,6 +69,16 @@
    left(m_mapBM3Hm)right\
    left(m_mapBM3Hwm)right\
 \
+   left(m_mapNM1w)right\
+   left(m_mapNM1m)right\
+   left(m_mapNM1wm)right\
+   left(m_mapNM2w)right\
+   left(m_mapNM2m)right\
+   left(m_mapNM2wm)right\
+   left(m_mapNM3w)right\
+   left(m_mapNM3m)right\
+   left(m_mapNM3wm)right\
+\
    left(m_mapB0w)right\
    left(m_mapB1w)right\
    left(m_mapB2w)right\
@@ -263,6 +273,16 @@ public:
    CMorphMap m_mapBM3Hm;
    CWordMorphMap m_mapBM3Hwm;
 
+   CWordMap m_mapNM1w;
+   CMorphMap m_mapNM1m;
+   CWordMorphMap m_mapNM1wm;
+   CWordMap m_mapNM2w;
+   CMorphMap m_mapNM2m;
+   CWordMorphMap m_mapNM2wm;
+   CWordMap m_mapNM3w;
+   CMorphMap m_mapNM3m;
+   CWordMorphMap m_mapNM3wm;
+
    CWordMap m_mapB0w;
    CWordMap m_mapB1w;
    CWordMap m_mapB2w;
@@ -407,6 +427,16 @@ public:
                                                m_mapBM3Hw("Buffer-3HeadWord", DEP_TABLE_SIZE),
                                                m_mapBM3Hm("Buffer-3HeadMorph", DEP_TABLE_SIZE),
                                                m_mapBM3Hwm("Buffer-3HeadWordMorph", DEP_TABLE_SIZE),
+
+                                               m_mapNM1w("Cache-1Word", DEP_TABLE_SIZE),
+                                               m_mapNM1m("Cache-1Morph", DEP_TABLE_SIZE),
+                                               m_mapNM1wm("Cache-1WordMorph", DEP_TABLE_SIZE),
+                                               m_mapNM2w("Cache-2Word", DEP_TABLE_SIZE),
+                                               m_mapNM2m("Cache-2Morph", DEP_TABLE_SIZE),
+                                               m_mapNM2wm("Cache-2WordMorph", DEP_TABLE_SIZE),
+                                               m_mapNM3w("Cache-3Word", DEP_TABLE_SIZE),
+                                               m_mapNM3m("Cache-3Morph", DEP_TABLE_SIZE),
+                                               m_mapNM3wm("Cache-3WordMorph", DEP_TABLE_SIZE),
 
                                                m_mapB0w("NextUnanalyzedWord", DEP_TABLE_SIZE),
                                                m_mapB1w("Next+1UnanalyzedWord", DEP_TABLE_SIZE),
