@@ -11,8 +11,18 @@ bool advmod2(){
 }
 
 
-//"SBAR < (WHNP=target < WRB)", "SBARQ <, WHADVP=target", "XS < JJ=target",
+//"SBAR < (WHNP=target < WRB)",
 bool advmod3(){
+
+}
+
+//"SBARQ <, WHADVP=target"
+bool advmod31(){
+
+}
+
+//"XS < JJ=target",
+bool advmod32(){
 
 }
 
