@@ -225,6 +225,53 @@ bool det3(){
 	 return false;
 }
 
+
+//"NP|NP-TMP|NP-ADV <<, PRP <- (NP|DT|RB=target <<- all|both|each)", // we all, them all; various structures
+    bool det5(){
+   	 if (node.constituent==PENN_CON_NP){
+   		 CStateNodeList* childsNp=node.m_umbinarizedSubNodes;
+   		 bool firstCond=false;
+   		 bool secCond=false;
+   		 while (childsNp!=0){
+   			 const CStateNode* targ=childsNp->node;
+   			 if (childsNp->next==0 && (targ->constituent==PENN_CON_NP ||(*words)[targ->lexical_head].tag.code()==PENN_TAG_DT || (*words)[targ->lexical_head].tag.code()==PENN_TAG_ADVERB)){
+   				 CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
+   				 CStateNodeList* rdescendantsNp=new CStateNodeList();
+   				 listRightMostDescendants (childsT, rdescendantsNp);
+   				 while(rdescendantsNp!=0){
+   					 if (((*words)[rdescendantsNp->node->lexical_head].word==g_word_all) ||((*words)[rdescendantsNp->node->lexical_head].word==g_word_both) ||((*words)[rdescendantsNp->node->lexical_head].word==g_word_each)){
+   						 secCond=true;
+   					 }
+   					 rdescendantsNp=rdescendantsNp->next;
+   				 }
+
+   			 }
+   			 if (secCond){
+   				 CStateNodeList* descendantsNp=new CStateNodeList();
+   				 listLeftMostDescendants (node.m_umbinarizedSubNodes, descendantsNp);
+   				 while(descendantsNp!=0){
+   					 if ((*words)[descendantsNp->node->lexical_head].tag.code()==PENN_TAG_PRP){
+   						 firstCond=true;
+   					 }
+   					 descendantsNp=descendantsNp->next;
+   				 }
+   			 }
+
+   			 if (firstCond && secCond){
+					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+						 addLinked(&node,targ);
+						 return true;
+					 }
+   			 }
+
+   			 childsNp=childsNp->next;
+   		 }
+
+   	 }
+   	 return false;
+    }
+
 //"NP|NP-TMP|NP-ADV < (DT=target $++ (/^JJ/ !$+ /^NN/) !$++ CC !$+ DT)",
 bool det4(){
 	 if (node.constituent==PENN_CON_NP){

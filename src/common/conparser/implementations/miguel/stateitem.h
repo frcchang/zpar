@@ -155,6 +155,10 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_neither("neither");
  static CWord g_word_both("both");
  
+ static CWord g_word_all("all");
+ static CWord g_word_each("each");
+
+
  
  //only|just|merely
  static CWord g_word_only("only");
@@ -1225,6 +1229,8 @@ public:
 	   advmod1();
 	   advmod2();
 	   advmod3();
+	   advmod31();
+	   advmod32();
 	   advmod4();
 	   advmod5();
 	   advmod6();
@@ -1701,6 +1707,50 @@ public:
   		   headChilds=headChilds->next;
   	   }
      } 
+
+
+
+
+
+   void searchRecursivelyConst(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
+  	 while(childs!=0){
+  		 if (childs->node->constituent==constituent){
+  			 CStateNodeList::add(candidates,childs->node);
+  		 }
+  		 searchRecursivelyConst(childs->node->m_umbinarizedSubNodes, constituent, candidates);
+  		 //if (cs!=0) return cs;
+  		 childs=childs->next;
+  	 }
+   }
+
+   void listDescendants (CStateNodeList* childs, CStateNodeList*& candidates){
+  	 while(childs!=0){
+  		 CStateNodeList::add(candidates,childs->node);
+  	     listDescendants(childs->node->m_umbinarizedSubNodes, candidates);
+  	     //if (cs!=0) return cs;
+  	     childs=childs->next;
+  	}
+   }
+
+   void listRightMostDescendants(CStateNodeList* childs, CStateNodeList*& candidates){
+  	 while(childs!=0){
+  		 if (childs->next==0){ //there is nothing more to the right, because it is the last one.
+  			 CStateNodeList::add(candidates,childs->node);
+  			 listRightMostDescendants(childs->node->m_umbinarizedSubNodes, candidates);
+  			 //if (cs!=0) return cs;
+  		 }
+  	     childs=childs->next;
+  	 }
+   }
+
+   void listLeftMostDescendants(CStateNodeList* childs, CStateNodeList*& candidates){
+  	 if(childs!=0){ //it is the first, hence it is the leftmost.
+  		 CStateNodeList::add(candidates,childs->node);
+  		 listLeftMostDescendants(childs->node->m_umbinarizedSubNodes, candidates);
+  	     //if (cs!=0) return cs;
+  	     childs=childs->next;
+  	 }
+   }
      
      
 
@@ -1814,47 +1864,6 @@ public:
 
 
      
-     void searchRecursivelyConst(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
-    	 while(childs!=0){
-    		 if (childs->node->constituent==constituent){
-    			 CStateNodeList::add(candidates,childs->node);
-    		 }
-    		 searchRecursivelyConst(childs->node->m_umbinarizedSubNodes, constituent, candidates);
-    		 //if (cs!=0) return cs;
-    		 childs=childs->next;
-    	 }
-     }
-
-     void listDescendants (CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
-    	 while(childs!=0){
-    		 CStateNodeList::add(candidates,childs->node);
-    	     listDescendants(childs->node->m_umbinarizedSubNodes, constituent, candidates);
-    	     //if (cs!=0) return cs;
-    	     childs=childs->next;
-    	}
-     }
-
-     void listRightMostDescendants(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
-    	 while(childs!=0){
-    		 if (childs->next==0){ //there is nothing more to the right, because it is the last one.
-    			 CStateNodeList::add(candidates,childs->node);
-    			 listRightMostDescendants(childs->node->m_umbinarizedSubNodes, constituent, candidates);
-    			 //if (cs!=0) return cs;
-    		 }
-    	     childs=childs->next;
-    	 }
-     }
-
-     void listLeftMostDescendants(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
-    	 if(childs!=0){ //it is the first, hence it is the leftmost.
-    		 CStateNodeList::add(candidates,childs->node);
-    		 listLeftMostDescendants(childs->node->m_umbinarizedSubNodes, constituent, candidates);
-    	     //if (cs!=0) return cs;
-    	     childs=childs->next;
-    	 }
-     }
-
-     
 
      //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
       bool buildDobj4() {
@@ -1868,10 +1877,7 @@ public:
 
       }
 
-     //"NP|NP-TMP|NP-ADV <<, PRP <- (NP|DT|RB=target <<- all|both|each)", // we all, them all; various structures
-     bool det5(){
 
-     }
      
      
 
