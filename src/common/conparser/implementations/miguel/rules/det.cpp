@@ -281,10 +281,7 @@ bool det4(){
 
 
 
-//"NP|NP-TMP|NP-ADV <<, PRP <- (NP|DT|RB=target <<- all|both|each)", // we all, them all; various structures
-bool det5(){
 
-}
 
 //"WHNP < (NP $-- (WHNP=target < WDT))",
  bool det6(){
