@@ -1813,19 +1813,65 @@ public:
 
 
 
-    //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
-     bool buildDobj4() {
-    	 if (node.constituent==PENN_CON_SBARQ){
-    		 CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
-    		 while(childsSbarq!=0){
-
-    			 childsSbarq=childsSbarq->next;
+     
+     void searchRecursivelyConst(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
+    	 while(childs!=0){
+    		 if (childs->node->constituent==constituent){
+    			 CStateNodeList::add(candidates,childs->node);
     		 }
+    		 searchRecursivelyConst(childs->node->m_umbinarizedSubNodes, constituent, candidates);
+    		 //if (cs!=0) return cs;
+    		 childs=childs->next;
     	 }
+     }
+
+     void listDescendants (CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
+    	 while(childs!=0){
+    		 CStateNodeList::add(candidates,childs->node);
+    	     listDescendants(childs->node->m_umbinarizedSubNodes, constituent, candidates);
+    	     //if (cs!=0) return cs;
+    	     childs=childs->next;
+    	}
+     }
+
+     void listRightMostDescendants(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
+    	 while(childs!=0){
+    		 if (childs->next==0){ //there is nothing more to the right, because it is the last one.
+    			 CStateNodeList::add(candidates,childs->node);
+    			 listRightMostDescendants(childs->node->m_umbinarizedSubNodes, constituent, candidates);
+    			 //if (cs!=0) return cs;
+    		 }
+    	     childs=childs->next;
+    	 }
+     }
+
+     void listLeftMostDescendants(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
+    	 if(childs!=0){ //it is the first, hence it is the leftmost.
+    		 CStateNodeList::add(candidates,childs->node);
+    		 listLeftMostDescendants(childs->node->m_umbinarizedSubNodes, constituent, candidates);
+    	     //if (cs!=0) return cs;
+    	     childs=childs->next;
+    	 }
+     }
+
+     
+
+     //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
+      bool buildDobj4() {
+     	 if (node.constituent==PENN_CON_SBARQ){
+     		 CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
+     		 while(childsSbarq!=0){
+
+     			 childsSbarq=childsSbarq->next;
+     		 }
+     	 }
+
+      }
+
+     //"NP|NP-TMP|NP-ADV <<, PRP <- (NP|DT|RB=target <<- all|both|each)", // we all, them all; various structures
+     bool det5(){
 
      }
-     
-     
      
      
 
