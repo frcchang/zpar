@@ -199,6 +199,10 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_quotes("``");
  static CWord g_word_squotes("''");
 
+ static CWord g_word_where("where");
+ static CWord g_word_why("why");
+ static CWord g_word_when("when");
+
 
 
 
@@ -1877,9 +1881,6 @@ public:
 
       }
 
-      
-     
-     
      
 
 
