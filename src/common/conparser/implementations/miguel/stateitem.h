@@ -187,6 +187,7 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_asterisc("*");
  static CWord g_word_hyphen("-");
  static CWord g_word_lowhyphen("_");
+ static CWord g_word_perc("%");
 
  static CWord g_word_at("at");
  static CWord g_word_in("in");
@@ -1881,7 +1882,31 @@ public:
 
       }
 
-     
+      //"@ADVP|ADJP|WHADJP|WHADVP|PP|WHPP <# (JJ|JJR|IN|RB|RBR !< notwithstanding $- (@NP=target !< NNP|NNPS))",
+      bool npadvmod1(){
+    	  if (node.constituent==PENN_CON_ADVP||node.constituent==PENN_CON_ADJP||node.constituent==PENN_CON_WHADJP||node.constituent==PENN_CON_PP||node.constituent==PENN_CON_WHPP) {
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_IN
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE) && childs->node->lexical_head==node.lexical_head) {
+
+    				  bool inCond=true;
+    				  CStateNodeList* childsJ=childs->node->m_umbinarizedSubNodes;
+    				  while(childsJ!=0){
+    					  if ((*words)[childsJ->node->lexical_head].word==g_word_that){
+
+    					  }
+    					  childsJ=childsJ->next;
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
 
 
 
