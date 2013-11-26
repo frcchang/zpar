@@ -197,7 +197,7 @@
 
      //"@ADVP < (@ADVP < (RB < /where$/)) < @SBAR=target",
           bool rcmod5(){
-        	  if (node.constituent==PENN_CON_ADVP || node.constituent==PENN_CON_WHADVP){ //is this correct? or should I remove whadvp?
+        	  if (node.constituent==PENN_CON_ADVP){ //is this correct? or should I put whadvp?
         		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
         		  bool inCond=false;
         		  while(childs!=0){
