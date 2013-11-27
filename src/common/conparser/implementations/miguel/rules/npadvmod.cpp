@@ -1,3 +1,53 @@
+   //"@ADVP|ADJP|WHADJP|WHADVP|PP|WHPP <# (JJ|JJR|IN|RB|RBR !< notwithstanding $- (@NP=target !< NNP|NNPS))",
+      bool npadvmod1(){
+    	  if (node.constituent==PENN_CON_ADVP||node.constituent==PENN_CON_ADJP||node.constituent==PENN_CON_WHADJP||node.constituent==PENN_CON_PP||node.constituent==PENN_CON_WHPP) {
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_IN
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB
+    					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE) && childs->node->lexical_head==node.lexical_head) {
+
+    				  bool inCond=true;
+    				  CStateNodeList* childsJ=childs->node->m_umbinarizedSubNodes;
+    				  while(childsJ!=0){
+    					  if ((*words)[childsJ->node->lexical_head].word==g_word_notwithstanding){
+    						  inCond=false;
+    					  }
+    					  childsJ=childsJ->next;
+    				  }
+    				  
+    				  if (inCond){
+    					  if (childs->previous!=0){
+    						  const CStateNode* npTarg=childs->previous->node;
+    						  if (npTarg->constituent==PENN_CON_NP && !isLinked(&node,npTarg)){
+    							  bool lastCond=true;
+    							  CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
+    							  while(childsNp!=0){
+    								  if ((*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER || (*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL){
+    									  lastCond=false;
+    								  }
+    								  childsNp=childsNp->next;
+    							  }
+    							  
+    							  if (lastCond){
+    								  CDependencyLabel* label=new CDependencyLabel(0);
+    								  if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+    									  addLinked(&node,npTarg);
+    								      return true;
+    								  }
+    							  }
+    						  }
+    					  }
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
+
 
 
 //"@ADJP < (NN=target $++ /^JJ/) !< CC|CONJP",
