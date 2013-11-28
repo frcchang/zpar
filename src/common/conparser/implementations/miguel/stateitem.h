@@ -210,7 +210,46 @@ static CWord g_word_gotten("gotten");
 //static CWord g_word_lot("lot"); //?
 
 
+ class CConstituentList {
+ 	public:
+ 		CConstituent current;
+ 		CConstituentList* next;
 
+ 		CConstituentList() : current(0), next(0) {}
+ 		virtual ~CConstituentList() {}
+ 		void clear() {current=0; next=0;}
+
+ 		void addAux(CConstituent new_node) {
+ 			if (current==0){
+ 				this->current=new_node;
+ 				this->next=0;
+ 			}
+ 			else {
+ 				CConstituentList* temp=this;
+ 				while(temp->next!=0) {
+ 					temp=temp->next;  //we iterate just until the very last node.
+ 				}
+ 				CConstituentList* list_new=new CConstituentList();
+ 				list_new->current=new_node;
+ 				temp->next=list_new;
+ 			}
+ 		}
+
+
+ 		bool empty(){
+ 			return (current==0 && next==0);
+ 		}
+
+ 		static void add(CConstituentList*& list, CConstituent node) {
+ 			if (list==0){
+ 				list=new CConstituentList();
+ 				list->current=node;
+ 			}
+ 			else {
+ 				list->addAux(node);
+ 			}
+ 		}
+ };
 
 
 #include "action.h"
@@ -758,7 +797,7 @@ protected:
          }
          ++it;
       } //while
-      if (!bCorrect)
+      if (!bCorrect)onst
          ++(plost);
    }
 
@@ -1683,6 +1722,29 @@ public:
   	   }
      } 
 
+
+     void findChainMultiCategory(CConstituentList* via_category, CConstituent target_category, const CStateNode* head, CStateNodeList*& candidates) {
+       	   CStateNodeList* headChilds=head->m_umbinarizedSubNodes;
+       	   while(headChilds) {
+       		   const CStateNode* node=headChilds->node;
+       		   if (node->constituent==target_category) {
+       			   //candidates->add(node);
+       			   CStateNodeList::add(candidates,node);
+       		   }
+       		   bool catCoincident=false;
+       		   while(via_category!=0){
+       			   if (node->constituent==via_category->current) {
+       				   catCoincident=true;
+       			   }
+       			   via_category=via_category->next;
+       		   }
+       		   if (catCoincident) {
+       			   findChainMultiCategory(via_category,target_category,node,candidates);
+       		   }
+       		   headChilds=headChilds->next;
+       	   }
+          }
+
     void findChainTargetPos(CConstituent via_category, unsigned long target_category, const CStateNode* head, CStateNodeList*& candidates) {
   	   CStateNodeList* headChilds=head->m_umbinarizedSubNodes;
   	   while(headChilds) {
@@ -1755,6 +1817,23 @@ public:
   	     //if (cs!=0) return cs;
   	     childs=childs->next;
   	 }
+   }
+
+   const CStateNode* findParent(const CStateNode* antecessor, const CStateNode* child){
+	   CStateNodeList* childsAnt=antecessor->m_umbinarizedSubNodes;
+	   while(childsAnt!=0){
+		   const CStateNode* parentCand=findParent(childsAnt->node,child);
+		   if (parentCand!=0) {
+			   return parentCand;
+		   }
+		   else {
+			   if (childsAnt->node==child){
+				   return antecessor;
+			   }
+		   }
+		   childsAnt=childsAnt->next;
+	   }
+	   return 0;
    }
      
      
@@ -1881,6 +1960,7 @@ public:
      	 }
 
       }
+
 
    
 
