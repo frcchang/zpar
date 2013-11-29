@@ -1961,9 +1961,15 @@ public:
 
       }
 
+      //"/^(?:VP|ADJP|JJP|WHADJP|SQ?|SBARQ?|SINV|XS|RRC|(?:WH)?NP(?:-TMP|-ADV)?)$/ < (RB|RBR|RBS|WRB|ADVP|WHADVP=target !< " + NOT_PAT + ")",
+      bool advmod1(){
+    	  if (node.constituent==PENN_CON_VP || node.constituent==PENN_CON_ADJP || node.constituent==PENN_CON_S || //S (SBAR) is there because because SQ? (SBARQ?) matches SQ and S, being Q optional
+    			  node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SBAR || node.constituent==PENN_CON_SBARQ ||
+    			  node.constituent==PENN_CON_SINV || node.constituent==PENN_CON_RRC || node.constituent==PENN_CON_SBARQ){
 
-   
-
+    	  }
+    	  return false;
+      }
             
       
    
