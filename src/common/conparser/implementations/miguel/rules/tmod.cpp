@@ -11,7 +11,7 @@ bool tmod2(){
 
 //"@PP < (IN|TO|VBG|FW $++ (@NP $+ NP-TMP=target))",
 bool tmod3(){
-
+//we can safely ignore it, NP-TMP is not in our data set.
 }
 
 //"@PP < (IN|TO|VBG|FW $++ (@NP $+ (NP=target <# (/^NN/ < " + timeWordRegex + "))))",
@@ -42,5 +42,5 @@ bool tmod8(){
 
 //"NP < NP-TMP=target"
 bool tmod9(){
-
+//we can safely ignore it...
 }

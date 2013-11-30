@@ -1,5 +1,39 @@
 
-
+ //"/^(?:VP|ADJP|JJP|WHADJP|SQ?|SBARQ?|SINV|XS|RRC|(?:WH)?NP(?:-TMP|-ADV)?)$/ < (RB|RBR|RBS|WRB|ADVP|WHADVP=target !< " + NOT_PAT + ")",
+      bool advmod1(){
+    	  if (node.constituent==PENN_CON_VP || node.constituent==PENN_CON_ADJP || node.constituent==PENN_CON_S || //S (SBAR) is there because because SQ? (SBARQ?) matches SQ and S, being Q optional
+    			  node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SBAR || node.constituent==PENN_CON_SBARQ ||
+    			  node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_SBARQ ||
+    			  node.constituent==PENN_CON_SINV || node.constituent==PENN_CON_RRC || node.constituent==PENN_CON_SBARQ){
+    		  CStateNodeList* childs = node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  const CStateNode* targ=childs->node;
+    			  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_ADVERB || (*words)[targ->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE 
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_ADVERB_SUPERLATIVE || (*words)[targ->lexical_head].tag.code()==PENN_TAG_WRB || targ->constituent==PENN_CON_WHADVP) && !isLinked(&node,targ)){
+    				  
+    				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
+    				  bool notCond=true;
+    				  while(childsT!=0){
+     					  if (((*words)[childsT->node->lexical_head].word==g_word_not) ||((*words)[childsT->node->lexical_head].word==g_word_nt)){
+     						 notCond=false;
+     					  }
+    					  childsT=childsT->next;
+    				  }
+    				  
+    				  if (notCond){
+    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    						  addLinked(&node,targ);
+    					      return true;
+    					  }
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
+            
 
 
 //"ADVP|WHADVP < (RB|RBR|RBS|WRB|ADVP|WHADVP|JJ=target !< " + NOT_PAT + ") !< CC !< CONJP",
@@ -76,15 +110,29 @@
 
 
 
-//"SBARQ <, WHADVP=target"
-bool advmod31(){
-
-}
+    //"SBARQ <, WHADVP=target"
+      bool advmod31(){
+    	  if (node.constituent==PENN_CON_SBARQ){
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  if (childs!=0){
+    			  const CStateNode* targ=childs->node;
+    			  if (targ->constituent==PENN_CON_WHADVP && !isLinked(&node,targ)){
+    				  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+    				  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    					  addLinked(&node,targ);
+    				      return true;
+    				 }
+    			  }
+    		  }
+    	  }
+    	  return false;
+      }
+      
 
 //"XS < JJ=target",
-bool advmod32(){
-
-}
+/*bool advmod32(){
+//We can safely remove it, there is no XS in our data set.
+}*/
 
 //"/(?:WH)?PP(?:-TMP|-ADV)?$/ <# (__ $-- (RB|RBR|RBS|WRB|ADVP|WHADVP=target !< " + NOT_PAT + "))",
 bool advmod4(){
