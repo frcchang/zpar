@@ -197,6 +197,7 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_addition("addition");
  static CWord g_word_so("so");
 
+ static CWord g_word_quote("'");
  static CWord g_word_quotes("``");
  static CWord g_word_squotes("''");
 
@@ -1961,7 +1962,6 @@ public:
 
       }
 
-      
     
    
     //===============================================================================
