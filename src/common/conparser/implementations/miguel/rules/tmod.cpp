@@ -1,7 +1,7 @@
 
 //"VP|ADJP < NP-TMP=target",
 bool tmod1(){
-
+//we can safely ignore it...NP-TMP is not in our data set.
 }
 
 //"VP|ADJP < (NP=target <# (/^NN/ < " + timeWordRegex + ") !$+ (/^JJ/ < old))",

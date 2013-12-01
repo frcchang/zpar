@@ -5,11 +5,91 @@ bool predet1(){
 }
 
 //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < (PDT|DT=target $+ DT $++ (/^JJ/ !$+ /^NN/)) !$++ CC",
-bool predet2(){
+    bool predet2(){
+  	  CStateNodeList* childsN=node.m_umbinarizedSubNodes;
+  	  while(childsN!=0){
+  		  const CStateNode* head=childsN->node;
+  		  if (head->constituent==PENN_CON_WHNP || head->constituent==PENN_CON_NP){
+  			  bool rightSisCond=true;
+  			  CStateNodeList* rightSisters=childsN->next;
+  			  while(rightSisters!=0){
+  				  if (((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC)){
+  					  rightSisCond=false;
+  				  }
+  				  rightSisters=rightSisters->next;
+  			  }
+  			  if (rightSisCond){
+  				  CStateNodeList* childs=head->m_umbinarizedSubNodes;
+  				  while(childs!=0){
+  					  const CStateNode* targ=childs->node;
+  					  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_DT)
+  							  ||((*words)[targ->lexical_head].tag.code()==PENN_TAG_PDT) && !isLinked(&node,targ)){
+  						  CStateNodeList* rightSis=childs->next;
+  						  bool firstCond=false;
+  						  bool secCond=false;
+  						  if (rightSis!=0){
+  							  if (((*words)[rightSis->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE)
+  								  ||((*words)[rightSis->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE)
+  							      ||((*words)[rightSis->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)){
+  							  firstCond=true;
+  						  }
+  						  if (firstCond){
+  							  while(rightSis!=0){
+  								  //PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
+  								  if (((*words)[rightSis->node->lexical_head].tag.code()==PENN_TAG_NOUN)
+  								      ||((*words)[rightSis->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER)
+  								      ||((*words)[rightSis->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)
+  								      ||((*words)[rightSis->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL)){
+  									  secCond=true;
+  								  }
+  								  rightSis=rightSis->next;
+  							  }
+  							  if (firstCond && secCond){
+  								  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREDET);
+  								  if (buildStanfordLink(label, targ->lexical_head, head->lexical_head)) {
+  									  addLinked(&node,targ);
+  								      return true;
+  								  }
+  							  }
+  						  }
+  					  }
+  						  }
+  					  childs=childs->next;
+  				  }
+  			  }
+  		  }
+  		  childsN=childsN->next;
+  	  }
+  	  return false;
+    }
 
-}
 
 //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < PDT=target <- DT"
-bool predet3(){
+     bool predet3(){
+   	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP){
+   		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+   		  bool lastCond=false;
+   		  while(childs!=0){
+   			  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_DT) && childs->next==0){
+   				  lastCond=true;
+   			  }
+   			  childs=childs->next;
+   		  }
+   		  if (lastCond){
+   			  childs=node.m_umbinarizedSubNodes;
+   			  while(childs!=0){
+   				  const CStateNode* targ=childs->node;
+   				  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_PDT) && !isLinked(&node,targ)){
+   					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREDET);
+   					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+   						  addLinked(&node,targ);
+   					      return true;
+   					  }
+   				  }
+   				  childs=childs->next;
+   			  }
+   		  }
+   	  }	
+   	  return false;
+     }
 
-}
