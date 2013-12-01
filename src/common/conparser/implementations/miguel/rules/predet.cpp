@@ -1,8 +1,53 @@
+      
+      //"/^(?:(?:WH)?NP(?:-TMP|-ADV)?|NX|NAC|NML)$/ < (PDT|DT=target $+ /^(?:DT|WP\\$|PRP\\$)$/ $++ /^N[NXM]/ !$++ CC)",
+      bool predet1(){
+    	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP || node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  const CStateNode* targ=childs->node;
+    			  if ((((*words)[targ->lexical_head].tag.code()==PENN_TAG_PDT)
+    					  ||((*words)[targ->lexical_head].tag.code()==PENN_TAG_DT))
+    					&& !isLinked(&node,targ)){
+    				  
+    				  bool firstCond=false;
+    				  bool secCond=false;
+    				  bool thirdCond=true;
+    				  CStateNodeList* rightSisters=childs->next;
+    				  if (rightSisters!=0){
+    					  if (((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_PDT)
+    						  ||((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_WP)
+    						  ||((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_WP_DOLLAR)
+    						  ||((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_PRP_DOLLAR)
+    					      ||((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_PRP)) {
+    						  firstCond=true;
+    					  }
+    				  }
+    				  while(rightSisters!=0){
+    					  if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN || rightSisters->node->constituent==PENN_CON_NX){
+    						  secCond=true;
+    					  }
+    					  if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
+    						  thirdCond=false;
+    					  }
+    					  rightSisters=rightSisters->next;
+    				  }
+    				  
+    				  
+    				  if (firstCond && secCond && thirdCond){
+    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREDET);
+    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    						  addLinked(&node,targ);
+    					      return true;
+    					  }
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
 
-//"/^(?:(?:WH)?NP(?:-TMP|-ADV)?|NX|NAC|NML)$/ < (PDT|DT=target $+ /^(?:DT|WP\\$|PRP\\$)$/ $++ /^N[NXM]/ !$++ CC)",
-bool predet1(){
 
-}
 
 //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < (PDT|DT=target $+ DT $++ (/^JJ/ !$+ /^NN/)) !$++ CC",
     bool predet2(){
