@@ -1964,7 +1964,21 @@ public:
       }
 
 
-   
+      //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < (NP|NML|NN|NNS|NNP|NNPS|FW|AFX=target $++ NN|NNS|NNP|NNPS|FW|CD !<<- POS !<<- (VBZ < /^\'s$/) !$- /^,$/ )",
+      bool nn1(){
+    	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP ||node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  const CStateNode* targ=childs->node;
+    			  if ((targ->constituent==PENN_CON_NP || targ->constituent==PENN_CON_NP) && !isLinked(&node,targ)){
+
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
+
     //===============================================================================
       
       //conj rules. There are 
