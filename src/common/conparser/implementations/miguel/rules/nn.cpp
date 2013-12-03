@@ -1,13 +1,164 @@
+ //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < (NP|NML|NN|NNS|NNP|NNPS|FW|AFX=target $++ NN|NNS|NNP|NNPS|FW|CD !<<- POS !<<- (VBZ < /^\'s$/) !$- /^,$/ )",
+      bool nn1(){
+    	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP ||node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  const CStateNode* targ=childs->node;
+    			  //PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
+    			  if ((targ->constituent==PENN_CON_NP || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_FW ) && !isLinked(&node,targ)){
 
-//"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < (NP|NML|NN|NNS|NNP|NNPS|FW|AFX=target $++ NN|NNS|NNP|NNPS|FW|CD !<<- POS !<<- (VBZ < /^\'s$/) !$- /^,$/ )",
-//bool nn1(){
+    				  bool rightsistCond=false;
+    				  bool descCond1=true;
+    				  bool descCond2=true;
+    				  bool leftSistCond=true;
+    				  //(*words)[targ->lexical_head].tag.code()==PENN_TAG_CD
+    				  CStateNodeList* rightSisters=childs->next;
+    				  while(rightSisters!=0){
+    					  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[targ->lexical_head].tag.code()==PENN_TAG_CD
+    					      	|| (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					      	|| (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					      	|| (*words)[targ->lexical_head].tag.code()==PENN_TAG_FW )){
+    						  rightsistCond=true;
+    					  }
+    					  rightSisters=rightSisters->next;
+    				  }
+    				  if (rightsistCond){
+    					  CStateNodeList* leftSisters=childs->previous;
+    					  if (leftSisters!=0){
+    						  if ((*words)[leftSisters->node->lexical_head].word==g_word_comma){
+    							  leftSistCond=false;
+    						  }
+    					  }
+    					  if (leftSistCond){
+    						  CStateNodeList* descendants=new CStateNodeList();
+    						  listRightMostDescendants(targ->m_umbinarizedSubNodes,descendants);
+    						  while(descendants!=0){
+    							  if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_POS){
+    								  descCond1=false;
+    							  }
+    							  else if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
+    								  CStateNodeList* childsVbz=descendants->node->m_umbinarizedSubNodes;
+    								  while(childsVbz!=0){
+    									  if ((*words)[childsVbz->node->lexical_head].word==g_word_aps){
+    										  descCond2=false;
+    									  }
+    									  childsVbz=childsVbz->next;
+    								  }
+    							  }
+    							  descendants=descendants->next;
+    						  }
 
-//}
+    					  }
+    				  }
 
-//"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < JJ|JJR|JJS=sister < (NP|NML|NN|NNS|NNP|NNPS|FW=target !<<- POS !<<- (VBZ < /^\'s$/) $+ =sister) <# NN|NNS|NNP|NNPS !<<- POS !<<- (VBZ < /^\'s$/) ",
-bool nn2(){
+    				  if (rightsistCond && descCond1 && descCond2 && leftSistCond){
+    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
+    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    						  addLinked(&node,targ);
+    					  	  return true;
+    					  }
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
 
-}
+      //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < JJ|JJR|JJS=sister < (NP|NML|NN|NNS|NNP|NNPS|FW=target !<<- POS !<<- (VBZ < /^\'s$/) $+ =sister) <# NN|NNS|NNP|NNPS !<<- POS !<<- (VBZ < /^\'s$/) ",
+            bool nn2(){
+          	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP || node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
+          		  bool firstCond=false; //< JJ|JJR|JJS=sister
+          		  bool thirdCond=false; //<# NN|NNS|NNP|NNPS
+          		  bool fourthCond=true;//!<<- POS
+          		  bool fifthCond=true; //!<<- (VBZ < /^\'s$/)
+
+          		  const CStateNode* sister=0;
+          		  const CStateNodeList* childs=node.m_umbinarizedSubNodes;
+          		  while(childs!=0){
+          			  if ((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE){
+          				  firstCond=true;
+          				  sister=childs->node;
+          			  }
+          			  //PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
+          			  else if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
+          					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL) && childs->node->lexical_head==node.lexical_head){
+          				  thirdCond=true;
+          			  }
+          			  childs=childs->next;
+          		  }
+
+          		  if (firstCond && thirdCond){
+          			  CStateNodeList* descendants=new CStateNodeList();
+          			  listRightMostDescendants(node.m_umbinarizedSubNodes,descendants);
+          			  while(descendants!=0){
+          				  if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_POS){
+          					  fourthCond=false;
+          				  }
+          				  else if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
+          					  CStateNodeList* childsVbz=descendants->node->m_umbinarizedSubNodes;
+          				      while(childsVbz!=0){
+          				    	  if ((*words)[childsVbz->node->lexical_head].word==g_word_aps){
+          				    		  fifthCond=false;
+          				    	  }
+          				      	  childsVbz=childsVbz->next;
+          				      }
+          				  }
+          				  descendants=descendants->next;
+          			  }
+          		  }
+
+          		  if (firstCond && thirdCond && fourthCond && fifthCond){
+          			  //< (NP|NML|NN|NNS|NNP|NNPS|FW=target !<<- POS !<<- (VBZ < /^\'s$/) $+ =sister)
+          			  childs=node.m_umbinarizedSubNodes;
+          			  while(childs!=0){
+          				  const CStateNode* targ=childs->node;
+          				  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
+          						  || childs->node->constituent==PENN_CON_NP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+          						  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_FW || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL) && !isLinked(&node,targ)){
+
+          					  CStateNodeList* descendants2=new CStateNodeList();
+          					  listRightMostDescendants(targ->m_umbinarizedSubNodes,descendants2);
+          					  while(descendants2!=0){
+          						  if ((*words)[descendants2->node->lexical_head].tag.code()==PENN_TAG_POS){
+          							  fourthCond=false;
+          					      }
+          					      else if ((*words)[descendants2->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
+          					    	  CStateNodeList* childsVbz=descendants2->node->m_umbinarizedSubNodes;
+          					      	  while(childsVbz!=0){
+          					      		  if ((*words)[childsVbz->node->lexical_head].word==g_word_aps){
+          					      			CStateNodeList* rightSisters=childs->next;
+          					      			if (rightSisters!=0 && sister!=0){
+          					      				if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
+          					      						|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE
+          					      						|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE){
+          					      					CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
+          					      					if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+          					      						addLinked(&node,targ);
+          					      					    return true;
+          					      					}
+          					      				}
+          					      			}
+          					      		  }
+          					      		  childsVbz=childsVbz->next;
+          					      	  }
+          					       }
+          					      descendants2=descendants2->next;
+          					    }
+
+          				  }
+          				  childs=childs->next;
+          			  }
+          		  }
+          	  }
+          	  return false;
+            }
+
+
+
 
 //"ADJP|ADVP < (FW [ $- FW=target | $- (IN=target < in|In) ] )",  // in vitro, in vivo, etc., in Genia
 //Divided in 2...
