@@ -1309,9 +1309,9 @@ public:
 	   det6();
 	   det7();
 
-	   discourse1();
+	   /*discourse1();
 	   discourse2();
-	   discourse3();
+	   discourse3();*/
 
 	   goesWith();
 
@@ -1321,12 +1321,12 @@ public:
 	   mark1();
 	   mark2();
 
-	   mwe1();
+	   /*mwe1();
 	   mwe2();
 	   mwe3();
 	   mwe4();
 	   mwe5();
-	   mwe6();
+	   mwe6();*/
 
 	   neg1();
 	   neg2();
@@ -1381,7 +1381,7 @@ public:
 	   prep3();
 	   prep4();
 
-	   prt1();
+	   //prt1();
 	   prt2();
 
 	   quantmod1();
@@ -1980,8 +1980,31 @@ public:
       }
       
       
-
-
+      //"/(?:WH)?PP(?:-TMP|-ADV)?$/ < @NP|WHNP < (RB|RBR|RBS|WRB|ADVP|WHADVP=target !< " + NOT_PAT + ")",
+      bool advmod5(){
+    	  if (node.constituent==PENN_CON_PP || node.constituent==PENN_CON_WHPP){
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  bool npwhCond=false;
+    		  while(childs!=0){
+    			  if (childs->node->constituent==PENN_CON_NP || childs->node->constituent==PENN_CON_WHNP){
+    				  npwhCond=true;
+    			  }
+    			  childs=childs->next;
+    		  }
+    		  if (npwhCond){
+    			  childs=node.m_umbinarizedSubNodes;
+    			  while(childs!=0){
+    				  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE || 
+    						  (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB || 
+    						  (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB) && !isLinked(&node,targ)){
+    					  
+    				  }
+    				  childs=childs->next;
+    			  }
+    		  }
+    	  }
+    	  return false;
+      }
       
     //===============================================================================
       
