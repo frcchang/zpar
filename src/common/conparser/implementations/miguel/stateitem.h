@@ -1970,9 +1970,9 @@ public:
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
-    			  if ((targ->constituent==PENN_CON_NP || targ->constituent==PENN_CON_NP) && !isLinked(&node,targ)){
+    			  //if ((targ->constituent==PENN_CON_NP || (*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET) && !isLinked(&node,targ)){
 
-    			  }
+    			  //}
     			  childs=childs->next;
     		  }
     	  }
@@ -1980,32 +1980,7 @@ public:
       }
       
       
-      //"/(?:WH)?PP(?:-TMP|-ADV)?$/ < @NP|WHNP < (RB|RBR|RBS|WRB|ADVP|WHADVP=target !< " + NOT_PAT + ")",
-      bool advmod5(){
-    	  if (node.constituent==PENN_CON_PP || node.constituent==PENN_CON_WHPP){
-    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
-    		  bool npwhCond=false;
-    		  while(childs!=0){
-    			  if (childs->node->constituent==PENN_CON_NP || childs->node->constituent==PENN_CON_WHNP){
-    				  npwhCond=true;
-    			  }
-    			  childs=childs->next;
-    		  }
-    		  if (npwhCond){
-    			  childs=node.m_umbinarizedSubNodes;
-    			  while(childs!=0){
-    				  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE || 
-    						  (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB || 
-    						  (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_WRB) && !isLinked(&node,targ)){
-    					  
-    				  }
-    				  childs=childs->next;
-    			  }
-    		  }
-    	  }
-    	  return false;
-      }
-      
+
     //===============================================================================
       
       //conj rules. There are 
