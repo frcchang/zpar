@@ -1215,8 +1215,8 @@ public:
 
 	   buildPunct1();
 	   std::cerr<<"Punct1 \n";
-	   buildPunct2();
-	   std::cerr<<"Punct2 \n";
+	   //buildPunct2();
+	   //std::cerr<<"Punct2 \n";
 
 	   buildPobj1();
 	   std::cerr<<"Pobj1 \n";
@@ -1256,8 +1256,6 @@ public:
 	   std::cerr<<"Conj7 \n";
 	   buildConj8();
 	   std::cerr<<"Conj8 \n";
-	   buildConj9();
-	   std::cerr<<"Conj9 \n";
 
 	   buildAComp1();
 	   buildAComp2();
