@@ -1256,7 +1256,8 @@ public:
 	   std::cerr<<"Conj7 \n";
 	   buildConj8();
 	   std::cerr<<"Conj8 \n";
-
+	   buildConj9();
+	   std::cerr<<"Conj9 \n";
 
 	   buildAComp1();
 	   buildAComp2();
@@ -1403,6 +1404,9 @@ public:
 	   tmod7();
 	   tmod8();
 	   tmod9();
+
+
+
 
 
 
@@ -1964,21 +1968,8 @@ public:
       }
 
 
-      //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < (NP|NML|NN|NNS|NNP|NNPS|FW|AFX=target $++ NN|NNS|NNP|NNPS|FW|CD !<<- POS !<<- (VBZ < /^\'s$/) !$- /^,$/ )",
-      bool nn1(){
-    	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP ||node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
-    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
-    		  while(childs!=0){
-    			  const CStateNode* targ=childs->node;
-    			  //if ((targ->constituent==PENN_CON_NP || (*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET) && !isLinked(&node,targ)){
 
-    			  //}
-    			  childs=childs->next;
-    		  }
-    	  }
-    	  return false;
-      }
-      
+
       
 
     //===============================================================================
