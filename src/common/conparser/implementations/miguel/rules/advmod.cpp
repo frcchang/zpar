@@ -140,10 +140,7 @@ bool advmod4(){
 }
 
 
-//"/(?:WH)?PP(?:-TMP|-ADV)?$/ < @NP|WHNP < (RB|RBR|RBS|WRB|ADVP|WHADVP=target !< " + NOT_PAT + ")",
-bool advmod5(){
 
-}
 
 //"CONJP < (RB=target !< " + NOT_PAT + ")",
     bool advmod6(){
