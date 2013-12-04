@@ -1967,7 +1967,29 @@ public:
 
 
 
-
+      //"VP|ADJP < (NP=target <# (/^NN/ < " + timeWordRegex + ") !$+ (/^JJ/ < old))",
+      bool tmod2(){
+    	  if (node.constituent==PENN_CON_VP || node.constituent==PENN_CON_ADJP){
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  const CStateNode* targ=childs->node;
+    			  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
+    				  bool cond1=false;
+    				  bool cond2=true;
+    				  
+    				  if (cond1 && cond2){
+    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
+    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    						  addLinked(&node,targ);
+    					      return true;
+    					  }
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
       
 
     //===============================================================================
