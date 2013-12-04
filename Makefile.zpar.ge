@@ -1,14 +1,14 @@
 
 # currently support only agenda
-GENERIC_TAGGER_IMPL = collins
+GENERIC_TAGGER_IMPL = $(TAGGER_IMPL)
 
 # currently support nivre, combined implementations (other implementations are not generalized)
-GENERIC_DEPPARSER_IMPL = miguel
+GENERIC_DEPPARSER_IMPL = $(DEPPARSER_IMPL)
 GENERIC_DEPPARSER_LABELED = true
 # current naive
 GENERIC_DEPLABELER_IMPL = naive
 # currently support sr implementations 
-GENERIC_CONPARSER_IMPL = srnew
+GENERIC_CONPARSER_IMPL = $(CONPARSER_IMPL)
 GENERIC_CONPARSER_D = -DGENERIC_CONLABEL_SIZE=12
 
 #===================================================================

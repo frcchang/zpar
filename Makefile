@@ -24,6 +24,15 @@
 #
 #================================================================
 
+# the generic tagger
+TAGGER_IMPL = collins
+
+# the generic depparser
+DEPPARSER_IMPL = miguel
+
+# the generic conparser
+CONPARSER_IMPL = srnew
+
 # choose between agenda, agendachart etc ## NO SPACE AFTER NAME ###
 #
 # agenda: the single agenda method - reproduce paper
