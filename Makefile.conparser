@@ -9,7 +9,7 @@ $(DIST_CONPARSER):
 	mkdir -p $(DIST_CONPARSER)
 $(OBJECT_CONPARSER):
 	mkdir -p $(OBJECT_CONPARSER)
-chinese.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_CONPARSER) $(DIST_CONPARSER) $(DIST_CONPARSER)/conparser $(DIST_CONPARSER)/train
+chinese.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_CONPARSER) $(DIST_CONPARSER) $(OBJECTS) $(DIST_CONPARSER)/conparser $(DIST_CONPARSER)/train
 	@echo The Chinese constituent parser system is compiled successfully into $(DIST_CONPARSER).
 
 # the constituent
