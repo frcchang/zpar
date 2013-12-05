@@ -71,7 +71,4 @@
     	  return false;
       }
       
-//"S < (SBAR|S=target !$+ /^,$/ $++ (VP <+(VP) (VP < VBN|VBD > (VP < (/^(?:VB|AUX)/ < " + passiveAuxWordRegex + "))) !$-- NP))"
-bool csubjpass2(){
 
-}

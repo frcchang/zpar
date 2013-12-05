@@ -1967,6 +1967,21 @@ public:
 
       }
 
+      //"S < (SBAR|S=target !$+ /^,$/ $++ (VP <+(VP) (VP < VBN|VBD > (VP < (/^(?:VB|AUX)/ < " + passiveAuxWordRegex + "))) !$-- NP))"
+      bool csubjpass2(){
+    	  if (node.constituent==PENN_CON_S){
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  const CStateNode* targ=childs->node;
+    			  if ((targ->constituent==PENN_CON_SBAR || targ->constituent==PENN_CON_S)&&!isLinked(&node,targ)){
+
+    			  }
+    			  childs=childs->next;
+    		  }
+    	  }
+    	  return false;
+      }
+
 
     //===============================================================================
       
