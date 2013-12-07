@@ -918,6 +918,8 @@ public:
    void Move(CStateItem *retval, const CAction &action) const {
       retval->action = action; // this makes it necessary for the actions to 
       retval->statePtr = this; // be called by Move
+      std::memcpy(retval->m_lHeads, m_lHeads, MAX_SENTENCE_SIZE*sizeof(int));
+      std::memcpy(retval->m_lLabels, m_lLabels, MAX_SENTENCE_SIZE*sizeof(unsigned));
       
       retval->words = this->words; // Miguel
       
@@ -1031,10 +1033,10 @@ public:
       out.root = nodes[0]->id;
    }
 
-   void GenerateStanford(const CTwoStringVector &tagged, CCoNLLOutput &out) const {
-      out.clear();
+   void GenerateStanford(const CTwoStringVector &tagged, CCoNLLOutput *out) const {
+      out->clear();
       for (int i=0; i<tagged.size(); ++i) {
-         out.push_back(CCoNLLOutputNode(i+1, tagged.at(i).first, "_", "_", tagged.at(i).second, "_", m_lHeads[i]+1, CDependencyLabel(m_lHeads[i]).str(), DEPENDENCY_LINK_NO_HEAD, "_"));
+         out->push_back(CCoNLLOutputNode(i+1, tagged.at(i).first, "_", "_", tagged.at(i).second, "_", m_lHeads[i]+1, CDependencyLabel(m_lHeads[i]).str(), DEPENDENCY_LINK_NO_HEAD, "_"));
       }
    }
 
@@ -2228,7 +2230,7 @@ public:
       newNode->next=this->node.stfLinks;
       node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
 
-      assert(m_lHeads[dependent] == DEPENDENCY_LINK_NO_HEAD);
+//      assert(m_lHeads[dependent] == DEPENDENCY_LINK_NO_HEAD); 
       m_lHeads[dependent] = head;
       m_lLabels[dependent] = label->code();
 

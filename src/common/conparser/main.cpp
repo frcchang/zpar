@@ -23,7 +23,12 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, const char cInputFormat, int nBest, const bool bScores, const bool bBinary) {
+void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, 
+const char cInputFormat, 
+#ifdef CONLL_OUTPUT
+const char cOutputFormat,
+#endif
+int nBest, const bool bScores, const bool bBinary) {
 
    std::cout << "Parsing started" << std::endl;
 
@@ -43,6 +48,9 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
    static CTwoStringVector raw_input;
    static CSentenceMultiCon<CConstituent> con_input;
    CSentenceParsed *outout_sent; 
+#ifdef CONLL_OUTPUT
+   CCoNLLOutput o_conll;
+#endif
 
    int nCount=0;
    bool bReadSuccessful;
@@ -65,17 +73,32 @@ void process(const std::string &sInputFile, const std::string &sOutputFile, cons
       ++ nCount;
 
       // Find decoder outout
+#ifdef CONLL_OUTPUT
+      if (cInputFormat=='c')
+         parser.parse( con_input , outout_sent , &o_conll , nBest , scores ) ;
+      else
+         parser.parse( raw_input , outout_sent , &o_conll , nBest , scores ) ;
+#else
       if (cInputFormat=='c')
          parser.parse( con_input , outout_sent , nBest , scores ) ;
       else
          parser.parse( raw_input , outout_sent , nBest , scores ) ;
+#endif
       
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
+#ifdef CONLL_OUTPUT
+         if (cOutputFormat == 'c' || cOutputFormat == 'a')
+            os << o_conll << std::endl;
+         if (cOutputFormat == 'b' || cOutputFormat == 'a') {
+#endif
          if (bBinary)
             os << outout_sent[i] ;
          else
             os << outout_sent[i].str_unbinarized() << std::endl;
+#ifdef CONLL_OUTPUT
+         }
+#endif
          if (bScores) *os_scores << scores[i] << std::endl;
       }
 
@@ -112,10 +135,13 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("i", "r/c", "input format: r - pos-tagged sentence; c - pos-tagged and a lit of constituents for each word", "r");
+      configurations.defineConfiguration("i", "r/c", "input format: r - pos-tagged sentence; c - pos-tagged and a list of constituents for each word", "r");
       configurations.defineConfiguration("b", "", "outout binarized parse trees", "");
       configurations.defineConfiguration("n", "N", "N best list outout", "1");
       configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
+#ifdef CONLL_OUTPUT
+      configurations.defineConfiguration("o", "b/c/a", "output format: b - bracked sentence; c - conll dependencies; a - both", "b");
+#endif
       // check arguments
       if (options.args.size() != 4) {
          std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
@@ -132,7 +158,15 @@ int main(int argc, char* argv[]) {
       bool bScores = configurations.getConfiguration("s").empty() ? false : true;
       bool bBinary = configurations.getConfiguration("b").empty() ? false : true;
       char cInputFormat = configurations.getConfiguration("i") == "c" ? 'c' : 'r';
-      process(options.args[1], options.args[2], options.args[3], cInputFormat, nBest, bScores, bBinary);
+#ifdef CONLL_OUTPUT
+      char cOutputFormat = configurations.getConfiguration("o").at(0);
+#endif
+      process(options.args[1], options.args[2], options.args[3], 
+              cInputFormat, 
+#ifdef CONLL_OUTPUT
+              cOutputFormat,
+#endif
+              nBest, bScores, bBinary);
    } 
    catch (const std::string &e) {
       std::cerr << "Error: " << e << std::endl;
