@@ -1981,20 +1981,165 @@ public:
 
       }
 
-      //"S < (SBAR|S=target !$+ /^,$/ $++ (VP <+(VP) (VP < VBN|VBD > (VP < (/^(?:VB|AUX)/ < " + passiveAuxWordRegex + "))) !$-- NP))"
-      bool csubjpass2(){
-         if (node.constituent==PENN_CON_S){
-            CStateNodeList* childs=node.m_umbinarizedSubNodes;
-            while(childs!=0){
-               const CStateNode* targ=childs->node;
-               if ((targ->constituent==PENN_CON_SBAR || targ->constituent==PENN_CON_S)&&!isLinked(&node,targ)){
 
-               }
-               childs=childs->next;
-            }
-         }
-         return false;
+      //ASK JOHN WHETHER this /^(?:VB|AUX)/ matches all kind of VERBS or only VB. Does it match for instance VBZ or VBG?
+      //SEE MORE QUESTIONS TO JOHN IN CONJ1 and CONJ8 and APPOS5 (below)
+      
+      
+      //"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
+      bool buildConj1(){
+    	  if (node.constituent==PENN_CON_VP || node.constituent==PENN_CON_S || node.constituent==PENN_CON_SBAR ||
+    			  node.constituent==PENN_CON_SBARQ || node.constituent==PENN_CON_SINV || node.constituent==PENN_CON_SQ){
+    		
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  if (childs->node->constituent==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
+    				  bool leftCondition=false;
+    				  CStateNodeList* leftSisters=childs->node->m_umbinarizedSubNodes;
+    				  if (leftSisters->next!=0){
+    					  leftCondition=true;
+    				  }
+    				  while(leftSisters!=0){
+    					  if (leftSisters->node->constituent==PENN_CON_PP || leftSisters->node->constituent==PENN_CON_ADVP ||
+    						(*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET || leftSisters->node->constituent==PENN_CON_PRN ||
+    						(*words)[leftSisters->node->lexical_head].word==g_word_quotes){
+    						  leftCondition=false; 
+    						  //ASK JOHN what the ! symbol mean before the !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ 
+    						  //I guess that it is a negation, so this thing matches every node but the thing that is negated.
+    					  }
+    					  leftSisters=leftSisters->previous;
+    				  }
+    				  
+    				  
+    				  if (leftSisters && childs->next!=0){
+    					  bool targCond=true;
+    					  const CStateNode* targ=childs->next->node;
+    					  if (true){
+    						  targCond=false;
+    					  }
+    					  
+    					  
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    		  
+    	  }
+    	  return false;
       }
+      
+      
+      //"NX|NML < (CC|CONJP $- __) < (/^,$/ $- /^(?:A|N|V|PP|PRP|J|W|R|S)/=target)",
+                      // to take the conjunct in a preconjunct structure "either X or Y"
+      bool buildConj8(){
+    	  if (node.constituent==PENN_CON_NX){
+    		  bool firstCond=false;
+    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  while(childs!=0){
+    			  if (childs->node->constituent==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
+    				  if (childs->previous!=0){
+    					  firstCond=true;
+    				  }
+    			  }
+    			  childs=childs->next;
+    		  }
+    		  
+    		  if (firstCond){
+    			  childs=node.m_umbinarizedSubNodes;
+    			  while(childs!=0){
+    				  if ((*words)[childs->node->lexical_head].word==g_word_comma){
+    					  if (childs->previous!=0){
+    						  const CStateNode* targ=childs->previous->node;
+    						  if (false && !isLinked(&node,targ)){
+    							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
+    							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    								  addLinked(&node,targ);
+    							      return true;
+    							  }
+    						  }
+    					  }
+    				  }
+    				  childs=childs->next;
+    			  }
+    		  }
+    	  }
+    	  return false;
+    	  
+      }
+      
+      
+      
+      //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < (PRN=target <, /^-LRB-$/ <- /^-RRB-$/ !<< /^(?:POS|(?:WP|PRP)\\$|[,$#]|CC|RB|CD)$/ <+(NP) (NNP|NN < /^(?:[A-Z]\\.?){2,}/) )"
+      
+      
+               bool appos5(){
+             	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP){
+             		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+             		  while(childs!=0){
+             			  const CStateNode* targ=childs->node;
+             			  if (targ->constituent==PENN_CON_PRN && !isLinked(&node,targ)){
+             				  bool firstCond=false; //<, /^-LRB-$/
+             				  bool secondCond=false; // <- /^-RRB-$/
+             				  bool thirdCond=true; //!<< /^(?:POS|(?:WP|PRP)\\$|[,$#]|CC|RB|CD)$/
+             				  bool fourthCond=true; //<+(NP) (NNP|NN < /^(?:[A-Z]\\.?){2,}/)
+
+             				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
+             				  if (childsT!=0){
+             					  if ((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET){
+             						  firstCond=true;
+             				      }
+             				  }
+             				  while(childsT!=0){
+             					  if ((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_R_BRACKET && childsT->next==0){
+             						  secondCond=true;
+             					  }
+             					  childsT=childsT->next;
+             				  }
+
+             				  //void listDescendants (CStateNodeList* childs, CStateNodeList*& candidates){
+             				  if (firstCond && secondCond){
+             					  CStateNodeList* descendants=new CStateNodeList();
+             					  listDescendants(targ->m_umbinarizedSubNodes,descendants);
+             					  while(descendants!=0){
+             						  if (((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_POS)|| ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_PRP)
+             								  || ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_CC) || ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_ADVERB)||
+             								  ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_CD)){ //??????
+             							  thirdCond=false;
+             						  }
+             						  descendants=descendants->next;
+             					  }
+             					  if (thirdCond){
+             						 //<+(NP) (NNP|NN < /^(?:[A-Z]\\.?){2,}/)
+             						 CStateNodeList* chain=new CStateNodeList();
+             						 findChainTargetPos(PENN_CON_NP, PENN_TAG_NOUN, targ, chain);
+             						 findChainTargetPos(PENN_CON_NP, PENN_TAG_NOUN_PROPER, targ, chain);
+             						 while(chain!=0){
+             							 CStateNodeList* childsNN=chain->node->m_umbinarizedSubNodes;
+             							 while(childsNN!=0){
+             								 if (false){
+             									 fourthCond=true;
+             									 //ASK JOHN ABOUT < /^(?:[A-Z]\\.?){2,}/
+             								 }
+             							 }
+             							 chain=chain->next;
+             						 }
+             					  }
+             				  }
+
+             				  if (firstCond && secondCond && thirdCond && fourthCond){
+             					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
+             					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+             						 addLinked(&node,targ);
+             					  	 return true;
+             					 }
+             				  }
+             			  }
+             			  childs=childs->next;
+             		  }
+             	  }
+             	  return false;
+               }
+
 
 
     //===============================================================================
