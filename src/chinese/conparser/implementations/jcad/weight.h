@@ -279,9 +279,9 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 	left(m_mapSubWordHeadCharEqual)right\
 	left(m_mapSubWordHeadCharEqualTag)right\
 	left(m_mapInSubWordDictionaryTag)right\
-	left(m_mapInSubWordTagDictionaryTag)right
-
-
+	left(m_mapInSubWordTagDictionaryTag)right\
+	left(m_mapSYNRightMostc)right\
+	left(m_mapSYNRightMostcWord)right
 
 
 
@@ -544,10 +544,10 @@ const static unsigned DEFAULT_TABLE_SIZE = 1<<17;
 	left m_mapSubWordHeadCharEqual middle m_mapSubWordHeadCharEqual right\
 	left m_mapSubWordHeadCharEqualTag middle m_mapSubWordHeadCharEqualTag right\
 	left m_mapInSubWordDictionaryTag middle m_mapInSubWordDictionaryTag right\
-	left m_mapInSubWordTagDictionaryTag middle m_mapInSubWordTagDictionaryTag right
+	left m_mapInSubWordTagDictionaryTag middle m_mapInSubWordTagDictionaryTag right\
+	left m_mapSYNRightMostc middle m_mapSYNRightMostc right\
+	left m_mapSYNRightMostcWord middle m_mapSYNRightMostcWord right
    
-
-
 
 
 
@@ -921,6 +921,11 @@ public:
    CTagIntMap m_mapInSubWordTagDictionaryTag;
 
 
+   //new 2013.0706
+   CConstituentMap m_mapSYNRightMostc;
+   CWordConstituentMap m_mapSYNRightMostcWord;
+
+
 
    // Rule dictionary
    unsigned long m_nMaxWordFrequency;
@@ -1218,7 +1223,9 @@ public:
                            m_mapSubWordHeadCharEqual("SubWordHeadCharEqual", TABLE_SIZE),
                            m_mapSubWordHeadCharEqualTag("SubWordHeadCharEqualTag", TABLE_SIZE),
                            m_mapInSubWordDictionaryTag("InSubWordDictionaryTag", TABLE_SIZE),
-                           m_mapInSubWordTagDictionaryTag("InSubWordTagDictionaryTag", TABLE_SIZE)
+                           m_mapInSubWordTagDictionaryTag("InSubWordTagDictionaryTag", TABLE_SIZE),
+                           m_mapSYNRightMostc("SYNRightMostc", TABLE_SIZE),
+                           m_mapSYNRightMostcWord("SYNRightMostcWord", TABLE_SIZE)
    { }
    ~CWeight() {
    	if (m_Knowledge) delete m_Knowledge;
