@@ -23,6 +23,8 @@
 
 #define STANFORD_DEPENDENCIES
 
+#define CONLL_OUTPUT
+
 // The size of agenda
 static const unsigned long AGENDA_SIZE = 32;
 static const unsigned long MIRA_SIZE = AGENDA_SIZE+1;

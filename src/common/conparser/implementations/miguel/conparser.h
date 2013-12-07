@@ -143,8 +143,8 @@ public:
    }
 
 public:
-   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
-   void parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CTwoStringVector &sentence , CSentenceParsed *retval , CCoNLLOutput *o_conll , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
+   void parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , CCoNLLOutput *o_conll , int nBest=1 , conparser::SCORE_TYPE *scores=0 ) ;
    void train( const CSentenceParsed &correct , int round ) ;
    void train( const CSentenceMultiCon<CConstituent> &con_input, const CSentenceParsed &correct , int round ) ;
 #ifdef NO_NEG_FEATURE
@@ -169,7 +169,7 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, CCoNLLOutput *o_conll, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
 
    // get the global score for a parsed sentence or section
    inline void getOrUpdateStackScore( conparser::CWeight *cast_weights, CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem *item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );

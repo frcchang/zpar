@@ -983,7 +983,7 @@ void CConParser::getOrUpdateScore( CPackedScoreType<SCORE_TYPE, CAction::MAX> &r
  *
  *--------------------------------------------------------------*/
 
-void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CSentenceParsed *retval , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
+void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CSentenceParsed *retval , CCoNLLOutput *o_conll , const CSentenceParsed &correct , int nBest , SCORE_TYPE *scores ) {
 
    static CStateItem lattice[(MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2)*(AGENDA_SIZE+1)];
    static CStateItem *lattice_index[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
@@ -1195,6 +1195,7 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 
    TRACE("Outputing sentence");
    pBestGen->GenerateTree( sentence, retval[0] );
+   pBestGen->GenerateStanford( sentence, o_conll );
    if (scores) scores[0] = pBestGen->score;
 
    TRACE("Done, the highest score is: " << pBestGen->score ) ;
@@ -1209,11 +1210,11 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
  *
  *--------------------------------------------------------------*/
 
-void CConParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CConParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retval , CCoNLLOutput *o_conll , int nBest , SCORE_TYPE *scores ) {
 
    static CSentenceParsed empty ;
 
-   work(false, sentence, retval, empty, nBest, scores ) ;
+   work(false, sentence, retval, o_conll, empty, nBest, scores ) ;
 
 }
 
@@ -1225,12 +1226,12 @@ void CConParser::parse( const CTwoStringVector &sentence , CSentenceParsed *retv
  *
  *--------------------------------------------------------------*/
 
-void CConParser::parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , int nBest , SCORE_TYPE *scores ) {
+void CConParser::parse( const CSentenceMultiCon<CConstituent> &sentence , CSentenceParsed *retval , CCoNLLOutput *o_conll , int nBest , SCORE_TYPE *scores ) {
 
    static CSentenceParsed empty ;
 
    m_rule.SetLexConstituents( sentence.constituents );
-   work(false, sentence.words, retval, empty, nBest, scores ) ;
+   work(false, sentence.words, retval, o_conll, empty, nBest, scores ) ;
    m_rule.UnsetLexConstituents();
 
 }
@@ -1250,8 +1251,7 @@ void CConParser::train( const CSentenceParsed &correct , int round ) {
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-//   work( true , sentence , &outout , correct , 1 , 0 ) ; 
-   work( true , sentence , 0 , correct , 1 , 0 ) ; 
+   work( true , sentence , 0 , 0 , correct , 1 , 0 ) ; 
 
 };
 
@@ -1267,7 +1267,7 @@ void CConParser::train( const CSentenceMultiCon<CConstituent> &con_input, const 
    m_nTrainingRound = round ;
 
    m_rule.SetLexConstituents( con_input.constituents );
-   work( true , con_input.words , 0 , correct , 1 , 0 ) ; 
+   work( true , con_input.words , 0 , 0 , correct , 1 , 0 ) ; 
    m_rule.UnsetLexConstituents();
 
 };
