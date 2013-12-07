@@ -100,11 +100,12 @@ public:
    //===============================================================
 
 protected:
+   CEntry *c_free;
    CEntry **m_buckets;
    CMemoryPool<CEntry> * m_pool;
 public:
-   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0) { 
-      m_pool = new CMemoryPool<CEntry>(TABLE_SIZE);
+   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0), c_free(0) { 
+      // m_pool = new CMemoryPool<CEntry>(TABLE_SIZE);
       // getPool(); // ensure that the pool is constructed.
       if (initialize) init();
    }
@@ -115,7 +116,7 @@ public:
       clear();
       delete [] m_buckets; m_buckets = 0;
       delete m_pool; m_pool = 0;
-      getFreeMemory() = 0;
+      c_free = 0;
    }
    void resize(const unsigned long &size) {
       ASSERT(m_buckets==0, "Cannot resize hashmap after initialization");
@@ -123,6 +124,7 @@ public:
    }
    void init() {
       ASSERT(m_buckets==0, "Cannot initialize hashmap after initialization");
+      m_pool = new CMemoryPool<CEntry>(m_nTableSize);
       m_buckets = new CEntry*[m_nTableSize] ;
 //      for (int i=0; i<m_nTableSize; ++i) 
 //         m_buckets[i]=0;
@@ -134,11 +136,10 @@ protected:
    CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
    // static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
-   static CEntry* &getFreeMemory() { static CEntry* c_free = 0; return c_free; }
    
    CEntry *allocate() {
       static CEntry *retval;
-      CEntry* &c_freed = getFreeMemory();
+      CEntry* &c_freed = c_free;
       if (c_freed) {
          retval = c_freed;
          c_freed = c_freed->m_next;
@@ -244,7 +245,7 @@ public:
                tail = tail->m_next;
             }
             tail->m_value = value;
-            CEntry* &c_freed = getFreeMemory();
+            CEntry* &c_freed = c_free;
             tail->m_next = c_freed;
             c_freed = m_buckets[i];
             m_buckets[i]=0;
@@ -281,12 +282,6 @@ public:
       std::cout << "done" << std::endl;
    }
 #endif
-
-//public:
-//   static void freePoolMemory() { // call after all instances clean!
-//      getPool().reset();
-//      getFreeMemory() = 0;
-//   }
 
 };
 
