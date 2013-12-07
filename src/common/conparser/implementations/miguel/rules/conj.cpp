@@ -2,8 +2,7 @@
       //(stf comment) this is more ugly, but the first 3 patterns are now duplicated and for clausal things, that daughter to the left of the CC/CONJP can't be a PP or RB or ADVP either
       //(stf comment) non-parenthetical or comma in suitable phrase with conjunction to left
 
-//"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
-bool buildConj1(){}
+
 
 // non-parenthetical or comma in suitable phrase with conj then adverb to left
 //"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ (ADVP $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target))",
@@ -32,8 +31,6 @@ bool buildConj6(){}
                 // content phrase to the left of a comma for at least NX
 bool buildConj7(){}
 
-//"NX|NML < (CC|CONJP $- __) < (/^,$/ $- /^(?:A|N|V|PP|PRP|J|W|R|S)/=target)",
-                // to take the conjunct in a preconjunct structure "either X or Y"
-bool buildConj8(){}
+
 
 

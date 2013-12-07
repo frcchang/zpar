@@ -229,51 +229,5 @@
    }
 
 
-   //SIN TERMINAR!!!!!
-   //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < (PRN=target <, /^-LRB-$/ <- /^-RRB-$/ !<< /^(?:POS|(?:WP|PRP)\\$|[,$#]|CC|RB|CD)$/ <+(NP) (NNP|NN < /^(?:[A-Z]\\.?){2,}/) )"
-         bool appos5(){
-       	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP){
-       		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
-       		  while(childs!=0){
-       			  const CStateNode* targ=childs->node;
-       			  if (targ->constituent==PENN_CON_PRN && !isLinked(&node,targ)){
-       				  bool firstCond=false; //<, /^-LRB-$/
-       				  bool secondCond=false; // <- /^-RRB-$/
-       				  bool thirdCond=true; //!<< /^(?:POS|(?:WP|PRP)\\$|[,$#]|CC|RB|CD)$/
-       				  bool fourthCond=true; //<+(NP) (NNP|NN < /^(?:[A-Z]\\.?){2,}/)
-
-       				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
-       				  if (childsT!=0){
-       					  if ((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET){
-       						  firstCond=true;
-       				      }
-       				  }
-       				  while(childsT!=0){
-       					  if ((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_R_BRACKET && childsT->next==0){
-       						  secondCond=true;
-       					  }
-       					  childsT=childsT->next;
-       				  }
-
-       				  //void listDescendants (CStateNodeList* childs, CStateNodeList*& candidates){
-       				  if (firstCond && secondCond){
-       					  CStateNodeList* descendants=new CStateNodeList();
-       					  listDescendants(targ->m_umbinarizedSubNodes,descendants);
-       					  while(descendants!=0){
-       						  if (((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_POS)|| ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_PRP)
-       								  || ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_CC) || ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_ADVERB)||
-       								  ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_CD)){ //??????
-
-       						  }
-       						  descendants=descendants->next;
-       					  }
-       				  }
-
-       			  }
-       			  childs=childs->next;
-       		  }
-       	  }
-       	  return false;
-         }
-
+   
 
