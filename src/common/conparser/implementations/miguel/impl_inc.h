@@ -18,6 +18,7 @@ typedef CTemporary<CConstituentLabel> CConstituent; //SQ*
 #include "tuple3.h"
 #include "tuple4.h"
 #include "vector_stream.h"
+#include "linguistics/conll.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"
 #include "linguistics/sentence_multicon.h"
