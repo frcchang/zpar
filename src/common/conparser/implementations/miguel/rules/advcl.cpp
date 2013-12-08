@@ -66,8 +66,8 @@
     								}
     								childsIn=childsIn->next;
     							}
-    							childsSbar=childsSbar->next;
     						}
+    						childsSbar=childsSbar->next;
     					}
     					if (firstInCond){
     						childsSbar=sbarTarg->m_umbinarizedSubNodes;

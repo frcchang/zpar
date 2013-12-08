@@ -62,7 +62,7 @@
          				 leftSisters=leftSisters->previous;
          			 }
          			 while(rightSisters!=0){
-         			 	 const CStateNode* prnTarg=leftSisters->node;
+         			 	 const CStateNode* prnTarg=rightSisters->node;
          			 	 if (prnTarg->constituent==PENN_CON_PRN && !(isLinked(&node,prnTarg))){
          			 		 bool secCondition=false;
          			     	 bool thirdCondition=false;
@@ -90,7 +90,7 @@
          			     	 }
          			     }
          			    }
-         			    rightSisters=rightSisters->previous;
+         			    rightSisters=rightSisters->next;
          			 }
          		 }
          		 childs=childs->next;
