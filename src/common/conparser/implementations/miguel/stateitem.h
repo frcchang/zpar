@@ -2067,65 +2067,17 @@ public:
 
      
 
-     //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
-      bool buildDobj4() {
-         if (node.constituent==PENN_CON_SBARQ){
-            CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
-            while(childsSbarq!=0){
+     
 
-               childsSbarq=childsSbarq->next;
-            }
-         }
-
-      }
-
-
-      //ASK JOHN WHETHER this /^(?:VB|AUX)/ matches all kind of VERBS or only VB. Does it match for instance VBZ or VBG?
       //SEE MORE QUESTIONS TO JOHN IN CONJ1 and CONJ8 and APPOS5 (below)
+    
+    //CONJ1
+    //"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
       
-      
-      //"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
-      bool buildConj1(){
-    	  if (node.constituent==PENN_CON_VP || node.constituent==PENN_CON_S || node.constituent==PENN_CON_SBAR ||
-    			  node.constituent==PENN_CON_SBARQ || node.constituent==PENN_CON_SINV || node.constituent==PENN_CON_SQ){
-    		
-    		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
-    		  while(childs!=0){
-    			  if (childs->node->constituent==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
-    				  bool leftCondition=false;
-    				  CStateNodeList* leftSisters=childs->node->m_umbinarizedSubNodes;
-    				  if (leftSisters->next!=0){
-    					  leftCondition=true;
-    				  }
-    				  while(leftSisters!=0){
-    					  if (leftSisters->node->constituent==PENN_CON_PP || leftSisters->node->constituent==PENN_CON_ADVP ||
-    						(*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET || leftSisters->node->constituent==PENN_CON_PRN ||
-    						(*words)[leftSisters->node->lexical_head].word==g_word_quotes){
-    						  leftCondition=false; 
-    						  //ASK JOHN what the ! symbol mean before the !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ 
-    						  //I guess that it is a negation, so this thing matches every node but the thing that is negated.
-    					  }
-    					  leftSisters=leftSisters->previous;
-    				  }
-    				  
-    				  
-    				  if (leftSisters && childs->next!=0){
-    					  bool targCond=true;
-    					  const CStateNode* targ=childs->next->node;
-    					  if (true){
-    						  targCond=false;
-    					  }
-    					  
-    					  
-    				  }
-    			  }
-    			  childs=childs->next;
-    		  }
-    		  
-    	  }
-    	  return false;
-      }
-      
+   
+    
+    
+     
       
       //"NX|NML < (CC|CONJP $- __) < (/^,$/ $- /^(?:A|N|V|PP|PRP|J|W|R|S)/=target)",
                       // to take the conjunct in a preconjunct structure "either X or Y"
