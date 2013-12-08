@@ -89,6 +89,7 @@
     	 								fifthCond=false;
     	 							}
     	 						}
+    	 						rightSisters=rightSisters->next;
     	 					}
     	 				 }
     	 			 }
@@ -102,6 +103,7 @@
     	 			 }
     	 			 
     	 		 }
+    	 		 childsNp=childsNp->next;
     	 	}
     	 }
     	 return false;
@@ -195,7 +197,7 @@ bool det3(){
 					 }
 					 childsDt=childsDt->next;
 				 }
-				 CStateNodeList* rightSisters=childsDt->next;
+				 CStateNodeList* rightSisters=childsNp->next;
 				 bool ccCond=false;
 				 while(rightSisters!=0){
 					 if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
@@ -203,8 +205,8 @@ bool det3(){
 					 }
 					 rightSisters=rightSisters->next;
 				 }
-				 if (ccCond){
-					 rightSisters=childsDt->next;
+				 if (ccCond && wordsCond){
+					 rightSisters=childsNp->next;
 					 while(rightSisters!=0){
 						 if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN || rightSisters->node->constituent==PENN_CON_NX){
 							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
@@ -238,6 +240,10 @@ bool det3(){
    				 CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
    				 CStateNodeList* rdescendantsNp=new CStateNodeList();
    				 listRightMostDescendants (childsT, rdescendantsNp);
+   				if (rdescendantsNp->node==0) {
+   					rdescendantsNp->clear();
+   				   	rdescendantsNp=0;
+   				 }
    				 while(rdescendantsNp!=0){
    					 if (((*words)[rdescendantsNp->node->lexical_head].word==g_word_all) ||((*words)[rdescendantsNp->node->lexical_head].word==g_word_both) ||((*words)[rdescendantsNp->node->lexical_head].word==g_word_each)){
    						 secCond=true;
@@ -249,6 +255,10 @@ bool det3(){
    			 if (secCond){
    				 CStateNodeList* descendantsNp=new CStateNodeList();
    				 listLeftMostDescendants (node.m_umbinarizedSubNodes, descendantsNp);
+   				 if (descendantsNp->node==0) {
+   					descendantsNp->clear();
+   				    descendantsNp=0;
+   				 }
    				 while(descendantsNp!=0){
    					 if ((*words)[descendantsNp->node->lexical_head].tag.code()==PENN_TAG_PRP){
    						 firstCond=true;

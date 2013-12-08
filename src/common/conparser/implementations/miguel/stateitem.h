@@ -1274,67 +1274,113 @@ public:
       std::cerr<<"Conj8 \n";
 
       buildAComp1();
+      std::cerr<<"Acomp1 \n";
       buildAComp2();
+      std::cerr<<"AComp2 \n";
 
       advcl1();
+      std::cerr<<"Advcl1 \n";
       advcl2();
+      std::cerr<<"Advcl2 \n";
       advcl3();
+      std::cerr<<"Advcl3 \n";
       advcl4();
+      std::cerr<<"Advcl4 \n";
       advcl5();
+      std::cerr<<"Advcl5 \n";
       advcl6();
+      std::cerr<<"Advcl6 \n";
       advcl7();
+      std::cerr<<"Advcl7 \n";
       advcl8();
+      std::cerr<<"Advcl8 \n";
       advcl9();
+      std::cerr<<"Advcl9 \n";
 
       advmod1();
+      std::cerr<<"Advmod1 \n";
       advmod2();
+      std::cerr<<"Advmod2 \n";
       advmod3();
+      std::cerr<<"Advmod3 \n";
       advmod31();
+      std::cerr<<"Advmod31 \n";
       //advmod32();
       advmod4();
+      std::cerr<<"Advmod4\n";
       advmod5();
+      std::cerr<<"Advmod5 \n";
       advmod6();
+      std::cerr<<"Advmod6 \n";
 
       amod1();
+      std::cerr<<"Amod1 \n";
       amod2();
+      std::cerr<<"Amod2 \n";
       amod3();
+      std::cerr<<"Amod3 \n";
 
       appos1();
+      std::cerr<<"Appos1 \n";
       appos2();
+      std::cerr<<"Appos2 \n";
       appos3();
+      std::cerr<<"Appos3 \n";
       appos4();
+      std::cerr<<"Appos4 \n";
       appos5();
+      std::cerr<<"Appos5 \n";
 
       auxpass1();
+      std::cerr<<"Auxpass1 \n";
       auxpass2();
+      std::cerr<<"Auxpass2 \n";
       auxpass3();
+      std::cerr<<"Auxpass3 \n";
       auxpass4();
+      std::cerr<<"Auxpass4 \n";
 
       cop1();
+      std::cerr<<"Cop1 \n";
       cop2();
+      std::cerr<<"Cop2 \n";
 
       csubjpass1();
+      std::cerr<<"csubjpass1 \n";
       csubjpass2();
+      std::cerr<<"csubjpass2 \n";
 
       det1();
+      std::cerr<<"det1 \n";
       det2();
+      std::cerr<<"det2 \n";
       det3();
+      std::cerr<<"det3 \n";
       det4();
+      std::cerr<<"det4 \n";
       det5();
+      std::cerr<<"det5 \n";
       det6();
+      std::cerr<<"det6 \n";
       det7();
+      std::cerr<<"det7 \n";
 
       /*discourse1();
       discourse2();
       discourse3();*/
 
-      goesWith();
+      //goesWith();
+      
 
       infmod1();
+      std::cerr<<"infmod1 \n";
       infmod2();
+      std::cerr<<"infmod2 \n";
 
       mark1();
+      std::cerr<<"mark1 \n";
       mark2();
+      std::cerr<<"mark2 \n";
 
       /*mwe1();
       mwe2();
@@ -1344,13 +1390,20 @@ public:
       mwe6();*/
 
       neg1();
+      std::cerr<<"neg1 \n";
       neg2();
+      std::cerr<<"neg2 \n";
       neg3();
+      std::cerr<<"neg3 \n";
 
       nn1();
+      std::cerr<<"nn1 \n";
       nn2();
+      std::cerr<<"nn2 \n";
       nn3();
+      std::cerr<<"nn3 \n";
       nn4();
+      std::cerr<<"nn4 \n";
 
       //npadvmod1();
       //npadvmod2();
@@ -1359,65 +1412,111 @@ public:
       //npadvmod5();
 
       num1();
+      std::cerr<<"num1 \n";
       num2();
+      std::cerr<<"num2 \n";
 
       number1();
+      std::cerr<<"number1 \n";
 
       parataxis1();
+      std::cerr<<"parataxis1 \n";
       parataxis2();
+      std::cerr<<"parataxis2 \n";
       parataxis3();
+      std::cerr<<"parataxis3 \n";
       parataxis4();
+      std::cerr<<"parataxis4 \n";
 
       partmod1();
+      std::cerr<<"partmod1 \n";
       partmod2();
+      std::cerr<<"partmod2 \n";
       partmod3();
+      std::cerr<<"partmod3 \n";
       partmod4();
+      std::cerr<<"partmod4 \n";
 
       poss1();
+      std::cerr<<"poss1 \n";
       poss2();
+      std::cerr<<"poss2 \n";
       poss21();
+      std::cerr<<"poss21 \n";
       poss3();
+      std::cerr<<"poss3 \n";
 
       possessive1();
+      std::cerr<<"possessive1 \n";
       possessive2();
+      std::cerr<<"possessive21 \n";
 
       preconj1();
+      std::cerr<<"preconj1 \n";
       preconj2();
+      std::cerr<<"preconj2 \n";
       preconj3();
+      std::cerr<<"preconj3 \n";
       preconj4();
+      std::cerr<<"preconj4 \n";
       preconj5();
+      std::cerr<<"preconj5 \n";
 
       predet1();
+      std::cerr<<"predet1 \n";
       predet2();
+      std::cerr<<"predet2 \n";
       predet3();
+      std::cerr<<"predet3 \n";
 
       prep1();
+      std::cerr<<"prep1 \n";
       prep2();
+      std::cerr<<"prep2 \n";
       prep3();
+      std::cerr<<"prep3 \n";
       prep4();
+      std::cerr<<"prep4 \n";
 
       //prt1();
       prt2();
+      std::cerr<<"prt2 \n";
 
       quantmod1();
+      std::cerr<<"quantmod1 \n";
 
       rcmod1();
+      std::cerr<<"rcmod1 \n";
       rcmod2();
+      std::cerr<<"rcmod2 \n";
       rcmod3();
+      std::cerr<<"rcmod3 \n";
       rcmod4();
+      std::cerr<<"rcmod4 \n";
       rcmod5();
+      std::cerr<<"rcmod5 \n";
 
       rel1();
+      std::cerr<<"rel1 \n";
 
       tmod1();
+      std::cerr<<"tmod1 \n";
       tmod2();
+      std::cerr<<"tmod2 \n";
       tmod3();
+      std::cerr<<"tmod3 \n";
       tmod4();
+      std::cerr<<"tmod4 \n";
       tmod5();
+      std::cerr<<"tmod5 \n";
       tmod6();
+      std::cerr<<"tmod6 \n";
       tmod7();
+      std::cerr<<"tmod7 \n";
       tmod8();
+      std::cerr<<"tmod8 \n";
       tmod9();
+      std::cerr<<"tmod9 \n";
 
 
 
@@ -1835,7 +1934,6 @@ public:
          CStateNodeList::add(candidates,childs->node);
          listLeftMostDescendants(childs->node->m_umbinarizedSubNodes, candidates);
           //if (cs!=0) return cs;
-          childs=childs->next;
       }
    }
 

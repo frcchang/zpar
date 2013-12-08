@@ -125,11 +125,12 @@ bool tmod5(){
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
     			  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
-    				  while(childs!=0){
-    					  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
-    					     || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL)
-    				      	 && targ->lexical_head==childs->node->lexical_head){
-    				      	 CStateNodeList* childsNN=childs->node->m_umbinarizedSubNodes;
+    				  CStateNodeList* childsNp=targ->m_umbinarizedSubNodes;
+    				  while(childsNp!=0){
+    					  if (((*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
+    					     || (*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL || (*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL)
+    				      	 && targ->lexical_head==childsNp->node->lexical_head){
+    				      	 CStateNodeList* childsNN=childsNp->node->m_umbinarizedSubNodes;
     				      	 while(childsNN!=0){
     				      		 if (compareWordToTimeWordRegex((*words)[childsNN->node->lexical_head].word)) {
 
@@ -155,7 +156,7 @@ bool tmod5(){
     				      		 childsNN=childsNN->next;
     				      	 }
     				      }
-    				      childs=childs->next;
+    				      childsNp=childsNp->next;
     				   }
     			  }
     			  childs=childs->next;
