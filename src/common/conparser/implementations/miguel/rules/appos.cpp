@@ -87,7 +87,7 @@
 
           						  CStateNodeList* leftSisters=childsPr->previous;
           						  while(leftSisters!=0){
-          							  if ((*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET){
+          							  if ((*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET){
           								  leftCond=true;
           							  }
           							  leftSisters=leftSisters->previous;
