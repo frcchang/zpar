@@ -72,7 +72,7 @@
        		 				 while(childsUNS!=0){
        		 					 if ((childsUNS->node->constituent==PENN_CON_CONJP)||(*words)[childsUNS->node->lexical_head].tag.code()==PENN_TAG_CC){
        		 						 CStateNodeList* leftSistersUNS=childsUNS;
-       		 						 while(leftSisters!=0){
+       		 						 while(leftSistersUNS!=0){
        		 							if ((*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB||
        		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST||
        		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG||
@@ -81,7 +81,7 @@
        		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
        		 								fifthCondition=true;
        		 							}
-       		 							 leftSisters=leftSisters->previous;
+       		 							 leftSistersUNS=leftSistersUNS->previous;
        		 						 }
 
        		 					 }
