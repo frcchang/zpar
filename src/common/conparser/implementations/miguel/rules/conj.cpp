@@ -11,8 +11,8 @@
     		  while(childs!=0){
     			  if (childs->node->constituent==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
     				  bool leftCondition=false;
-    				  CStateNodeList* leftSisters=childs->node->m_umbinarizedSubNodes;
-    				  if (leftSisters->next!=0){
+    				  CStateNodeList* leftSisters=childs->previous;
+    				  if (leftSisters!=0){
     					  leftCondition=true;
     				  }
     				  while(leftSisters!=0){
