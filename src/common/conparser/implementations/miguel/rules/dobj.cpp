@@ -171,9 +171,183 @@
 
 
  //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
- //bool buildDobj4() {
+       bool buildDobj4() {
+          if (node.constituent==PENN_CON_SBARQ){
+             CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
+             
+             bool secCond=false;
+             //findChainMultiCategory(CConstituentList* via_category, CConstituent target_category, const CStateNode* head, CStateNodeList*& candidates);
+             CConstituentList* ccList=new CConstituentList();
+             CConstituentList::add(ccList,PENN_CON_SQ);
+             CConstituentList::add(ccList,PENN_CON_SINV);
+             CConstituentList::add(ccList,PENN_CON_S);
+             CConstituentList::add(ccList,PENN_CON_VP);
+             CStateNodeList* candidates=new CStateNodeList();
+             findChainMultiCategory(ccList, PENN_CON_VP, &node, candidates);
+             if (candidates->node==0){
+             	candidates->clear();
+             	candidates=0;
+             }
+             //(VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
+             bool firstCCond=true; //!< NP|TO
+             bool secCCond=true; //!< (S < (VP < TO))
+             bool thirdCCond=true; //!< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD))
+             bool fourthCCond=true; //!<- PRT
+             bool fifthCCond=true; //!<- (PP <: IN)
+             bool sixthCCond=false; //$-- (NP !< /^-NONE-$/)
+             while(candidates!=0){
+             	CStateNodeList* childsCand=candidates->node->m_umbinarizedSubNodes;
+             	while(childsCand!=0){
+             		if (childsCand->node->constituent==PENN_CON_NP || (*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_TO){
+             			firstCCond=false;
+             		}
+             		else if (childsCand->node->constituent==PENN_CON_S){
+             			CStateNodeList* childsS=childsCand->node->m_umbinarizedSubNodes;
+             			while(childsS!=0){
+             				if (childsS->node->constituent==PENN_CON_VP){
+             					CStateNodeList* childsVp=childsS->node->m_umbinarizedSubNodes;
+             					while(childsVp!=0){
+             						if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO){
+             							secCCond=false;
+             						}
+             						childsVp=childsVp->next;
+             					}
+             				}
+             				childsS=childsS->next;
+             			}
+             		}
+             		//PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE,
+             		//!< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD))
+             		else if ((*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_VERB ||
+             				(*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST||
+             				(*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG||
+             				(*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE||
+             				(*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_VERB_PRES||
+             				(*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
+             			
+             			bool copCond=false;
+             			bool rsisCond=false;
+             			CStateNodeList* childsVb=childsCand->node->m_umbinarizedSubNodes;
+             			while(childsVb!=0){
+             				if (compareWordToCopularWordRegex((*words)[childsVb->node->lexical_head].word)) {
+             					copCond=true;
+             				}
+             				childsVb=childsVb->next;
+             			}
+             			CStateNodeList* rightSisters=childsCand->next;
+             			while(rightSisters!=0){
+             				if (rightSisters->node->constituent==PENN_CON_VP){
+             					CStateNodeList* rsChilds=rightSisters->node->m_umbinarizedSubNodes;
+             					while(rsChilds!=0){
+             						if ((*words)[rsChilds->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE ||
+             						    (*words)[rsChilds->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST){
+             							rsisCond=true;
+             						}
+             						rsChilds=rsChilds->next;
+             					}
+             				}
+             				rightSisters=rightSisters->next;
+             			}
+             			
+             			if (copCond && rsisCond){
+             				thirdCCond=false;
+             			}
+             			
+             		}
+             		//!<- PRT
+             		else if (childsCand->node->constituent==PENN_CON_PRT && childsCand->next==0){
+             			fourthCCond=false;
+             		}
+             		//!<- (PP <: IN)
+             		else if (childsCand->node->constituent==PENN_CON_PP && childsCand->next==0){
+             			CStateNodeList* childsPP=childsCand->node->m_umbinarizedSubNodes;
+             			if (childsPP!=0){
+             				if ((*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_IN && childsPP->next==0){
+             					fifthCCond=false;
+             				}
+             			}
+             		}
+             		childsCand=childsCand->next;
+             	}
+             	const CStateNode* parent=findParent(&node, candidates->node);
+             	if (parent!=0){
+             		CStateNodeList* childsP=parent->m_umbinarizedSubNodes;
+             		while(childsP!=0){
+             			if (childsP->node==candidates->node){
+             				CStateNodeList* leftSisters=childsP->previous;
+             				//$-- (NP !< /^-NONE-$/)
+             				while(leftSisters!=0){
+             					if (leftSisters->node->constituent==PENN_CON_NP){
+             						bool noneCond=true;
+             						CStateNodeList* childsLNp=leftSisters->node->m_umbinarizedSubNodes;
+             						while(childsLNp!=0){
+             							if (childsLNp->node->constituent==PENN_CON_NONE){
+             								noneCond=false;
+             							}
+             							childsLNp=childsLNp->next;
+             						}
+             						sixthCCond=noneCond;
+             					}
+             					leftSisters=leftSisters->previous;
+             				}
+             			}
+             			childsP=childsP->next;
+             		}
+             	}
+             	
+             	candidates=candidates->next;
+             }
+             
+             
+             secCond=firstCCond && secCCond && thirdCCond && fourthCCond && fifthCCond && sixthCCond;
+             if (secCond){
+             	childsSbarq=node.m_umbinarizedSubNodes;
+             	while(childsSbarq!=0){
+             		const CStateNode* targ=childsSbarq->node;
+             		if (targ->constituent==PENN_CON_SBARQ && !isLinked(&node,targ)){
+             			bool firstInCond=true;
+             			bool secInCond=true;
+             			
+             			CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
+             			while(childsT!=0){
+             				if ((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_WRB){
+             					firstInCond=false;
+             				}
+             				//PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
+             				else if (((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN||
+             						(*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER||
+             						(*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL||
+             						(*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL) 
+             						&& childsT->node->lexical_head==targ->lexical_head){
+             					
+             					CStateNodeList* childsNN=childsT->node->m_umbinarizedSubNodes;
+             					while(childsNN!=0){
+             						if (compareWordToTimeWordRegex((*words)[childsNN->node->lexical_head].word)) {
+             							secInCond=false;
+             						}
+             						childsNN=childsNN->next;
+             					}
+             					
+             				}
+             				childsT=childsT->next;
+             			}
+             			
+             			if (firstInCond && secInCond){
+             				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DOBJ);
+             				if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+             					addLinked(&node,targ); //this is not correct! but almost
+             				 	return true;
+             				}
+             			}
+             		}
+             		childsSbarq=childsSbarq->next;
+             	}
 
- //}
+             }
+          }
+          return false;
+       }
+
 
  //"SBAR < (WHNP=target !< WRB) < (S < NP < (VP !< SBAR !<+(VP) (PP <- IN) !< (S < (VP < TO))))",
      bool buildDobj5() {
