@@ -66,7 +66,7 @@
        		 				 fourthCondition=true;
        		 			 }
        		 		 }
-       		 		 if (!secCondition&&!thirdCondition&&!fourthCondition){
+       		 		 if (!secCondition && !thirdCondition && !fourthCondition){
        		 			 if (node.constituent==PENN_CON_UCP||node.constituent==PENN_CON_NP||node.constituent==PENN_CON_SBAR){
        		 				 CStateNodeList* childsUNS=node.m_umbinarizedSubNodes;
        		 				 while(childsUNS!=0){
@@ -77,7 +77,7 @@
        		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST||
        		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG||
        		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE||
-       		 							    (*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_VERB_PRES||
+       		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_PRES||
        		 							    (*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
        		 								fifthCondition=true;
        		 							}
