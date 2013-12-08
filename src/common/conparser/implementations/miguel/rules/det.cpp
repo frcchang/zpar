@@ -348,8 +348,8 @@ bool det4(){
 			 const CStateNode* npChild=childsWhnp->node;
 			 if (npChild->constituent==PENN_CON_NP){
 				 CStateNodeList* leftSisters=childsWhnp->previous;
-				 while(childsWhnp!=0){
-					 const CStateNode* whnpTarg=childsWhnp->node;
+				 while(leftSisters!=0){
+					 const CStateNode* whnpTarg=leftSisters->node;
 					 if (whnpTarg->constituent==PENN_CON_WHNP && !(isLinked(&node,whnpTarg))){
 						 CStateNodeList* whnpChilds=whnpTarg->m_umbinarizedSubNodes;
 						 while(whnpChilds!=0){
@@ -363,7 +363,7 @@ bool det4(){
 							 whnpChilds=whnpChilds->next;
 						 }
 					 }
-					 childsWhnp=childsWhnp->previous;
+					 leftSisters=leftSisters->previous;
 				 }
 			 }
 			 childsWhnp=childsWhnp->next;
