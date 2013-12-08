@@ -17,10 +17,10 @@
     				  //(*words)[targ->lexical_head].tag.code()==PENN_TAG_CD
     				  CStateNodeList* rightSisters=childs->next;
     				  while(rightSisters!=0){
-    					  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[targ->lexical_head].tag.code()==PENN_TAG_CD
-    					      	|| (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
-    					      	|| (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
-    					      	|| (*words)[targ->lexical_head].tag.code()==PENN_TAG_FW )){
+    					  if (((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CD
+    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_FW )){
     						  rightsistCond=true;
     					  }
     					  rightSisters=rightSisters->next;
@@ -35,6 +35,10 @@
     					  if (leftSistCond){
     						  CStateNodeList* descendants=new CStateNodeList();
     						  listRightMostDescendants(targ->m_umbinarizedSubNodes,descendants);
+    						  if (descendants->node==0) {
+    							  descendants->clear();
+    						      descendants=0;
+    						  }
     						  while(descendants!=0){
     							  if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_POS){
     								  descCond1=false;
@@ -94,6 +98,10 @@
           		  if (firstCond && thirdCond){
           			  CStateNodeList* descendants=new CStateNodeList();
           			  listRightMostDescendants(node.m_umbinarizedSubNodes,descendants);
+          			  if (descendants->node==0) {
+          				descendants->clear();
+          			   	descendants=0;
+          			  }
           			  while(descendants!=0){
           				  if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_POS){
           					  fourthCond=false;
@@ -122,6 +130,10 @@
 
           					  CStateNodeList* descendants2=new CStateNodeList();
           					  listRightMostDescendants(targ->m_umbinarizedSubNodes,descendants2);
+          					  if (descendants2->node==0) {
+          						  descendants2->clear();
+          					      descendants2=0;
+          					  }
           					  while(descendants2!=0){
           						  if ((*words)[descendants2->node->lexical_head].tag.code()==PENN_TAG_POS){
           							  fourthCond=false;

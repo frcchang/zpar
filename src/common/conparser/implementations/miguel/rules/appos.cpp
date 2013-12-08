@@ -18,8 +18,10 @@
     				  }
     				  if (cdCond){
     					  CStateNodeList* leftSisters=childs->previous;
-    					  if (((*words)[leftSisters->node->lexical_head].word==g_word_comma)){
-    						  firstSisCond=true;
+    					  if (leftSisters!=0){
+    						  if (((*words)[leftSisters->node->lexical_head].word==g_word_comma)){
+    							  firstSisCond=true;
+    					  	  }
     					  }
     					  while(leftSisters!=0){
     						  if (leftSisters->node->constituent==PENN_CON_WHNP || leftSisters->node->constituent==PENN_CON_NP){
