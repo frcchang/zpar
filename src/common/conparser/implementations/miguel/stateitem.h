@@ -1034,9 +1034,11 @@ public:
    }
 
    void GenerateStanford(const CTwoStringVector &tagged, CCoNLLOutput *out) const {
-      out->clear();
-      for (int i=0; i<tagged.size(); ++i) {
-         out->push_back(CCoNLLOutputNode(i+1, tagged.at(i).first, "_", "_", tagged.at(i).second, "_", m_lHeads[i]+1, CDependencyLabel(m_lHeads[i]).str(), DEPENDENCY_LINK_NO_HEAD, "_"));
+      if (out) {
+         out->clear();
+         for (int i=0; i<tagged.size(); ++i) {
+            out->push_back(CCoNLLOutputNode(i+1, tagged.at(i).first, "_", "_", tagged.at(i).second, "_", m_lHeads[i]+1, CDependencyLabel(m_lLabels[i]).str(), DEPENDENCY_LINK_NO_HEAD, "_"));
+         }
       }
    }
 

@@ -75,9 +75,9 @@ int nBest, const bool bScores, const bool bBinary) {
       // Find decoder outout
 #ifdef CONLL_OUTPUT
       if (cInputFormat=='c')
-         parser.parse( con_input , outout_sent , &o_conll , nBest , scores ) ;
+         parser.parse( con_input , outout_sent , cOutputFormat=='b'?0:&o_conll , nBest , scores ) ;
       else
-         parser.parse( raw_input , outout_sent , &o_conll , nBest , scores ) ;
+         parser.parse( raw_input , outout_sent , cOutputFormat=='b'?0:&o_conll , nBest , scores ) ;
 #else
       if (cInputFormat=='c')
          parser.parse( con_input , outout_sent , nBest , scores ) ;
@@ -88,8 +88,6 @@ int nBest, const bool bScores, const bool bBinary) {
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
 #ifdef CONLL_OUTPUT
-         if (cOutputFormat == 'c' || cOutputFormat == 'a')
-            os << o_conll << std::endl;
          if (cOutputFormat == 'b' || cOutputFormat == 'a') {
 #endif
          if (bBinary)
@@ -98,6 +96,8 @@ int nBest, const bool bScores, const bool bBinary) {
             os << outout_sent[i].str_unbinarized() << std::endl;
 #ifdef CONLL_OUTPUT
          }
+         if (cOutputFormat == 'c' || cOutputFormat == 'a')
+            os << std::endl << o_conll;
 #endif
          if (bScores) *os_scores << scores[i] << std::endl;
       }
