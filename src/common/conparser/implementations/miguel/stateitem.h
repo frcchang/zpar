@@ -2152,6 +2152,10 @@ public:
              				  if (firstCond && secondCond){
              					  CStateNodeList* descendants=new CStateNodeList();
              					  listDescendants(targ->m_umbinarizedSubNodes,descendants);
+             					  if (descendants->node==0){
+             						  descendants->clear();
+             						  descendants=0;
+             					  }
              					  while(descendants!=0){
              						  if (((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_POS)|| ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_PRP)
              								  || ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_CC) || ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_ADVERB)||
@@ -2165,6 +2169,10 @@ public:
              						 CStateNodeList* chain=new CStateNodeList();
              						 findChainTargetPos(PENN_CON_NP, PENN_TAG_NOUN, targ, chain);
              						 findChainTargetPos(PENN_CON_NP, PENN_TAG_NOUN_PROPER, targ, chain);
+             						 if (chain->node==0){
+             							 chain->clear();
+             							 chain=0;
+             						 }
              						 while(chain!=0){
              							 CStateNodeList* childsNN=chain->node->m_umbinarizedSubNodes;
              							 while(childsNN!=0){
@@ -2172,6 +2180,7 @@ public:
              									 fourthCond=true;
              									 //ASK JOHN ABOUT < /^(?:[A-Z]\\.?){2,}/
              								 }
+             								 childsNN=childsNN->next;
              							 }
              							 chain=chain->next;
              						 }
