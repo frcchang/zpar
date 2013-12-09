@@ -279,9 +279,9 @@ bool tmod5(){
     					  childsSq=childsSq->next;
     				  }
     				  if (secCond){
-    					  childs=node.m_umbinarizedSubNodes;
-    					  while(childs!=0){
-    						  const CStateNode* targ=childs->node;
+    					  CStateNodeList* childs2=node.m_umbinarizedSubNodes;
+    					  while(childs2!=0){
+    						  const CStateNode* targ=childs2->node;
     						  if (targ->constituent==PENN_CON_WHNP && !isLinked(&node,targ)){
     							  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
     							  while(childsT!=0){
@@ -303,7 +303,7 @@ bool tmod5(){
     							      childsT=childsT->next;
     							  }
     						  }
-    						  childs=childs->next;
+    						  childs2=childs2->next;
     					  }
     				  }
     			  }
