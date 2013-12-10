@@ -127,13 +127,36 @@ public:
   }
 
   inline int stacktop() const {
-    assert(!stack_.empty());
+    if (stack_.empty()) {
+      return -1;
+    }
     return stack_.back();
+  }
+
+  inline int stack2ndtop() const {
+    if (stack_.size() < 2) {
+      return -1;
+    }
+    return stack_[stack_.size() - 2];
+  }
+
+  inline int stack3rdtop() const {
+    if (stack_.size() < 3) {
+      return -1;
+    }
+    return stack_[stack_.size() - 3];
   }
 
   inline int stackbottom() const {
     assert(!stack_.empty());
     return stack_.front();
+  }
+
+  inline int bufferfront() const {
+    if (next_word == len_) {
+      return -1;
+    }
+    return next_word;
   }
 
   inline int stackitem(const unsigned &index) const {
@@ -172,6 +195,10 @@ public:
 
   inline int size() const {
     return next_word;
+  }
+
+  inline bool bufferempty() const {
+    return (next_word == len_);
   }
 
   inline bool complete() const {
