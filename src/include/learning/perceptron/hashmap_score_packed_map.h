@@ -34,11 +34,17 @@
  *
  *==============================================================*/
 
+
 template <typename SCORE_TYPE, unsigned PACKED_SIZE>
 class CPackedScoreType {
+
+//public:
+//      static const SCORE_TYPE NO_SCORE = 0; //score not defined yet
+
 protected:
    //SCORE_TYPE scores[PACKED_SIZE];
 	std::tr1::unordered_map<unsigned long,SCORE_TYPE> scores;
+	const SCORE_TYPE DEFAULT_SCORE = 0; //todo: should be a way to make it static, but i can't seem to successfully return it by reference if it's static
 public:
    void reset() {
 //      memset(scores, 0, sizeof(SCORE_TYPE)*PACKED_SIZE);
@@ -64,13 +70,15 @@ public:
       return scores[index];
    }
 
-   //TODO can't implement as previous one, not const
-   const SCORE_TYPE &operator [](const unsigned &index) const {
+    //TODO can't implement as previous one, not const
+     const SCORE_TYPE &operator [](const unsigned &index) const {
 	  if ( scores.find(index) == scores.end() )
-	  	  return 0;
+          {
+	  	  return DEFAULT_SCORE;
+          }
 	  else return scores.find(index)->second;
 	  //return scores[index];
-   }
+     }
 
    void operator +=(const CPackedScoreType &i) {
 	   typename std::tr1::unordered_map<unsigned long,SCORE_TYPE>::iterator iter;
@@ -88,6 +96,8 @@ public:
       //   scores[index]+=i.scores[index];
    }
 };
+
+//template <typename SCORE_TYPE, unsigned PACKED_SIZE> const SCORE_TYPE CPackedScoreType::NO_SCORE = 0;
 
 template <typename SCORE_TYPE, unsigned PACKED_SIZE>
 std::istream & operator >> (std::istream &is, CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &score) {
