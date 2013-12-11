@@ -202,8 +202,9 @@ public:
   }
 
   inline bool complete() const {
-    return (next_word == len_ && 
-        stack_.size() == 1 && 
+    return (deque_.empty() &&
+        next_word == len_ &&
+        stack_.size() == 1 &&
         DEPENDENCY_LINK_NO_HEAD == heads[stack_.back()]);
   }
 
@@ -306,6 +307,7 @@ public:
   //
   //  1. pop the stack
   void Reduce() {
+    assert(false == stack_.empty());
     assert(heads[stack_.back()] != DEPENDENCY_LINK_NO_HEAD);
     stack_.pop_back();
     last_action = action::EncodeAction(action::kReduce);
@@ -323,7 +325,7 @@ public:
     labels[stack_.back()] = CDependencyLabel::ROOT;
 #endif  //  end for LABELED
     last_action = action::EncodeAction(action::kPopRoot);
-    stack_.pop_back();  // pop it
+    // stack_.pop_back();  // pop it
   }
 
   // perform the no-pass action, this action pop a word from the stack, push
@@ -587,16 +589,6 @@ public:
       return;
     }
 
-    if (next_word == oracle_tree.size()) {
-      if (stack_.size() == 1) {
-        PopRoot();
-      } else if (stack_.size() > 1) {
-        Reduce();
-      } else {
-        Idle();
-      }
-      return;
-    }
     int dir = -1;
     int len = oracle_tree.size();
     const int stack_top    = stack_.back();
@@ -619,6 +611,17 @@ public:
 
     for (int i = 0; i < stack_.size() - 1; ++ i) {
       if (oracle_tree[stack_[i]].head == buffer_front) { is_gold_shift  = false; break; }
+    }
+
+    if (next_word == len) {
+      if (stack_.size() == 1) {
+        PopRoot();
+      } else if (is_gold_reduce) {
+        Reduce();
+      } else {
+        NoPass();
+      }
+      return;
     }
 
     if (0 == dir) {

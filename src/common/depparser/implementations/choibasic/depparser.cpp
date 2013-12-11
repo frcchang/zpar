@@ -27,7 +27,6 @@ const TaggedWord  EmptyTaggedWord;
 const int         kMaxSentenceSize  = MAX_SENTENCE_SIZE;
 const int         kAgendaSize       = AGENDA_SIZE;
 
-
 #define cast_weights static_cast<CWeight*>(m_weights)
 #define refer_or_allocate_tuple2(x, o1, o2) do { \
   if (amount == 0) { \
@@ -56,6 +55,24 @@ const int         kAgendaSize       = AGENDA_SIZE;
 
 #define _conll_or_empty(x) (x == "_" ? "" : x)
 
+// the constructor
+CDepParser::CDepParser(
+    const std::string & feature_database_path,
+    bool                is_train,
+    bool                is_conll)
+  : CDepParserBase(feature_database_path, is_train, is_conll) {
+  m_Beam    = new CAgendaSimple<depparser::action::CScoredAction>(AGENDA_SIZE);
+  m_weights = new depparser::CWeight(feature_database_path, is_train);
+  m_nTrainingRound  = 0;
+  m_nTotalErrors    = 0;
+
+  if (is_train) {
+    m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage;
+  } else {
+    m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage;
+  }
+}
+
 /*===============================================================
  *
  * CDepParser - the depparser for TARGET_LANGUAGE
@@ -69,11 +86,11 @@ const int         kAgendaSize       = AGENDA_SIZE;
  *---------------------------------------------------------------*/
 inline
 void CDepParser::GetOrUpdateStackScore(
-    const CStateItem *                            item,
+    const CStateItem                           *  item,
     CPackedScoreType<SCORE_TYPE, action::kMax> &  retval,
-    const unsigned &                              action,
-    SCORE_TYPE                                    amount,
-    int                                           round) {
+    const unsigned                             &  action,
+    const SCORE_TYPE                           &  amount,
+    const int                                     round) {
   const int len       = m_lCache.size();
   const int S0_id   = item->stacktop();
   const int N0_id   = item->bufferfront();
@@ -502,6 +519,33 @@ void CDepParser::GetOrUpdateStackScore(
     refer_or_allocate_tuple2(ttset, &N0.tag,  &N0_lset);
     __GET_OR_UPDATE_SCORE(N0_p_N0_lset, ttset);
   }
+
+  if (m_bCoNLL) {
+    if (-1 != S0_id) {
+      if (!m_lCacheCoNLLLemma[S0_id].empty()) {
+        __GET_OR_UPDATE_SCORE(S0conll_l, m_lCacheCoNLLLemma[S0_id]);
+      }
+      if (CCoNLLCPOS() != m_lCacheCoNLLCPOS[S0_id]) {
+        __GET_OR_UPDATE_SCORE(S0conll_c, m_lCacheCoNLLCPOS[S0_id]);
+      }
+      for (int i = 0; i < m_lCacheCoNLLFeats[S0_id].size(); ++ i) {
+        __GET_OR_UPDATE_SCORE(S0conll_f, m_lCacheCoNLLFeats[S0_id][i]);
+      }
+    }
+
+    if (-1 != N0_id) {
+      if (!m_lCacheCoNLLLemma[N0_id].empty()) {
+        __GET_OR_UPDATE_SCORE(N0conll_l, m_lCacheCoNLLLemma[N0_id]);
+      }
+      if (CCoNLLCPOS() != m_lCacheCoNLLCPOS[N0_id]) {
+        __GET_OR_UPDATE_SCORE(N0conll_c, m_lCacheCoNLLCPOS[N0_id]);
+      }
+      for (int i = 0; i < m_lCacheCoNLLFeats[N0_id].size(); ++ i) {
+        __GET_OR_UPDATE_SCORE(N0conll_f, m_lCacheCoNLLFeats[N0_id][i]);
+      }
+    }
+  }
+#undef __GET_OR_UPDATE_SCORE
 }
 
 /*---------------------------------------------------------------
@@ -511,9 +555,9 @@ void CDepParser::GetOrUpdateStackScore(
  * Inputs: parse graph
  *
  *---------------------------------------------------------------*/
-
-SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
-  THROW("depparser.cpp: getGlobalScore unsupported");
+SCORE_TYPE
+CDepParser::getGlobalScore(const CDependencyParse &parsed) {
+  THROW("depparser.cpp: getGlobalScore not implemented");
 }
 
 /*---------------------------------------------------------------
@@ -527,34 +571,12 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
  * Inputs: the parsed and the correct example
  *
  *---------------------------------------------------------------*/
-
-void CDepParser::updateScores(
+void
+CDepParser::updateScores(
     const CDependencyParse & parsed,
     const CDependencyParse & correct,
     int round ) {
-  THROW("depparser.cpp: updateScores unsupported");
-}
-
-/*---------------------------------------------------------------
- *
- * updateScoreForState - update a single positive or negative outout
- *
- *--------------------------------------------------------------*/
-
-inline
-void CDepParser::updateScoreForState(
-    const CStateItem &from,
-    const CStateItem *outout,
-    const SCORE_TYPE &amount ) {
-  static CStateItem item;
-  static unsigned action;
-  static CPackedScoreType<SCORE_TYPE, action::kMax> empty;
-  item = from;
-  while ( item != *outout ) {
-     action = item.FollowMove( outout );
-     GetOrUpdateStackScore( &item, empty, action, amount, m_nTrainingRound);
-     item.Move( action );
-  }
+  THROW("depparser.cpp: updateScores not implemented");
 }
 
 /*---------------------------------------------------------------
@@ -562,12 +584,11 @@ void CDepParser::updateScoreForState(
  * updateScoresForStates - update scores for states
  *
  *--------------------------------------------------------------*/
-
 void CDepParser::UpdateScoresForStates(
-    const CStateItem *  predicated,
-    const CStateItem *  correct,
-    SCORE_TYPE          amount_add,
-    SCORE_TYPE          amount_subtract) {
+    const CStateItem *  predicated_state,
+    const CStateItem *  correct_state,
+    const SCORE_TYPE    amount_add,
+    const SCORE_TYPE    amount_subtract) {
 
   static CPackedScoreType<SCORE_TYPE, action::kMax> empty;
 
@@ -578,12 +599,12 @@ void CDepParser::UpdateScoresForStates(
   int num_predicated_states = 0;
   int num_correct_states    = 0;
 
-  for (const CStateItem * p = predicated; p; p = p->previous_) {
+  for (const CStateItem * p = predicated_state; p; p = p->previous_) {
     predicated_state_chain[num_predicated_states] = p;
     ++ num_predicated_states;
   }
 
-  for (const CStateItem * p = correct; p; p = p->previous_) {
+  for (const CStateItem * p = correct_state; p; p = p->previous_) {
     correct_state_chain[num_correct_states] = p;
     ++ num_correct_states;
   }
@@ -613,6 +634,7 @@ void CDepParser::UpdateScoresForStates(
     GetOrUpdateStackScore(correct_state_chain[i],
         empty, correct_action,    amount_add,      m_nTrainingRound);
   }
+
   m_nTotalErrors++;
 }
 
@@ -621,7 +643,7 @@ void CDepParser::UpdateScoresForStates(
  *
  * ------------------------------------------------------------- */
 inline
-void CDepParser::idle(
+void CDepParser::Idle(
     const CStateItem * item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
@@ -636,7 +658,7 @@ void CDepParser::idle(
  *
  *--------------------------------------------------------------*/
 inline
-void CDepParser::reduce(
+void CDepParser::Reduce(
     const CStateItem * item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
@@ -652,7 +674,7 @@ void CDepParser::reduce(
  *
  *--------------------------------------------------------------*/
 inline
-void CDepParser::arcleft(
+void CDepParser::ArcLeft(
     const CStateItem * item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
@@ -676,16 +698,23 @@ void CDepParser::arcleft(
  *
  *--------------------------------------------------------------*/
 inline
-void CDepParser::arcright(
+void CDepParser::ArcRight(
     const CStateItem *item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
 #ifdef LABELED
-  for (unsigned label = CDependencyLabel::FIRST;
-      label < CDependencyLabel::COUNT; ++ label) {
-    scored_action.action = action::EncodeAction(action::kArcRight, label);
+  if (0 == item->stacktop()) {
+    scored_action.action = action::EncodeAction(action::kArcRight, 
+                                                CDependencyLabel::ROOT);
     scored_action.score = item->score + scores[scored_action.action];
     m_Beam->insertItem(&scored_action);
+  } else {
+    for (unsigned label = CDependencyLabel::FIRST + 1;
+        label < CDependencyLabel::COUNT; ++ label) {
+      scored_action.action = action::EncodeAction(action::kArcRight, label);
+      scored_action.score = item->score + scores[scored_action.action];
+      m_Beam->insertItem(&scored_action);
+    }
   }
 #else
   scored_action.action = action::kArcRight;
@@ -701,7 +730,7 @@ void CDepParser::arcright(
  *--------------------------------------------------------------*/
 
 inline
-void CDepParser::shift(
+void CDepParser::Shift(
     const CStateItem *item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
@@ -716,7 +745,7 @@ void CDepParser::shift(
  *
  *--------------------------------------------------------------*/
 inline
-void CDepParser::poproot(
+void CDepParser::PopRoot(
     const CStateItem *item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
@@ -731,7 +760,7 @@ void CDepParser::poproot(
  *
  * -------------------------------------------------------------- */
 inline
-void CDepParser::nopass(
+void CDepParser::NoPass(
     const CStateItem * item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
@@ -746,12 +775,12 @@ void CDepParser::nopass(
  *
  * ------------------------------------------------------------- */
 inline
-void CDepParser::leftpass(
+void CDepParser::LeftPass(
     const CStateItem * item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
 #ifdef LABELED
-  for (unsigned label = CDependencyLabel::FIRST;
+  for (unsigned label = CDependencyLabel::FIRST + 1;
       label < CDependencyLabel::COUNT; ++ label) {
     scored_action.action = action::EncodeAction(action::kLeftPass, label);
     scored_action.score  = item->score + scores[scored_action.action];
@@ -770,12 +799,12 @@ void CDepParser::leftpass(
  *
  * ------------------------------------------------------------- */
 inline
-void CDepParser::rightpass(
+void CDepParser::RightPass(
     const CStateItem * item,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
 #ifdef LABELED
-  for (unsigned label = CDependencyLabel::FIRST;
+  for (unsigned label = CDependencyLabel::FIRST + 1;
       label < CDependencyLabel::COUNT; ++ label) {
     scored_action.action = action::EncodeAction(action::kRightPass, label);
     scored_action.score  = item->score + scores[scored_action.action];
@@ -792,9 +821,9 @@ bool StateHeapMore(const CStateItem & x, const CStateItem & y) {
   return x.score > y.score;
 }
 
-int CDepParser::insert_into_beam(
-    const CStateItem * item,
+int CDepParser::InsertIntoBeam(
     CStateItem *       beam,
+    const CStateItem * item,
     const int          current_beam_size,
     const int          max_beam_size) {
   if (current_beam_size == max_beam_size) {
@@ -811,16 +840,15 @@ int CDepParser::insert_into_beam(
   return 1;
 }
 
-/*
- * enumerate all the possible transition from the given state
- */
-void CDepParser::transit(
+// Enumerate all the possible transition from the given state, insert the legal
+// actions into beam.
+void CDepParser::Transit(
     const CStateItem * generator,
     const CPackedScoreType<SCORE_TYPE, action::kMax> & packed_scores) {
 
   // no possible transtion, return to guarentee
   if (generator->terminated()) {
-    idle(generator, packed_scores);
+    Idle(generator, packed_scores);
     return;
   }
 
@@ -828,14 +856,14 @@ void CDepParser::transit(
   //  1. stack is not empty;
   //  2. stack size equals 1
   if (generator->complete()) {
-    poproot(generator, packed_scores);
+    PopRoot(generator, packed_scores);
+    return;
   }
-
 
   // std::cout << " * generator: " << (*generator);
   // precondition: 1. buffer is not empty
   if (generator->size() < generator->len_) {
-    shift(generator, packed_scores);
+    Shift(generator, packed_scores);
   }
 
   // precondition:
@@ -843,21 +871,22 @@ void CDepParser::transit(
   //  2. stack top has head.
   if ((false == generator->stackempty()) &&
       (DEPENDENCY_LINK_NO_HEAD != generator->head(generator->stacktop()))) {
-    reduce(generator, packed_scores);
+    Reduce(generator, packed_scores);
   }
 
   // precondition: 1. stack is not empty
   if (false == generator->stackempty()) {
-    nopass(generator, packed_scores);
+    NoPass(generator, packed_scores);
   }
 
   // precondition:
-  //  1. stack is not empty;
-  //  2. buffer is not empty
+  //  1. stack is not empty
+  //  2. stack top is not 0
+  //  3. buffer is not empty
   if (false == generator->stackempty() &&
       generator->size() < generator->len_ &&
       (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->stacktop()))) {
-    arcleft(generator, packed_scores);
+    ArcLeft(generator, packed_scores);
   }
 
   // precondition:
@@ -866,23 +895,24 @@ void CDepParser::transit(
   if (false == generator->stackempty() &&
       generator->size() < generator->len_ &&
       (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->size()))) {
-    arcright(generator, packed_scores);
+    ArcRight(generator, packed_scores);
   }
 
   // precondition:
   //  1. stack is not empty;
   //  2. buffer is not empty
   if (false == generator->stackempty() &&
+      (!m_bCoNLL || 0 != generator->stacktop()) &&
       generator->size() < generator->len_ &&
       (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->stacktop()))) {
-    leftpass(generator, packed_scores);
+    LeftPass(generator, packed_scores);
   }
 
 
   if (false == generator->stackempty() &&
       generator->size() < generator->len_ &&
       (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->size()))) {
-    rightpass(generator, packed_scores);
+    RightPass(generator, packed_scores);
   }
 }
 
@@ -893,77 +923,78 @@ void CDepParser::transit(
  * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
-
-int CDepParser::work(
-    const bool               bTrain,
+int CDepParser::Work(
+    CDependencyParse       * retval,
+    SCORE_TYPE             * scores,
     const CTwoStringVector & sentence,
-    CDependencyParse *       retval,
-    const CDependencyParse & correct,
-    int                      nBest,
-    SCORE_TYPE *             scores) {
+    const CDependencyParse & oracle_tree,
+    int                      nbest,
+    bool                     is_train) {
 
 #ifdef DEBUG
   clock_t total_start_time = clock();
-#endif
+#endif  // end for DEBUG
+
   const int length           = sentence.size();
   const int max_round        = (length + 1) * (length + 1);
   const int max_lattice_size = (kAgendaSize + 1) * max_round;
 
-  // the memory pool
-  CStateItem * lattice = new CStateItem[max_lattice_size];
-
-  for (int i = 0; i < max_lattice_size; ++ i) { lattice[i].len_ = length; }
-
-  CStateItem * lattice_index[max_round];
-  const CStateItem * correct_state;       // use to point the position in the
-                                          // lattice as the correct_state
-
-  lattice_index[0] = lattice;
-  lattice_index[1] = lattice_index[0] + 1;
-
-  // clear the start state.
-  lattice[0].clear();
-  correct_state = lattice;
-  // used only for training
-  bool bCorrect ;              // used in learning for early update
-  static CPackedScoreType<SCORE_TYPE, action::kMax> packed_scores;
-
   ASSERT(length < kMaxSentenceSize,
       "The size of the sentence is larger than the system configuration.");
 
-  TRACE("Initialising the decoding process...");
+  CStateItem * lattice =
+    new CStateItem[max_lattice_size];     // allocate the memory pool
+  CStateItem * lattice_index[max_round];  // specify states of certain round
+  const CStateItem * correct_state;       // point to the correct state's
+                                          // position in the lattice
+
+  for (int i = 0; i < max_lattice_size; ++ i) {
+    lattice[i].len_ = length;
+  }
+
+  // initialize first round lattice
+  // clear the start state.
+  lattice[0].clear();
+  correct_state = lattice;
+  lattice_index[0] = lattice;
+  lattice_index[1] = lattice_index[0] + 1;
+
+  static CPackedScoreType<SCORE_TYPE, action::kMax> packed_scores;
+
+  // TRACE("Initialising the decoding process...");
   m_lCache.clear();
   for (int index = 0; index < length; ++ index) {
      m_lCache.push_back(TaggedWord(sentence[index].first , sentence[index].second));
-     // there use to be a rule check here, but it is not necessary in non-projective
-     // parser.
   }
 
-  // verifying supertags
   if (m_supertags) {
-     ASSERT(m_supertags->getSentenceSize() == length,
-         "Sentence size does not match supertags size");
+    // verifying supertags
+    ASSERT(m_supertags->getSentenceSize() == length,
+        "Sentence size does not match supertags size");
   }
 
 #ifdef LABELED
   m_lCacheLabel.clear();
-  if (bTrain) {
-    for (int index=0; index < length; ++ index) {
-      // std::cout << correct[index].label << std::endl;
-      m_lCacheLabel.push_back(CDependencyLabel(correct[index].label));
+  if (is_train) {
+    for (int i = 0; i < length; ++ i) {
+      m_lCacheLabel.push_back(CDependencyLabel(oracle_tree[i].label));
     }
   }
 #endif
 
-  TRACE("Decoding started");
+  // TRACE("Decoding started");
   int num_results = 0;
   int round = 0;
-  bool reach_standard_finished = false;
+  bool is_correct;    // used for training to specify correct state in lattice
+
   // loop with the next word to process in the sentence,
   // `round` represent the generators, and the condidates should be inserted
   // into the `round + 1`
-  for (round = 1; round < (length+1) * (length+1); ++ round) {
-    if (bTrain) { bCorrect = false; }
+  for (round = 1; round < max_round; ++ round) {
+    if (is_train) {
+      is_correct = false;
+    }
+
     if (lattice_index[round - 1] == lattice_index[round]) {
       // there is nothing in generators, the proning has cut all legel
       // generator, so raise an exception and return
@@ -980,8 +1011,7 @@ int CDepParser::work(
 
       m_Beam->clear();  packed_scores.reset();
       GetOrUpdateStackScore(generator, packed_scores, action::kNoAction);
-
-      transit(generator, packed_scores);
+      Transit(generator, packed_scores);
 
       for (unsigned i = 0; i < m_Beam->size(); ++ i) {
         CStateItem candidate; candidate = (*generator);
@@ -990,9 +1020,9 @@ int CDepParser::work(
         candidate.previous_ = generator;
         candidate.Move(m_Beam->item(i)->action);
 
-        current_beam_size += insert_into_beam(
-            &candidate,
+        current_beam_size += InsertIntoBeam(
             lattice_index[round],
+            &candidate,
             current_beam_size,
             kAgendaSize);
       }
@@ -1001,7 +1031,7 @@ int CDepParser::work(
     lattice_index[round + 1] = lattice_index[round] + current_beam_size;
 
     bool all_finished = true;
-    for (CStateItem * p = lattice_index[round];
+    for (const CStateItem * p = lattice_index[round];
         p != lattice_index[round + 1]; ++ p) {
       if (false == p->terminated()) { all_finished = false; }
     }
@@ -1010,30 +1040,31 @@ int CDepParser::work(
       break;
     }
 
-    if (bTrain) {
+    if (is_train) {
       CStateItem next_correct_state;
       next_correct_state = (*correct_state);
-      next_correct_state.StandardMoveStep(correct
+      next_correct_state.StandardMoveStep(oracle_tree
 #ifdef LABELED
           , m_lCacheLabel
 #endif  //  end for LABELED
           );
       next_correct_state.previous_ = correct_state;
 
-      correct_state = NULL;
-      bCorrect = false;
+      // correct_state = NULL;
+      is_correct = false;
       for (CStateItem * p = lattice_index[round];
           p != lattice_index[round + 1];
           ++ p) {
-        if (next_correct_state == (*p)) {
+        if (next_correct_state.last_action == p->last_action &&
+            p->previous_ == correct_state) {
           correct_state = p;
-          bCorrect = true;
+          is_correct = true;
         }
       }
 #ifdef EARLY_UPDATE
-      if (!bCorrect) {
+      if (!is_correct) {
         TRACE("ERROR at the " << next_correct_state.size() << "th word;"
-            << " Total is " << correct.size());
+            << " Total is " << oracle_tree.size());
         CStateItem * best_generator = lattice_index[round];
         for (CStateItem * p = lattice_index[round];
             p != lattice_index[round + 1];
@@ -1053,7 +1084,6 @@ int CDepParser::work(
 #endif  //  end for EARLY_UPDATE
 
       if (correct_state->terminated()) {
-        reach_standard_finished = true;
         break;
       }
     }
@@ -1067,7 +1097,7 @@ int CDepParser::work(
   TRACE("Output sentence");
   std::sort(lattice_index[round - 1], lattice_index[round], std::greater<CStateItem>());
   num_results = lattice_index[round] - lattice_index[round - 1];
-  for (int i = 0; i < std::min(num_results, nBest); ++ i) {
+  for (int i = 0; i < std::min(num_results, nbest); ++ i) {
     (lattice_index[round - 1] + 1)->GenerateTree(sentence, retval[i]);
     if (scores) { scores[i] = (lattice_index[round - 1] + i)->score; }
   }
@@ -1088,22 +1118,9 @@ int CDepParser::work(
 void CDepParser::parse(
     const CTwoStringVector & sentence,
     CDependencyParse *       retval,
-    int                      nBest,
+    int                      nbest,
     SCORE_TYPE *             scores) {
-
-  static CDependencyParse empty ;
-  assert( !m_bCoNLL );
-
-  for (int i=0; i < nBest; ++ i) {
-     // clear the outout sentences
-     retval[i].clear();
-     if (scores) {
-       scores[i] = 0; //pGenerator->score;
-     }
-  }
-
-  work(false, sentence, retval, empty, nBest, scores );
-
+  THROW("depparser.cpp :: parse not implemented");
 }
 
 /*---------------------------------------------------------------
@@ -1111,20 +1128,10 @@ void CDepParser::parse(
  * train - train the models with an example
  *
  *---------------------------------------------------------------*/
-
 void CDepParser::train(
-    const CDependencyParse &correct , int round ) {
-  static CTwoStringVector sentence ;
-
-  assert(!m_bCoNLL);
-  UnparseSentence( &correct, &sentence );
-
-  // The following code does update for each processing stage
-#ifndef LOCAL_LEARNING
-  ++m_nTrainingRound;
-  ASSERT(m_nTrainingRound == round, "Training round error");
-#endif
-  work(true , sentence , NULL, correct , 1 , 0);
+    const CDependencyParse &  correct,
+    int                       round) {
+  THROW("depparser.cpp :: parse not implemented");
 };
 
 /*---------------------------------------------------------------
@@ -1134,42 +1141,50 @@ void CDepParser::train(
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::extract_features(const CDependencyParse &input) {
-
-  CStateItem item;
-  CStateItem tmp;
-  unsigned action;
+void CDepParser::extract_features(const CDependencyParse & oracle_tree) {
+  int max_steps = (oracle_tree.size() + 1) * (oracle_tree.size() + 1);
+  CStateItem * state_chain = new CStateItem[max_steps];
   CPackedScoreType<SCORE_TYPE, action::kMax> empty;
 
-  // word and pos
+  for (int i = 0; i < max_steps; ++ i) {
+    state_chain[i].len_ = oracle_tree.size();
+  }
+
   m_lCache.clear();
+  for (int i = 0; i < oracle_tree.size(); ++ i) {
+    m_lCache.push_back(TaggedWord(oracle_tree[i].word, oracle_tree[i].tag));
+  }
+
 #ifdef LABELED
   m_lCacheLabel.clear();
+  for (int i = 0; i < oracle_tree.size(); ++ i) {
+    m_lCacheLabel.push_back(CDependencyLabel(oracle_tree[i].label));
+  }
 #endif
-  for (int i=0; i<input.size(); ++i) {
-    m_lCache.push_back(TaggedWord(input[i].word, input[i].tag));
+
+  int round = 0;
+  state_chain[round].clear();
+
+  for (round = 1; ; ++ round) {
+    state_chain[round] = state_chain[round - 1];
+    state_chain[round].StandardMoveStep(oracle_tree
 #ifdef LABELED
-    m_lCacheLabel.push_back(CDependencyLabel(input[i].label));
+        , m_lCacheLabel
 #endif
+        );
+
+    unsigned long action = state_chain[round].last_action;
+    GetOrUpdateStackScore(state_chain + round - 1, empty, action, 1, 1);
+    if (state_chain[round].terminated()) {
+      break;
+    }
   }
 
-  // make standard item
-  item.clear();
-  for (int i=0; i<input.size() * 2; ++i) {
-#ifdef LABELED
-    item.StandardMoveStep(input, m_lCacheLabel);
-#else
-    item.StandardMoveStep(input);
-#endif
+  assert(state_chain[round].len_ == oracle_tree.size());
+  for (int i = 1; i < oracle_tree.size(); ++ i) {
+    assert(state_chain[round].head(i) != DEPENDENCY_LINK_NO_HEAD);
   }
-
-  // extract feature now with another step less efficient yet easier here
-  tmp.clear();
-  while (tmp != item) {
-    action = tmp.FollowMove(&item);
-    GetOrUpdateStackScore(&tmp, empty, action, 1, 0);
-    tmp.Move(action);
-  }
+  delete [] state_chain;
 }
 
 /*---------------------------------------------------------------
@@ -1179,17 +1194,36 @@ void CDepParser::extract_features(const CDependencyParse &input) {
  *---------------------------------------------------------------*/
 
 template<typename CCoNLLInputOrOutput>
-void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
-  m_lCacheCoNLLLemma.resize(sentence.size());
-  m_lCacheCoNLLCPOS.resize(sentence.size());
-  m_lCacheCoNLLFeats.resize(sentence.size());
-  for (unsigned i=0; i<sentence.size(); ++i) {
-     m_lCacheCoNLLLemma[i].load(_conll_or_empty(sentence.at(i).lemma));
-     m_lCacheCoNLLCPOS[i].load(_conll_or_empty(sentence.at(i).ctag));
+void CDepParser::InitializeCoNLLCache(
+    const CCoNLLInputOrOutput & conll_tree_with_pseudo_root) {
+  int len = conll_tree_with_pseudo_root.size();
+  m_lCacheCoNLLLemma.resize(len);
+  m_lCacheCoNLLCPOS.resize (len);
+  m_lCacheCoNLLFeats.resize(len);
+
+  for (unsigned i = 0; i < conll_tree_with_pseudo_root.size(); ++ i) {
+     m_lCacheCoNLLLemma[i].load(
+         _conll_or_empty(conll_tree_with_pseudo_root.at(i).lemma));
+     m_lCacheCoNLLCPOS[i].load(
+         _conll_or_empty(conll_tree_with_pseudo_root.at(i).ctag));
      m_lCacheCoNLLFeats[i].clear();
-     if (sentence.at(i).feats != "_")
-        readCoNLLFeats(m_lCacheCoNLLFeats[i], sentence.at(i).feats);
+     if (conll_tree_with_pseudo_root.at(i).feats != "_") {
+        readCoNLLFeats(m_lCacheCoNLLFeats[i],
+                       conll_tree_with_pseudo_root.at(i).feats);
+     }
   }
+}
+
+void CDepParser::ConvertCoNLLToDependency(
+    const CCoNLLOutput & conll_tree,
+    CDependencyParse   & tree) {
+  conll_tree.toDependencyTree(tree);
+}
+
+void CDepParser::ConvertCoNLLToTwoStringVector(
+    const CCoNLLInput  & conll_tree,
+    CTwoStringVector   & sentence) {
+  conll_tree.toTwoStringVector(sentence);
 }
 
 /*---------------------------------------------------------------
@@ -1201,32 +1235,39 @@ void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
  *--------------------------------------------------------------*/
 
 void CDepParser::parse_conll(
-    const CCoNLLInput & sentence,
+    const CCoNLLInput & conll_tree_with_pseudo_root,
     CCoNLLOutput *      retval,
-    int                 nBest,
+    int                 nbest,
     SCORE_TYPE *        scores) {
-
-  static CDependencyParse empty;
-  static CTwoStringVector input;
-  static CDependencyParse outout[AGENDA_SIZE];
-
   assert(m_bCoNLL);
-  initCoNLLCache(sentence);
-  sentence.toTwoStringVector(input);
 
-  for (int i=0; i<nBest; ++i) {
+  CDependencyParse empty;
+  CTwoStringVector sentence_with_pseudo_root;
+  CDependencyParse outout[AGENDA_SIZE];
+
+  InitializeCoNLLCache(conll_tree_with_pseudo_root);
+  ConvertCoNLLToTwoStringVector(conll_tree_with_pseudo_root,
+                                sentence_with_pseudo_root);
+
+  for (int i = 0; i < nbest; ++ i) {
      // clear the outout sentences
      retval[i].clear();
      outout[i].clear();
      if (scores) scores[i] = 0; //pGenerator->score;
   }
 
-  int num_results = work(false, input, outout, empty, nBest, scores );
+  int num_results = Work(outout,
+                         scores,
+                         sentence_with_pseudo_root,
+                         empty,
+                         nbest,
+                         false);
 
-  for (int i=0; i<std::min(nBest, num_results); ++i) {
-     // now make the conll format stype outout
-     retval[i].fromCoNLLInput(sentence);
-     retval[i].copyDependencyHeads(outout[i]);
+  for (int i = 0; i < std::min(nbest, num_results); ++ i) {
+    // now make the conll format stype outout
+    retval[i].fromCoNLLInput(conll_tree_with_pseudo_root);
+    // std::cout << conll_tree.size() << " " << outout[i].size() << std::endl;
+    retval[i].copyDependencyHeads(outout[i]);
   }
 }
 
@@ -1235,23 +1276,29 @@ void CDepParser::parse_conll(
  * train_conll - train the models with an example
  *
  *---------------------------------------------------------------*/
+// perform training on conll data
+void CDepParser::train_conll(
+    const CCoNLLOutput & oracle_conll_tree_with_pseudo_root,
+    int round) {
+  assert(m_bCoNLL);
 
-void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
+  CTwoStringVector sentence;
+  CDependencyParse oracle_tree_with_pseudo_root;
 
-  static CTwoStringVector sentence ;
-  static CDependencyParse reference ;
-
-  assert( m_bCoNLL );
-
-  initCoNLLCache(correct);
-
-  correct.toDependencyTree( reference );
-  UnparseSentence( &reference, &sentence );
+  InitializeCoNLLCache(oracle_conll_tree_with_pseudo_root);
+  ConvertCoNLLToDependency(oracle_conll_tree_with_pseudo_root,
+                           oracle_tree_with_pseudo_root);
+  UnparseSentence (&oracle_tree_with_pseudo_root, &sentence);
 
   // The following code does update for each processing stage
   m_nTrainingRound = round ;
-  work(true , sentence , NULL, reference , 1 , 0);
-
+  Work(
+      NULL,
+      NULL,
+      sentence,
+      oracle_tree_with_pseudo_root,
+      1,
+      true);
 }
 
 /*---------------------------------------------------------------
@@ -1260,12 +1307,22 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
  *
  *---------------------------------------------------------------*/
 
-void CDepParser::extract_features_conll( const CCoNLLOutput &input) {
+void CDepParser::extract_features_conll(
+    const CCoNLLOutput & oracle_conll_tree_with_pseudo_root) {
+  assert(m_bCoNLL);
 
-  CDependencyParse dep;
-  assert( m_bCoNLL );
-  initCoNLLCache( input );
-  input.toDependencyTree( dep );
-  extract_features(dep);
+  CDependencyParse oracle_tree_with_pseudo_root;
+  InitializeCoNLLCache(oracle_conll_tree_with_pseudo_root);
+  ConvertCoNLLToDependency(oracle_conll_tree_with_pseudo_root,
+                           oracle_tree_with_pseudo_root);
+  extract_features(oracle_tree_with_pseudo_root);
 }
+
+void CDepParser::finishtraining() {
+  static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(
+      m_nTrainingRound);
+  static_cast<depparser::CWeight*>(m_weights)->saveScores();
+  std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+}
+
 

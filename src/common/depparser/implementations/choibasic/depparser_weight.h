@@ -172,6 +172,12 @@ typedef CPackedScoreMap<CCoNLLFeats,  SCORE_TYPE, action::kMax> CCoNLLFeatsMap;
   left(S0_p_S0_lset)right;        /* 99 */ \
   left(S0_p_S0_rset)right;        /* 100 */ \
   left(N0_p_N0_lset)right;        /* 101 */ \
+  left(S0conll_l)right;           /* 102 */ \
+  left(S0conll_c)right;           /* 103 */ \
+  left(S0conll_f)right;           /* 104 */ \
+  left(N0conll_l)right;           /* 105 */ \
+  left(N0conll_c)right;           /* 106 */ \
+  left(N0conll_f)right;           /* 107 */ \
 } while (0);
 
 class CWeight : public CWeightBase {
@@ -293,6 +299,13 @@ public:
   CTagSetOfLabelsMap  S0_p_S0_rset;     // 100 - S0.p + S0.rset
   CTagSetOfLabelsMap  N0_p_N0_lset;     // 101 - N0.p + N0.lset
 
+  CLemmaMap           S0conll_l;        // 102 - S0|conll.l
+  CCoNLLCPOSMap       S0conll_c;        // 103 - S0|conll.c
+  CCoNLLFeatsMap      S0conll_f;        // 104 - S0|conll.f
+  CLemmaMap           N0conll_l;        // 105 - N0|conll.l
+  CCoNLLCPOSMap       N0conll_c;        // 106 - N0|conll.c
+  CCoNLLFeatsMap      N0conll_f;        // 107 - N0|conll.f
+
   CWeight(const std::string &sPath, bool bTrain) :
     CWeightBase(sPath, bTrain) ,
     // initialization for the
@@ -406,7 +419,13 @@ public:
     N0_w_N0_lset("98_N0.w_N0.lset", DEP_TABLE_SIZE, false),
     S0_p_S0_lset("99_S0.p_S0.lset", DEP_TABLE_SIZE, false),
     S0_p_S0_rset("100_S0.p_S0.rset",DEP_TABLE_SIZE, false),
-    N0_p_N0_lset("101_N0.p_N0.lset",DEP_TABLE_SIZE, false)
+    N0_p_N0_lset("101_N0.p_N0.lset",DEP_TABLE_SIZE, false),
+    S0conll_l("102_S0|conll.l", DEP_TABLE_SIZE, false),
+    S0conll_c("103_S0|conll.c", DEP_TABLE_SIZE, false),
+    S0conll_f("104_S0|conll.f", DEP_TABLE_SIZE, false),
+    N0conll_l("105_N0|conll.l", DEP_TABLE_SIZE, false),
+    N0conll_c("106_N0|conll.c", DEP_TABLE_SIZE, false),
+    N0conll_f("107_N0|conll.f", DEP_TABLE_SIZE, false)
   {
     loadScores();
   }

@@ -78,30 +78,34 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
-  std::cout<<"Saving scores..."; std::cout.flush();
-  std::ofstream file ;
-  file.open(m_sRecordPath.c_str()) ;
+  std::cout<<"Saving scores...";
+  std::cout.flush();
+
+  std::ofstream ofs;
+  ofs.open(m_sRecordPath.c_str());
 
 #ifdef LABELED
-  file << "Dependency labels:" << std::endl;
+  ofs << "Dependency labels:" << std::endl;
   for (unsigned label = CDependencyLabel::FIRST;
       label < CDependencyLabel::COUNT;
       ++label) {
-    file << CDependencyLabel(label) << ' ';
+    ofs << CDependencyLabel(label) << ' ';
   }
-  file << std::endl << std::endl;
+  ofs << std::endl << std::endl;
 #endif
-  iterate_templates(file<<,;)
+  iterate_templates(ofs <<, ;);
+
 #ifdef DEBUG
-  iterate_templates(,.trace(););
+  iterate_templates( ,.trace());
 #endif
+
   if (m_bRules) {
-    file << "Rules=1" << std::endl;
+    ofs << "Rules=1" << std::endl;
   } else {
-    file << "Rules=0" << std::endl;
+    ofs << "Rules=0" << std::endl;
   }
 
-  file.close();
+  ofs.close();
   std::cout<<" done."<<std::endl;
 }
 
@@ -112,9 +116,9 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::depparser::CWeight::computeAverageFeatureWeights(int round) {
-  std::cout<<"Computing averaged (total) feature vector...";
+  std::cout << "Computing averaged (total) feature vector...";
   std::cout.flush();
   iterate_templates(,.computeAverage(round););
-  std::cout<<"done."<<std::endl;
+  std::cout << "done." <<std::endl;
 }
 
