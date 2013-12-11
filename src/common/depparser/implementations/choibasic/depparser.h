@@ -20,13 +20,12 @@
  *
  *==============================================================*/
 
+// guard the state with certain namespace
 namespace TARGET_LANGUAGE {
 namespace depparser {
-
 #include "state.h"
-
-}; // namespace depparser
-};
+};  //  namespace depparser
+};  //  namespace TARGET_LANGUAGE
 
 #include "depparser_weight.h"
 
@@ -40,14 +39,13 @@ namespace TARGET_LANGUAGE {
 
 class CDepParser : public CDepParserBase {
 private:
-  CAgendaBeam<depparser::CStateItem> *m_Agenda;
   CAgendaSimple<depparser::action::CScoredAction> *m_Beam;
-
-  // caches for input
+  // input
   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
   std::vector< CLemma >                           m_lCacheCoNLLLemma; // conll
   std::vector< CCoNLLCPOS >                       m_lCacheCoNLLCPOS;  // conll
   std::vector< std::vector<CCoNLLFeats> >         m_lCacheCoNLLFeats; // conll
+
 #ifdef LABELED
   std::vector< CDependencyLabel > m_lCacheLabel;
 #endif
@@ -62,23 +60,9 @@ public:
   CDepParser(
       const std::string & sFeatureDBPath,
       bool                bTrain,
-      bool                bCoNLL = false) :
-    CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) {
-    m_Agenda  = new CAgendaBeam<depparser::CStateItem>(AGENDA_SIZE);
-    m_Beam    = new CAgendaSimple<depparser::action::CScoredAction>(AGENDA_SIZE);
-    m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
-    m_nTrainingRound = 0;
-    m_nTotalErrors = 0;
-
-    if (bTrain) {
-      m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage;
-    } else {
-      m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage;
-    }
-  }
+      bool                bCoNLL = false);
 
   ~CDepParser() {
-    delete m_Agenda;
     delete m_Beam;
     delete m_weights;
   }
@@ -88,110 +72,183 @@ public:
   }
 
 public:
-   void parse(
-       const CTwoStringVector & sentence,
-       CDependencyParse *       retval,
-       int                      nBest = 1,
-       depparser::SCORE_TYPE *  scores = 0);
+  void parse(
+      const CTwoStringVector & sentence,
+      CDependencyParse       * retval,
+      int                      n_best = 1,
+      depparser::SCORE_TYPE  * scores = 0);
 
-   void train(
-       const CDependencyParse & correct,
-       int                      round);
+  void parse_conll(
+      const CCoNLLInput      & sentence,
+      CCoNLLOutput           * retval,
+      int                      n_best = 1,
+      depparser::SCORE_TYPE *  scores = 0);
 
-   void extract_features(
-       const CDependencyParse & input);
+  void train(
+      const CDependencyParse & oracle_tree,
+      int                      round);
 
-   void parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval , int nBest=1, depparser::SCORE_TYPE *scores=0 );
-   void train_conll( const CCoNLLOutput &correct , int round );
-   void extract_features_conll( const CCoNLLOutput &input );
+  /* training wrapper for CoNLLx format data. this function convert
+   * CoNLLOutput into dependency parse
+   *
+   *   @param[in]    correct
+   *   @param[in]    round
+   */
+  void train_conll(
+      const CCoNLLOutput &     oracle_conll_tree,
+      int                      round);
 
-   void finishtraining() {
-      static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
-      static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
-   }
-   depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
-   void updateScores(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
+  void extract_features(
+      const CDependencyParse & input);
+
+  void extract_features_conll(
+      const CCoNLLOutput &     input);
+
+  void finishtraining();
+
+  depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
+
+  void updateScores(
+      const CDependencyParse &parse, 
+      const CDependencyParse &correct,
+      int round=0);
 
 private:
-   enum SCORE_UPDATE {eAdd=0, eSubtract};
+  enum SCORE_UPDATE {
+    eAdd = 0,
+    eSubtract
+  };
 
-   template<typename CCoNLLInputOrOutput>
-   void initCoNLLCache( const CCoNLLInputOrOutput &sentence );
+  // If CoNLL format is confirmed, lemma, coase postag and conll specified
+  // features are cached according to the given sentence
+  template<typename CCoNLLInputOrOutput>
+    void InitializeCoNLLCache(const CCoNLLInputOrOutput & sentence);
 
-   int work(
-       const bool               bTrain,
-       const CTwoStringVector & sentence,
-       CDependencyParse *       retval,
-       const CDependencyParse & correct,
-       int                      nBest,
-       depparser::SCORE_TYPE *  scores);
+  void ConvertCoNLLToTwoStringVector(
+      const CCoNLLInput  & conll_tree,
+      CTwoStringVector   & sentence);
 
-   inline void GetOrUpdateStackScore(
-       const depparser::CStateItem *item,
-       CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> &retval,
-       const unsigned &action,
-       depparser::SCORE_TYPE amount=0,
-       int round=0 );
+  void ConvertCoNLLToDependency(
+      const CCoNLLOutput & conll_tree,
+      CDependencyParse   & tree);
 
-   // update the built-in weight std::vector for this feature object specifically
-   void UpdateScoresForStates(
-       const depparser::CStateItem * outout,
-       const depparser::CStateItem * correct,
-       depparser::SCORE_TYPE amount_add,
-       depparser::SCORE_TYPE amount_subtract);
+  /* add a pseudo root to dependency tree
+   *
+   *  @param[in]  tree                    the tree without pseudo root
+   *  @param[out] tree_with_pseudo_root   the tree with pseudo root
+   */
+  void AddPseudoRootToDependency (
+      const CDependencyParse & tree,
+      CDependencyParse       & tree_with_pseudo_root);
 
-   inline void updateScoreForState(
-       const depparser::CStateItem & from, 
-       const depparser::CStateItem * outout,
-       const depparser::SCORE_TYPE & amount);
+  void AddPseudoRootToTwoStringVector (
+      const CTwoStringVector & sentence,
+      CTwoStringVector       & sentence_with_pseudo_root);
+  /*
+   * Main process for performing the work process. If is_train is specified
+   * perform early update
+   *
+   *  @param[out]   retval      the result parsing tree
+   *  @param[out]   score       the result of scores, output nothing if is NULL
+   *  @param[in]    sentence    the input sentence
+   *  @param[in]    oracle_tree the gold standard parsing tree
+   *  @param[in]    nbest       the number of top n best result to return
+   *  @param[in]    is_train    use to specify the training process
+   *  @return       int         the number of results, -1 when failed
+   */
+  int Work(
+      CDependencyParse       * retval,
+      depparser::SCORE_TYPE  * scores,
+      const CTwoStringVector & sentence,
+      const CDependencyParse & oracle_tree,
+      int                      nbest,
+      bool                     is_train);
 
-  int insert_into_beam(
-      const depparser::CStateItem * item,
+  /*
+   * Get or update the scores according to the stack states
+   *
+   *  @param[out]   retval      the packed score result
+   *  @param[in]    item        the state item
+   *  @param[in]    action      the action to update
+   *  @param[in]    amount      the amount to update
+   *  @param[in]    round
+   */
+  void GetOrUpdateStackScore(
+      const depparser::CStateItem                                       * item,
+      CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax>  & retval,
+      const unsigned                                                    & action,
+      const depparser::SCORE_TYPE                                       & amount = 0,
+      const int                                                           round  = 0);
+
+  // update the built-in weight std::vector for this feature object specifically
+  /* Travel through the state chain and update scores
+   *
+   *  @param[in]  predicated_state    the predicated state
+   *  @param[in]  correct_state       the correct state
+   *  @param[in]  amount_add          the 
+   *  @param[in]  amount_substract    the punishment on wrong state
+   */
+  void UpdateScoresForStates(
+      const depparser::CStateItem * predicated_state,
+      const depparser::CStateItem * correct_state,
+      const depparser::SCORE_TYPE   amount_add,
+      const depparser::SCORE_TYPE   amount_subtract);
+
+  /* Insert the state into beam, perform some heap operation
+   *
+   *  @param[in/out]  beam                the beam
+   *  @param[in]      item                the item to be inserted
+   *  @param[in]      current_beam_size   the current beam size
+   *  @param[in]      max_beam_size       the max volumn of beam
+   *  @return         int                 1 if the beam increased otherwise 0
+   */
+  int InsertIntoBeam(
       depparser::CStateItem *       beam,
+      const depparser::CStateItem * item,
       const int                     current_beam_size,
       const int                     max_beam_size);
 
   // helper method
-  inline void transit(
+  inline void Transit(
       const depparser::CStateItem * item,
       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-  inline void idle(
+  inline void Idle(
       const depparser::CStateItem * item,
       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-  inline void reduce(
+  inline void Reduce(
       const depparser::CStateItem * item,
       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-  inline void nopass(
-       const depparser::CStateItem * item,
-       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+  inline void NoPass(
+      const depparser::CStateItem * item,
+      const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-   inline void shift(
-       const depparser::CStateItem * item,
-       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+  inline void Shift(
+      const depparser::CStateItem * item,
+      const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-   inline void arcleft(
-       const depparser::CStateItem * item,
-       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+  inline void ArcLeft(
+      const depparser::CStateItem * item,
+      const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-   inline void arcright(
-       const depparser::CStateItem * item,
-       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+  inline void ArcRight(
+      const depparser::CStateItem * item,
+      const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-   inline void poproot(
-       const depparser::CStateItem * item,
-       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+  inline void PopRoot(
+      const depparser::CStateItem * item,
+      const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-   inline void leftpass(
-       const depparser::CStateItem * item,
-       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+  inline void LeftPass(
+      const depparser::CStateItem * item,
+      const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
 
-   inline void rightpass(
-       const depparser::CStateItem * item,
-       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+  inline void RightPass(
+      const depparser::CStateItem * item,
+      const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
+
 public:
    void TestSuite1();
 };
