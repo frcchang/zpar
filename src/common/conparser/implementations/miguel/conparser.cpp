@@ -1010,6 +1010,9 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 #ifdef SCALE
    bool bAllTerminated;
 #endif
+#ifdef TRACE_STANFORD
+   CCoNLLOutput c_o;
+#endif
 
    static CPackedScoreType<SCORE_TYPE, CAction::MAX> packedscores;
 
@@ -1154,6 +1157,18 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 //            updateScoresByLoss(pBestGen, correctState) ; 
             updateScoresForStates(pBestGen, correctState) ; 
 #endif // TRAIN_MULTI
+
+#ifdef TRACE_STANFORD
+            while (!correctState->IsTerminated()) {
+               correctState->StandardMove(correct, correct_action);
+               correctState->Move(lattice_index[index+1], correct_action); 
+               correctState = lattice_index[index+1];
+               ++lattice_index[index+1];
+            }
+            CCoNLLOutput c_o;
+            correctState->GenerateStanford(sentence, &c_o);
+            std::cout << c_o << std::endl;
+#endif
             return ;
 //         } // bCorrect
 #else // EARLY UDPATE
@@ -1181,6 +1196,12 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
 //         updateScoresByLoss(pBestGen, correctState) ; 
          updateScoresForStates(pBestGen, correctState) ; 
 #endif // TRAIN_MULTI
+
+#ifdef TRACE_STANFORD
+         correctState->GenerateStanford(sentence, &c_o);
+         std::cout << c_o << std::endl;
+#endif
+
          return ;
       }
       else {
@@ -1190,8 +1211,11 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
       }
    } 
 
-   if (!retval) 
-      return;
+   if (!retval) {
+#ifdef TRACE_STANFORD
+      correctState->GenerateStanford(sentence, &c_o); std::cout << c_o << std::endl;
+#endif
+      return; }
 
    TRACE("Outputing sentence");
    pBestGen->GenerateTree( sentence, retval[0] );

@@ -25,6 +25,8 @@
 
 #define CONLL_OUTPUT
 
+#define TRACE_STANFORD
+
 // The size of agenda
 static const unsigned long AGENDA_SIZE = 32;
 static const unsigned long MIRA_SIZE = AGENDA_SIZE+1;
