@@ -24,7 +24,7 @@
  *
  *==============================================================*/
 
-#include "score_packed_list.h"
+#include "score_packed_list_ulong.h"
 //#include "score_packed_hash.h"
 //#include "score_packed_array.h"
 
@@ -35,7 +35,7 @@
  *==============================================================*/
 
 
-template <typename SCORE_TYPE, unsigned PACKED_SIZE>
+template <typename SCORE_TYPE, unsigned long PACKED_SIZE>
 class CPackedScoreType {
 
 //public:
@@ -65,13 +65,13 @@ public:
 	   return true;
    }
 public:
-   SCORE_TYPE &operator [](const unsigned &index) {
+   SCORE_TYPE &operator [](const unsigned long &index) {
       //assert(index<PACKED_SIZE);
       return scores[index];
    }
 
     //TODO can't implement as previous one, not const
-     const SCORE_TYPE &operator [](const unsigned &index) const {
+     const SCORE_TYPE &operator [](const unsigned long &index) const {
 	  if ( scores.find(index) == scores.end() )
           {
 	  	  return DEFAULT_SCORE;
@@ -99,7 +99,7 @@ public:
 
 //template <typename SCORE_TYPE, unsigned PACKED_SIZE> const SCORE_TYPE CPackedScoreType::NO_SCORE = 0;
 
-template <typename SCORE_TYPE, unsigned PACKED_SIZE>
+template <typename SCORE_TYPE, unsigned long PACKED_SIZE>
 std::istream & operator >> (std::istream &is, CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &score) {
    //assert(PACKED_SIZE>0);
    assert(!score.empty());
@@ -134,7 +134,7 @@ std::istream & operator >> (std::istream &is, CPackedScoreType<SCORE_TYPE, PACKE
    return is;
 }
 
-template <typename SCORE_TYPE, unsigned PACKED_SIZE>
+template <typename SCORE_TYPE, unsigned long PACKED_SIZE>
 std::ostream & operator << (std::ostream &os, CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &score) {
    //assert(PACKED_SIZE>0);
    assert(!score.empty());
@@ -162,7 +162,7 @@ std::ostream & operator << (std::ostream &os, CPackedScoreType<SCORE_TYPE, PACKE
  *
  *==============================================================*/
 
-template <typename K, typename SCORE_TYPE, unsigned PACKED_SIZE>
+template <typename K, typename SCORE_TYPE, unsigned long PACKED_SIZE>
 class CPackedScoreMap : public CHashMap< K , CPackedScore<SCORE_TYPE, PACKED_SIZE> > {
 
 protected:
@@ -176,7 +176,7 @@ protected:
 public:
    const std::string name ;
    bool initialized ;
-   unsigned count ;
+   unsigned long count ;
 
 public:
    CPackedScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CPackedScore<SCORE_TYPE, PACKED_SIZE> >(TABLE_SIZE, bInitMap) 
@@ -198,7 +198,7 @@ public:
       m_positive = &positive;
    }
 
-   virtual inline void addPositiveFeature(const K &key, const unsigned &index) {
+   virtual inline void addPositiveFeature(const K &key, const unsigned long &index) {
       (*this)[key][index];
    }
 #endif // define features
@@ -207,14 +207,14 @@ public:
       this->find( key , m_zero ).add( o , which );
    }
 
-   virtual inline void updateScore( const K &key , const unsigned &index , const SCORE_TYPE &amount , const int &round ) {
+   virtual inline void updateScore( const K &key , const unsigned long &index , const SCORE_TYPE &amount , const int &round ) {
 #ifdef NO_NEG_FEATURE
       if (m_positive->element(key) && (*m_positive)[key].element(index))
 #endif // update can only happen with defined features
       (*this)[ key ].updateCurrent( index , amount , round );
    }
 
-   virtual inline void getOrUpdateScore( CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &out , const K &key , const unsigned &index , const int &which , const SCORE_TYPE &amount=0 , const int &round=0 ) {
+   virtual inline void getOrUpdateScore( CPackedScoreType<SCORE_TYPE, PACKED_SIZE> &out , const K &key , const unsigned long &index , const int &which , const SCORE_TYPE &amount=0 , const int &round=0 ) {
 #ifdef NO_NEG_FEATURE
       if ( round == -1 ) {
          addPositiveFeature( key, index );
@@ -313,23 +313,23 @@ public:
 
 //===============================================================
 
-template<typename K, typename SCORE_TYPE, unsigned PACKED_SIZE>
+template<typename K, typename SCORE_TYPE, unsigned long PACKED_SIZE>
 inline
 std::istream & operator >> (std::istream &is, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> &score_map) {
    if (!is) return is ;
    std::string s ;
    getline(is, s) ;
    // match name
-   const unsigned &size = score_map.name.size();
+   const unsigned long &size = score_map.name.size();
    if ( s.substr(0, size)!=score_map.name ) THROW("hashmap_score_packed.h: the expected score map " << score_map.name << " is not matched.");
    if ( !score_map.initialized ) {
       // match size
       if ( s.size()>size ) {
-         unsigned table_size = 0;
+         unsigned long table_size = 0;
          std::istringstream buffer(s.substr(size));
          buffer >> table_size;
          if (table_size) {
-            unsigned hash_size = 1;
+            unsigned long hash_size = 1;
             while (hash_size<table_size) hash_size <<= 1;
             hash_size <<= 1;
             score_map.resize(hash_size);
@@ -341,7 +341,7 @@ std::istream & operator >> (std::istream &is, CPackedScoreMap<K, SCORE_TYPE, PAC
    return is ;
 }
 
-template<typename K, typename SCORE_TYPE, unsigned PACKED_SIZE>
+template<typename K, typename SCORE_TYPE, unsigned long PACKED_SIZE>
 inline
 std::ostream & operator << (std::ostream &os, CPackedScoreMap<K, SCORE_TYPE, PACKED_SIZE> &score_map) {
    assert(os);
