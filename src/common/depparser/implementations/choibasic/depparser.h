@@ -39,6 +39,9 @@ namespace TARGET_LANGUAGE {
 
 class CDepParser : public CDepParserBase {
 private:
+  static depparser::CStateItem * lattice_;
+  static int                     max_lattice_size_;
+private:
   CAgendaSimple<depparser::action::CScoredAction> *m_Beam;
   // input
   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
@@ -65,6 +68,10 @@ public:
   ~CDepParser() {
     delete m_Beam;
     delete m_weights;
+    if (lattice_) {
+      delete [] lattice_;
+      lattice_ = 0;
+    }
   }
 
   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) {
@@ -118,6 +125,8 @@ private:
     eAdd = 0,
     eSubtract
   };
+
+  depparser::CStateItem * GetLattice(int max_lattice_size);
 
   // If CoNLL format is confirmed, lemma, coase postag and conll specified
   // features are cached according to the given sentence
