@@ -249,7 +249,7 @@ public:
     ClearNext();
   }
 
-  void operator = (const CStateItem &item) {
+  CStateItem & operator = (const CStateItem &item) {
     stack_        = item.stack_;
     deque_        = item.deque_;
     next_word     = item.next_word;
@@ -258,18 +258,18 @@ public:
     score         = item.score;
     previous_     = item.previous_;
 
-    for (int i = 0; i <= next_word; ++ i) {
-      // only copy active word (including m_nNext)
-      heads[i]              = item.heads[i];
-      left_most_child[i]    = item.left_most_child[i];
-      left_2most_child[i]   = item.left_2most_child[i];
-      right_most_child[i]   = item.right_most_child[i];
-      right_2most_child[i]  = item.right_2most_child[i];
-      num_left_children[i]  = item.num_left_children[i];
-      num_right_children[i] = item.num_right_children[i];
+    memcpy(heads,             item.heads,             sizeof(int)*(next_word + 1));
+    memcpy(left_most_child,   item.left_most_child,   sizeof(int)*(next_word + 1));
+    memcpy(left_2most_child,  item.left_2most_child,  sizeof(int)*(next_word + 1));
+    memcpy(right_most_child,  item.right_most_child,  sizeof(int)*(next_word + 1));
+    memcpy(right_2most_child, item.right_2most_child, sizeof(int)*(next_word + 1));
+    memcpy(num_left_children, item.num_left_children, sizeof(int)*(next_word + 1));
+    memcpy(num_right_children,item.num_right_children,sizeof(int)*(next_word + 1));
 
 #ifdef LABELED
-      labels[i]             = item.labels[i];
+    memcpy(labels, item.labels, sizeof(unsigned long)*(next_word + 1));
+    for (int i = 0; i <= next_word; ++ i) {
+      // only copy active word (including m_nNext)
       left_dep_tagset[i]    = item.left_dep_tagset[i];
       right_dep_tagset[i]   = item.right_dep_tagset[i];
 #endif
