@@ -916,6 +916,23 @@ void CDepParser::Transit(
   }
 }
 
+CStateItem * CDepParser::lattice_ = 0;
+int CDepParser::max_lattice_size_ = 0;
+
+CStateItem *
+CDepParser::GetLattice(int max_lattice_size) {
+  if (0 == lattice_) {
+    max_lattice_size_ = max_lattice_size;
+    lattice_ = new CStateItem[max_lattice_size];
+  } else if (max_lattice_size_ < max_lattice_size) {
+    delete [] lattice_;
+    max_lattice_size_ = max_lattice_size;
+    lattice_ = new CStateItem[max_lattice_size];
+  }
+
+  return lattice_;
+}
+
 /*---------------------------------------------------------------
  *
  * work - the working process shared by training and parsing
@@ -942,8 +959,8 @@ int CDepParser::Work(
   ASSERT(length < kMaxSentenceSize,
       "The size of the sentence is larger than the system configuration.");
 
-  CStateItem * lattice =
-    new CStateItem[max_lattice_size];     // allocate the memory pool
+  CStateItem * lattice = GetLattice(max_lattice_size);
+    //new CStateItem[max_lattice_size];     // allocate the memory pool
   CStateItem * lattice_index[max_round];  // specify states of certain round
   const CStateItem * correct_state;       // point to the correct state's
                                           // position in the lattice
@@ -1077,7 +1094,7 @@ int CDepParser::Work(
         // std::cout << "predicated: " << (*best_generator);
         // std::cout << "correct:    " << (next_correct_state);
         UpdateScoresForStates(best_generator, &next_correct_state, 1, -1);
-        delete [] lattice;
+        // delete [] lattice;
 
         return -1;
       }
@@ -1090,7 +1107,7 @@ int CDepParser::Work(
   }
 
   if (!retval) {
-    delete [] lattice;
+    // delete [] lattice;
     return -1;
   }
 
@@ -1103,7 +1120,7 @@ int CDepParser::Work(
   }
 
   TRACE("Done, total time spent: " << double(clock() - total_start_time) / CLOCKS_PER_SEC);
-  delete [] lattice;
+  // delete [] lattice;
   return num_results;
 }
 
