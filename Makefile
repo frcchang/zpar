@@ -89,8 +89,8 @@ SPANISH_ANNOTATION = ES09_DEPENDENCIES
 #
 #================================================================
 
-DEBUG = -DDEBUG -g
-#DEBUG = -DNDEBUG
+#DEBUG = -DDEBUG -g
+DEBUG = -DNDEBUG
 
 #================================================================
 #

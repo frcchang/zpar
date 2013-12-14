@@ -18,7 +18,12 @@ class CScore;
 template<typename SCORE_TYPE>
 std::istream & operator >> (std::istream &is, CScore<SCORE_TYPE> &score) {
    char c ;
+#ifdef PERCEPTRON_FOR_DECODING
+   SCORE_TYPE tmp;
+   ASSERT(is >> tmp, "The first element of CScore cannot be read."); 
+#else
    ASSERT(is >> score[0], "The first element of CScore cannot be read."); 
+#endif
    ASSERT((is >> c) && c=='/', "The separator CScore cannot be read");
    ASSERT(is >> score[1], "The second element of CScore cannot be read");
    return is ;
@@ -26,7 +31,12 @@ std::istream & operator >> (std::istream &is, CScore<SCORE_TYPE> &score) {
 
 template<typename SCORE_TYPE>
 std::ostream & operator << (std::ostream &os, const CScore<SCORE_TYPE> &score) {
+#ifdef PERCEPTRON_FOR_DECODING
+   THROW("Internal error: score.h; cannot store score value when the class is decoding only.");
+   return os;
+#else
    return os << score[0] << " / " << score[1] ;
+#endif
 }
 
 /*===============================================================
@@ -42,28 +52,119 @@ public:
    enum SCORE_AVERAGE { eNonAverage=0 , eAverage=1 } ;
 
 protected:
-   SCORE_TYPE current;
+  
    SCORE_TYPE total;
+
+#ifndef PERCEPTRON_FOR_DECODING
+   SCORE_TYPE current;
    int lastupdate; // the round number for the last update action
+#endif
 
 public:
-   CScore() : current(0), total(0), lastupdate(0) {/*current=0; total=0; lastupdate=0;*/}
-   CScore(const CScore &s1) : current(s1.current), total(s1.total), lastupdate(s1.lastupdate) {/*current=s1.current; total=s1.total; lastupdate=s1.lastupdate;*/}
+   CScore() : total(0)
+#ifndef PERCEPTRON_FOR_DECODING
+               , current(0) 
+               , lastupdate(0) 
+#endif
+   {/*current=0; total=0; lastupdate=0;*/}
+
+   CScore(const CScore &s1) : total(s1.total)
+#ifndef PERCEPTRON_FOR_DECODING
+                              , current(s1.current)
+                              , lastupdate(s1.lastupdate) 
+#endif
+   {/*current=s1.current; total=s1.total; lastupdate=s1.lastupdate;*/}
+
    virtual ~CScore() {};
 
-   void reset() {current=0; total=0; lastupdate=0;}
-   bool empty() const { return current==0 && total==0 && lastupdate==0; }
-   bool zero() const { return current==0 && total==0; }
-   void operator ++ (int) {current++;}
-   void operator -- (int) {current--;}
-   SCORE_TYPE &operator [] (const int &n) {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }}
-   const SCORE_TYPE &operator [] (const int &n) const {if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }}
-   const SCORE_TYPE score(const int &n=eNonAverage) const {if (n==eNonAverage) return current; return total;}
-   void updateCurrent(const SCORE_TYPE &added, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added; }
-   void scaleCurrent(const SCORE_TYPE &scale, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}total-=current;current*=scale;total+=current;}
-   //void updateCurrent(SCORE_TYPE added, int round=0) {if (round>=lastupdate){updateAverage(round);total+=added;lastupdate=round;}current+=added; }
-   void updateAverage(const int &round=0) {if (round>lastupdate)total += current*(round-lastupdate);
-   else if (round<lastupdate) std::cout << "Round is: "<<round<<"<"<<lastupdate<<std::endl;}
+   void reset() {
+      total=0; 
+#ifndef PERCEPTRON_FOR_DECODING
+      current=0; 
+      lastupdate=0;
+#endif
+   }
+
+   bool empty() const { 
+      return total==0 
+#ifdef PERCEPTRON_FOR_DECODING
+             ;
+#else
+             && current==0 && lastupdate==0;
+#endif
+   }
+
+   bool zero() const { 
+      return total == 0
+#ifdef PERCEPTRON_FOR_DECODING
+             ;
+#else
+             && current==0; 
+#endif
+}
+
+   void operator ++ (int) {
+#ifdef PERCEPTRON_FOR_DECODING
+      THROW("Internal error: score.h; cannot modify the content of score in decoding mode.");
+#else
+      current++;
+#endif
+   }
+   void operator -- (int) {
+#ifdef PERCEPTRON_FOR_DECODING
+      THROW("Internal error: score.h; cannot modify the content of score in decoding mode.");
+#else
+      current--;
+#endif
+   }
+
+   SCORE_TYPE &operator [] (const int &n) {
+#ifdef PERCEPTRON_FOR_DECODING
+      return total;
+#else
+      if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }
+#endif
+   }
+   const SCORE_TYPE &operator [] (const int &n) const {
+#ifdef PERCEPTRON_FOR_DECODING
+      return total;
+#else
+      if (n==eNonAverage) return current; else if (n==eAverage) return total; else { THROW("SCore only has two component, " << n << " required."); }
+#endif
+   }
+   const SCORE_TYPE &score(const int &n=eNonAverage) const {
+#ifdef PERCEPTRON_FOR_DECODING
+      return total;
+#else
+      if (n==eNonAverage) return current; return total;
+#endif
+   }
+
+   void updateCurrent(const SCORE_TYPE &added, const int &round=0) {
+#ifdef PERCEPTRON_FOR_DECODING
+      THROW("Internal error: score.h; cannot modify the content of score in decoding mode.");
+#else
+      assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added; 
+#endif
+   }
+
+   void scaleCurrent(const SCORE_TYPE &scale, const int &round=0) {
+#ifdef PERCEPTRON_FOR_DECODING
+      THROW("Internal error: score.h; cannot modify the content of score in decoding mode.");
+#else
+      assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}total-=current;current*=scale;total+=current;
+#endif
+   }
+
+   void updateAverage(const int &round=0) {
+#ifdef PERCEPTRON_FOR_DECODING
+      THROW("Internal error: score.h; cannot modify the content of score in decoding mode.");
+#else
+      if (round>lastupdate)total += current*(round-lastupdate) ;
+      else if (round<lastupdate) std::cout << "Round is: "<<round<<"<"<<lastupdate<<std::endl;
+#endif
+   }
+
 };
 
 #endif
