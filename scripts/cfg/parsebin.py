@@ -1,1 +1,1 @@
-scripts/ccg/parsebin.py
+../ccg/parsebin.py
