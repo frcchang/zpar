@@ -443,20 +443,18 @@ inline std::ostream & operator << (std::ostream &os, const CMorph &m) {
 
 
 /**
- * Convert a Penn Treebank word + POS tag into its morphological information.
- * The word is used only for some known words.
- * Use an empty word
- * Pass the empty string as the word if only tag information is to be used for morphological analysis.
+ * Convert an AnCoRa word + POS tag + feats field into its morphological information.
+ * Equivalent to the old english::pennToMorph(word, tag) which should be renamed now.
  */
-CMorph pennToMorph(const std::string &word , const std::string &pennTag);
+CMorph conllToMorph(const std::string &word , const std::string &pennTag, const std::string &feats);
 
 /**
- * Convert morphological information back into a Penn Treebank POS tag.
+ * Convert morphological information back into a POS tag.
  * Useful to evaluate tagging accuracy.
  */
-CTag morphToPenn(CMorph morph);
+CTag morphToTag(CMorph morph);
 
 
-} //namespace english
+} //namespace spanish
 
 #endif /* MORPH_H_ */
