@@ -65,7 +65,7 @@ const int MORPH_FIELD_SIZE [] = {
 };
 
 const int LAST_MORPH_FIELD = MORPH_IS_WH;
-const int MORPH_BITS = LAST_MORPH_FIELD+2; //TODO +2? (MORPH_FIELD_SIZE[LAST_MORPH_FIELD]): done
+const int MORPH_BITS = LAST_MORPH_FIELD+2; //can be -2 instead of +2 for optimization, as actually last 4 bits (is-possessive and wh) are unused at the moment.
 //If instead of 2 I type MORPH_FIELD_SIZE[LAST_MORPH_FIELD] I get error in action.h: "MORPH_BITS cannot appear in a constant expression". Not sure why, as all of that is const.
 
 const std::string MORPH_FIELD_STRINGS [] = {
