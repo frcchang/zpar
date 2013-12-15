@@ -155,7 +155,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const int &stld_label = stld_index==-1 ? CDependencyLabel::NONE : item->label(stld_index);
    const int &strd_label = strd_index==-1 ? CDependencyLabel::NONE : item->label(strd_index);
    const int &stl2d_label = stl2d_index==-1 ? CDependencyLabel::NONE : item->label(stl2d_index);
-   const int &str2d_label = str2d_index==-1 ? CDependencyLabel::NONE : item->label(str2d_index);
+   const int &str2d_label = str2d_index==-1 ? CDependencyLabel::NONE : item->label(strd_index); //bug location
    const int &n0ld_label = n0ld_index==-1 ? CDependencyLabel::NONE : item->label(n0ld_index);
    const int &n0l2d_label = n0l2d_index==-1 ? CDependencyLabel::NONE : item->label(n0l2d_index);
 
@@ -222,6 +222,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple3<CWord, CMorph, CMorph> word_morph_morph;
    static CTuple3<CWord, CWord, CMorph> word_word_morph;
    static CTuple4<CWord, CWord, CMorph, CMorph> word_word_morph_morph;
+
+   static CTuple2<CWord, CWord> word_word;
 
    static CTuple3<CMorph, CMorph, CMorph> morph_morph_morph;
 
@@ -303,7 +305,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    if (str2d_index != -1) {
       cast_weights->m_mapSTR2Dw.getOrUpdateScore( retval, str2d_word, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapSTR2Dm.getOrUpdateScore( retval, str2d_morph, action, m_nScoreIndex, amount, round ) ;
-      //cast_weights->m_mapSTR2Di.getOrUpdateScore( retval, str2d_label, action, m_nScoreIndex, amount, round) ; //didn't help
+      cast_weights->m_mapSTR2Di.getOrUpdateScore( retval, str2d_label, action, m_nScoreIndex, amount, round) ; //the bugged feature
    }
 
    if (n0l2d_index != -1) {
@@ -313,6 +315,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    //buffer minus x features
+   /*
    if (bm1_index != -1) {
       cast_weights->m_mapBM1w.getOrUpdateScore( retval, bm1_word, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapBM1m.getOrUpdateScore( retval, bm1_morph, action, m_nScoreIndex, amount, round) ;
@@ -333,8 +336,10 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       refer_or_allocate_tuple2(word_morph, &bm3_word, &bm3_morph);
       cast_weights->m_mapBM3wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
+   */
 
    //cache minus x features
+   /*
    if (nm1_index != -1) {
       cast_weights->m_mapNM1w.getOrUpdateScore( retval, nm1_word, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapNM1m.getOrUpdateScore( retval, nm1_morph, action, m_nScoreIndex, amount, round) ;
@@ -355,8 +360,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       refer_or_allocate_tuple2(word_morph, &nm3_word, &nm3_morph);
       cast_weights->m_mapNM3wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
    }
+   */
 
-   //didn't help
+   //didn't help: cache head features
    /*
    if (bm2h_index != -1) {
       cast_weights->m_mapBM2Hw.getOrUpdateScore( retval, bm2h_word, action, m_nScoreIndex, amount, round ) ;
@@ -422,12 +428,14 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    //buffer -x morph
+   /*
    if (bm1_index != -1 && bm2_index != -1) {
 	  refer_or_allocate_tuple2(morph_morph, &bm1_morph, &bm2_morph);
       cast_weights->m_mapBM1mBM2m.getOrUpdateScore( retval, morph_morph, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(morph_morph_morph, &bm1_morph, &bm2_morph, &bm3_morph);
       cast_weights->m_mapBM1mBM2mBM3m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
    }
+   */
 
    if (st_index != -1 && n0_index != -1) {
 	  //TODO: Use a morph set instead of tuples? Probably not, wouldn't fit in an unsigned long.
@@ -456,6 +464,20 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTmSTRDmN0m.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(morph_morph_morph, &st_morph, &strd_morph, &str2d_morph);
       cast_weights->m_mapSTmSTRDmSTR2Dm.getOrUpdateScore( retval, morph_morph_morph, action, m_nScoreIndex, amount, round ) ;
+   }
+
+   //Lemma bigrams in the cache
+   if ( n1_index != -1 )
+   {
+	   refer_or_allocate_tuple2(word_word, &n0_word, &n1_word);
+	   cast_weights->m_mapN0wN1w.getOrUpdateScore( retval, word_word, action, m_nScoreIndex, amount, round ) ;
+	   refer_or_allocate_tuple3(word_word_morph, &n0_word, &n1_word, &n1_morph);
+	   cast_weights->m_mapN0wN1wN1m.getOrUpdateScore( retval, word_word_morph, action, m_nScoreIndex, amount, round ) ;
+   }
+   if ( n2_index != -1 )
+   {
+	   refer_or_allocate_tuple2(word_word, &n1_word, &n2_word);
+	   cast_weights->m_mapN1wN2w.getOrUpdateScore( retval, word_word, action, m_nScoreIndex, amount, round ) ;
    }
 
    // distance
@@ -815,7 +837,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
    {
 	   for (index=0; index<length; ++index)
 	   {
-		   CMorph correctMorph = pennToMorph(correct[index].word, correct[index].tag);
+		   CMorph correctMorph = conllToMorph(correct[index].word, correct[index].tag, correct[index].feats);
 	       m_lCacheMorph.push_back(correctMorph);
 	       //std::cout << "Correct word/morph: " << m_lCache[index] << ": " << m_lCacheMorph[index].str() << "\n";
 	   }
@@ -1120,7 +1142,7 @@ void CDepParser::extract_features(const CDependencyParse &input) {
    //init gold standard morphs and lemmas
    for (int index=0; index<input.size(); ++index)
    {
-	   CMorph correctMorph = pennToMorph(input[index].word, input[index].tag);
+	   CMorph correctMorph = conllToMorph(input[index].word, input[index].tag, input[index].feats);
 	   m_lCacheMorph.push_back(correctMorph);
    }
 

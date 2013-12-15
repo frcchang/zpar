@@ -239,8 +239,9 @@ namespace english
 	 * The word is used only for some known words.
 	 * Use an empty word
 	 * Pass the empty string as the word if only tag information is to be used for morphological analysis.
+	 * The feats parameter is ignored since the English Penn treebank has no feats field, but it is included because it is used in other languages.
 	 */
-	CMorph pennToMorph(const std::string &word , const std::string &pennTag)
+	CMorph conllToMorph(const std::string &word , const std::string &pennTag, const std::string &feats)
 	{
 
 		CMorph morph;

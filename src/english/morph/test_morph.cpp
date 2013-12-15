@@ -19,7 +19,7 @@ int main ( void )
 		std::cout << "Input a Penn word and tag: ";
 		std::cin >> inputWord;
 		std::cin >> inputTag;
-		english::CMorph morph = english::pennToMorph(inputWord,inputTag);
+		english::CMorph morph = english::conllToMorph(inputWord,inputTag,"");
 		std::cout << "{" << morph.str() << "}\n";
 	}
 
