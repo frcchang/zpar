@@ -119,6 +119,10 @@
    left(m_mapSTmSTRDmN0m)right\
    left(m_mapSTmSTRDmSTR2Dm)right\
 \
+   left(m_mapN0wN1w)right\
+   left(m_mapN1wN2w)right\
+   left(m_mapN0wN1wN1m)right\
+\
    left(m_mapSTwd)right\
    left(m_mapSTmd)right\
    left(m_mapN0wd)right\
@@ -171,6 +175,7 @@ typedef CPackedScoreMap<CTagSet<CTag, 3>, SCORE_TYPE, action::MAX> CTagSet3Map;
 typedef CPackedScoreMap<CTagSet<CTag, 4>, SCORE_TYPE, action::MAX> CTagSet4Map;
 typedef CPackedScoreMap<CTuple2<CWord, CTag>, SCORE_TYPE, action::MAX> CWordTagMap;
 typedef CPackedScoreMap<CTuple2<CWord, CMorph>, SCORE_TYPE, action::MAX> CWordMorphMap;
+typedef CPackedScoreMap<CTuple2<CWord, CWord>, SCORE_TYPE, action::MAX> CWordWordMap;
 typedef CPackedScoreMap<CTuple3<CWord, CTag, CTag>, SCORE_TYPE, action::MAX> CWordTagTagMap;
 typedef CPackedScoreMap<CTuple3<CWord, CWord, CTag>, SCORE_TYPE, action::MAX> CWordWordTagMap;
 typedef CPackedScoreMap<CTuple3<CWord, CMorph, CMorph>, SCORE_TYPE, action::MAX> CWordMorphMorphMap;
@@ -322,6 +327,10 @@ public:
    CMorphMorphMorphMap m_mapSTmSTLDmSTL2Dm;
    CMorphMorphMorphMap m_mapSTmSTRDmN0m;
    CMorphMorphMorphMap m_mapSTmSTRDmSTR2Dm;
+
+   CWordWordMap m_mapN0wN1w;
+   CWordWordMap m_mapN1wN2w;
+   CWordWordMorphMap m_mapN0wN1wN1m;
 
    CWordIntMap m_mapSTwd;
    CMorphIntMap m_mapSTmd;
@@ -477,6 +486,10 @@ public:
                                                m_mapSTmSTLDmSTL2Dm("StackMorphStackLDMorphStackL2DMorph", DEP_TABLE_SIZE),
                                                m_mapSTmSTRDmN0m("StackMorphStackRDMorphNextMorph", DEP_TABLE_SIZE),
                                                m_mapSTmSTRDmSTR2Dm("StackMorphStackRDMorphStackR2DMorph", DEP_TABLE_SIZE),
+
+                                               m_mapN0wN1w("NextWordNext+1Word", DEP_TABLE_SIZE),
+                                               m_mapN1wN2w("Next+1WordNext+2Word", DEP_TABLE_SIZE),
+                                               m_mapN0wN1wN1m("NextWordNext+1WordNext+1Morph", DEP_TABLE_SIZE),
 
                                                m_mapSTwd("StackWordDist", DEP_TABLE_SIZE),
                                                m_mapSTmd("StackMorphDist", DEP_TABLE_SIZE),

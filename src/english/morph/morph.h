@@ -46,9 +46,6 @@ enum MORPH_FIELDS {
 
 };
 
-const int LAST_MORPH_FIELD = MORPH_IS_WH;
-const int MORPH_BITS = LAST_MORPH_FIELD+1;
-
 const int MORPH_FIELD_SIZE [] = {
 
 	//MORPH_FIELD_SIZE[i] = length of the field that ends at bit i counting from the right hand side
@@ -66,6 +63,10 @@ const int MORPH_FIELD_SIZE [] = {
 	2, 0,
 	2, 0
 };
+
+const int LAST_MORPH_FIELD = MORPH_IS_WH;
+const int MORPH_BITS = LAST_MORPH_FIELD+2; //TODO +2? (MORPH_FIELD_SIZE[LAST_MORPH_FIELD]): done
+//If instead of 2 I type MORPH_FIELD_SIZE[LAST_MORPH_FIELD] I get error in action.h: "MORPH_BITS cannot appear in a constant expression". Not sure why, as all of that is const.
 
 const std::string MORPH_FIELD_STRINGS [] = {
 
@@ -401,8 +402,9 @@ inline std::ostream & operator << (std::ostream &os, const CMorph &m) {
  * The word is used only for some known words.
  * Use an empty word
  * Pass the empty string as the word if only tag information is to be used for morphological analysis.
+ * The feats parameter is ignored since the English Penn treebank has no feats field, but it is included because it is used in other languages.
  */
-CMorph pennToMorph(const std::string &word , const std::string &pennTag);
+CMorph conllToMorph(const std::string &word , const std::string &pennTag, const std::string &feats);
 
 /**
  * Convert morphological information back into a Penn Treebank POS tag.

@@ -172,7 +172,7 @@ std::set<CMorph> getPossibleMorph ( const std::string & word )
 	std::set<CMorph> result;
 	for ( std::set<english::CTag>::iterator it = tags.begin() ; it != tags.end() ; ++it )
 	{
-		CMorph morph = pennToMorph ( word , it->str() );
+		CMorph morph = conllToMorph ( word , it->str() , "" );
 		result.insert(morph);
 	}
 	return result;
