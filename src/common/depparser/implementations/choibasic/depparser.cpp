@@ -91,7 +91,15 @@ void CDepParser::GetOrUpdateStackScore(
     const unsigned                             &  action,
     const SCORE_TYPE                           &  amount,
     const int                                     round) {
+  // Global judgement of having CoNLLCPOS in given sentence
+  bool enable_cpos = false;
+  //  (m_bCoNLL && (m_lCacheCoNLLCPOS[1] != CCoNLLCPOS()));
+  bool enable_ext_dep = false;
+
+  const std::vector<CCoNLLCPOS> & CPS 
+    = m_lCacheCoNLLCPOS;
   const int len       = m_lCache.size();
+
   const int S0_id   = item->stacktop();
   const int N0_id   = item->bufferfront();
   const int Sm2_id  = item->stack3rdtop();
@@ -167,12 +175,20 @@ void CDepParser::GetOrUpdateStackScore(
     __GET_OR_UPDATE_SCORE(S0_w,       S0.word);         // 0
     __GET_OR_UPDATE_SCORE(S0_p,       S0.tag);          // 1
     __GET_OR_UPDATE_SCORE(S0_w_S0_p,  S0);              // 4
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(S0_c, CPS[S0_id]); //  108
+    }
   }
 
   if (-1 != N0_id) {
     __GET_OR_UPDATE_SCORE(N0_w,       N0.word);         // 2
     __GET_OR_UPDATE_SCORE(N0_p,       N0.tag);          // 3
     __GET_OR_UPDATE_SCORE(N0_w_N0_p,  N0);              // 5
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(N0_c, CPS[N0_id]); //  109
+    }
   }
 
   if (-1 != S0_id && -1 != N0_id) {
@@ -192,20 +208,36 @@ void CDepParser::GetOrUpdateStackScore(
 
   if (-1 != S0m2_id) {
     __GET_OR_UPDATE_SCORE(S0m2_p,     S0m2.tag);        // 17
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(S0m2_c,   CPS[S0m2_id]);
+    }
   }
 
   if (-1 != S0m1_id) {
     __GET_OR_UPDATE_SCORE(S0m1_w,     S0m1.word);       // 11
     __GET_OR_UPDATE_SCORE(S0m1_p,     S0m1.tag);        // 18
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(S0m1_c,   CPS[S0m1_id]);
+    }
   }
 
   if (-1 != S0p1_id) {
     __GET_OR_UPDATE_SCORE(S0p1_w,     S0p1.word);       // 12
     __GET_OR_UPDATE_SCORE(S0p1_p,     S0p1.tag);        // 19
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(S0p1_c,   CPS[S0p1_id]);
+    }
   }
 
   if (-1 != S0p2_id) {
     __GET_OR_UPDATE_SCORE(S0p2_p,     S0p2.tag);        // 20
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(S0p2_c,   CPS[S0p2_id]);
+    }
   }
 
   if (-1 != N0m2_id) {
@@ -215,11 +247,19 @@ void CDepParser::GetOrUpdateStackScore(
   if (-1 != N0m1_id) {
     __GET_OR_UPDATE_SCORE(N0m1_w,     N0m1.word);       // 14
     __GET_OR_UPDATE_SCORE(N0m1_p,     N0m1.tag);        // 21
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(N0m1_c,   CPS[N0m1_id]);
+    }
   }
 
   if (-1 != N0p1_id) {
     __GET_OR_UPDATE_SCORE(N0p1_w,     N0p1.word);       // 15
     __GET_OR_UPDATE_SCORE(N0p1_p,     N0p1.tag);        // 22
+
+    if (enable_cpos) {
+      __GET_OR_UPDATE_SCORE(N0p1_c,   CPS[N0p1_id]);
+    }
   }
 
   if (-1 != N0p2_id) {
@@ -229,16 +269,34 @@ void CDepParser::GetOrUpdateStackScore(
   if (-1 != N0p1_id && -1 != S0_id) {
     CTagSet<CTag, 2> ts(encodeTags(N0p1.tag, S0.tag));
     __GET_OR_UPDATE_SCORE(N0p1_p_S0_p,ts);              // 23
+
+    if (enable_cpos) {
+      CTuple2<CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple2(ts, &CPS[N0p1_id], &CPS[S0_id]);
+      __GET_OR_UPDATE_SCORE(N0p1_c_S0_c, ts);
+    }
   }
 
   if (-1 != Sm1_id && -1 != S0_id) {
     CTagSet<CTag, 2> ts(encodeTags(Sm1.tag, S0.tag));
     __GET_OR_UPDATE_SCORE(Sm1_p_S0_p, ts);              // 24
+
+    if (enable_cpos) {
+      CTuple2<CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple2(ts, &CPS[Sm1_id], &CPS[S0_id]);
+      __GET_OR_UPDATE_SCORE(Sm1_c_S0_c, ts);
+    }
   }
 
   if (-1 != Sm1_id && -1 != N0_id) {
     CTagSet<CTag, 2> ts(encodeTags(Sm1.tag, N0.tag));
     __GET_OR_UPDATE_SCORE(Sm1_p_N0_p, ts);              // 25
+
+    if (enable_cpos) {
+      CTuple2<CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple2(ts, &CPS[Sm1_id], &CPS[N0_id]);
+      __GET_OR_UPDATE_SCORE(Sm1_c_N0_c, ts);
+    }
   }
 
   if (-1 != N0m1_id && -1 != S0_id) {
@@ -283,72 +341,156 @@ void CDepParser::GetOrUpdateStackScore(
   if (-1 != S0m2_id && -1 != S0m1_id && -1 != S0_id) {
     CTagSet<CTag, 3> ts(encodeTags(S0m2.tag, S0m1.tag, S0.tag));
     __GET_OR_UPDATE_SCORE(S0m2_p_S0m1_p_S0_p, ts);      // 33
+
+    if (enable_cpos) {
+      CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple3(ts, &CPS[S0m2_id], &CPS[S0m1_id], &CPS[S0_id]);
+      __GET_OR_UPDATE_SCORE(S0m2_c_S0m1_c_S0_c, ts);
+    }
   }
 
   if (-1 != S0m1_id && -1 != S0p1_id && -1 != S0_id) {
     CTagSet<CTag, 3> ts(encodeTags(S0m1.tag, S0p1.tag, S0.tag));
     __GET_OR_UPDATE_SCORE(S0m1_p_S0p1_p_S0_p, ts);      // 34
+
+    if (enable_cpos) {
+      CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple3(ts, &CPS[S0m1_id], &CPS[S0p1_id], &CPS[S0_id]);
+      __GET_OR_UPDATE_SCORE(S0m1_c_S0p1_c_S0_c, ts);
+    }
   }
 
   if (-1 != S0p1_id && -1 != S0p2_id && -1 != S0_id) {
     CTagSet<CTag, 3> ts(encodeTags(S0p1.tag, S0p2.tag, S0.tag));
     __GET_OR_UPDATE_SCORE(S0p1_p_S0p2_p_S0_p, ts);     // 35
+
+    if (enable_cpos) {
+      CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple3(ts, &CPS[S0p1_id], &CPS[S0p2_id], &CPS[S0_id]);
+      __GET_OR_UPDATE_SCORE(S0p1_c_S0p2_c_S0_c, ts);
+    }
   }
 
   if (-1 != N0m1_id && -1 != N0p1_id && -1 != N0_id) {
     CTagSet<CTag, 3> ts(encodeTags(N0m1.tag, N0p1.tag, N0.tag));
     __GET_OR_UPDATE_SCORE(N0m1_p_N0p1_p_N0_p, ts);      // 36
+
+    if (enable_cpos) {
+      CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple3(ts, &CPS[N0m1_id], &CPS[N0p1_id], &CPS[N0_id]);
+      __GET_OR_UPDATE_SCORE(N0m1_c_N0p1_c_N0_c, ts);
+    }
   }
 
   if (-1 != N0p1_id && -1 != N0p2_id && -1 != N0_id) {
     CTagSet<CTag, 3> ts(encodeTags(N0p1.tag, N0p2.tag, N0.tag));
     __GET_OR_UPDATE_SCORE(N0p1_p_N0p2_p_N0_p, ts);      // 37
+
+    if (enable_cpos) {
+      CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple3(ts, &CPS[N0p1_id], &CPS[N0p2_id], &CPS[N0_id]);
+      __GET_OR_UPDATE_SCORE(N0p1_c_N0p2_c_N0_c, ts);
+    }
   }
 
   if (-1 != Sm2_id && -1 != Sm1_id && -1 != S0_id) {
     CTagSet<CTag, 3> ts(encodeTags(Sm2.tag, Sm1.tag, S0.tag));
     __GET_OR_UPDATE_SCORE(Sm2_p_Sm1_p_S0_p, ts);        // 38
+
+    if (enable_cpos) {
+      CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+      refer_or_allocate_tuple3(ts, &CPS[Sm2_id], &CPS[Sm1_id], &CPS[S0_id]);
+      __GET_OR_UPDATE_SCORE(Sm2_c_Sm1_c_S0_c, ts);
+    }
   }
 
   if (-1 != S0_id && -1 != N0_id) {
     if (-1 != Sm2_id) {
       CTagSet<CTag, 3> ts(encodeTags(Sm2.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(Sm2_p_S0_p_N0_p, ts);         // 39
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[Sm2_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(Sm2_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != S0m1_id) {
       CTagSet<CTag, 3> ts(encodeTags(S0m1.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(S0m1_p_S0_p_N0_p, ts);      // 40
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[S0m1_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(S0m1_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != S0p1_id) {
       CTagSet<CTag, 3> ts(encodeTags(S0p1.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(S0p1_p_S0_p_N0_p, ts);      // 41
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[S0p1_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(S0p1_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != N0m2_id) {
       CTagSet<CTag, 3> ts(encodeTags(N0m2.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(N0m2_p_S0_p_N0_p, ts);      // 42
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[N0m2_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(N0m2_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != N0m1_id) {
       CTagSet<CTag, 3> ts(encodeTags(N0m1.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(N0m1_p_S0_p_N0_p, ts);      // 43
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[N0m1_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(N0m1_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != N0p1_id) {
       CTagSet<CTag, 3> ts(encodeTags(N0p1.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(N0p1_p_S0_p_N0_p, ts);      // 44
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[N0p1_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(N0p1_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != N0p2_id) {
       CTagSet<CTag, 3> ts(encodeTags(N0p2.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(N0p2_p_S0_p_N0_p, ts);      // 45
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[N0p2_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(N0p2_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != N0p3_id) {
       CTagSet<CTag, 3> ts(encodeTags(N0p3.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(N0p3_p_S0_p_N0_p, ts);      // 47
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[N0p3_id], &CPS[S0_id], &CPS[N0_id]);
+        __GET_OR_UPDATE_SCORE(N0p3_c_S0_c_N0_c, ts);
+      }
     }
   }
 
@@ -362,6 +504,7 @@ void CDepParser::GetOrUpdateStackScore(
     __GET_OR_UPDATE_SCORE(S0lm_w, S0lm.word); // 49
     __GET_OR_UPDATE_SCORE(S0lm_p, S0lm.tag);  // 54
     __GET_OR_UPDATE_SCORE(S0lm_d, S0lm_d);    // 59
+
   }
 
   if (-1 != S0rm_id) {
@@ -386,26 +529,56 @@ void CDepParser::GetOrUpdateStackScore(
     if (-1 != S0lm_id) {
       CTagSet<CTag, 3> ts(encodeTags(S0lm.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(S0lm_p_S0_p_N0_p, ts);
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[S0lm_id], &CPS[S0_id], &CPS[N0_id]);
+        // __GET_OR_UPDATE_SCORE(S0lm_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != S0rm_id) {
       CTagSet<CTag, 3> ts(encodeTags(S0rm.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(S0rm_p_S0_p_N0_p, ts);
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[S0rm_id], &CPS[S0_id], &CPS[N0_id]);
+        // __GET_OR_UPDATE_SCORE(S0rm_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != S0h_id) {
       CTagSet<CTag, 3> ts(encodeTags(S0h.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(S0h_p_S0_p_N0_p, ts);
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[S0h_id], &CPS[S0_id], &CPS[N0_id]);
+        // __GET_OR_UPDATE_SCORE(S0h_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != N0lm_id) {
       CTagSet<CTag, 3> ts(encodeTags(N0lm.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(N0lm_p_S0_p_N0_p, ts);
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[N0lm_id], &CPS[S0_id], &CPS[N0_id]);
+        // __GET_OR_UPDATE_SCORE(N0lm_c_S0_c_N0_c, ts);
+      }
     }
 
     if (-1 != N0h_id) {
       CTagSet<CTag, 3> ts(encodeTags(N0h.tag, S0.tag, N0.tag));
       __GET_OR_UPDATE_SCORE(N0h_p_S0_p_N0_p, ts);
+
+      if (enable_cpos) {
+        CTuple3<CCoNLLCPOS, CCoNLLCPOS, CCoNLLCPOS> ts;
+        refer_or_allocate_tuple3(ts, &CPS[N0h_id], &CPS[S0_id], &CPS[N0_id]);
+        // __GET_OR_UPDATE_SCORE(N0h_c_S0_c_N0_c, ts);
+      }
     }
   }
 
@@ -477,6 +650,50 @@ void CDepParser::GetOrUpdateStackScore(
     __GET_OR_UPDATE_SCORE(S0_w_S0_la, wa);
     refer_or_allocate_tuple2(ta, &S0.tag,  &S0_la);
     __GET_OR_UPDATE_SCORE(S0_p_S0_la, ta);
+  }
+
+  if (enable_ext_dep) {
+    CTuple2<int, int> dd;
+
+    if (-1 != S0lm_id && -1 != S0_id) {
+      dd.allocate(&S0lm_d, &S0h_d);
+      __GET_OR_UPDATE_SCORE(S0lm_d_S0_d, dd); // 200
+    }
+
+    if (-1 != S0lm2_id && -1 != S0_id) {
+      dd.allocate(&S0lm2_d, &S0h_d);
+      __GET_OR_UPDATE_SCORE(S0lm2_d_S0_d, dd);  // 201
+    }
+
+    if (-1 != S0rm_id && -1 != S0_id) {
+      dd.allocate(&S0rm_d, &S0h_d);
+      __GET_OR_UPDATE_SCORE(S0rm_d_S0_d, dd); // 202
+    }
+
+    if (-1 != S0rm2_id && -1 != S0_id) {
+      dd.allocate(&S0rm2_d, &S0h_d);
+      __GET_OR_UPDATE_SCORE(S0rm2_d_S0_d, dd);  // 203
+    }
+
+    if (-1 != S0h_id && -1 != S0_id) {
+      dd.allocate(&S0h2_d, &S0h_d);
+      __GET_OR_UPDATE_SCORE(S0h_d_S0_d, dd);  //  204
+    }
+
+    if (-1 != N0lm_id && -1 != N0_id) {
+      dd.allocate(&N0lm_d, &N0h_d);
+      __GET_OR_UPDATE_SCORE(N0lm_d_N0_d, dd); // 205
+    }
+
+    if (-1 != N0lm2_id && -1 != N0_id) {
+      dd.allocate(&N0lm2_d, &N0h_d);
+      __GET_OR_UPDATE_SCORE(N0lm2_d_N0_d, dd);  // 206
+    }
+
+    if (-1 != N0h_id && -1 != N0_id) {
+      dd.allocate(&N0h_d, &N0h_d);
+      __GET_OR_UPDATE_SCORE(N0h_d_N0_d, dd);  //  207 
+    }
   }
 
   // n0 arity
@@ -804,11 +1021,18 @@ void CDepParser::RightPass(
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
 #ifdef LABELED
-  for (unsigned label = CDependencyLabel::FIRST + 1;
-      label < CDependencyLabel::COUNT; ++ label) {
-    scored_action.action = action::EncodeAction(action::kRightPass, label);
-    scored_action.score  = item->score + scores[scored_action.action];
+  if (0 == item->stacktop()) {
+    scored_action.action = action::EncodeAction(action::kRightPass, 
+                                                CDependencyLabel::ROOT);
+    scored_action.score = item->score + scores[scored_action.action];
     m_Beam->insertItem(&scored_action);
+  } else {
+    for (unsigned label = CDependencyLabel::FIRST + 1;
+        label < CDependencyLabel::COUNT; ++ label) {
+      scored_action.action = action::EncodeAction(action::kRightPass, label);
+      scored_action.score  = item->score + scores[scored_action.action];
+      m_Beam->insertItem(&scored_action);
+    }
   }
 #else
   scored_action.action = action::kRightPass;
@@ -853,65 +1077,79 @@ void CDepParser::Transit(
   }
 
   // precondition:
-  //  1. stack is not empty;
-  //  2. stack size equals 1
+  //  - 1. stack is not empty;
+  //  - 2. stack size equals 1
   if (generator->complete()) {
     PopRoot(generator, packed_scores);
     return;
   }
 
-  // std::cout << " * generator: " << (*generator);
-  // precondition: 1. buffer is not empty
-  if (generator->size() < generator->len_) {
+  // precondition:
+  //  - 1. buffer is not empty
+  if (!generator->bufferempty()) {
     Shift(generator, packed_scores);
   }
 
   // precondition:
   //  1. stack is not empty
   //  2. stack top has head.
-  if ((false == generator->stackempty()) &&
-      (DEPENDENCY_LINK_NO_HEAD != generator->head(generator->stacktop()))) {
+  if ((!generator->stackempty()) &&
+      (generator->hashead(generator->stacktop()))) {
     Reduce(generator, packed_scores);
   }
 
-  // precondition: 1. stack is not empty
-  if (false == generator->stackempty()) {
+  bool left_linkable  = ((!generator->stackempty())
+                        && (!generator->bufferempty())
+                        && (!generator->hashead(generator->stacktop()))
+                        && !generator->is_descendant(generator->bufferfront(),
+                                                     generator->stacktop())
+                        );
+  bool right_linkable = ((!generator->stackempty())
+                        && (!generator->bufferempty())
+                        && !generator->hashead(generator->bufferfront()) 
+                        && !generator->is_descendant(generator->stacktop(),
+                                                     generator->bufferfront())
+                        );
+  // std::cout << left_linkable << " " << right_linkable << std::endl;
+  // precondition:
+  //  - 1. stack is not empty
+  if (!generator->stackempty()) {
     NoPass(generator, packed_scores);
   }
 
+  // link arc (left <- right)
   // precondition:
-  //  1. stack is not empty
-  //  2. stack top is not 0
-  //  3. buffer is not empty
-  if (false == generator->stackempty() &&
-      generator->size() < generator->len_ &&
-      (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->stacktop()))) {
+  //  - 1. stack is not empty
+  //  - 2. stack top is not pseudo root 
+  //  - 3. buffer is not empty
+  if (left_linkable
+      && (generator->stacktop())
+      ) {
     ArcLeft(generator, packed_scores);
   }
 
+  // link arc (left -> right)
   // precondition:
-  //  1. stack is not empty;
-  //  2. buffer is not empty
-  if (false == generator->stackempty() &&
-      generator->size() < generator->len_ &&
-      (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->size()))) {
+  //  - 1. stack is not empty
+  //  - 2. buffer is not empty
+  //  - 3. buffer has no head
+  if (right_linkable) {
     ArcRight(generator, packed_scores);
   }
 
+  // link arc (left <- right)
   // precondition:
-  //  1. stack is not empty;
-  //  2. buffer is not empty
-  if (false == generator->stackempty() &&
-      (!m_bCoNLL || 0 != generator->stacktop()) &&
-      generator->size() < generator->len_ &&
-      (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->stacktop()))) {
+  //  - 1. stack is not empty
+  //  - 2. stack top is not pseudo root
+  //  - 3. buffer is not empty
+  if (left_linkable 
+      && (generator->stacktop())) {
     LeftPass(generator, packed_scores);
   }
 
-
-  if (false == generator->stackempty() &&
-      generator->size() < generator->len_ &&
-      (DEPENDENCY_LINK_NO_HEAD == generator->head(generator->size()))) {
+  // precondition
+  //
+  if (right_linkable) {
     RightPass(generator, packed_scores);
   }
 }
@@ -1014,9 +1252,13 @@ int CDepParser::Work(
 
     if (lattice_index[round - 1] == lattice_index[round]) {
       // there is nothing in generators, the proning has cut all legel
-      // generator, so raise an exception and return
+      // generator. actually, in this kind of case, we should raise a 
+      // exception. however to achieve a parsing tree, an alternative
+      // solution is go back to the previous round
       WARNING("Parsing Failed!");
-      return -1;
+      -- round;
+      break;
+      // return -1;
     }
 
     int current_beam_size = 0;
@@ -1037,17 +1279,16 @@ int CDepParser::Work(
         candidate.previous_ = generator;
         candidate.Move(m_Beam->item(i)->action);
 
-        current_beam_size += InsertIntoBeam(
-            lattice_index[round],
-            &candidate,
-            current_beam_size,
-            kAgendaSize);
+        current_beam_size += InsertIntoBeam(lattice_index[round],
+                                            &candidate,
+                                            current_beam_size,
+                                            kAgendaSize);
       }
     }
 
     lattice_index[round + 1] = lattice_index[round] + current_beam_size;
 
-    bool all_finished = true;
+    bool all_finished = (true && current_beam_size > 0);
     for (const CStateItem * p = lattice_index[round];
         p != lattice_index[round + 1]; ++ p) {
       if (false == p->terminated()) { all_finished = false; }
@@ -1258,6 +1499,7 @@ void CDepParser::parse_conll(
     SCORE_TYPE *        scores) {
   assert(m_bCoNLL);
 
+  // std::cout << conll_tree_with_pseudo_root.size() << std::endl;
   CDependencyParse empty;
   CTwoStringVector sentence_with_pseudo_root;
   CDependencyParse outout[AGENDA_SIZE];

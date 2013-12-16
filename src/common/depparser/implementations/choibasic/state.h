@@ -173,6 +173,22 @@ public:
     return heads[index];
   }
 
+  inline bool is_descendant(const int & from, const int & to) const {
+    assert(from <= next_word);
+    assert(to <= next_word);
+    int current = heads[from];
+    while (current != DEPENDENCY_LINK_NO_HEAD) {
+      if (current == to) return true; 
+      current = heads[current];
+    }
+    return false;
+  }
+
+  inline bool hashead(const int & index) const {
+    assert(index <= next_word);
+    return heads[index] != DEPENDENCY_LINK_NO_HEAD;
+  }
+
   inline int leftdep(const int &index) const {
     assert(index <= next_word);
     return left_most_child[index];
@@ -677,6 +693,16 @@ public:
   void GenerateTree(
       const CTwoStringVector & input,
       CDependencyParse       & output) const {
+    if (input.size() != size()) {
+      std::cout << input.size() << std::endl;
+      std::cout << size() << std::endl;
+      std::cout << len_ << std::endl;
+
+      const CStateItem * p = this;
+      while (p) { std::cout << (*p); p = p->previous_; }
+      exit(1);
+      // assert (input.size() == size());
+    }
     output.clear();
     for (int i = 0; i < size(); ++ i) {
 #ifdef LABELED
