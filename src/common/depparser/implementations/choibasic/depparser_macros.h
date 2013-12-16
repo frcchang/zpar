@@ -15,7 +15,7 @@
 //#define LOCAL_LEARNING
 
 // The size of agenda
-#define AGENDA_SIZE 32
+#define AGENDA_SIZE 64
 
 //label
 #ifdef LABELED
