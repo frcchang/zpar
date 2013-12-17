@@ -26,7 +26,7 @@
 							   if (sister->constituent==PENN_CON_NP || sister->constituent==PENN_CON_ADJP) { //FIRE RULE
 								   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
 								   //if (buildStanfordLink(label, npTarg->lexical_head, sHead->lexical_head)){
-								   if (buildStanfordLinkForDebug(label, npTarg->lexical_head, sHead->lexical_head,1)){
+								   if (buildStanfordLink(label, npTarg->lexical_head, sHead->lexical_head)){
 									   //std::cout<<"nSubj1"<<" (head: "<<sHead->lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
 									   //addLinked(sHead,npTarg);
 									   addLinked(&node,npTarg);
