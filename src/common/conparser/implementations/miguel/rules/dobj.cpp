@@ -48,7 +48,7 @@
     			   childsVp=childsVp->next;
     		   }
 
-    		   if (secondCondition) { //VP does not a have child that looks like (/^(?:VB|AUX)/ < " + copularWordRegex + ")
+    		   if (secondCondition) { //VP does not a have child that matches (/^(?:VB|AUX)/ < " + copularWordRegex + ")
     			   childsVp=node.m_umbinarizedSubNodes;
     			   while(childsVp!=0){
     				   const CStateNode* npChildVp=childsVp->node;
@@ -164,10 +164,86 @@
 
           }
 
- //"VP !<(/^(?:VB|AUX)/ < " + copularWordRegex + ") < (NP|WHNP=target [ [ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ] | $+ NP-TMP | $+ (NP <# (/^NN/ < " + timeWordRegex + ")) ] )"
- bool buildDobj3() {
+          //"VP !<(/^(?:VB|AUX)/ < " + copularWordRegex + ") < (NP|WHNP=target [ [ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ] | $+ NP-TMP | $+ (NP <# (/^NN/ < " + timeWordRegex + ")) ] )"
+              bool buildDobj3() {
+             	 if (node.constituent==PENN_CON_VP) {
+             		 CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
+             	     bool firstCondition=true;
+             	     while(childsVp!=0){
+             	     const CStateNode* vbChildVp=childsVp->node;
+             	     	 if (((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)) {
+             	     	 CStateNodeList* childsVB=vbChildVp->m_umbinarizedSubNodes;
+             	     	 	 while(childsVB!=0){
+             	     	 		 if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
+             	     	 			 firstCondition=false;
+             	     			  }
+             	     			  childsVB=childsVB->next;
+             	     	 	 }
+             	     	 }
+             	     	 childsVp=childsVp->next;
+             	     }
+             	     if (firstCondition){
+             	    	 childsVp=node.m_umbinarizedSubNodes;
+             	         while(childsVp!=0){
+             	        	 const CStateNode* targ=childsVp->node;
+             	        	 if ((targ->constituent==PENN_CON_NP || targ->constituent==PENN_CON_WHNP) && !isLinked(&node,targ)){
+             	        		 bool firstCondition=true; //[ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ]
+             	        		 bool secCondition=false; //$+ NP-TMP it will be false, ever and ever, there is no np-tmp in our data set.
+             	        		 bool thirdCondition=false; //$+ (NP <# (/^NN/ < " + timeWordRegex + "))
 
- }
+             	        		 CStateNodeList* childsNp=targ->m_umbinarizedSubNodes;
+             	        		 bool nnTime=false;
+             	        		 while(childsNp!=0){
+             	        			 const CStateNode* nnChildNp=childsNp->node;
+             	        			 if ((nnChildNp->type==CStateNode::LEAF)
+             	        			 	&& (nnChildNp->lexical_head==targ->lexical_head) //<#
+             	        			 	&& (compareWordToTimeWordRegex((*words)[nnChildNp->lexical_head].word))
+             	        			 	&& ((((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN))
+             	        			 	||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER))
+             	        			 	||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
+             	        			 	||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
+             	        				 firstCondition=false;
+             	        			 }
+             	        			 childsNp=childsNp->next;
+             	        		 }
+             	        		 CStateNodeList* rightSisters=childsVp->next;
+             	        		 if (rightSisters!=0){
+             	        			 if (rightSisters->node->constituent==PENN_CON_NP){
+             	        				 firstCondition=false;
+             	        				 CStateNodeList* childsNp2=rightSisters->node->m_umbinarizedSubNodes;
+             	        				 while(childsNp2!=0){
+             	        					 const CStateNode* nnChildNp2=childsNp2->node;
+             	        				     if ((nnChildNp2->type==CStateNode::LEAF)
+             	        				      	&& (nnChildNp2->lexical_head==rightSisters->node->lexical_head) //<#
+             	        				     	&& (compareWordToTimeWordRegex((*words)[nnChildNp2->lexical_head].word))
+             	        				     	&& ((((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN))
+             	        				      	||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER))
+             	        				      	||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
+             	        				      	||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
+             	        				    	 	 thirdCondition=false;
+             	        				     }
+             	        				     childsNp2=childsNp2->next;
+             	        				 }
+             	        			 }
+
+             	        		 }
+             	        		 if (firstCondition || secCondition || thirdCondition){
+             	        			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DOBJ);
+             	        			 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+             	        				 addLinked(&node,targ);
+             	        			  	 return true;
+             	        			 }
+             	        		 }
+
+             	        	 }
+             	        	 childsVp=childsVp->next;
+             	         }
+             	     }
+             	 }
+
+
+              }
+
 
 
  //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",

@@ -2062,6 +2062,8 @@ public:
 
 
 
+
+
     //compareWordToHaveWordRegex
     // PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
 
@@ -2445,14 +2447,17 @@ public:
    
    
    bool buildStanfordLinkForDebug(CDependencyLabel* label, int dependent, int head, int nsubjrule) {
-      if (head==dependent) return false;
-      
-         CLink* newNode=new CLink(*label, dependent, head, 0);
-         newNode->nsubjRule=nsubjrule;
-         newNode->next=this->node.stfLinks;
-         node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
-         //std::cout<<"Nsubj rule numb:"<<nsubjrule<<"\n";
-         return true;
+	   if (head==dependent) return false;
+
+	         CLink* newNode=new CLink(*label, dependent, head, 0);
+	         newNode->next=this->node.stfLinks;
+	         node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
+
+	   //      assert(m_lHeads[dependent] == DEPENDENCY_LINK_NO_HEAD);
+	         m_lHeads[dependent] = head;
+	         m_lLabels[dependent] = label->code();
+
+	         return true;
          }
 
    //===============================================================================
