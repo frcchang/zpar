@@ -6,10 +6,10 @@
     	 	 while(childsNp!=0){
     	 		 const CStateNode* targ=childsNp->node;
     	 		 if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_DT && !(isLinked(&node,targ))){
-    	 			 bool firstCond=true;
-    	 			 bool secCond=true;
-    	 			 bool thirdCond=true;
-    	 			 bool fourthCond=false;
+    	 			 bool firstCond=true; //!< /^(?i:either|neither|both)$/
+    	 			 bool secCond=true; //!$+ DT
+    	 			 bool thirdCond=true; //!$++ CC
+    	 			 bool fourthCond=false; //$++ /^(?:N[MNXP]|CD|JJ|FW|ADJP|QP|RB|PRP(?![$])|PRN)/=det
     	 			 bool fifthCond=true;
     	 			 
     	 			 CStateNodeList* childsDt=targ->m_umbinarizedSubNodes;
@@ -39,6 +39,9 @@
     	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE||
     	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_FW||
     	 								rightSisters->node->constituent==PENN_CON_ADJP||
+    	 								rightSisters->node->constituent==PENN_CON_NP||
+    	 								rightSisters->node->constituent==PENN_CON_NX||
+    	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN||
     	 								rightSisters->node->constituent==PENN_CON_QP||
     	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADVERB||
     	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_PRP||
@@ -57,6 +60,9 @@
     	 								    (*words)[rightSistR->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE||
     	 								    (*words)[rightSistR->node->lexical_head].tag.code()==PENN_TAG_FW||
     	 								    rightSistR->node->constituent==PENN_CON_ADJP||
+    	 								    rightSistR->node->constituent==PENN_CON_NP||
+    	 								    rightSistR->node->constituent==PENN_CON_NX||
+    	 								    (*words)[rightSistR->node->lexical_head].tag.code()==PENN_TAG_NOUN||
     	 								    rightSistR->node->constituent==PENN_CON_QP||
     	 								    (*words)[rightSistR->node->lexical_head].tag.code()==PENN_TAG_ADVERB||
     	 								    (*words)[rightSistR->node->lexical_head].tag.code()==PENN_TAG_PRP||

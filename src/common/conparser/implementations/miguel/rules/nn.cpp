@@ -1,14 +1,23 @@
  //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < (NP|NML|NN|NNS|NNP|NNPS|FW|AFX=target $++ NN|NNS|NNP|NNPS|FW|CD !<<- POS !<<- (VBZ < /^\'s$/) !$- /^,$/ )",
       bool nn1(){
+    	  std::cout<<"nn1 \n";
+    	  std::cout<<(*words)[node.lexical_head].word<<"\n";
+    	  std::cout<<node.constituent<<"\n";
     	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP ||node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		  std::cout<<"After the constittuent test"<<(*words)[node.lexical_head].word<<"\n";
+
+			  //std::cout<<(*words)[targ->lexical_head].word<<"\n";
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
     			  //PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
-    			  if ((targ->constituent==PENN_CON_NP || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN
-    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    			  if ((targ->constituent==PENN_CON_NP
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_FW ) && !isLinked(&node,targ)){
+
 
     				  bool rightsistCond=false;
     				  bool descCond1=true;
@@ -17,10 +26,12 @@
     				  //(*words)[targ->lexical_head].tag.code()==PENN_TAG_CD
     				  CStateNodeList* rightSisters=childs->next;
     				  while(rightSisters!=0){
-    					  if (((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CD
-    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					  if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN
+    							|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CD
+    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
     					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
-    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_FW )){
+    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_FW ){
     						  rightsistCond=true;
     					  }
     					  rightSisters=rightSisters->next;
@@ -56,14 +67,14 @@
     						  }
 
     					  }
-    				  }
+    					  if (rightsistCond && descCond1 && descCond2 && leftSistCond){
 
-    				  if (rightsistCond && descCond1 && descCond2 && leftSistCond){
-    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
-    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
-    						  addLinked(&node,targ);
-    					  	  return true;
-    					  }
+    						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
+    					      if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    					      	  addLinked(&node,targ);
+    					      	  return true;
+    					      }
+    					   }
     				  }
     			  }
     			  childs=childs->next;
