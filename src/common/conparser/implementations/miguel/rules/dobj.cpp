@@ -171,8 +171,15 @@
              	     bool firstCondition=true;
              	     while(childsVp!=0){
              	     const CStateNode* vbChildVp=childsVp->node;
-             	     	 if (((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)) {
-             	     	 CStateNodeList* childsVB=vbChildVp->m_umbinarizedSubNodes;
+             	     //PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE,
+             	     	 if (((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)
+             	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PAST)
+             	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PROG)
+             	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)
+             	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PRES)
+             	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE)
+             	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)) {
+             	     		 CStateNodeList* childsVB=vbChildVp->m_umbinarizedSubNodes;
              	     	 	 while(childsVB!=0){
              	     	 		 if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
              	     	 			 firstCondition=false;
@@ -187,7 +194,7 @@
              	         while(childsVp!=0){
              	        	 const CStateNode* targ=childsVp->node;
              	        	 if ((targ->constituent==PENN_CON_NP || targ->constituent==PENN_CON_WHNP) && !isLinked(&node,targ)){
-             	        		 bool firstCondition=true; //[ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ]
+             	        		 bool firstConditionIn=true; //[ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ]
              	        		 bool secCondition=false; //$+ NP-TMP it will be false, ever and ever, there is no np-tmp in our data set.
              	        		 bool thirdCondition=false; //$+ (NP <# (/^NN/ < " + timeWordRegex + "))
 
@@ -202,14 +209,14 @@
              	        			 	||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER))
              	        			 	||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
              	        			 	||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
-             	        				 firstCondition=false;
+             	        				 firstConditionIn=false;
              	        			 }
              	        			 childsNp=childsNp->next;
              	        		 }
              	        		 CStateNodeList* rightSisters=childsVp->next;
              	        		 if (rightSisters!=0){
              	        			 if (rightSisters->node->constituent==PENN_CON_NP){
-             	        				 firstCondition=false;
+             	        				 firstConditionIn=false;
              	        				 CStateNodeList* childsNp2=rightSisters->node->m_umbinarizedSubNodes;
              	        				 while(childsNp2!=0){
              	        					 const CStateNode* nnChildNp2=childsNp2->node;
@@ -220,14 +227,15 @@
              	        				      	||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER))
              	        				      	||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
              	        				      	||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
-             	        				    	 	 thirdCondition=false;
+             	        				    	 	 thirdCondition=true;
              	        				     }
              	        				     childsNp2=childsNp2->next;
              	        				 }
              	        			 }
 
              	        		 }
-             	        		 if (firstCondition || secCondition || thirdCondition){
+             	        		 if (firstConditionIn || secCondition || thirdCondition){
+             	        		//if (true){
              	        			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DOBJ);
              	        			 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
              	        				 addLinked(&node,targ);
