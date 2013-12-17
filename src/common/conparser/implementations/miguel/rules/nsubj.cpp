@@ -2,6 +2,7 @@
     
    /*
     * Miguel: RULES FOR NSUBJ. There are 13
+
     * 
     * //S < (NP=target $+ NP|ADJP) > VP
     * 
@@ -105,7 +106,7 @@
 			   if ((npwhnpTarg->constituent==PENN_CON_NP ||npwhnpTarg->constituent==PENN_CON_WHNP)&& !(isLinked(&node, npwhnpTarg))){
 				   //std::cout<<"NP|WHNP: "<<(*words)[npwhnpTarg->lexical_head].word<<"\n";
 				   bool vpSister=false;
-				   CStateNodeList* rightSistersNp=childsS;
+				   CStateNodeList* rightSistersNp=childsS->next;
 				   while(rightSistersNp!=0){
 					   if (rightSistersNp->node->constituent==PENN_CON_VP){
 						   vpSister=true;
@@ -138,7 +139,7 @@
 					   if (noEx && noNNTime){ //FIRE RULE
 						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
 						   //if (buildStanfordLink(label, npwhnpTarg->lexical_head, node.lexical_head)) {
-						   if (buildStanfordLinkForDebug(label, npwhnpTarg->lexical_head, node.lexical_head,3)) {  
+						   if (buildStanfordLink(label, npwhnpTarg->lexical_head, node.lexical_head)) {
 							   //std::cout<<"------\n";
 							   addLinked(&node,npwhnpTarg);
 							   //std::cout<<"nSubj3"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npwhnpTarg->lexical_head<<")\n";
@@ -192,7 +193,7 @@
 							   ||(((*words)[nnChildNp->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) { //FIre rule
 							   		CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
 							   		//if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
-							   		if (buildStanfordLinkForDebug(label, npTarg->lexical_head, node.lexical_head,4)) {
+							   		if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
 							   			addLinked(&node,npTarg);
 							   			//std::cout<<"nSubj4"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
 							   			return true;
@@ -257,7 +258,7 @@
       								  if (npTarg->constituent==PENN_CON_NP && !(isLinked(&node,npTarg))) {
       									  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
       									  //if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
-      									if (buildStanfordLinkForDebug(label, npTarg->lexical_head, node.lexical_head,5)) {
+      									if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
       										  //addLinked(vpsChain->node,npTarg);
       										  addLinked(&node,npTarg);	
       										  //std::cout<<"nSubj5"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
@@ -315,7 +316,7 @@
    									//std::cout<<(*words)[npLeftSister->lexical_head].word;
    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    									//if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
-   								    if (buildStanfordLinkForDebug(label, npTarg->lexical_head, node.lexical_head,6)) {
+   								    if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
    										addLinked(&node,npTarg);
    										//std::cout<<"nSubj6"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
    										return true;
@@ -369,7 +370,7 @@
  										if (noVp) { //fire rule
  											CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
  											//if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
- 											if (buildStanfordLinkForDebug(label, npTarg->lexical_head, node.lexical_head,7)){
+ 											if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
  												addLinked(&node,npTarg);
  												//std::cout<<"nSubj7"<<" (head: "<<node.lexical_head<<")"<<"(dependent:"<<npTarg->lexical_head<<")\n";
  												return true;
@@ -427,7 +428,7 @@
     				  if (whnpTarg->constituent==PENN_CON_WHNP && !(isLinked(&node,whnpTarg))) {
     					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
     					   //if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)){
-    					  if (buildStanfordLinkForDebug(label, whnpTarg->lexical_head, node.lexical_head,8)){
+    					  if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)){
     						   addLinked(&node,whnpTarg);
     						   //std::cout<<"nSubj8"<<" (head: "<<node.lexical_head<<")"<<"(dependent:"<<whnpTarg->lexical_head<<")\n";
     					   	   return true;
@@ -468,7 +469,7 @@
    					   if (noVp && firstCondition) {
    						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    						   //if (buildStanfordLink(label, sqTarg->lexical_head, node.lexical_head)){
-   						   if (buildStanfordLinkForDebug(label, sqTarg->lexical_head, node.lexical_head,9)){
+   						   if (buildStanfordLink(label, sqTarg->lexical_head, node.lexical_head)){
    							   addLinked(&node,sqTarg);
    							   //std::cout<<"nSubj9"<<" (head: "<<node.lexical_head<<")"<<"(sqTarg->lexical_head<<")\n";
    							   return true;
@@ -571,7 +572,7 @@
    					   if (firstCondition || secondCondition || thirdCondition) {
    						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    						   //if (buildStanfordLink(label, npwhnpTarg->lexical_head, node.lexical_head)){
-   						   if (buildStanfordLinkForDebug(label, npwhnpTarg->lexical_head, node.lexical_head,10)){
+   						   if (buildStanfordLink(label, npwhnpTarg->lexical_head, node.lexical_head)){
    							   addLinked(&node,npwhnpTarg);
    							   //std::cout<<"nSubj10"<<" (head: "<<node.lexical_head<<")"<<"(npwhnpTarg->lexical_head<<")\n";
    						   	   return true;
@@ -666,7 +667,7 @@
    					   if (secondCondition || firstCondition) {
    						   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    						   //if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)){
-   						   if (buildStanfordLinkForDebug(label, whnpTarg->lexical_head, node.lexical_head,11)){
+   						   if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)){
    							   addLinked(&node, whnpTarg);
    							   //std::cout<<"nSubj11"<<" (head: "<<node.lexical_head<<")"<<"(whnpTarg->lexical_head<<")\n";
    							   return true;
@@ -739,7 +740,7 @@
         											if (noWhnp && secondCondition){
         												CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
         												//if (buildStanfordLink(label, whnpTarg->lexical_head, sbarHead->lexical_head)){
-        												if (buildStanfordLinkForDebug(label, whnpTarg->lexical_head, sbarHead->lexical_head,11)){
+        												if (buildStanfordLink(label, whnpTarg->lexical_head, sbarHead->lexical_head)){
         													addLinked(&node,whnpTarg);
         													//std::cout<<"nSubj11"<<" (head: "<<sbarHead->lexical_head<<")"<<"(whnpTarg->lexical_head<<")\n";
         													return true;	
@@ -790,7 +791,7 @@
    						   if (sisterIsNp) {
    							   CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJ);
    							   //if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
-   							   if (buildStanfordLinkForDebug(label, npTarg->lexical_head, node.lexical_head,13)){
+   							   if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
    								   addLinked(&node,npTarg);
    								   //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
    								   return true;
