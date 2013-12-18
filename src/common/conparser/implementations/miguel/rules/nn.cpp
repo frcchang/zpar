@@ -14,11 +14,11 @@ inline const bool &nn1(const unsigned long &cons){
     			  if ((CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
-    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_FW ) && !isLinked(&node,targ)){
 
-
+    				  //std::cout<<"TARGET"<<(*words)[targ->lexical_head].word<<"\n";
     				  bool rightsistCond=false;
     				  bool descCond1=true;
     				  bool descCond2=true;
@@ -26,10 +26,11 @@ inline const bool &nn1(const unsigned long &cons){
     				  //(*words)[targ->lexical_head].tag.code()==PENN_TAG_CD
     				  CStateNodeList* rightSisters=childs->next;
     				  while(rightSisters!=0){
+    					  //std::cout<<"RIGHTSIS"<<(*words)[rightSisters->node->lexical_head].word<<"\n";
     					  if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN
     							|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CD
     					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
-    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+    					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL
     					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
     					      	|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_FW ){
     						  rightsistCond=true;
