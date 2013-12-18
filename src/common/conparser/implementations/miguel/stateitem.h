@@ -1382,9 +1382,9 @@ public:
       infmod2();
       std::cerr<<"infmod2 \n";
 
-      mark1();
+      mark1(cons);
       std::cerr<<"mark1 \n";
-      mark2();
+      mark2(cons);
       std::cerr<<"mark2 \n";
 
       /*mwe1();
