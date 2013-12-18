@@ -1080,6 +1080,9 @@ public:
    //Miguel
    //this method generates the stanford links that are available for the current node.
    void generateStanfordLinks() {
+
+      // remove temporary sign
+      unsigned long cons = CConstituent::clearTmp(node.constituent.code());
       
       //nsubj
       //S < (NP=target $+ NP|ADJP) > VP
@@ -1398,13 +1401,13 @@ public:
       neg3();
       std::cerr<<"neg3 \n";
 
-      nn1();
+      nn1(cons);
       std::cerr<<"nn1 \n";
-      nn2();
+      nn2(cons);
       std::cerr<<"nn2 \n";
-      nn3();
+      nn3(cons);
       std::cerr<<"nn3 \n";
-      nn4();
+      nn4(cons);
       std::cerr<<"nn4 \n";
 
       //npadvmod1();
@@ -2010,38 +2013,38 @@ public:
     
 
   
-    #include "rules/acomp.cpp"
-    #include "rules/advcl.cpp"
-    #include "rules/advmod.cpp"
-    #include "rules/appos.cpp"
-    #include "rules/auxpass.cpp"
-    #include "rules/cop.cpp"
-    #include "rules/csubjpass.cpp"
-    #include "rules/det.cpp"
-    #include "rules/discourse.cpp"
-    #include "rules/goeswith.cpp"
-    #include "rules/infmod.cpp"
-    #include "rules/mark.cpp"
-    #include "rules/mwe.cpp"
-    #include "rules/neg.cpp"
-    #include "rules/nn.cpp"
-    #include "rules/npadvmod.cpp"
+   #include "rules/acomp.cpp"
+   #include "rules/advcl.cpp"
+   #include "rules/advmod.cpp"
+   #include "rules/appos.cpp"
+   #include "rules/auxpass.cpp"
+   #include "rules/cop.cpp"
+   #include "rules/csubjpass.cpp"
+   #include "rules/det.cpp"
+   #include "rules/discourse.cpp"
+   #include "rules/goeswith.cpp"
+   #include "rules/infmod.cpp"
+   #include "rules/mark.cpp"
+   #include "rules/mwe.cpp"
+   #include "rules/neg.cpp"
+   #include "rules/nn.cpp"
+   #include "rules/npadvmod.cpp"
    #include "rules/nsubj.cpp"
    #include "rules/nsubjpass.cpp"
    #include "rules/csubj.cpp"
    #include "rules/auxi.cpp"
    #include "rules/cc.cpp"
    #include "rules/expl.cpp"
-    #include "rules/dobj.cpp"
-    #include "rules/iobj.cpp"
+   #include "rules/dobj.cpp"
+   #include "rules/iobj.cpp"
    #include "rules/attr.cpp"
-    #include "rules/ccomp.cpp"
-    #include "rules/xcomp.cpp"
-    #include "rules/punct.cpp"
-    #include "rules/pobj.cpp"
-    #include "rules/pcomp.cpp"
-    #include "rules/conj.cpp"
-    #include "rules/amod.cpp"
+   #include "rules/ccomp.cpp"
+   #include "rules/xcomp.cpp"
+   #include "rules/punct.cpp"
+   #include "rules/pobj.cpp"
+   #include "rules/pcomp.cpp"
+   #include "rules/conj.cpp"
+   #include "rules/amod.cpp"
    #include "rules/num.cpp"
    #include "rules/number.cpp"
    #include "rules/parataxis.cpp"
@@ -2057,32 +2060,15 @@ public:
    #include "rules/rel.cpp"
    #include "rules/tmod.cpp"
 
-   
-
-
-
-
-
 
     //compareWordToHaveWordRegex
     // PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
-
-
-
-     
-
-     
 
       //SEE MORE QUESTIONS TO JOHN IN CONJ1 and CONJ8 and APPOS5 (below)
     
     //CONJ1
     //"VP|S|SBAR|SBARQ|SINV|SQ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
-      
-   
-    
-    
-     
-      
+
       //"NX|NML < (CC|CONJP $- __) < (/^,$/ $- /^(?:A|N|V|PP|PRP|J|W|R|S)/=target)",
                       // to take the conjunct in a preconjunct structure "either X or Y"
       bool buildConj8(){
