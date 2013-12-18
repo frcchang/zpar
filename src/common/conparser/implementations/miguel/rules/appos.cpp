@@ -1,10 +1,10 @@
  //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < (NP=target !<: CD $- /^,$/ $-- /^(?:WH)?NP/ !$ CC|CONJP)",
-      bool appos1(){
-    	  if (node.constituent==PENN_CON_WHNP||node.constituent==PENN_CON_NP){
+inline const bool &appos1(const unsigned long &cons){
+    	  if (cons==PENN_CON_WHNP||cons==PENN_CON_NP){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
-    			  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
+    			  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP && !isLinked(&node,targ)){
     				  bool cdCond=true;
     				  bool firstSisCond=false;
     				  bool leftSisCond=false;
@@ -24,10 +24,10 @@
     					  	  }
     					  }
     					  while(leftSisters!=0){
-    						  if (leftSisters->node->constituent==PENN_CON_WHNP || leftSisters->node->constituent==PENN_CON_NP){
+    						  if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_WHNP || CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP){
     							  leftSisCond=true;
     						  }
-    						  if (leftSisters->node->constituent==PENN_CON_CONJP || (*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
+    						  if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_CONJP || (*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
     							leftRightCond=false;
     						  }
     						  leftSisters=leftSisters->previous;
@@ -35,7 +35,7 @@
     					  if (leftSisCond && leftRightCond){
     						  CStateNodeList* rightSisters=childs->next;
     						  while(rightSisters!=0){
-    							  if (rightSisters->node->constituent==PENN_CON_CONJP || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
+    							  if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_CONJP || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
     								  leftRightCond=false;
     							  }
     							  rightSisters=rightSisters->next;
@@ -59,15 +59,15 @@
       }
 
       //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < (PRN=target < (NP < /^(?:NN|CD)/ $-- /^-LRB-$/ $+ /^-RRB-$/))",
-            bool appos2(){
-          	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP){
+inline const bool &appos2(const unsigned long &cons){
+          	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP){
           		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
           		  while(childs!=0){
           			  const CStateNode* targ=childs->node;
-          			  if (targ->constituent==PENN_CON_PRN && !isLinked(&node,targ)){
+          			  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_PRN && !isLinked(&node,targ)){
           				  CStateNodeList* childsPr=targ->m_umbinarizedSubNodes;
           				  while(childsPr!=0){
-          					  if (childsPr->node->constituent==PENN_CON_NP){
+          					  if (CConstituent::clearTmp(childsPr->node->constituent.code())==PENN_CON_NP){
           						  CStateNodeList* childsNp=childsPr->node->m_umbinarizedSubNodes;
           						  bool childCond=false;
           						  bool leftCond=false;
@@ -120,12 +120,12 @@
 
 
             //"@WHNP|NP < (@NP=target !<: CD <, /^-LRB-$/ <` /^-RRB-$/ $-- /^(?:WH)?NP/ !$ CC|CONJP)",
-                  bool appos3(){
-                	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP){
+inline const bool &appos3(const unsigned long &cons){
+                	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP){
                 		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
                 		  while(childs!=0){
                 			  const CStateNode* targ=childs->node;
-                			  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
+                			  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP && !isLinked(&node,targ)){
                 				  bool firstCond=true;
                 				  bool secCond=false;
                 				  bool thirdCond=false;
@@ -151,10 +151,10 @@
                 				  }
                 				  CStateNodeList* leftSisters=childs->previous;
                 				  while(leftSisters!=0){
-                					  if (leftSisters->node->constituent==PENN_CON_WHNP || leftSisters->node->constituent==PENN_CON_NP){
+                					  if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_WHNP || CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP){
                 						  fourthCond=true;
                 					  }
-                					  else if (leftSisters->node->constituent==PENN_CON_CONJP || (*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
+                					  else if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_CONJP || (*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
                 						  fifthCond=false;
                 					  }
                 					  leftSisters=leftSisters->previous;
@@ -163,7 +163,7 @@
                 				  if (fifthCond){
                 					  CStateNodeList* rightSisters=childs->next;
                 					  while(rightSisters!=0){
-                						  if (rightSisters->node->constituent==PENN_CON_CONJP || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
+                						  if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_CONJP || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
                 							  fifthCond=false;
                 						  }
                 						  rightSisters=rightSisters->next;
@@ -190,12 +190,12 @@
 
 
 //"NP|NP-TMP|NP-ADV < (NNP $+ (/^,$/ $+ NNP=target)) !< CC|CONJP",
-   bool appos4(){
- 	  if (node.constituent==PENN_CON_NP){
+inline const bool &appos4(const unsigned long &cons){
+ 	  if (cons==PENN_CON_NP){
  		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
  		  bool lastCond=true;
  		  while(childs!=0){
-				  if (childs->node->constituent==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
+				  if (CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
 					  lastCond=false;
 				  }
  			  childs=childs->next;

@@ -1,12 +1,12 @@
     
     //"S|SQ < (WHNP|NP=target !< EX) < (VP < (/^(?:VB|AUX)/ < " + passiveAuxWordRegex + ")  < (VP < VBN|VBD))",
     
-    bool buildNsubjpass1() {
-    	if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ) {
+ inline const bool &buildNsubjpass1(const unsigned long &cons) {
+    	if (cons==PENN_CON_S || cons==PENN_CON_SQ) {
     		CStateNodeList* childsSSQ=node.m_umbinarizedSubNodes;
     		while(childsSSQ!=0){
     			const CStateNode* whnpnpTarg=childsSSQ->node;
-    			if ((whnpnpTarg->constituent==PENN_CON_WHNP || whnpnpTarg->constituent==PENN_CON_NP) && (!isLinked(&node,whnpnpTarg))){ 
+    			if ((CConstituent::clearTmp(whnpnpTarg->constituent.code())==PENN_CON_WHNP || CConstituent::clearTmp(whnpnpTarg->constituent.code())==PENN_CON_NP) && (!isLinked(&node,whnpnpTarg))){
     				CStateNodeList* childsTarg=whnpnpTarg->m_umbinarizedSubNodes;
     				while(childsTarg!=0){
     					if (!((*words)[childsTarg->node->lexical_head].tag.code()==PENN_TAG_EX)) {
@@ -15,7 +15,7 @@
     						bool secondCondition=false;
     						 while(childsSSQSec!=0){
     							 const CStateNode* vp=childsSSQSec->node;
-    							 if (vp->constituent==PENN_CON_VP) {
+    							 if (CConstituent::clearTmp(vp->constituent.code())==PENN_CON_VP) {
     								 CStateNodeList* childsVp=vp->m_umbinarizedSubNodes;
     								 while(childsVp!=0){
     									 const CStateNode* vb=childsVp->node;
@@ -36,7 +36,7 @@
     						 childsSSQSec=node.m_umbinarizedSubNodes; //we have to look the rest of childs of S|SQ (node)
     						 while(childsSSQSec!=0){
     							 const CStateNode* vp=childsSSQSec->node;
-    							 if (vp->constituent==PENN_CON_VP) {
+    							 if (CConstituent::clearTmp(vp->constituent.code())==PENN_CON_VP) {
     								 CStateNodeList* childsVp=vp->m_umbinarizedSubNodes;
     								 while(childsVp!=0){
     									 const CStateNode* vbvbn=childsVp->node;

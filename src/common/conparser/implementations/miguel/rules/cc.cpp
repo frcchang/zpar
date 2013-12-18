@@ -2,7 +2,7 @@
     //I'm going to divide this one in 2, it is clearer and better.
     //1. "__ < (CC=target !< /^(?i:either|neither|both)$/ )
     //__ matches any node ()
-    bool cc1(){
+inline const bool &cc1(const unsigned long &cons){
     	CStateNodeList* childs=node.m_umbinarizedSubNodes;
     	while(childs!=0){
     		const CStateNode* ccTarg=childs->node;
@@ -32,11 +32,11 @@
     
     
     //2. "__ < (CONJP=target !< (RB < /^(?i:not)$/ $+ (RB|JJ < /^(?i:only|just|merely)$/))) ]
-    bool cc2(){
+inline const bool &cc2(const unsigned long &cons){
         	CStateNodeList* childs=node.m_umbinarizedSubNodes;
         	while(childs!=0) {
         		const CStateNode* conjpTarg=childs->node;
-        		if (conjpTarg->constituent==PENN_CON_CONJP && (!isLinked(&node,conjpTarg))) {
+        		if (CConstituent::clearTmp(conjpTarg->constituent.code())==PENN_CON_CONJP && (!isLinked(&node,conjpTarg))) {
         			bool secondCondition=true;
         			CStateNodeList* childsConj=conjpTarg->m_umbinarizedSubNodes;
         			while(childsConj!=0) {

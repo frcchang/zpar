@@ -1,7 +1,7 @@
 
 //"QP < IN|RB|RBR|RBS|PDT|DT|JJ|JJR|JJS|XS=target"
-bool quantmod1(){
-	if (node.constituent==PENN_CON_QP){
+inline const bool & quantmod1(const unsigned long &cons){
+	if (cons==PENN_CON_QP){
 		CStateNodeList* childsQp=node.m_umbinarizedSubNodes;
 		while(childsQp!=0){
 			const CStateNode* targ=childsQp->node;

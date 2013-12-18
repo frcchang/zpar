@@ -4,18 +4,18 @@
 //this can be divided in 2 different rules
 
 //"VP < (ADJP=target !$-- NP)
-     bool buildAComp1(){
-    	 if (node.constituent==PENN_CON_VP){
+inline const bool &buildAComp1(const unsigned long &cons){
+    	 if (cons==PENN_CON_VP){
     		 CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
     		 while(childsVp!=0){
     			 const CStateNode* adjpTarg=childsVp->node;
-    			 if (adjpTarg->constituent==PENN_CON_ADJP && !(isLinked(&node,adjpTarg))) {
+    			 if (CConstituent::clearTmp(adjpTarg->constituent.code())==PENN_CON_ADJP && !(isLinked(&node,adjpTarg))) {
     				 CStateNodeList* leftSistersAdjp=childsVp;
     				 if (leftSistersAdjp->previous!=0){
     					 leftSistersAdjp=leftSistersAdjp->previous;
     					 bool npCondition=true;
     					 while(leftSistersAdjp!=0){
-    						 if (leftSistersAdjp->node->constituent==PENN_CON_NP){
+    						 if (CConstituent::clearTmp(leftSistersAdjp->node->constituent.code())==PENN_CON_NP){
     							 npCondition=false;
     						 }
     						 leftSistersAdjp=leftSistersAdjp->previous;
@@ -38,8 +38,8 @@
 
 
      //VP < (/^VB/ $+ (@S=target < (@ADJP < /^JJ/ ! $-- @NP|S)))
-     bool buildAComp2(){
-    	 if (node.constituent==PENN_CON_VP){
+inline const bool &buildAComp2(const unsigned long &cons){
+    	 if (cons==PENN_CON_VP){
     		 CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
     		 while(childsVp!=0){
     			 const CStateNode* vbChild=childsVp->node;
@@ -52,17 +52,17 @@
     					 ((*words)[vbChild->lexical_head].tag.code()==PENN_TAG_VERB_PROG)) {
     				 if (childsVp->next!=0){ //right siter of vb
     					 const CStateNode* sTarg=childsVp->next->node;
-    					 if ((sTarg->constituent==PENN_CON_S)&& !(isLinked(&node,sTarg))){
+    					 if ((CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_S)&& !(isLinked(&node,sTarg))){
     						 CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
     						 while(childsS!=0){
     							 const CStateNode* adjpChildS=childsS->node;
     							 //(@ADJP < /^JJ/ ! $-- @NP|S)))
-    							 if (adjpChildS->constituent==PENN_CON_ADJP){
+    							 if (CConstituent::clearTmp(adjpChildS->constituent.code())==PENN_CON_ADJP){
     								 bool secondCondition=true;
     								 if (childsS->previous!=0){
     									 CStateNodeList* leftSisters=childsS->previous;
     									 while(leftSisters!=0){
-    										 if (leftSisters->node->constituent==PENN_CON_NP || leftSisters->node->constituent==PENN_CON_S) {
+    										 if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP || CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_S) {
     											 secondCondition=false;
     										 }
     										 leftSisters=leftSisters->previous;

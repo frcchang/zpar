@@ -1,6 +1,6 @@
   //"QP|ADJP < (/^(?:CD|$|#)$/=target !$- CC)"
-     bool number1(){
-    	 if (node.constituent==PENN_CON_ADJP||node.constituent==PENN_CON_QP){
+     inline const bool &number1(const unsigned long &cons){
+    	 if (cons==PENN_CON_ADJP||cons==PENN_CON_QP){
     		 CStateNodeList* childsQpAdj=node.m_umbinarizedSubNodes;
     		 while(childsQpAdj!=0){
     			 const CStateNode* cdTarg=childsQpAdj->node;

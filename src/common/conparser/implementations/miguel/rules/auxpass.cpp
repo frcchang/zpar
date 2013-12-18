@@ -1,19 +1,19 @@
      //"VP < (/^(?:VB|AUX|POS)/=target < " + passiveAuxWordRegex + " ) < (VP|ADJP [ < VBN|VBD | < (VP|ADJP < VBN|VBD) < CC ] )",
-     bool auxpass1(){
-    	 if (node.constituent==PENN_CON_VP){
+inline const bool &auxpass1(const unsigned long &cons){
+    	 if (cons==PENN_CON_VP){
     		 bool secondCondition=false;
 
     		 CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
     		 while(childsVp!=0){
     			 const CStateNode* vpadjp=childsVp->node;
-    			 if ((vpadjp->constituent==PENN_CON_VP)||(vpadjp->constituent==PENN_CON_ADJP)){
+    			 if ((CConstituent::clearTmp(vpadjp->constituent.code())==PENN_CON_VP)||(CConstituent::clearTmp(vpadjp->constituent.code())==PENN_CON_ADJP)){
     				 CStateNodeList* childsVpadjp=vpadjp->m_umbinarizedSubNodes;
     				 while(childsVpadjp!=0){
     					 if ((*words)[childsVpadjp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST ||
                   				 (*words)[childsVpadjp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE) {
     						 secondCondition=true;
     					 }
-    					 if (childsVpadjp->node->constituent==PENN_CON_VP || childsVpadjp->node->constituent==PENN_CON_ADJP){
+    					 if (CConstituent::clearTmp(childsVpadjp->node->constituent.code())==PENN_CON_VP || CConstituent::clearTmp(childsVpadjp->node->constituent.code())==PENN_CON_ADJP){
     						 CStateNodeList* childsInt=childsVpadjp->node->m_umbinarizedSubNodes;
     						 while(childsInt!=0){
     							 if ((*words)[childsInt->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST ||
@@ -72,8 +72,8 @@
 //bool auxpass1(){}
 
 //"SQ|SINV < (/^(?:VB|AUX|POS)/=target < " + beAuxiliaryRegex + " $++ (VP < VBD|VBN))",
-     bool auxpass2(){
-    	 if (node.constituent==PENN_CON_SQ ||node.constituent==PENN_CON_SINV) {
+inline const bool &auxpass2(const unsigned long &cons){
+    	 if (cons==PENN_CON_SQ ||cons==PENN_CON_SINV) {
     		 CStateNodeList* childsSqS=node.m_umbinarizedSubNodes;
     		 while(childsSqS!=0){
     			 const CStateNode* vbauxposTarg=childsSqS->node;
@@ -89,7 +89,7 @@
     				 CStateNodeList* rightSisters=childsSqS->next;
     				 while(rightSisters!=0){
     					 const CStateNode* vpSist=rightSisters->node;
-    					 if (vpSist->constituent==PENN_CON_VP){
+    					 if (CConstituent::clearTmp(vpSist->constituent.code())==PENN_CON_VP){
     						 CStateNodeList* childsVp=vpSist->m_umbinarizedSubNodes;
     						 while(childsVp!=0){
     							 if (((*words)[vbauxposTarg->lexical_head].tag.code()==PENN_TAG_VERB_PAST)||((*words)[vbauxposTarg->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)) {
@@ -123,12 +123,12 @@
 
 
      //"SINV < (VP=target < (/^(?:VB|AUX|POS)/ < " + beAuxiliaryRegex + ") $-- (VP < VBD|VBN))",
-     bool auxpass3(){
-    	 if (node.constituent==PENN_CON_SINV){
+inline const bool &auxpass3(const unsigned long &cons){
+    	 if (cons==PENN_CON_SINV){
     		 CStateNodeList* childsSinv=node.m_umbinarizedSubNodes;
     		 while(childsSinv!=0){
     			 const CStateNode* vpTarg=childsSinv->node;
-    			 if (vpTarg->constituent==PENN_CON_VP && !(isLinked(&node,vpTarg))) {
+    			 if (CConstituent::clearTmp(vpTarg->constituent.code())==PENN_CON_VP && !(isLinked(&node,vpTarg))) {
     				 CStateNodeList* childsVp=vpTarg->m_umbinarizedSubNodes;
     				 while(childsVp!=0){
     					 if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB)||
@@ -145,7 +145,7 @@
     									 CStateNodeList* leftSistersVp=childsSinv->previous;
     									 while(leftSistersVp!=0){
     										 const CStateNode* vpLeftSister=leftSistersVp->node;
-    										 if (vpLeftSister->constituent==PENN_CON_VP){
+    										 if (CConstituent::clearTmp(vpLeftSister->constituent.code())==PENN_CON_VP){
     											 CStateNodeList* childsVpInLeft=vpLeftSister->m_umbinarizedSubNodes;
     											 while (childsVpInLeft!=0){
     												 if ((*words)[childsVpInLeft->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST ||
@@ -181,15 +181,15 @@
 
 
      //"SINV < (VP=target < (VP < (/^(?:VB|AUX|POS)/ < " + beAuxiliaryRegex + ")) $-- (VP < VBD|VBN))",
-        bool auxpass4(){
-       	 if (node.constituent==PENN_CON_SINV){
+inline const bool &auxpass4(const unsigned long &cons){
+       	 if (cons==PENN_CON_SINV){
        		 CStateNodeList* childsSinv=node.m_umbinarizedSubNodes;
        		 while(childsSinv!=0){
        			 const CStateNode* vpTarg=childsSinv->node;
-       			 if (vpTarg->constituent==PENN_CON_VP && !(isLinked(&node,vpTarg))) {
+       			 if (CConstituent::clearTmp(vpTarg->constituent.code())==PENN_CON_VP && !(isLinked(&node,vpTarg))) {
        				 CStateNodeList* childs1stVp=vpTarg->m_umbinarizedSubNodes;
        				 while(childs1stVp!=0){
-       					 if (childs1stVp->node->constituent==PENN_CON_VP){
+       					 if (CConstituent::clearTmp(childs1stVp->node->constituent.code())==PENN_CON_VP){
        						 CStateNodeList* childsVp=childs1stVp->node->m_umbinarizedSubNodes;
        						 while(childsVp!=0){
        							 if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB)||
@@ -206,7 +206,7 @@
        											 CStateNodeList* leftSistersVp=childsSinv->previous;
        											 while(leftSistersVp!=0){
        												 const CStateNode* vpLeftSister=leftSistersVp->node;
-       												 if (vpLeftSister->constituent==PENN_CON_VP){
+       												 if (CConstituent::clearTmp(vpLeftSister->constituent.code())==PENN_CON_VP){
        													 CStateNodeList* childsVpInLeft=vpLeftSister->m_umbinarizedSubNodes;
        													 while (childsVpInLeft!=0){
        														 if ((*words)[childsVpInLeft->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST ||

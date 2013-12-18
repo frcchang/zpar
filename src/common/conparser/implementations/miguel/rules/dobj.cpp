@@ -30,8 +30,8 @@
        *"VP < (NP $+ (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))) !<(/^(?:VB|AUX)/ < " + copularWordRegex + ")"
        *
        */
-       bool buildDobj1() {
-    	   if (node.constituent==PENN_CON_VP) {
+       inline const bool & buildDobj1(const unsigned long &cons) {
+    	   if (cons==PENN_CON_VP) {
     		   CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
     		   bool secondCondition=true;
     		   while(childsVp!=0){
@@ -53,13 +53,15 @@
     			   while(childsVp!=0){
     				   const CStateNode* npChildVp=childsVp->node;
 
-    				   if (npChildVp->constituent==PENN_CON_NP) {
+    				   if (CConstituent::clearTmp(npChildVp->constituent.code())==PENN_CON_NP) {
     					   	  //now the immediate left sister must look like (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))
     					   	   CStateNodeList* previous=childsVp->previous;
     					   	   if (previous!=0) {
     					   		   const CStateNode* leftSisterNpTarg=previous->node;
 
-    					   		   if ((leftSisterNpTarg->constituent==PENN_CON_NP || leftSisterNpTarg->constituent==PENN_CON_WHNP) && !(isLinked(&node, leftSisterNpTarg))) {
+    					   		   if ((CConstituent::clearTmp(leftSisterNpTarg->constituent.code())==PENN_CON_NP
+    					   				   || CConstituent::clearTmp(leftSisterNpTarg->constituent.code())==PENN_CON_WHNP)
+    					   				   && !(isLinked(&node, leftSisterNpTarg))) {
     					   			   bool noChildNNTime=true;
     					   			   CStateNodeList* childsOfTarg=leftSisterNpTarg->m_umbinarizedSubNodes;
     					   			   while(childsOfTarg!=0){
@@ -97,8 +99,8 @@
        }
 
        //"VP < (NP < (NP $+ (/^(NP|WHNP)$/=target !< (/^NN/ < " + timeWordLotRegex + "))))!< (/^(?:VB|AUX)/ < " + copularWordRegex + ")"
-          bool buildDobj2() {
-          	if (node.constituent==PENN_CON_VP) {
+       inline const bool &buildDobj2(const unsigned long &cons) {
+          	if (cons==PENN_CON_VP) {
           		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
           		bool secondCondition=true;
           		while(childsVp!=0){
@@ -118,16 +120,16 @@
           			childsVp=node.m_umbinarizedSubNodes;
           			while(childsVp!=0){
           				const CStateNode* fstnpChildVp=childsVp->node;
-          				if (fstnpChildVp->constituent==PENN_CON_NP) {
+          				if (CConstituent::clearTmp(fstnpChildVp->constituent.code())==PENN_CON_NP) {
           					CStateNodeList* childsNP=fstnpChildVp->m_umbinarizedSubNodes;
           					while(childsNP!=0){
           						const CStateNode* npChildVp=childsNP->node;
-          						if (npChildVp->constituent==PENN_CON_NP) {
+          						if (CConstituent::clearTmp(npChildVp->constituent.code())==PENN_CON_NP) {
           						//now the immediate left sister must look like (NP|WHNP=target !< (/^NN/ < " + timeWordLotRegex + "))
           							CStateNodeList* previous=childsVp->previous;
           						    if (previous!=0) {
           						    	const CStateNode* leftSisterNpTarg=previous->node;
-          						    	if ((leftSisterNpTarg->constituent==PENN_CON_NP || leftSisterNpTarg->constituent==PENN_CON_WHNP) && !(isLinked(&node, leftSisterNpTarg))) {
+          						    	if ((CConstituent::clearTmp(leftSisterNpTarg->constituent.code())==PENN_CON_NP || CConstituent::clearTmp(leftSisterNpTarg->constituent.code())==PENN_CON_WHNP) && !(isLinked(&node, leftSisterNpTarg))) {
           						    		bool noChildNNTime=true;
           						    		CStateNodeList* childsOfTarg=leftSisterNpTarg->m_umbinarizedSubNodes;
           						    		while(childsOfTarg!=0){
@@ -165,8 +167,8 @@
           }
 
           //"VP !<(/^(?:VB|AUX)/ < " + copularWordRegex + ") < (NP|WHNP=target [ [ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ] | $+ NP-TMP | $+ (NP <# (/^NN/ < " + timeWordRegex + ")) ] )"
-              bool buildDobj3() {
-             	 if (node.constituent==PENN_CON_VP) {
+       inline const bool &buildDobj3(const unsigned long &cons) {
+             	 if (cons==PENN_CON_VP) {
              		 CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
              	     bool firstCondition=true;
              	     while(childsVp!=0){
@@ -193,7 +195,8 @@
              	    	 childsVp=node.m_umbinarizedSubNodes;
              	         while(childsVp!=0){
              	        	 const CStateNode* targ=childsVp->node;
-             	        	 if ((targ->constituent==PENN_CON_NP || targ->constituent==PENN_CON_WHNP) && !isLinked(&node,targ)){
+             	        	 if ((CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP
+             	        			 || CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHNP) && !isLinked(&node,targ)){
              	        		 bool firstConditionIn=true; //[ !<# (/^NN/ < " + timeWordRegex + ") !$+ NP ]
              	        		 bool secCondition=false; //$+ NP-TMP it will be false, ever and ever, there is no np-tmp in our data set.
              	        		 bool thirdCondition=false; //$+ (NP <# (/^NN/ < " + timeWordRegex + "))
@@ -215,7 +218,7 @@
              	        		 }
              	        		 CStateNodeList* rightSisters=childsVp->next;
              	        		 if (rightSisters!=0){
-             	        			 if (rightSisters->node->constituent==PENN_CON_NP){
+             	        			 if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_NP){
              	        				 firstConditionIn=false;
              	        				 CStateNodeList* childsNp2=rightSisters->node->m_umbinarizedSubNodes;
              	        				 while(childsNp2!=0){
@@ -255,8 +258,8 @@
 
 
  //"SBARQ < (WHNP=target !< WRB !<# (/^NN/ < " + timeWordRegex + ")) <+(SQ|SINV|S|VP) (VP !< NP|TO !< (S < (VP < TO)) !< (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
-       bool buildDobj4() {
-          if (node.constituent==PENN_CON_SBARQ){
+       inline const bool & buildDobj4(const unsigned long &cons) {
+          if (cons==PENN_CON_SBARQ){
              CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
              
              bool secCond=false;
@@ -282,13 +285,13 @@
              while(candidates!=0){
              	CStateNodeList* childsCand=candidates->node->m_umbinarizedSubNodes;
              	while(childsCand!=0){
-             		if (childsCand->node->constituent==PENN_CON_NP || (*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_TO){
+             		if (CConstituent::clearTmp(childsCand->node->constituent.code())==PENN_CON_NP || (*words)[childsCand->node->lexical_head].tag.code()==PENN_TAG_TO){
              			firstCCond=false;
              		}
-             		else if (childsCand->node->constituent==PENN_CON_S){
+             		else if (CConstituent::clearTmp(childsCand->node->constituent.code())==PENN_CON_S){
              			CStateNodeList* childsS=childsCand->node->m_umbinarizedSubNodes;
              			while(childsS!=0){
-             				if (childsS->node->constituent==PENN_CON_VP){
+             				if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_VP){
              					CStateNodeList* childsVp=childsS->node->m_umbinarizedSubNodes;
              					while(childsVp!=0){
              						if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO){
@@ -320,7 +323,7 @@
              			}
              			CStateNodeList* rightSisters=childsCand->next;
              			while(rightSisters!=0){
-             				if (rightSisters->node->constituent==PENN_CON_VP){
+             				if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_VP){
              					CStateNodeList* rsChilds=rightSisters->node->m_umbinarizedSubNodes;
              					while(rsChilds!=0){
              						if ((*words)[rsChilds->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE ||
@@ -339,11 +342,11 @@
              			
              		}
              		//!<- PRT
-             		else if (childsCand->node->constituent==PENN_CON_PRT && childsCand->next==0){
+             		else if (CConstituent::clearTmp(childsCand->node->constituent.code())==PENN_CON_PRT && childsCand->next==0){
              			fourthCCond=false;
              		}
              		//!<- (PP <: IN)
-             		else if (childsCand->node->constituent==PENN_CON_PP && childsCand->next==0){
+             		else if (CConstituent::clearTmp(childsCand->node->constituent.code())==PENN_CON_PP && childsCand->next==0){
              			CStateNodeList* childsPP=childsCand->node->m_umbinarizedSubNodes;
              			if (childsPP!=0){
              				if ((*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_IN && childsPP->next==0){
@@ -361,11 +364,11 @@
              				CStateNodeList* leftSisters=childsP->previous;
              				//$-- (NP !< /^-NONE-$/)
              				while(leftSisters!=0){
-             					if (leftSisters->node->constituent==PENN_CON_NP){
+             					if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP){
              						bool noneCond=true;
              						CStateNodeList* childsLNp=leftSisters->node->m_umbinarizedSubNodes;
              						while(childsLNp!=0){
-             							if (childsLNp->node->constituent==PENN_CON_NONE){
+             							if (CConstituent::clearTmp(childsLNp->node->constituent.code())==PENN_CON_NONE){
              								noneCond=false;
              							}
              							childsLNp=childsLNp->next;
@@ -388,7 +391,7 @@
              	childsSbarq=node.m_umbinarizedSubNodes;
              	while(childsSbarq!=0){
              		const CStateNode* targ=childsSbarq->node;
-             		if (targ->constituent==PENN_CON_SBARQ && !isLinked(&node,targ)){
+             		if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_SBARQ && !isLinked(&node,targ)){
              			bool firstInCond=true;
              			bool secInCond=true;
              			
@@ -434,34 +437,34 @@
 
 
  //"SBAR < (WHNP=target !< WRB) < (S < NP < (VP !< SBAR !<+(VP) (PP <- IN) !< (S < (VP < TO))))",
-     bool buildDobj5() {
-    	 if (node.constituent==PENN_CON_SBAR){
+       inline const bool &buildDobj5(const unsigned long &cons) {
+    	 if (cons==PENN_CON_SBAR){
     		bool secondCondition=false;
     		CStateNodeList* childsSbar=node.m_umbinarizedSubNodes;
     		while(childsSbar!=0){
     			const CStateNode* schildSbar=childsSbar->node;
-    			if (schildSbar->constituent==PENN_CON_S){
+    			if (CConstituent::clearTmp(schildSbar->constituent.code())==PENN_CON_S){
     				CStateNodeList* childsS=schildSbar->m_umbinarizedSubNodes;
     				while(childsS!=0){
     					const CStateNode* npChildS=childsS->node;
-    					if (npChildS->constituent==PENN_CON_NP){
+    					if (CConstituent::clearTmp(npChildS->constituent.code())==PENN_CON_NP){
     						CStateNodeList* childsNp=npChildS->m_umbinarizedSubNodes;
     						while(childsNp!=0){
     							const CStateNode* vpChildNp=childsNp->node;
-    							if (vpChildNp->constituent==PENN_CON_VP){
+    							if (CConstituent::clearTmp(vpChildNp->constituent.code())==PENN_CON_VP){
     								bool firstInCond=true;
     								bool secondInCond=true;
     								bool thirdInCond=true;
     								CStateNodeList* childsVp=vpChildNp->m_umbinarizedSubNodes;
     								while(childsVp!=0){
-    									if (childsVp->node->constituent==PENN_CON_SBAR){
+    									if (CConstituent::clearTmp(childsVp->node->constituent.code())==PENN_CON_SBAR){
     										firstInCond=false;
     									}
-    									if (childsVp->node->constituent==PENN_CON_S){
+    									if (CConstituent::clearTmp(childsVp->node->constituent.code())==PENN_CON_S){
     										CStateNodeList* childsSvp=childsVp->node->m_umbinarizedSubNodes;
     										while(childsSvp!=0){
     											const CStateNode* vpChildS=childsSvp->node;
-    											if (vpChildS->constituent==PENN_CON_VP){
+    											if (CConstituent::clearTmp(vpChildS->constituent.code())==PENN_CON_VP){
     												CStateNodeList* childsVpTo=vpChildS->m_umbinarizedSubNodes;
     												while(childsVpTo!=0){
     													if (((*words)[childsVpTo->node->lexical_head].tag.code()==PENN_TAG_TO)) {
@@ -512,7 +515,7 @@
     			childsSbar=node.m_umbinarizedSubNodes;
     			while(childsSbar!=0){
     				const CStateNode* whnpTarg=childsSbar->node;
-    				if (whnpTarg->constituent==PENN_CON_WHNP){
+    				if (CConstituent::clearTmp(whnpTarg->constituent.code())==PENN_CON_WHNP){
     					bool wrbCond=true;
     					CStateNodeList* childsWhnp=whnpTarg->m_umbinarizedSubNodes;
     					while(childsWhnp!=0){
@@ -537,19 +540,19 @@
      }
 
  //"SBAR !< WHNP|WHADVP < (S < (@NP $++ (VP !$++ NP))) > (VP > (S < NP $- WHNP=target))",
- bool buildDobj6() {
+  inline const bool &buildDobj6(const unsigned long &cons) {
  	//we do not care about what the head of S is, S is not the the head, but is the "lexical" head of VP, which is the head of SBAR which is the the "stanford" link head of WHNP
  	CStateNodeList* childs=node.m_umbinarizedSubNodes;
  	while(childs!=0){
  		const CStateNode* sChild=childs->node;
- 		if (sChild->constituent==PENN_CON_S){
+ 		if (CConstituent::clearTmp(sChild->constituent.code())==PENN_CON_S){
  			if (childs->previous!=0){
  				const CStateNode* whnpTarg=childs->previous->node;
- 				if (whnpTarg->constituent==PENN_CON_WHNP){ //I'll check whether it is linked when I have the head (SBAR)
+ 				if (CConstituent::clearTmp(whnpTarg->constituent.code())==PENN_CON_WHNP){ //I'll check whether it is linked when I have the head (SBAR)
  					CStateNodeList* childsS=sChild->m_umbinarizedSubNodes;
  					bool npFound=false;
  					while(childsS!=0){
- 						if (childsS->node->constituent==PENN_CON_NP){
+ 						if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_NP){
  							npFound=true;
  						}
  						childsS=childsS->next;
@@ -558,15 +561,15 @@
  						childsS=sChild->m_umbinarizedSubNodes;
  						while(childsS!=0){
  							const CStateNode* vpChilds=childsS->node;
- 							if (vpChilds->constituent==PENN_CON_VP){
+ 							if (CConstituent::clearTmp(vpChilds->constituent.code())==PENN_CON_VP){
  								CStateNodeList* childsVp=vpChilds->m_umbinarizedSubNodes;
  								while(childsVp!=0){
  									const CStateNode* sbarHead=childsVp->node;
- 									if ((sbarHead->constituent==PENN_CON_SBAR) && !(isLinked(sbarHead, whnpTarg))){
+ 									if ((CConstituent::clearTmp(sbarHead->constituent.code())==PENN_CON_SBAR) && !(isLinked(sbarHead, whnpTarg))){
  										CStateNodeList* childsSbar=sbarHead->m_umbinarizedSubNodes;
  										bool firstCondition=true;
  										while(childsSbar!=0){
- 											if (childsSbar->node->constituent==PENN_CON_WHNP ||childsSbar->node->constituent==PENN_CON_WHADVP){
+ 											if (CConstituent::clearTmp(childsSbar->node->constituent.code())==PENN_CON_WHNP ||CConstituent::clearTmp(childsSbar->node->constituent.code())==PENN_CON_WHADVP){
  												firstCondition=false;
  											}
  											childsSbar=childsSbar->next;
@@ -575,19 +578,19 @@
  											childsSbar=sbarHead->m_umbinarizedSubNodes;
  											while(childsSbar!=0){
  												const CStateNode* sChildSbar=childsSbar->node;
- 												if (sChildSbar->constituent==PENN_CON_S){
+ 												if (CConstituent::clearTmp(sChildSbar->constituent.code())==PENN_CON_S){
  													CStateNodeList* childsS=sChildSbar->m_umbinarizedSubNodes;
  													while(childsS!=0){
  														const CStateNode* npChildS=childsS->node;
- 														if (npChildS->constituent==PENN_CON_NP){ //again, @NP, basic "class" of NP. how come?
+ 														if (CConstituent::clearTmp(npChildS->constituent.code())==PENN_CON_NP){ //again, @NP, basic "class" of NP. how come?
  															//A $++ B 	A is a left sister of B
  															CStateNodeList* rightSistersNp=childsS;
  															while(rightSistersNp!=0){
- 																if (rightSistersNp->node->constituent==PENN_CON_VP){
+ 																if (CConstituent::clearTmp(rightSistersNp->node->constituent.code())==PENN_CON_VP){
  																	CStateNodeList* rightSistersVp=rightSistersNp;
  																	bool noRightSister=true;
  																	while(rightSistersVp!=0){
- 																		if (rightSistersVp->node->constituent==PENN_CON_NP){
+ 																		if (CConstituent::clearTmp(rightSistersVp->node->constituent.code())==PENN_CON_NP){
  																			noRightSister=false;
  																		}
  																		rightSistersVp=rightSistersVp->next;
@@ -626,10 +629,10 @@
  	return false;
 	}
 //"SBAR !< (WHPP|WHNP|WHADVP) < (S < (@NP $+ (VP !< (/^(?:VB|AUX)/ < " + copularWordRegex + " !$+ VP)  !<+(VP) (/^(?:VB|AUX)/ < " + copularWordRegex + " $+ (VP < VBN|VBD)) !<+(VP) NP !< SBAR !<+(VP) (PP <- IN)))) !$-- CC $-- NP > NP=target",
- bool buildDobj7() {
+  inline const bool &buildDobj7(const unsigned long &cons) {
 
  }
 //"SBAR !< (WHPP|WHNP|WHADVP) < (S < (@NP $+ (ADVP $+ (VP !< (/^(?:VB|AUX)/ < " + copularWordRegex + " !$+ VP) !<+(VP) (/^(?:VB|AUX)/ < " + copularWordRegex + " $+ (VP < VBN|VBD)) !<+(VP) NP !< SBAR !<+(VP) (PP <- IN))))) !$-- CC $-- NP > NP=target"
- bool buildDobj8() {
+  inline const bool &buildDobj8(const unsigned long &cons) {
 
  }

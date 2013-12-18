@@ -1,11 +1,11 @@
  //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < (NP|NML|NN|NNS|NNP|NNPS|FW|AFX=target $++ NN|NNS|NNP|NNPS|FW|CD !<<- POS !<<- (VBZ < /^\'s$/) !$- /^,$/ )",
 inline const bool &nn1(const unsigned long &cons){
-    	  std::cout<<"nn1 \n";
-    	  std::cout<<(*words)[node.lexical_head].word<<"\n";
-    	  std::cout<<cons<<"\n";
+    	  //std::cout<<"nn1 \n";
+    	  //std::cout<<(*words)[node.lexical_head].word<<"\n";
+    	  //std::cout<<cons<<"\n";
     	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP ||cons==PENN_CON_NAC || cons==PENN_CON_NX){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
-    		  std::cout<<"After the constittuent test"<<(*words)[node.lexical_head].word<<"\n";
+    		  //std::cout<<"After the constittuent test"<<(*words)[node.lexical_head].word<<"\n";
 
 			  //std::cout<<(*words)[targ->lexical_head].word<<"\n";
     		  while(childs!=0){

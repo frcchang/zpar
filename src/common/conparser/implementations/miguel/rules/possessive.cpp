@@ -1,7 +1,7 @@
 
  //"/^(?:WH)?(?:NP|NML)(?:-TMP|-ADV)?$/ < POS=target",
-      bool possessive1(){
-    	  if (node.constituent==PENN_CON_WHNP){
+     inline const bool &possessive1(const unsigned long &cons){
+    	  if (cons==PENN_CON_WHNP){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
@@ -19,8 +19,8 @@
       }  
 
       //"/^(?:WH)?(?:NP|NML)(?:-TMP|-ADV)?$/ < (VBZ=target < /^'s$/)"
-                 bool possessive2(){
-               	  if (node.constituent==PENN_CON_WHNP){
+     inline const bool &possessive2(const unsigned long &cons){
+               	  if (cons==PENN_CON_WHNP){
                		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
                		  while(childs!=0){
                			  const CStateNode* targ=childs->node;
