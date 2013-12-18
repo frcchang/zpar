@@ -1,9 +1,9 @@
  //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < (NP|NML|NN|NNS|NNP|NNPS|FW|AFX=target $++ NN|NNS|NNP|NNPS|FW|CD !<<- POS !<<- (VBZ < /^\'s$/) !$- /^,$/ )",
-      bool nn1(){
+inline const bool &nn1(const unsigned long &cons){
     	  std::cout<<"nn1 \n";
     	  std::cout<<(*words)[node.lexical_head].word<<"\n";
-    	  std::cout<<node.constituent<<"\n";
-    	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP ||node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
+    	  std::cout<<cons<<"\n";
+    	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP ||cons==PENN_CON_NAC || cons==PENN_CON_NX){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  std::cout<<"After the constittuent test"<<(*words)[node.lexical_head].word<<"\n";
 
@@ -11,7 +11,7 @@
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
     			  //PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
-    			  if ((targ->constituent==PENN_CON_NP
+    			  if ((CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
     					  || (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
@@ -81,11 +81,11 @@
     		  }
     	  }
     	  return false;
-      }
+}
 
       //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < JJ|JJR|JJS=sister < (NP|NML|NN|NNS|NNP|NNPS|FW=target !<<- POS !<<- (VBZ < /^\'s$/) $+ =sister) <# NN|NNS|NNP|NNPS !<<- POS !<<- (VBZ < /^\'s$/) ",
-            bool nn2(){
-          	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP || node.constituent==PENN_CON_NAC || node.constituent==PENN_CON_NX){
+inline const bool &nn2(const unsigned long &cons){
+          	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP || cons==PENN_CON_NAC || cons==PENN_CON_NX){
           		  bool firstCond=false; //< JJ|JJR|JJS=sister
           		  bool thirdCond=false; //<# NN|NNS|NNP|NNPS
           		  bool fourthCond=true;//!<<- POS
@@ -136,7 +136,7 @@
           			  while(childs!=0){
           				  const CStateNode* targ=childs->node;
           				  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
-          						  || childs->node->constituent==PENN_CON_NP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
+          						  || CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_NP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL
           						  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_FW || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL) && !isLinked(&node,targ)){
 
           					  CStateNodeList* descendants2=new CStateNodeList();
@@ -178,9 +178,7 @@
           		  }
           	  }
           	  return false;
-            }
-
-
+}
 
 
 //"ADJP|ADVP < (FW [ $- FW=target | $- (IN=target < in|In) ] )",  // in vitro, in vivo, etc., in Genia
@@ -188,8 +186,8 @@
 
 
 //"ADJP|ADVP < (FW $- FW=target)",
-bool nn3(){
-	 if (node.constituent==PENN_CON_ADJP || node.constituent==PENN_CON_ADVP){
+inline const bool &nn3(const unsigned long &cons){
+	 if (cons==PENN_CON_ADJP || cons==PENN_CON_ADVP){
 		 CStateNodeList* childsAd=node.m_umbinarizedSubNodes;
 		 while(childsAd!=0){
 			 if ((*words)[childsAd->node->lexical_head].tag.code()==PENN_TAG_FW){
@@ -212,8 +210,8 @@ bool nn3(){
 
 
 //"ADJP|ADVP < (FW $- (IN=target < in|In) )"
-bool nn4(){
-	 if (node.constituent==PENN_CON_ADJP || node.constituent==PENN_CON_ADVP){
+inline const bool &nn4(const unsigned long &cons){
+	 if (cons==PENN_CON_ADJP || cons==PENN_CON_ADVP){
 		 CStateNodeList* childsAd=node.m_umbinarizedSubNodes;
 	     while(childsAd!=0){
 	    	 if ((*words)[childsAd->node->lexical_head].tag.code()==PENN_TAG_FW){
