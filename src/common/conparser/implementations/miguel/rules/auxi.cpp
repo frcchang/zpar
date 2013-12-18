@@ -17,14 +17,14 @@
        * 
        * PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
        */
-      bool buildAux1(){
-    	  if (node.constituent==PENN_CON_VP) {
+inline const bool &buildAux1(const unsigned long &cons){
+    	  if (cons==PENN_CON_VP) {
     		  CStateNodeList* childsConjp=node.m_umbinarizedSubNodes;
     		  bool child1=false;
     	      bool child2=false;
     	      const CStateNode* targ=0;
     	      while(childsConjp!=0){
-    	    	  if (childsConjp->node->constituent==PENN_CON_VP){
+    	    	  if (CConstituent::clearTmp(childsConjp->node->constituent.code())==PENN_CON_VP){
     	      		 child1=true;
     	      	  }
     	      	  if ((((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB) ||
@@ -59,8 +59,8 @@
       * 
       * 
       */
-      bool buildAux2(){
-    	  if (node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV) {
+inline const bool &buildAux2(const unsigned long &cons){
+    	  if (cons==PENN_CON_SQ || cons==PENN_CON_SINV) {
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while (childs!=0) {
     		  const CStateNode* targ=childs->node;
@@ -71,7 +71,7 @@
     	    	  		CStateNodeList* rightSisters=childs;
     	    	  		while(rightSisters!=0){
     	    	  			const CStateNode* rSis=rightSisters->node;
-    	    	  			if ((rSis->constituent==PENN_CON_VP) || (rSis->constituent==PENN_CON_ADJP)) {
+    	    	  			if ((CConstituent::clearTmp(rSis->constituent.code())==PENN_CON_VP) || (CConstituent::clearTmp(rSis->constituent.code())==PENN_CON_ADJP)) {
     	    	  				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
     	    	  				if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)){
     	    	  					addLinked(&node,targ);
@@ -95,8 +95,8 @@
        * "CONJP < TO=target < VB"
        * 
        */
-      bool buildAux3() {
-    	 if (node.constituent==PENN_CON_CONJP) {
+inline const bool &buildAux3(const unsigned long &cons) {
+    	 if (cons==PENN_CON_CONJP) {
     		 CStateNodeList* childsConjp=node.m_umbinarizedSubNodes;
     		 bool child1=false;
     		 bool child2=false;
@@ -130,12 +130,12 @@
        * 
        */
       //SINV < (VP=target < (/^(?:VB|AUX|POS)/ < " + beAuxiliaryRegex + ") $-- (VP < VBG))",
-      bool buildAux4() {
-        	 if (node.constituent==PENN_CON_SINV) {
+inline const bool &buildAux4(const unsigned long &cons) {
+        	 if (cons==PENN_CON_SINV) {
            		 CStateNodeList* childsSinv=node.m_umbinarizedSubNodes;
            		 while (childsSinv!=0){
               		const CStateNode* vpTarg=childsSinv->node;
-              		if (vpTarg->constituent==PENN_CON_VP && (isLinked(&node, vpTarg))) {
+              		if (CConstituent::clearTmp(vpTarg->constituent.code())==PENN_CON_VP && (isLinked(&node, vpTarg))) {
               		CStateNodeList* childsVp=vpTarg->m_umbinarizedSubNodes;
               		bool firstCondVp=false;
               		bool secondCondVp=false;
@@ -157,7 +157,7 @@
               		 CStateNodeList* leftSistersVp=childsSinv->previous;
               		 while(leftSistersVp!=0){
               			 const CStateNode* vpChild=leftSistersVp->node;
-              			 if (vpChild->constituent==PENN_CON_VP){
+              			 if (CConstituent::clearTmp(vpChild->constituent.code())==PENN_CON_VP){
               			 //child PENN_TAG_VERB_PROG?
               				 CStateNodeList* childsSecVp=vpChild->m_umbinarizedSubNodes;
               				 while (childsSecVp!=0) {

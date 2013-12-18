@@ -1085,444 +1085,443 @@ public:
       unsigned long cons = CConstituent::clearTmp(node.constituent.code());
       
       //nsubj
-      //S < (NP=target $+ NP|ADJP) > VP
-      //std::cout<<"Rule 1 \n";
-      buildNsubj1();
-      std::cerr<<"Nsubj1 \n";
-      //SQ|PRN < (NP=target !< EX $++ VP)
-      //std::cout<<"Rule 2 \n";
-      buildNsubj2();
-      std::cerr<<"Nsubj2 \n";
-      //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
-      //std::cout<<"Rule 3 \n";
-      buildNsubj3();
-      std::cerr<<"Nsubj3 \n";
-      //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++VP)",
-      //std::cout<<"Rule 4 \n";
-      buildNsubj4();
-      std::cerr<<"Nsubj4 \n";
-      //"S < (NP < EX) <+(VP) (VP < NP=target)"
-      //std::cout<<"Rule 5 \n";
-      buildNsubj5();
-      std::cerr<<"Nsubj5 \n";
-      //"SQ < ((NP=target !< EX) $- /^(?:VB|AUX)/ !$++ VP)",
-      //std::cout<<"Rule 6 \n";
-      buildNsubj6();
-      std::cerr<<"Nsubj6 \n";
-      //"SQ < ((NP=target !< EX) $- (RB $- /^(?:VB|AUX)/) ![$++ VP])",
-      //std::cout<<"Rule 7 \n";
-      buildNsubj7();
-      std::cerr<<"Nsubj7 \n";
-      //"SBARQ < WHNP=target < (SQ < (VP ![$-- NP]))",
-      //std::cout<<"Rule 8 \n";
-      buildNsubj8();
-      std::cerr<<"Nsubj8 \n";
-      //"SBARQ < (SQ=target < /^(?:VB|AUX)/ !< VP)",
-      //std::cout<<"Rule 9 \n";
-      buildNsubj9();
-      std::cerr<<"Nsubj9 \n";
-      //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
-      //std::cout<<"Rule 10 \n";
-      buildNsubj10();
-      std::cerr<<"Nsubj10 \n";
-      //"SBAR < WHNP=target [ < (S < (VP !$-- NP) !< SBAR) | < (VP !$-- NP) !< S ]"
-      //std::cout<<"Rule 11 \n";
-      buildNsubj11(); //REVISE
-      std::cerr<<"Nsubj11 \n";
-      //"SBAR !< WHNP < (S !< (NP $++ VP)) > (VP > (S $- WHNP=target))",
-      //std::cout<<"Rule 12 \n";
-      buildNsubj12();
-      std::cerr<<"Nsubj12 \n";
-      //"SQ < ((NP < EX) $++ NP=target)",
-      //std::cout<<"Rule 13 \n";
-      buildNsubj13();
-      std::cerr<<"Nsubj13 \n";
-      
+           //S < (NP=target $+ NP|ADJP) > VP
+           //std::cout<<"Rule 1 \n";
+           buildNsubj1(cons);
+           std::cerr<<"Nsubj1 \n";
+           //SQ|PRN < (NP=target !< EX $++ VP)
+           //std::cout<<"Rule 2 \n";
+           buildNsubj2(cons);
+           std::cerr<<"Nsubj2 \n";
+           //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
+           //std::cout<<"Rule 3 \n";
+           buildNsubj3(cons);
+           std::cerr<<"Nsubj3 \n";
+           //"S < ( NP=target <# (/^NN/ < " + timeWordRegex + ") !$++ NP $++VP)",
+           //std::cout<<"Rule 4 \n";
+           buildNsubj4(cons);
+           std::cerr<<"Nsubj4 \n";
+           //"S < (NP < EX) <+(VP) (VP < NP=target)"
+           //std::cout<<"Rule 5 \n";
+           buildNsubj5(cons);
+           std::cerr<<"Nsubj5 \n";
+           //"SQ < ((NP=target !< EX) $- /^(?:VB|AUX)/ !$++ VP)",
+           //std::cout<<"Rule 6 \n";
+           buildNsubj6(cons);
+           std::cerr<<"Nsubj6 \n";
+           //"SQ < ((NP=target !< EX) $- (RB $- /^(?:VB|AUX)/) ![$++ VP])",
+           //std::cout<<"Rule 7 \n";
+           buildNsubj7(cons);
+           std::cerr<<"Nsubj7 \n";
+           //"SBARQ < WHNP=target < (SQ < (VP ![$-- NP]))",
+           //std::cout<<"Rule 8 \n";
+           buildNsubj8(cons);
+           std::cerr<<"Nsubj8 \n";
+           //"SBARQ < (SQ=target < /^(?:VB|AUX)/ !< VP)",
+           //std::cout<<"Rule 9 \n";
+           buildNsubj9(cons);
+           std::cerr<<"Nsubj9 \n";
+           //"SINV < (NP|WHNP=target [ $- VP|VBZ|VBD|VBP|VB|MD|AUX | $- (@RB|ADVP $- VP|VBZ|VBD|VBP|VB|MD|AUX) | !$- __ !$ @NP] )",
+           //std::cout<<"Rule 10 \n";
+           buildNsubj10(cons);
+           std::cerr<<"Nsubj10 \n";
+           //"SBAR < WHNP=target [ < (S < (VP !$-- NP) !< SBAR) | < (VP !$-- NP) !< S ]"
+           //std::cout<<"Rule 11 \n";
+           buildNsubj11(cons); //REVISE
+           std::cerr<<"Nsubj11 \n";
+           //"SBAR !< WHNP < (S !< (NP $++ VP)) > (VP > (S $- WHNP=target))",
+           //std::cout<<"Rule 12 \n";
+           buildNsubj12(cons);
+           std::cerr<<"Nsubj12 \n";
+           //"SQ < ((NP < EX) $++ NP=target)",
+           //std::cout<<"Rule 13 \n";
+           buildNsubj13(cons);
+           std::cerr<<"Nsubj13 \n";
 
 
-      buildAux1();
-      std::cerr<<"Aux 1 \n";
-      buildAux2();
-      std::cerr<<"Aux 2 \n";
-      buildAux3();
-      std::cerr<<"Aux 3 \n";
-      buildAux4();
-      std::cerr<<"Aux 4 \n";
-      
-      cc1();
-      std::cerr<<"CC 1 \n";
-      cc2();
-      std::cerr<<"CC 2 \n";
-      
-      csubj1();
-      std::cerr<<"csubj 1 \n";
-      
 
-      buildNsubjpass1();
-      std::cerr<<"Nsubjpass 1 \n";
+           buildAux1(cons);
+           std::cerr<<"Aux 1 \n";
+           buildAux2(cons);
+           std::cerr<<"Aux 2 \n";
+           buildAux3(cons);
+           std::cerr<<"Aux 3 \n";
+           buildAux4(cons);
+           std::cerr<<"Aux 4 \n";
+
+           cc1(cons);
+           std::cerr<<"CC 1 \n";
+           cc2(cons);
+           std::cerr<<"CC 2 \n";
+
+           csubj1(cons);
+           std::cerr<<"csubj 1 \n";
 
 
-      buildExpl1();
-      std::cerr<<"Expl1 \n";
+           buildNsubjpass1(cons);
+           std::cerr<<"Nsubjpass 1 \n";
 
-      buildDobj1();
-      std::cerr<<"Dobj1 \n";
-      buildDobj2();
-      std::cerr<<"Dobj2 \n";
-      buildDobj3();
-      std::cerr<<"Dobj3 \n";
-      buildDobj4();
-      std::cerr<<"Dobj4 \n";
-      buildDobj5();
-      std::cerr<<"Dobj5 \n";
-      buildDobj6();
-      std::cerr<<"Dobj6 \n";
-      buildDobj7();
-      std::cerr<<"Dobj7 \n";
-      buildDobj8();
-      std::cerr<<"Dobj8 \n";
 
-      builIObj1();
-      std::cerr<<"Iobj1 \n";
-      builIObj2();
-      std::cerr<<"Iobj2 \n";
+           buildExpl1(cons);
+           std::cerr<<"Expl1 \n";
 
-      buildAttr1();
-      std::cerr<<"Attr1 \n";
-      buildAttr2();
-      std::cerr<<"Attr2 \n";
-      buildAttr3();
-      std::cerr<<"Attr3 \n";
-      buildAttr4();
-      std::cerr<<"Attr4 \n";
+           buildDobj1(cons);
+           std::cerr<<"Dobj1 \n";
+           buildDobj2(cons);
+           std::cerr<<"Dobj2 \n";
+           buildDobj3(cons);
+           std::cerr<<"Dobj3 \n";
+           buildDobj4(cons);
+           std::cerr<<"Dobj4 \n";
+           buildDobj5(cons);
+           std::cerr<<"Dobj5 \n";
+           buildDobj6(cons);
+           std::cerr<<"Dobj6 \n";
+           buildDobj7(cons);
+           std::cerr<<"Dobj7 \n";
+           buildDobj8(cons);
+           std::cerr<<"Dobj8 \n";
 
-      buildCComp1();
-      std::cerr<<"Ccomp1 \n";
-      buildCComp2();
-      std::cerr<<"Ccomp2 \n";
-      buildCComp3();
-      std::cerr<<"Ccomp3 \n";
-      buildCComp4();
-      std::cerr<<"Ccomp4 \n";
-      buildCComp5();
-      std::cerr<<"Ccomp5 \n";
-      buildCComp6();
-      std::cerr<<"Ccomp6 \n";
-      buildCComp7();
-      std::cerr<<"Ccomp7 \n";
-      buildCComp8();
-      std::cerr<<"Ccomp8 \n";
-      buildCComp9();
-      std::cerr<<"Ccomp9 \n";
-      buildCComp10();
-      std::cerr<<"Ccomp10 \n";
-      buildCComp11();
-      std::cerr<<"Ccomp11 \n";
+           builIObj1(cons);
+           std::cerr<<"Iobj1 \n";
+           builIObj2(cons);
+           std::cerr<<"Iobj2 \n";
 
-      buildXComp1();
-      std::cerr<<"XComp1 \n";
-      buildXComp2();
-      std::cerr<<"XComp2 \n";
-      buildXComp3();
-      std::cerr<<"XComp3 \n";
-      buildXComp4();
-      std::cerr<<"XComp4 \n";
-      buildXComp5();
-      std::cerr<<"XComp5 \n";
-      buildXComp6();
-      std::cerr<<"XComp6 \n";
-      buildXComp7();
-      std::cerr<<"XComp7 \n";
+           buildAttr1(cons);
+           std::cerr<<"Attr1 \n";
+           buildAttr2(cons);
+           std::cerr<<"Attr2 \n";
+           buildAttr3(cons);
+           std::cerr<<"Attr3 \n";
+           buildAttr4(cons);
+           std::cerr<<"Attr4 \n";
 
-      buildPunct1();
-      std::cerr<<"Punct1 \n";
-      //buildPunct2();
-      //std::cerr<<"Punct2 \n";
+           buildCComp1(cons);
+           std::cerr<<"Ccomp1 \n";
+           buildCComp2(cons);
+           std::cerr<<"Ccomp2 \n";
+           buildCComp3(cons);
+           std::cerr<<"Ccomp3 \n";
+           buildCComp4(cons);
+           std::cerr<<"Ccomp4 \n";
+           buildCComp5(cons);
+           std::cerr<<"Ccomp5 \n";
+           buildCComp6(cons);
+           std::cerr<<"Ccomp6 \n";
+           buildCComp7(cons);
+           std::cerr<<"Ccomp7 \n";
+           buildCComp8(cons);
+           std::cerr<<"Ccomp8 \n";
+           buildCComp9(cons);
+           std::cerr<<"Ccomp9 \n";
+           buildCComp10(cons);
+           std::cerr<<"Ccomp10 \n";
+           buildCComp11(cons);
+           std::cerr<<"Ccomp11 \n";
 
-      buildPobj1();
-      std::cerr<<"Pobj1 \n";
-      buildPobj2();
-      std::cerr<<"Pobj2 \n";
-      buildPobj3();
-      std::cerr<<"Pobj3 \n";
-      buildPobj4();
-      std::cerr<<"Pobj4 \n";
-      buildPobj5();
-      std::cerr<<"Pobj5 \n";
-      buildPobj6();
-      std::cerr<<"Pobj6 \n";
-      buildPobj7();
-      std::cerr<<"Pobj7 \n";
+           buildXComp1(cons);
+           std::cerr<<"XComp1 \n";
+           buildXComp2(cons);
+           std::cerr<<"XComp2 \n";
+           buildXComp3(cons);
+           std::cerr<<"XComp3 \n";
+           buildXComp4(cons);
+           std::cerr<<"XComp4 \n";
+           buildXComp5(cons);
+           std::cerr<<"XComp5 \n";
+           buildXComp6(cons);
+           std::cerr<<"XComp6 \n";
+           buildXComp7(cons);
+           std::cerr<<"XComp7 \n";
 
-      buildPComp1();
-      std::cerr<<"PComp1 \n";
-      buildPComp2();
-      std::cerr<<"PComp2 \n";
-      buildPComp3();
-      std::cerr<<"PComp3 \n";
+           buildPunct1(cons);
+           std::cerr<<"Punct1 \n";
+           //buildPunct2(cons);
+           //std::cerr<<"Punct2 \n";
 
-      buildConj1();
-      std::cerr<<"Conj1 \n";
-      buildConj2();
-      std::cerr<<"Conj2 \n";
-      buildConj3();
-      std::cerr<<"Conj3 \n";
-      buildConj4();
-      std::cerr<<"Conj4 \n";
-      buildConj5();
-      std::cerr<<"Conj5 \n";
-      buildConj6();
-      std::cerr<<"Conj6 \n";
-      buildConj7();
-      std::cerr<<"Conj7 \n";
-      buildConj8();
-      std::cerr<<"Conj8 \n";
+           buildPobj1(cons);
+           std::cerr<<"Pobj1 \n";
+           buildPobj2(cons);
+           std::cerr<<"Pobj2 \n";
+           buildPobj3(cons);
+           std::cerr<<"Pobj3 \n";
+           buildPobj4(cons);
+           std::cerr<<"Pobj4 \n";
+           buildPobj5(cons);
+           std::cerr<<"Pobj5 \n";
+           buildPobj6(cons);
+           std::cerr<<"Pobj6 \n";
+           buildPobj7(cons);
+           std::cerr<<"Pobj7 \n";
 
-      buildAComp1();
-      std::cerr<<"Acomp1 \n";
-      buildAComp2();
-      std::cerr<<"AComp2 \n";
+           buildPComp1(cons);
+           std::cerr<<"PComp1 \n";
+           buildPComp2(cons);
+           std::cerr<<"PComp2 \n";
+           buildPComp3(cons);
+           std::cerr<<"PComp3 \n";
 
-      advcl1();
-      std::cerr<<"Advcl1 \n";
-      advcl2();
-      std::cerr<<"Advcl2 \n";
-      advcl3();
-      std::cerr<<"Advcl3 \n";
-      advcl4();
-      std::cerr<<"Advcl4 \n";
-      advcl5();
-      std::cerr<<"Advcl5 \n";
-      advcl6();
-      std::cerr<<"Advcl6 \n";
-      advcl7();
-      std::cerr<<"Advcl7 \n";
-      advcl8();
-      std::cerr<<"Advcl8 \n";
-      advcl9();
-      std::cerr<<"Advcl9 \n";
+           buildConj1(cons);
+           std::cerr<<"Conj1 \n";
+           buildConj2(cons);
+           std::cerr<<"Conj2 \n";
+           buildConj3(cons);
+           std::cerr<<"Conj3 \n";
+           buildConj4(cons);
+           std::cerr<<"Conj4 \n";
+           buildConj5(cons);
+           std::cerr<<"Conj5 \n";
+           buildConj6(cons);
+           std::cerr<<"Conj6 \n";
+           buildConj7(cons);
+           std::cerr<<"Conj7 \n";
+           buildConj8(cons);
+           std::cerr<<"Conj8 \n";
 
-      advmod1();
-      std::cerr<<"Advmod1 \n";
-      advmod2();
-      std::cerr<<"Advmod2 \n";
-      advmod3();
-      std::cerr<<"Advmod3 \n";
-      advmod31();
-      std::cerr<<"Advmod31 \n";
-      //advmod32();
-      advmod4();
-      std::cerr<<"Advmod4\n";
-      advmod5();
-      std::cerr<<"Advmod5 \n";
-      advmod6();
-      std::cerr<<"Advmod6 \n";
+           buildAComp1(cons);
+           std::cerr<<"Acomp1 \n";
+           buildAComp2(cons);
+           std::cerr<<"AComp2 \n";
 
-      amod1();
-      std::cerr<<"Amod1 \n";
-      amod2();
-      std::cerr<<"Amod2 \n";
-      amod3();
-      std::cerr<<"Amod3 \n";
+           advcl1(cons);
+           std::cerr<<"Advcl1 \n";
+           advcl2(cons);
+           std::cerr<<"Advcl2 \n";
+           advcl3(cons);
+           std::cerr<<"Advcl3 \n";
+           advcl4(cons);
+           std::cerr<<"Advcl4 \n";
+           advcl5(cons);
+           std::cerr<<"Advcl5 \n";
+           advcl6(cons);
+           std::cerr<<"Advcl6 \n";
+           advcl7(cons);
+           std::cerr<<"Advcl7 \n";
+           advcl8(cons);
+           std::cerr<<"Advcl8 \n";
+           advcl9(cons);
+           std::cerr<<"Advcl9 \n";
 
-      appos1();
-      std::cerr<<"Appos1 \n";
-      appos2();
-      std::cerr<<"Appos2 \n";
-      appos3();
-      std::cerr<<"Appos3 \n";
-      appos4();
-      std::cerr<<"Appos4 \n";
-      appos5();
-      std::cerr<<"Appos5 \n";
+           advmod1(cons);
+           std::cerr<<"Advmod1 \n";
+           advmod2(cons);
+           std::cerr<<"Advmod2 \n";
+           advmod3(cons);
+           std::cerr<<"Advmod3 \n";
+           advmod31(cons);
+           std::cerr<<"Advmod31 \n";
+           //advmod32(cons);
+           advmod4(cons);
+           std::cerr<<"Advmod4\n";
+           advmod5(cons);
+           std::cerr<<"Advmod5 \n";
+           advmod6(cons);
+           std::cerr<<"Advmod6 \n";
 
-      auxpass1();
-      std::cerr<<"Auxpass1 \n";
-      auxpass2();
-      std::cerr<<"Auxpass2 \n";
-      auxpass3();
-      std::cerr<<"Auxpass3 \n";
-      auxpass4();
-      std::cerr<<"Auxpass4 \n";
+           amod1(cons);
+           std::cerr<<"Amod1 \n";
+           amod2(cons);
+           std::cerr<<"Amod2 \n";
+           amod3(cons);
+           std::cerr<<"Amod3 \n";
 
-      cop1();
-      std::cerr<<"Cop1 \n";
-      cop2();
-      std::cerr<<"Cop2 \n";
+           appos1(cons);
+           std::cerr<<"Appos1 \n";
+           appos2(cons);
+           std::cerr<<"Appos2 \n";
+           appos3(cons);
+           std::cerr<<"Appos3 \n";
+           appos4(cons);
+           std::cerr<<"Appos4 \n";
+           appos5(cons);
+           std::cerr<<"Appos5 \n";
 
-      csubjpass1();
-      std::cerr<<"csubjpass1 \n";
-      csubjpass2();
-      std::cerr<<"csubjpass2 \n";
+           auxpass1(cons);
+           std::cerr<<"Auxpass1 \n";
+           auxpass2(cons);
+           std::cerr<<"Auxpass2 \n";
+           auxpass3(cons);
+           std::cerr<<"Auxpass3 \n";
+           auxpass4(cons);
+           std::cerr<<"Auxpass4 \n";
 
-      det1();
-      std::cerr<<"det1 \n";
-      det2();
-      std::cerr<<"det2 \n";
-      det3();
-      std::cerr<<"det3 \n";
-      det4();
-      std::cerr<<"det4 \n";
-      det5();
-      std::cerr<<"det5 \n";
-      det6();
-      std::cerr<<"det6 \n";
-      det7();
-      std::cerr<<"det7 \n";
+           cop1(cons);
+           std::cerr<<"Cop1 \n";
+           cop2(cons);
+           std::cerr<<"Cop2 \n";
 
-      /*discourse1();
-      discourse2();
-      discourse3();*/
+           csubjpass1(cons);
+           std::cerr<<"csubjpass1 \n";
+           csubjpass2(cons);
+           std::cerr<<"csubjpass2 \n";
 
-      //goesWith();
-      
+           det1(cons);
+           std::cerr<<"det1 \n";
+           det2(cons);
+           std::cerr<<"det2 \n";
+           det3(cons);
+           std::cerr<<"det3 \n";
+           det4(cons);
+           std::cerr<<"det4 \n";
+           det5(cons);
+           std::cerr<<"det5 \n";
+           det6(cons);
+           std::cerr<<"det6 \n";
+           det7(cons);
+           std::cerr<<"det7 \n";
 
-      infmod1();
-      std::cerr<<"infmod1 \n";
-      infmod2();
-      std::cerr<<"infmod2 \n";
+           /*discourse1(cons);
+           discourse2(cons);
+           discourse3(cons);*/
 
-      mark1(cons);
-      std::cerr<<"mark1 \n";
-      mark2(cons);
-      std::cerr<<"mark2 \n";
+           //goesWith(cons);
 
-      /*mwe1();
-      mwe2();
-      mwe3();
-      mwe4();
-      mwe5();
-      mwe6();*/
 
-      neg1();
-      std::cerr<<"neg1 \n";
-      neg2();
-      std::cerr<<"neg2 \n";
-      neg3();
-      std::cerr<<"neg3 \n";
+           infmod1(cons);
+           std::cerr<<"infmod1 \n";
+           infmod2(cons);
+           std::cerr<<"infmod2 \n";
 
-      nn1(cons);
-      std::cerr<<"nn1 \n";
-      nn2(cons);
-      std::cerr<<"nn2 \n";
-      nn3(cons);
-      std::cerr<<"nn3 \n";
-      nn4(cons);
-      std::cerr<<"nn4 \n";
+           mark1(cons);
+           std::cerr<<"mark1 \n";
+           mark2(cons);
+           std::cerr<<"mark2 \n";
 
-      //npadvmod1();
-      //npadvmod2();
-      //npadvmod3();
-      //npadvmod4();
-      //npadvmod5();
+           /*mwe1(cons);
+           mwe2(cons);
+           mwe3(cons);
+           mwe4(cons);
+           mwe5(cons);
+           mwe6(cons);*/
 
-      num1();
-      std::cerr<<"num1 \n";
-      num2();
-      std::cerr<<"num2 \n";
+           neg1(cons);
+           std::cerr<<"neg1 \n";
+           neg2(cons);
+           std::cerr<<"neg2 \n";
+           neg3(cons);
+           std::cerr<<"neg3 \n";
 
-      number1();
-      std::cerr<<"number1 \n";
+           nn1(cons);
+           std::cerr<<"nn1 \n";
+           nn2(cons);
+           std::cerr<<"nn2 \n";
+           nn3(cons);
+           std::cerr<<"nn3 \n";
+           nn4(cons);
+           std::cerr<<"nn4 \n";
 
-      parataxis1();
-      std::cerr<<"parataxis1 \n";
-      parataxis2();
-      std::cerr<<"parataxis2 \n";
-      parataxis3();
-      std::cerr<<"parataxis3 \n";
-      parataxis4();
-      std::cerr<<"parataxis4 \n";
+           //npadvmod1(cons);
+           //npadvmod2(cons);
+           //npadvmod3(cons);
+           //npadvmod4(cons);
+           //npadvmod5(cons);
 
-      partmod1();
-      std::cerr<<"partmod1 \n";
-      partmod2();
-      std::cerr<<"partmod2 \n";
-      partmod3();
-      std::cerr<<"partmod3 \n";
-      partmod4();
-      std::cerr<<"partmod4 \n";
+           num1(cons);
+           std::cerr<<"num1 \n";
+           num2(cons);
+           std::cerr<<"num2 \n";
 
-      poss1();
-      std::cerr<<"poss1 \n";
-      poss2();
-      std::cerr<<"poss2 \n";
-      poss21();
-      std::cerr<<"poss21 \n";
-      poss3();
-      std::cerr<<"poss3 \n";
+           number1(cons);
+           std::cerr<<"number1 \n";
 
-      possessive1();
-      std::cerr<<"possessive1 \n";
-      possessive2();
-      std::cerr<<"possessive21 \n";
+           parataxis1(cons);
+           std::cerr<<"parataxis1 \n";
+           parataxis2(cons);
+           std::cerr<<"parataxis2 \n";
+           parataxis3(cons);
+           std::cerr<<"parataxis3 \n";
+           parataxis4(cons);
+           std::cerr<<"parataxis4 \n";
 
-      preconj1();
-      std::cerr<<"preconj1 \n";
-      preconj2();
-      std::cerr<<"preconj2 \n";
-      preconj3();
-      std::cerr<<"preconj3 \n";
-      preconj4();
-      std::cerr<<"preconj4 \n";
-      preconj5();
-      std::cerr<<"preconj5 \n";
+           partmod1(cons);
+           std::cerr<<"partmod1 \n";
+           partmod2(cons);
+           std::cerr<<"partmod2 \n";
+           partmod3(cons);
+           std::cerr<<"partmod3 \n";
+           partmod4(cons);
+           std::cerr<<"partmod4 \n";
 
-      predet1();
-      std::cerr<<"predet1 \n";
-      predet2();
-      std::cerr<<"predet2 \n";
-      predet3();
-      std::cerr<<"predet3 \n";
+           poss1(cons);
+           std::cerr<<"poss1 \n";
+           poss2(cons);
+           std::cerr<<"poss2 \n";
+           poss21(cons);
+           std::cerr<<"poss21 \n";
+           poss3(cons);
+           std::cerr<<"poss3 \n";
 
-      prep1();
-      std::cerr<<"prep1 \n";
-      prep2();
-      std::cerr<<"prep2 \n";
-      prep3();
-      std::cerr<<"prep3 \n";
-      prep4();
-      std::cerr<<"prep4 \n";
+           possessive1(cons);
+           std::cerr<<"possessive1 \n";
+           possessive2(cons);
+           std::cerr<<"possessive21 \n";
 
-      //prt1();
-      prt2();
-      std::cerr<<"prt2 \n";
+           preconj1(cons);
+           std::cerr<<"preconj1 \n";
+           preconj2(cons);
+           std::cerr<<"preconj2 \n";
+           preconj3(cons);
+           std::cerr<<"preconj3 \n";
+           preconj4(cons);
+           std::cerr<<"preconj4 \n";
+           preconj5(cons);
+           std::cerr<<"preconj5 \n";
 
-      quantmod1();
-      std::cerr<<"quantmod1 \n";
+           predet1(cons);
+           std::cerr<<"predet1 \n";
+           predet2(cons);
+           std::cerr<<"predet2 \n";
+           predet3(cons);
+           std::cerr<<"predet3 \n";
 
-      rcmod1();
-      std::cerr<<"rcmod1 \n";
-      rcmod2();
-      std::cerr<<"rcmod2 \n";
-      rcmod3();
-      std::cerr<<"rcmod3 \n";
-      rcmod4();
-      std::cerr<<"rcmod4 \n";
-      rcmod5();
-      std::cerr<<"rcmod5 \n";
+           prep1(cons);
+           std::cerr<<"prep1 \n";
+           prep2(cons);
+           std::cerr<<"prep2 \n";
+           prep3(cons);
+           std::cerr<<"prep3 \n";
+           prep4(cons);
+           std::cerr<<"prep4 \n";
 
-      rel1();
-      std::cerr<<"rel1 \n";
+           //prt1(cons);
+           prt2(cons);
+           std::cerr<<"prt2 \n";
 
-      tmod1();
-      std::cerr<<"tmod1 \n";
-      tmod2();
-      std::cerr<<"tmod2 \n";
-      tmod3();
-      std::cerr<<"tmod3 \n";
-      tmod4();
-      std::cerr<<"tmod4 \n";
-      tmod5();
-      std::cerr<<"tmod5 \n";
-      tmod6();
-      std::cerr<<"tmod6 \n";
-      tmod7();
-      std::cerr<<"tmod7 \n";
-      tmod8();
-      std::cerr<<"tmod8 \n";
-      tmod9();
-      std::cerr<<"tmod9 \n";
+           quantmod1(cons);
+           std::cerr<<"quantmod1 \n";
 
+           rcmod1(cons);
+           std::cerr<<"rcmod1 \n";
+           rcmod2(cons);
+           std::cerr<<"rcmod2 \n";
+           rcmod3(cons);
+           std::cerr<<"rcmod3 \n";
+           rcmod4(cons);
+           std::cerr<<"rcmod4 \n";
+           rcmod5(cons);
+           std::cerr<<"rcmod5 \n";
+
+           rel1(cons);
+           std::cerr<<"rel1 \n";
+
+           tmod1(cons);
+           std::cerr<<"tmod1 \n";
+           tmod2(cons);
+           std::cerr<<"tmod2 \n";
+           tmod3(cons);
+           std::cerr<<"tmod3 \n";
+           tmod4(cons);
+           std::cerr<<"tmod4 \n";
+           tmod5(cons);
+           std::cerr<<"tmod5 \n";
+           tmod6(cons);
+           std::cerr<<"tmod6 \n";
+           tmod7(cons);
+           std::cerr<<"tmod7 \n";
+           tmod8(cons);
+           std::cerr<<"tmod8 \n";
+           tmod9(cons);
+           std::cerr<<"tmod9 \n";
 
 
 
@@ -2071,12 +2070,12 @@ public:
 
       //"NX|NML < (CC|CONJP $- __) < (/^,$/ $- /^(?:A|N|V|PP|PRP|J|W|R|S)/=target)",
                       // to take the conjunct in a preconjunct structure "either X or Y"
-      bool buildConj8(){
-    	  if (node.constituent==PENN_CON_NX){
+      bool buildConj8(const unsigned long &cons){
+    	  if (cons==PENN_CON_NX){
     		  bool firstCond=false;
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
-    			  if (childs->node->constituent==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
+    			  if (CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
     				  if (childs->previous!=0){
     					  firstCond=true;
     				  }
@@ -2112,12 +2111,12 @@ public:
       //"WHNP|WHNP-TMP|WHNP-ADV|NP|NP-TMP|NP-ADV < (PRN=target <, /^-LRB-$/ <- /^-RRB-$/ !<< /^(?:POS|(?:WP|PRP)\\$|[,$#]|CC|RB|CD)$/ <+(NP) (NNP|NN < /^(?:[A-Z]\\.?){2,}/) )"
       
       
-               bool appos5(){
-             	  if (node.constituent==PENN_CON_WHNP || node.constituent==PENN_CON_NP){
+               bool appos5(const unsigned long &cons){
+             	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP){
              		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
              		  while(childs!=0){
              			  const CStateNode* targ=childs->node;
-             			  if (targ->constituent==PENN_CON_PRN && !isLinked(&node,targ)){
+             			  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_PRN && !isLinked(&node,targ)){
              				  bool firstCond=false; //<, /^-LRB-$/
              				  bool secondCond=false; // <- /^-RRB-$/
              				  bool thirdCond=true; //!<< /^(?:POS|(?:WP|PRP)\\$|[,$#]|CC|RB|CD)$/

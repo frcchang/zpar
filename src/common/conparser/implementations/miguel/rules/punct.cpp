@@ -1,7 +1,7 @@
 
 
    //"__ < /^(?:\\.|:|,|''|``|\\*|-LRB-|-RRB-|HYPH)$/=target"
-     bool buildPunct1() {
+     inline const bool & buildPunct1(const unsigned long &cons) {
     	 CStateNodeList* childs=node.m_umbinarizedSubNodes;
     	 while(childs!=0){
     		 const CStateNode* child=childs->node;
@@ -34,6 +34,6 @@
 
 //"__ < (NFP=target !< /^(?:[<>]?[:;=8][\\-o\\*']?(?:-RRB-|-LRB-|[DPdpO\\/\\\\\\:}{@\\|\\[\\]])|(?:-RRB-|-LRB-|[DPdpO\\/\\\\\\:}{@\\|\\[\\]])[\\-o\\*']?[:;=8][<>]?)$/"
 //              + "!< /^(?:-LRB-)?[\\-\\^x=~<>'][_.]?[\\-\\^x=~<>'](?:-RRB-)?$/)"
-bool buildPunct2() {
+     inline const bool & buildPunct2(const unsigned long &cons) {
 	//I think we can safely ignore it, since we don't have NFP in our data set.
 }

@@ -1,10 +1,10 @@
  //"S|SQ|SINV < (NP=target <+(NP) EX)"
-     bool buildExpl1() {
-        if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV) {
+     inline const bool &buildExpl1(const unsigned long &cons) {
+        if (cons==PENN_CON_S || cons==PENN_CON_SQ || cons==PENN_CON_SINV) {
      	   CStateNodeList* childsS=node.m_umbinarizedSubNodes;
      	   while (childsS!=0) {
      		   const CStateNode* npTarg=childsS->node;
-     		   if (npTarg->constituent==PENN_CON_NP && (!isLinked(&node, npTarg))){
+     		   if (CConstituent::clearTmp(npTarg->constituent.code())==PENN_CON_NP && (!isLinked(&node, npTarg))){
      		   CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
 
 				while(childsNp!=0) {
@@ -17,7 +17,7 @@
     		      				return true;
     		      			}
 					}
-					else if (npChild->constituent==PENN_CON_NP) { //zero or more REMEMBER, this is why we have the thing shown above.
+					else if (CConstituent::clearTmp(npChild->constituent.code())==PENN_CON_NP) { //zero or more REMEMBER, this is why we have the thing shown above.
 						CStateNodeList* npsChain=new CStateNodeList();
       						  //std::cout<<"findingchain\n";
       					findChainTargetPos(PENN_CON_NP,PENN_TAG_EX,npChild,npsChain);

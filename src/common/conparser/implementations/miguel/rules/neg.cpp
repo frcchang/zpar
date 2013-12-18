@@ -1,8 +1,8 @@
 
 //"/^(?:VP|NP(?:-TMP|-ADV)?|ADJP|SQ|S|FRAG|CONJP|PP)$/< (RB=target < " + NOT_PAT + ")",
-     bool neg1(){
-    	 if (node.constituent==PENN_CON_VP ||node.constituent==PENN_CON_NP ||node.constituent==PENN_CON_ADJP ||node.constituent==PENN_CON_SQ ||node.constituent==PENN_CON_S
-    			 ||node.constituent==PENN_CON_FRAG ||node.constituent==PENN_CON_CONJP ||node.constituent==PENN_CON_PP){
+     inline const bool & neg1(const unsigned long &cons){
+    	 if (cons==PENN_CON_VP ||cons==PENN_CON_NP ||cons==PENN_CON_ADJP ||cons==PENN_CON_SQ ||cons==PENN_CON_S
+    			 ||cons==PENN_CON_FRAG ||cons==PENN_CON_CONJP ||cons==PENN_CON_PP){
 
     		 CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		 while(childs!=0){
@@ -27,12 +27,12 @@
      }
 
      //"VP|ADJP|S|SBAR|SINV|FRAG < (ADVP=target <# (RB < " + NOT_PAT + "))",
-        bool neg2(){
-       	 if (node.constituent==PENN_CON_VP || node.constituent==PENN_CON_ADJP ||node.constituent==PENN_CON_S || node.constituent==PENN_CON_SBAR || node.constituent==PENN_CON_SINV || node.constituent==PENN_CON_FRAG) {
+     inline const bool & neg2(const unsigned long &cons){
+       	 if (cons==PENN_CON_VP || cons==PENN_CON_ADJP ||cons==PENN_CON_S || cons==PENN_CON_SBAR || cons==PENN_CON_SINV || cons==PENN_CON_FRAG) {
        		 CStateNodeList* childs=node.m_umbinarizedSubNodes;
        		 while(childs!=0){
        			 const CStateNode* targ=childs->node;
-       			 if (targ->constituent==PENN_CON_ADVP && !(isLinked(&node,targ))){
+       			 if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_ADVP && !(isLinked(&node,targ))){
        				 CStateNodeList* childsTarg=targ->m_umbinarizedSubNodes;
        				 while(childsTarg!=0){
        					 const CStateNode* adv=childsTarg->node;
@@ -61,13 +61,13 @@
 
 
 // "VP > SQ $-- (RB=target < " + NOT_PAT + ")"
-   bool neg3(){
-  	 if (node.constituent==PENN_CON_SQ){
+     inline const bool &neg3(const unsigned long &cons){
+  	 if (cons==PENN_CON_SQ){
 
   		 CStateNodeList* childsSq=node.m_umbinarizedSubNodes;
   		 while(childsSq!=0){
   			 const CStateNode* head=childsSq->node;
-  			 if (head->constituent==PENN_CON_VP){
+  			 if (CConstituent::clearTmp(head->constituent.code())==PENN_CON_VP){
   				 CStateNodeList* leftSisters=childsSq->previous;
   				 while(leftSisters!=0){
   					 const CStateNode* targ=leftSisters->node;

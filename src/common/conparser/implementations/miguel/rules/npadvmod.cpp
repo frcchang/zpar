@@ -1,6 +1,6 @@
    //"@ADVP|ADJP|WHADJP|WHADVP|PP|WHPP <# (JJ|JJR|IN|RB|RBR !< notwithstanding $- (@NP=target !< NNP|NNPS))",
-      bool npadvmod1(){
-    	  if (node.constituent==PENN_CON_ADVP||node.constituent==PENN_CON_ADJP||node.constituent==PENN_CON_WHADJP||node.constituent==PENN_CON_PP||node.constituent==PENN_CON_WHPP) {
+     inline const bool &npadvmod1(const unsigned long &cons){
+    	  if (cons==PENN_CON_ADVP||cons==PENN_CON_ADJP||cons==PENN_CON_WHADJP||cons==PENN_CON_PP||cons==PENN_CON_WHPP) {
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  if (((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
@@ -21,7 +21,7 @@
     				  if (inCond){
     					  if (childs->previous!=0){
     						  const CStateNode* npTarg=childs->previous->node;
-    						  if (npTarg->constituent==PENN_CON_NP && !isLinked(&node,npTarg)){
+    						  if (CConstituent::clearTmp(npTarg->constituent.code())==PENN_CON_NP && !isLinked(&node,npTarg)){
     							  bool lastCond=true;
     							  CStateNodeList* childsNp=npTarg->m_umbinarizedSubNodes;
     							  while(childsNp!=0){
@@ -51,13 +51,13 @@
 
 
 //"@ADJP < (NN=target $++ /^JJ/) !< CC|CONJP",
-bool npadvmod2(){
-	 if (node.constituent==PENN_CON_ADJP){
+     inline const bool &npadvmod2(const unsigned long &cons){
+	 if (cons==PENN_CON_ADJP){
 		 CStateNodeList* childsAdjp=node.m_umbinarizedSubNodes;
 		 bool firstCondition=true;
 		 
 		 while(childsAdjp!=0){
-			 if (((*words)[childsAdjp->node->lexical_head].tag.code()==PENN_TAG_CC) || childsAdjp->node->constituent==PENN_CON_CONJP) {
+			 if (((*words)[childsAdjp->node->lexical_head].tag.code()==PENN_TAG_CC) || CConstituent::clearTmp(childsAdjp->node->constituent.code())==PENN_CON_CONJP) {
 				 firstCondition=false;
 			 }
 			 childsAdjp=childsAdjp->next;
@@ -93,7 +93,7 @@ bool npadvmod2(){
 
 
 //"@NP|WHNP < /^NP-ADV/=target",
-bool npadvmod3(){
+     inline const bool &npadvmod3(const unsigned long &cons){
 	  //I think we can safely ignore it...
 	//......
 
@@ -102,13 +102,13 @@ bool npadvmod3(){
 
 
 //"@NP <1 (@NP <<# /^%$/) <2 (@NP=target <<# days|month|months) !<3 __",
-     bool npadvmod4(){
-   	  if (node.constituent==PENN_CON_NP){
+     inline const bool &npadvmod4(const unsigned long &cons){
+   	  if (cons==PENN_CON_NP){
 
    		  CStateNodeList* childsNp=node.m_umbinarizedSubNodes;
    		  if (childsNp!=0){
    			  bool firstCond=false;
-   			  if (childsNp->node->constituent==PENN_CON_NP){
+   			  if (CConstituent::clearTmp(childsNp->node->constituent.code())==PENN_CON_NP){
    				  //
    				  CStateNodeList* desc=new CStateNodeList();
    				  listDescendants (childsNp->node->m_umbinarizedSubNodes, desc);
@@ -123,7 +123,7 @@ bool npadvmod3(){
    			  if (childsNp!=0 && firstCond){
    				  bool secCond=false;
    				  const CStateNode* targ=childsNp->node;
-   				  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
+   				  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP && !isLinked(&node,targ)){
    					  CStateNodeList* desc2=new CStateNodeList();
    					  listDescendants (targ->m_umbinarizedSubNodes, desc2);
    					  while(desc2!=0){
@@ -151,7 +151,7 @@ bool npadvmod3(){
 
 
 //"@VP < /^NP-ADV/=target",
-bool npadvmod5(){
+     inline const bool &npadvmod5(const unsigned long &cons){
 	 //I think we can safely ignore it...
 
 	//......

@@ -1,28 +1,28 @@
     //"SBAR <, WHNP|WHPP|WHADJP=target > /^NP/ [ !<, /^WHNP/ | < (S < (VP $-- (/^NP/ !< /^-NONE-$/)))]"
-     bool rel1(){
-    	 if (node.constituent==PENN_CON_NP){ //this is not the head.
+inline const bool &rel1(const unsigned long &cons){
+    	 if (cons==PENN_CON_NP){ //this is not the head.
     		 CStateNodeList* childsNp=node.m_umbinarizedSubNodes;
     		 while(childsNp!=0){
     			 const CStateNode* sbarHead=childsNp->node;
-    			 if (sbarHead->constituent==PENN_CON_SBAR){
+    			 if (CConstituent::clearTmp(sbarHead->constituent.code())==PENN_CON_SBAR){
     				 bool cond1=true;
     				 bool cond2=false;
     				 CStateNodeList* childsSbar=sbarHead->m_umbinarizedSubNodes;
     				 if (childsSbar!=0){
-    					 if (childsSbar->node->constituent==PENN_CON_WHNP){
+    					 if (CConstituent::clearTmp(childsSbar->node->constituent.code())==PENN_CON_WHNP){
     						 cond1=false;
     					 }
     				 }
     				 if (!cond1){
     					 while(childsSbar!=0){
-    						 if (childsSbar->node->constituent==PENN_CON_S){
+    						 if (CConstituent::clearTmp(childsSbar->node->constituent.code())==PENN_CON_S){
     							 CStateNodeList* childsS=childsSbar->node->m_umbinarizedSubNodes;
     							 while(childsS!=0){
-    								 if (childsS->node->constituent==PENN_CON_VP){
+    								 if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_VP){
     									 CStateNodeList* leftSisters=childsS->previous;
     									 while(leftSisters!=0){
 
-    										 if (leftSisters->node->constituent==PENN_CON_NP){
+    										 if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP){
     											CStateNodeList* childsL=leftSisters->node->m_umbinarizedSubNodes;
     											bool noneCondition=true;
     											while(childsL!=0){
@@ -49,7 +49,7 @@
     					 childsSbar=sbarHead->m_umbinarizedSubNodes;
     					 while(childsSbar!=0){
     						 const CStateNode* whTarg=childsSbar->node;
-    						 if ((whTarg->constituent==PENN_CON_WHNP ||whTarg->constituent==PENN_CON_WHPP ||whTarg->constituent==PENN_CON_WHADJP) && !isLinked(&node,whTarg)){
+    						 if ((CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHNP ||CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHPP ||CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHADJP) && !isLinked(&node,whTarg)){
     							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_REL);
     							 if (buildStanfordLink(label, whTarg->lexical_head, sbarHead->lexical_head)) {
     								 addLinked(&node,whTarg);

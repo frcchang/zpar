@@ -1,16 +1,16 @@
 
 //"VP|ADJP < NP-TMP=target",
-bool tmod1(){
+inline const bool &tmod1(const unsigned long &cons){
 //we can safely ignore it...NP-TMP is not in our data set.
 }
 
 //"VP|ADJP < (NP=target <# (/^NN/ < " + timeWordRegex + ") !$+ (/^JJ/ < old))",
-    bool tmod2(){
-  	  if (node.constituent==PENN_CON_VP || node.constituent==PENN_CON_ADJP){
+inline const bool &tmod2(const unsigned long &cons){
+  	  if (cons==PENN_CON_VP || cons==PENN_CON_ADJP){
   		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
   		  while(childs!=0){
   			  const CStateNode* targ=childs->node;
-  			  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
+  			  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP && !isLinked(&node,targ)){
   				  bool cond1=false;
   				  bool cond2=true;
   				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
@@ -63,23 +63,23 @@ bool tmod1(){
 
 
 //"@PP < (IN|TO|VBG|FW $++ (@NP $+ NP-TMP=target))",
-bool tmod3(){
+inline const bool &tmod3(const unsigned long &cons){
 //we can safely ignore it, NP-TMP is not in our data set.
 }
 
 //"@PP < (IN|TO|VBG|FW $++ (@NP $+ (NP=target <# (/^NN/ < " + timeWordRegex + "))))",
-      bool tmod4(){
-    	  if (node.constituent==PENN_CON_PP){// ||node.constituent==PENN_CON_WHPP){ //??
+inline const bool & tmod4(const unsigned long &cons){
+    	  if (cons==PENN_CON_PP){// ||cons==PENN_CON_WHPP){ //??
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  if ((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_IN || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG ||
     				  (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_TO || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_FW){
     				  CStateNodeList* rightSisters=childs->next;
     				  while(rightSisters!=0){
-    					  if (rightSisters->node->constituent==PENN_CON_NP){ //|| rightSisters->node->constituent==PENN_CON_WHNP){ //???
+    					  if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_NP){ //|| rightSisters->node->constituent.code())==PENN_CON_WHNP){ //???
     						  if (rightSisters->next!=0){
     							  const CStateNode* targ=rightSisters->next->node;
-    							  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
+    							  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP && !isLinked(&node,targ)){
     								  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
     								  while(childsT!=0){
     									  if (((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
@@ -113,18 +113,18 @@ bool tmod3(){
 
 
 //"S < (NP-TMP=target $++ VP [ $++ NP | $-- NP] )",
-bool tmod5(){
+inline const bool &tmod5(const unsigned long &cons){
 //we can safely ignore it....
 }
 
 
 //"S < (NP=target <# (/^NN/ < " + timeWordRegex + ") $++ (NP $++ VP))",
-      bool tmod6(){
-    	  if (node.constituent==PENN_CON_S){
+inline const bool &tmod6(const unsigned long &cons){
+    	  if (cons==PENN_CON_S){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
-    			  if (targ->constituent==PENN_CON_NP && !isLinked(&node,targ)){
+    			  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP && !isLinked(&node,targ)){
     				  CStateNodeList* childsNp=targ->m_umbinarizedSubNodes;
     				  while(childsNp!=0){
     					  if (((*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childsNp->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
@@ -136,10 +136,10 @@ bool tmod5(){
 
     				      			 CStateNodeList* rightSisters=childs->next;
     				      			 while(rightSisters!=0){
-    				      				 if (rightSisters->node->constituent==PENN_CON_NP){
+    				      				 if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_NP){
     				      					 CStateNodeList* rightSisters2=rightSisters->next;
     				      					 while(rightSisters2!=0){
-    				      						 if (rightSisters2->node->constituent==PENN_CON_VP){
+    				      						 if (CConstituent::clearTmp(rightSisters2->node->constituent.code())==PENN_CON_VP){
     				      							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
     				      							if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
     				      								addLinked(&node,targ);
@@ -168,17 +168,17 @@ bool tmod5(){
 
       //THIS ONE IS VERY VERY WEIRD (MIGUEL)
       //"SBAR < (@WHADVP < (WRB < when)) < (S < (NP $+ (VP !< (/^(?:VB|AUX)/ < " + copularWordRegex + " !$+ VP) ))) !$-- CC $-- NP > NP=target",
-      bool tmod7(){
-    	  if (node.constituent==PENN_CON_NP){ //this the target!
+inline const bool & tmod7(const unsigned long &cons){
+    	  if (cons==PENN_CON_NP){ //this the target!
     		  CStateNodeList* childsT=node.m_umbinarizedSubNodes;
     		  while(childsT!=0){
     			  const CStateNode* head=childsT->node;
-    			  if (head->constituent==PENN_CON_SBAR && !isLinked(&node,head)){ //the other way around, this is a relaxation of what we really want
+    			  if (CConstituent::clearTmp(head->constituent.code())==PENN_CON_SBAR && !isLinked(&node,head)){ //the other way around, this is a relaxation of what we really want
     				  CStateNodeList* leftSisters=childsT->previous;
     				  bool leftSistCond1=true;
     				  bool leftSistCond2=false;
     				  while(leftSisters!=0){
-    					  if (leftSisters->node->constituent==PENN_CON_NP){
+    					  if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP){
     						  leftSistCond2=true;
     					  }
     					  if ((*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
@@ -191,7 +191,7 @@ bool tmod5(){
     				  bool childsCond1=false;
     				  bool childsCond2=false;
     				  while(childsH!=0){
-    					  if (childsH->node->constituent==PENN_CON_WHNP){
+    					  if (CConstituent::clearTmp(childsH->node->constituent.code())==PENN_CON_WHNP){
     						  CStateNodeList* childsWh=childsH->node->m_umbinarizedSubNodes;
     						  while(childsWh!=0){
     							  if ((*words)[childsWh->node->lexical_head].tag.code()==PENN_TAG_WRB){
@@ -207,12 +207,12 @@ bool tmod5(){
     						  }
     					  }
     					  //(S < (NP $+ (VP !< (/^(?:VB|AUX)/ < " + copularWordRegex + " !$+ VP) )))
-    					  if (childsH->node->constituent==PENN_CON_S){
+    					  if (CConstituent::clearTmp(childsH->node->constituent.code())==PENN_CON_S){
     						  CStateNodeList* childsS=childsH->node->m_umbinarizedSubNodes;
     						  while(childsS!=0){
-    							  if (childsS->node->constituent==PENN_CON_NP){
+    							  if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_NP){
     								  if (childsS->next!=0){
-    									  if (childsS->next->node->constituent==PENN_CON_VP){
+    									  if (CConstituent::clearTmp(childsS->next->node->constituent.code())==PENN_CON_VP){
     										  CStateNodeList* childsVpnps=childsS->next->node->m_umbinarizedSubNodes;
     										  bool inCond=true; //we expect this to be true, but if the conditions inside the parenthesis match, them it will be false
     										  while(childsVpnps!=0){
@@ -220,7 +220,7 @@ bool tmod5(){
     												  bool copCond=false; //< " + copularWordRegex +
     												  bool sistCond=true; //!$+ VP
     												  if (childsVpnps->next!=0){
-    													  if (childsVpnps->next->node->constituent==PENN_CON_VP){
+    													  if (CConstituent::clearTmp(childsVpnps->next->node->constituent.code())==PENN_CON_VP){
     														  sistCond=false;
     													  }
     												  }
@@ -265,15 +265,15 @@ bool tmod5(){
 
 
 //"SBARQ < (@WHNP=target <# (/^NN/ < " + timeWordRegex + ")) < (SQ < @NP)",
-      bool tmod8(){
-    	  if (node.constituent==PENN_CON_SBARQ){
+inline const bool & tmod8(const unsigned long &cons){
+    	  if (cons==PENN_CON_SBARQ){
     		  bool secCond=false;
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
-    			  if (childs->node->constituent==PENN_CON_SQ){
+    			  if (CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_SQ){
     				  CStateNodeList* childsSq=childs->node->m_umbinarizedSubNodes;
     				  while(childsSq!=0){
-    					  if (childsSq->node->constituent==PENN_CON_NP){
+    					  if (CConstituent::clearTmp(childsSq->node->constituent.code())==PENN_CON_NP){
     						  secCond=true;
     					  }
     					  childsSq=childsSq->next;
@@ -285,7 +285,7 @@ bool tmod5(){
     			CStateNodeList* childs2=node.m_umbinarizedSubNodes;
     			while(childs2!=0){
     				const CStateNode* targ=childs2->node;
-    				if (targ->constituent==PENN_CON_WHNP && !isLinked(&node,targ)){
+    				if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHNP && !isLinked(&node,targ)){
     					CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
     						while(childsT!=0){
     							if (((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN || (*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER
@@ -315,6 +315,6 @@ bool tmod5(){
 
 
 //"NP < NP-TMP=target"
-bool tmod9(){
+inline const bool &tmod9(const unsigned long &cons){
 //we can safely ignore it...
 }

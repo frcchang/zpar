@@ -2,12 +2,12 @@
 
      //"VP < (@SBAR=target [ < (IN !< /^(?i:that|whether)$/) | <: (SINV <1 /^(?:VB|MD|AUX)/) | < (IN < that) < (RB|IN < so) ] )",
 
-     bool advcl1(){
-    	 if (node.constituent==PENN_CON_VP){
+inline const bool &advcl1(const unsigned long &cons){
+    	 if (cons==PENN_CON_VP){
     		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
     		while(childsVp!=0){
     			const CStateNode* sbarTarg=childsVp->node;
-    			if ((sbarTarg->constituent==PENN_CON_SBAR) && !(isLinked(&node,sbarTarg))) {
+    			if ((CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR) && !(isLinked(&node,sbarTarg))) {
     				bool firstCondition=false;
     				bool secondCondition=false;
     				bool thirdCondition=false;
@@ -33,7 +33,7 @@
     					//<: (SINV <1 /^(?:VB|MD|AUX)/)
     					if(childsSbar!=0){
     						const CStateNode* sinvChild=childsSbar->node;
-    						if (sinvChild->constituent==PENN_CON_SBAR && childsSbar->next==0){
+    						if (CConstituent::clearTmp(sinvChild->constituent.code())==PENN_CON_SBAR && childsSbar->next==0){
     							//I will assume that this <1 is like <,
     							CStateNodeList* childsSinv=sinvChild->m_umbinarizedSubNodes;
     							if(childsSinv!=0){
@@ -108,18 +108,18 @@
 
 
      //"S|SQ|SINV < (SBAR|SBAR-TMP=target <, (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/ !$+ VP)",
-        bool advcl2(){
-       	 if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV){
+inline const bool &advcl2(const unsigned long &cons){
+       	 if (cons==PENN_CON_S || cons==PENN_CON_SQ || cons==PENN_CON_SINV){
        		 CStateNodeList* childs=node.m_umbinarizedSubNodes;
        		 while(childs!=0){
        			 const CStateNode* sbarTarg=childs->node;
-       			 if (sbarTarg->constituent==PENN_CON_SBAR && !isLinked(&node,sbarTarg)){
+       			 if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR && !isLinked(&node,sbarTarg)){
        				 bool firstCond=false; //<, (IN !< /^(?i:that|whether)$/ !$+ (NN < order))
        				 bool secCond=true; //!$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/
        				 bool thirdCond=true; //!$+ VP
 
        				 if (childs->next!=0){
-       					 if (childs->next->node->constituent==PENN_CON_VP){
+       					 if (CConstituent::clearTmp(childs->next->node->constituent.code())==PENN_CON_VP){
        						 thirdCond=false;
        					 }
        				 }
@@ -127,7 +127,8 @@
        					 CStateNodeList* leftSisters=childs->previous;
        					 while(leftSisters!=0){
        						 const CStateNode* lSis=leftSisters->node;
-       						 if (lSis->constituent==PENN_CON_CONJP ||lSis->constituent==PENN_CON_INTJ ||lSis->constituent==PENN_CON_PP|| (*words)[lSis->lexical_head].tag.code()==PENN_TAG_CC||
+       						 if (CConstituent::clearTmp(lSis->constituent.code())==PENN_CON_CONJP ||CConstituent::clearTmp(lSis->constituent.code())==PENN_CON_INTJ
+       								 ||CConstituent::clearTmp(lSis->constituent.code())==PENN_CON_PP|| (*words)[lSis->lexical_head].tag.code()==PENN_TAG_CC||
        								 (*words)[lSis->lexical_head].word==g_word_comma ||(*words)[lSis->lexical_head].word==g_word_quotes){
        							 secCond=false;
        						 }
@@ -190,12 +191,12 @@
 
         //"S|SQ|SINV < (SBAR|SBAR-TMP=target <2 (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?$).*$/)",
 
-             bool advcl3(){
-            	 if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV){
+inline const bool &advcl3(const unsigned long &cons){
+            	 if (cons==PENN_CON_S || cons==PENN_CON_SQ || cons==PENN_CON_SINV){
             		 CStateNodeList* childs=node.m_umbinarizedSubNodes;
             		 while(childs!=0){
             			 const CStateNode* sbarTarg=childs->node;
-            			 if (sbarTarg->constituent==PENN_CON_SBAR && !isLinked(&node,sbarTarg)){
+            			 if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR && !isLinked(&node,sbarTarg)){
             				 bool firstCond=false; //<, (IN !< /^(?i:that|whether)$/ !$+ (NN < order))
             				 bool secCond=true; //!$-- /^(?!CC|CONJP|``|,|INTJ|PP(-.*)?).*$/
             				 //bool thirdCond=true; //!$+ VP (this is from advcl2)
@@ -203,7 +204,9 @@
             				 CStateNodeList* leftSisters=childs->previous;
             				 while(leftSisters!=0){
             					 const CStateNode* lSis=leftSisters->node;
-            					 if (lSis->constituent==PENN_CON_CONJP ||lSis->constituent==PENN_CON_INTJ ||lSis->constituent==PENN_CON_PP|| (*words)[lSis->lexical_head].tag.code()==PENN_TAG_CC||
+            					 if (CConstituent::clearTmp(lSis->constituent.code())==PENN_CON_CONJP
+            							 ||CConstituent::clearTmp(lSis->constituent.code())==PENN_CON_INTJ
+            							 ||CConstituent::clearTmp(lSis->constituent.code())==PENN_CON_PP|| (*words)[lSis->lexical_head].tag.code()==PENN_TAG_CC||
             							 (*words)[lSis->lexical_head].word==g_word_comma ||(*words)[lSis->lexical_head].word==g_word_quotes){
             						 secCond=false;
             					 }
@@ -262,19 +265,19 @@
              }
 
 //"S|SQ|SINV < (SBAR|SBAR-TMP=target <, (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) !$+ @VP $+ /^,$/ $++ @NP)"
-    bool advcl4(){
+inline const bool &advcl4(const unsigned long &cons){
 
-   	if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ || node.constituent==PENN_CON_SINV){
+   	if (cons==PENN_CON_S || cons==PENN_CON_SQ || cons==PENN_CON_SINV){
    		CStateNodeList* childsSSqS=node.m_umbinarizedSubNodes;
    		while(childsSSqS!=0){
    			const CStateNode* sbarTarg=childsSSqS->node;
-   			if (sbarTarg->constituent==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))){
+   			if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))){
    				bool secondCondition=true;
    				bool thirdCondition=false;
    				bool fourthCondition=false;
 
    				if (childsSSqS->next!=0){
-   					if (childsSSqS->next->node->constituent==PENN_CON_VP){
+   					if (CConstituent::clearTmp(childsSSqS->next->node->constituent.code())==PENN_CON_VP){
    						secondCondition=false;
    					}
    					else if ((*words)[childsSSqS->next->node->lexical_head].word==g_word_comma){
@@ -284,7 +287,7 @@
    				if (secondCondition && thirdCondition){
    					CStateNodeList* rightSisters=childsSSqS;
    					while(rightSisters!=0){
-   						if (rightSisters->node->constituent==PENN_CON_NP){
+   						if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_NP){
    							fourthCondition=true;
    						}
    						rightSisters=rightSisters->next;
@@ -340,12 +343,12 @@
 
 
     //"SBARQ < (SBAR|SBAR-TMP|SBAR-ADV=target <, (IN !< /^(?i:that|whether)$/ !$+ (NN < order)) $+ /^,$/ $++ @SQ|S|SBARQ)",
-      bool advcl5(){
-     	 if (node.constituent==PENN_CON_SBARQ){
+inline const bool &advcl5(const unsigned long &cons){
+     	 if (cons==PENN_CON_SBARQ){
      		 CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
      		 while(childsSbarq!=0){
      			 const CStateNode* sbarTarg=childsSbarq->node;
-     			 if (sbarTarg->constituent==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))){ //there are no subclasses, such as tmp or adv.
+     			 if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))){ //there are no subclasses, such as tmp or adv.
      				 bool secondCondition=false;
      				 bool thirdCondition=false;
 
@@ -358,7 +361,9 @@
      							 secondCondition=true;
      						 }
      					 }
-     					 if (rightSister->constituent==PENN_CON_S||rightSister->constituent==PENN_CON_SQ||rightSister->constituent==PENN_CON_SBARQ){
+     					 if (CConstituent::clearTmp(rightSister->constituent.code())==PENN_CON_S
+     							 ||CConstituent::clearTmp(rightSister->constituent.code())==PENN_CON_SQ
+     							 ||CConstituent::clearTmp(rightSister->constituent.code())==PENN_CON_SBARQ){
      						 thirdCondition=true;
      					 }
      					 rightSistersSbr=rightSistersSbr->next;
@@ -416,20 +421,20 @@
       }
 
       //"VP < (SBAR|SBAR-TMP=target <, (WHADVP|WHNP < (WRB !< /^(?i:how)$/)) !< (S < (VP < TO)))", // added the (S < (VP <TO)) part so that "I tell them how to do so" doesn't get a
-      bool advcl6(){
-     	 if (node.constituent==PENN_CON_VP){
+inline const bool &advcl6(const unsigned long &cons){
+     	 if (cons==PENN_CON_VP){
      		 CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
      		 while(childsVp!=0){
      			 const CStateNode* sbarTarg=childsVp->node;
-     			 if (sbarTarg->constituent==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))) {
+     			 if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))) {
      				 bool secondCondition=true;
      				 CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
      				 while(childsSbar!=0){
      					 const CStateNode* schild=childsSbar->node;
-     					 if (schild->constituent==PENN_CON_S){
+     					 if (CConstituent::clearTmp(schild->constituent.code())==PENN_CON_S){
      						 CStateNodeList* childsS=schild->m_umbinarizedSubNodes;
      						 while(childsS!=0){
-     							 if (childsS->node->constituent==PENN_CON_VP){
+     							 if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_VP){
      								 CStateNodeList* childsVp=childsS->node->m_umbinarizedSubNodes;
      								 while(childsVp!=0){
      									 if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO)) {
@@ -446,7 +451,8 @@
      				 childsSbar=sbarTarg->m_umbinarizedSubNodes;
      				 if (childsSbar!=0){ //first child. //<, (WHADVP|WHNP < (WRB !< /^(?i:how)$/))
      					 const CStateNode* whChild=childsSbar->node;
-     					 if (whChild->constituent==PENN_CON_WHNP || whChild->constituent==PENN_CON_WHADVP){
+     					 if (CConstituent::clearTmp(whChild->constituent.code())==PENN_CON_WHNP
+     							 || CConstituent::clearTmp(whChild->constituent.code())==PENN_CON_WHADVP){
      						 CStateNodeList* childsWh=whChild->m_umbinarizedSubNodes;
      						 while(childsWh!=0){
      							 const CStateNode* wrbChild=childsWh->node;
@@ -481,20 +487,20 @@
       }
 
 //"S|SQ < (SBAR|SBAR-TMP=target <, (WHADVP|WHNP < (WRB !< /^(?i:how)$/)) !< (S < (VP < TO)))",
-     bool advcl7(){
-    	 if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_SQ){
+inline const bool &advcl7(const unsigned long &cons){
+    	 if (cons==PENN_CON_S || cons==PENN_CON_SQ){
     		 CStateNodeList* childsSSQ=node.m_umbinarizedSubNodes;
     		 while(childsSSQ!=0){
     			 const CStateNode* sbarTarg=childsSSQ->node;
-    			 if (sbarTarg->constituent==PENN_CON_SBAR || !(isLinked(&node,sbarTarg))){
+    			 if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR || !(isLinked(&node,sbarTarg))){
     				 CStateNodeList* childsSbar=sbarTarg->m_umbinarizedSubNodes;
     				 bool secondCondition=true;
     				 while(childsSbar!=0){
     					 const CStateNode* sChildSbar=childsSbar->node;
-    					 if (sChildSbar->constituent==PENN_CON_S){
+    					 if (CConstituent::clearTmp(sChildSbar->constituent.code())==PENN_CON_S){
     						 CStateNodeList* childsS=sChildSbar->m_umbinarizedSubNodes;
     						 while(childsS!=0){
-    							 if (childsS->node->constituent==PENN_CON_VP){
+    							 if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_VP){
     								 CStateNodeList* childsVp=childsS->node->m_umbinarizedSubNodes;
     								 while(childsVp!=0){
     									 if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO)) {
@@ -513,7 +519,8 @@
     					 if (childsSbar!=0){
     						 //<, (WHADVP|WHNP < (WRB !< /^(?i:how)$/))
     						 const CStateNode* whChildS=childsSbar->node;
-    						 if (whChildS->constituent==PENN_CON_WHADJP ||whChildS->constituent==PENN_CON_WHNP){
+    						 if (CConstituent::clearTmp(whChildS->constituent.code())==PENN_CON_WHADJP
+    								 ||CConstituent::clearTmp(whChildS->constituent.code())==PENN_CON_WHNP){
     							 CStateNodeList* childsWh=whChildS->m_umbinarizedSubNodes;
     							 while(childsWh!=0){
     								 const CStateNode* wrbChildwh=childsWh->node;
@@ -550,16 +557,16 @@
      }
 
 //"@S < (@SBAR=target $++ @NP $++ @VP)",
-    bool advcl8(){
-   	 if (node.constituent==PENN_CON_S){
+inline const bool &advcl8(const unsigned long &cons){
+   	 if (cons==PENN_CON_S){
    		 CStateNodeList* childsS=node.m_umbinarizedSubNodes;
    		 while(childsS!=0){
    			 const CStateNode* sbarTarg=childsS->node;
-   			 if (sbarTarg->constituent==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))) {
+   			 if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR && !(isLinked(&node,sbarTarg))) {
    				 CStateNodeList* rightSistersSbar=childsS;
    				 bool firstCondition=false;
    				 while(rightSistersSbar!=0){
-   					 if (rightSistersSbar->node->constituent==PENN_CON_NP){
+   					 if (CConstituent::clearTmp(rightSistersSbar->node->constituent.code())==PENN_CON_NP){
    						 firstCondition=true;
    					 }
    					 rightSistersSbar=rightSistersSbar->next;
@@ -567,7 +574,7 @@
    				 if (firstCondition){
    					 rightSistersSbar=childsS;
    					 while(rightSistersSbar!=0){
-   						 if (rightSistersSbar->node->constituent==PENN_CON_VP){
+   						 if (CConstituent::clearTmp(rightSistersSbar->node->constituent.code())==PENN_CON_VP){
    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVCL);
    							 if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
    								 addLinked(&node,sbarTarg);
@@ -586,12 +593,12 @@
 
 
     //"@S < (@S=target < (VP < TO) $+ (/^,$/ $++ @NP))",
-    bool advcl9(){
-   	 if (node.constituent==PENN_CON_S){
+inline const bool &advcl9(const unsigned long &cons){
+   	 if (cons==PENN_CON_S){
    		 CStateNodeList* childsS=node.m_umbinarizedSubNodes;
    		 while(childsS!=0){
    			 const CStateNode* sTarg=childsS->node;
-   			 if (sTarg->constituent==PENN_CON_S && !(isLinked(&node,sTarg))){
+   			 if (CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_S && !(isLinked(&node,sTarg))){
    				 bool secondCondition=false;
    				 if (childsS->next!=0){
    					 const CStateNode* commaRightSister=childsS->next->node;
@@ -599,7 +606,7 @@
    						 if (childsS->next->next!=0){
    							 CStateNodeList* rightSisters=childsS->next->next;
    							 while(rightSisters!=0){
-   								 if (rightSisters->node->constituent==PENN_CON_NP){
+   								 if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_NP){
    									 secondCondition=true;
    								 }
    								 rightSisters=rightSisters->next;
@@ -611,7 +618,7 @@
    					 CStateNodeList* childsSIn=sTarg->m_umbinarizedSubNodes;
    					 while(childsSIn!=0){
    						 const CStateNode* vpChildS=childsSIn->node;
-   						 if (vpChildS->constituent==PENN_CON_VP){
+   						 if (CConstituent::clearTmp(vpChildS->constituent.code())==PENN_CON_VP){
    							 CStateNodeList* childsVp=vpChildS->m_umbinarizedSubNodes;
    							 while(childsVp!=0){
    								 if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO){

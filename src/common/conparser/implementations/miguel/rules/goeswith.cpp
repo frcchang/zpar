@@ -1,5 +1,5 @@
 
 //"__ < GW=target",
-bool goesWith(){
+inline const bool &goesWith(const unsigned long &cons){
 
 }

@@ -1,13 +1,14 @@
      //"VP < (PRN=target < S|SINV|SBAR)",
-     bool parataxis1(){
-     	if (node.constituent==PENN_CON_VP){
+     inline const bool &parataxis1(const unsigned long &cons){
+     	if (cons==PENN_CON_VP){
      		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
      		while(childsVp!=0){
      			const CStateNode* prnTarg=childsVp->node;
-     			if (prnTarg->constituent==PENN_CON_PRN && !(isLinked(&node, prnTarg))){
+     			if (CConstituent::clearTmp(prnTarg->constituent.code())==PENN_CON_PRN && !(isLinked(&node, prnTarg))){
      				CStateNodeList* childsPrn=prnTarg->m_umbinarizedSubNodes;
      				while(childsPrn!=0){
-     					if (childsPrn->node->constituent==PENN_CON_S ||childsPrn->node->constituent==PENN_CON_SINV|| childsPrn->node->constituent==PENN_CON_SBAR) {
+     					if (CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_S ||CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SINV
+     							|| CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SBAR) {
      						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
      						if (buildStanfordLink(label, prnTarg->lexical_head, node.lexical_head)) {
      							addLinked(&node,prnTarg);
@@ -23,27 +24,27 @@
      	return false;
      }
      //"VP $ (PRN=target [ < S|SINV|SBAR | < VP < @NP ] )"
-          bool parataxis2(){
+     inline const bool &parataxis2(const unsigned long &cons){
          	 CStateNodeList* childs=node.m_umbinarizedSubNodes;
          	 while(childs!=0){
          		 const CStateNode* vpHead=childs->node;
-         		 if (vpHead->constituent==PENN_CON_VP){
+         		 if (CConstituent::clearTmp(vpHead->constituent.code())==PENN_CON_VP){
          			 CStateNodeList* leftSisters=childs->previous;
          			 CStateNodeList* rightSisters=childs->next;
          			 while(leftSisters!=0){
          				 const CStateNode* prnTarg=leftSisters->node;
-         				 if (prnTarg->constituent==PENN_CON_PRN && !(isLinked(&node,prnTarg))){
+         				 if (CConstituent::clearTmp(prnTarg->constituent.code())==PENN_CON_PRN && !(isLinked(&node,prnTarg))){
          					 bool secCondition=false;
          					 bool thirdCondition=false;
          					 CStateNodeList* childsPrn=prnTarg->m_umbinarizedSubNodes;
          					 while(childsPrn!=0){
-         						 if (childsPrn->node->constituent==PENN_CON_S ||childsPrn->node->constituent==PENN_CON_SINV || childsPrn->node->constituent==PENN_CON_SBAR) {
+         						 if (CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_S ||CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SINV || CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SBAR) {
          							 secCondition=true;
          						 }
-         						 else if (childsPrn->node->constituent==PENN_CON_VP){
+         						 else if (CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_VP){
          							 CStateNodeList* childsVp=childsPrn->node->m_umbinarizedSubNodes;
          							 while(childsVp!=0){
-         								 if (childsVp->node->constituent==PENN_CON_NP){
+         								 if (CConstituent::clearTmp(childsVp->node->constituent.code())==PENN_CON_NP){
          									 thirdCondition=true;
          								 }
          								 childsVp=childsVp->next;
@@ -63,18 +64,18 @@
          			 }
          			 while(rightSisters!=0){
          			 	 const CStateNode* prnTarg=rightSisters->node;
-         			 	 if (prnTarg->constituent==PENN_CON_PRN && !(isLinked(&node,prnTarg))){
+         			 	 if (CConstituent::clearTmp(prnTarg->constituent.code())==PENN_CON_PRN && !(isLinked(&node,prnTarg))){
          			 		 bool secCondition=false;
          			     	 bool thirdCondition=false;
          			    	 CStateNodeList* childsPrn=prnTarg->m_umbinarizedSubNodes;
          			    	 while(childsPrn!=0){
-         			    		 if (childsPrn->node->constituent==PENN_CON_S ||childsPrn->node->constituent==PENN_CON_SINV || childsPrn->node->constituent==PENN_CON_SBAR) {
+         			    		 if (CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_S ||CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SINV || CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SBAR) {
          			    			 secCondition=true;
          			     		 }
-         			     		 else if (childsPrn->node->constituent==PENN_CON_VP){
+         			     		 else if (CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_VP){
          			     		 CStateNodeList* childsVp=childsPrn->node->m_umbinarizedSubNodes;
          			     		 while(childsVp!=0){
-         			     			 if (childsVp->node->constituent==PENN_CON_NP){
+         			     			 if (CConstituent::clearTmp(childsVp->node->constituent.code())==PENN_CON_NP){
          			     				 thirdCondition=true;
          			     			 }
          			     			 childsVp=childsVp->next;
@@ -100,15 +101,15 @@
           
 
           //"S|VP < (/^:$/ $+ /^S/=target) !<, (__ $++ CC|CONJP)",
-               bool parataxis3(){
-              	 if (node.constituent==PENN_CON_S || node.constituent==PENN_CON_VP){
+     inline const bool &parataxis3(const unsigned long &cons){
+              	 if (cons==PENN_CON_S || cons==PENN_CON_VP){
               		 
               		 bool secondCondition=true;
               		 CStateNodeList* childsSVP=node.m_umbinarizedSubNodes;
               		 if (childsSVP!=0){
               			 CStateNodeList* rightSisters=childsSVP->next;
               			 while(rightSisters!=0){
-              				 if (rightSisters->node->constituent==PENN_CON_CONJP || ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC)) {
+              				 if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_CONJP || ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC)) {
               					 secondCondition=false;
               				 }
               				 rightSisters=rightSisters->next;
@@ -121,11 +122,11 @@
               					 if (childsSVP->next!=0){
               						 const CStateNode* sTarg=childsSVP->node;
               						 //PENN_CON_S, PENN_CON_SBAR, PENN_CON_SBARQ, PENN_CON_SINV, PENN_CON_SQ
-              						 if ((sTarg->constituent==PENN_CON_S 
-              								 ||sTarg->constituent==PENN_CON_SBAR 
-              								 ||sTarg->constituent==PENN_CON_SBARQ 
-              								 ||sTarg->constituent==PENN_CON_SINV
-              								 ||sTarg->constituent==PENN_CON_SQ) && !(isLinked(&node,sTarg)) ){
+              						 if ((CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_S
+              								 ||CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_SBAR
+              								 ||CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_SBARQ
+              								 ||CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_SINV
+              								 ||CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_SQ) && !(isLinked(&node,sTarg)) ){
               							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
               							 if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
               								 addLinked(&node,sTarg);
@@ -143,12 +144,12 @@
 
 
                //"@S < (@S $.. @S=target) !< @CC|CONJP",
-                   bool parataxis4(){
-                  	 if (node.constituent==PENN_CON_S){
+     inline const bool &parataxis4(const unsigned long &cons){
+                  	 if (cons==PENN_CON_S){
                   		 CStateNodeList* childsS=node.m_umbinarizedSubNodes;
                   		 bool secCond=true;
                   		 while(childsS!=0){
-                  			 if (childsS->node->constituent==PENN_CON_CONJP || ((*words)[childsS->node->lexical_head].tag.code()==PENN_TAG_CC)) {
+                  			 if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_CONJP || ((*words)[childsS->node->lexical_head].tag.code()==PENN_TAG_CC)) {
                   				 secCond=false;
                   			 }
                   			 childsS=childsS->next;
@@ -156,11 +157,11 @@
                   		 if (secCond){
                   			 childsS=node.m_umbinarizedSubNodes;
                   		 		while(childsS!=0){
-                  		 			if (childsS->node->constituent==PENN_CON_S){
+                  		 			if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_S){
                   		 				CStateNodeList* rightSisters=childsS->next;
                   		 				while(rightSisters!=0){
                   		 					const CStateNode* sTarg=rightSisters->node;
-                  		 					if (sTarg->constituent==PENN_CON_S && !isLinked(&node,sTarg)){
+                  		 					if (CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_S && !isLinked(&node,sTarg)){
                   		 						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
                   		 						if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
                   		 							addLinked(&node,sTarg);

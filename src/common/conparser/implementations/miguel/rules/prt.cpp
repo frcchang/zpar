@@ -1,7 +1,7 @@
 
 //VP < PRT=target"
-     bool prt1(){
-     	if (node.constituent==PENN_CON_VP) {
+inline const bool & prt1(const unsigned long &cons){
+     	if (cons==PENN_CON_VP) {
      		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
      		while(childsVp!=0){
      			//I DON¡T know what prt is
@@ -11,8 +11,8 @@
      }
 
 //"ADJP < /^VB/ < RP=target"
-bool prt2(){
-	if (node.constituent==PENN_CON_ADJP) {
+inline const bool & prt2(const unsigned long &cons){
+	if (cons==PENN_CON_ADJP) {
 		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
 		bool firstCondition=false;
 	    while(childsVp!=0){

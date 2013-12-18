@@ -1,17 +1,17 @@
 
  //"VP < NP=target <(/^(?:VB|AUX)/ < " + copularWordRegex + ") !$ (NP < EX)",
-    bool buildAttr1() {
-    	if (node.constituent==PENN_CON_VP){
+inline const bool &buildAttr1(const unsigned long &cons) {
+    	if (cons==PENN_CON_VP){
     		CStateNodeList* childsVp=node.m_umbinarizedSubNodes;
     		while (childsVp!=0){
     			const CStateNode* npTarg=childsVp->node;
-    			if (npTarg->constituent==PENN_CON_NP && !(isLinked(&node, npTarg))){
+    			if (CConstituent::clearTmp(npTarg->constituent.code())==PENN_CON_NP && !(isLinked(&node, npTarg))){
     				//1st check whether there is no sister that looks like (NP < EX)
     				bool secondCondition=true;
     				CStateNodeList* leftSisters=childsVp->previous;
     				while(leftSisters!=0){
     					const CStateNode* npLeftSister=leftSisters->node;
-    					if (npLeftSister->constituent==PENN_CON_NP){
+    					if (CConstituent::clearTmp(npLeftSister->constituent.code())==PENN_CON_NP){
     						CStateNodeList* childsExofNp=npLeftSister->m_umbinarizedSubNodes;
     						while(childsExofNp!=0){  //Big doubt: do I have to check the childs of NP, or the EX is the lexical head of the NP?????? Yue?
     							const CStateNode* childEx=childsExofNp->node;
@@ -26,7 +26,7 @@
     				CStateNodeList* rightSisters=childsVp->next;
     				while(rightSisters!=0){
     					const CStateNode* npRightSister=rightSisters->node;
-    				    if (npRightSister->constituent==PENN_CON_NP){
+    				    if (CConstituent::clearTmp(npRightSister->constituent.code())==PENN_CON_NP){
     				    	CStateNodeList* childsExofNp=npRightSister->m_umbinarizedSubNodes;
     				    	while(childsExofNp!=0){
     				    		const CStateNode* childEx=childsExofNp->node;
@@ -68,28 +68,28 @@
     }
 
     //"SBARQ < (WHNP|WHADJP=target $+ (SQ < (/^(?:VB|AUX)/ < " + copularWordRegex + " !$++ VP) !< (VP <- (PP <:IN)) !<- (PP <: IN)))
-    bool buildAttr2() {
+inline const bool &buildAttr2(const unsigned long &cons) {
     // A<:B (B is the only child of A)
     //A <- B (B is the last child of A)
     // A $+ B (A is the immediate left sister of B)
-    	if (node.constituent==PENN_CON_SBARQ){
+    	if (cons==PENN_CON_SBARQ){
     		CStateNodeList* childsSbarq=node.m_umbinarizedSubNodes;
     		while(childsSbarq!=0){
     			const CStateNode* whTarg=childsSbarq->node;
-    			if ((whTarg->constituent==PENN_CON_WHNP || whTarg->constituent==PENN_CON_WHADJP) && (!isLinked(&node,whTarg))) {
+    			if ((CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHNP || CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHADJP) && (!isLinked(&node,whTarg))) {
     				if (childsSbarq->previous!=0) {
     					const CStateNode* sqSisterWh=childsSbarq->previous->node;
-    					if (sqSisterWh->constituent==PENN_CON_SQ) {
+    					if (CConstituent::clearTmp(sqSisterWh->constituent.code())==PENN_CON_SQ) {
     						bool secondCondition=true;
     						bool thirdCondition=true;
     						CStateNodeList* childsSq=sqSisterWh->m_umbinarizedSubNodes;
     						while(childsSq!=0){
     							const CStateNode* vpChildSq=childsSq->node;
-    							if (vpChildSq->constituent==PENN_CON_VP) {
+    							if (CConstituent::clearTmp(vpChildSq->constituent.code())==PENN_CON_VP) {
     								CStateNodeList* childsVp=vpChildSq->m_umbinarizedSubNodes;
     								while(childsVp!=0){
     									const CStateNode* ppChildVp=childsVp->node;
-    									if (childsVp->next==0 && ppChildVp->constituent==PENN_CON_PP) { //it is the last child of
+    									if (childsVp->next==0 && CConstituent::clearTmp(ppChildVp->constituent.code())==PENN_CON_PP) { //it is the last child of
     										CStateNodeList* childsPP=ppChildVp->m_umbinarizedSubNodes;
     										if (childsPP->next==0 && ((*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_IN)){
     											secondCondition=false;
@@ -104,7 +104,7 @@
     							childsSq=sqSisterWh->m_umbinarizedSubNodes;
     							while(childsSq!=0) {
     								const CStateNode* ppChildSq=childsSq->node;
-    								if (childsSq->next==0 && ppChildSq->constituent==PENN_CON_PP){
+    								if (childsSq->next==0 && CConstituent::clearTmp(ppChildSq->constituent.code())==PENN_CON_PP){
     									CStateNodeList* childsPP=ppChildSq->m_umbinarizedSubNodes;
     									if (childsPP->next==0 && ((*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_IN)){
     										thirdCondition=false;
@@ -128,7 +128,7 @@
     											CStateNodeList* sistersVb=childsSq->next;
     											while(sistersVb!=0){
     												const CStateNode* vpSisterVb=sistersVb->node;
-    												if (vpSisterVb->constituent==PENN_CON_VP){
+    												if (CConstituent::clearTmp(vpSisterVb->constituent.code())==PENN_CON_VP){
     													insideCondition=false;
     												}
     												sistersVb=sistersVb->next;
@@ -157,8 +157,8 @@
     }
 
     //"SBARQ <, (WHNP|WHADJP=target !< WRB) <+(SQ|SINV|S|VP) (VP !< (S < (VP < TO)) < (/^(?:VB|AUX)/ < " + copularWordRegex + " $++ (VP < VBN|VBD)) !<- PRT !<- (PP <: IN) $-- (NP !< /^-NONE-$/))",
-         bool buildAttr3() {
-       	  if (node.constituent==PENN_CON_SBARQ){
+inline const bool &buildAttr3(const unsigned long &cons) {
+       	  if (cons==PENN_CON_SBARQ){
 
        		  bool secFinalCond=false;
        		  CConstituentList* cl=new CConstituentList();
@@ -185,11 +185,11 @@
        					  if (childsParent->node==vpsChain->node){
        						  CStateNodeList* leftSisters=childsParent->previous;
        						  while(leftSisters!=0){
-       							  if (leftSisters->node->constituent==PENN_CON_NP){
+       							  if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP){
        								  CStateNodeList* childsNp=leftSisters->node->m_umbinarizedSubNodes;
        								  bool noneCond=true;
        								  while(childsNp!=0){
-       									  if (childsNp->node->constituent==PENN_CON_NONE){
+       									  if (CConstituent::clearTmp(childsNp->node->constituent.code())==PENN_CON_NONE){
        										  noneCond=false;
        									  }
        									  childsNp=childsNp->next;
@@ -207,10 +207,10 @@
        			  if (fifthCond){
        				  CStateNodeList* childs=vpsChain->node->m_umbinarizedSubNodes;
        				  while(childs!=0){
-       					  if (childs->next==0 && childs->node->constituent==PENN_CON_PRN){
+       					  if (childs->next==0 && CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_PRN){
        						  thirdCond=false;
        					  }
-       					  else if (childs->next==0 && childs->node->constituent==PENN_CON_PP){
+       					  else if (childs->next==0 && CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_PP){
        						  CStateNodeList* childsPP=childs->node->m_umbinarizedSubNodes;
        						  while(childsPP!=0){
        							  if ((*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_IN){
@@ -219,10 +219,10 @@
        							  childsPP=childsPP->next;
        						  }
        					  }
-       					  else if (childs->node->constituent==PENN_CON_S){ //!< (S < (VP < TO))
+       					  else if (CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_S){ //!< (S < (VP < TO))
        						  CStateNodeList* childsS=childs->node->m_umbinarizedSubNodes;
        						  while(childsS!=0){
-       							  if (childsS->node->constituent==PENN_CON_VP){
+       							  if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_VP){
        								  CStateNodeList* childsVp=childsS->node->m_umbinarizedSubNodes;
        								  while(childsVp!=0){
        									  if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO){
@@ -247,7 +247,7 @@
 
        						  CStateNodeList* rightSisters=childs->next;
        						  while(rightSisters!=0){
-       							  if (rightSisters->node->constituent==PENN_CON_VP){
+       							  if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_VP){
        								  CStateNodeList* childsVp=rightSisters->node->m_umbinarizedSubNodes;
        								  while(childsVp!=0){
        									  if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE || (*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST){
@@ -280,7 +280,7 @@
        			  CStateNodeList* childsSbar=node.m_umbinarizedSubNodes;
        			  if (childsSbar!=0){
        				 const CStateNode* targ=childsSbar->node;
-       				 if ((targ->constituent==PENN_CON_WHNP || targ->constituent==PENN_CON_WHADJP) && isLinked(&node,targ)){
+       				 if ((CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHNP || CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHADJP) && isLinked(&node,targ)){
        					 bool wrbCond=true;
        					 CStateNodeList* childsTarg=targ->m_umbinarizedSubNodes;
        					 while(childsTarg!=0){
@@ -304,9 +304,9 @@
          }
 
 //"SQ <, (/^(?:VB|AUX)/ < " + copularWordRegex + ") < (NP=target $-- (NP !< EX))"
-  bool buildAttr4() {
+inline const bool &buildAttr4(const unsigned long &cons) {
   	//A <, B  (B is the FIRST child of A)
-  	if (node.constituent==PENN_CON_SQ) {
+  	if (cons==PENN_CON_SQ) {
   		if (node.m_umbinarizedSubNodes!=0) {
   		const CStateNode* firstChild=node.m_umbinarizedSubNodes->node;
   		bool firstCondition=false; //SQ<, (/^(?:VB|AUX)/ < " + copularWordRegex + ")
@@ -323,12 +323,12 @@
   			CStateNodeList* childsSQ=node.m_umbinarizedSubNodes;
   			while(childsSQ!=0){
   				const CStateNode* npTargChildSq=childsSQ->node;
-  				if (npTargChildSq->constituent==PENN_CON_NP && (!isLinked(&node,npTargChildSq))) {
+  				if (CConstituent::clearTmp(npTargChildSq->constituent.code())==PENN_CON_NP && (!isLinked(&node,npTargChildSq))) {
   					//A $--B (A is RIGHT sister of B)
   					CStateNodeList* leftSistersNp=childsSQ->previous;
   					while(leftSistersNp!=0){
   						const CStateNode* sisterNp=leftSistersNp->node;
-  						if (sisterNp->constituent==PENN_CON_NP) {
+  						if (CConstituent::clearTmp(sisterNp->constituent.code())==PENN_CON_NP) {
   							CStateNodeList* childsNpNp=sisterNp->m_umbinarizedSubNodes;
   							bool noEx=true;
   							while(childsNpNp!=0) {
