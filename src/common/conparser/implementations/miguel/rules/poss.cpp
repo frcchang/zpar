@@ -1,7 +1,7 @@
 //"/^(?:WH)?(?:NP|INTJ|ADJP|PRN|NAC|NX|NML)(?:-TMP|-ADV)?$/ < /^(?:W|PR)P\\$$/=target",
     inline const bool &poss1(const unsigned long &cons){
     	  if (cons==PENN_CON_WHNP || cons==PENN_CON_ADJP || cons==PENN_CON_PRN || cons==PENN_CON_INTJ||
-    			  cons==PENN_CON_NX || cons==PENN_CON_NAC){
+    			  cons==PENN_CON_NX || cons==PENN_CON_NAC || cons==PENN_CON_NP){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
