@@ -19,36 +19,42 @@
        */
 inline const bool &buildAux1(const unsigned long &cons){
     	  if (cons==PENN_CON_VP) {
+    		  std::cout<<cons<<" \n";
     		  CStateNodeList* childsConjp=node.m_umbinarizedSubNodes;
     		  bool child1=false;
     	      bool child2=false;
-    	      const CStateNode* targ=0;
+
     	      while(childsConjp!=0){
     	    	  if (CConstituent::clearTmp(childsConjp->node->constituent.code())==PENN_CON_VP){
     	      		 child1=true;
     	      	  }
-    	      	  if ((((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB) ||
-    	      			((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST) ||
-    	      			((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG) ||
-    	      			((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE) ||
-    	      			((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB_PRES) ||
-    	      			((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE) ||
-    	      			  ((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_MD) ||
-    	      			  ((*words)[childsConjp->node->lexical_head].tag.code()==PENN_TAG_TO)) 
-    	      			  && (!isLinked(&node, childsConjp->node))) { //V
-    	      		  child2=true;
-    	      		  targ=childsConjp->node;
+    	    	  childsConjp=childsConjp->next;
+    	      }
+    	      if (child1){
+    	      CStateNodeList* childsConjp2=node.m_umbinarizedSubNodes;
+    	      while(childsConjp!=0){
+    	      	  if ((((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB) ||
+    	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST) ||
+    	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG) ||
+    	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE) ||
+    	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_PRES) ||
+    	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE) ||
+    	      			  ((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_MD) ||
+    	      			  ((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_TO))
+    	      			  && (!isLinked(&node, childsConjp2->node))) { //
+    	      		  const CStateNode* targ=childsConjp2->node;
+    	      		  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
+    	      		  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)){
+    	      			  addLinked(&node,targ);
+    	      			  //std::cout<<"aux1 \n";
+    	      			  //std::cout<<"dependent:"<<(*words)[targ->lexical_head].word<<"\n";
+    	      			  //std::cout<<"head:"<<(*words)[node.lexical_head].word<<"\n";
+    	      			  return true;
+    	      		  }
     	      	  }
     	      	  childsConjp=childsConjp->next;
     	      	}
-    	        if (child1 && child2) {
-    	        	CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
-    	      		if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)){
-    	      			addLinked(&node,targ);
-    	      			//std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
-    	      			return true;
-    	      		}
-    	      	}
+    	      }
     	  }
     	  return false;
       }
