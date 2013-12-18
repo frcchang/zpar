@@ -1,7 +1,7 @@
 
 //"SBAR|SBAR-TMP < (IN|DT=target $++ S|FRAG)",
-     bool mark1(){
-    	 if (node.constituent==PENN_CON_SBAR){
+inline const bool &mark1(const unsigned long &cons){
+    	 if (cons==PENN_CON_SBAR){
     		 CStateNodeList* childsSbar=node.m_umbinarizedSubNodes;
     		 while(childsSbar!=0){
     			 const CStateNode* indtTarg=childsSbar->node;
@@ -9,8 +9,8 @@
     			     (*words)[indtTarg->lexical_head].tag.code()==PENN_TAG_DT) && !isLinked(&node,indtTarg)){
     				 CStateNodeList* rightSisters=childsSbar;
     				 while(rightSisters!=0){
-    					 if (rightSisters->node->constituent==PENN_CON_S ||
-    							 rightSisters->node->constituent==PENN_CON_FRAG) {
+    					 if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_S ||
+    							 CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_FRAG) {
 
     						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_MARK);
     						 if (buildStanfordLink(label, indtTarg->lexical_head, node.lexical_head)) {
@@ -25,15 +25,15 @@
     		 }
     	 }
     	 return false;
-     }
+}
 
      //"SBAR < (IN|DT=target < that|whether) [ $-- /^(?:VB|AUX)/ | $- NP|NN|NNS | > ADJP|PP | > (@NP|UCP|SBAR < CC|CONJP $-- /^(?:VB|AUX)/) ]",
-        bool mark2(){
+inline const bool &mark2(const unsigned long &cons){
 
        	 CStateNodeList* childs=node.m_umbinarizedSubNodes;
        	 while(childs!=0){
        		 const CStateNode* headSbar=childs->node;
-       		 	 if (headSbar->constituent==PENN_CON_SBAR){
+       		 	 if (CConstituent::clearTmp(headSbar->constituent.code())==PENN_CON_SBAR){
        		 		 bool secCondition=false;
        		 		 bool thirdCondition=false;
        		 		 bool fourthCondition=false;
@@ -54,7 +54,7 @@
        		 		 }
        		 		 if (!secCondition){
        		 			 if (childs->previous!=0){
-       		 				 if ((childs->previous->node->constituent==PENN_CON_NP)||((*words)[childs->previous->node->lexical_head].tag.code()==PENN_TAG_NOUN)||
+       		 				 if ((CConstituent::clearTmp(childs->previous->node->constituent.code())==PENN_CON_NP)||((*words)[childs->previous->node->lexical_head].tag.code()==PENN_TAG_NOUN)||
        	    		 					((*words)[childs->previous->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL)){
 
        		 					 thirdCondition=true;
@@ -62,15 +62,15 @@
        		 			 }
        		 		 }
        		 		 if (!secCondition && !thirdCondition){
-       		 			 if (node.constituent==PENN_CON_ADJP || node.constituent==PENN_CON_PP){
+       		 			 if (cons==PENN_CON_ADJP || cons==PENN_CON_PP){
        		 				 fourthCondition=true;
        		 			 }
        		 		 }
        		 		 if (!secCondition && !thirdCondition && !fourthCondition){
-       		 			 if (node.constituent==PENN_CON_UCP||node.constituent==PENN_CON_NP||node.constituent==PENN_CON_SBAR){
+       		 			 if (cons==PENN_CON_UCP||cons==PENN_CON_NP||cons==PENN_CON_SBAR){
        		 				 CStateNodeList* childsUNS=node.m_umbinarizedSubNodes;
        		 				 while(childsUNS!=0){
-       		 					 if ((childsUNS->node->constituent==PENN_CON_CONJP)||(*words)[childsUNS->node->lexical_head].tag.code()==PENN_TAG_CC){
+       		 					 if ((CConstituent::clearTmp(childsUNS->node->constituent.code())==PENN_CON_CONJP)||(*words)[childsUNS->node->lexical_head].tag.code()==PENN_TAG_CC){
        		 						 CStateNodeList* leftSistersUNS=childsUNS->previous;
        		 						 while(leftSistersUNS!=0){
        		 							if ((*words)[leftSistersUNS->node->lexical_head].tag.code()==PENN_TAG_VERB||
