@@ -1037,7 +1037,10 @@ public:
       if (out) {
          out->clear();
          for (int i=0; i<tagged.size(); ++i) {
-            out->push_back(CCoNLLOutputNode(i+1, tagged.at(i).first, "_", "_", tagged.at(i).second, "_", m_lHeads[i]+1, CDependencyLabel(m_lLabels[i]).str(), DEPENDENCY_LINK_NO_HEAD, "_"));
+            unsigned label = m_lLabels[i];
+            if (label == STANFORD_DEP_NONE)
+               label = STANFORD_DEP_ROOT;
+            out->push_back(CCoNLLOutputNode(i+1, tagged.at(i).first, "_", "_", tagged.at(i).second, "_", m_lHeads[i]+1, CDependencyLabel(label).str(), DEPENDENCY_LINK_NO_HEAD, "_"));
          }
       }
    }
