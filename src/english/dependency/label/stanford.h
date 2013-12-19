@@ -16,7 +16,7 @@ namespace english {
 
 const std::string STANFORD_DEP_STRINGS[] = {
    "-none-",
-   "null",
+   "root",
    "cc", 
    "number", 
    "ccomp", 
