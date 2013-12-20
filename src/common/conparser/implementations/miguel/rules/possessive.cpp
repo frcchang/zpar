@@ -1,11 +1,11 @@
 
  //"/^(?:WH)?(?:NP|NML)(?:-TMP|-ADV)?$/ < POS=target",
      inline const bool &possessive1(const unsigned long &cons){
-    	  if (cons==PENN_CON_WHNP){
+    	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP){
     		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
-    			  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_DT) && !isLinked(&node,targ)){
+    			  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_POS) && !isLinked(&node,targ)){
     				  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSSESSIVE);
     				  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
     					  addLinked(&node,targ);
@@ -20,7 +20,7 @@
 
       //"/^(?:WH)?(?:NP|NML)(?:-TMP|-ADV)?$/ < (VBZ=target < /^'s$/)"
      inline const bool &possessive2(const unsigned long &cons){
-               	  if (cons==PENN_CON_WHNP){
+               	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP){
                		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
                		  while(childs!=0){
                			  const CStateNode* targ=childs->node;
