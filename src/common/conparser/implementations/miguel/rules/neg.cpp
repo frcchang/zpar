@@ -3,11 +3,12 @@
      inline const bool & neg1(const unsigned long &cons){
     	 if (cons==PENN_CON_VP ||cons==PENN_CON_NP ||cons==PENN_CON_ADJP ||cons==PENN_CON_SQ ||cons==PENN_CON_S
     			 ||cons==PENN_CON_FRAG ||cons==PENN_CON_CONJP ||cons==PENN_CON_PP){
-
     		 CStateNodeList* childs=node.m_umbinarizedSubNodes;
     		 while(childs!=0){
     			 const CStateNode* targ=childs->node;
     			 if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_ADVERB && (!isLinked(&node,targ))){
+    				 //std::cout<<"TARG:"<<targ<<(*words)[childs->node->lexical_head].word<<"\n";
+    				 //std::cout<<"N't"<<g_word_nt<<"\n";
     				 CStateNodeList* childsRb=targ->m_umbinarizedSubNodes;
     				 while(childsRb!=0){
     					 if (((*words)[childsRb->node->lexical_head].word==g_word_not) ||((*words)[childsRb->node->lexical_head].word==g_word_nt)){
