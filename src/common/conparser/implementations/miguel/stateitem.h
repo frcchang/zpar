@@ -186,6 +186,7 @@ static CWord g_word_gotten("gotten");
 
  static CWord g_word_asterisc("*");
  static CWord g_word_hyphen("-");
+ static CWord g_word_hyphen2("--");
  static CWord g_word_lowhyphen("_");
  static CWord g_word_perc("%");
 
