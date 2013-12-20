@@ -1837,11 +1837,11 @@ public:
         CStateNodeList* headChilds=head->m_umbinarizedSubNodes;
         while(headChilds) {
            const CStateNode* node=headChilds->node;
-           if (node->constituent==target_category) {
+           if (CConstituent::clearTmp(node->constituent.code())==CConstituent::clearTmp(target_category.code())) {
               //candidates->add(node);
               CStateNodeList::add(candidates,node);
            }
-           if (node->constituent==via_category) { 
+           if (CConstituent::clearTmp(node->constituent.code())==CConstituent::clearTmp(via_category.code())) {
               findChain(via_category,target_category,node,candidates);
            }
            headChilds=headChilds->next;
@@ -1853,13 +1853,13 @@ public:
              CStateNodeList* headChilds=head->m_umbinarizedSubNodes;
              while(headChilds) {
                 const CStateNode* node=headChilds->node;
-                if (node->constituent==target_category) {
+                if (CConstituent::clearTmp(node->constituent.code())==CConstituent::clearTmp(target_category.code())) {
                    //candidates->add(node);
                    CStateNodeList::add(candidates,node);
                 }
                 bool catCoincident=false;
                 while(via_category!=0){
-                   if (node->constituent==via_category->current) {
+                   if (CConstituent::clearTmp(node->constituent.code())==CConstituent::clearTmp(via_category->current.code())) {
                       catCoincident=true;
                    }
                    via_category=via_category->next;
@@ -1890,7 +1890,7 @@ public:
         CStateNodeList* headChilds=head->m_umbinarizedSubNodes;
         while(headChilds) {
            const CStateNode* node=headChilds->node;
-           if (node->constituent==target_category) {
+           if (CConstituent::clearTmp(node->constituent.code())==CConstituent::clearTmp(target_category.code())) {
               //candidates->add(node);
               CStateNodeList::add(candidates,node);
            }
@@ -1907,7 +1907,7 @@ public:
 
    void searchRecursivelyConst(CStateNodeList* childs, CConstituent constituent, CStateNodeList*& candidates){
       while(childs!=0){
-         if (childs->node->constituent==constituent){
+         if (CConstituent::clearTmp(childs->node->constituent.code())==CConstituent::clearTmp(constituent.code())){
             CStateNodeList::add(candidates,childs->node);
          }
          searchRecursivelyConst(childs->node->m_umbinarizedSubNodes, constituent, candidates);
