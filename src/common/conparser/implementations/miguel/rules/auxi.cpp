@@ -19,7 +19,6 @@
        */
 inline const bool &buildAux1(const unsigned long &cons){
     	  if (cons==PENN_CON_VP) {
-    		  std::cout<<cons<<" \n";
     		  CStateNodeList* childsConjp=node.m_umbinarizedSubNodes;
     		  bool child1=false;
     	      bool child2=false;

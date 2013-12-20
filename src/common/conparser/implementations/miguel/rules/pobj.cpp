@@ -1,7 +1,43 @@
-//"/^(?:PP(?:-TMP)?|(?:WH)?(?:PP|ADVP))$/ < (IN|VBG|TO|FW|RB|RBR $++ (/^(?:WH)?(?:NP|ADJP)(?:-TMP|-ADV)?$/=target !$- @NP))",
-      // We allow ADVP with NP objects for cases like (ADVP earlier this year)
+ //"/^(?:PP(?:-TMP)?|(?:WH)?(?:PP|ADVP))$/ < (IN|VBG|TO|FW|RB|RBR $++ (/^(?:WH)?(?:NP|ADJP)(?:-TMP|-ADV)?$/=target !$- @NP))",
+    inline const bool &buildPobj1(const unsigned long &cons) {
+    	if (cons==PENN_CON_PP || cons==PENN_CON_WHPP || cons==PENN_CON_ADVP || cons==PENN_CON_WHADVP){
+    		CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		while(childs!=0){
+    			if ((*words)[childs->node->lexical_head].tag.code()==PENN_TAG_IN
+    			    || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG
+    			    || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_TO
+    			    || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_FW
+    			    || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB
+    			    || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE){
 
-inline const bool &buildPobj1(const unsigned long &cons) {}
+    				CStateNodeList* rightSisters=childs->next;
+    				while(rightSisters!=0){
+    					const CStateNode* targ=rightSisters->node;
+    					if ((CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP || CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHNP ||
+    							CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHADJP || CConstituent::clearTmp(targ->constituent.code())==PENN_CON_ADJP) && !isLinked(&node,targ)){
+    						bool leftSisterCond=true;
+    						if (rightSisters->previous!=0){
+    							if (CConstituent::clearTmp(rightSisters->previous->node->constituent.code())==PENN_CON_NP){
+    								leftSisterCond=false;
+    							}
+    						}
+    						if (leftSisterCond){
+    							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POBJ);
+    							if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    								addLinked(&node,targ);
+    							    return true;
+    							}
+    						}
+    					}
+    					rightSisters=rightSisters->next;
+    				}
+    			}
+    			childs=childs->next;
+    		}
+    	}
+    	return false;
+    }
+
 
 //"/^PP(?:-TMP)?$/ < (/^(?:IN|VBG|TO)$/ $+ (ADVP=target [ < (RB < /^(?i:here|there)$/) | < (ADVP < /^NP(?:-TMP)?$/) ] ))",
       // second disjunct is weird ADVP, only matches 1 tree in 2-21
