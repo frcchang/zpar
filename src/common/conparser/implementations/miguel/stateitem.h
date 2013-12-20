@@ -1305,6 +1305,22 @@ public:
            advcl9(cons);
            std::cerr<<"Advcl9 \n";
 
+           neg1(cons);
+           std::cerr<<"neg1 \n";
+           neg2(cons);
+           std::cerr<<"neg2 \n";
+           neg3(cons);
+           std::cerr<<"neg3 \n";
+           nn1(cons);
+           std::cerr<<"nn1 \n";
+           nn2(cons);
+           std::cerr<<"nn2 \n";
+           nn3(cons);
+           std::cerr<<"nn3 \n";
+           nn4(cons);
+           std::cerr<<"nn4 \n";
+
+
            advmod1(cons);
            std::cerr<<"Advmod1 \n";
            advmod2(cons);
@@ -1397,21 +1413,6 @@ public:
            mwe5(cons);
            mwe6(cons);*/
 
-           neg1(cons);
-           std::cerr<<"neg1 \n";
-           neg2(cons);
-           std::cerr<<"neg2 \n";
-           neg3(cons);
-           std::cerr<<"neg3 \n";
-
-           nn1(cons);
-           std::cerr<<"nn1 \n";
-           nn2(cons);
-           std::cerr<<"nn2 \n";
-           nn3(cons);
-           std::cerr<<"nn3 \n";
-           nn4(cons);
-           std::cerr<<"nn4 \n";
 
            //npadvmod1(cons);
            //npadvmod2(cons);
