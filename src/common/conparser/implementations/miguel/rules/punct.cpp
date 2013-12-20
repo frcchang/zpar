@@ -13,6 +13,7 @@
     				 || ((*words)[child->lexical_head].tag.code()==PENN_TAG_L_QUOTE)
     				 || ((*words)[child->lexical_head].word==g_word_asterisc)
     				 || ((*words)[child->lexical_head].word==g_word_hyphen)
+    				 || ((*words)[child->lexical_head].word==g_word_hyphen2)
     				 || ((*words)[child->lexical_head].word==g_word_lowhyphen)
     				 || ((*words)[child->lexical_head].tag.code()==PENN_TAG_L_BRACKET)
     				 || ((*words)[child->lexical_head].tag.code()==PENN_TAG_R_BRACKET)
