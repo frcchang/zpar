@@ -45,6 +45,11 @@ inline const bool &det1(const unsigned long &cons){
     	 								CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_QP||
     	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADVERB||
     	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_PRP||
+    	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN||
+    	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER||
+    	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL||
+    	 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL||
+    	 								//PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
     	 								//(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_PRP_DOLLAR|| (the ! is the negation symbol, right?)
     	 								CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_PRN){
     	 							fourthCond=true;
@@ -311,19 +316,27 @@ inline const bool &det4(const unsigned long &cons){
 						if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
 							secCond=false;
 						}
+						bool nnCond=true;
 						//PENN_TAG_ADJECTIVE, PENN_TAG_ADJECTIVE_COMPARATIVE, PENN_TAG_ADJECTIVE_SUPERLATIVE
 						if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE ||
 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE ||
 								(*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE){
+
 							if (rightSisters->next!=0){
 								//PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL
 								if ((*words)[rightSisters->next->node->lexical_head].tag.code()==PENN_TAG_NOUN ||
 									(*words)[rightSisters->next->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER ||
 									(*words)[rightSisters->next->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL ||
 								    (*words)[rightSisters->next->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL){
-									firstCond=true;
+									nnCond=false;
 								}
 							}
+						}
+						if (nnCond){
+							firstCond=true;
+						}
+						else {
+							firstCond=false;
 						}
 						rightSisters=rightSisters->next;
 					}

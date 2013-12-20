@@ -21,7 +21,6 @@ inline const bool &buildAux1(const unsigned long &cons){
     	  if (cons==PENN_CON_VP) {
     		  CStateNodeList* childsConjp=node.m_umbinarizedSubNodes;
     		  bool child1=false;
-    	      bool child2=false;
 
     	      while(childsConjp!=0){
     	    	  if (CConstituent::clearTmp(childsConjp->node->constituent.code())==PENN_CON_VP){
@@ -30,9 +29,9 @@ inline const bool &buildAux1(const unsigned long &cons){
     	    	  childsConjp=childsConjp->next;
     	      }
     	      if (child1){
-    	      CStateNodeList* childsConjp2=node.m_umbinarizedSubNodes;
-    	      while(childsConjp!=0){
-    	      	  if ((((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB) ||
+    	    	  CStateNodeList* childsConjp2=node.m_umbinarizedSubNodes;
+    	    	  while(childsConjp2!=0){
+    	    		  if ((((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB) ||
     	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST) ||
     	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG) ||
     	      			((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE) ||
@@ -51,7 +50,7 @@ inline const bool &buildAux1(const unsigned long &cons){
     	      			  return true;
     	      		  }
     	      	  }
-    	      	  childsConjp=childsConjp->next;
+    	      	  childsConjp2=childsConjp2->next;
     	      	}
     	      }
     	  }

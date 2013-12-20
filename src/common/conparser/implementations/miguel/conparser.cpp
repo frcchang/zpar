@@ -686,7 +686,7 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
 
 void CConParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct ) {
 
-   std::cout << "updating parameters ... " ; 
+   std::cout << "updating parameters ... \n" ;
 
    static double F;
 #ifdef TRAIN_LOSS
