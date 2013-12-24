@@ -7,11 +7,22 @@
     		 while(childs!=0){
     			 const CStateNode* targ=childs->node;
     			 if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_ADVERB && (!isLinked(&node,targ))){
-    				 //std::cout<<"TARG:"<<targ<<(*words)[childs->node->lexical_head].word<<"\n";
+    				 if (((*words)[childs->node->lexical_head].word==g_word_not) ||((*words)[childs->node->lexical_head].word==g_word_nt)){
+    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
+    					     						 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    					     							 addLinked(&node,targ);
+    					     							 return true;
+    					     						 }
+    				 }
+    				 //std::cout<<"TARG:"<<(*words)[childs->node->lexical_head].word<<"\n";
     				 //std::cout<<"N't"<<g_word_nt<<"\n";
-    				 CStateNodeList* childsRb=targ->m_umbinarizedSubNodes;
+    				 /*CStateNodeList* childsRb=targ->m_umbinarizedSubNodes;
+    				 std::cout<<childsRb<<"\n";
     				 while(childsRb!=0){
+    					 std::cout<<"hola:\n";
+    					 std::cout<<"CHILDRB:"<<(*words)[childsRb->node->lexical_head].word<<"\n";
     					 if (((*words)[childsRb->node->lexical_head].word==g_word_not) ||((*words)[childsRb->node->lexical_head].word==g_word_nt)){
+    						 std::cout<<"N't"<<g_word_nt<<"\n";
     						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
     						 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
     							 addLinked(&node,targ);
@@ -19,7 +30,7 @@
     						 }
     				   	}
     				   	childsRb=childsRb->next;
-    				 }
+    				 }*/
     			 }
     			 childs=childs->next;
     		 }
