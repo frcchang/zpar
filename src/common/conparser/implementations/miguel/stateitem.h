@@ -2100,7 +2100,14 @@ public:
     				  if ((*words)[childs->node->lexical_head].word==g_word_comma){
     					  if (childs->previous!=0){
     						  const CStateNode* targ=childs->previous->node;
-    						  if (false && !isLinked(&node,targ)){
+    						  ///^(?:A|N|V|PP|PRP|J|W|R|S)/=target)", ??
+    						  if ((CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S
+    								  ||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_PP
+    								  //||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_PRP
+    								  //||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S
+    								  //||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S
+    								  //||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S
+    								  ||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S) && !isLinked(&node,targ)){
     							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
     							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
     								  addLinked(&node,targ);
@@ -2113,8 +2120,7 @@ public:
     			  }
     		  }
     	  }
-    	  return false;
-    	  
+    	  return false;  
       }
       
       
@@ -2172,14 +2178,13 @@ public:
              							 chain=0;
              						 }
              						 while(chain!=0){
-             							 CStateNodeList* childsNN=chain->node->m_umbinarizedSubNodes;
-             							 while(childsNN!=0){
+             							 //while(childsNN!=0){
              								 if (false){
              									 fourthCond=true;
              									 //ASK JOHN ABOUT < /^(?:[A-Z]\\.?){2,}/
              								 }
-             								 childsNN=childsNN->next;
-             							 }
+             								 //childsNN=childsNN->next;
+             							 //}
              							 chain=chain->next;
              						 }
              					  }
