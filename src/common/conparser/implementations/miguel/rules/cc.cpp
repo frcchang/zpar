@@ -9,11 +9,8 @@ inline const bool &cc1(const unsigned long &cons){
     		if ((*words)[ccTarg->lexical_head].tag.code()==PENN_TAG_CC && (!isLinked(&node,ccTarg))) {
     			CStateNodeList* childsCC=ccTarg->m_umbinarizedSubNodes;
     			bool secondCondition=true;
-    			while (childsCC!=0){
-    				if (compareWordToEitherNeitherBoth((*words)[childsCC->node->lexical_head].word)) {
-    					secondCondition=false;
-    				}
-    				childsCC=childsCC->next;
+    			if (compareWordToEitherNeitherBoth((*words)[ccTarg->lexical_head].word)) {
+    				secondCondition=false;
     			}
     			if (secondCondition) {
     				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
@@ -43,25 +40,25 @@ inline const bool &cc2(const unsigned long &cons){
         				const CStateNode* childRb=childsConj->node;
         				if ((*words)[childRb->lexical_head].tag.code()==PENN_TAG_ADVERB) {
         					CStateNodeList* childsRb=childRb->m_umbinarizedSubNodes;
-        					while(childsRb!=0){
-        						const CStateNode* childNot=childsRb->node;
-        						if ((*words)[childNot->lexical_head].word==g_word_not) {
+        					//while(childsRb!=0){
+        						//const CStateNode* childNot=childsRb->node;
+        						if ((*words)[childRb->lexical_head].word==g_word_not) {
         							if (childsConj->next!=0){
         								const CStateNode* rightSisterRB=childsConj->next->node;
         								if (((*words)[rightSisterRB->lexical_head].tag.code()==PENN_TAG_ADVERB) 
         										|| ((*words)[rightSisterRB->lexical_head].tag.code()==PENN_TAG_ADJECTIVE)) {
-        									CStateNodeList* childsRbJJ=rightSisterRB->m_umbinarizedSubNodes;
-        									while(childsRbJJ!=0){
-        										if (compareWordToOnlyJustMerely((*words)[childsRbJJ->node->lexical_head].word)) {
+        									//CStateNodeList* childsRbJJ=rightSisterRB->m_umbinarizedSubNodes;
+        									//while(childsRbJJ!=0){
+        										if (compareWordToOnlyJustMerely((*words)[rightSisterRB->lexical_head].word)) {
         											secondCondition=false;
         										}
-        										childsRbJJ=childsRbJJ->next;
-        									}
+        										//childsRbJJ=childsRbJJ->next;
+        									//}
         								}
         							}
         						}
-        						childsRb=childsRb->next;
-        					}
+        						//childsRb=childsRb->next;
+        					//}
         					
         				}
         				

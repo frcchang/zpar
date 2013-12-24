@@ -20,13 +20,13 @@
     								 while(childsVp!=0){
     									 const CStateNode* vb=childsVp->node;
     									 if (((*words)[childsTarg->node->lexical_head].tag.code()==PENN_TAG_VERB)) {
-    										 CStateNodeList* childsVB=vb->m_umbinarizedSubNodes;
-    										 while(childsVB!=0){
-    											 if ((compareWordToPassiveAuxWordRegex((*words)[childsVB->node->lexical_head].word))) {
+    										 //CStateNodeList* childsVB=vb->m_umbinarizedSubNodes;
+    										 //while(childsVB!=0){
+    											 if ((compareWordToPassiveAuxWordRegex((*words)[vb->lexical_head].word))) {
     												 firstCondition=true;
     											 }
-    											 childsVB=childsVB->next;
-    										 }
+    											// childsVB=childsVB->next;
+    										 //}
     									 }
     									 childsVp=childsVp->next;
     								 }

@@ -109,13 +109,13 @@
           								  opt1=true;
           							  }
           							  else if ((*words)[childsWnp->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
-          								  CStateNodeList* childsVbz=childsWnp->node->m_umbinarizedSubNodes;
-          								  while(childsVbz!=0){
-          									  if ((*words)[childsVbz->node->lexical_head].word==g_word_aps){
+          								  //CStateNodeList* childsVbz=childsWnp->node->m_umbinarizedSubNodes;
+          								  //while(childsVbz!=0){
+          									  if ((*words)[childsWnp->node->lexical_head].word==g_word_aps){
           										  opt2=true;
           									  }
-          									  childsVbz=childsVbz->next;
-          								  }
+          									//  childsVbz=childsVbz->next;
+          								  //}
           							  }
           							  childsWnp=childsWnp->next;
           						  }
@@ -167,12 +167,12 @@
 							  }
 							  rightSisters=rightSisters->next;
 						  }
-						  while(childsR!=0){
-							  if ((*words)[childsR->node->lexical_head].word==g_word_quote){
+						  //while(childsR!=0){
+							  if ((*words)[rightSisters->node->lexical_head].word==g_word_quote){
 								  childCond=true;
 							  }
-							  childsR=childsR->next;
-						  }
+							 // childsR=childsR->next;
+						  //}
 						  if (sisCond && childCond){
 							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSS);
 							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {

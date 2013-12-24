@@ -147,13 +147,9 @@ inline const bool &buildAux4(const unsigned long &cons) {
               			const CStateNode* childVp=childsVp->node;
               			if ((*words)[childVp->lexical_head].tag.code()==PENN_TAG_VERB ||
               				 (*words)[childVp->lexical_head].tag.code()==PENN_TAG_POS) { //VB or POS
-              				 CStateNodeList* childsVbPos=childVp->m_umbinarizedSubNodes;
-              				 while(childsVbPos!=0){
-              					 if (compareWordToTimeWordRegex((*words)[childsVbPos->node->lexical_head].word)) {
-              						 firstCondVp=true;
-              					 }
-              					 childsVbPos=childsVbPos->next;
-              				 }
+              					if (compareWordToBeAuxiliaryWordRegex((*words)[childVp->lexical_head].word)) {
+              						firstCondVp=true;
+              				    }
               			 }
               			 childsVp=childsVp->next;
               		 }	 

@@ -107,12 +107,12 @@
           			const CStateNode* vbChildVp=childsVp->node;
           		    if (((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)) {
           		    	CStateNodeList* childsVB=vbChildVp->m_umbinarizedSubNodes;
-          		    	while(childsVB!=0){
-          		    		if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
+          		    	//while(childsVB!=0){
+          		    		if ((compareWordToCopularWordRegex((*words)[vbChildVp->lexical_head].word))) {
           		    			secondCondition=false;
           		    		}
-          		    		childsVB=childsVB->next;
-          		    	}
+          		    		//childsVB=childsVB->next;
+          		    	//}
           		    }
           		    childsVp=childsVp->next;
           		}
@@ -181,13 +181,13 @@
              	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_PRES)
              	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE)
              	     			 || ((*words)[vbChildVp->lexical_head].tag.code()==PENN_TAG_VERB)) {
-             	     		 CStateNodeList* childsVB=vbChildVp->m_umbinarizedSubNodes;
-             	     	 	 while(childsVB!=0){
-             	     	 		 if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
+             	     		 //CStateNodeList* childsVB=vbChildVp->m_umbinarizedSubNodes;
+             	     	 	 //while(childsVB!=0){
+             	     	 		 if ((compareWordToCopularWordRegex((*words)[vbChildVp->lexical_head].word))) {
              	     	 			 firstCondition=false;
              	     			  }
-             	     			  childsVB=childsVB->next;
-             	     	 	 }
+             	     			  //childsVB=childsVB->next;
+             	     	 	 //}
              	     	 }
              	     	 childsVp=childsVp->next;
              	     }
@@ -314,13 +314,13 @@
              			
              			bool copCond=false;
              			bool rsisCond=false;
-             			CStateNodeList* childsVb=childsCand->node->m_umbinarizedSubNodes;
-             			while(childsVb!=0){
-             				if (compareWordToCopularWordRegex((*words)[childsVb->node->lexical_head].word)) {
+             			//CStateNodeList* childsVb=childsCand->node->m_umbinarizedSubNodes;
+             			//while(childsVb!=0){
+             				if (compareWordToCopularWordRegex((*words)[childsCand->node->lexical_head].word)) {
              					copCond=true;
              				}
-             				childsVb=childsVb->next;
-             			}
+             				//childsVb=childsVb->next;
+             			//}
              			CStateNodeList* rightSisters=childsCand->next;
              			while(rightSisters!=0){
              				if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_VP){
@@ -407,13 +407,13 @@
              						(*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL) 
              						&& childsT->node->lexical_head==targ->lexical_head){
              					
-             					CStateNodeList* childsNN=childsT->node->m_umbinarizedSubNodes;
-             					while(childsNN!=0){
-             						if (compareWordToTimeWordRegex((*words)[childsNN->node->lexical_head].word)) {
+             					//CStateNodeList* childsNN=childsT->node->m_umbinarizedSubNodes;
+             					//while(childsNN!=0){
+             						if (compareWordToTimeWordRegex((*words)[childsT->node->lexical_head].word)) {
              							secInCond=false;
              						}
-             						childsNN=childsNN->next;
-             					}
+             						//childsNN=childsNN->next;
+             					//}
              					
              				}
              				childsT=childsT->next;

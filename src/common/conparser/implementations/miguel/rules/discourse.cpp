@@ -52,9 +52,6 @@ inline const bool & discourse3(const unsigned long &cons){
     		  
     		  childs=childs->next;
     	  }
-    	  
-    	  /*if (cond1||cond2){
-    		  
-    	  }*/
+   
       }
 

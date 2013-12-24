@@ -42,12 +42,8 @@
     										  }
     									  }
     									  if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB){
-    										  CStateNodeList* childsVb=childsVp->node->m_umbinarizedSubNodes;
-    										  while(childsVb!=0){
-    											  if (compareWordToPassiveAuxWordRegex((*words)[childsVb->node->lexical_head].word)) {
-    												  secCond=true;
-    											  }
-    											  childsVb=childsVb->next;
+    										  if (compareWordToPassiveAuxWordRegex((*words)[childsVp->node->lexical_head].word)) {
+    											  secCond=true;
     										  }
     									  }
     									  childsVp=childsVp->next;
@@ -114,17 +110,17 @@
     							    			  CStateNodeList* childsVp=parent->m_umbinarizedSubNodes;
     							    			  while(childsVp!=0){
     							    				  if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB){
-    							    					  CStateNodeList* childsVb=childsVp->node->m_umbinarizedSubNodes;
-    							    					  while(childsVb!=0){
-    							    						  if (compareWordToPassiveAuxWordRegex((*words)[childsVb->node->lexical_head].word)) {
+    							    					  //CStateNodeList* childsVb=childsVp->node->m_umbinarizedSubNodes;
+    							    					  //while(childsVb!=0){
+    							    						  if (compareWordToPassiveAuxWordRegex((*words)[childsVp->node->lexical_head].word)) {
     							    							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
     							    							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
     							    								  addLinked(&node,targ);
     							    							      return true;
     							    							  }
     							    						  }
-    							    						  childsVb=childsVb->next;
-    							    					  }
+    							    						  //childsVb=childsVb->next;
+    							    					  //}
     							    				  }
     							    				  childsVp=childsVp->next;
     							    			  }

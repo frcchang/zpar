@@ -10,14 +10,10 @@ inline const bool & buildXComp1(const unsigned long &cons) {
     				if (childsVp->previous!=0){
     					const CStateNode* leftSisterS=childsVp->previous->node;
     					if (((*words)[leftSisterS->lexical_head].tag.code()==PENN_TAG_NOUN)) {
-    						CStateNodeList* childsNN=leftSisterS->m_umbinarizedSubNodes;
-    						while(childsNN!=0){
-    							const CStateNode* orderChild=childsNN->node;
-    							if ((*words)[orderChild->lexical_head].word==g_word_order){
+    							if ((*words)[leftSisterS->lexical_head].word==g_word_order){
     								sisterCondition=true;
     							}
-    							childsNN=childsNN->next;
-    						}
+    						
     					}
     				}
     				if (sisterCondition){
@@ -93,14 +89,14 @@ inline const bool &buildXComp3(const unsigned long &cons) {
 				if (childsVp->previous!=0){
 					const CStateNode* leftSisterS=childsVp->previous->node;
 					if (((*words)[leftSisterS->lexical_head].tag.code()==PENN_TAG_NOUN)) {
-						CStateNodeList* childsNN=leftSisterS->m_umbinarizedSubNodes;
-						while(childsNN!=0){
-							const CStateNode* orderChild=childsNN->node;
-							if ((*words)[orderChild->lexical_head].word==g_word_order){
+						//CStateNodeList* childsNN=leftSisterS->m_umbinarizedSubNodes;
+						//while(childsNN!=0){
+							//const CStateNode* orderChild=childsNN->node;
+							if ((*words)[leftSisterS->lexical_head].word==g_word_order){
 								sisterCondition=true;
 							}
-							childsNN=childsNN->next;
-						}
+							//childsNN=childsNN->next;
+						//}
 					}
 				}
 				if (sisterCondition){
@@ -197,14 +193,14 @@ inline const bool & buildXComp6(const unsigned long &cons) {
 						if (childsVp->previous!=0){
 							const CStateNode* leftSisterS=childsVp->previous->node;
 							if (((*words)[leftSisterS->lexical_head].tag.code()==PENN_TAG_NOUN)) {
-								CStateNodeList* childsNN=leftSisterS->m_umbinarizedSubNodes;
-								while(childsNN!=0){
-									const CStateNode* orderChild=childsNN->node;
-									if ((*words)[orderChild->lexical_head].word==g_word_order){
+								//CStateNodeList* childsNN=leftSisterS->m_umbinarizedSubNodes;
+								//while(childsNN!=0){
+									//const CStateNode* orderChild=childsNN->node;
+									if ((*words)[leftSisterS->lexical_head].word==g_word_order){
 										firstCondition=false;
 									}
-									childsNN=childsNN->next;
-								 }
+									//childsNN=childsNN->next;
+								 //}
 							 }
 						}
 						if (firstCondition){

@@ -26,16 +26,16 @@
                			  const CStateNode* targ=childs->node;
                			  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE) && !isLinked(&node,targ)){
                				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
-               				  while(childsT!=0){
-               					  if ((*words)[childsT->node->lexical_head].word==g_word_aps){
+               				  //while(childsT!=0){
+               					  if ((*words)[targ->lexical_head].word==g_word_aps){
                						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSSESSIVE);
                						  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
                							  addLinked(&node,targ);
                						      return true;
                						  } 
                					  }
-               					  childsT=childsT->next;
-               				  }
+               					//  childsT=childsT->next;
+               				  //}
                				  
                				  
                			  }

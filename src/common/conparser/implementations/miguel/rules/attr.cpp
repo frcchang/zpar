@@ -45,17 +45,13 @@ inline const bool &buildAttr1(const unsigned long &cons) {
     					while(childsNp!=0){
     						 const CStateNode* vb=childsNp->node;
     						 if (((*words)[vb->lexical_head].tag.code()==PENN_TAG_VERB)) {
-    							 CStateNodeList* childsVB=vb->m_umbinarizedSubNodes;
-    						     while(childsVB!=0){
-    						    	 if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
-    						    		 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
-    						    		 if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
-    						    			 addLinked(&node,npTarg);
-    						    		     return true;
-    						    		 }
+    							 if ((compareWordToCopularWordRegex((*words)[vb->lexical_head].word))) {
+    								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
+    						    	 if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+    						    		 addLinked(&node,npTarg);
+    						    		 return true;
     						    	 }
-    						    	 childsVB=childsVB->next;
-    						     }
+    							 }
     						 }
     						 childsNp=childsNp->next;
     					}
@@ -120,9 +116,9 @@ inline const bool &buildAttr2(const unsigned long &cons) {
     								const CStateNode* vbChildSq=childsSq->node;
 
     								if ((*words)[vbChildSq->lexical_head].tag.code()==PENN_TAG_VERB) {
-    									const CStateNodeList* childsVb=vbChildSq->m_umbinarizedSubNodes;
-    									while(childsVb!=0){
-    										if ((compareWordToCopularWordRegex((*words)[childsVb->node->lexical_head].word))) {
+    									//const CStateNodeList* childsVb=vbChildSq->m_umbinarizedSubNodes;
+    									//while(childsVb!=0){
+    										if ((compareWordToCopularWordRegex((*words)[vbChildSq->lexical_head].word))) {
     											//A $++ B (A is a left sister of B)
     											bool insideCondition=true;
     											CStateNodeList* sistersVb=childsSq->next;
@@ -141,8 +137,8 @@ inline const bool &buildAttr2(const unsigned long &cons) {
     												}
     											}
     										}
-    										childsVb=childsVb->next;
-    									}
+    										//childsVb=childsVb->next;
+    									//}
     								}
     								childsSq=childsSq->next;
     							}
@@ -258,13 +254,8 @@ inline const bool &buildAttr3(const unsigned long &cons) {
        							  }
        							  rightSisters=rightSisters->next;
        						  }
-
-       						  CStateNodeList* childsVb=childs->node->m_umbinarizedSubNodes;
-       						  while(childsVb!=0){
-       							  if (compareWordToCopularWordRegex((*words)[childsVb->node->lexical_head].word)){
-       								  copCond=true;
-       							  }
-       							  childsVb=childsVb->next;
+       						  if (compareWordToCopularWordRegex((*words)[childs->node->lexical_head].word)){
+       							  copCond=true;
        						  }
        						  if (copCond && rightSisCond){
        							  secCond=true;
@@ -311,12 +302,8 @@ inline const bool &buildAttr4(const unsigned long &cons) {
   		const CStateNode* firstChild=node.m_umbinarizedSubNodes->node;
   		bool firstCondition=false; //SQ<, (/^(?:VB|AUX)/ < " + copularWordRegex + ")
   		if (firstChild!=0 && ((*words)[firstChild->lexical_head].tag.code()==PENN_TAG_VERB)) {
-  			CStateNodeList* childsVB=firstChild->m_umbinarizedSubNodes;
-  			while(childsVB!=0){
-  				if ((compareWordToCopularWordRegex((*words)[childsVB->node->lexical_head].word))) {
-  					firstCondition=true;
-  				}
-  			    childsVB=childsVB->next;
+  			if ((compareWordToCopularWordRegex((*words)[firstChild->lexical_head].word))) {
+  				firstCondition=true;
   			}
   		}
   		if (firstCondition){
