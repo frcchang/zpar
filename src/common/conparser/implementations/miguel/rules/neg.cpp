@@ -49,17 +49,13 @@
        				 while(childsTarg!=0){
        					 const CStateNode* adv=childsTarg->node;
        					 if ((*words)[adv->lexical_head].tag.code()==PENN_TAG_ADVERB && adv->lexical_head==targ->lexical_head){ //<#
-       						 CStateNodeList* childsRb=targ->m_umbinarizedSubNodes;
-       						 while(childsRb!=0){
-       							 if (((*words)[childsRb->node->lexical_head].word==g_word_not) ||((*words)[childsRb->node->lexical_head].word==g_word_nt)){
-       								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
-       						     	 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
-       						     		 addLinked(&node,targ);
-       						     		 return true;
-       						     		 }
-       						     	 }
-       						   	 childsRb=childsRb->next;
-       						 }
+       						if (((*words)[adv->lexical_head].word==g_word_not) ||((*words)[adv->lexical_head].word==g_word_nt)){
+       							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
+       							if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+       								addLinked(&node,targ);
+       						     	return true;
+       						     	}
+       						    }
        					 }
        					 childsTarg=childsTarg->next;
        				 }
