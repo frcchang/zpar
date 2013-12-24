@@ -131,17 +131,17 @@
               								  if (CConstituent::clearTmp(childsSb->node->constituent.code())==PENN_CON_WHADVP){
               									  CStateNodeList* childsWh=childsSb->node->m_umbinarizedSubNodes;
               									  if ((*words)[childsWh->node->lexical_head].tag.code()==PENN_TAG_WRB){
-              										  CStateNodeList* childsWr=childsWh->node->m_umbinarizedSubNodes;
-              										  while(childsWr!=0){
-              											  if (((*words)[childsWr->node->lexical_head].word==g_word_where) ||((*words)[childsWr->node->lexical_head].word==g_word_why)||((*words)[childsWr->node->lexical_head].word==g_word_when)){
+              										  //CStateNodeList* childsWr=childsWh->node->m_umbinarizedSubNodes;
+              										  //while(childsWr!=0){
+              											  if (((*words)[childsWh->node->lexical_head].word==g_word_where) ||((*words)[childsWh->node->lexical_head].word==g_word_why)||((*words)[childsWh->node->lexical_head].word==g_word_when)){
               												  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
               												  if (buildStanfordLink(label, sbarTarg->lexical_head, head->lexical_head)) {
               													  addLinked(&node,sbarTarg);
               												      return true;
               												  }
               											  }
-              											  childsWr=childsWr->next;
-              										  }
+              											//  childsWr=childsWr->next;
+              										  //}
               									  }
               								  }
               								  childsSb=childsSb->next;
@@ -207,13 +207,13 @@
         				  CStateNodeList* childsAdvp=childs->node->m_umbinarizedSubNodes;
         				  while(childsAdvp!=0){
         					  if ((*words)[childsAdvp->node->lexical_head].tag.code()==PENN_TAG_ADVERB){
-        						  CStateNodeList* childsRb=childsAdvp->node->m_umbinarizedSubNodes;
-        						  while(childsRb!=0){
-        							  if (((*words)[childsRb->node->lexical_head].word==g_word_where)){
+        						  //CStateNodeList* childsRb=childsAdvp->node->m_umbinarizedSubNodes;
+        						  //while(childsRb!=0){
+        							  if (((*words)[childsAdvp->node->lexical_head].word==g_word_where)){
         								  inCond=true;
         							  }
-        							  childsRb=childsRb->next;
-        						  }
+        							//  childsRb=childsRb->next;
+        						  //}
         					  }
         					  childsAdvp=childsAdvp->next;
         				  }

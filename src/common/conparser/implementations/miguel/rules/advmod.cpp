@@ -14,11 +14,8 @@ inline const bool &advmod1(const unsigned long &cons){
     				  
     				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
     				  bool notCond=true;
-    				  while(childsT!=0){
-     					  if (((*words)[childsT->node->lexical_head].word==g_word_not) ||((*words)[childsT->node->lexical_head].word==g_word_nt)){
-     						 notCond=false;
-     					  }
-    					  childsT=childsT->next;
+    				  if (((*words)[targ->lexical_head].word==g_word_not) ||((*words)[targ->lexical_head].word==g_word_nt)){
+    					  notCond=false;
     				  }
     				  
     				  if (notCond){
@@ -63,11 +60,8 @@ inline const bool &advmod2(const unsigned long &cons){
   						  (*words)[targ->lexical_head].tag.code()==PENN_TAG_WRB) && !isLinked(&node,targ)){
   					  bool notCond=true;
   					  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
-  					  while(childsT!=0){
-  						  if (((*words)[childsT->node->lexical_head].word==g_word_not) ||((*words)[childsT->node->lexical_head].word==g_word_nt)){
-  							  notCond=false;
-  						  }
-  						  childsT=childsT->next;
+  					  if (((*words)[targ->lexical_head].word==g_word_not) ||((*words)[targ->lexical_head].word==g_word_nt)){
+  						  notCond=false;
   					  }
 
   					  if (notCond){
@@ -150,12 +144,8 @@ inline const bool &advmod4(const unsigned long &cons){
         							  CConstituent::clearTmp(targ->constituent.code())==PENN_CON_ADVP
         							  || CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHADVP) && !isLinked(&node,targ)){
         						  bool notCond=true;
-        						  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
-        						  while(childsT!=0){
-        							  if (((*words)[childsT->node->lexical_head].word==g_word_not) ||((*words)[childsT->node->lexical_head].word==g_word_nt)){
-        								  notCond=false;
-        						      }
-        						      childsT=childsT->next;
+        						  if (((*words)[targ->lexical_head].word==g_word_not) ||((*words)[targ->lexical_head].word==g_word_nt)){
+        							  notCond=false;
         						  }
         						  if (notCond){
         							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
@@ -194,14 +184,9 @@ inline const bool &advmod5(const unsigned long &cons){
 
 
             					  bool notCond=true;
-            					  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
-            					  while(childsT!=0){
-            						  if (((*words)[childsT->node->lexical_head].word==g_word_not) ||((*words)[childsT->node->lexical_head].word==g_word_nt)){
-            							  notCond=false;
-            						  }
-            						  childsT=childsT->next;
+            					  if (((*words)[targ->lexical_head].word==g_word_not) ||((*words)[targ->lexical_head].word==g_word_nt)){
+            						  notCond=false;
             					  }
-
             					  if (notCond){
             						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
             						  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
@@ -228,12 +213,8 @@ inline const bool &advmod6(const unsigned long &cons){
    			 const CStateNode* rbTarg=childsConjp->node;
    			 if ((*words)[rbTarg->lexical_head].tag.code()==PENN_TAG_ADVERB && !isLinked(&node, rbTarg)){
    				 bool notCond=true;
-   				 CStateNodeList* childsRb=rbTarg->m_umbinarizedSubNodes;
-   				 while(childsRb!=0){
-   					 if (((*words)[childsRb->node->lexical_head].word==g_word_not) ||((*words)[childsRb->node->lexical_head].word==g_word_nt)){
-   						 notCond=false;
-   					 }
-   					 childsRb=childsRb->next;
+   				 if (((*words)[rbTarg->lexical_head].word==g_word_not) ||((*words)[rbTarg->lexical_head].word==g_word_nt)){
+   					 notCond=false;
    				 }
    				 if (notCond){
    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);

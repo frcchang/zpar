@@ -10,13 +10,13 @@
     					  || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_ADVERB_COMPARATIVE) && childs->node->lexical_head==node.lexical_head) {
 
     				  bool inCond=true;
-    				  CStateNodeList* childsJ=childs->node->m_umbinarizedSubNodes;
-    				  while(childsJ!=0){
-    					  if ((*words)[childsJ->node->lexical_head].word==g_word_notwithstanding){
+    				  //CStateNodeList* childsJ=childs->node->m_umbinarizedSubNodes;
+    				  //while(childsJ!=0){
+    					  if ((*words)[childs->node->lexical_head].word==g_word_notwithstanding){
     						  inCond=false;
     					  }
-    					  childsJ=childsJ->next;
-    				  }
+    					//  childsJ=childsJ->next;
+    				  //}
     				  
     				  if (inCond){
     					  if (childs->previous!=0){

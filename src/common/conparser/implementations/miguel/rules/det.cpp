@@ -12,15 +12,15 @@ inline const bool &det1(const unsigned long &cons){
     	 			 bool fourthCond=false; //$++ /^(?:N[MNXP]|CD|JJ|FW|ADJP|QP|RB|PRP(?![$])|PRN)/=det
     	 			 bool fifthCond=true;
     	 			 
-    	 			 CStateNodeList* childsDt=targ->m_umbinarizedSubNodes;
-    	 			 while(childsDt!=0){
-    	 				 if (((*words)[childsDt->node->lexical_head].word==g_word_either) 
-    	 					 ||((*words)[childsDt->node->lexical_head].word==g_word_neither)
-    	 					 ||((*words)[childsDt->node->lexical_head].word==g_word_both)){
+    	 			 //CStateNodeList* childsDt=targ->m_umbinarizedSubNodes;
+    	 			 //while(childsDt!=0){
+    	 				 if (((*words)[targ->lexical_head].word==g_word_either) 
+    	 					 ||((*words)[targ->lexical_head].word==g_word_neither)
+    	 					 ||((*words)[targ->lexical_head].word==g_word_both)){
     	 					 firstCond=false;
     	 				 }
-    	 				 childsDt=childsDt->next;
-    	 			 }
+    	 				 //childsDt=childsDt->next;
+    	 			 //}
     	 			 
     	 			 if (firstCond){
     	 				 CStateNodeList* rightSisters=childsNp->next;
@@ -164,14 +164,14 @@ inline const bool &det2(const unsigned long &cons){
 					 }
 					 if (thirdCond && fourthCond && fifthCond){
 						 CStateNodeList* childsDt=targ->m_umbinarizedSubNodes;
-						 while(childsDt!=0){
-							 if (((*words)[childsDt->node->lexical_head].word==g_word_either) 
-									 ||((*words)[childsDt->node->lexical_head].word==g_word_neither)
-									 ||((*words)[childsDt->node->lexical_head].word==g_word_both)){
+						 //while(childsDt!=0){
+							 if (((*words)[targ->lexical_head].word==g_word_either) 
+									 ||((*words)[targ->lexical_head].word==g_word_neither)
+									 ||((*words)[targ->lexical_head].word==g_word_both)){
 								 firstCond=true;
 							 }
-							 childsDt=childsDt->next;
-						 }
+							 //childsDt=childsDt->next;
+						 //}
 					 }
 				 }
 				 
@@ -201,14 +201,14 @@ inline const bool &det3(const unsigned long &cons){
 			 if ((*words)[dtTarg->lexical_head].tag.code()==PENN_TAG_DT && !(isLinked(&node,dtTarg))){
 				 bool wordsCond=true;
 				 CStateNodeList* childsDt=dtTarg->m_umbinarizedSubNodes;
-				 while(childsDt!=0){
-					 if (((*words)[childsDt->node->lexical_head].word==g_word_either) 
-							 ||((*words)[childsDt->node->lexical_head].word==g_word_neither)
-							 ||((*words)[childsDt->node->lexical_head].word==g_word_both)){
+				 //while(childsDt!=0){
+					 if (((*words)[dtTarg->lexical_head].word==g_word_either) 
+							 ||((*words)[dtTarg->lexical_head].word==g_word_neither)
+							 ||((*words)[dtTarg->lexical_head].word==g_word_both)){
 						 wordsCond=false;
 					 }
-					 childsDt=childsDt->next;
-				 }
+					 //childsDt=childsDt->next;
+				 //}
 				 CStateNodeList* rightSisters=childsNp->next;
 				 bool ccCond=false;
 				 while(rightSisters!=0){

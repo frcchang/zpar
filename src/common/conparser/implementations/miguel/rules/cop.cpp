@@ -5,9 +5,9 @@
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
     			  if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_VERB && !isLinked(&node,targ)) {
-    				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
-    				  while(childsT!=0){
-    					  if (compareWordToCopularWordRegex((*words)[childsT->node->lexical_head].word)) {
+    				  //CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
+    				  //while(childsT!=0){
+    					  if (compareWordToCopularWordRegex((*words)[targ->lexical_head].word)) {
     						  CStateNodeList* rightSisters=childs->next;
     						  bool cond1=false;
     						  bool cond2=false;
@@ -52,8 +52,8 @@
     							  }
     						  }
     					  }
-    					  childsT=childsT->next;
-    				  }
+    					  //childsT=childsT->next;
+    				  //}
 
     			  }
     			  childs=childs->next;
@@ -70,9 +70,9 @@
          	      		  while(childs!=0){
          	      			  const CStateNode* targ=childs->node;
          	      			  if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_VERB && !isLinked(&node,targ)) {
-         	      				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
-         	      				  while(childsT!=0){
-         	      					  if (compareWordToCopularWordRegex((*words)[childsT->node->lexical_head].word)) {
+         	      				  //CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
+         	      				  //while(childsT!=0){
+         	      					  if (compareWordToCopularWordRegex((*words)[targ->lexical_head].word)) {
          	      						  CStateNodeList* rightSisters=childs->next;
          	      						  bool cond1=false;
          	      						  bool cond2=false;
@@ -127,8 +127,8 @@
          	      							  }
          	      						  }
          	      					  }
-         	      					  childsT=childsT->next;
-         	      				  }
+         	      					  //childsT=childsT->next;
+         	      				  //}
 
          	      			  }
          	      			  childs=childs->next;

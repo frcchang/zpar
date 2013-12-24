@@ -49,17 +49,13 @@ inline const bool &auxpass1(const unsigned long &cons){
     				     (*words)[verbTarg->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)&&!(isLinked(&node,verbTarg))) {
 
     					 CStateNodeList* childsVerb=verbTarg->m_umbinarizedSubNodes;
-    					 while(childsVerb!=0){
-    						 if ((compareWordToPassiveAuxWordRegex((*words)[childsVerb->node->lexical_head].word))) {
+    						 if ((compareWordToPassiveAuxWordRegex((*words)[verbTarg->lexical_head].word))) {
     							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
     							 if (buildStanfordLink(label, verbTarg->lexical_head, node.lexical_head)) {
     								 addLinked(&node,verbTarg);
     							     return true;
     							 }
     						 }
-    						 childsVerb=childsVerb->next;
-    					 }
-
     				 }
     				 childsVp=childsVp->next;
     			 }
@@ -101,17 +97,13 @@ inline const bool &auxpass2(const unsigned long &cons){
     					 rightSisters=rightSisters->next;
     				 }
     				 if (secondCondition){
-    					 CStateNodeList* childsVb=vbauxposTarg->m_umbinarizedSubNodes;
-    					 while(childsVb!=0){
-    						 if (compareWordToBeAuxiliaryWordRegex((*words)[childsVb->node->lexical_head].word)) {
+    						 if (compareWordToBeAuxiliaryWordRegex((*words)[vbauxposTarg->lexical_head].word)) {
     							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
     							 if (buildStanfordLink(label, vbauxposTarg->lexical_head, node.lexical_head)) {
     								 addLinked(&node,vbauxposTarg);
     							     return true;
     							 }
     						 }
-    						 childsVb=childsVb->next;
-    					 }
     				 }
     				 
     			 }
@@ -138,9 +130,9 @@ inline const bool &auxpass3(const unsigned long &cons){
     					 	 ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE)||
     					 	 ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_POS)) {
 
-    						 CStateNodeList* childsVerb=childsVp->node->m_umbinarizedSubNodes;
-    						 while(childsVerb!=0){
-    							 if ((compareWordToBeAuxiliaryWordRegex((*words)[childsVerb->node->lexical_head].word))) {
+    						 //CStateNodeList* childsVerb=childsVp->node->m_umbinarizedSubNodes;
+    						 //while(childsVerb!=0){
+    							 if ((compareWordToBeAuxiliaryWordRegex((*words)[childsVp->node->lexical_head].word))) {
     								 if (childsSinv->previous!=0){
     									 CStateNodeList* leftSistersVp=childsSinv->previous;
     									 while(leftSistersVp!=0){
@@ -163,8 +155,8 @@ inline const bool &auxpass3(const unsigned long &cons){
     									 }
     								 }
     						      }
-    						      childsVerb=childsVerb->next;
-    						  }
+    						      //childsVerb=childsVerb->next;
+    						  //}
     					 }
     					 childsVp=childsVp->next;
     				 }
@@ -199,9 +191,9 @@ inline const bool &auxpass4(const unsigned long &cons){
        									 ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE)||
        									 ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_POS)) {
 
-       								 CStateNodeList* childsVerb=childsVp->node->m_umbinarizedSubNodes;
-       								 while(childsVerb!=0){
-       									 if ((compareWordToBeAuxiliaryWordRegex((*words)[childsVerb->node->lexical_head].word))) {
+       								 //CStateNodeList* childsVerb=childsVp->node->m_umbinarizedSubNodes;
+       								 //while(childsVerb!=0){
+       									 if ((compareWordToBeAuxiliaryWordRegex((*words)[childsVp->node->lexical_head].word))) {
        										 if (childsSinv->previous!=0){
        											 CStateNodeList* leftSistersVp=childsSinv->previous;
        											 while(leftSistersVp!=0){
@@ -224,8 +216,8 @@ inline const bool &auxpass4(const unsigned long &cons){
        											 }
        										 }
        									 }
-       									 childsVerb=childsVerb->next;
-       								 }
+       									 //childsVerb=childsVerb->next;
+       								 //}
        							 }
        							 childsVp=childsVp->next;
        						 }

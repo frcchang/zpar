@@ -16,13 +16,9 @@ inline const bool &advcl1(const unsigned long &cons){
     				while(childsSbar!=0){
     					const CStateNode* inChildSbar=childsSbar->node;
     					if ((*words)[inChildSbar->lexical_head].tag.code()==PENN_TAG_NOUN){
-    						CStateNodeList* childsIn=inChildSbar->m_umbinarizedSubNodes;
     						bool inCondition=true;
-    						while(childsIn!=0){
-    							if (((*words)[childsIn->node->lexical_head].word==g_word_that) ||((*words)[childsIn->node->lexical_head].word==g_word_whether)){
-    								inCondition=false;
-    							}
-    							childsIn=childsIn->next;
+    						if (((*words)[inChildSbar->lexical_head].word==g_word_that) ||((*words)[inChildSbar->lexical_head].word==g_word_whether)){
+    							inCondition=false;
     						}
     						firstCondition=inCondition;
     					}
@@ -59,12 +55,8 @@ inline const bool &advcl1(const unsigned long &cons){
     					bool firstInCond=false;
     					while(childsSbar!=0){
     						if ((*words)[childsSbar->node->lexical_head].tag.code()==PENN_TAG_IN){
-    							CStateNodeList* childsIn=childsSbar->node->m_umbinarizedSubNodes;
-    							while(childsIn!=0){
-    								if ((*words)[childsIn->node->lexical_head].word==g_word_that){
-    									firstInCond=true;
-    								}
-    								childsIn=childsIn->next;
+    							if ((*words)[childsSbar->node->lexical_head].word==g_word_that){
+    								firstInCond=true;
     							}
     						}
     						childsSbar=childsSbar->next;
@@ -75,13 +67,8 @@ inline const bool &advcl1(const unsigned long &cons){
     							const CStateNode* rbInChildSbar=childsSbar->node;
     							if ((*words)[rbInChildSbar->lexical_head].tag.code()==PENN_TAG_IN ||
     									(*words)[rbInChildSbar->lexical_head].tag.code()==PENN_TAG_ADVERB){
-
-    								CStateNodeList* childsRbin=rbInChildSbar->m_umbinarizedSubNodes;
-    								while(childsRbin!=0){
-    									if ((*words)[childsRbin->node->lexical_head].word==g_word_so){
-    										thirdCondition=true;
-    									}
-    									childsRbin=childsRbin->next;
+    								if ((*words)[rbInChildSbar->lexical_head].word==g_word_so){
+    									thirdCondition=true;
     								}
     							}
     							childsSbar=childsSbar->next;
@@ -141,24 +128,19 @@ inline const bool &advcl2(const unsigned long &cons){
        							if ((*words)[inChild->lexical_head].tag.code()==PENN_TAG_IN){
        								bool secInCond=true;
        								bool thirdInCond=true;
-       								CStateNodeList* childsIn=inChild->m_umbinarizedSubNodes;
-       								while(childsIn!=0){
-       									if ((*words)[childsIn->node->lexical_head].word==g_word_whether||(*words)[childsIn->node->lexical_head].word==g_word_that){
-       										secInCond=false;
-       									}
-       									childsIn=childsIn->next;
+       								if ((*words)[inChild->lexical_head].word==g_word_whether||(*words)[inChild->lexical_head].word==g_word_that){
+       									secInCond=false;
        								}
+       								CStateNodeList* childsIn=inChild->m_umbinarizedSubNodes;
+       								
        								if (secInCond){
        									if (childs->next!=0){
        										if ((*words)[childs->next->node->lexical_head].tag.code()==PENN_TAG_NOUN){
-       											CStateNodeList* childsNN=childs->next->node->m_umbinarizedSubNodes;
-       											while(childsNN!=0){
-       												if ((*words)[childsNN->node->lexical_head].word==g_word_order){
-       													thirdInCond=false;
-       												}
-       												childsNN=childsNN->next;
+       											if ((*words)[childs->next->node->lexical_head].word==g_word_order){
+       												thirdInCond=false;
        											}
 
+  
        									    }
        									}
        								}
@@ -220,24 +202,16 @@ inline const bool &advcl3(const unsigned long &cons){
             							if ((*words)[inChild->lexical_head].tag.code()==PENN_TAG_IN){
             								bool secInCond=true;
             								bool thirdInCond=true;
-            								CStateNodeList* childsIn=inChild->m_umbinarizedSubNodes;
-            								while(childsIn!=0){
-            									if ((*words)[childsIn->node->lexical_head].word==g_word_whether||(*words)[childsIn->node->lexical_head].word==g_word_that){
-            										secInCond=false;
-            									}
-            									childsIn=childsIn->next;
+            								if ((*words)[inChild->lexical_head].word==g_word_whether||(*words)[inChild->lexical_head].word==g_word_that){
+            									secInCond=false;
             								}
+            								
             								if (secInCond){
             									if (childs->next!=0){
             										if ((*words)[childs->next->node->lexical_head].tag.code()==PENN_TAG_NOUN){
-            											CStateNodeList* childsNN=childs->next->node->m_umbinarizedSubNodes;
-            											while(childsNN!=0){
-            												if ((*words)[childsNN->node->lexical_head].word==g_word_order){
-            													thirdInCond=false;
-            												}
-            												childsNN=childsNN->next;
+            											if ((*words)[childs->next->node->lexical_head].word==g_word_order){
+            												thirdInCond=false;
             											}
-
             									    }
             									}
             								}
@@ -302,22 +276,14 @@ inline const bool &advcl4(const unsigned long &cons){
    							//(IN !< /^(?i:that|whether)$/ !$+ (NN < order))
    							bool secInCondition=true;
    							bool thirdInCondition=true;
-   							CStateNodeList* childsIn=inChild->m_umbinarizedSubNodes;
-   							while(childsIn!=0){
-   								if (((*words)[childsIn->node->lexical_head].word==g_word_that) ||((*words)[childsIn->node->lexical_head].word==g_word_whether)){
-   									secInCondition=false;
-   								}
-   								childsIn=childsIn->next;
+   							if (((*words)[inChild->lexical_head].word==g_word_that) ||((*words)[inChild->lexical_head].word==g_word_whether)){
+   								secInCondition=false;
    							}
    							if (childsSbar->next!=0){
    								const CStateNode* nnRightSis=childsSbar->next->node;
    								if ((*words)[nnRightSis->lexical_head].tag.code()==PENN_TAG_NOUN){
-   									CStateNodeList* childsNN=nnRightSis->m_umbinarizedSubNodes;
-   									while(childsNN!=0){
-   										if ((*words)[childsNN->node->lexical_head].word==g_word_order){
-   											thirdInCondition=false;
-   										}
-   										childsNN=childsNN->next;
+   									if ((*words)[nnRightSis->lexical_head].word==g_word_order){
+   										thirdInCondition=false;   										
    									}
    								}
    							}
@@ -382,25 +348,17 @@ inline const bool &advcl5(const unsigned long &cons){
      							 if (childsSbarTarg->next!=0){ //$+
      								 const CStateNode* nnSister=childsSbarTarg->next->node;
      	    						 if (((*words)[nnSister->lexical_head].tag.code()==PENN_TAG_NOUN)) {
-     	    							 CStateNodeList* childsNN=nnSister->m_umbinarizedSubNodes;
-     	    							 while(childsNN!=0){
-     	    	    						 if ((*words)[childsNN->node->lexical_head].word==g_word_order){
-     	    	    							 thirdInCondition=false;
-     	    	    						 }
-     	    								 childsNN=childsNN->next;
-     	    							 }
+     	    							if ((*words)[nnSister->lexical_head].word==g_word_order){
+     	    								thirdInCondition=false;
+     	    							}
      	    						 }
 
      							 }
      							 if (thirdInCondition){
-     								 CStateNodeList* childsIn=fstChildSbar->m_umbinarizedSubNodes;
-     								 while(childsIn!=0){
-     									 if (((*words)[childsIn->node->lexical_head].word==g_word_that)||
-     											 ((*words)[childsIn->node->lexical_head].word==g_word_whether)){
-     										 secInCondition=true;
-     									 }
-     									 childsIn=childsIn->next;
-     								 }
+     								if (((*words)[fstChildSbar->lexical_head].word==g_word_that)||
+     								    ((*words)[fstChildSbar->lexical_head].word==g_word_whether)){
+     									secInCondition=true;
+     								}
      							 }
 
      							 if (secInCondition && thirdInCondition){
@@ -457,14 +415,10 @@ inline const bool &advcl6(const unsigned long &cons){
      						 while(childsWh!=0){
      							 const CStateNode* wrbChild=childsWh->node;
      							 if (((*words)[wrbChild->lexical_head].tag.code()==PENN_TAG_WRB)) {
-     								 CStateNodeList* childsWrb=wrbChild->m_umbinarizedSubNodes;
      								 bool inCondition=true;
-     								 while(childsWrb!=0){
-     									 if ((*words)[childsWrb->node->lexical_head].word==g_word_how){
-     										 inCondition=false;
-     									 }
-     									 childsWrb=childsWrb->next;
-     								 }
+     								if ((*words)[wrbChild->lexical_head].word==g_word_how){
+     									inCondition=false;
+     								}
      								 if (inCondition){
      									 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVCL);
      									 if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
@@ -526,12 +480,8 @@ inline const bool &advcl7(const unsigned long &cons){
     								 const CStateNode* wrbChildwh=childsWh->node;
     								 if (((*words)[wrbChildwh->lexical_head].tag.code()==PENN_TAG_WRB)) {
     									 bool howCond=true;
-    									 CStateNodeList* childsWrb=wrbChildwh->m_umbinarizedSubNodes;
-    									 while(childsWrb!=0){
-    										 if ((*words)[childsWrb->node->lexical_head].word==g_word_how){
-    											 howCond=false;
-    										 }
-    										 childsWrb=childsWrb->next;
+    									 if ((*words)[wrbChildwh->lexical_head].word==g_word_how){
+    										 howCond=false;
     									 }
     									 if (howCond){
     										 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVCL);

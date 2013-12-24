@@ -57,12 +57,12 @@ inline const bool &nn1(const unsigned long &cons){
     							  }
     							  else if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
     								  CStateNodeList* childsVbz=descendants->node->m_umbinarizedSubNodes;
-    								  while(childsVbz!=0){
-    									  if ((*words)[childsVbz->node->lexical_head].word==g_word_aps){
+    								  //while(childsVbz!=0){
+    									  if ((*words)[descendants->node->lexical_head].word==g_word_aps){
     										  descCond2=false;
     									  }
-    									  childsVbz=childsVbz->next;
-    								  }
+    									  //childsVbz=childsVbz->next;
+    								  //}
     							  }
     							  descendants=descendants->next;
     						  }
@@ -86,7 +86,7 @@ inline const bool &nn1(const unsigned long &cons){
 
       //"/^(?:WH)?(?:NP|NX|NAC|NML)(?:-TMP|-ADV)?$/ < JJ|JJR|JJS=sister < (NP|NML|NN|NNS|NNP|NNPS|FW=target !<<- POS !<<- (VBZ < /^\'s$/) $+ =sister) <# NN|NNS|NNP|NNPS !<<- POS !<<- (VBZ < /^\'s$/) ",
 inline const bool &nn2(const unsigned long &cons){
-          	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP || cons==PENN_CON_NAC || cons==PENN_CON_NX){
+         	  if (cons==PENN_CON_WHNP || cons==PENN_CON_NP || cons==PENN_CON_NAC || cons==PENN_CON_NX){
           		  bool firstCond=false; //< JJ|JJR|JJS=sister
           		  bool thirdCond=false; //<# NN|NNS|NNP|NNPS
           		  bool fourthCond=true;//!<<- POS
@@ -119,13 +119,13 @@ inline const bool &nn2(const unsigned long &cons){
           					  fourthCond=false;
           				  }
           				  else if ((*words)[descendants->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
-          					  CStateNodeList* childsVbz=descendants->node->m_umbinarizedSubNodes;
-          				      while(childsVbz!=0){
-          				    	  if ((*words)[childsVbz->node->lexical_head].word==g_word_aps){
+          					  //CStateNodeList* childsVbz=descendants->node->m_umbinarizedSubNodes;
+          				      //while(childsVbz!=0){
+          				    	  if ((*words)[descendants->node->lexical_head].word==g_word_aps){
           				    		  fifthCond=false;
           				    	  }
-          				      	  childsVbz=childsVbz->next;
-          				      }
+          				      	//  childsVbz=childsVbz->next;
+          				      //}
           				  }
           				  descendants=descendants->next;
           			  }
@@ -152,8 +152,8 @@ inline const bool &nn2(const unsigned long &cons){
           					      }
           					      else if ((*words)[descendants2->node->lexical_head].tag.code()==PENN_TAG_VERB_THIRD_SINGLE){
           					    	  CStateNodeList* childsVbz=descendants2->node->m_umbinarizedSubNodes;
-          					      	  while(childsVbz!=0){
-          					      		  if ((*words)[childsVbz->node->lexical_head].word==g_word_aps){
+          					      	  //while(childsVbz!=0){
+          					      		  if ((*words)[descendants2->node->lexical_head].word==g_word_aps){
           					      			CStateNodeList* rightSisters=childs->next;
           					      			if (rightSisters!=0 && sister!=0){
           					      				if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
@@ -167,8 +167,8 @@ inline const bool &nn2(const unsigned long &cons){
           					      				}
           					      			}
           					      		  }
-          					      		  childsVbz=childsVbz->next;
-          					      	  }
+          					      		//  childsVbz=childsVbz->next;
+          					      	  //}
           					       }
           					      descendants2=descendants2->next;
           					    }
@@ -221,16 +221,16 @@ inline const bool &nn4(const unsigned long &cons){
 	    			 	 if (((*words)[inTarg->lexical_head].tag.code()==PENN_TAG_IN)&&!(isLinked(&node,inTarg))){
 
 	    			 		 CStateNodeList* childsIn=inTarg->m_umbinarizedSubNodes;
-	    			 		 while(childsIn!=0){
-	    			 			if ((*words)[childsIn->node->lexical_head].word==g_word_in||(*words)[childsIn->node->lexical_head].word==g_word_In){
+	    			 		 //while(childsIn!=0){
+	    			 			if ((*words)[inTarg->lexical_head].word==g_word_in||(*words)[inTarg->lexical_head].word==g_word_In){
 	    			 				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
 	    			 				if (buildStanfordLink(label, inTarg->lexical_head, node.lexical_head)) {
 	    			 					addLinked(&node,inTarg);
 	    			 				    return true;
 	    			 				}
 	    			 			}
-	    			 			childsIn=childsIn->next;
-	    			 		 }
+	    			 			//childsIn=childsIn->next;
+	    			 		 //}
 	     				 }
 	     			}
 	     		}
