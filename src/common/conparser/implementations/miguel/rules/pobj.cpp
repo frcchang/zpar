@@ -38,12 +38,60 @@
     	return false;
     }
 
+    //"/^PP(?:-TMP)?$/ < (/^(?:IN|VBG|TO)$/ $+ (ADVP=target [ < (RB < /^(?i:here|there)$/) | < (ADVP < /^NP(?:-TMP)?$/) ] ))",
+          // second disjunct is weird ADVP, only matches 1 tree in 2-21
+          // to deal with preposition stranding in questions (e.g., "Which city do you live in?") -- the preposition is sometimes treated as a particle by the parser (works well but doesn't preserve the tree structure!)
 
-//"/^PP(?:-TMP)?$/ < (/^(?:IN|VBG|TO)$/ $+ (ADVP=target [ < (RB < /^(?i:here|there)$/) | < (ADVP < /^NP(?:-TMP)?$/) ] ))",
-      // second disjunct is weird ADVP, only matches 1 tree in 2-21
-      // to deal with preposition stranding in questions (e.g., "Which city do you live in?") -- the preposition is sometimes treated as a particle by the parser (works well but doesn't preserve the tree structure!)
+    inline const bool &buildPobj2(const unsigned long &cons) {
+    	if (cons==PENN_CON_PP){
+    		CStateNodeList* childsPP=node.m_umbinarizedSubNodes;
+    		while(childsPP!=0){
+    			if (((*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_IN 
+    				|| (*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_TO || (*words)[childsPP->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)){
+    			  	if (childsPP->next!=0){
+    			  		const CStateNode* targ=childsPP->next->node;
+    			  		if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_ADVP && !isLinked(&node,targ)){
+    			  			bool cond1=false;
+    			  			bool cond2=false;
+    			  			CStateNodeList* childsAdvp=targ->m_umbinarizedSubNodes;
+    			  			while(childsAdvp!=0){
+    			  				if ((*words)[childsAdvp->node->lexical_head].tag.code()==PENN_TAG_ADVERB 
+    			  						&& (((*words)[childsAdvp->node->lexical_head].word==g_word_here)||((*words)[childsAdvp->node->lexical_head].word==g_word_there))){
+    			  					cond1=true;
+    			  				}
+    			  				childsAdvp=childsAdvp->next;
+    			  			}
+    			  			if (!cond1){
+    			  				childsAdvp=targ->m_umbinarizedSubNodes;
+    			  				while(childsAdvp!=0){
+    			  					if (CConstituent::clearTmp(childsAdvp->node->constituent.code())==PENN_CON_ADVP){
+    			  						CStateNodeList* childsAdvp2=childsAdvp->node->m_umbinarizedSubNodes;
+    			  						while(childsAdvp2!=0){
+    			  							if (CConstituent::clearTmp(childsAdvp2->node->constituent.code())==PENN_CON_NP){
+    			  								cond2=true;
+    			  							}
+    			  							childsAdvp2=childsAdvp2->next;
+    			  						}
+    			  					}
+    			  				    childsAdvp=childsAdvp->next;
+    			  				}	
+    			  			}
+    			  			if (cond1 || cond2){
+    			  				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POBJ);
+    			  				if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+    			  					addLinked(&node,targ);
+    			  				    return true;
+    			  				}
+    			  			}
+    			  		}
+    			  	}
+    			}
+    			childsPP=childsPP->next;
+    		}
+    	}
+    	return false;
+    }
 
-inline const bool &buildPobj2(const unsigned long &cons) {}
 
 //"PRT >- (VP !< (S < (VP < TO)) >+(SQ|SINV|S|VP) (SBARQ <, (WHNP=target !< WRB)) $-- (NP !< /^-NONE-$/))",
 
