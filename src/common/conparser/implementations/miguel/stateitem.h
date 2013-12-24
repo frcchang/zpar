@@ -13,6 +13,8 @@
 //static copulateVerbs({"be", "being", "been", "am", "are", "r", "is", "ai", "was", "were", "'m", "'re", "'s", "s", "seem", "seems", "seemed", "appear", "appears", "appeared", "stay", "stays", "stayed", "remain", "remains", "remained", "resemble", "resembles", "resembled", "become", "becomes", "became"};
 
 //Miguel
+static CWord g_word_here("here");
+static CWord g_word_there("there");
 static CWord g_word_mondays("Mondays");
 static CWord g_word_monday("Monday");
 static CWord g_word_tuesdays("Tuesdays");
@@ -2064,6 +2066,10 @@ public:
    #include "rules/rel.cpp"
    #include "rules/tmod.cpp"
 
+    
+
+
+    
 
     //compareWordToHaveWordRegex
     // PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
