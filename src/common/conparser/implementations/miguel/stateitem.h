@@ -1416,11 +1416,13 @@ public:
            mwe5(cons);
            mwe6(cons);*/
 
-
-           //npadvmod1(cons);
-           //npadvmod2(cons);
+           std::cerr<<"npadvmod1 \n";
+           npadvmod1(cons);
+           std::cerr<<"npadvmod2 \n";
+           npadvmod2(cons);
            //npadvmod3(cons);
-           //npadvmod4(cons);
+           std::cerr<<"npadvmod4 \n";
+           npadvmod4(cons);
            //npadvmod5(cons);
 
            num1(cons);
