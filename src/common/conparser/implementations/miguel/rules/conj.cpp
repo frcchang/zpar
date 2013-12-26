@@ -124,9 +124,55 @@
 //"VP|S|SBAR|SBARQ|SINV|SQ=root < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/) < (/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/ $+ (/^S|SINV$|^(?:A|N|V|PP|PRP|J|W|R)/=target $-- (/^CC|CONJP|:|,$/ $-- (__ ># =root))) )",
 bool buildConj3(const unsigned long &cons){}
 
-	// non-parenthetical or comma in suitable phrase with conjunction to left
+
 //"/^(?:ADJP|JJP|PP|QP|(?:WH)?NP(?:-TMP|-ADV)?|ADVP|UCP(?:-TMP|-ADV)?|NX|NML)$/ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN)$/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
-bool buildConj4(const unsigned long &cons){}
+bool buildConj4(const unsigned long &cons){
+	if (cons==PENN_CON_ADJP || cons==PENN_CON_PP || cons==PENN_CON_QP || cons==PENN_CON_WHNP 
+			|| cons==PENN_CON_NP || cons==PENN_CON_ADVP || cons==PENN_CON_UCP || cons==PENN_CON_NX){
+		CStateNodeList* childs=node.m_umbinarizedSubNodes;
+		while(childs!=0){
+			if (CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
+				bool leftCond=false;
+				CStateNodeList* leftSisters=childs->previous;
+				if (leftSisters!=0) leftCond=true;
+				while(leftSisters!=0){
+					if ((*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET || CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_PRN ||
+    						(*words)[leftSisters->node->lexical_head].word==g_word_quotes){
+						//g_word_quotes
+						leftCond=false;
+					}
+					leftSisters=leftSisters->previous;
+				}
+				if (leftCond && childs->next!=0){
+					const CStateNode* targ=childs->next->node;
+					if (!isLinked(&node,targ)){
+						bool targCond=true;
+						 //!/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)
+						 if ((*words)[targ->lexical_head].word==g_word_quotes || (*words)[targ->lexical_head].word==g_word_squotes || 
+						    (*words)[targ->lexical_head].word==g_word_two_dots || (*words)[targ->lexical_head].word==g_word_dot ||
+						    (*words)[targ->lexical_head].tag.code()==PENN_TAG_R_BRACKET || CConstituent::clearTmp(targ->constituent.code())==PENN_CON_PRN||
+						    (*words)[targ->lexical_head].tag.code()==PENN_TAG_L_BRACKET){
+						  	  targCond=false;
+						 }
+						 if (targCond){
+							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
+							 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+								 addLinked(&node,targ);
+							     return true;
+							 }
+						 }
+					}
+				}
+			}
+			childs=childs->next;
+		}
+		
+		//if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_CONJP || (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_CC){
+	}
+	return false;
+}
+
+	// non-parenthetical or comma in suitable phrase with conjunction to left
 
 //"/^(?:VP|S|SBAR|SBARQ|SINV|ADJP|PP|QP|(?:WH)?NP(?:-TMP|-ADV)?|ADVP|UCP(?:-TMP|-ADV)?|NX|NML)$/ < (CC $++ (CC|CONJP $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target))",
     bool buildConj5(const unsigned long &cons){
