@@ -164,15 +164,13 @@
 							      ||((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)
 							      ||((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL)){
 								  sisCond=true;
+								  if ((*words)[rightSisters->node->lexical_head].word==g_word_quote){
+									  childCond=true;
+								  }
 							  }
 							  rightSisters=rightSisters->next;
 						  }
-						  //while(childsR!=0){
-							  if ((*words)[rightSisters->node->lexical_head].word==g_word_quote){
-								  childCond=true;
-							  }
-							 // childsR=childsR->next;
-						  //}
+
 						  if (sisCond && childCond){
 							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSS);
 							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
