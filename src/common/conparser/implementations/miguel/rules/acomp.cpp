@@ -21,8 +21,8 @@ inline const bool &buildAComp1(const unsigned long &cons){
     						 leftSistersAdjp=leftSistersAdjp->previous;
     					 }
     					 if (npCondition){
-    						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ACOMP);
-    						 if (buildStanfordLink(label, adjpTarg->lexical_head, node.lexical_head)) {
+//    						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ACOMP);
+    						 if (buildStanfordLink(STANFORD_DEP_ACOMP, adjpTarg->lexical_head, node.lexical_head)) {
     							 addLinked(&node,adjpTarg);
     						     return true;
     						 }   
@@ -76,8 +76,8 @@ inline const bool &buildAComp2(const unsigned long &cons){
     													 ((*words)[childsAdjp->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)||
     													 ((*words)[childsAdjp->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)||
     													 ((*words)[childsAdjp->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)) {
-    												 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ACOMP);
-    												 if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//    												 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ACOMP);
+    												 if (buildStanfordLink(STANFORD_DEP_ACOMP, sTarg->lexical_head, node.lexical_head)) {
     													 addLinked(&node,sTarg);
     												     return true;
     												 }   

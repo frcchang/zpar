@@ -24,8 +24,8 @@ inline const bool & buildXComp1(const unsigned long &cons) {
     							CStateNodeList* childsVps=vpChild->m_umbinarizedSubNodes;
     							while(childsVps!=0){
     								if ((*words)[childsVps->node->lexical_head].tag.code()==PENN_TAG_TO) {
-    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-    									if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+    									if (buildStanfordLink(STANFORD_DEP_XCOMP, sTarg->lexical_head, node.lexical_head)) {
     										addLinked(&node,sTarg);
     									    return true;
     									}
@@ -59,8 +59,8 @@ inline const bool & buildXComp2(const unsigned long &cons) {
        						CStateNodeList* childsVp=vpChildS->m_umbinarizedSubNodes;
        						if (childsVp!=0){//only first child
        							if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_TO)){
-       								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-       								if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//       								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+       								if (buildStanfordLink(STANFORD_DEP_XCOMP, sTarg->lexical_head, node.lexical_head)) {
        									addLinked(&node,sTarg);
        									return true;
        								}
@@ -108,8 +108,8 @@ inline const bool &buildXComp3(const unsigned long &cons) {
 							if (childsS->next!=0){
 								if (CConstituent::clearTmp(childsS->next->node->constituent.code())==PENN_CON_NP
 										||CConstituent::clearTmp(childsS->next->node->constituent.code())==PENN_CON_ADJP){
-									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-									if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+									if (buildStanfordLink(STANFORD_DEP_XCOMP, sTarg->lexical_head, node.lexical_head)) {
 										addLinked(&node,sTarg);
 									    return true;
 									}
@@ -150,8 +150,8 @@ inline const bool &buildXComp4(const unsigned long &cons) {
    							CStateNodeList* childsVb=vbChildVp->m_umbinarizedSubNodes;
    							while(childsVb!=0){
    								if (CConstituent::clearTmp(childsVb->node->constituent.code())==PENN_CON_NP){
-   									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-   									if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)) {
+//   									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+   									if (buildStanfordLink(STANFORD_DEP_XCOMP, vpTarg->lexical_head, node.lexical_head)) {
    										addLinked(&node,vpTarg);
    										return true;
    									}
@@ -209,8 +209,8 @@ inline const bool & buildXComp6(const unsigned long &cons) {
 							CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
 							if (childsS!=0){
 								if ((CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_NP) && (childsS->next ==0)){
-									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-									if (buildStanfordLink(label, sTarg->lexical_head, vpNode->lexical_head)) {
+//									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+									if (buildStanfordLink(STANFORD_DEP_XCOMP, sTarg->lexical_head, vpNode->lexical_head)) {
 										//addLinked(vpNode,sTarg);
 										addLinked(&node,sTarg); //I think this is not correct, in this specific case.
 										return true;
@@ -319,8 +319,8 @@ inline const bool &buildXComp7(const unsigned long &cons) {
      									CStateNodeList* childsVp=vpChildS->m_umbinarizedSubNodes;
      									while(childsVp!=0){
      										if (((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)) {
-     											CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-     											if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//     											CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
+     											if (buildStanfordLink(STANFORD_DEP_XCOMP, sTarg->lexical_head, node.lexical_head)) {
      												//addLinked(vpNode,sTarg);
      												addLinked(&node,sTarg);
      												return true;

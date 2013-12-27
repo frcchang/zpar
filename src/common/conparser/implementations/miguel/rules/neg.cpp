@@ -8,8 +8,8 @@
     			 const CStateNode* targ=childs->node;
     			 if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_ADVERB && (!isLinked(&node,targ))){
     				 if (((*words)[childs->node->lexical_head].word==g_word_not) ||((*words)[childs->node->lexical_head].word==g_word_nt)){
-    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
-    					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
+    					 if (buildStanfordLink(STANFORD_DEP_NEG, targ->lexical_head, node.lexical_head)) {
     						 addLinked(&node,targ);
     					     return true;
     					 }
@@ -33,8 +33,8 @@
        					 const CStateNode* adv=childsTarg->node;
        					 if ((*words)[adv->lexical_head].tag.code()==PENN_TAG_ADVERB && adv->lexical_head==targ->lexical_head){ //<#
        						if (((*words)[adv->lexical_head].word==g_word_not) ||((*words)[adv->lexical_head].word==g_word_nt)){
-       							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
-       							if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//       							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
+       							if (buildStanfordLink(STANFORD_DEP_NEG, targ->lexical_head, node.lexical_head)) {
        								addLinked(&node,targ);
        						     	return true;
        						     	}
@@ -66,8 +66,8 @@
   						 //CStateNodeList* childsRb=targ->m_umbinarizedSubNodes;
   						 //while(childsRb!=0){
   							 if (((*words)[targ->lexical_head].word==g_word_not) ||((*words)[targ->lexical_head].word==g_word_nt)){
-  								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
-  								 if (buildStanfordLink(label, targ->lexical_head, head->lexical_head)) {
+//  								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NEG);
+  								 if (buildStanfordLink(STANFORD_DEP_NEG, targ->lexical_head, head->lexical_head)) {
   									 addLinked(&node,targ);
   								     return true;
   								 }

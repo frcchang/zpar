@@ -45,8 +45,8 @@
     							  rightSisters=rightSisters->next;
     						  }
     						  if (cond1||cond2){
-    							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_COP);
-    							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_COP);
+    							  if (buildStanfordLink(STANFORD_DEP_COP, targ->lexical_head, node.lexical_head)) {
     								  addLinked(&node,targ);
     								  return true;
     							  }
@@ -120,8 +120,8 @@
          	      							  rightSisters=rightSisters->next;
          	      						  }
          	      						  if (cond1||cond2||cond3){
-         	      							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_COP);
-         	      							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//         	      							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_COP);
+         	      							  if (buildStanfordLink(STANFORD_DEP_COP, targ->lexical_head, node.lexical_head)) {
          	      								  addLinked(&node,targ);
          	      								  return true;
          	      							  }

@@ -13,8 +13,8 @@
      					  }
      				  }
      				  if (ccCond){
-     					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NUM);
-     					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//     					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NUM);
+     					  if (buildStanfordLink(STANFORD_DEP_NUM, targ->lexical_head, node.lexical_head)) {
      						  addLinked(&node,targ);
      					  	  return true;
      					  }
@@ -39,8 +39,8 @@
    					  qpCond=true;
    				  }
    				  if (qpCond){
-   					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NUM);
-   					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//   					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NUM);
+   					  if (buildStanfordLink(STANFORD_DEP_NUM, targ->lexical_head, node.lexical_head)) {
    						  addLinked(&node,targ);
    					  	  return true;
    					  }

@@ -43,8 +43,8 @@ inline const bool & discourse3(const unsigned long &cons){
     		  }
     		  
     		  if (cond1||cond2){
-    			  CDependencyLabel* label=new CDependencyLabel(0);
-    			  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    			  CDependencyLabel* label=new CDependencyLabel(0);
+    			  if (buildStanfordLink(0, targ->lexical_head, node.lexical_head)) {
     				  addLinked(&node,targ);
     			      return true;
     			  }

@@ -9,8 +9,8 @@
      				while(childsPrn!=0){
      					if (CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_S ||CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SINV
      							|| CConstituent::clearTmp(childsPrn->node->constituent.code())==PENN_CON_SBAR) {
-     						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
-     						if (buildStanfordLink(label, prnTarg->lexical_head, node.lexical_head)) {
+//     						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
+     						if (buildStanfordLink(STANFORD_DEP_PARATAXIS, prnTarg->lexical_head, node.lexical_head)) {
      							addLinked(&node,prnTarg);
      							return true;
      						}
@@ -53,8 +53,8 @@
          						 childsPrn=childsPrn->next;
          					 }
          					 if (secCondition||thirdCondition){
-         						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
-         						 if (buildStanfordLink(label, prnTarg->lexical_head, vpHead->lexical_head)) {
+//         						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
+         						 if (buildStanfordLink(STANFORD_DEP_PARATAXIS, prnTarg->lexical_head, vpHead->lexical_head)) {
          							 addLinked(&node,prnTarg);
          						     return true;
          						 }
@@ -84,8 +84,8 @@
          			     	 childsPrn=childsPrn->next;
          			     }
          			     if (secCondition||thirdCondition){
-         			    	 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
-         			     	 if (buildStanfordLink(label, prnTarg->lexical_head, vpHead->lexical_head)) {
+//         			    	 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
+         			     	 if (buildStanfordLink(STANFORD_DEP_PARATAXIS, prnTarg->lexical_head, vpHead->lexical_head)) {
          			     		 addLinked(&node,prnTarg);
          			     		 return true;
          			     	 }
@@ -127,8 +127,8 @@
               								 ||CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_SBARQ
               								 ||CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_SINV
               								 ||CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_SQ) && !(isLinked(&node,sTarg)) ){
-              							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
-              							 if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//              							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
+              							 if (buildStanfordLink(STANFORD_DEP_PARATAXIS, sTarg->lexical_head, node.lexical_head)) {
               								 addLinked(&node,sTarg);
               							     return true;
               							 }
@@ -162,8 +162,8 @@
                   		 				while(rightSisters!=0){
                   		 					const CStateNode* sTarg=rightSisters->node;
                   		 					if (CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_S && !isLinked(&node,sTarg)){
-                  		 						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
-                  		 						if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//                  		 						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARATAXIS);
+                  		 						if (buildStanfordLink(STANFORD_DEP_PARATAXIS, sTarg->lexical_head, node.lexical_head)) {
                   		 							addLinked(&node,sTarg);
                   		 						    return true;
                   		 						}

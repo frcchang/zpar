@@ -60,17 +60,17 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
    static CTuple2<CAction, CAction> tuple_action2;
    
-   static CTuple3<CTag,CTag,CDependencyLabel> tag_tag_label; //Miguel. Stanford links (1)
-   static CTuple3<CWord,CWord,CDependencyLabel> word_word_label; //Miguel. Stanford links (1)
-   static CTuple3<CTag,CWord,CDependencyLabel> tag_word_label; //Miguel. Stanford links (1)
-   static CTuple3<CWord,CTag,CDependencyLabel> word_tag_label; //Miguel. Stanford links (1)
-   static CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel> wordtag_wordtag_label; //Yue. Stanford links (1)
+   static CTuple3<CTag,CTag,unsigned long> tag_tag_label; //Miguel. Stanford links (1)
+   static CTuple3<CWord,CWord,unsigned long> word_word_label; //Miguel. Stanford links (1)
+   static CTuple3<CTag,CWord,unsigned long> tag_word_label; //Miguel. Stanford links (1)
+   static CTuple3<CWord,CTag,unsigned long> word_tag_label; //Miguel. Stanford links (1)
+   static CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,unsigned long> wordtag_wordtag_label; //Yue. Stanford links (1)
 
-   static CTuple4<CTag,CTag,CDependencyLabel, int> tag_tag_label_dist; //Yue. Stanford links (1)
-   static CTuple4<CWord,CWord,CDependencyLabel, int> word_word_label_dist; //Yue. Stanford links (1)
-   static CTuple4<CTag,CWord,CDependencyLabel, int> tag_word_label_dist; //Yue. Stanford links (1)
-   static CTuple4<CWord,CTag,CDependencyLabel, int> word_tag_label_dist; //Yue. Stanford links (1)
-   static CTuple4<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel, int> wordtag_wordtag_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CTag,CTag,unsigned long, int> tag_tag_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CWord,CWord,unsigned long, int> word_word_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CTag,CWord,unsigned long, int> tag_word_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CWord,CTag,unsigned long, int> word_tag_label_dist; //Yue. Stanford links (1)
+   static CTuple4<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,unsigned long, int> wordtag_wordtag_label_dist; //Yue. Stanford links (1)
    static int link_dir, link_dist;
 
 //   CWeight* cast_weights = (amount&&(round!=-1)) ? m_delta : static_cast<CWeight*>(m_weights);

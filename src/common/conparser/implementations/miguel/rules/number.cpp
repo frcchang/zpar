@@ -15,8 +15,8 @@
     					 }
     				 }
     				 if (ccCond){
-    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NUMBER);
-    					 if (buildStanfordLink(label, cdTarg->lexical_head, node.lexical_head)) {
+//    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NUMBER);
+    					 if (buildStanfordLink(STANFORD_DEP_NUMBER, cdTarg->lexical_head, node.lexical_head)) {
     						 addLinked(&node,cdTarg);
     					     return true;
     					 }

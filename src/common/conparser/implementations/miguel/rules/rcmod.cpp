@@ -30,8 +30,8 @@
     								  sbarChain=0;
     							  }
     							  else {
-    								  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
-    								  if (buildStanfordLink(label, sbarTarg->lexical_head, head->lexical_head)) {
+//    								  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
+    								  if (buildStanfordLink(STANFORD_DEP_RCMOD, sbarTarg->lexical_head, head->lexical_head)) {
     									  addLinked(&node,sbarTarg);
     								      return true;
     								  }
@@ -87,8 +87,8 @@
           										  }
           									  }
           									  if (inCond){
-          										  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
-          										  if (buildStanfordLink(label, sbarTarg->lexical_head, head->lexical_head)) {
+//          										  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
+          										  if (buildStanfordLink(STANFORD_DEP_RCMOD, sbarTarg->lexical_head, head->lexical_head)) {
           											  addLinked(&node,sbarTarg);
           										      return true;
           										  }
@@ -134,8 +134,8 @@
               										  //CStateNodeList* childsWr=childsWh->node->m_umbinarizedSubNodes;
               										  //while(childsWr!=0){
               											  if (((*words)[childsWh->node->lexical_head].word==g_word_where) ||((*words)[childsWh->node->lexical_head].word==g_word_why)||((*words)[childsWh->node->lexical_head].word==g_word_when)){
-              												  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
-              												  if (buildStanfordLink(label, sbarTarg->lexical_head, head->lexical_head)) {
+//              												  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
+              												  if (buildStanfordLink(STANFORD_DEP_RCMOD, sbarTarg->lexical_head, head->lexical_head)) {
               													  addLinked(&node,sbarTarg);
               												      return true;
               												  }
@@ -181,8 +181,8 @@
    				  while(rightSisters!=0){
    					  const CStateNode* targ=rightSisters->node;
    					  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_RRC && !isLinked(&node,targ)){
-   						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
-   						  if (buildStanfordLink(label, targ->lexical_head, head->lexical_head)) {
+//   						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
+   						  if (buildStanfordLink(STANFORD_DEP_RCMOD, targ->lexical_head, head->lexical_head)) {
    							  addLinked(&node,targ);
    						      return true;
    						  }
@@ -226,8 +226,8 @@
         			  while(childs!=0){
         				  const CStateNode* sbarTarg=childs->node;
         				  if (CConstituent::clearTmp(sbarTarg->constituent.code())==PENN_CON_SBAR && !isLinked(&node,sbarTarg)){
-        					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
-        					  if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//        					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_RCMOD);
+        					  if (buildStanfordLink(STANFORD_DEP_RCMOD, sbarTarg->lexical_head, node.lexical_head)) {
         						  addLinked(&node,sbarTarg);
         					      return true;
         					  }

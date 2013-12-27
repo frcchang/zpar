@@ -19,8 +19,8 @@ inline const bool &advmod1(const unsigned long &cons){
     				  }
     				  
     				  if (notCond){
-    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
-    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+    					  if (buildStanfordLink(STANFORD_DEP_ADVMOD, targ->lexical_head, node.lexical_head)) {
     						  addLinked(&node,targ);
     					      return true;
     					  }
@@ -65,8 +65,8 @@ inline const bool &advmod2(const unsigned long &cons){
   					  }
 
   					  if (notCond){
-  						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
-  						  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//  						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+  						  if (buildStanfordLink(STANFORD_DEP_ADVMOD, targ->lexical_head, node.lexical_head)) {
   							  addLinked(&node,targ);
   						      return true;
   						  }
@@ -89,8 +89,8 @@ inline const bool &advmod3(const unsigned long &cons){
   				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
   				  while(childsT!=0){
   					  if (((*words)[childsT->node->lexical_head].tag.code()==PENN_TAG_WRB)){
-  						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
-  						  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//  						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+  						  if (buildStanfordLink(STANFORD_DEP_ADVMOD, targ->lexical_head, node.lexical_head)) {
   							  addLinked(&node,targ);
   						      return true;
   						  }
@@ -113,8 +113,8 @@ inline const bool &advmod31(const unsigned long &cons){
     		  if (childs!=0){
     			  const CStateNode* targ=childs->node;
     			  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_WHADVP && !isLinked(&node,targ)){
-    				  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
-    				  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    				  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+    				  if (buildStanfordLink(STANFORD_DEP_ADVMOD, targ->lexical_head, node.lexical_head)) {
     					  addLinked(&node,targ);
     				      return true;
     				 }
@@ -148,8 +148,8 @@ inline const bool &advmod4(const unsigned long &cons){
         							  notCond=false;
         						  }
         						  if (notCond){
-        							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
-        						      if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//        							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+        						      if (buildStanfordLink(STANFORD_DEP_ADVMOD, targ->lexical_head, node.lexical_head)) {
         						    	  addLinked(&node,targ);
         						          return true;
         						          }
@@ -188,8 +188,8 @@ inline const bool &advmod5(const unsigned long &cons){
             						  notCond=false;
             					  }
             					  if (notCond){
-            						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
-            						  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//            						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+            						  if (buildStanfordLink(STANFORD_DEP_ADVMOD, targ->lexical_head, node.lexical_head)) {
             							  addLinked(&node,targ);
             						      return true;
             						  }
@@ -217,8 +217,8 @@ inline const bool &advmod6(const unsigned long &cons){
    					 notCond=false;
    				 }
    				 if (notCond){
-   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
-   					 if (buildStanfordLink(label, rbTarg->lexical_head, node.lexical_head)) {
+//   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ADVMOD);
+   					 if (buildStanfordLink(STANFORD_DEP_ADVMOD, rbTarg->lexical_head, node.lexical_head)) {
    						 addLinked(&node,rbTarg);
    					     return true;
    					 }

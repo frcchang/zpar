@@ -6,8 +6,8 @@
     		  while(childs!=0){
     			  const CStateNode* targ=childs->node;
     			  if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_POS) && !isLinked(&node,targ)){
-    				  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSSESSIVE);
-    				  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    				  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSSESSIVE);
+    				  if (buildStanfordLink(STANFORD_DEP_POSSESSIVE, targ->lexical_head, node.lexical_head)) {
     					  addLinked(&node,targ);
     				      return true;
     				  }
@@ -28,8 +28,8 @@
                				  CStateNodeList* childsT=targ->m_umbinarizedSubNodes;
                				  //while(childsT!=0){
                					  if ((*words)[targ->lexical_head].word==g_word_aps){
-               						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSSESSIVE);
-               						  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//               						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_POSSESSIVE);
+               						  if (buildStanfordLink(STANFORD_DEP_POSSESSIVE, targ->lexical_head, node.lexical_head)) {
                							  addLinked(&node,targ);
                						      return true;
                						  } 

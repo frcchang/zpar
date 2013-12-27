@@ -70,8 +70,8 @@ inline const bool &nn1(const unsigned long &cons){
     					  }
     					  if (rightsistCond && descCond1 && descCond2 && leftSistCond){
 
-    						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
-    					      if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
+    					      if (buildStanfordLink(STANFORD_DEP_NN, targ->lexical_head, node.lexical_head)) {
     					      	  addLinked(&node,targ);
     					      	  return true;
     					      }
@@ -159,8 +159,8 @@ inline const bool &nn2(const unsigned long &cons){
           					      				if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
           					      						|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE
           					      						|| (*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE){
-          					      					CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
-          					      					if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//          					      					CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
+          					      					if (buildStanfordLink(STANFORD_DEP_NN, targ->lexical_head, node.lexical_head)) {
           					      						addLinked(&node,targ);
           					      					    return true;
           					      					}
@@ -195,8 +195,8 @@ inline const bool &nn3(const unsigned long &cons){
 				 if (childsAd->previous!=0){
 					 const CStateNode* fwTarg=childsAd->previous->node;
 					 if (((*words)[fwTarg->lexical_head].tag.code()==PENN_TAG_FW)&&!(isLinked(&node,fwTarg))){
-						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
-						 if (buildStanfordLink(label, fwTarg->lexical_head, node.lexical_head)) {
+//						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
+						 if (buildStanfordLink(STANFORD_DEP_NN, fwTarg->lexical_head, node.lexical_head)) {
 							 addLinked(&node,fwTarg);
 						     return true;
 						 }
@@ -223,8 +223,8 @@ inline const bool &nn4(const unsigned long &cons){
 	    			 		 CStateNodeList* childsIn=inTarg->m_umbinarizedSubNodes;
 	    			 		 //while(childsIn!=0){
 	    			 			if ((*words)[inTarg->lexical_head].word==g_word_in||(*words)[inTarg->lexical_head].word==g_word_In){
-	    			 				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
-	    			 				if (buildStanfordLink(label, inTarg->lexical_head, node.lexical_head)) {
+//	    			 				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
+	    			 				if (buildStanfordLink(STANFORD_DEP_NN, inTarg->lexical_head, node.lexical_head)) {
 	    			 					addLinked(&node,inTarg);
 	    			 				    return true;
 	    			 				}

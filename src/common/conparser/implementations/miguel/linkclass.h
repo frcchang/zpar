@@ -14,7 +14,7 @@
 
 class CLink {
 public:
-   CDependencyLabel label; //src/english/dependency/label/stanford.h
+   unsigned long label; //src/english/dependency/label/stanford.h
    int dependent;
    int head; 
    CLink *next;   
@@ -22,7 +22,7 @@ public:
    int nsubjRule;
 
 public:
-   CLink(const CDependencyLabel label, const int dependent, const int head, CLink* next): label(label), dependent(dependent), head(head), next(next) {
+   CLink(const unsigned long label, const int dependent, const int head, CLink* next): label(label), dependent(dependent), head(head), next(next) {
 	   this->nsubjRule=0;
    }   
    CLink(): label(0), dependent(-1), head(-1), next(0) {
@@ -39,7 +39,7 @@ public:
       this->next=0;
       this->head=-1;
    }
-   void set(const CDependencyLabel label, const int dependent, CLink* next, const int head) { 
+   void set(const unsigned long label, const int dependent, CLink* next, const int head) { 
       this->label = label;
       this->dependent = dependent; 
       this->next = next;
@@ -83,12 +83,5 @@ public:
 
 
 };
- 
-
-
-
-
-
-
 
 #endif

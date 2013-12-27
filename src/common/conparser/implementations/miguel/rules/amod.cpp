@@ -27,8 +27,8 @@ inline const bool &amod1(const unsigned long &cons){
     					 }
     				 }
     				 if (secCond && thirdCond){
-    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
-    					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
+    					 if (buildStanfordLink(STANFORD_DEP_AMOD, targ->lexical_head, node.lexical_head)) {
     						 addLinked(&node,targ);
     				 		 return true;
     				    }
@@ -64,8 +64,8 @@ inline const bool &amod2(const unsigned long &cons){
 						 const CStateNode* jjnnpTarg=rightSisters->node;
 						 if (((*words)[jjnnpTarg->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
 								 ||(*words)[jjnnpTarg->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER) && !(isLinked(&node,jjnnpTarg))){
-							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
-							 if (buildStanfordLink(label, jjnnpTarg->lexical_head, node.lexical_head)) {
+//							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
+							 if (buildStanfordLink(STANFORD_DEP_AMOD, jjnnpTarg->lexical_head, node.lexical_head)) {
 								 addLinked(&node,jjnnpTarg);
 							     return true;
 							 }
@@ -76,8 +76,8 @@ inline const bool &amod2(const unsigned long &cons){
 						 const CStateNode* jjnnpTarg=leftSisters->node;
 						 if (((*words)[jjnnpTarg->lexical_head].tag.code()==PENN_TAG_ADJECTIVE
 								 ||(*words)[jjnnpTarg->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER) && !(isLinked(&node,jjnnpTarg))){
-						     CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
-						     if (buildStanfordLink(label, jjnnpTarg->lexical_head, node.lexical_head)) {
+//						     CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
+						     if (buildStanfordLink(STANFORD_DEP_AMOD, jjnnpTarg->lexical_head, node.lexical_head)) {
 						    	 addLinked(&node,jjnnpTarg);
 						     	 return true;
 						     }
@@ -145,8 +145,8 @@ inline const bool &amod3(const unsigned long &cons){
    				 }
 
    				 if (firstCond && secCond && thirdCond && fourthCond){
-   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
-   					 if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+//   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AMOD);
+   					 if (buildStanfordLink(STANFORD_DEP_AMOD, npTarg->lexical_head, node.lexical_head)) {
    						 addLinked(&node,npTarg);
    					     return true;
    					 }

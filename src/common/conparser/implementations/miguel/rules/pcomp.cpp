@@ -12,8 +12,8 @@ inline const bool & buildPComp1(const unsigned long &cons) {
 							 ||CConstituent::clearTmp(sbarSTarg->constituent.code())==PENN_CON_PP||CConstituent::clearTmp(sbarSTarg->constituent.code())==PENN_CON_ADVP)
 							 && !(isLinked(&node, sbarSTarg))){
 						 //again, what is the basic category of SBAR????, what is @SBAR?
-						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PCOMP);
-		    			if (buildStanfordLink(label, sbarSTarg->lexical_head, node.lexical_head)) {
+//						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PCOMP);
+		    			if (buildStanfordLink(STANFORD_DEP_PCOMP, sbarSTarg->lexical_head, node.lexical_head)) {
 		    				addLinked(&node,sbarSTarg);
 		    				return true;
 		    			}
@@ -39,8 +39,8 @@ inline const bool &buildPComp2(const unsigned long &cons) {
    					 const CStateNode* sbarSTarg=childsPPWhpp->previous->node;
    					 if ((CConstituent::clearTmp(sbarSTarg->constituent.code())==PENN_CON_S||CConstituent::clearTmp(sbarSTarg->constituent.code())==PENN_CON_SBAR)&& !(isLinked(&node, sbarSTarg))){
    						 //again, what is the basic category of SBAR????, what is @SBAR?
-   						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PCOMP);
-			    			if (buildStanfordLink(label, sbarSTarg->lexical_head, node.lexical_head)) {
+//   						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PCOMP);
+			    			if (buildStanfordLink(STANFORD_DEP_PCOMP, sbarSTarg->lexical_head, node.lexical_head)) {
 			    				addLinked(&node,sbarSTarg);
 			    				return true;
 			    			}
@@ -78,8 +78,8 @@ inline const bool &buildPComp3(const unsigned long &cons) {
 						if (childsSbar->next!=0){
 							const CStateNode* sSister=childsSbar->next->node;
 							if (CConstituent::clearTmp(sSister->constituent.code())==PENN_CON_S){
-								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PCOMP);
-								if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PCOMP);
+								if (buildStanfordLink(STANFORD_DEP_PCOMP, sbarTarg->lexical_head, node.lexical_head)) {
 									addLinked(&node,sbarTarg);
 									return true;
 								}

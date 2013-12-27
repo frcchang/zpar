@@ -52,8 +52,8 @@
     						 
     						 
     						 if (firstCondition && secondCondition) {
-    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJPASS);
-    							 if (buildStanfordLink(label, whnpnpTarg->lexical_head, node.lexical_head)) {
+//    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NSUBJPASS);
+    							 if (buildStanfordLink(STANFORD_DEP_NSUBJPASS, whnpnpTarg->lexical_head, node.lexical_head)) {
     								 addLinked(&node,whnpnpTarg);
     							 	 return true;
     							 }   
