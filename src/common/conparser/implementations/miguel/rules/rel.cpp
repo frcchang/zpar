@@ -50,8 +50,8 @@ inline const bool &rel1(const unsigned long &cons){
     					 while(childsSbar!=0){
     						 const CStateNode* whTarg=childsSbar->node;
     						 if ((CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHNP ||CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHPP ||CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHADJP) && !isLinked(&node,whTarg)){
-    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_REL);
-    							 if (buildStanfordLink(label, whTarg->lexical_head, sbarHead->lexical_head)) {
+//    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_REL);
+    							 if (buildStanfordLink(STANFORD_DEP_REL, whTarg->lexical_head, sbarHead->lexical_head)) {
     								 addLinked(&node,whTarg);
     							     return true;
     							 }

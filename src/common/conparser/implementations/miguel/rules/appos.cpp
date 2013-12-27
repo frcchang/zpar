@@ -45,8 +45,8 @@ inline const bool &appos1(const unsigned long &cons){
     				  }
 
     				  if (cdCond && firstSisCond && leftSisCond && leftRightCond){
-    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
-    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
+    					  if (buildStanfordLink(STANFORD_DEP_APPOS, targ->lexical_head, node.lexical_head)) {
     						  addLinked(&node,targ);
     					      return true;
     					 }
@@ -100,8 +100,8 @@ inline const bool &appos2(const unsigned long &cons){
           						  }
 
           						  if (childCond && leftCond && rightCond){
-          							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
-          							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//          							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
+          							  if (buildStanfordLink(STANFORD_DEP_APPOS, targ->lexical_head, node.lexical_head)) {
           								  addLinked(&node,targ);
           							  	  return true;
           							  }
@@ -172,8 +172,8 @@ inline const bool &appos3(const unsigned long &cons){
 
 
                 				  if (firstCond && secCond && thirdCond && fourthCond && fifthCond){
-                					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
-                					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//                					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
+                					  if (buildStanfordLink(STANFORD_DEP_APPOS, targ->lexical_head, node.lexical_head)) {
                 						  addLinked(&node,targ);
                 					      return true;
                 					  }
@@ -210,8 +210,8 @@ inline const bool &appos4(const unsigned long &cons){
  							  if (childs->next->next!=0){
  								  const CStateNode* targ=childs->next->next->node;
  			    				  if ((*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER && !isLinked(&node,targ)){
- 			    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
- 			    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+// 			    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
+ 			    					  if (buildStanfordLink(STANFORD_DEP_APPOS, targ->lexical_head, node.lexical_head)) {
  			    						  addLinked(&node,targ);
  			    					      return true;
  			    					  }

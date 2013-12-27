@@ -46,8 +46,8 @@ inline const bool &buildAttr1(const unsigned long &cons) {
     						 const CStateNode* vb=childsNp->node;
     						 if (((*words)[vb->lexical_head].tag.code()==PENN_TAG_VERB)) {
     							 if ((compareWordToCopularWordRegex((*words)[vb->lexical_head].word))) {
-    								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
-    						    	 if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+//    								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
+    						    	 if (buildStanfordLink(STANFORD_DEP_ATTR, npTarg->lexical_head, node.lexical_head)) {
     						    		 addLinked(&node,npTarg);
     						    		 return true;
     						    	 }
@@ -130,8 +130,8 @@ inline const bool &buildAttr2(const unsigned long &cons) {
     												sistersVb=sistersVb->next;
     											}
     											if (insideCondition){
-    												CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
-    												if (buildStanfordLink(label, whTarg->lexical_head, node.lexical_head)) {
+//    												CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
+    												if (buildStanfordLink(STANFORD_DEP_ATTR, whTarg->lexical_head, node.lexical_head)) {
     													addLinked(&node,whTarg);
     												    return true;
     												}
@@ -281,8 +281,8 @@ inline const bool &buildAttr3(const unsigned long &cons) {
        						 childsTarg=childsTarg->next;
        					 }
        					 if (wrbCond){
-       						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
-       						 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//       						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
+       						 if (buildStanfordLink(STANFORD_DEP_ATTR, targ->lexical_head, node.lexical_head)) {
        							 addLinked(&node,targ);
        						     return true;
        						 }
@@ -326,8 +326,8 @@ inline const bool &buildAttr4(const unsigned long &cons) {
   								childsNpNp=childsNpNp->next;
   							}
   							if (noEx){
-  								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
-  								if (buildStanfordLink(label, npTargChildSq->lexical_head, node.lexical_head)) {
+//  								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_ATTR);
+  								if (buildStanfordLink(STANFORD_DEP_ATTR, npTargChildSq->lexical_head, node.lexical_head)) {
   									addLinked(&node,npTargChildSq);
   								    return true;
   								}

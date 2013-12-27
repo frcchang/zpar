@@ -37,8 +37,8 @@
     						leftSistersS=leftSistersS->previous;
     					}
     					if (secondCondition) {
-    						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-    						if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//    						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+    						if (buildStanfordLink(STANFORD_DEP_CCOMP, sTarg->lexical_head, node.lexical_head)) {
     							addLinked(&node,sTarg);
     						    return true;
     						}
@@ -81,8 +81,8 @@
       							findChain(PENN_CON_S,PENN_CON_VP, sChildSbar, sChain);
       							while(sChain!=0){
       								if (CConstituent::clearTmp(sChain->node->constituent.code())==PENN_CON_VP){
-      									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-      									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//      									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+      									if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
       										addLinked(&node,sbarTarg);
       										return true;
       									}
@@ -143,8 +143,8 @@
             							findChain(PENN_CON_S,PENN_CON_VP, sChildSbar, sChain);
             							while(sChain!=0){
             								if (CConstituent::clearTmp(sChain->node->constituent.code())==PENN_CON_VP){
-            									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-            									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//            									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+            									if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
             										addLinked(&node,sbarTarg);
             										return true;
             									}
@@ -196,8 +196,8 @@
  							while(childsS!=0){
  								const CStateNode* vpChildS=childsS->node;
  								if (CConstituent::clearTmp(vpChildS->constituent.code())==PENN_CON_VP){
- 									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
- 									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+// 									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+ 									if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
  										addLinked(&node,sbarTarg);
  									    return true;
  									}
@@ -250,8 +250,8 @@
  												//CStateNodeList* childsWrb=wrbChildWh->m_umbinarizedSubNodes;
  												//while(childsWrb!=0){
  													if (((*words)[wrbChildWh->lexical_head].word==g_word_how)) {
- 														CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
- 														if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+// 														CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+ 														if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
  															addLinked(&node,sbarTarg);
  															return true;
  														}
@@ -316,8 +316,8 @@
    							CStateNodeList* childsNp=npChildS->m_umbinarizedSubNodes;
    							while(childsNp!=0){
    								if (CConstituent::clearTmp(childsNp->node->constituent.code())==PENN_CON_VP){
-   									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-   									if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//   									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+   									if (buildStanfordLink(STANFORD_DEP_CCOMP, sTarg->lexical_head, node.lexical_head)) {
    										addLinked(&node,sTarg);
    										return true;
    									}
@@ -376,8 +376,8 @@
    					if (((*words)[childsSSinv->next->node->lexical_head].word==g_word_comma)
    							||((*words)[childsSSinv->next->node->lexical_head].word==g_word_dot)
    							||((*words)[childsSSinv->next->node->lexical_head].tag.code()==PENN_TAG_R_QUOTE)) {
-   						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-   						if (buildStanfordLink(label, ssbarqTarg->lexical_head, node.lexical_head)) {
+//   						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+   						if (buildStanfordLink(STANFORD_DEP_CCOMP, ssbarqTarg->lexical_head, node.lexical_head)) {
    							addLinked(&node,ssbarqTarg);
    							return true;
    						}
@@ -430,8 +430,8 @@ bool buildCComp8(const unsigned long &cons) {
 						const CStateNode* inChildSbar=childsSbar->node;
 						if ((*words)[inChildSbar->lexical_head].tag.code()==PENN_TAG_IN) {
 								if (((*words)[inChildSbar->lexical_head].word==g_word_as)&&((*words)[inChildSbar->lexical_head].word==g_word_that)) {
-									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+									if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
 										addLinked(&node,sbarTarg);
 									    return true;
 									}
@@ -475,8 +475,8 @@ bool buildCComp8(const unsigned long &cons) {
     					while(childsSbar!=0){
     						const CStateNode* schildSbar=childsSbar->node;
     						if (CConstituent::clearTmp(schildSbar->constituent.code())==PENN_CON_S){
-    							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-    							 if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//    							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+    							 if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
     								 addLinked(&node,sbarTarg);
     							 	 return true;
     							}
@@ -514,8 +514,8 @@ bool buildCComp8(const unsigned long &cons) {
     							CStateNodeList* childsIn=inChildSbar->m_umbinarizedSubNodes;
     							//while(childsIn!=0){
     								if (((*words)[inChildSbar->lexical_head].word==g_word_whether)&&((*words)[inChildSbar->lexical_head].word==g_word_that)) {
-    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-    									if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+    									if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
     										addLinked(&node,sbarTarg);
     										return true;
     									}
@@ -591,8 +591,8 @@ bool buildCComp8(const unsigned long &cons) {
         						}
 
         						if (childCondition || sisterCondition) { //[] represents an or.
-        							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
-        							if (buildStanfordLink(label, sbarTarg->lexical_head, node.lexical_head)) {
+//        							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
+        							if (buildStanfordLink(STANFORD_DEP_CCOMP, sbarTarg->lexical_head, node.lexical_head)) {
         								addLinked(&node,sbarTarg);
         							    return true;
         							}

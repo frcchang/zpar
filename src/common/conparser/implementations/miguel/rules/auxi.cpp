@@ -41,8 +41,8 @@ inline const bool &buildAux1(const unsigned long &cons){
     	      			  ((*words)[childsConjp2->node->lexical_head].tag.code()==PENN_TAG_TO))
     	      			  && (!isLinked(&node, childsConjp2->node))) { //
     	      		  const CStateNode* targ=childsConjp2->node;
-    	      		  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
-    	      		  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)){
+//    	      		  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
+    	      		  if (buildStanfordLink(STANFORD_DEP_AUX, targ->lexical_head, node.lexical_head)){
     	      			  addLinked(&node,targ);
     	      			  //std::cout<<"aux1 \n";
     	      			  //std::cout<<"dependent:"<<(*words)[targ->lexical_head].word<<"\n";
@@ -76,8 +76,8 @@ inline const bool &buildAux2(const unsigned long &cons){
     	    	  		while(rightSisters!=0){
     	    	  			const CStateNode* rSis=rightSisters->node;
     	    	  			if ((CConstituent::clearTmp(rSis->constituent.code())==PENN_CON_VP) || (CConstituent::clearTmp(rSis->constituent.code())==PENN_CON_ADJP)) {
-    	    	  				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
-    	    	  				if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)){
+//    	    	  				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
+    	    	  				if (buildStanfordLink(STANFORD_DEP_AUX, targ->lexical_head, node.lexical_head)){
     	    	  					addLinked(&node,targ);
     	    	  				    //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     	    	  				    return true;
@@ -116,8 +116,8 @@ inline const bool &buildAux3(const unsigned long &cons) {
     			 childsConjp=childsConjp->next;
     		 }
     		 if (child1 && child2) {
-    			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
-    			 if (buildStanfordLink(label, tOTarg->lexical_head, node.lexical_head)){
+//    			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
+    			 if (buildStanfordLink(STANFORD_DEP_AUX, tOTarg->lexical_head, node.lexical_head)){
     				 addLinked(&node,tOTarg);
     			    //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     			    return true;
@@ -172,8 +172,8 @@ inline const bool &buildAux4(const unsigned long &cons) {
               		 }
               				 
               		 if (firstCondVp && secondCondVp) {
-              			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
-              			 if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)){
+//              			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUX);
+              			 if (buildStanfordLink(STANFORD_DEP_AUX, vpTarg->lexical_head, node.lexical_head)){
               				 addLinked(&node,vpTarg);
               				 //std::cout<<"nSubj13"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
               				 return true;

@@ -106,8 +106,8 @@ inline const bool &det1(const unsigned long &cons){
     	 			 }
     	 			 
     	 			 if (firstCond && secCond && thirdCond && fourthCond && fifthCond){
-    	 				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
-    	 				if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    	 				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+    	 				if (buildStanfordLink(STANFORD_DEP_DET, targ->lexical_head, node.lexical_head)) {
     	 					addLinked(&node,targ);
     	 					return true;
     	 				}
@@ -177,8 +177,8 @@ inline const bool &det2(const unsigned long &cons){
 				 
 				 
 				 if (firstCond && secCond && thirdCond && fourthCond && fifthCond){
-					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
-					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+					 if (buildStanfordLink(STANFORD_DEP_DET, targ->lexical_head, node.lexical_head)) {
 						 addLinked(&node,targ);
 					 	 return true;
 					 }
@@ -222,8 +222,8 @@ inline const bool &det3(const unsigned long &cons){
 					 while(rightSisters!=0){
 						 if ((*words)[rightSisters->node->lexical_head].tag.code()==PENN_TAG_NOUN
 								 || CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_NX){
-							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
-							 if (buildStanfordLink(label, dtTarg->lexical_head, node.lexical_head)) {
+//							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+							 if (buildStanfordLink(STANFORD_DEP_DET, dtTarg->lexical_head, node.lexical_head)) {
 								 addLinked(&node,dtTarg);
 							 	 return true;
 							 }
@@ -281,8 +281,8 @@ inline const bool &det5(const unsigned long &cons){
    			 }
 
    			 if (firstCond && secCond){
-					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
-					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+					 if (buildStanfordLink(STANFORD_DEP_DET, targ->lexical_head, node.lexical_head)) {
 						 addLinked(&node,targ);
 						 return true;
 					 }
@@ -344,8 +344,8 @@ inline const bool &det4(const unsigned long &cons){
 				
 				
 				if (firstCond && secCond && thirdCond){
-					CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
-					if (buildStanfordLink(label, dtTarg->lexical_head, node.lexical_head)) {
+//					CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+					if (buildStanfordLink(STANFORD_DEP_DET, dtTarg->lexical_head, node.lexical_head)) {
 						addLinked(&node,dtTarg);
 						return true;
 					}
@@ -375,8 +375,8 @@ inline const bool &det6(const unsigned long &cons){
 						 CStateNodeList* whnpChilds=whnpTarg->m_umbinarizedSubNodes;
 						 while(whnpChilds!=0){
 							 if ((*words)[whnpChilds->node->lexical_head].tag.code()==PENN_TAG_WDT){
-								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
-								 if (buildStanfordLink(label, whnpTarg->lexical_head, node.lexical_head)) {
+//								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+								 if (buildStanfordLink(STANFORD_DEP_DET, whnpTarg->lexical_head, node.lexical_head)) {
 									 addLinked(&node,whnpTarg);
 								     return true;
 								 }
@@ -410,8 +410,8 @@ inline const bool &det7(const unsigned long &cons){
   					 if (((*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN||
   							 (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN||
   							 (*words)[targ->lexical_head].tag.code()==PENN_TAG_NOUN) && !isLinked(&node,targ)){
-  						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
-  						 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//  						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_DET);
+  						 if (buildStanfordLink(STANFORD_DEP_DET, targ->lexical_head, node.lexical_head)) {
   							 addLinked(&node,targ);
   						 	 return true;
   						 }

@@ -458,17 +458,17 @@ typedef CScoreMapType<CConstituent, SCORE_TYPE, CAction::MAX> CConstituentMap;
 typedef CScoreMapType<CAction, SCORE_TYPE, CAction::MAX> CActionMap;
 typedef CScoreMapType<CTuple2<CAction, CAction>, SCORE_TYPE, CAction::MAX> CAction2Map;
 
-typedef CScoreMapType<CTuple3<CTag,CTag,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CTagTagLabelMap; //Miguel
-typedef CScoreMapType<CTuple3<CWord,CTag,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CWordTagLabelMap; //Miguel
-typedef CScoreMapType<CTuple3<CTag,CWord,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CTagWordLabelMap; //Miguel
-typedef CScoreMapType<CTuple3<CWord,CWord,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CWordWordLabelMap; //Miguel
-typedef CScoreMapType<CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel>, SCORE_TYPE, CAction::MAX> CTaggedWordTaggedWordLabelMap; //Yue
+typedef CScoreMapType<CTuple3<CTag,CTag,unsigned long>, SCORE_TYPE, CAction::MAX> CTagTagLabelMap; //Miguel
+typedef CScoreMapType<CTuple3<CWord,CTag,unsigned long>, SCORE_TYPE, CAction::MAX> CWordTagLabelMap; //Miguel
+typedef CScoreMapType<CTuple3<CTag,CWord,unsigned long>, SCORE_TYPE, CAction::MAX> CTagWordLabelMap; //Miguel
+typedef CScoreMapType<CTuple3<CWord,CWord,unsigned long>, SCORE_TYPE, CAction::MAX> CWordWordLabelMap; //Miguel
+typedef CScoreMapType<CTuple3<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,unsigned long>, SCORE_TYPE, CAction::MAX> CTaggedWordTaggedWordLabelMap; //Yue
 
-typedef CScoreMapType<CTuple4<CTag,CTag,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CTagTagLabelIntMap; //Yue
-typedef CScoreMapType<CTuple4<CWord,CTag,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CWordTagLabelIntMap; //Yue
-typedef CScoreMapType<CTuple4<CTag,CWord,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CTagWordLabelIntMap; //Yue
-typedef CScoreMapType<CTuple4<CWord,CWord,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CWordWordLabelIntMap; //Yue
-typedef CScoreMapType<CTuple4<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,CDependencyLabel, int>, SCORE_TYPE, CAction::MAX> CTaggedWordTaggedWordLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CTag,CTag,unsigned long, int>, SCORE_TYPE, CAction::MAX> CTagTagLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CWord,CTag,unsigned long, int>, SCORE_TYPE, CAction::MAX> CWordTagLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CTag,CWord,unsigned long, int>, SCORE_TYPE, CAction::MAX> CTagWordLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CWord,CWord,unsigned long, int>, SCORE_TYPE, CAction::MAX> CWordWordLabelIntMap; //Yue
+typedef CScoreMapType<CTuple4<CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR>,unsigned long, int>, SCORE_TYPE, CAction::MAX> CTaggedWordTaggedWordLabelIntMap; //Yue
 
 typedef CHashMap<CWord, unsigned long> CWordToIntMap;
 

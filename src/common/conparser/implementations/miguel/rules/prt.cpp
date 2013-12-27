@@ -32,8 +32,8 @@ inline const bool & prt2(const unsigned long &cons){
 	    	while (childsVp!=0){
 	    		const CStateNode* rpTarg=childsVp->node;
 	    		if (((*words)[rpTarg->lexical_head].tag.code()==PENN_TAG_RP)&& !(isLinked(&node,rpTarg))) {
-	    			CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PRT);
-	    			if (buildStanfordLink(label, rpTarg->lexical_head, node.lexical_head)) {
+//	    			CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PRT);
+	    			if (buildStanfordLink(STANFORD_DEP_PRT, rpTarg->lexical_head, node.lexical_head)) {
 	    				addLinked(&node,rpTarg);
 	    			  	return true;
 	    			}

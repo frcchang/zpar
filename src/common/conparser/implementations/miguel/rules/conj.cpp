@@ -40,8 +40,8 @@
     						  }  
     					  }
     					  if (targCond){
-    						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
-    						  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    						  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
+    						  if (buildStanfordLink(STANFORD_DEP_CONJ, targ->lexical_head, node.lexical_head)) {
     							  addLinked(&node,targ);
     						      return true;
     						  }
@@ -98,8 +98,8 @@
        								  }  
        							  }
        							  if (targCond){
-       								  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
-       								  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//       								  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
+       								  if (buildStanfordLink(STANFORD_DEP_CONJ, targ->lexical_head, node.lexical_head)) {
        									  addLinked(&node,targ);
        									  return true;
        								  }
@@ -155,8 +155,8 @@ bool buildConj4(const unsigned long &cons){
 						  	  targCond=false;
 						 }
 						 if (targCond){
-							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
-							 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
+							 if (buildStanfordLink(STANFORD_DEP_CONJ, targ->lexical_head, node.lexical_head)) {
 								 addLinked(&node,targ);
 							     return true;
 							 }
@@ -203,8 +203,8 @@ bool buildConj4(const unsigned long &cons){
     								}  
     							}
     							if (targCond){
-    								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
-    								if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
+    								if (buildStanfordLink(STANFORD_DEP_CONJ, targ->lexical_head, node.lexical_head)) {
     									addLinked(&node,targ);
     									return true;
     								}

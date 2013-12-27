@@ -20,8 +20,8 @@
     				 || ((*words)[child->lexical_head].word==g_word_order))
     				 && (!isLinked(&node,child))){
 
-    			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PUNCT);
-    			 if (buildStanfordLink(label, child->lexical_head, node.lexical_head)) {
+//    			 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PUNCT);
+    			 if (buildStanfordLink(STANFORD_DEP_PUNCT, child->lexical_head, node.lexical_head)) {
     				 addLinked(&node,child);
     			     return true;
     			 }

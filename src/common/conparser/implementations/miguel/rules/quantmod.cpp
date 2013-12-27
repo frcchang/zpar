@@ -16,8 +16,8 @@ inline const bool & quantmod1(const unsigned long &cons){
 				    			((*words)[targ->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)) && !(isLinked(&node,targ))) {
 				
 				
-				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_QUANTMOD);
-				if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_QUANTMOD);
+				if (buildStanfordLink(STANFORD_DEP_QUANTMOD, targ->lexical_head, node.lexical_head)) {
 					addLinked(&node,targ);
 					return true;
 				}

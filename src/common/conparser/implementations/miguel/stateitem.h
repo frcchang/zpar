@@ -625,7 +625,7 @@ protected:
    void reduce(CStateItem *retval, const unsigned long &constituent, const bool &single_child, const bool &head_left, const bool &temporary) const {
       //TRACE("reduce");
       assert(!IsTerminated());
-      const static CStateNode *l, *r;
+      const CStateNode *l, *r;
       assert(stackPtr!=0);
       retval->current_word = current_word; //modified by Miguel and Yue 3 jul 12.01 pm
       if (single_child) {
@@ -658,16 +658,25 @@ protected:
       }
       else {
 
-         static unsigned long fullconst; 
+         const CStateNode *h, *m;
+         unsigned long fullconst; 
          assert(stacksize()>=2);
          r = &node;
          l = &(stackPtr->node);
+         if (head_left) {
+            h = l;
+            m = r;
+         }
+         else{
+            h = r;
+            m = l;         
+         }
 #ifdef NO_TEMP_CONSTITUENT
          fullconst = constituent;
 #else
          fullconst = CConstituent::encodeTmp(constituent, temporary);
 #endif
-         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, fullconst, l, r, (head_left?l->lexical_head:r->lexical_head), l->lexical_start, r->lexical_end);
+         retval->node.set(node.id+1, (head_left?CStateNode::HEAD_LEFT:CStateNode::HEAD_RIGHT), temporary, fullconst, l, r, h->lexical_head, l->lexical_start, r->lexical_end);
         
 
          retval->stackPtr = stackPtr->stackPtr;
@@ -723,6 +732,9 @@ protected:
          
          
          retval->generateStanfordLinks(); //collapsed and then uncollapsed
+
+         if (!isLinked(0, m))
+            retval->buildStanfordLink(STANFORD_DEP_DEP, h->lexical_head, m->lexical_head);
             
       }
 
@@ -1998,7 +2010,7 @@ public:
        return false;
     }*/
     
-    bool isLinked(const CStateNode* head, const CStateNode* child){
+    bool isLinked(const CStateNode* head, const CStateNode* child) const {
        return head->linkedNodes.isset(child->lexical_head);
     }//Miguel
     
@@ -2115,8 +2127,8 @@ public:
     								  //||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S
     								  //||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S
     								  ||CConstituent::clearTmp(targ->constituent.code())==PENN_CON_S) && !isLinked(&node,targ)){
-    							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
-    							  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CONJ);
+    							  if (buildStanfordLink(STANFORD_DEP_CONJ, targ->lexical_head, node.lexical_head)) {
     								  addLinked(&node,targ);
     							      return true;
     							  }
@@ -2198,8 +2210,8 @@ public:
              				  }
 
              				  if (firstCond && secondCond && thirdCond && fourthCond){
-             					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
-             					 if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//             					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_APPOS);
+             					 if (buildStanfordLink(STANFORD_DEP_APPOS, targ->lexical_head, node.lexical_head)) {
              						 addLinked(&node,targ);
              					  	 return true;
              					 }
@@ -2439,31 +2451,31 @@ public:
       
       
       
-   bool buildStanfordLink(CDependencyLabel* label, int dependent, int head) {
+   bool buildStanfordLink(const unsigned long &label, int dependent, int head) {
       if (head==dependent) return false;
       
-      CLink* newNode=new CLink(*label, dependent, head, 0);
+      CLink* newNode=new CLink(label, dependent, head, 0);
       newNode->next=this->node.stfLinks;
       node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
 
 //      assert(m_lHeads[dependent] == DEPENDENCY_LINK_NO_HEAD); 
       m_lHeads[dependent] = head;
-      m_lLabels[dependent] = label->code();
+      m_lLabels[dependent] = label;
 
       return true;
       }
    
    
-   bool buildStanfordLinkForDebug(CDependencyLabel* label, int dependent, int head, int nsubjrule) {
+   bool buildStanfordLinkForDebug(const unsigned long &label, int dependent, int head, int nsubjrule) {
 	   if (head==dependent) return false;
 
-	         CLink* newNode=new CLink(*label, dependent, head, 0);
+	         CLink* newNode=new CLink(label, dependent, head, 0);
 	         newNode->next=this->node.stfLinks;
 	         node.stfLinks=newNode; //the new node (with the arc and label is added to the list)
 
 	   //      assert(m_lHeads[dependent] == DEPENDENCY_LINK_NO_HEAD);
 	         m_lHeads[dependent] = head;
-	         m_lLabels[dependent] = label->code();
+	         m_lLabels[dependent] = label;
 
 	         return true;
          }

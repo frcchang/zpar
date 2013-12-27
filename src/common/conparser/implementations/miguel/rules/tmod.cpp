@@ -47,8 +47,8 @@ inline const bool &tmod2(const unsigned long &cons){
   				  }
 
   				  if (cond1 && cond2){
-  					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
-  					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//  					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
+  					  if (buildStanfordLink(STANFORD_DEP_TMOD, targ->lexical_head, node.lexical_head)) {
   						  addLinked(&node,targ);
   					      return true;
   					  }
@@ -88,8 +88,8 @@ inline const bool & tmod4(const unsigned long &cons){
     										  //CStateNodeList* childsNN=childsT->node->m_umbinarizedSubNodes;
     										 // while(childsNN!=0){
     											  if (compareWordToTimeWordRegex((*words)[childsT->node->lexical_head].word)) {
-    												  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
-    												  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    												  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
+    												  if (buildStanfordLink(STANFORD_DEP_TMOD, targ->lexical_head, node.lexical_head)) {
     													  addLinked(&node,targ);
     												      return true;
     												  }
@@ -140,8 +140,8 @@ inline const bool &tmod6(const unsigned long &cons){
     				      					 CStateNodeList* rightSisters2=rightSisters->next;
     				      					 while(rightSisters2!=0){
     				      						 if (CConstituent::clearTmp(rightSisters2->node->constituent.code())==PENN_CON_VP){
-    				      							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
-    				      							if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    				      							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
+    				      							if (buildStanfordLink(STANFORD_DEP_TMOD, targ->lexical_head, node.lexical_head)) {
     				      								addLinked(&node,targ);
     				      							    return true;
     				      							 }
@@ -249,8 +249,8 @@ inline const bool & tmod7(const unsigned long &cons){
     					  childsH=childsH->next;
     				  }
     				  if (childsCond1 && childsCond2){
-    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
-    					  if (buildStanfordLink(label, node.lexical_head, head->lexical_head)) { //the other way around for this rule-the ARC direction is correct! we normally have buildStanfordLink(label, head->lexical_head, node.lexical_head))
+//    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
+    					  if (buildStanfordLink(STANFORD_DEP_TMOD, node.lexical_head, head->lexical_head)) { //the other way around for this rule-the ARC direction is correct! we normally have buildStanfordLink(label, head->lexical_head, node.lexical_head))
     						  addLinked(&node,head); //this is a relaxation of what we need, but I think that perhaps it could work.
     					      return true;
     					  }
@@ -294,8 +294,8 @@ inline const bool & tmod8(const unsigned long &cons){
     							    //CStateNodeList* childsNN=childsT->node->m_umbinarizedSubNodes;
     							    //while(childsNN!=0){
     							    	if (compareWordToTimeWordRegex((*words)[childsT->node->lexical_head].word)) {
-    							    		CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
-    							      		if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    							    		CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_TMOD);
+    							      		if (buildStanfordLink(STANFORD_DEP_TMOD, targ->lexical_head, node.lexical_head)) {
     							      			addLinked(&node,targ);
     							      			return true;
     							      		}

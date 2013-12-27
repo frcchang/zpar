@@ -48,8 +48,8 @@ bool mwe5(){
 					CStateNodeList* childsNNTo=nntoTarg->m_umbinarizedSubNodes;
 					while(childsNNTo!=0){
 						if (((*words)[childsNNTo->node->lexical_head].word==g_word_addition) && ((*words)[childsNNTo->node->lexical_head].word==g_word_to)) {
-							CDependencyLabel* label=new CDependencyLabel(0);
-							if (buildStanfordLink(label, nntoTarg->lexical_head, node.lexical_head)) {
+//							CDependencyLabel* label=new CDependencyLabel(0);
+							if (buildStanfordLink(0, nntoTarg->lexical_head, node.lexical_head)) {
 								addLinked(&node,nntoTarg);
 							  	return true;
 							 }

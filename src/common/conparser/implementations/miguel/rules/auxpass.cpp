@@ -50,8 +50,8 @@ inline const bool &auxpass1(const unsigned long &cons){
 
     					 CStateNodeList* childsVerb=verbTarg->m_umbinarizedSubNodes;
     						 if ((compareWordToPassiveAuxWordRegex((*words)[verbTarg->lexical_head].word))) {
-    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
-    							 if (buildStanfordLink(label, verbTarg->lexical_head, node.lexical_head)) {
+//    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
+    							 if (buildStanfordLink(STANFORD_DEP_AUXPASS, verbTarg->lexical_head, node.lexical_head)) {
     								 addLinked(&node,verbTarg);
     							     return true;
     							 }
@@ -98,8 +98,8 @@ inline const bool &auxpass2(const unsigned long &cons){
     				 }
     				 if (secondCondition){
     						 if (compareWordToBeAuxiliaryWordRegex((*words)[vbauxposTarg->lexical_head].word)) {
-    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
-    							 if (buildStanfordLink(label, vbauxposTarg->lexical_head, node.lexical_head)) {
+//    							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
+    							 if (buildStanfordLink(STANFORD_DEP_AUXPASS, vbauxposTarg->lexical_head, node.lexical_head)) {
     								 addLinked(&node,vbauxposTarg);
     							     return true;
     							 }
@@ -142,8 +142,8 @@ inline const bool &auxpass3(const unsigned long &cons){
     											 while (childsVpInLeft!=0){
     												 if ((*words)[childsVpInLeft->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST ||
     												     (*words)[childsVpInLeft->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE) {
-    													 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
-    													 if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)) {
+//    													 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
+    													 if (buildStanfordLink(STANFORD_DEP_AUXPASS, vpTarg->lexical_head, node.lexical_head)) {
     														 addLinked(&node,vpTarg);
     													     return true;
     													 }
@@ -203,8 +203,8 @@ inline const bool &auxpass4(const unsigned long &cons){
        													 while (childsVpInLeft!=0){
        														 if ((*words)[childsVpInLeft->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST ||
        																 (*words)[childsVpInLeft->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE) {
-       															 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
-       															 if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)) {
+//       															 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_AUXPASS);
+       															 if (buildStanfordLink(STANFORD_DEP_AUXPASS, vpTarg->lexical_head, node.lexical_head)) {
        																 addLinked(&node,vpTarg);
        																 return true;
        															 }

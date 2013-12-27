@@ -10,8 +10,8 @@
 				while(childsNp!=0) {
 					const CStateNode* npChild=childsNp->node;//zero or more REMEMBER, this is why we can have this case.
 					if ((*words)[npChild->lexical_head].tag.code()==PENN_TAG_EX) {
-						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_EXPL);
-						if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
+//						CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_EXPL);
+						if (buildStanfordLink(STANFORD_DEP_EXPL, npTarg->lexical_head, node.lexical_head)){
     		      				addLinked(&node,npTarg);
     		      				//std::cout<<"expl"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     		      				return true;
@@ -28,8 +28,8 @@
 						while(npsChain!=0) {
 							const CStateNode* npCh=npsChain->node;
 							if ((*words)[npChild->lexical_head].tag.code()==PENN_TAG_EX) {
-								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_EXPL);
-								if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)){
+//								CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_EXPL);
+								if (buildStanfordLink(STANFORD_DEP_EXPL, npTarg->lexical_head, node.lexical_head)){
     		      						addLinked(&node,npTarg);
     		      						//std::cout<<"expl"<<" (head: "<<node.lexical_head<<")"<<"(npTarg->lexical_head<<")\n";
     		      						return true;

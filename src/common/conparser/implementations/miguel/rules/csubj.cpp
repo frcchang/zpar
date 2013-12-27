@@ -35,8 +35,8 @@
     				}
     				
     				if (firstCondition && secondCondition){
-    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CSUBJ);
-    					 if (buildStanfordLink(label, sbarsTarg->lexical_head, node.lexical_head)) {
+//    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CSUBJ);
+    					 if (buildStanfordLink(STANFORD_DEP_CSUBJ, sbarsTarg->lexical_head, node.lexical_head)) {
     						 addLinked(&node,sbarsTarg);
     					     return true;
     					}   

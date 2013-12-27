@@ -40,8 +40,8 @@
     							    		||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PLURAL))
     							    		||(((*words)[nnChildNp2->lexical_head].tag.code()==PENN_TAG_NOUN_PROPER_PLURAL)))) {
 
-    							    		CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_IOBJ);
-    							    	  	if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+//    							    		CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_IOBJ);
+    							    	  	if (buildStanfordLink(STANFORD_DEP_IOBJ, npTarg->lexical_head, node.lexical_head)) {
     							    	  		addLinked(&node,npTarg);
     							    	  		return true;
     							    	  	}
@@ -141,8 +141,8 @@
 
 
         									if (nnCondition){
-        										CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_IOBJ);
-        										if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+//        										CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_IOBJ);
+        										if (buildStanfordLink(STANFORD_DEP_IOBJ, npTarg->lexical_head, node.lexical_head)) {
         											addLinked(&node,npTarg);
         										    return true;
         										}

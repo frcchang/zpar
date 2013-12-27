@@ -13,8 +13,8 @@ inline const bool &cc1(const unsigned long &cons){
     				secondCondition=false;
     			}
     			if (secondCondition) {
-    				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
-    				if (buildStanfordLink(label, ccTarg->lexical_head, node.lexical_head)) {
+//    				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
+    				if (buildStanfordLink(STANFORD_DEP_CC, ccTarg->lexical_head, node.lexical_head)) {
     					//std::cout<<"CC1\n";
     					addLinked(&node,ccTarg);
     					return true;
@@ -66,8 +66,8 @@ inline const bool &cc2(const unsigned long &cons){
         			}
         			
         			if (secondCondition) {
-        				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
-        				if (buildStanfordLink(label, conjpTarg->lexical_head, node.lexical_head)) {
+//        				CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CC);
+        				if (buildStanfordLink(STANFORD_DEP_CC, conjpTarg->lexical_head, node.lexical_head)) {
         					//std::cout<<"nSubj2"<<" (head: "<<node.lexical_head<<")"<<"(dependent: "<<npTarg->lexical_head<<")\n";
         					//std::cout<<"CC2\n";
         					addLinked(&node,conjpTarg);

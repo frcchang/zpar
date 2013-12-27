@@ -16,8 +16,8 @@
     						 CStateNodeList* leftSisters=childsVp->previous;
     						 while(leftSisters!=0){
     							 if (CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_NP){
-    								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
-    								 if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)) {
+//    								 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
+    								 if (buildStanfordLink(STANFORD_DEP_PARTMOD, vpTarg->lexical_head, node.lexical_head)) {
     									 addLinked(&node,vpTarg);
     								     return true;
     								 }
@@ -50,8 +50,8 @@
     							 //PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE
     	    						if (((*words)[childsVpt->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)||
     	    								((*words)[childsVpt->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)){
-    	    							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
-    	    							if (buildStanfordLink(label, vpTarg->lexical_head, node.lexical_head)) {
+//    	    							CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
+    	    							if (buildStanfordLink(STANFORD_DEP_PARTMOD, vpTarg->lexical_head, node.lexical_head)) {
     	    								addLinked(&node,vpTarg);
     	    							    return true;
     	    							}
@@ -126,8 +126,8 @@
         								 //PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE
         								 if ((*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG ||
         										 (*words)[childsVp->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE){
-        									 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
-        									 if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//        									 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
+        									 if (buildStanfordLink(STANFORD_DEP_PARTMOD, sTarg->lexical_head, node.lexical_head)) {
         										 addLinked(&node,sTarg);
         									     return true;
         									 }
@@ -203,8 +203,8 @@
         								 //PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE
         								 if (((*words)[childsVpIn->node->lexical_head].tag.code()==PENN_TAG_VERB_PROG)||
         										((*words)[childsVpIn->node->lexical_head].tag.code()==PENN_TAG_VERB_PAST_PARTICIPATE)){
-        									 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
-        									 if (buildStanfordLink(label, sTarg->lexical_head, node.lexical_head)) {
+//        									 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PARTMOD);
+        									 if (buildStanfordLink(STANFORD_DEP_PARTMOD, sTarg->lexical_head, node.lexical_head)) {
         										 addLinked(&node,sTarg);
         									     return true;
         									 }

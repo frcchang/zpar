@@ -34,8 +34,8 @@
     							  }
     							  
     							  if (lastCond){
-    								  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NPADVMOD);
-    								  if (buildStanfordLink(label, npTarg->lexical_head, node.lexical_head)) {
+//    								  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NPADVMOD);
+    								  if (buildStanfordLink(STANFORD_DEP_NPADVMOD, npTarg->lexical_head, node.lexical_head)) {
     									  addLinked(&node,npTarg);
     								      return true;
     								  }
@@ -75,8 +75,8 @@
 						 if (((*words)[rightSistersNN->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE)||
 								 ((*words)[rightSistersNN->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_COMPARATIVE)||
 								 ((*words)[rightSistersNN->node->lexical_head].tag.code()==PENN_TAG_ADJECTIVE_SUPERLATIVE)) {
-							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NPADVMOD);
-							 if (buildStanfordLink(label, nnTarg->lexical_head, node.lexical_head)) {
+//							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NPADVMOD);
+							 if (buildStanfordLink(STANFORD_DEP_NPADVMOD, nnTarg->lexical_head, node.lexical_head)) {
 								 addLinked(&node,nnTarg);
 							 	return true;
 							 }
@@ -139,8 +139,8 @@
 
    				  childsNp=childsNp->next;
    				  if (childsNp==0 && secCond){ //there is no 3rd child
-   					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NPADVMOD);
-   					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//   					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NPADVMOD);
+   					  if (buildStanfordLink(STANFORD_DEP_NPADVMOD, targ->lexical_head, node.lexical_head)) {
    						  addLinked(&node,targ);
    						  return true;
    					  }

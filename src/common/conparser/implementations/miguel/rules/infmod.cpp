@@ -31,8 +31,8 @@ inline const bool &infmod1(const unsigned long &cons){
     					  childsT=childsT->next;
     				  }
     				  if (sistCond && childsCond){
-    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_INFMOD);
-    					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//    					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_INFMOD);
+    					  if (buildStanfordLink(STANFORD_DEP_INFMOD, targ->lexical_head, node.lexical_head)) {
     						  addLinked(&node,targ);
     					  	  return true;
     					  }
@@ -82,8 +82,8 @@ inline const bool &infmod2(const unsigned long &cons){
                					  childsT=childsT->next;
                				  }
                				  if (sistCond && childsCond){
-               					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_INFMOD);
-               					  if (buildStanfordLink(label, targ->lexical_head, node.lexical_head)) {
+//               					  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_INFMOD);
+               					  if (buildStanfordLink(STANFORD_DEP_INFMOD, targ->lexical_head, node.lexical_head)) {
                						  addLinked(&node,targ);
                					  	  return true;
                					  }

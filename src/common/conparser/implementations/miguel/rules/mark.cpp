@@ -12,8 +12,8 @@ inline const bool &mark1(const unsigned long &cons){
     					 if (CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_S ||
     							 CConstituent::clearTmp(rightSisters->node->constituent.code())==PENN_CON_FRAG) {
 
-    						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_MARK);
-    						 if (buildStanfordLink(label, indtTarg->lexical_head, node.lexical_head)) {
+//    						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_MARK);
+    						 if (buildStanfordLink(STANFORD_DEP_MARK, indtTarg->lexical_head, node.lexical_head)) {
     							 addLinked(&node,indtTarg);
     						     return true;
     						 }
@@ -103,8 +103,8 @@ inline const bool &mark2(const unsigned long &cons){
        		 						 if ((*words)[indtTarg->lexical_head].word==g_word_that ||
        		 								 (*words)[indtTarg->lexical_head].word==g_word_whether){
 
-       		 							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_MARK);
-       		 							 if (buildStanfordLink(label, indtTarg->lexical_head, headSbar->lexical_head)) {
+//       		 							 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_MARK);
+       		 							 if (buildStanfordLink(STANFORD_DEP_MARK, indtTarg->lexical_head, headSbar->lexical_head)) {
        		 								 addLinked(&node,indtTarg);
        		 								 return true;
        		 							 }

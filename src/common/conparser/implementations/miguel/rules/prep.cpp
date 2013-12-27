@@ -24,8 +24,8 @@ inline const bool & prep1(const unsigned long &cons){
     				 while(childsHead!=0){
     					 const CStateNode* whppTarg=childsHead->node;
     					 if ((CConstituent::clearTmp(whppTarg->constituent.code())==PENN_CON_WHPP || CConstituent::clearTmp(whppTarg->constituent.code())==PENN_CON_PP)&&!isLinked(&node,whppTarg)){
-    						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
-    						 if (buildStanfordLink(label, whppTarg->lexical_head, head->lexical_head)) {
+//    						 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
+    						 if (buildStanfordLink(STANFORD_DEP_PREP, whppTarg->lexical_head, head->lexical_head)) {
     							 addLinked(&node,whppTarg);
     						     return true;
     						 }
@@ -67,8 +67,8 @@ inline const bool & prep2(const unsigned long &cons){
     					 } 
     				 }
     				 if (sisterCond){
-    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
-    					 if (buildStanfordLink(label, whppTarg->lexical_head, node.lexical_head)) {
+//    					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
+    					 if (buildStanfordLink(STANFORD_DEP_PREP, whppTarg->lexical_head, node.lexical_head)) {
     						 addLinked(&node,whppTarg);
     					     return true;
     					 }
@@ -105,8 +105,8 @@ inline const bool & prep3(const unsigned long &cons){
    					 childsPP=childsPP->next;
    				 }
    				 if (inCond){
-   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
-   					 if (buildStanfordLink(label, ppTarg->lexical_head, node.lexical_head)) {
+//   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
+   					 if (buildStanfordLink(STANFORD_DEP_PREP, ppTarg->lexical_head, node.lexical_head)) {
    						 addLinked(&node,ppTarg);
    					     return true;
    					 }
@@ -138,8 +138,8 @@ inline const bool & prep4(const unsigned long &cons){
         						CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHNP||CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHADVP
         						||CConstituent::clearTmp(whTarg->constituent.code())==PENN_CON_WHADJP)
         						&& !isLinked(&node,whTarg)){
-        					CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
-        					if (buildStanfordLink(label, whTarg->lexical_head, node.lexical_head)) {
+//        					CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
+        					if (buildStanfordLink(STANFORD_DEP_PREP, whTarg->lexical_head, node.lexical_head)) {
         						addLinked(&node,whTarg);
         					   	return true;
         					}
