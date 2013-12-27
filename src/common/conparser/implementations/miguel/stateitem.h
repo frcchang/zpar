@@ -735,8 +735,9 @@ protected:
 
          if (!isLinked(h, m)) {
         	 //	if (!h->lexical_head==m->lexical_head) {
+        	 //if (!h->id==0) {
         		retval->buildStanfordLink(STANFORD_DEP_DEP, h->lexical_head, m->lexical_head);
-        	// 	}
+        	 //}
          }
             
       }
