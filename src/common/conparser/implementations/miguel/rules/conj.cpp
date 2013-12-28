@@ -121,8 +121,7 @@
 
       // dependency and the head of the phrase.  Otherwise, a
       // different relationship is probably more appropriate.
-//"VP|S|SBAR|SBARQ|SINV|SQ=root < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/) < (/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/ $+ (/^S|SINV$|^(?:A|N|V|PP|PRP|J|W|R)/=target $-- (/^CC|CONJP|:|,$/ $-- (__ ># =root))) )",
-bool buildConj3(const unsigned long &cons){}
+
 
 
 //"/^(?:ADJP|JJP|PP|QP|(?:WH)?NP(?:-TMP|-ADV)?|ADVP|UCP(?:-TMP|-ADV)?|NX|NML)$/ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN)$/ $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target)",
@@ -221,14 +220,61 @@ bool buildConj4(const unsigned long &cons){
     }
     
 
+    //"/^(?:ADJP|PP|(?:WH)?NP(?:-TMP|-ADV)?|ADVP|UCP(?:-TMP|-ADV)?|NX|NML)$/ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN)$/ $+ (ADVP $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target))",
+          // content phrase to the right of a comma or a parenthetical
+    bool buildConj6(const unsigned long &cons){
+    	if (cons==PENN_CON_ADJP || cons==PENN_CON_PP || cons==PENN_CON_NP || cons==PENN_CON_WHNP || cons==PENN_CON_ADVP || cons==PENN_CON_UCP
+    			|| cons==PENN_CON_NX) {
+    		CStateNodeList* childs=node.m_umbinarizedSubNodes;
+    		while(childs!=0){
+    			if (CConstituent::clearTmp(childs->node->constituent.code())==PENN_CON_CONJP || (*words)[childs->node->lexical_head].tag.code()==PENN_TAG_CC){
+    				bool leftCond=false;
+    				CStateNodeList* leftSisters=childs->previous;
+    				if (leftSisters!=0) leftCond=true;
+    					while(leftSisters!=0){
+    						if ((*words)[leftSisters->node->lexical_head].tag.code()==PENN_TAG_L_BRACKET || CConstituent::clearTmp(leftSisters->node->constituent.code())==PENN_CON_PRN ||
+    								(*words)[leftSisters->node->lexical_head].word==g_word_quotes){
+    								//g_word_quotes
+    								leftCond=false;
+    						}
+    						leftSisters=leftSisters->previous;
+    					}
+    					if (leftCond){
+    						if (childs->next!=0){
+    							if (childs->next->node->constituent==PENN_CON_ADVP){
+    								if (childs->next->next!=0){
+    									bool targCond=true;
+    									const CStateNode* targ=childs->next->next->node;
+    									if (!isLinked(&node,targ)){
+    									//!/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)
+    										if ((*words)[targ->lexical_head].word==g_word_quotes || (*words)[targ->lexical_head].word==g_word_squotes || 
+    												(*words)[targ->lexical_head].word==g_word_two_dots || (*words)[targ->lexical_head].word==g_word_dot ||
+    												(*words)[targ->lexical_head].tag.code()==PENN_TAG_R_BRACKET || CConstituent::clearTmp(targ->constituent.code())==PENN_CON_PRN||
+    												(*words)[targ->lexical_head].tag.code()==PENN_TAG_L_BRACKET){
+    											targCond=false;
+    										}  
+    									}
+    									if (targCond){
+    										if (buildStanfordLink(STANFORD_DEP_CONJ, targ->lexical_head, node.lexical_head)) {
+    											addLinked(&node,targ);
+    									    	return true;
+    									    }
+    									}
+    								}
+    							}
+    						}
+    					}
+    			}
+    			childs=childs->next;
+    		}
+    		
+    	}
+    	return false;
+    }
 
-//"/^(?:ADJP|PP|(?:WH)?NP(?:-TMP|-ADV)?|ADVP|UCP(?:-TMP|-ADV)?|NX|NML)$/ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN)$/ $+ (ADVP $+ !/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/=target))",
-      // content phrase to the right of a comma or a parenthetical
-bool buildConj6(const unsigned long &cons){}
 
-//"/^(?:ADJP|PP|(?:WH)?NP(?:-TMP|-ADV)?|ADVP|UCP(?:-TMP|-ADV)?|NX|NML)$/ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN)$/) < (/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/ $+ /^S|SINV$|^(?:A|N|V|PP|PRP|J|W|R)/=target)",
-                // content phrase to the left of a comma for at least NX
-bool buildConj7(const unsigned long &cons){}
+
+
 
 
 

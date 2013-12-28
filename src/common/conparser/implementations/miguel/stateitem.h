@@ -2083,13 +2083,23 @@ public:
 
     
     
+    //"VP|S|SBAR|SBARQ|SINV|SQ=root < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/) < (/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/ $+ (/^S|SINV$|^(?:A|N|V|PP|PRP|J|W|R)/=target $-- (/^CC|CONJP|:|,$/ $-- (__ ># =root))) )",
+    bool buildConj3(const unsigned long &cons){
+    	if (cons==PENN_CON_VP || cons==PENN_CON_S || cons==PENN_CON_SBAR || cons==PENN_CON_SBARQ || cons==PENN_CON_SINV || cons==PENN_CON_SQ) {
+    		
+    	}
+    	return false;
+    }
     
 
 
+
     
 
 
-    
+    //"/^(?:ADJP|PP|(?:WH)?NP(?:-TMP|-ADV)?|ADVP|UCP(?:-TMP|-ADV)?|NX|NML)$/ < (CC|CONJP $-- !/^(?:``|-LRB-|PRN)$/) < (/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/ $+ /^S|SINV$|^(?:A|N|V|PP|PRP|J|W|R)/=target)",
+                    // content phrase to the left of a comma for at least NX
+    bool buildConj7(const unsigned long &cons){}
 
     //compareWordToHaveWordRegex
     // PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE
