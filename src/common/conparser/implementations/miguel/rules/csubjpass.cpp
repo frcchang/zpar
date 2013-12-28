@@ -51,7 +51,7 @@
     								  
     								  if (firstCond && secCond){
 //    									  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
-    									  if (buildStanfordLink(STANFORD_DEP_NN, targ->lexical_head, node.lexical_head)) {
+    									  if (buildStanfordLink(STANFORD_DEP_CSUBJPASS, targ->lexical_head, node.lexical_head)) {
     										  addLinked(&node,targ);
     									  	  return true;
     									  }
@@ -114,7 +114,7 @@
     							    					  //while(childsVb!=0){
     							    						  if (compareWordToPassiveAuxWordRegex((*words)[childsVp->node->lexical_head].word)) {
 //    							    							  CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_NN);
-    							    							  if (buildStanfordLink(STANFORD_DEP_NN, targ->lexical_head, node.lexical_head)) {
+    							    							  if (buildStanfordLink(STANFORD_DEP_CSUBJPASS, targ->lexical_head, node.lexical_head)) {
     							    								  addLinked(&node,targ);
     							    							      return true;
     							    							  }
