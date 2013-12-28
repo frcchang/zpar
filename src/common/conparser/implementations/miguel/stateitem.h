@@ -733,11 +733,8 @@ protected:
          
          retval->generateStanfordLinks(); //collapsed and then uncollapsed
 
-         if (!isLinked(h, m)) {
-        	 //	if (!h->lexical_head==m->lexical_head) {
-        	 //if (!h->id==0) {
-        		retval->buildStanfordLink(STANFORD_DEP_DEP, h->lexical_head, m->lexical_head);
-        	 //}
+         if (retval->m_lHeads[m->lexical_head]==DEPENDENCY_LINK_NO_HEAD) {
+            retval->buildStanfordLink(STANFORD_DEP_DEP, m->lexical_head, h->lexical_head);
          }
             
       }
