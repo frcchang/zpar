@@ -95,6 +95,24 @@
    left(m_mapB0hu)right\
    left(m_mapB0hh)right\
 \
+   left(m_mapB1p1)right\
+   left(m_mapB1p2)right\
+   left(m_mapB1p3)right\
+   left(m_mapB1p4)right\
+   left(m_mapB1s1)right\
+   left(m_mapB1s2)right\
+   left(m_mapB1s3)right\
+   left(m_mapB1s4)right\
+\
+   left(m_mapSTmp)right\
+   left(m_mapSTnum)right\
+   left(m_mapSTper)right\
+   left(m_mapN0mp)right\
+   left(m_mapN0num)right\
+   left(m_mapN0per)right\
+   left(m_mapSTnumN0num)right\
+   left(m_mapSTperN0per)right\
+\
    left(m_mapSTwmN0wm)right\
    left(m_mapSTwmN0w)right\
    left(m_mapSTwN0wm)right\
@@ -192,6 +210,7 @@ typedef CPackedScoreMap<CTuple3<CTag, CTag, int>, SCORE_TYPE, action::MAX> CTagT
 typedef CPackedScoreMap<CTuple2<CMorph, int>, SCORE_TYPE, action::MAX> CMorphIntMap;
 typedef CPackedScoreMap<CTuple3<CMorph, CMorph, int>, SCORE_TYPE, action::MAX> CMorphMorphIntMap;
 typedef CPackedScoreMap<CTuple3<CWord, CWord, int>, SCORE_TYPE, action::MAX> CWordWordIntMap;
+typedef CPackedScoreMap<CTuple2<int, int>, SCORE_TYPE, action::MAX> CIntIntMap;
 typedef CPackedScoreMap<CTuple2< CWord, CSetOfTags<CDependencyLabel> >, SCORE_TYPE, action::MAX> CWordSetOfLabelsMap;
 typedef CPackedScoreMap<CTuple2< CTag, CSetOfTags<CDependencyLabel> >, SCORE_TYPE, action::MAX> CTagSetOfLabelsMap;
 typedef CPackedScoreMap<CTuple2< CMorph, CSetOfTags<CDependencyLabel> >, SCORE_TYPE, action::MAX> CMorphSetOfLabelsMap;
@@ -303,6 +322,25 @@ public:
    CBoolMap m_mapB0hd;
    CBoolMap m_mapB0hu;
    CBoolMap m_mapB0hh;
+
+   CWordMap m_mapB1p1;
+   CWordMap m_mapB1p2;
+   CWordMap m_mapB1p3;
+   CWordMap m_mapB1p4;
+   CWordMap m_mapB1s1;
+   CWordMap m_mapB1s2;
+   CWordMap m_mapB1s3;
+   CWordMap m_mapB1s4;
+
+   CIntMap m_mapSTmp;
+   CIntMap m_mapSTnum;
+   CIntMap m_mapSTper;
+   CIntMap m_mapN0mp;
+   CIntMap m_mapN0num;
+   CIntMap m_mapN0per;
+
+   CIntIntMap m_mapSTnumN0num;
+   CIntIntMap m_mapSTperN0per;
 
    CWordWordMorphMorphMap m_mapSTwmN0wm;
    CWordWordMorphMap m_mapSTwmN0w;
@@ -462,6 +500,24 @@ public:
                                                m_mapB0hd("NextUnanalyzedSuffixHasDigit", DEP_TABLE_SIZE),
                                                m_mapB0hu("NextUnanalyzedSuffixHasUpper", DEP_TABLE_SIZE),
                                                m_mapB0hh("NextUnanalyzedSuffixHasHyphen", DEP_TABLE_SIZE),
+
+                                               m_mapB1p1("Next+1UnanalyzedPrefix1", DEP_TABLE_SIZE),
+                                               m_mapB1p2("Next+1UnanalyzedPrefix2", DEP_TABLE_SIZE),
+                                               m_mapB1p3("Next+1UnanalyzedPrefix3", DEP_TABLE_SIZE),
+                                               m_mapB1p4("Next+1UnanalyzedPrefix4", DEP_TABLE_SIZE),
+                                               m_mapB1s1("Next+1UnanalyzedSuffix1", DEP_TABLE_SIZE),
+                                               m_mapB1s2("Next+1UnanalyzedSuffix2", DEP_TABLE_SIZE),
+                                               m_mapB1s3("Next+1UnanalyzedSuffix3", DEP_TABLE_SIZE),
+                                               m_mapB1s4("Next+1UnanalyzedSuffix4", DEP_TABLE_SIZE),
+
+                                               m_mapSTmp("StackMorphPostag", DEP_TABLE_SIZE),
+   	   	   	   	   	   	   	   	   	   	   	   m_mapSTnum("StackNumber", DEP_TABLE_SIZE),
+                                               m_mapSTper("StackPerson", DEP_TABLE_SIZE),
+                                               m_mapN0mp("NextMorphPostag", DEP_TABLE_SIZE),
+   	   	   	   	   	   	   	   	   	   	   	   m_mapN0num("NextNumber", DEP_TABLE_SIZE),
+                                               m_mapN0per("NextPerson", DEP_TABLE_SIZE),
+                                               m_mapSTnumN0num("StackNumberNextNumber", DEP_TABLE_SIZE),
+                                               m_mapSTperN0per("StackPersonNextPerson", DEP_TABLE_SIZE),
 
                                                m_mapSTwmN0wm("StackWordMorphNextWordMorph", DEP_TABLE_SIZE),
                                                m_mapSTwmN0w("StackWordMorphNextWord", DEP_TABLE_SIZE),
