@@ -146,6 +146,16 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CWord &b0_suff3 = b0_index==-1 ? g_emptyWord : m_lCacheS3[b0_index];
    const CWord &b0_suff4 = b0_index==-1 ? g_emptyWord : m_lCacheS4[b0_index];
 
+   const CWord &b1_pref1 = b1_index==-1 ? g_emptyWord : m_lCacheP1[b1_index];
+   const CWord &b1_pref2 = b1_index==-1 ? g_emptyWord : m_lCacheP1[b1_index];
+   const CWord &b1_pref3 = b1_index==-1 ? g_emptyWord : m_lCacheP1[b1_index];
+   const CWord &b1_pref4 = b1_index==-1 ? g_emptyWord : m_lCacheP1[b1_index];
+
+   const CWord &b1_suff1 = b1_index==-1 ? g_emptyWord : m_lCacheS1[b1_index];
+   const CWord &b1_suff2 = b1_index==-1 ? g_emptyWord : m_lCacheS1[b1_index];
+   const CWord &b1_suff3 = b1_index==-1 ? g_emptyWord : m_lCacheS1[b1_index];
+   const CWord &b1_suff4 = b1_index==-1 ? g_emptyWord : m_lCacheS1[b1_index];
+
    const bool &b0_hasDigit = b0_index==-1 ? false : m_lCacheHasDigit[b0_index];
    const bool &b0_hasUpper = b0_index==-1 ? false : m_lCacheHasUpper[b0_index];
    const bool &b0_hasHyphen = b0_index==-1 ? false : m_lCacheHasHyphen[b0_index];
@@ -184,6 +194,15 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    const CMorph &bm2h_morph = (bm2h_index==-1) ? CMorph::NONE : item->morph(bm2h_index);
    const CMorph &bm3h_morph = (bm3h_index==-1) ? CMorph::NONE : item->morph(bm3h_index);
+
+   const int &n0_mpostag = (int) n0_morph.getField(MORPH_POSTAG);
+   const int &st_mpostag = (int) st_morph.getField(MORPH_POSTAG);
+
+   const int &n0_number = (int) n0_morph.getField(MORPH_NUMBER);
+   const int &st_number = (int) st_morph.getField(MORPH_NUMBER);
+
+   const int &n0_person = (int) n0_morph.getField(MORPH_PERSON);
+   const int &st_person = (int) st_morph.getField(MORPH_PERSON);
 
    static int st_n0_dist;
    st_n0_dist = encodeLinkDistance(st_index, n0_index);
@@ -229,6 +248,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    static CTuple2<CMorph, int> morph_int;
    static CTuple3<CMorph, CMorph, int> morph_morph_int;
+   static CTuple2<int, int> int_int;
 
    static CTuple2<CMorph, CSetOfTags<CDependencyLabel> > morph_tagset;
 
@@ -408,6 +428,43 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
          cast_weights->m_mapB0hu.getOrUpdateScore( retval, b0_hasUpper, action, m_nScoreIndex, amount, round ) ;
          cast_weights->m_mapB0hh.getOrUpdateScore( retval, b0_hasHyphen, action, m_nScoreIndex, amount, round ) ;
    }
+
+   //prefixes and suffixes of b1
+   /*
+   if (b1_index != -1) {
+         cast_weights->m_mapB1p1.getOrUpdateScore( retval, b1_pref1, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB1p2.getOrUpdateScore( retval, b1_pref2, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB1p3.getOrUpdateScore( retval, b1_pref3, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB1p4.getOrUpdateScore( retval, b1_pref4, action, m_nScoreIndex, amount, round ) ;
+
+         cast_weights->m_mapB1s1.getOrUpdateScore( retval, b1_suff1, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB1s2.getOrUpdateScore( retval, b1_suff2, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB1s3.getOrUpdateScore( retval, b1_suff3, action, m_nScoreIndex, amount, round ) ;
+         cast_weights->m_mapB1s4.getOrUpdateScore( retval, b1_suff4, action, m_nScoreIndex, amount, round ) ;
+   }
+   */
+
+   //piecemeal single morph features
+   if (st_index != -1) {
+      cast_weights->m_mapSTmp.getOrUpdateScore( retval, st_mpostag, action, m_nScoreIndex, amount, round) ;
+      cast_weights->m_mapSTnum.getOrUpdateScore( retval, st_number, action, m_nScoreIndex, amount, round) ;
+      cast_weights->m_mapSTper.getOrUpdateScore( retval, st_person, action, m_nScoreIndex, amount, round) ;
+   }
+
+   if (n0_index != -1) {
+      cast_weights->m_mapN0mp.getOrUpdateScore( retval, n0_mpostag, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN0num.getOrUpdateScore( retval, n0_number, action, m_nScoreIndex, amount, round) ;
+      cast_weights->m_mapN0per.getOrUpdateScore( retval, n0_person , action, m_nScoreIndex, amount, round ) ;
+   }
+
+   //concordance single morph features
+   if (st_index != -1 && n0_index != -1) {
+	  refer_or_allocate_tuple2(int_int, &st_number, &n0_number);
+      cast_weights->m_mapSTnumN0num.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+	  refer_or_allocate_tuple2(int_int, &st_person, &n0_person);
+      cast_weights->m_mapSTperN0per.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+   }
+
 
 
    // s0 and n0
@@ -791,6 +848,7 @@ void CDepParser::work( const bool bTrain , const CStringVector &sentence , CDepe
    m_lCache.clear();
    m_lCacheP1.clear(); m_lCacheP2.clear(); m_lCacheP3.clear(); m_lCacheP4.clear();
    m_lCacheS1.clear(); m_lCacheS2.clear(); m_lCacheS3.clear(); m_lCacheS4.clear();
+
    for ( index=0; index<length; ++index ) {
       m_lCache.push_back( CWord(sentence[index]) );
 
