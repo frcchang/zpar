@@ -113,7 +113,11 @@
    			  if (CConstituent::clearTmp(childsNp->node->constituent.code())==PENN_CON_NP){
    				  //
    				  CStateNodeList* desc=new CStateNodeList();
-   				  listDescendants (childsNp->node->m_umbinarizedSubNodes, desc);
+   				  listDescendants(childsNp->node->m_umbinarizedSubNodes, desc);
+   				  if (desc->node==0) {
+   					desc->clear();
+   				    desc=0;
+   				  }
    				  while(desc!=0){
    					  if (((*words)[desc->node->lexical_head].word==g_word_perc) && (childsNp->node->lexical_head==desc->node->lexical_head)){
    						  firstCond=true;
@@ -127,7 +131,11 @@
    				  const CStateNode* targ=childsNp->node;
    				  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_NP && !isLinked(&node,targ)){
    					  CStateNodeList* desc2=new CStateNodeList();
-   					  listDescendants (targ->m_umbinarizedSubNodes, desc2);
+   					  listDescendants(targ->m_umbinarizedSubNodes, desc2);
+   					  if (desc2->node==0) {
+   						  desc2->clear();
+   						  desc2=0;
+   					  }
    					  while(desc2!=0){
    						  if (((*words)[desc2->node->lexical_head].word==g_word_days || (*words)[desc2->node->lexical_head].word==g_word_month || (*words)[desc2->node->lexical_head].word==g_word_months)
    								  && (targ->lexical_head==desc2->node->lexical_head)){
