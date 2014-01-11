@@ -445,6 +445,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    */
 
    //piecemeal single morph features
+
+   /*
    if (st_index != -1) {
       cast_weights->m_mapSTmp.getOrUpdateScore( retval, st_mpostag, action, m_nScoreIndex, amount, round) ;
       cast_weights->m_mapSTnum.getOrUpdateScore( retval, st_number, action, m_nScoreIndex, amount, round) ;
@@ -456,6 +458,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0num.getOrUpdateScore( retval, n0_number, action, m_nScoreIndex, amount, round) ;
       cast_weights->m_mapN0per.getOrUpdateScore( retval, n0_person , action, m_nScoreIndex, amount, round ) ;
    }
+   */
 
    //concordance single morph features
    if (st_index != -1 && n0_index != -1) {
