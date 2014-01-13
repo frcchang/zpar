@@ -106,7 +106,6 @@
 //"@NP <1 (@NP <<# /^%$/) <2 (@NP=target <<# days|month|months) !<3 __",
      inline const bool &npadvmod4(const unsigned long &cons){
    	  if (cons==PENN_CON_NP){
-
    		  CStateNodeList* childsNp=node.m_umbinarizedSubNodes;
    		  if (childsNp!=0){
    			  bool firstCond=false;

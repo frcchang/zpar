@@ -170,9 +170,74 @@ inline const bool &buildXComp4(const unsigned long &cons) {
 
    }
 
-
 //"VP < (SBAR=target < (S !$- (NN < order) < (VP < TO))) !> (VP < (VB|AUX < be)) ",
-inline const bool & buildXComp5(const unsigned long &cons) {}
+inline const bool & buildXComp5(const unsigned long &cons) {
+	  bool fstCond=true;
+	  if (cons==PENN_CON_VP){
+		  CStateNodeList* childsFstVp=node.m_umbinarizedSubNodes;
+		  while(childsFstVp!=0){
+			  if (((*words)[childsFstVp->node->lexical_head].tag.code()==PENN_TAG_VERB) && ((*words)[childsFstVp->node->lexical_head].word==g_word_be)) {
+				  fstCond=false;
+			  }
+
+			  childsFstVp=childsFstVp->next;
+		  }
+	  }
+	  if (fstCond){
+		  CStateNodeList* childs=node.m_umbinarizedSubNodes;
+		  while(childs!=0){
+			  const CStateNode* head=childs->node;
+			  if (CConstituent::clearTmp(head->constituent.code())==PENN_CON_VP){
+				  CStateNodeList* childsHead=head->m_umbinarizedSubNodes;
+				  while(childsHead!=0){
+					  const CStateNode* targ=childsHead->node;
+					  if (CConstituent::clearTmp(targ->constituent.code())==PENN_CON_SBAR && !isLinked(&node,targ)){
+						  CStateNodeList* childsTarg=targ->m_umbinarizedSubNodes;
+						  while(childsTarg!=0){
+							  if (CConstituent::clearTmp(childsTarg->node->constituent.code())==PENN_CON_S){
+								  bool firstCondition=true; //!$- (NN < order)
+								  bool secCondition=false;  //< (VP < TO)
+								  if (childsTarg->previous!=0){
+									  if ((*words)[childsTarg->previous->node->lexical_head].tag.code()==PENN_TAG_NOUN && ((*words)[childsTarg->previous->node->lexical_head].word==g_word_order)){
+										  firstCondition=false;
+									  }
+								  }
+								  if (firstCondition){
+									  CStateNodeList* childsS=childsTarg->node->m_umbinarizedSubNodes;
+									  while(childsS!=0){
+										  if (CConstituent::clearTmp(childsS->node->constituent.code())==PENN_CON_VP){
+											  CStateNodeList* childsVpS=childsS->node->m_umbinarizedSubNodes;
+											  while(childsVpS!=0){
+												  if ((*words)[childsVpS->node->lexical_head].tag.code()==PENN_TAG_TO){
+													  secCondition=true;
+												  }
+												  childsVpS=childsVpS->next;
+											  }
+										  }
+										  childsS=childsS->next;
+									  }
+								  }
+								  if (firstCondition && secCondition){
+										if (buildStanfordLink(STANFORD_DEP_XCOMP, targ->lexical_head, head->lexical_head)) {
+											//addLinked(vpNode,sTarg);
+											addLinked(&node,targ); //I think this is not correct, in this specific case.
+											return true;
+										}
+								  }
+							  }
+							  childsTarg=childsTarg->next;
+						  }
+					  }
+					  childsHead=childsHead->next;
+				  }
+			  }
+			  childs=childs->next;
+		  }
+	  }
+	  return false;
+}
+
+
 
 
 //"VP < (S=target !$- (NN < order) <: NP) > VP",
