@@ -141,6 +141,25 @@ private:
       const CCoNLLOutput & conll_tree,
       CDependencyParse   & tree);
 
+  void MoveDummyRootToTail(
+      const CCoNLLOutput & conll_tree_with_dummy_root,
+      CCoNLLOutput       & conll_tree_with_dummy_root_in_tail);
+
+  void MoveDummyRootToTail(
+      const CCoNLLInput  & conll_tree_with_dummy_root,
+      CCoNLLInput        & conll_tree_with_dummy_root_in_tail);
+
+  void MoveDummyRootToFront(
+      const CCoNLLOutput & conll_tree_with_dummy_root,
+      CCoNLLOutput       & conll_tree_with_dummy_root_in_front);
+
+  void MoveDummyRootToFront(
+      const CCoNLLInput  & conll_tree_with_dummy_root,
+      CCoNLLInput        & conll_tree_with_dummy_root_in_front);
+
+  void MoveDummyRootToFront(
+      const CDependencyParse & parse_endswith_dummy_root,
+      CDependencyParse       & parse_startswith_dummy_root);
   /* add a pseudo root to dependency tree
    *
    *  @param[in]  tree                    the tree without pseudo root
