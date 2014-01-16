@@ -2,39 +2,6 @@
 #ifndef SRC_COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H_
 #define SRC_COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H_
 
-/*===============================================================
- *
- * CStateItem - the search state item, representing a partial
- *              candidate with shift reduce.
- *
- * Note about members: there are two types of item properties;
- * The first is the stack, which changes during the process;
- * The second is the incoming sentence, including heads,
- * left_most_child and right_most_child, num_left_children,
- * num_right_children etc, which records the properties of
- * each input word so far.
- *
- * A state item is partial and do not include information about
- * all words from the input sentence. Though heads, left_most_child
- * and right_most_child are fixed arrays with MAX_SENTENCE_SIZE length,
- * not all the elements from the arrays are used. The ACTIVE
- * elements are from the input index 0 to next_word, inclusive.
- * And a state item only captures information about the active
- * sub section from input.
- *
- * The property for each input word need to be initialised.
- * heads left_most_child etc could be initialised within the
- * clear() method. However, because the parsing process is
- * incremental, they can also be initialised lasily.
- * Apart from the avoidance of unecessary assignments, one
- * benefit of lazy initialisation is that we only need to copy
- * the active indexies when doing a copy operation. Therefore,
- * this implementation takes the approach.
- * The initialisation of these values are in clear(), shift()
- * and arcright()
- *
- *==============================================================*/
-
 class CStateItem {
 protected:
   std::vector<int> stack_;                    // the stack
@@ -218,10 +185,10 @@ public:
   }
 
   inline bool complete() const {
-    return (deque_.empty() &&
-        next_word == len_ &&
-        stack_.size() == 1 &&
-        DEPENDENCY_LINK_NO_HEAD == heads[stack_.back()]);
+    return (deque_.empty()
+            && next_word == len_
+            && stack_.size() == 1
+            && DEPENDENCY_LINK_NO_HEAD == heads[stack_.back()]);
   }
 
   inline bool terminated() const {
@@ -288,8 +255,8 @@ public:
       // only copy active word (including m_nNext)
       left_dep_tagset[i]    = item.left_dep_tagset[i];
       right_dep_tagset[i]   = item.right_dep_tagset[i];
-#endif
     }
+#endif
   }
 
 //-----------------------------------------------------------------------------
@@ -340,6 +307,7 @@ public:
 #ifdef LABELED
     labels[stack_.back()] = CDependencyLabel::ROOT;
 #endif  //  end for LABELED
+
     last_action = action::EncodeAction(action::kPopRoot);
     // stack_.pop_back();  // pop it
   }
@@ -693,18 +661,9 @@ public:
   void GenerateTree(
       const CTwoStringVector & input,
       CDependencyParse       & output) const {
-    if (input.size() != size()) {
-      std::cout << input.size() << std::endl;
-      std::cout << size() << std::endl;
-      std::cout << len_ << std::endl;
 
-      const CStateItem * p = this;
-      while (p) { std::cout << (*p); p = p->previous_; }
-      exit(1);
-      // assert (input.size() == size());
-    }
     output.clear();
-    for (int i = 0; i < size(); ++ i) {
+    for (int i = 0; i < input.size(); ++ i) {
 #ifdef LABELED
       output.push_back(CLabeledDependencyTreeNode(
             input.at(i).first,
@@ -740,7 +699,5 @@ public:
     return out;
   }
 };
-
-
 
 #endif  // SRC_COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H_

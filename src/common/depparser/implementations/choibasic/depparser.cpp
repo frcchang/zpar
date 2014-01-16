@@ -106,13 +106,13 @@ void CDepParser::GetOrUpdateStackScore(
   const int Sm1_id  = item->stack2ndtop();
   const int S0m2_id = (S0_id - 2 >= 0 ? S0_id - 2 : -1);
   const int S0m1_id = (S0_id - 1 >= 0 ? S0_id - 1 : -1);
-  const int S0p1_id = (S0_id + 1 < len? S0_id + 1 : -1);
-  const int S0p2_id = (S0_id + 2 < len? S0_id + 2 : -1);
+  const int S0p1_id = (S0_id != -1 && S0_id + 1 < len? S0_id + 1 : -1);
+  const int S0p2_id = (S0_id != -1 && S0_id + 2 < len? S0_id + 2 : -1);
   const int N0m2_id = (N0_id - 2 >= 0 ? N0_id - 2 : -1);
   const int N0m1_id = (N0_id - 1 >= 0 ? N0_id - 1 : -1);
-  const int N0p1_id = (N0_id + 1 < len? N0_id + 1 : -1);
-  const int N0p2_id = (N0_id + 2 < len? N0_id + 2 : -1);
-  const int N0p3_id = (N0_id + 3 < len? N0_id + 3 : -1);
+  const int N0p1_id = (N0_id != -1 && N0_id + 1 < len? N0_id + 1 : -1);
+  const int N0p2_id = (N0_id != -1 && N0_id + 2 < len? N0_id + 2 : -1);
+  const int N0p3_id = (N0_id != -1 && N0_id + 3 < len? N0_id + 3 : -1);
 
   const TaggedWord & S0   = (-1 == S0_id ?   EmptyTaggedWord : m_lCache[S0_id]);
   const TaggedWord & N0   = (-1 == N0_id ?   EmptyTaggedWord : m_lCache[N0_id]);
@@ -165,10 +165,9 @@ void CDepParser::GetOrUpdateStackScore(
   const int S0_la = (S0_id == -1 ? 0 : item->leftarity(S0_id));
   const int N0_la = (N0_id == -1 ? 0 : item->leftarity(N0_id));
 
-#define __GET_OR_UPDATE_SCORE(temp, feature) do { \
+#define __GET_OR_UPDATE_SCORE(temp, feature) \
   cast_weights->temp.getOrUpdateScore(retval, feature, \
-      action, m_nScoreIndex, amount, round); \
-} while (0);
+      action, m_nScoreIndex, amount, round);
 
   // basic feature
   if (-1 != S0_id) {
@@ -761,6 +760,18 @@ void CDepParser::GetOrUpdateStackScore(
         __GET_OR_UPDATE_SCORE(N0conll_f, m_lCacheCoNLLFeats[N0_id][i]);
       }
     }
+
+    if (-1 != S0_id && -1 != N0_id) {
+      for (int i = 0; i < m_lCacheCoNLLFeats[S0_id].size(); ++ i) {
+        for (int j = 0; j < m_lCacheCoNLLFeats[N0_id].size(); ++ j) {
+          CTuple2<CCoNLLFeats, CCoNLLFeats> cc;
+          refer_or_allocate_tuple2(cc, \
+              &m_lCacheCoNLLFeats[S0_id][i], \
+              &m_lCacheCoNLLFeats[N0_id][j]);
+          __GET_OR_UPDATE_SCORE(S0conll_f_N0conll_f, cc);
+        }
+      }
+    }
   }
 #undef __GET_OR_UPDATE_SCORE
 }
@@ -920,18 +931,11 @@ void CDepParser::ArcRight(
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
 #ifdef LABELED
-  if (0 == item->stacktop()) {
-    scored_action.action = action::EncodeAction(action::kArcRight, 
-                                                CDependencyLabel::ROOT);
+  for (unsigned label = CDependencyLabel::FIRST;
+      label < CDependencyLabel::COUNT; ++ label) {
+    scored_action.action = action::EncodeAction(action::kArcRight, label);
     scored_action.score = item->score + scores[scored_action.action];
     m_Beam->insertItem(&scored_action);
-  } else {
-    for (unsigned label = CDependencyLabel::FIRST + 1;
-        label < CDependencyLabel::COUNT; ++ label) {
-      scored_action.action = action::EncodeAction(action::kArcRight, label);
-      scored_action.score = item->score + scores[scored_action.action];
-      m_Beam->insertItem(&scored_action);
-    }
   }
 #else
   scored_action.action = action::kArcRight;
@@ -997,7 +1001,7 @@ void CDepParser::LeftPass(
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
 #ifdef LABELED
-  for (unsigned label = CDependencyLabel::FIRST + 1;
+  for (unsigned label = CDependencyLabel::FIRST;
       label < CDependencyLabel::COUNT; ++ label) {
     scored_action.action = action::EncodeAction(action::kLeftPass, label);
     scored_action.score  = item->score + scores[scored_action.action];
@@ -1021,18 +1025,11 @@ void CDepParser::RightPass(
     const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
   static action::CScoredAction scored_action;
 #ifdef LABELED
-  if (0 == item->stacktop()) {
-    scored_action.action = action::EncodeAction(action::kRightPass, 
-                                                CDependencyLabel::ROOT);
-    scored_action.score = item->score + scores[scored_action.action];
-    m_Beam->insertItem(&scored_action);
-  } else {
-    for (unsigned label = CDependencyLabel::FIRST + 1;
+  for (unsigned label = CDependencyLabel::FIRST;
         label < CDependencyLabel::COUNT; ++ label) {
-      scored_action.action = action::EncodeAction(action::kRightPass, label);
-      scored_action.score  = item->score + scores[scored_action.action];
-      m_Beam->insertItem(&scored_action);
-    }
+    scored_action.action = action::EncodeAction(action::kRightPass, label);
+    scored_action.score  = item->score + scores[scored_action.action];
+    m_Beam->insertItem(&scored_action);
   }
 #else
   scored_action.action = action::kRightPass;
@@ -1110,7 +1107,7 @@ void CDepParser::Transit(
                         && !generator->is_descendant(generator->stacktop(),
                                                      generator->bufferfront())
                         );
-  // std::cout << left_linkable << " " << right_linkable << std::endl;
+
   // precondition:
   //  - 1. stack is not empty
   if (!generator->stackempty()) {
@@ -1123,7 +1120,7 @@ void CDepParser::Transit(
   //  - 2. stack top is not pseudo root 
   //  - 3. buffer is not empty
   if (left_linkable
-      && (generator->stacktop())
+      // && (generator->stacktop())
       ) {
     ArcLeft(generator, packed_scores);
   }
@@ -1143,7 +1140,8 @@ void CDepParser::Transit(
   //  - 2. stack top is not pseudo root
   //  - 3. buffer is not empty
   if (left_linkable 
-      && (generator->stacktop())) {
+      // && (generator->stacktop())
+      ) {
     LeftPass(generator, packed_scores);
   }
 
@@ -1178,20 +1176,19 @@ CDepParser::GetLattice(int max_lattice_size) {
  * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
-int CDepParser::Work(
-    CDependencyParse       * retval,
-    SCORE_TYPE             * scores,
-    const CTwoStringVector & sentence,
-    const CDependencyParse & oracle_tree,
-    int                      nbest,
-    bool                     is_train) {
+int CDepParser::Work(CDependencyParse       * retval,
+                     SCORE_TYPE             * scores,
+                     const CTwoStringVector & sentence,
+                     const CDependencyParse & oracle_tree,
+                     int                      nbest,
+                     bool                     is_train) {
 
 #ifdef DEBUG
   clock_t total_start_time = clock();
 #endif  // end for DEBUG
 
   const int length           = sentence.size();
-  const int max_round        = (length + 1) * (length + 1);
+  const int max_round        = (length + 1) * (length + 1) / 2;
   const int max_lattice_size = (kAgendaSize + 1) * max_round;
 
   ASSERT(length < kMaxSentenceSize,
@@ -1319,6 +1316,7 @@ int CDepParser::Work(
           is_correct = true;
         }
       }
+
 #ifdef EARLY_UPDATE
       if (!is_correct) {
         TRACE("ERROR at the " << next_correct_state.size() << "th word;"
@@ -1332,10 +1330,7 @@ int CDepParser::Work(
           }
         }
 
-        // std::cout << "predicated: " << (*best_generator);
-        // std::cout << "correct:    " << (next_correct_state);
         UpdateScoresForStates(best_generator, &next_correct_state, 1, -1);
-        // delete [] lattice;
 
         return -1;
       }
@@ -1356,7 +1351,7 @@ int CDepParser::Work(
   std::sort(lattice_index[round - 1], lattice_index[round], std::greater<CStateItem>());
   num_results = lattice_index[round] - lattice_index[round - 1];
   for (int i = 0; i < std::min(num_results, nbest); ++ i) {
-    (lattice_index[round - 1] + 1)->GenerateTree(sentence, retval[i]);
+    (lattice_index[round - 1] + i)->GenerateTree(sentence, retval[i]);
     if (scores) { scores[i] = (lattice_index[round - 1] + i)->score; }
   }
 
@@ -1472,6 +1467,85 @@ void CDepParser::InitializeCoNLLCache(
   }
 }
 
+void CDepParser::MoveDummyRootToTail(
+    const CCoNLLOutput & conll_tree_startswith_dummy_root,
+    CCoNLLOutput       & conll_tree_endswith_dummy_root) {
+  int len = conll_tree_startswith_dummy_root.size();
+  conll_tree_endswith_dummy_root.clear();
+  conll_tree_endswith_dummy_root.pop_back();
+  for (int i = 1; i < len; ++ i) {
+    conll_tree_endswith_dummy_root.push_back(conll_tree_startswith_dummy_root[i]);
+    if (conll_tree_startswith_dummy_root[i].head == 0) {
+      conll_tree_endswith_dummy_root[i - 1].head = len;
+    }
+    conll_tree_endswith_dummy_root[i - 1].id --;
+    conll_tree_endswith_dummy_root[i - 1].head --;
+  }
+  conll_tree_endswith_dummy_root.push_back(conll_tree_startswith_dummy_root[0]);
+  conll_tree_endswith_dummy_root[len - 1].id = len - 1;
+}
+
+void CDepParser::MoveDummyRootToTail(
+    const CCoNLLInput & conll_tree_startswith_dummy_root,
+    CCoNLLInput       & conll_tree_endswith_dummy_root) {
+  int len = conll_tree_startswith_dummy_root.size();
+  conll_tree_endswith_dummy_root.clear();
+  conll_tree_endswith_dummy_root.pop_back();
+  for (int i = 1; i < len; ++ i) {
+    conll_tree_endswith_dummy_root.push_back(conll_tree_startswith_dummy_root[i]);
+    if (conll_tree_startswith_dummy_root[i].head == 0) {
+      conll_tree_endswith_dummy_root[i - 1].head = len;
+    }
+    conll_tree_endswith_dummy_root[i - 1].id --;
+    conll_tree_endswith_dummy_root[i - 1].head --;
+  }
+  conll_tree_endswith_dummy_root.push_back(conll_tree_startswith_dummy_root[0]);
+  conll_tree_endswith_dummy_root[len - 1].id = len - 1;
+}
+
+void CDepParser::MoveDummyRootToFront(
+    const CCoNLLOutput & conll_tree_endswith_dummy_root,
+    CCoNLLOutput       & conll_tree_startswith_dummy_root) {
+  int len = conll_tree_endswith_dummy_root.size();
+  conll_tree_startswith_dummy_root.clear();
+  for (int i = 0; i < len - 1; ++ i) {
+    conll_tree_startswith_dummy_root.push_back(conll_tree_endswith_dummy_root[i]);
+    if (conll_tree_endswith_dummy_root[i].head == len - 1) {
+      conll_tree_startswith_dummy_root[i + 1].head = 0;
+    }
+    conll_tree_startswith_dummy_root[i + 1].head ++;
+  }
+}
+
+void CDepParser::MoveDummyRootToFront(
+    const CCoNLLInput & conll_tree_endswith_dummy_root,
+    CCoNLLInput       & conll_tree_startswith_dummy_root) {
+  int len = conll_tree_endswith_dummy_root.size();
+  conll_tree_startswith_dummy_root.clear();
+  for (int i = 0; i < len - 1; ++ i) {
+    conll_tree_startswith_dummy_root.push_back(conll_tree_endswith_dummy_root[i]);
+    if (conll_tree_endswith_dummy_root[i].head == len - 1) {
+      conll_tree_startswith_dummy_root[i + 1].head = 0;
+    }
+    conll_tree_startswith_dummy_root[i + 1].head ++;
+  }
+}
+
+void CDepParser::MoveDummyRootToFront(
+    const CDependencyParse & parse_endswith_dummy_root,
+    CDependencyParse       & parse_startswith_dummy_root) {
+  int len = parse_endswith_dummy_root.size();
+  parse_startswith_dummy_root.clear();
+  parse_startswith_dummy_root.push_back(parse_endswith_dummy_root[len - 1]);
+  for (int i = 0; i < len - 1; ++ i) {
+    parse_startswith_dummy_root.push_back(parse_endswith_dummy_root[i]);
+    if (parse_endswith_dummy_root[i].head == len - 1) {
+      parse_startswith_dummy_root[i + 1].head = -1;
+    }
+    parse_startswith_dummy_root[i + 1].head ++;
+  }
+}
+
 void CDepParser::ConvertCoNLLToDependency(
     const CCoNLLOutput & conll_tree,
     CDependencyParse   & tree) {
@@ -1493,7 +1567,7 @@ void CDepParser::ConvertCoNLLToTwoStringVector(
  *--------------------------------------------------------------*/
 
 void CDepParser::parse_conll(
-    const CCoNLLInput & conll_tree_with_pseudo_root,
+    const CCoNLLInput & conll_tree_startswith_dummy_root,
     CCoNLLOutput *      retval,
     int                 nbest,
     SCORE_TYPE *        scores) {
@@ -1501,12 +1575,21 @@ void CDepParser::parse_conll(
 
   // std::cout << conll_tree_with_pseudo_root.size() << std::endl;
   CDependencyParse empty;
-  CTwoStringVector sentence_with_pseudo_root;
+  CTwoStringVector sentence_startswith_dummy_root;
+  CTwoStringVector sentence_endswith_dummy_root;
+  CCoNLLInput conll_tree_endswith_dummy_root;
   CDependencyParse outout[AGENDA_SIZE];
 
-  InitializeCoNLLCache(conll_tree_with_pseudo_root);
-  ConvertCoNLLToTwoStringVector(conll_tree_with_pseudo_root,
-                                sentence_with_pseudo_root);
+  MoveDummyRootToTail (conll_tree_startswith_dummy_root,
+                       conll_tree_endswith_dummy_root);
+
+  /*for (int i = 0; i < oracle_conll_tree_endswith_dummy_root.size(); ++ i) {
+    std::cout << oracle_conll_tree_endswith_dummy_root[i] << std::endl;
+  }*/
+
+  InitializeCoNLLCache (conll_tree_endswith_dummy_root);
+  ConvertCoNLLToTwoStringVector(conll_tree_endswith_dummy_root,
+                                sentence_endswith_dummy_root);
 
   for (int i = 0; i < nbest; ++ i) {
      // clear the outout sentences
@@ -1517,16 +1600,18 @@ void CDepParser::parse_conll(
 
   int num_results = Work(outout,
                          scores,
-                         sentence_with_pseudo_root,
+                         sentence_endswith_dummy_root,
                          empty,
                          nbest,
                          false);
 
   for (int i = 0; i < std::min(nbest, num_results); ++ i) {
+    CDependencyParse tmp;
+    MoveDummyRootToFront(outout[i], tmp);
     // now make the conll format stype outout
-    retval[i].fromCoNLLInput(conll_tree_with_pseudo_root);
+    retval[i].fromCoNLLInput(conll_tree_startswith_dummy_root);
     // std::cout << conll_tree.size() << " " << outout[i].size() << std::endl;
-    retval[i].copyDependencyHeads(outout[i]);
+    retval[i].copyDependencyHeads(tmp);
   }
 }
 
@@ -1537,27 +1622,29 @@ void CDepParser::parse_conll(
  *---------------------------------------------------------------*/
 // perform training on conll data
 void CDepParser::train_conll(
-    const CCoNLLOutput & oracle_conll_tree_with_pseudo_root,
+    const CCoNLLOutput & oracle_conll_tree_startswith_dummy_root,
     int round) {
   assert(m_bCoNLL);
 
   CTwoStringVector sentence;
-  CDependencyParse oracle_tree_with_pseudo_root;
+  CCoNLLOutput oracle_conll_tree_endswith_dummy_root;
+  CDependencyParse oracle_tree_with_dummy_root;
 
-  InitializeCoNLLCache(oracle_conll_tree_with_pseudo_root);
-  ConvertCoNLLToDependency(oracle_conll_tree_with_pseudo_root,
-                           oracle_tree_with_pseudo_root);
-  UnparseSentence (&oracle_tree_with_pseudo_root, &sentence);
+  MoveDummyRootToTail (oracle_conll_tree_startswith_dummy_root,
+                       oracle_conll_tree_endswith_dummy_root);
+  InitializeCoNLLCache (oracle_conll_tree_endswith_dummy_root);
+  ConvertCoNLLToDependency (oracle_conll_tree_endswith_dummy_root,
+                            oracle_tree_with_dummy_root);
+  UnparseSentence (&oracle_tree_with_dummy_root, &sentence);
 
   // The following code does update for each processing stage
   m_nTrainingRound = round ;
-  Work(
-      NULL,
-      NULL,
-      sentence,
-      oracle_tree_with_pseudo_root,
-      1,
-      true);
+  Work(NULL,
+       NULL,
+       sentence,
+       oracle_tree_with_dummy_root,
+       1,
+       true);
 }
 
 /*---------------------------------------------------------------
@@ -1567,14 +1654,17 @@ void CDepParser::train_conll(
  *---------------------------------------------------------------*/
 
 void CDepParser::extract_features_conll(
-    const CCoNLLOutput & oracle_conll_tree_with_pseudo_root) {
+    const CCoNLLOutput & oracle_conll_tree_with_dummy_root) {
   assert(m_bCoNLL);
 
-  CDependencyParse oracle_tree_with_pseudo_root;
-  InitializeCoNLLCache(oracle_conll_tree_with_pseudo_root);
-  ConvertCoNLLToDependency(oracle_conll_tree_with_pseudo_root,
-                           oracle_tree_with_pseudo_root);
-  extract_features(oracle_tree_with_pseudo_root);
+  CCoNLLOutput oracle_conll_tree_endswith_dummy_root;
+  CDependencyParse oracle_tree_with_dummy_root;
+  MoveDummyRootToTail (oracle_conll_tree_with_dummy_root,
+                       oracle_conll_tree_endswith_dummy_root);
+  InitializeCoNLLCache(oracle_conll_tree_with_dummy_root);
+  ConvertCoNLLToDependency(oracle_conll_tree_with_dummy_root,
+                           oracle_tree_with_dummy_root);
+  extract_features(oracle_tree_with_dummy_root);
 }
 
 void CDepParser::finishtraining() {

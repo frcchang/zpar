@@ -72,6 +72,8 @@ typedef CPackedScoreMap<CTuple2< CTag, CSetOfTags<CDependencyLabel> >, \
 typedef CPackedScoreMap<CLemma,       SCORE_TYPE, action::kMax> CLemmaMap;
 typedef CPackedScoreMap<CCoNLLCPOS,   SCORE_TYPE, action::kMax> CCoNLLCPOSMap;
 typedef CPackedScoreMap<CCoNLLFeats,  SCORE_TYPE, action::kMax> CCoNLLFeatsMap;
+typedef CPackedScoreMap<CTuple2<CCoNLLFeats, CCoNLLFeats>, \
+  SCORE_TYPE, action::kMax> CCoNLLFeats2Map;
 
 /*===============================================================
  *
@@ -187,6 +189,7 @@ typedef CPackedScoreMap<CCoNLLFeats,  SCORE_TYPE, action::kMax> CCoNLLFeatsMap;
   left(N0conll_l)right;           /* 105 */ \
   left(N0conll_c)right;           /* 106 */ \
   left(N0conll_f)right;           /* 107 */ \
+  left(S0conll_f_N0conll_f)right; /* 107.5 */ \
   left(S0lm_d_S0_d)right;         /* 200 */ \
   left(S0lm2_d_S0_d)right;        /* 201 */ \
   left(S0rm_d_S0_d)right;         /* 202 */ \
@@ -335,6 +338,7 @@ public:
   CLemmaMap           N0conll_l;        // 105 - N0|conll.l
   CCoNLLCPOSMap       N0conll_c;        // 106 - N0|conll.c
   CCoNLLFeatsMap      N0conll_f;        // 107 - N0|conll.f
+  CCoNLLFeats2Map     S0conll_f_N0conll_f;//  107.5 - S0|conll.f - N0|conll.f
 
   CCoNLLCPOSMap       S0_c;               //  108 - S0.c
   CCoNLLCPOSMap       N0_c;               //  109 - N0.c
@@ -509,6 +513,7 @@ public:
     N0conll_l("105_N0|conll.l", DEP_TABLE_SIZE, false),
     N0conll_c("106_N0|conll.c", DEP_TABLE_SIZE, false),
     N0conll_f("107_N0|conll.f", DEP_TABLE_SIZE, false),
+    S0conll_f_N0conll_f("107.5_S0|conll.f_N0|conll.f", DEP_TABLE_SIZE, false),
     S0_c("108_S0.c",            DEP_TABLE_SIZE, false),
     N0_c("109_N0.c",            DEP_TABLE_SIZE, false),
     S0m2_c("110_S0-2.c",        DEP_TABLE_SIZE, false),
