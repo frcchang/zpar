@@ -79,6 +79,10 @@
       							//A dominates B via an unbroken chain of (zero or more) nodes matching description C
       							CStateNodeList* sChain=new CStateNodeList();
       							findChain(PENN_CON_S,PENN_CON_VP, sChildSbar, sChain);
+      							if (sChain->node==0) {
+      								sChain->clear();
+      							   	sChain=0;
+      							}
       							while(sChain!=0){
       								if (CConstituent::clearTmp(sChain->node->constituent.code())==PENN_CON_VP){
 //      									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);
@@ -141,6 +145,10 @@
             							//A dominates B via an unbroken chain of (zero or more) nodes matching description C
             							CStateNodeList* sChain=new CStateNodeList();
             							findChain(PENN_CON_S,PENN_CON_VP, sChildSbar, sChain);
+            							if (sChain->node==0) {
+            								sChain->clear();
+            							   	sChain=0;
+            							}
             							while(sChain!=0){
             								if (CConstituent::clearTmp(sChain->node->constituent.code())==PENN_CON_VP){
 //            									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_CCOMP);

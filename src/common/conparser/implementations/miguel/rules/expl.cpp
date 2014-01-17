@@ -23,7 +23,7 @@
       					findChainTargetPos(PENN_CON_NP,PENN_TAG_EX,npChild,npsChain);
       					if (npsChain->node==0) {
       						npsChain->clear();
-      					        npsChain=0;
+      					    npsChain=0;
       					}
 						while(npsChain!=0) {
 							const CStateNode* npCh=npsChain->node;
