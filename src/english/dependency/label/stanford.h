@@ -65,6 +65,7 @@ const std::string STANFORD_DEP_STRINGS[] = {
    "expl", 
    "predet",
    "npadvmod",
+   "mwe",
    "preconj"
 };
 
@@ -120,6 +121,7 @@ enum STANFORD_DEP_LABELS {
    STANFORD_DEP_PREDET, 
    STANFORD_DEP_PRECONJ,
    STANFORD_DEP_NPADVMOD,
+   STANFORD_DEP_MWE,
    STANFORD_DEP_COUNT 
 };
 
