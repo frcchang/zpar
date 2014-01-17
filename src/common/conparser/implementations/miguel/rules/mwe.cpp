@@ -1,28 +1,28 @@
 
 //"PP|XS < (IN|TO < as|of|at|to|in) < (JJ|IN|JJR|JJS|NN=target < such|because|Because|least|instead|due|Due|addition|to)",
-bool mwe1(){
+inline const bool &mwe1(const unsigned long &cons) {
 
 }
 
 //"ADVP < (RB|IN < well) < (IN|RB|JJS=target < as)",
-bool mwe2(){
+inline const bool &mwe2(const unsigned long &cons) {
 
 }
 
 //"ADVP < (DT < all) < (CC < but)",
-bool mwe3(){
+inline const bool &mwe3(const unsigned long &cons) {
 
 }
 
 //"CONJP < (RB < rather|well|instead) < (RB|IN=target < as|than|of)",
-bool mwe4(){
+inline const bool &mwe4(const unsigned long &cons) {
 
 }
 
 //CONJP < (IN < in) < (NN|TO=target < addition|to)",
-bool mwe5(){
+inline const bool &mwe5(const unsigned long &cons) {
 
-	if (node.constituent==PENN_CON_CONJP) {
+	if (cons==PENN_CON_CONJP) {
 		CStateNodeList* childsConjp=node.m_umbinarizedSubNodes;
 		bool firstCondition=false;
 		while(childsConjp!=0) {
@@ -49,7 +49,7 @@ bool mwe5(){
 					while(childsNNTo!=0){
 						if (((*words)[childsNNTo->node->lexical_head].word==g_word_addition) && ((*words)[childsNNTo->node->lexical_head].word==g_word_to)) {
 //							CDependencyLabel* label=new CDependencyLabel(0);
-							if (buildStanfordLink(0, nntoTarg->lexical_head, node.lexical_head)) {
+							if (buildStanfordLink(STANFORD_DEP_MWE, nntoTarg->lexical_head, node.lexical_head)) {
 								addLinked(&node,nntoTarg);
 							  	return true;
 							 }
@@ -66,6 +66,6 @@ bool mwe5(){
 }
 
 //"XS < JJR|JJS=target"
-bool mwe6(){
+inline const bool &mwe6(const unsigned long &cons) {
 
 }

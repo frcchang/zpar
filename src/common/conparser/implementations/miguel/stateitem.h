@@ -1422,12 +1422,18 @@ public:
            mark2(cons);
            std::cerr<<"mark2 \n";
 
-           /*mwe1(cons);
+           mwe1(cons);
+           std::cerr<<"mwe1 \n";
            mwe2(cons);
+           std::cerr<<"mwe2 \n";
            mwe3(cons);
+           std::cerr<<"mwe3 \n";
            mwe4(cons);
+           std::cerr<<"mwe4 \n";
            mwe5(cons);
-           mwe6(cons);*/
+           std::cerr<<"mwe5 \n";
+           mwe6(cons);
+           std::cerr<<"mwe6 \n";
 
 
            npadvmod1(cons);
