@@ -172,7 +172,10 @@ inline const bool &buildAttr3(const unsigned long &cons) {
        		  bool thirdCond=true; //!<- PRT
        		  bool fourthCond=true; //!<- (PP <: IN)
        		  bool fifthCond=false; //$-- (NP !< /^-NONE-$/)
-
+       		  if (vpsChain->node==0) {
+       			  vpsChain->clear();
+       		   	  vpsChain=0;
+       		  }
        		  while(vpsChain!=0){
        			  const CStateNode* parent=findParent(&node, vpsChain->node);
        			  if (parent!=0){
