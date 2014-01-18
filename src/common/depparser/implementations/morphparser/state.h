@@ -143,6 +143,7 @@ public:
    inline int stacksize() const { return m_Stack.size(); }
    inline bool stackempty() const { return m_Stack.empty(); }
    inline int stacktop() const { assert(!m_Stack.empty()); return m_Stack.back(); }
+   inline int stacksecond() const { assert(m_Stack.size() > 1); return m_Stack.rbegin()[1]; }
    inline int stackbottom() const { assert(!m_Stack.empty()); return m_Stack.front(); }
    inline int stackitem( const unsigned &index ) const { assert(index<m_Stack.size()); return m_Stack[index]; }
 

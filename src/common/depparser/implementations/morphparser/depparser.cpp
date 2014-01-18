@@ -41,6 +41,7 @@ const CTag g_noneTag = CTag::NONE;
 inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedScoreType<SCORE_TYPE, action::MAX> &retval, const unsigned long &action, SCORE_TYPE amount , int round ) {
 
    const int &st_index = item->stackempty() ? -1 : item->stacktop(); // stack top
+   const int &st1_index = item->stacksize() < 2 ? -1 : item->stacksecond(); //stack second
    const int &sth_index = st_index == -1 ? -1 : item->head(st_index); // stack top head
    const int &sthh_index = sth_index == -1 ? -1 : item->head(sth_index); // stack top head
    const int &stld_index = st_index == -1 ? -1 : item->leftdep(st_index); // leftmost dep of stack
@@ -171,6 +172,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
 
    const CMorph &st_morph = st_index==-1 ? CMorph::NONE : item->morph(st_index);
+   const CMorph &st1_morph = st_index==-1 ? CMorph::NONE : item->morph(st1_index);
    const CMorph &sth_morph = sth_index==-1 ? CMorph::NONE : item->morph(sth_index);
    const CMorph &sthh_morph = sth_index==-1 ? CMorph::NONE : item->morph(sthh_index);
    const CMorph &stld_morph = stld_index==-1 ? CMorph::NONE : item->morph(stld_index);
@@ -196,13 +198,29 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    const CMorph &bm3h_morph = (bm3h_index==-1) ? CMorph::NONE : item->morph(bm3h_index);
 
    const int &n0_mpostag = (int) n0_morph.getField(MORPH_POSTAG);
+   const int &n1_mpostag = (int) n1_morph.getField(MORPH_POSTAG);
    const int &st_mpostag = (int) st_morph.getField(MORPH_POSTAG);
+   const int &st1_mpostag = (int) st1_morph.getField(MORPH_POSTAG);
 
    const int &n0_number = (int) n0_morph.getField(MORPH_NUMBER);
+   const int &n1_number = (int) n1_morph.getField(MORPH_NUMBER);
    const int &st_number = (int) st_morph.getField(MORPH_NUMBER);
+   const int &st1_number = (int) st1_morph.getField(MORPH_NUMBER);
 
    const int &n0_person = (int) n0_morph.getField(MORPH_PERSON);
+   const int &n1_person = (int) n1_morph.getField(MORPH_PERSON);
    const int &st_person = (int) st_morph.getField(MORPH_PERSON);
+   const int &st1_person = (int) st1_morph.getField(MORPH_PERSON);
+
+   const int &n0_vtype = (int) n0_morph.getField(MORPH_VERB_TYPE);
+   const int &n1_vtype = (int) n1_morph.getField(MORPH_VERB_TYPE);
+   const int &st_vtype = (int) st_morph.getField(MORPH_VERB_TYPE);
+   const int &st1_vtype = (int) st1_morph.getField(MORPH_VERB_TYPE);
+
+   const int &n0_vform = (int) n0_morph.getField(MORPH_VERB_FORM);
+   const int &n1_vform = (int) n1_morph.getField(MORPH_VERB_FORM);
+   const int &st_vform = (int) st_morph.getField(MORPH_VERB_FORM);
+   const int &st1_vform = (int) st1_morph.getField(MORPH_VERB_FORM);
 
    static int st_n0_dist;
    st_n0_dist = encodeLinkDistance(st_index, n0_index);
@@ -466,6 +484,21 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapSTnumN0num.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
 	  refer_or_allocate_tuple2(int_int, &st_person, &n0_person);
       cast_weights->m_mapSTperN0per.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+
+	  //refer_or_allocate_tuple2(int_int, &st_vtype, &n0_vtype);
+      //cast_weights->m_mapSTvtyN0vty.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+	  //refer_or_allocate_tuple2(int_int, &st_vform, &n0_vform);
+      //cast_weights->m_mapSTvfoN0vfo.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+
+	  //refer_or_allocate_tuple2(int_int, &st1_number, &n0_number);
+      //cast_weights->m_mapST1numN0num.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+	  //refer_or_allocate_tuple2(int_int, &st1_person, &n0_person);
+      //cast_weights->m_mapST1perN0per.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+
+	  //refer_or_allocate_tuple2(int_int, &st_number, &n1_number);
+      //cast_weights->m_mapSTnumN1num.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
+	  //refer_or_allocate_tuple2(int_int, &st_person, &n1_person);
+      //cast_weights->m_mapSTperN1per.getOrUpdateScore( retval, int_int, action, m_nScoreIndex, amount, round );
    }
 
 
