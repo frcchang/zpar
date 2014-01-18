@@ -112,6 +112,12 @@
    left(m_mapN0per)right\
    left(m_mapSTnumN0num)right\
    left(m_mapSTperN0per)right\
+   left(m_mapSTvtyN0vty)right\
+   left(m_mapSTvfoN0vfo)right\
+   left(m_mapST1numN0num)right\
+   left(m_mapST1perN0per)right\
+   left(m_mapSTnumN1num)right\
+   left(m_mapSTperN1per)right\
 \
    left(m_mapSTwmN0wm)right\
    left(m_mapSTwmN0w)right\
@@ -341,6 +347,12 @@ public:
 
    CIntIntMap m_mapSTnumN0num;
    CIntIntMap m_mapSTperN0per;
+   CIntIntMap m_mapSTvtyN0vty;
+   CIntIntMap m_mapSTvfoN0vfo;
+   CIntIntMap m_mapST1numN0num;
+   CIntIntMap m_mapST1perN0per;
+   CIntIntMap m_mapSTnumN1num;
+   CIntIntMap m_mapSTperN1per;
 
    CWordWordMorphMorphMap m_mapSTwmN0wm;
    CWordWordMorphMap m_mapSTwmN0w;
@@ -518,6 +530,12 @@ public:
                                                m_mapN0per("NextPerson", DEP_TABLE_SIZE),
                                                m_mapSTnumN0num("StackNumberNextNumber", DEP_TABLE_SIZE),
                                                m_mapSTperN0per("StackPersonNextPerson", DEP_TABLE_SIZE),
+                                               m_mapSTvtyN0vty("StackVTypeNextVType", DEP_TABLE_SIZE),
+                                               m_mapSTvfoN0vfo("StackVFormNextVForm", DEP_TABLE_SIZE),
+                                               m_mapST1numN0num("Stack1NumberNextNumber", DEP_TABLE_SIZE),
+                                               m_mapST1perN0per("Stack1PersonNextPerson", DEP_TABLE_SIZE),
+                                               m_mapSTnumN1num("StackNumberNext+1Number", DEP_TABLE_SIZE),
+                                               m_mapSTperN1per("StackPersonNext+1Person", DEP_TABLE_SIZE),
 
                                                m_mapSTwmN0wm("StackWordMorphNextWordMorph", DEP_TABLE_SIZE),
                                                m_mapSTwmN0w("StackWordMorphNextWord", DEP_TABLE_SIZE),
