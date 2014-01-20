@@ -210,6 +210,18 @@ static CWord g_word_gotten("gotten");
  static CWord g_word_notwithstanding("notwithstanding");
 
  static CWord g_word_old("old");
+ static CWord g_word_well("well");
+ static CWord g_word_rather("rather");
+ static CWord g_word_instead("instead");
+ static CWord g_word_than("than");
+  static CWord g_word_of("of");
+
+  static CWord g_word_such("such");
+  static CWord g_word_because("because");
+  static CWord g_word_Because("because");
+  static CWord g_word_least("least");
+  static CWord g_word_due("due");
+  static CWord g_word_Due("Due");
 
 
 
@@ -2089,6 +2101,8 @@ public:
    #include "rules/tmod.cpp"
 
     
+
+
     
     //"VP|S|SBAR|SBARQ|SINV|SQ=root < (CC|CONJP $-- !/^(?:``|-LRB-|PRN|PP|ADVP|RB)/) < (/^(?:PRN|``|''|-[LR]RB-|,|:|\\.)$/ $+ (/^S|SINV$|^(?:A|N|V|PP|PRP|J|W|R)/=target $-- (/^CC|CONJP|:|,$/ $-- (__ ># =root))) )",
     bool buildConj3(const unsigned long &cons){
