@@ -1453,7 +1453,7 @@ public:
            npadvmod2(cons);
            std::cerr<<"npadvmod2 \n";
            //npadvmod3(cons);
-           npadvmod4(cons);
+           //npadvmod4(cons);
            std::cerr<<"npadvmod4 \n";
            //npadvmod5(cons);
 
