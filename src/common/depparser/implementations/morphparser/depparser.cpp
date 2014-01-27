@@ -106,6 +106,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    //version with lemmas as words:
    //TODO This probably can be optimized by using class CLemma directly and avoiding the conversion
    const CWord &st_word = st_index == -1 ? g_emptyWord : item->lemmaascword(st_index);
+   const CWord &st1_word = st1_index == -1 ? g_emptyWord : item->lemmaascword(st1_index);
    const CWord &sth_word = sth_index==-1 ? g_emptyWord : item->lemmaascword(sth_index);
    const CWord &sthh_word = sthh_index==-1 ? g_emptyWord : item->lemmaascword(sthh_index);
    const CWord &stld_word = stld_index==-1 ? g_emptyWord : item->lemmaascword(stld_index);
@@ -351,6 +352,16 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0L2Dm.getOrUpdateScore( retval, n0l2d_morph, action, m_nScoreIndex, amount, round ) ;
       cast_weights->m_mapN0L2Di.getOrUpdateScore( retval, n0l2d_label, action, m_nScoreIndex, amount, round) ;
    }
+
+   //st1 single
+   /*
+   if (st1_index != -1) {
+      cast_weights->m_mapST1w.getOrUpdateScore( retval, st1_word, action, m_nScoreIndex, amount, round) ;
+      cast_weights->m_mapST1m.getOrUpdateScore( retval, st1_morph, action, m_nScoreIndex, amount, round) ;
+      refer_or_allocate_tuple2(word_morph, &st1_word, &st1_morph);
+      cast_weights->m_mapST1wm.getOrUpdateScore( retval, word_morph , action, m_nScoreIndex, amount, round ) ;
+   }
+   */
 
    //buffer minus x features
    /*
