@@ -16,6 +16,9 @@
    left(m_mapSTw)right\
    left(m_mapSTm)right\
    left(m_mapSTwm)right\
+   left(m_mapST1w)right\
+   left(m_mapST1m)right\
+   left(m_mapST1wm)right\
    left(m_mapN0w)right\
    left(m_mapN0m)right\
    left(m_mapN0wm)right\
@@ -239,6 +242,10 @@ public:
    CMorphMap m_mapSTm;
    CWordMorphMap m_mapSTwm;
 
+   CWordMap m_mapST1w;
+   CMorphMap m_mapST1m;
+   CWordMorphMap m_mapST1wm;
+
    CWordMap m_mapN0w;
    CMorphMap m_mapN0m;
    CWordMorphMap m_mapN0wm;
@@ -422,6 +429,10 @@ public:
                                                m_mapSTw("StackWord", DEP_TABLE_SIZE),
                                                m_mapSTm("StackMorph", DEP_TABLE_SIZE),
                                                m_mapSTwm("StackWordMorph", DEP_TABLE_SIZE),
+
+                                               m_mapST1w("Stack1Word", DEP_TABLE_SIZE),
+                                               m_mapST1m("Stack1Morph", DEP_TABLE_SIZE),
+                                               m_mapST1wm("Stack1WordMorph", DEP_TABLE_SIZE),
 
                                                m_mapN0w("NextWord", DEP_TABLE_SIZE),
                                                m_mapN0m("NextMorph", DEP_TABLE_SIZE),
