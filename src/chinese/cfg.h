@@ -13,7 +13,7 @@
 #define _CHINESE_CFG_H
 
 #include "tags.h"
-#include "cfg/penn.h"
+#include "cfg/pmt.h"
 
 //namespace chinese {
 //

@@ -6,9 +6,9 @@
 namespace chinese {
 
 #ifdef LABELED
-#include "dependency/label/ctb.h"
+#include "dependency/label/pmt.h"
 #endif
-#include "dependency/rules/ctb.h"
+#include "dependency/rules/pmt.h"
 
 }
 
