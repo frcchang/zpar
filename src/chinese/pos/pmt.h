@@ -24,9 +24,9 @@ const std::string PENN_TAG_STRINGS[] = {
    "m","p","c","f",
    "r","d","a","b",
    "q","t","ns","s",
-   "z","nz","y","nr",
+   "z","nz","y","nr","nrf","nrg",
    "nt","nx","vn","an",
-   "e","o","l","i"
+   "e","o","l","i","k","h","x","j"
 };
 
 
@@ -38,9 +38,9 @@ enum PENN_TAG_CONSTANTS {
    PENN_TAG_M, PENN_TAG_P,PENN_TAG_C, PENN_TAG_F,
    PENN_TAG_R, PENN_TAG_D, PENN_TAG_A, PENN_TAG_B,
    PENN_TAG_Q, PENN_TAG_T,PENN_TAG_NS, PENN_TAG_S,
-   PENN_TAG_Z, PENN_TAG_NZ, PENN_TAG_Y, PENN_TAG_NR,
+   PENN_TAG_Z, PENN_TAG_NZ, PENN_TAG_Y, PENN_TAG_NR, PENN_TAG_NRF, PENN_TAG_NRG,
    PENN_TAG_NT, PENN_TAG_NX, PENN_TAG_VN, PENN_TAG_AN, 
-   PENN_TAG_E,  PENN_TAG_O,  PENN_TAG_L,  PENN_TAG_I, 
+   PENN_TAG_E,  PENN_TAG_O,  PENN_TAG_L,  PENN_TAG_I,  PENN_TAG_K,  PENN_TAG_H,  PENN_TAG_X,  PENN_TAG_J, 
    PENN_TAG_COUNT
 };
 
@@ -55,9 +55,9 @@ const bool PENN_TAG_CLOSED[] = {
    false, true, true, true,
    true, false, false, false,
    true, false, false, false,
-   false, false, true, false,
+   false, false, true, false,false,false,
    false, false, false, false,
-   true, true, true, true
+   true, true, true, true,true,true,false,false
 };
 
 //===============================================================

@@ -11,6 +11,7 @@
 
 const std::string PENN_DEP_STRINGS[] = {
    "-NONE-",
+   "ROOT",
    "HED", 
    "ACT",
    "ADV",
@@ -40,13 +41,16 @@ const std::string PENN_DEP_STRINGS[] = {
    "SBV",
    "TPC",
    "VOB",
-   "VV",
+   "RADC",
+   "QUCC",
+   "VV"
 
 };
 
 enum PENN_DEP_LABELS {
    PENN_DEP_NONE=0,
    PENN_DEP_ROOT, 
+   PENN_DEP_HED,
    PENN_DEP_ACT,
    PENN_DEP_ADV,
    PENN_DEP_APP,
@@ -58,7 +62,6 @@ enum PENN_DEP_LABELS {
    PENN_DEP_DEI,
    PENN_DEP_DI,
    PENN_DEP_FOC,
-   PENN_DEP_HED,
    PENN_DEP_IC,
    PENN_DEP_IOB,
    PENN_DEP_IS,
@@ -76,6 +79,8 @@ enum PENN_DEP_LABELS {
    PENN_DEP_SBV,
    PENN_DEP_TPC,
    PENN_DEP_VOB,
+   PENN_DEP_RADC,
+   PENN_DEP_QUCC,
    PENN_DEP_VV, 
    PENN_DEP_COUNT
 };
