@@ -13,6 +13,8 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#define MACROTOSTRING(M) #M
+
 /*===============================================================
  *
  * The things that should be included 

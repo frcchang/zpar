@@ -26,6 +26,19 @@
 #include "morph/penn_lexicon.h"
 #include "morph/aux_lexicon.h"
 
+namespace TARGET_LANGUAGE {
+namespace depparser {
+//label
+#ifdef LABELED
+const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
+const unsigned DEP_LABEL_SIZE=CDependencyLabel::SIZE;
+#else
+const unsigned DEP_LABEL_COUNT = 1;
+const unsigned DEP_LABEL_SIZE=0;
+#endif
+#include "action.h"
+}
+}
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 

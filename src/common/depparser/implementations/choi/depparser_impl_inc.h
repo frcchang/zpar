@@ -18,6 +18,18 @@
 #include "charcat.h"
 #endif
 
+namespace TARGET_LANGUAGE {
+namespace depparser {
+//label
+#ifdef LABELED
+const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
+#else
+const unsigned DEP_LABEL_COUNT = 1;
+#endif
+#include "action.h"
+}
+}
+
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
 

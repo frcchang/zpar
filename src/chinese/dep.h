@@ -5,10 +5,18 @@
 
 namespace chinese {
 
-#ifdef LABELED
-#include "dependency/label/pmt.h"
+#ifndef CHINESE_DEP_SET
+#define CHINESE_DEP_SET ctb
 #endif
-#include "dependency/rules/pmt.h"
+
+#ifdef LABELED
+#define INCLUDE_FILE(M) MACROTOSTRING(dependency/label/M.h)
+#include INCLUDE_FILE(CHINESE_DEP_SET)
+#undef INCLUDE_FILE
+#endif
+#define INCLUDE_FILE(M) MACROTOSTRING(dependency/rules/M.h)
+#include INCLUDE_FILE(CHINESE_DEP_SET)
+#undef INCLUDE_FILE
 
 }
 

@@ -2,20 +2,22 @@
 #define SIMPLE_HASH
 #include "definitions.h"
 #include "utils.h"
-#include "tags.h"
 #include "linguistics/word_tokenized.h"
 #include "linguistics/taggedword.h"
 #include "linguistics/dependency.h"
 #ifdef LABELED
 #include "linguistics/dependencylabel.h"
 #endif
-#include "dep.h"
-#include "depparser_impl_inc.h"
+
 namespace TARGET_LANGUAGE { 
 namespace depparser { 
 #include "depparser_macros.h" 
 }
 }
+
+#include "tags.h"
+#include "dep.h"
+#include "depparser_impl_inc.h"
 
 #ifdef JOINT_MORPH
 #ifdef LABELED

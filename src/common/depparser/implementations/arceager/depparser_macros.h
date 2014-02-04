@@ -18,14 +18,7 @@
 #define AGENDA_SIZE 64
 
 //label
-#ifdef LABELED
-const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
-#else
-const unsigned DEP_LABEL_COUNT = 1;
-#endif
-
 typedef long SCORE_TYPE ;
-#include "action.h"
 
 // supertag
 #define SR_SUPERTAG 1

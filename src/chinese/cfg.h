@@ -13,7 +13,14 @@
 #define _CHINESE_CFG_H
 
 #include "tags.h"
-#include "cfg/pmt.h"
+
+#ifndef CHINESE_CFG_SET
+#define CHINESE_CFG_SET penn
+#endif
+
+#define INCLUDE_FILE(M) MACROTOSTRING(cfg/M.h)
+#include INCLUDE_FILE(CHINESE_CFG_SET)
+#undef INCLUDE_FILE
 
 //namespace chinese {
 //

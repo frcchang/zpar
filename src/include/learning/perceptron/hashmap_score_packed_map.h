@@ -41,10 +41,13 @@ class CPackedScoreType {
 //public:
 //      static const SCORE_TYPE NO_SCORE = 0; //score not defined yet
 
+public: 
+   CPackedScoreType(): DEFAULT_SCORE(0) {}
+
 protected:
    //SCORE_TYPE scores[PACKED_SIZE];
 	std::tr1::unordered_map<unsigned long,SCORE_TYPE> scores;
-	const SCORE_TYPE DEFAULT_SCORE = 0; //todo: should be a way to make it static, but i can't seem to successfully return it by reference if it's static
+	const SCORE_TYPE DEFAULT_SCORE; //todo: should be a way to make it static, but i can't seem to successfully return it by reference if it's static
 public:
    void reset() {
 //      memset(scores, 0, sizeof(SCORE_TYPE)*PACKED_SIZE);
