@@ -23,17 +23,7 @@
 // The size of agenda
 #define AGENDA_SIZE 64
 
-//label
-#ifdef LABELED
-const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
-const unsigned DEP_LABEL_SIZE=CDependencyLabel::SIZE;
-#else
-const unsigned DEP_LABEL_COUNT = 1;
-const unsigned DEP_LABEL_SIZE=0;
-#endif
-
 typedef long SCORE_TYPE ;
-#include "action.h"
 
 // supertag
 #define SR_SUPERTAG 1

@@ -10,10 +10,15 @@
  ****************************************************************/
 
 #ifndef _CHINESE_TAGS_H
-#define _CHINESE_TAGS_H 1
+#define _CHINESE_TAGS_H
 
-//#include <std::string>
-#include "pos/pmt.h"
+#ifndef CHINESE_POS_SET
+#define CHINESE_POS_SET ctb5
+#endif
+
+#define INCLUDE_FILE(M) MACROTOSTRING(pos/M.h)
+#include INCLUDE_FILE(CHINESE_POS_SET)
+#undef INCLUDE_FILE
 
 namespace chinese {
 

@@ -2,6 +2,12 @@
 #ifndef _GENERAL_DEPPARSER_MACROS_H
 #define _GENERAL_DEPPARSER_MACROS_H
 
+#define CHINESE_POS_SET pmt
+
+#define CHINESE_DEP_SET pmt
+
+#define CHINESE_CFG_SET pmt
+
 #define SIMPLE_HASH
 
 // early update? 
@@ -17,15 +23,7 @@
 // The size of agenda
 #define AGENDA_SIZE 64
 
-//label
-#ifdef LABELED
-const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
-#else
-const unsigned DEP_LABEL_COUNT = 1;
-#endif
-
 typedef long SCORE_TYPE ;
-#include "action.h"
 
 // supertag
 #define SR_SUPERTAG 1
