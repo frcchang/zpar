@@ -44,8 +44,8 @@ enum PENN_TAG_CONSTANTS {
    PENN_TAG_COUNT
 };
 
-const unsigned long PENN_TAG_FIRST = 3;
-const unsigned long PENN_TAG_COUNT_BITS = 6; // 32 < bits < 64, takes 6 bits
+const int PENN_TAG_FIRST = 3;
+const int PENN_TAG_COUNT_BITS = 6; // 32 < bits < 64, takes 6 bits
 
 const bool PENN_TAG_CLOSED[] = {
    false,

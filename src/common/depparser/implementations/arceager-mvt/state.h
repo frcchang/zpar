@@ -125,6 +125,7 @@ public:
    inline int size( ) const { return m_nNextWord ; }
 #ifdef LABELED
    inline int label( const int &index ) const { assert(index<=m_nNextWord); return m_lLabels[index]; }
+   inline const unsigned long &constituent( const int &index ) const { assert(index<=m_nNextWord); return m_lConstituents[index]; }
 #endif
 
    inline int leftarity( const int &index ) const { assert(index<=m_nNextWord); return m_lDepNumL[index]; }
@@ -207,7 +208,7 @@ public:
       m_lHeads[m_nNextWord] = left ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = lab ;
-      transfer((*m_lCache)[left].tag.code(), (*m_lCache)[m_nNextWord].tag.code(), lab, m_lConstituent[left]);
+      transfer((*m_lCache)[left].tag.code(), (*m_lCache)[m_nNextWord].tag.code(), lab, m_lConstituents[left]);
       m_lDepTagR[left].add(lab) ;
 #endif
       m_lSibling[m_nNextWord] = m_lDepsR[left];

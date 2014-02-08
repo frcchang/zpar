@@ -143,6 +143,11 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    static CTuple3<CTag, CTag, int> tag_tag_int;
    static CTuple2<CWord, CSetOfTags<CDependencyLabel> > word_tagset;
    static CTuple2<CTag, CSetOfTags<CDependencyLabel> > tag_tagset;
+   static CTuple3<unsigned long, unsigned long, unsigned long> int_int_int;
+
+   static unsigned hpos, mpos, label;
+   static unsigned long con;
+   unsigned ac = action::getUnlabeledAction(action);
 
    // single
    if (st_index != -1) {
@@ -303,6 +308,24 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       cast_weights->m_mapN0wlp.getOrUpdateScore( retval, word_tagset, action, m_nScoreIndex, amount, round) ;
       refer_or_allocate_tuple2(tag_tagset, &n0_tag, &n0_ltagset);
       cast_weights->m_mapN0tlp.getOrUpdateScore( retval, tag_tagset, action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (ac == action::ARC_LEFT) {
+      hpos = m_lCache[n0_index].tag.code();
+      mpos = m_lCache[st_index].tag.code();
+      label = action::getLabel(action);
+      transfer(hpos, mpos, label, con);
+      refer_or_allocate_tuple3(int_int_int, &(item->constituent(n0_index)), &(item->constituent(st_index)), &con);
+      cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;
+   }
+
+   if (ac == action::ARC_RIGHT) {
+      hpos = m_lCache[st_index].tag.code();
+      mpos = m_lCache[n0_index].tag.code();
+      label = action::getLabel(action);
+      transfer(hpos, mpos, label, con);
+      refer_or_allocate_tuple3(int_int_int, &(item->constituent(st_index)), &(item->constituent(n0_index)), &con);
+      cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;
    }
 
    if (m_bCoNLL) {
