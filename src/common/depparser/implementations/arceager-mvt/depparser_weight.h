@@ -105,7 +105,9 @@
 \
    left(m_mapN1l)right\
    left(m_mapN1c)right\
-   left(m_mapN1f)right
+   left(m_mapN1f)right\
+\
+   left(m_mapCFG)right
 
 namespace TARGET_LANGUAGE {
 
@@ -134,6 +136,7 @@ typedef CPackedScoreMap<CTuple3<CTag, CTag, int>, SCORE_TYPE, action::MAX> CTagT
 typedef CPackedScoreMap<CTuple3<CWord, CWord, int>, SCORE_TYPE, action::MAX> CWordWordIntMap;
 typedef CPackedScoreMap<CTuple2< CWord, CSetOfTags<CDependencyLabel> >, SCORE_TYPE, action::MAX> CWordSetOfLabelsMap;
 typedef CPackedScoreMap<CTuple2< CTag, CSetOfTags<CDependencyLabel> >, SCORE_TYPE, action::MAX> CTagSetOfLabelsMap;
+typedef CPackedScoreMap<CTuple3<unsigned long, unsigned long, unsigned long>, SCORE_TYPE, action::MAX> CIntSet3Map;
 
 typedef CPackedScoreMap<CLemma, SCORE_TYPE, action::MAX> CLemmaMap;
 typedef CPackedScoreMap<CCoNLLCPOS, SCORE_TYPE, action::MAX> CCoNLLCPOSMap;
@@ -255,6 +258,8 @@ public:
    CCoNLLCPOSMap m_mapN1c;
    CCoNLLFeatsMap m_mapN1f;
 
+   CIntSet3Map m_mapCFG;
+
 public:
 
    CWeight(const std::string &sPath, bool bTrain) : CWeightBase(sPath, bTrain) ,
@@ -363,7 +368,8 @@ public:
 
                                                m_mapN1l("Next+1Lemma", DEP_TABLE_SIZE),
                                                m_mapN1c("Next+1CPOS", DEP_TABLE_SIZE),
-                                               m_mapN1f("Next+1Feats", DEP_TABLE_SIZE)
+                                               m_mapN1f("Next+1Feats", DEP_TABLE_SIZE),
+                                               m_mapCFG("CFG", DEP_TABLE_SIZE)
    { loadScores(); }
 
    virtual ~CWeight() {

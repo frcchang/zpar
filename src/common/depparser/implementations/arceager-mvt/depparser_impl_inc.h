@@ -33,7 +33,10 @@ namespace depparser{
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
 
-#include "transferrule.h"
+#include "cfg.h"
 
+namespace TARGET_LANGUAGE{
+#include "transferrule.h"
+}
 
 #endif
