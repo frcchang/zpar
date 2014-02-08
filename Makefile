@@ -52,7 +52,7 @@ CHINESE_TAGGER_IMPL = dbn
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = arceager
+CHINESE_DEPPARSER_IMPL = arceager-mvt
 CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 

@@ -53,6 +53,7 @@ protected:
    int m_lSibling[MAX_SENTENCE_SIZE];       // the sibling towards head
 #ifdef LABELED
    unsigned long m_lLabels[MAX_SENTENCE_SIZE];   // the label of each dependency link
+   unsigned long m_lConstituents[MAX_SENTENCE_SIZE];   // the highest constituents at each node
 #endif
    unsigned long m_nLastAction;                  // the last stack action
    const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
@@ -157,6 +158,7 @@ public:
          m_lSibling[i] = item.m_lSibling[i];
 #ifdef LABELED
          m_lLabels[i] = item.m_lLabels[i];
+         m_lConstituents[i] = item.m_lConstituents[i];
 #endif
       }
    }
@@ -179,6 +181,7 @@ public:
       m_lHeads[left] = m_nNextWord;
 #ifdef LABELED
       m_lLabels[left] = lab;
+      transfer((*m_lCache)[m_nNextWord].tag.code(), (*m_lCache)[left].tag.code(), lab, m_lConstituents[m_nNextWord]);
       m_lDepTagL[m_nNextWord].add(lab) ;
 #endif
       m_lSibling[left] = m_lDepsL[m_nNextWord];
@@ -204,6 +207,7 @@ public:
       m_lHeads[m_nNextWord] = left ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = lab ;
+      transfer((*m_lCache)[left].tag.code(), (*m_lCache)[m_nNextWord].tag.code(), lab, m_lConstituent[left]);
       m_lDepTagR[left].add(lab) ;
 #endif
       m_lSibling[m_nNextWord] = m_lDepsR[left];
@@ -260,6 +264,7 @@ public:
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
+      m_lConstituents[m_nNextWord] = (*m_lCache)[m_nNextWord].tag.code() | (1<<std::max(PENN_TAG_COUNT_BITS, PENN_CON_COUNT_BITS));
 #endif
    }
 
