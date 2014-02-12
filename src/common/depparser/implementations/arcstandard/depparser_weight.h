@@ -7,8 +7,8 @@
  *
  ***************************************************************/
 
-#ifndef _DEPPARSER_WEIGHTS_H
-#define _DEPPARSER_WEIGHTS_H
+#ifndef DEPPARSER_ARC_STANDARD_WEIGHT_H
+#define DEPPARSER_ARC_STANDARD_WEIGHT_H
 
 #include "depparser_weight_base.h"
 
@@ -91,6 +91,14 @@
   left(S1tDist)right; /*  75 - S0.t + Dist(S0, S1)  */  \
   left(S0wS1wDist)right; /*  76 - S0.w + S1.w + Dist(S0, S1)  */  \
   left(S0tS1tDist)right; /*  77 - S0.t + S1.t + Dist(S0, S1)  */  \
+  left(S0tS0l1dtS0l2dt)right; /* 78 */ \
+  left(S0tS0r1dtS0r2dt)right; /* 79 */ \
+  left(S1tS1l1dtS1l2dt)right; /* 80 */ \
+  left(S1tS1r1dtS1r2dt)right; /* 81 */  \
+  left(S0tS1tS1r2dt)right;    /* 82 */  \
+  left(S0tS1tS0l2dt)right;    /* 83 */  \
+  left(S0tS1tS1l2dt)right;    /* 84 */  \
+  left(S0tS1tS0r2dt)right;    /* 85 */  \
 } while (0);
 
 namespace TARGET_LANGUAGE {
@@ -254,6 +262,18 @@ public:
   CTagIntMap            S1tDist;    /* 75 - S0.t + Dist(S0, S1) */
   CWordWordIntMap       S0wS1wDist; /* 76 - S0.w + S1.w + Dist(S0, S1) */
   CTagTagIntMap         S0tS1tDist; /* 77 - S0.t + S1.t + Dist(S0, S1) */
+
+  CTagTagTagMap   S0tS0l1dtS0l2dt;   /* 78 - S0.t + S0.ld.t + S0.l2d.t */
+  CTagTagTagMap   S0tS0r1dtS0r2dt;   /* 79 - S0.t + S0.rd.t + S0.r2d.t */
+  CTagTagTagMap   S1tS1l1dtS1l2dt;   /* 80 - S1.t + S1.ld.t + S1.l2d.t */
+  CTagTagTagMap   S1tS1r1dtS1r2dt;   /* 81 - S1.t + S1.rd.t + S1.r2d.t */
+
+  CTagTagTagMap   S0tS1tS1r2dt;   /* 82 - S1.t + S1.rd.t + S0.t */
+  CTagTagTagMap   S0tS1tS0l2dt;   /* 83 - S0.t + S0.ld.t + S1.t */
+  CTagTagTagMap   S0tS1tS1l2dt;   /* 84 - S1.t + S1.ld.t + S0.t */
+  CTagTagTagMap   S0tS1tS0r2dt;   /* 85 - S0.t + S0.rd.t + S1.t */
+
+
 public:
   CWeight(const std::string &sPath, bool bTrain)
     : CWeightBase(sPath, bTrain),
@@ -334,7 +354,15 @@ public:
     S1wDist("74-S0.w+Dist(S0,S1)", DEP_TABLE_SIZE),
     S1tDist("75-S0.t+Dist(S0,S1)", DEP_TABLE_SIZE),
     S0wS1wDist("76-S0.w+S1.w+Dist(S0,S1)", DEP_TABLE_SIZE),
-    S0tS1tDist("77-S0.t+S1.t+Dist(S0,S1)", DEP_TABLE_SIZE) {
+    S0tS1tDist("77-S0.t+S1.t+Dist(S0,S1)", DEP_TABLE_SIZE),
+    S0tS0l1dtS0l2dt("78-S0.t+S0.ld.t+S0.l2d.t", DEP_TABLE_SIZE),
+    S0tS0r1dtS0r2dt("79-S0.t+S0.rd.t+S0.r2d.t", DEP_TABLE_SIZE),
+    S1tS1l1dtS1l2dt("80-S1.t+S1.ld.t+S1.l2d.t", DEP_TABLE_SIZE),
+    S1tS1r1dtS1r2dt("81-S1.t+S1.rd.t+S1.r2d.t", DEP_TABLE_SIZE),
+    S0tS1tS1r2dt("82-S0.t+S1.t+S1.r2d.t", DEP_TABLE_SIZE),
+    S0tS1tS0l2dt("83-S0.t+S1.t+S0.l2d.t", DEP_TABLE_SIZE),
+    S0tS1tS1l2dt("84-S1.t+S1.t+S1.l2d.t", DEP_TABLE_SIZE),
+    S0tS1tS0r2dt("85-S0.t+S1.t+S0.r2d.t", DEP_TABLE_SIZE) {
       loadScores();
   }
 
@@ -354,5 +382,5 @@ public:
 };
 };
 
-#endif
+#endif  //  end for DEPPARSER_ARC_STANDARD_WEIGHT_H
 
