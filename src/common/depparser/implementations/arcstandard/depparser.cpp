@@ -202,6 +202,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S0l2dt,       S0l2dwt.tag);   //  37
     __GET_OR_UPDATE_SCORE(S0l2dwS0l2dt, S0l2dwt);       //  38
     __GET_OR_UPDATE_SCORE(S0l2dd,       S0l2dd);        //  39
+
+    refer_or_allocate_tuple3(ttt, &S0wt.tag, &S0l1dwt.tag, &S0l2dwt.tag);
+    __GET_OR_UPDATE_SCORE(S0tS0l1dtS0l2dt, ttt);
   }
 
   if (-1 != S0r2did) {
@@ -209,6 +212,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S0r2dt,       S0r2dwt.tag);   //  41
     __GET_OR_UPDATE_SCORE(S0r2dwS0r2dt, S0r2dwt);       //  42
     __GET_OR_UPDATE_SCORE(S0r2dd,       S0r2dd);        //  43
+
+    refer_or_allocate_tuple3(ttt, &S0wt.tag, &S0r1dwt.tag, &S0r2dwt.tag);
+    __GET_OR_UPDATE_SCORE(S0tS0r1dtS0r2dt, ttt);
   }
 
   if (-1 != S1l2did) {
@@ -216,6 +222,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S1l2dt,       S1l2dwt.tag);   //  45
     __GET_OR_UPDATE_SCORE(S1l2dwS1l2dt, S1l2dwt);       //  46
     __GET_OR_UPDATE_SCORE(S1l2dd,       S1l2dd);        //  47
+
+    refer_or_allocate_tuple3(ttt, &S1wt.tag, &S1l1dwt.tag, &S1l2dwt.tag);
+    __GET_OR_UPDATE_SCORE(S1tS1l1dtS1l2dt, ttt);
   }
 
   if (-1 != S1r2did) {
@@ -223,6 +232,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S1r2dt,       S1r2dwt.tag);   //  49
     __GET_OR_UPDATE_SCORE(S1r2dwS1r2dt, S1r2dwt);       //  50
     __GET_OR_UPDATE_SCORE(S1r2dd,       S1r2dd);        //  51
+
+    refer_or_allocate_tuple3(ttt, &S1wt.tag, &S1r1dwt.tag, &S1r2dwt.tag);
+    __GET_OR_UPDATE_SCORE(S1tS1r1dtS1r2dt, ttt);
   }
 
   if (-1 != S0id && -1 != S1id) {
@@ -231,9 +243,19 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
       __GET_OR_UPDATE_SCORE(S0tS1tS0l1dt, ttt);         //  52
     }
 
+    if (-1 != S0l2did) {
+       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S0l2dwt.tag);
+       __GET_OR_UPDATE_SCORE(S0tS1tS0l2dt, ttt);         //  82
+    }
+
     if (-1 != S0r1did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S0r1dwt.tag);
       __GET_OR_UPDATE_SCORE(S0tS1tS0r1dt, ttt);          //  53
+    }
+
+    if (-1 != S0r2did) {
+      refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S0r2dwt.tag);
+      __GET_OR_UPDATE_SCORE(S0tS1tS0r2dt, ttt);          //  83
     }
 
     if (-1 != S1l1did) {
@@ -241,9 +263,19 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
       __GET_OR_UPDATE_SCORE(S0tS1tS1l1dt, ttt);          //  54
     }
 
+    if (-1 != S1l2did) {
+      refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1l2dwt.tag);
+      __GET_OR_UPDATE_SCORE(S0tS1tS1l2dt, ttt);          //  84
+    }
+
     if (-1 != S1r1did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r1dwt.tag);
       __GET_OR_UPDATE_SCORE(S0tS1tS1r1dt, ttt);          //  55
+    }
+ 
+    if (-1 != S1r2did) {
+      refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r2dwt.tag);
+      __GET_OR_UPDATE_SCORE(S0tS1tS1r2dt, ttt);          //  85
     }
   }
 
