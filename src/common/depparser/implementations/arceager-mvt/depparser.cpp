@@ -311,6 +311,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    if (ac == action::ARC_LEFT) {
+std::cout<<"AL"<<std::endl;
       hpos = m_lCache[n0_index].tag.code();
       mpos = m_lCache[st_index].tag.code();
       label = action::getLabel(action);
@@ -320,6 +321,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
    }
 
    if (ac == action::ARC_RIGHT) {
+std::cout<<"AR"<<std::endl;
       hpos = m_lCache[st_index].tag.code();
       mpos = m_lCache[n0_index].tag.code();
       label = action::getLabel(action);
