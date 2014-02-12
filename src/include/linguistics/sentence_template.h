@@ -33,12 +33,11 @@ template <typename CSentenceNode>
 inline std::istream & operator >> (std::istream &is, CSentenceTemplate<CSentenceNode> &sent) {
    sent.clear();
    std::string line;
-//   while(is && line.empty())
-//      getline(is, line);
    getline(is, line);
 
    while(is && !line.empty())
    {
+//      std::cout << line << line.empty() << std::endl;
       CSentenceNode node;
       std::istringstream iss(line);
       iss >> node ;
