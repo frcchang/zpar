@@ -227,6 +227,9 @@ public:
    void Shift() {
       m_Stack.push_back( m_nNextWord );
       m_HeadStack.push_back( m_nNextWord );
+#ifdef LABELED
+      m_lConstituents[m_nNextWord] = (((*m_lCache)[m_nNextWord].tag.code()) | (1<<std::max(PENN_TAG_COUNT_BITS, PENN_CON_COUNT_BITS)));
+#endif
       m_nNextWord ++ ;
       ClearNext();
       m_nLastAction=action::encodeAction(action::SHIFT);
@@ -265,7 +268,7 @@ public:
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
-      m_lConstituents[m_nNextWord] = (*m_lCache)[m_nNextWord].tag.code() | (1<<std::max(PENN_TAG_COUNT_BITS, PENN_CON_COUNT_BITS));
+      m_lConstituents[m_nNextWord] = 0;
 #endif
    }
 
