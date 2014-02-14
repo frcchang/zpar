@@ -131,7 +131,7 @@ private:
   template<typename CCoNLLInputOrOutput>
     void initCoNLLCache(const CCoNLLInputOrOutput &sentence);
 
-  int InsertIntoBeam(depparser::CStateItem * beam,
+  int InsertIntoBeam(depparser::CStateItem ** beam,
                      const depparser::CStateItem * item,
                      const int current_beam_size,
                      const int max_beam_size);

@@ -417,10 +417,6 @@ CDepParser::updateScores(const CDependencyParse & parsed,
  *
  *--------------------------------------------------------------*/
 
-bool StateHeapMore(const CStateItem & x, const CStateItem & y) {
-  return x.score > y.score;
-}
-
 /*---------------------------------------------------------------
  *
  * updateScoresForStates - update scores for states
@@ -561,22 +557,26 @@ CDepParser::poproot(const CStateItem *item,
   m_Beam->insertItem(&scoredaction);
 }
 
+bool StateHeapMore(const CStateItem * x, const CStateItem * y) {
+  return x->score > y->score;
+}
+
 int
-CDepParser::InsertIntoBeam(CStateItem * beam,
+CDepParser::InsertIntoBeam(CStateItem ** beam_wrapper,
                            const CStateItem * item,
                            const int current_beam_size,
                            const int max_beam_size) {
   if (current_beam_size == max_beam_size) {
-    if (*item > *beam) {
-      std::pop_heap(beam, beam + max_beam_size, StateHeapMore);
-      *(beam + max_beam_size - 1) = *item;
-      std::push_heap(beam, beam + max_beam_size, StateHeapMore);
+    if (*item > **beam_wrapper) {
+      std::pop_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
+      **(beam_wrapper + max_beam_size - 1) = *item;
+      std::push_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
     }
     return 0;
   }
 
-  *(beam + current_beam_size) = *(item);
-  std::push_heap(beam, beam + current_beam_size + 1, StateHeapMore);
+  **(beam_wrapper + current_beam_size) = *(item);
+  std::push_heap(beam_wrapper, beam_wrapper + current_beam_size + 1, StateHeapMore);
   return 1;
 }
 
@@ -648,16 +648,18 @@ CDepParser::work(const bool is_train,
          "The size of sentence is too long.");
 
   CStateItem * lattice = GetLattice(max_lattice_size);
-  CStateItem * lattice_index[max_round];
+  CStateItem * lattice_wrapper[max_lattice_size];
+  CStateItem ** lattice_index[max_round];
   CStateItem * correct_state = lattice;
 
   for (int i = 0; i < max_lattice_size; ++ i) {
+    lattice_wrapper[i] = lattice + i;
     lattice[i].len_ = length;
   }
 
   lattice[0].clear();
   correct_state = lattice;
-  lattice_index[0] = lattice;
+  lattice_index[0] = lattice_wrapper;
   lattice_index[1] = lattice_index[0] + 1;
 
   static CPackedScoreType<SCORE_TYPE, action::kMax> packed_scores;
@@ -696,10 +698,10 @@ CDepParser::work(const bool is_train,
     int current_beam_size = 0;
     // loop over the generator states
     // std::cout << "round : " << round << std::endl;
-    for (const CStateItem * generator = lattice_index[round - 1];
-        generator != lattice_index[round];
-        ++ generator) {
-
+    for (CStateItem ** q = lattice_index[round - 1];
+        q != lattice_index[round];
+        ++ q) {
+      const CStateItem * generator = (*q);
       m_Beam->clear(); packed_scores.reset();
       GetOrUpdateStackScore(generator, packed_scores, action::kNoAction);
       Transit(generator, packed_scores);
@@ -730,10 +732,11 @@ CDepParser::work(const bool is_train,
       next_correct_state.previous_ = correct_state;
       is_correct = false;
 
-      for (CStateItem * p = lattice_index[round];
-          p != lattice_index[round + 1];
-          ++ p) {
+      for (CStateItem ** q = lattice_index[round];
+          q != lattice_index[round + 1];
+          ++ q) {
 
+        CStateItem * p = *q;
         if (next_correct_state.last_action == p->last_action
             && p->previous_ == correct_state) {
           correct_state = p;
@@ -746,10 +749,11 @@ CDepParser::work(const bool is_train,
         TRACE("ERROR at the " << next_correct_state.size() << "th word;"
               << " Total is " << oracle_tree.size());
 
-        CStateItem * best_generator = lattice_index[round];
-        for (CStateItem * p = lattice_index[round];
-             p != lattice_index[round + 1];
-             ++ p) {
+        CStateItem * best_generator = (*lattice_index[round]);
+        for (CStateItem ** q = lattice_index[round];
+             q != lattice_index[round + 1];
+             ++ q) {
+          CStateItem * p = (*q);
           if (best_generator->score < p->score) {
             best_generator = p;
           }
@@ -766,13 +770,13 @@ CDepParser::work(const bool is_train,
   }
 
   TRACE("Output sentence");
-  std::sort(lattice_index[round - 1], lattice_index[round], std::greater<CStateItem>());
+  std::sort(lattice_index[round - 1], lattice_index[round], StateHeapMore);
   num_results = lattice_index[round] - lattice_index[round - 1];
 
   for (int i = 0; i < std::min(num_results, nbest); ++ i) {
-    assert( (lattice_index[round - 1] + i)->size() == m_lCache.size());
-    (lattice_index[round - 1] + i)->GenerateTree(sentence, retval[i]);
-    if (scores) { scores[i] = (lattice_index[round - 1] + i)->score; }
+    assert( (*(lattice_index[round - 1] + i))->size() == m_lCache.size());
+    (*(lattice_index[round - 1] + i))->GenerateTree(sentence, retval[i]);
+    if (scores) { scores[i] = (*(lattice_index[round - 1] + i))->score; }
   }
   TRACE("Done, total time spent: " << double(clock() - total_start_time) / CLOCKS_PER_SEC);
   return num_results;
