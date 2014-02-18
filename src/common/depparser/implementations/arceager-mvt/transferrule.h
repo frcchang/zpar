@@ -1,6 +1,9 @@
 inline void transfer(const long & hpos, const long & mpos,const long & label,const long & parentCategory,bool head_left, unsigned long & category){
-
-	if(hpos==PENN_TAG_V && mpos==PENN_TAG_W && label==PENN_DEP_PUN){
+	if (parentCategory==PENN_CON_IP)
+	{
+		category=PENN_CON_IP;
+	}
+	else if(hpos==PENN_TAG_V && mpos==PENN_TAG_W && label==PENN_DEP_PUN){
 
 		category=PENN_CON_VP;
 
@@ -3191,10 +3194,7 @@ inline void transfer(const long & hpos, const long & mpos,const long & label,con
 		category=PENN_CON_NONE;
 
 	}
-        if (parentCategory==PENN_CON_IP)
-	{
-		category=PENN_CON_IP;
-	}
+        
 
         if (head_left)
              category |= (1<<(std::max(PENN_TAG_COUNT_BITS, PENN_CON_COUNT_BITS)+1)); // head right.
