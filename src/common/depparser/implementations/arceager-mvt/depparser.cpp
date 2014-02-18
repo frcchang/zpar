@@ -314,7 +314,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       hpos = m_lCache[n0_index].tag.code();
       mpos = m_lCache[st_index].tag.code();
       label = action::getLabel(action);
-      transfer(hpos, mpos, label, false, con);
+      transfer(hpos, mpos, label,item->constituent(n0_index), false, con);
       refer_or_allocate_tuple3(int_int_int, &(item->constituent(n0_index)), &(item->constituent(st_index)), &con);
       cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;
    }
@@ -323,7 +323,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       hpos = m_lCache[st_index].tag.code();
       mpos = m_lCache[n0_index].tag.code();
       label = action::getLabel(action);
-      transfer(hpos, mpos, label, true, con);
+      transfer(hpos, mpos, label,item->constituent(st_index), true, con);
       refer_or_allocate_tuple3(int_int_int, &(item->constituent(st_index)), &(item->constituent(n0_index)), &con);
       cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;
    }

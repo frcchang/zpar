@@ -182,7 +182,7 @@ public:
       m_lHeads[left] = m_nNextWord;
 #ifdef LABELED
       m_lLabels[left] = lab;
-      transfer((*m_lCache)[m_nNextWord].tag.code(), (*m_lCache)[left].tag.code(), lab, false, m_lConstituents[m_nNextWord]);
+      transfer((*m_lCache)[m_nNextWord].tag.code(), (*m_lCache)[left].tag.code(), lab,m_lConstituents[m_nNextWord], false, m_lConstituents[m_nNextWord]);
       m_lDepTagL[m_nNextWord].add(lab) ;
 #endif
       m_lSibling[left] = m_lDepsL[m_nNextWord];
@@ -208,7 +208,7 @@ public:
       m_lHeads[m_nNextWord] = left ;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = lab ;
-      transfer((*m_lCache)[left].tag.code(), (*m_lCache)[m_nNextWord].tag.code(), lab, true, m_lConstituents[left]);
+      transfer((*m_lCache)[left].tag.code(), (*m_lCache)[m_nNextWord].tag.code(), lab,m_lConstituents[left], true, m_lConstituents[left]);
       m_lDepTagR[left].add(lab) ;
 #endif
       m_lSibling[m_nNextWord] = m_lDepsR[left];
