@@ -315,8 +315,8 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       mpos = m_lCache[st_index].tag.code();
       label = action::getLabel(action);
       transfer(hpos, mpos, label,item->constituent(n0_index), false, con);
-      refer_or_allocate_tuple3(int_int_int, &(item->constituent(n0_index)), &(item->constituent(st_index)), &con);
-      cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;
+      refer_or_allocate_tuple3(int_int_int, &(item->constituent(st_index)), &(item->constituent(n0_index)), &con);
+      cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action::NO_ACTION, m_nScoreIndex, amount, round ) ;
    }
 
    if (ac == action::ARC_RIGHT || ac == action::NO_ACTION) {
@@ -325,7 +325,7 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       label = action::getLabel(action);
       transfer(hpos, mpos, label,item->constituent(st_index), true, con);
       refer_or_allocate_tuple3(int_int_int, &(item->constituent(st_index)), &(item->constituent(n0_index)), &con);
-      cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action::NO_ACTION, m_nScoreIndex, amount, round ) ;
    }
 
    if (m_bCoNLL) {
@@ -459,14 +459,13 @@ inline void CDepParser::arcleft( const CStateItem *item, const CPackedScoreType<
    for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
       if ( !m_weights->rules() || canAssignLabel(m_lCache, item->size(), item->stacktop(), label) ) {
          scoredaction.action = action::encodeAction(action::ARC_LEFT, label);
-         scoredaction.score = item->score + scores[scoredaction.action];
-                               //+scores[action::ARC_LEFT];
+         scoredaction.score = item->score + scores[scoredaction.action]+scores[action::NO_ACTION];
          m_Beam->insertItem(&scoredaction);
       }
    }
 #else
    scoredaction.action = action::ARC_LEFT;
-   scoredaction.score = item->score + scores[scoredaction.action];
+   scoredaction.score = item->score + scores[scoredaction.action]+scores[action::NO_ACTION];
       m_Beam->insertItem(&scoredaction);
 #endif
 }
@@ -484,14 +483,13 @@ inline void CDepParser::arcright( const CStateItem *item, const CPackedScoreType
    for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
       if ( !m_weights->rules() || canAssignLabel(m_lCache, item->stacktop(), item->size(), label) ) {
          scoredaction.action = action::encodeAction(action::ARC_RIGHT, label);
-         scoredaction.score = item->score + scores[scoredaction.action];
-                              //+scores[action::ARC_RIGHT];
+         scoredaction.score = item->score + scores[scoredaction.action]+scores[action::NO_ACTION];
          m_Beam->insertItem(&scoredaction);
       }
    }
 #else
    scoredaction.action = action::ARC_RIGHT;
-   scoredaction.score = item->score + scores[scoredaction.action];
+   scoredaction.score = item->score + scores[scoredaction.action]+scores[action::NO_ACTION];
    m_Beam->insertItem(&scoredaction);
 #endif
 }
