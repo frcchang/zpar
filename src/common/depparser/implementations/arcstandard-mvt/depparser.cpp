@@ -548,32 +548,32 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   if (-1 != S0id && -1 != N0id  && -1 != N1id) {
 	refer_or_allocate_tuple3(ttt, &S0wt.tag, &N0wt.tag, &N1wt.tag);
      __GET_OR_UPDATE_SCORE(S0tN0tN1t, ttt);//122
-        refer_or_allocate_tuple3(wtt, &S0wt.word, &N0wt.tag, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wN0tN1t, wtt);//129
-        refer_or_allocate_tuple3(wwt, &S0wt.word, &N0wt.word, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wN0wN1t, wwt);//130
-        refer_or_allocate_tuple3(wtt, &N0wt.word, &S0wt.tag, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(N0wS0tN1t, wtt);//131
+        //refer_or_allocate_tuple3(wtt, &S0wt.word, &N0wt.tag, &N1wt.tag);
+     //__GET_OR_UPDATE_SCORE(S0wN0tN1t, wtt);//129
+        //refer_or_allocate_tuple3(wwt, &S0wt.word, &N0wt.word, &N1wt.tag);
+     //__GET_OR_UPDATE_SCORE(S0wN0wN1t, wwt);//130
+        //refer_or_allocate_tuple3(wtt, &N0wt.word, &S0wt.tag, &N1wt.tag);
+     //__GET_OR_UPDATE_SCORE(N0wS0tN1t, wtt);//131
   }
   if (-1 != S0id && -1 != S1id  && -1 != S2id) {
 	refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S2wt.tag);
      __GET_OR_UPDATE_SCORE(S0tS1tS2t, ttt);//123
-        refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S2wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1tS2t, wtt);//132
-        refer_or_allocate_tuple3(wwt, &S0wt.word, &S1wt.word, &S2wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1wS2t, wwt);//133
-        refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S2wt.tag);
-     __GET_OR_UPDATE_SCORE(S1wS0tS2t, wtt);//134
+        //refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S2wt.tag);
+     //__GET_OR_UPDATE_SCORE(S0wS1tS2t, wtt);//132
+        //refer_or_allocate_tuple3(wwt, &S0wt.word, &S1wt.word, &S2wt.tag);
+    // __GET_OR_UPDATE_SCORE(S0wS1wS2t, wwt);//133
+        //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S2wt.tag);
+     //__GET_OR_UPDATE_SCORE(S1wS0tS2t, wtt);//134
   }
   if (-1 != S0id && -1 != S1id  && -1 != N0id) {
 	refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &N0wt.tag);
      __GET_OR_UPDATE_SCORE(S0tS1tN0t, ttt);//124
-        refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1tN0t, wtt);//126
-        refer_or_allocate_tuple3(wwt, &S0wt.word, &S1wt.word, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1wN0t, wwt);//127
-        refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S1wS0tN0t, wtt);//128
+        //refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &N0wt.tag);
+     //__GET_OR_UPDATE_SCORE(S0wS1tN0t, wtt);//126
+        //refer_or_allocate_tuple3(wwt, &S0wt.word, &S1wt.word, &N0wt.tag);
+     //__GET_OR_UPDATE_SCORE(S0wS1wN0t, wwt);//127
+        //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &N0wt.tag);
+     //__GET_OR_UPDATE_SCORE(S1wS0tN0t, wtt);//128
   }
 
 }
