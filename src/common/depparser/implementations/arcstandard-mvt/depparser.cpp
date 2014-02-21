@@ -126,6 +126,10 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   CTuple3<CWord, CTag, CTag> wtt;
   CTuple3<CWord, CWord, CTag> wwt;
   CTuple2<CWord, int>       wi;
+  CTuple3<CWord, int, int>       wii;
+  CTuple3<CWord,CWord, int>       wwi;
+  CTuple3<CTag,CTag, int>       tti;
+  CTuple3<CTag, int, int>       tii;
   CTuple2<CTag, int>        ti;
   CTuple2< CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR> > aa;
   //CTwoTaggedWords aa;
@@ -134,6 +138,8 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   CTuple2<CTaggedWord<CTag, TAG_SEPARATOR>,CTag> at;
   CTuple2<CWord, CSetOfTags<CDependencyLabel> > wset;
   CTuple2<CTag,  CSetOfTags<CDependencyLabel> > tset;
+  CTuple3<CWord, CSetOfTags<CDependencyLabel>, CSetOfTags<CDependencyLabel> > wsetset;
+  CTuple3<CTag,  CSetOfTags<CDependencyLabel>, CSetOfTags<CDependencyLabel> > tsetset;
 
   // single
   if (S0id != -1) {
@@ -248,9 +254,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S0l2dd,       S0l2dd);        //  39
 
     refer_or_allocate_tuple3(ttt, &S0wt.tag, &S0l1dwt.tag, &S0l2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S0tS0l1dtS0l2dt, ttt);
+    __GET_OR_UPDATE_SCORE(S0tS0l1dtS0l2dt, ttt);//78
     refer_or_allocate_tuple3(wtt, &S0wt.word, &S0l1dwt.tag, &S0l2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S0wS0l1dtS0l2dt, wtt);
+    __GET_OR_UPDATE_SCORE(S0wS0l1dtS0l2dt, wtt);//98
   }
 
   if (-1 != S0r2did) {
@@ -260,9 +266,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S0r2dd,       S0r2dd);        //  43
 
     refer_or_allocate_tuple3(ttt, &S0wt.tag, &S0r1dwt.tag, &S0r2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S0tS0r1dtS0r2dt, ttt);
+    __GET_OR_UPDATE_SCORE(S0tS0r1dtS0r2dt, ttt);//79
     refer_or_allocate_tuple3(wtt, &S0wt.word, &S0r1dwt.tag, &S0r2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S0wS0r1dtS0r2dt, wtt);
+    __GET_OR_UPDATE_SCORE(S0wS0r1dtS0r2dt, wtt);//99
   }
 
   if (-1 != S1l2did) {
@@ -272,9 +278,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S1l2dd,       S1l2dd);        //  47
 
     refer_or_allocate_tuple3(ttt, &S1wt.tag, &S1l1dwt.tag, &S1l2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S1tS1l1dtS1l2dt, ttt);
+    __GET_OR_UPDATE_SCORE(S1tS1l1dtS1l2dt, ttt);//80
     refer_or_allocate_tuple3(wtt, &S1wt.word, &S1l1dwt.tag, &S1l2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S1wS1l1dtS1l2dt, wtt);
+    __GET_OR_UPDATE_SCORE(S1wS1l1dtS1l2dt, wtt);//100
   }
 
   if (-1 != S1r2did) {
@@ -284,32 +290,32 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     __GET_OR_UPDATE_SCORE(S1r2dd,       S1r2dd);        //  51
 
     refer_or_allocate_tuple3(ttt, &S1wt.tag, &S1r1dwt.tag, &S1r2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S1tS1r1dtS1r2dt, ttt);
+    __GET_OR_UPDATE_SCORE(S1tS1r1dtS1r2dt, ttt);//81
 
     refer_or_allocate_tuple3(wtt, &S1wt.word, &S1r1dwt.tag, &S1r2dwt.tag);
-    __GET_OR_UPDATE_SCORE(S1wS1r1dtS1r2dt, wtt);
+    __GET_OR_UPDATE_SCORE(S1wS1r1dtS1r2dt, wtt);//101
     
   }
 
   if (-1 != S0id && -1 != S1id) {
     if (-1 != S0l1did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S0l1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0tS1tS0l1dt, ttt);         //  52
+      __GET_OR_UPDATE_SCORE(S0tS1tS0l1dt, ttt);         //  53
     }
 
     if (-1 != S0l2did) {
        refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S0l2dwt.tag);
-       __GET_OR_UPDATE_SCORE(S0tS1tS0l2dt, ttt);         //  82
+       __GET_OR_UPDATE_SCORE(S0tS1tS0l2dt, ttt);         //  83
     }
 
     if (-1 != S0r1did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S0r1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0tS1tS0r1dt, ttt);          //  53
+      __GET_OR_UPDATE_SCORE(S0tS1tS0r1dt, ttt);          //  55
     }
 
     if (-1 != S0r2did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S0r2dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0tS1tS0r2dt, ttt);          //  83
+      __GET_OR_UPDATE_SCORE(S0tS1tS0r2dt, ttt);          //  85
     }
 
     if (-1 != S1l1did) {
@@ -324,85 +330,111 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
     if (-1 != S1r1did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0tS1tS1r1dt, ttt);          //  55
+      __GET_OR_UPDATE_SCORE(S0tS1tS1r1dt, ttt);          //  52
     }
  
     if (-1 != S1r2did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r2dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0tS1tS1r2dt, ttt);          //  85
+      __GET_OR_UPDATE_SCORE(S0tS1tS1r2dt, ttt);          //  82
     }
     
     if (-1 != S0l1did) {
       refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S0l1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0wS1tS0l1dt, wtt);         //  98
+      __GET_OR_UPDATE_SCORE(S0wS1tS0l1dt, wtt);         //  103
     }
 
     if (-1 != S0r1did) {
       refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S0r1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0wS1tS0r1dt, wtt);          //  100
+      __GET_OR_UPDATE_SCORE(S0wS1tS0r1dt, wtt);          //  105
     }
 
     if (-1 != S0l1did) {
       refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S0l1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS0l1dt, wtt);         //  98
+      __GET_OR_UPDATE_SCORE(S1wS0tS0l1dt, wtt);         //  107
     }
 
     if (-1 != S0r1did) {
       refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S0r1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS0r1dt, wtt);          //  100
+      __GET_OR_UPDATE_SCORE(S1wS0tS0r1dt, wtt);          //  109
     }
 
     if (-1 != S1l1did) {
       refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S1l1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0wS1tS1l1dt, wtt);          //  102
+      __GET_OR_UPDATE_SCORE(S0wS1tS1l1dt, wtt);          //  104
     }
    
 
     if (-1 != S1r1did) {
       refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S1r2dwt.tag);
-      __GET_OR_UPDATE_SCORE(S0wS1tS1r1dt, wtt);          //  105
+      __GET_OR_UPDATE_SCORE(S0wS1tS1r1dt, wtt);          //  102
     }
 
     if (-1 != S1l1did) {
       refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1l1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS1l1dt, wtt);          //  106
+      __GET_OR_UPDATE_SCORE(S1wS0tS1l1dt, wtt);          //  108
     }
     
     if (-1 != S1r1did) {
       refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1r1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS1r1dt, wtt);          //  108
+      __GET_OR_UPDATE_SCORE(S1wS0tS1r1dt, wtt);          //  106
     } 
     
   }
 
   if (-1 != S0id) {
     refer_or_allocate_tuple2(wi, &S0wt.word, &S0ra);
-    __GET_OR_UPDATE_SCORE(S0wS0ra, wi);
+    __GET_OR_UPDATE_SCORE(S0wS0ra, wi);//56
 
     refer_or_allocate_tuple2(ti, &S0wt.tag, &S0ra);
-    __GET_OR_UPDATE_SCORE(S0tS0ra, ti);
+    __GET_OR_UPDATE_SCORE(S0tS0ra, ti);//57
 
     refer_or_allocate_tuple2(wi, &S0wt.word, &S0la);
-    __GET_OR_UPDATE_SCORE(S0wS0la, wi);
+    __GET_OR_UPDATE_SCORE(S0wS0la, wi);//58
 
     refer_or_allocate_tuple2(ti, &S0wt.tag, &S0la);
-    __GET_OR_UPDATE_SCORE(S0tS0la, ti);
+    __GET_OR_UPDATE_SCORE(S0tS0la, ti);//59
+   
+    refer_or_allocate_tuple3(wii, &S0wt.word, &S0ra, &S0la);
+    __GET_OR_UPDATE_SCORE(S0wS0raS0la, wii);//135
+
+    refer_or_allocate_tuple3(tii, &S0wt.tag, &S0ra, &S0la);
+    __GET_OR_UPDATE_SCORE(S0tS0raS0la, tii);//136
+
+    refer_or_allocate_tuple3(wsetset, &S0wt.word, &S0lset, &S0rset);
+    __GET_OR_UPDATE_SCORE(S0wS0lsetS0rset, wsetset);//139
+
+    refer_or_allocate_tuple3(tsetset, &S0wt.tag, &S0lset, &S0rset);
+    __GET_OR_UPDATE_SCORE(S0tS0lsetS0rset, tsetset);//140
+
   }
 
   if (-1 != S1id) {
     refer_or_allocate_tuple2(wi, &S1wt.word, &S1ra);
-    __GET_OR_UPDATE_SCORE(S1wS1ra, wi);
+    __GET_OR_UPDATE_SCORE(S1wS1ra, wi);//60
 
     refer_or_allocate_tuple2(ti, &S1wt.tag, &S1ra);
-    __GET_OR_UPDATE_SCORE(S1tS1ra, ti);
+    __GET_OR_UPDATE_SCORE(S1tS1ra, ti);//61
 
     refer_or_allocate_tuple2(wi, &S1wt.word, &S1la);
-    __GET_OR_UPDATE_SCORE(S1wS1la, wi);
+    __GET_OR_UPDATE_SCORE(S1wS1la, wi);//62
 
     refer_or_allocate_tuple2(ti, &S1wt.tag, &S1la);
-    __GET_OR_UPDATE_SCORE(S1tS1la, ti);
+    __GET_OR_UPDATE_SCORE(S1tS1la, ti);//63
+
+      refer_or_allocate_tuple3(wii, &S1wt.word, &S1ra, &S1la);
+    __GET_OR_UPDATE_SCORE(S1wS1raS1la, wii);//137
+
+    refer_or_allocate_tuple3(tii, &S1wt.tag, &S1ra, &S1la);
+    __GET_OR_UPDATE_SCORE(S1tS1raS1la, tii);//138
+
+    refer_or_allocate_tuple3(wsetset, &S1wt.word, &S1lset, &S1rset);
+    __GET_OR_UPDATE_SCORE(S1wS1lsetS1rset, wsetset);//141
+
+    refer_or_allocate_tuple3(tsetset, &S1wt.tag, &S1lset, &S1rset);
+    __GET_OR_UPDATE_SCORE(S1tS1lsetS1rset, tsetset);//142
   }
 
+/*
   if (-1 != S0id) {
     refer_or_allocate_tuple2(wi, &S0wt.word, &S0ra);
     __GET_OR_UPDATE_SCORE(S0wS0ra, wi);
@@ -429,113 +461,119 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
     refer_or_allocate_tuple2(ti, &S1wt.tag, &S1la);
     __GET_OR_UPDATE_SCORE(S1tS1la, ti);
-  }
+  }*/
 
   if (-1 != S0id) {
     refer_or_allocate_tuple2(wset, &S0wt.word, &S0lset);
-    __GET_OR_UPDATE_SCORE(S0wS0lset, wset);
+    __GET_OR_UPDATE_SCORE(S0wS0lset, wset);//64
 
     refer_or_allocate_tuple2(tset, &S0wt.tag, &S0lset);
-    __GET_OR_UPDATE_SCORE(S0tS0lset, tset);
+    __GET_OR_UPDATE_SCORE(S0tS0lset, tset);//65
 
     refer_or_allocate_tuple2(wset, &S0wt.word, &S0rset);
-    __GET_OR_UPDATE_SCORE(S0wS0rset, wset);
+    __GET_OR_UPDATE_SCORE(S0wS0rset, wset);//66
 
     refer_or_allocate_tuple2(tset, &S0wt.tag, &S0rset);
-    __GET_OR_UPDATE_SCORE(S0tS0rset, tset);
+    __GET_OR_UPDATE_SCORE(S0tS0rset, tset);//67
   }
 
   if (-1 != S1id) {
     refer_or_allocate_tuple2(wset, &S1wt.word, &S1lset);
-    __GET_OR_UPDATE_SCORE(S1wS1lset, wset);
+    __GET_OR_UPDATE_SCORE(S1wS1lset, wset);//68
 
     refer_or_allocate_tuple2(tset, &S1wt.tag, &S1lset);
-    __GET_OR_UPDATE_SCORE(S1tS1lset, tset);
+    __GET_OR_UPDATE_SCORE(S1tS1lset, tset);//69
 
     refer_or_allocate_tuple2(wset, &S1wt.word, &S1rset);
-    __GET_OR_UPDATE_SCORE(S1wS1rset, wset);
+    __GET_OR_UPDATE_SCORE(S1wS1rset, wset);//70
 
     refer_or_allocate_tuple2(tset, &S1wt.tag, &S1rset);
-    __GET_OR_UPDATE_SCORE(S1tS1rset, tset);
+    __GET_OR_UPDATE_SCORE(S1tS1rset, tset);//71
   }
 
 
   if (-1 != S0id && -1 != S1id) {
     int dist = encodeLinkDistance(S1id, S0id);
     refer_or_allocate_tuple2(wi, &S0wt.word, &dist);
-    __GET_OR_UPDATE_SCORE(S0wDist, wi);
+    __GET_OR_UPDATE_SCORE(S0wDist, wi);//72
 
     refer_or_allocate_tuple2(ti, &S0wt.tag, &dist);
-    __GET_OR_UPDATE_SCORE(S0tDist, ti);
+    __GET_OR_UPDATE_SCORE(S0tDist, ti);//73
 
     refer_or_allocate_tuple2(wi, &S1wt.word, &dist);
-    __GET_OR_UPDATE_SCORE(S1wDist, wi);
+    __GET_OR_UPDATE_SCORE(S1wDist, wi);//74
 
     refer_or_allocate_tuple2(ti, &S1wt.tag, &dist);
-    __GET_OR_UPDATE_SCORE(S1tDist, ti);
+    __GET_OR_UPDATE_SCORE(S1tDist, ti);//75
+
+    refer_or_allocate_tuple3(wwi, &S0wt.word, &S1wt.word, &dist);
+    __GET_OR_UPDATE_SCORE(S0wS1wDist, wwi);//76
+
+    refer_or_allocate_tuple3(tti, &S0wt.tag, &S1wt.tag, &dist);
+    __GET_OR_UPDATE_SCORE(S0tS1tDist, tti);//77
   }
 
   if (-1 != S0id && -1 != S1id) {
      refer_or_allocate_tuple2(aa, &S0wt, &S1wt);
-     __GET_OR_UPDATE_SCORE(S0wtS1wt, aa);
+     __GET_OR_UPDATE_SCORE(S0wtS1wt, aa);//110
      refer_or_allocate_tuple2(at, &S0wt, &S1wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wtS1t, at);
+     __GET_OR_UPDATE_SCORE(S0wtS1t, at);//111
      refer_or_allocate_tuple2(aw, &S0wt, &S1wt.word);
-     __GET_OR_UPDATE_SCORE(S0wtS1w, aw);
+     __GET_OR_UPDATE_SCORE(S0wtS1w, aw);//112
      refer_or_allocate_tuple2(at, &S1wt, &S0wt.tag);
-     __GET_OR_UPDATE_SCORE(S1wtS0t, at);
+     __GET_OR_UPDATE_SCORE(S1wtS0t, at);//113
      refer_or_allocate_tuple2(aw, &S1wt, &S0wt.word);
-     __GET_OR_UPDATE_SCORE(S1wtS0w, aw);
+     __GET_OR_UPDATE_SCORE(S1wtS0w, aw);//114
   }
   if (-1 != S0id && -1 != N0id) {
      refer_or_allocate_tuple2(aa, &S0wt, &N0wt);
-     __GET_OR_UPDATE_SCORE(S0wtN0wt, aa);
+     __GET_OR_UPDATE_SCORE(S0wtN0wt, aa);//115
      refer_or_allocate_tuple2(at, &S0wt, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wtN0t, at);
+     __GET_OR_UPDATE_SCORE(S0wtN0t, at);//116
      refer_or_allocate_tuple2(aw, &S0wt, &N0wt.word);
-     __GET_OR_UPDATE_SCORE(S0wtN0w, aw);
+     __GET_OR_UPDATE_SCORE(S0wtN0w, aw);//117
      refer_or_allocate_tuple2(at, &N0wt, &S0wt.tag);
-     __GET_OR_UPDATE_SCORE(N0wtS0t, at);
+     __GET_OR_UPDATE_SCORE(N0wtS0t, at);//118
      refer_or_allocate_tuple2(aw, &N0wt, &S0wt.word);
-     __GET_OR_UPDATE_SCORE(N0wtS0w, aw);
+     __GET_OR_UPDATE_SCORE(N0wtS0w, aw);//119
   }
    if (-1 != N0id  && -1 != N1id) {
 	refer_or_allocate_tuple2(tt, &N0wt.tag, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(N0tN1t, tt);
+     __GET_OR_UPDATE_SCORE(N0tN1t, tt);//120
   }
   if (-1 != N2id && -1 != N0id  && -1 != N1id) {
 	refer_or_allocate_tuple3(ttt, &N0wt.tag, &N1wt.tag, &N2wt.tag);
-     __GET_OR_UPDATE_SCORE(N0tN1tN2t, ttt);
+     __GET_OR_UPDATE_SCORE(N0tN1tN2t, ttt);//121
   }
   if (-1 != S0id && -1 != N0id  && -1 != N1id) {
 	refer_or_allocate_tuple3(ttt, &S0wt.tag, &N0wt.tag, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(S0tN0tN1t, ttt);
+     __GET_OR_UPDATE_SCORE(S0tN0tN1t, ttt);//122
         refer_or_allocate_tuple3(wtt, &S0wt.word, &N0wt.tag, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wN0tN1t, wtt);
+     __GET_OR_UPDATE_SCORE(S0wN0tN1t, wtt);//129
         refer_or_allocate_tuple3(wwt, &S0wt.word, &N0wt.word, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wN0wN1t, wwt);
+     __GET_OR_UPDATE_SCORE(S0wN0wN1t, wwt);//130
         refer_or_allocate_tuple3(wtt, &N0wt.word, &S0wt.tag, &N1wt.tag);
-     __GET_OR_UPDATE_SCORE(N0wS0tN1t, wtt);
+     __GET_OR_UPDATE_SCORE(N0wS0tN1t, wtt);//131
   }
   if (-1 != S0id && -1 != S1id  && -1 != S2id) {
 	refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S2wt.tag);
-     __GET_OR_UPDATE_SCORE(S0tS1tS2t, ttt);
+     __GET_OR_UPDATE_SCORE(S0tS1tS2t, ttt);//123
         refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S2wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1tS2t, wtt);
+     __GET_OR_UPDATE_SCORE(S0wS1tS2t, wtt);//132
         refer_or_allocate_tuple3(wwt, &S0wt.word, &S1wt.word, &S2wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1wS2t, wwt);
+     __GET_OR_UPDATE_SCORE(S0wS1wS2t, wwt);//133
         refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S2wt.tag);
-     __GET_OR_UPDATE_SCORE(S1wS0tS2t, wtt);
+     __GET_OR_UPDATE_SCORE(S1wS0tS2t, wtt);//134
   }
   if (-1 != S0id && -1 != S1id  && -1 != N0id) {
 	refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S0tS1tN0t, ttt);
+     __GET_OR_UPDATE_SCORE(S0tS1tN0t, ttt);//124
         refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1tN0t, wtt);
+     __GET_OR_UPDATE_SCORE(S0wS1tN0t, wtt);//126
         refer_or_allocate_tuple3(wwt, &S0wt.word, &S1wt.word, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S0wS1wN0t, wwt);
+     __GET_OR_UPDATE_SCORE(S0wS1wN0t, wwt);//127
         refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &N0wt.tag);
-     __GET_OR_UPDATE_SCORE(S1wS0tN0t, wtt);
+     __GET_OR_UPDATE_SCORE(S1wS0tN0t, wtt);//128
   }
 
 }
