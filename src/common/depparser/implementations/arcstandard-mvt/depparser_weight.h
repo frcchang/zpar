@@ -159,6 +159,8 @@
   left(S0tS0lsetS0rset)right;/* 140 - S0.t + S0.lset + S0.rset */ \
   left(S1wS1lsetS1rset)right; /* 141 - S1.w + S1.lset + S1.rset */ \
   left(S1tS1lsetS1rset)right;/* 142 - S1.t + S1.lset + S1.rset */ \  
+  left(S0wS1tDist)right; /*143-S0.w+S1.t+Dist(S0,S1) */ \
+  left(S1wS0tDist)right;/* 144-S1.w+S0.t+Dist(S0,S1) */ \
 } while (0);
 
 namespace TARGET_LANGUAGE {
@@ -213,6 +215,8 @@ typedef CPackedScoreMap<CTuple3<CTag, int, int>, SCORE_TYPE, action::kMax> \
   CTagIntIntMap;
 typedef CPackedScoreMap<CTuple3<CWord, int, int>, SCORE_TYPE, action::kMax> \
   CWordIntIntMap;
+typedef CPackedScoreMap<CTuple3<CWord, CTag, int>, SCORE_TYPE, action::kMax> \
+  CWordTagIntMap;
 typedef CPackedScoreMap<CTuple2< CWord, CSetOfTags<CDependencyLabel> >, \
   SCORE_TYPE, action::kMax> CWordSetOfLabelsMap;
 typedef CPackedScoreMap<CTuple2< CTag, CSetOfTags<CDependencyLabel> >, \
@@ -410,6 +414,8 @@ public:
   CTagTwoSetsOfLabelsMap S0tS0lsetS0rset;/* 140 - S0.t + S0.lset + S0.rset */ \
   CWordTwoSetsOfLabelsMap S1wS1lsetS1rset; /* 141 - S1.w + S1.lset + S1.rset */ \
   CTagTwoSetsOfLabelsMap S1tS1lsetS1rset;/* 142 - S1.t + S1.lset + S1.rset */ \  
+  CWordTagIntMap S0wS1tDist; /*143-S0.w+S1.t+Dist(S0,S1) */ \
+  CWordTagIntMap S1wS0tDist;/* 144-S1.w+S0.t+Dist(S0,S1) */ \
 
 public:
   CWeight(const std::string &sPath, bool bTrain)
@@ -558,7 +564,10 @@ public:
     S0wS0lsetS0rset("139 - S0.w + S0.lset + S0.rset", DEP_TABLE_SIZE),
     S0tS0lsetS0rset("140 - S0.t + S0.lset + S0.rset", DEP_TABLE_SIZE),
     S1wS1lsetS1rset("141 - S1.w + S1.lset + S1.rset", DEP_TABLE_SIZE),
-    S1tS1lsetS1rset("142 - S1.t + S1.lset + S1.rset", DEP_TABLE_SIZE){
+    S1tS1lsetS1rset("142 - S1.t + S1.lset + S1.rset", DEP_TABLE_SIZE),
+    S0wS1tDist("143-S0.w+S1.t+Dist(S0,S1)", DEP_TABLE_SIZE),
+    S1wS0tDist("144-S1.w+S0.t+Dist(S0,S1)", DEP_TABLE_SIZE)
+   {
       loadScores();
   }
 
