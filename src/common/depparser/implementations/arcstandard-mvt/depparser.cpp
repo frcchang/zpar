@@ -129,6 +129,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   CTuple3<CWord, int, int>       wii;
   CTuple3<CWord,CWord, int>       wwi;
   CTuple3<CTag,CTag, int>       tti;
+  CTuple3<CWord,CTag, int>       wti;
   CTuple3<CTag, int, int>       tii;
   CTuple2<CTag, int>        ti;
   CTuple2< CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR> > aa;
@@ -349,13 +350,13 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     }
 
     if (-1 != S0l1did) {
-      refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S0l1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS0l1dt, wtt);         //  107
+      //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S0l1dwt.tag);
+      //__GET_OR_UPDATE_SCORE(S1wS0tS0l1dt, wtt);         //  107
     }
 
     if (-1 != S0r1did) {
-      refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S0r1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS0r1dt, wtt);          //  109
+      //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S0r1dwt.tag);
+      //__GET_OR_UPDATE_SCORE(S1wS0tS0r1dt, wtt);          //  109
     }
 
     if (-1 != S1l1did) {
@@ -370,13 +371,13 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
     }
 
     if (-1 != S1l1did) {
-      refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1l1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS1l1dt, wtt);          //  108
+      //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1l1dwt.tag);
+      //__GET_OR_UPDATE_SCORE(S1wS0tS1l1dt, wtt);          //  108
     }
     
     if (-1 != S1r1did) {
-      refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1r1dwt.tag);
-      __GET_OR_UPDATE_SCORE(S1wS0tS1r1dt, wtt);          //  106
+      //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1r1dwt.tag);
+      //__GET_OR_UPDATE_SCORE(S1wS0tS1r1dt, wtt);          //  106
     } 
     
   }
@@ -511,6 +512,12 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
     refer_or_allocate_tuple3(tti, &S0wt.tag, &S1wt.tag, &dist);
     __GET_OR_UPDATE_SCORE(S0tS1tDist, tti);//77
+
+    //refer_or_allocate_tuple3(wti, &S0wt.word, &S1wt.tag, &dist);
+    //__GET_OR_UPDATE_SCORE(S0wS1tDist, wti);//143
+
+    //refer_or_allocate_tuple3(wti, &S1wt.word, &S0wt.tag, &dist);
+    //__GET_OR_UPDATE_SCORE(S1wS0tDist, wti);//144
   }
 
   if (-1 != S0id && -1 != S1id) {
@@ -543,7 +550,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   }
   if (-1 != N2id && -1 != N0id  && -1 != N1id) {
 	refer_or_allocate_tuple3(ttt, &N0wt.tag, &N1wt.tag, &N2wt.tag);
-     __GET_OR_UPDATE_SCORE(N0tN1tN2t, ttt);//121
+    __GET_OR_UPDATE_SCORE(N0tN1tN2t, ttt);//121
   }
   if (-1 != S0id && -1 != N0id  && -1 != N1id) {
 	refer_or_allocate_tuple3(ttt, &S0wt.tag, &N0wt.tag, &N1wt.tag);
