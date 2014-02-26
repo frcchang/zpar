@@ -126,6 +126,9 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   CTuple3<CWord, CTag, CTag> wtt;
   CTuple3<CWord, CWord, CTag> wwt;
   CTuple2<CWord, int>       wi;
+  CTuple2<CWord, unsigned long>       wl;
+  CTuple2<CTag, unsigned long>        tl;
+  CTuple3<CWord, unsigned, unsigned long>       wll;
   CTuple3<CWord, int, int>       wii;
   CTuple3<CWord,CWord, int>       wwi;
   CTuple3<CTag,CTag, int>       tti;
@@ -141,6 +144,17 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   CTuple2<CTag,  CSetOfTags<CDependencyLabel> > tset;
   CTuple3<CWord, CSetOfTags<CDependencyLabel>, CSetOfTags<CDependencyLabel> > wsetset;
   CTuple3<CTag,  CSetOfTags<CDependencyLabel>, CSetOfTags<CDependencyLabel> > tsetset;
+
+  CTuple2<int, int> ii;
+
+  static CTuple3<unsigned long, unsigned long, unsigned long> int_int_int;
+  static CTuple2<unsigned long, unsigned long> int_int;
+  CTuple2<CTaggedWord<CTag, TAG_SEPARATOR>,unsigned long> al;
+
+   static unsigned hpos, mpos, label;
+   static unsigned long con;
+   int label2 = label;
+   unsigned ac = action::getUnlabeledAction(action);
 
   // single
   if (S0id != -1) {
@@ -583,6 +597,89 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
      //__GET_OR_UPDATE_SCORE(S1wS0tN0t, wtt);//128
   }
 
+  if(-1!=S0id) {
+     __GET_OR_UPDATE_SCORE(S0C, item->constituent(S0id)); //  146    
+  }
+
+  if(-1 != S1id) {
+     __GET_OR_UPDATE_SCORE(S1C, item->constituent(S1id)); //  147
+  }
+
+  if (-1 != S0id && -1 != S1id) {
+      int CS0id = item->constituent(S0id);
+      int CS1id = item->constituent(S1id);
+     
+      refer_or_allocate_tuple2(int_int, &item->constituent(S0id), &item->constituent(S1id));
+     __GET_OR_UPDATE_SCORE(S0CS1C, int_int);//148
+     refer_or_allocate_tuple2(wl, &S0wt.word, &item->constituent(S1id));
+     __GET_OR_UPDATE_SCORE(S0wS1C, wl);//149
+
+     refer_or_allocate_tuple2(tl, &S0wt.tag, &item->constituent(S1id));
+     __GET_OR_UPDATE_SCORE(S0tS1C, tl);//150
+     refer_or_allocate_tuple2(al, &S0wt, &item->constituent(S1id));
+     __GET_OR_UPDATE_SCORE(S0wtS1C, al);//151
+     refer_or_allocate_tuple2(wl, &S1wt.word, &item->constituent(S0id));
+     __GET_OR_UPDATE_SCORE(S1wS0C, wl);//153
+     refer_or_allocate_tuple2(tl, &S1wt.tag, &item->constituent(S0id));
+     __GET_OR_UPDATE_SCORE(S1tS0C, tl);//154
+     refer_or_allocate_tuple2(al, &S1wt, &item->constituent(S0id));
+     __GET_OR_UPDATE_SCORE(S1wtS0C, al);//155
+     
+  }
+
+
+  if (-1 != S0id && -1 != S1id) {
+      if (ac == action::kArcLeft || ac == action::kNoAction) {
+          hpos = S0wt.tag.code();
+          mpos = S1wt.tag.code();
+          label=action::getLabel(action);
+          //label2 = action::getLabel(action);
+          //std::cout <<"hpos="<<hpos<<" "<<S0wt.tag<<" mpos"<<mpos<<" "<<S1wt.tag<< " con"<< con << std::endl ;
+
+          transfer(hpos, mpos, label,item->constituent(S0id), false, con);
+          refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
+          cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
+
+          //__GET_OR_UPDATE_SCORE(m_mapCFG,int_int_int);
+		
+          refer_or_allocate_tuple3(wll, &S0wt.word,
+                                   &label,
+                                   &item->constituent(S1id));
+          __GET_OR_UPDATE_SCORE(S0wS1dS1C, wll);//152
+          refer_or_allocate_tuple3(wll, &S1wt.word,
+                                   &label,
+                                   &item->constituent(S0id));
+          __GET_OR_UPDATE_SCORE(S1wS0dS0C, wll);//156
+
+
+      }
+  }
+
+   if (-1 != S0id && -1 != S1id) {
+       if (ac == action::kArcRight || ac == action::kNoAction) {
+           hpos = S1wt.tag.code();
+           mpos = S0wt.tag.code();
+           label = action::getLabel(action);
+           //std::cout <<"hpos="<<hpos<<" mpos"<<mpos<< " con"<< con << std::endl ;
+           transfer(hpos, mpos, label,item->constituent(S1id), true, con);
+           refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
+           cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
+           //__GET_OR_UPDATE_SCORE(m_mapCFG,int_int_int);
+
+           refer_or_allocate_tuple3(wll,
+                                    &S0wt.word,
+                                    &label,
+                                    &item->constituent(S1id));
+           __GET_OR_UPDATE_SCORE(S0wS1dS1C, wll);//152
+           refer_or_allocate_tuple3(wll,
+                                    &S1wt.word,
+                                    &label,
+                                    &item->constituent(S0id));
+           __GET_OR_UPDATE_SCORE(S1wS0dS0C, wll);//156
+
+        }
+   }
+
 }
 
 /*---------------------------------------------------------------
@@ -859,6 +956,7 @@ CDepParser::work(const bool is_train,
 
   for (int i = 0; i < max_lattice_size; ++ i) {
     lattice_wrapper[i] = lattice + i;
+    lattice[i].m_lCache = &m_lCache;
     lattice[i].len_ = length;
   }
 

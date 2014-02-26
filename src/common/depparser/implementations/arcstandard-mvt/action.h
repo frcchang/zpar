@@ -42,6 +42,24 @@ EncodeAction(const StackActions & action,
 
   return action;
 }
+static unsigned getUnlabeledAction(const unsigned &action ) {
+   assert(action<kMax);
+   if (action<kLabeledALFirst)
+      return action;
+   else if (action<kLabeledARFirst)
+      return kArcLeft;
+   else
+      return kArcRight;
+}
+static unsigned getLabel(const unsigned &action) {
+   assert(action<kMax);
+   if (action < kLabeledALFirst)
+      return 0;
+   else if (action < kLabeledARFirst)
+      return action-kLabeledALFirst+1;
+   else
+      return action-kLabeledARFirst+1;
+}
 
 static unsigned
 DecodeUnlabeledAction(const unsigned & action) {

@@ -39,8 +39,12 @@ protected:
 
 #ifdef LABELED
   unsigned long m_lLabels[MAX_SENTENCE_SIZE];
+  unsigned long m_lConstituents[MAX_SENTENCE_SIZE];   // the highest constituents at each node
   // the label of each dependency link
 #endif
+
+public:
+  const std::vector < CTaggedWord<CTag, TAG_SEPARATOR> >* m_lCache;
 
 public:
   SCORE_TYPE score;
@@ -162,7 +166,8 @@ public:
   inline int label(const int & id) const {
     assert(id < m_nNextWord);
     return m_lLabels[id];
-  }
+  }  
+  inline const unsigned long &constituent( const int &index ) const { assert(index<=m_nNextWord); return m_lConstituents[index]; }
 #endif
 
   inline int leftarity(const int & id) const {
@@ -197,6 +202,8 @@ public:
   void operator = (const CStateItem &item) {
     m_Stack = item.m_Stack;
     m_nNextWord = item.m_nNextWord;
+    
+    m_lCache = item.m_lCache;
 
     last_action = item.last_action;
     score       = item.score;
@@ -213,6 +220,7 @@ public:
       m_lDepNumR[i] = item.m_lDepNumR[i];
 #ifdef LABELED
       m_lLabels[i] = item.m_lLabels[i];
+      m_lConstituents[i] = item.m_lConstituents[i];
       m_lDepTagL[i] = item.m_lDepTagL[i];
       m_lDepTagR[i] = item.m_lDepTagR[i];
 #endif
@@ -244,6 +252,7 @@ public:
 
 #ifdef LABELED
     m_lLabels[top1] = lab;
+    transfer((*m_lCache)[top0].tag.code(), (*m_lCache)[top1].tag.code(), lab,m_lConstituents[top0], false, m_lConstituents[top0]);
     m_lDepTagL[top0].add(lab);
 #endif
 
@@ -281,6 +290,7 @@ public:
 
 #ifdef LABELED
     m_lLabels[top0] = lab;
+    transfer((*m_lCache)[top1].tag.code(), (*m_lCache)[top0].tag.code(), lab,m_lConstituents[top1], false, m_lConstituents[top1]);
     m_lDepTagR[top1].add(lab);
 #endif
 
@@ -301,8 +311,11 @@ public:
   }
 
   // the shift action does pushing
-  void Shift() {
+  void Shift() {      
     m_Stack.push_back(m_nNextWord);
+#ifdef LABELED
+      m_lConstituents[m_nNextWord] = (((*m_lCache)[m_nNextWord].tag.code()) | (1<<std::max(PENN_TAG_COUNT_BITS, PENN_CON_COUNT_BITS)));
+#endif
     m_nNextWord ++;
     ClearNext();
     last_action = action::EncodeAction(action::kShift);
@@ -337,6 +350,7 @@ public:
 
 #ifdef LABELED
     m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
+    m_lConstituents[m_nNextWord] = 0;
 #endif
   }
 
