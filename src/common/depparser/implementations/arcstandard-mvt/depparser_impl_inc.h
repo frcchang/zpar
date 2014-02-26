@@ -14,24 +14,30 @@
 
 #include "linguistics/lemma.h"
 
+
 #ifdef PUNCT
 #include "charcat.h"
 #endif
 
-namespace TARGET_LANGUAGE {
-namespace depparser {
 #ifdef LABELED
-const unsigned DEP_LABEL_COUNT=CDependencyLabel::MAX_COUNT;
+const unsigned DEP_LABEL_COUNT=TARGET_LANGUAGE::CDependencyLabel::MAX_COUNT;
 #else
 const unsigned DEP_LABEL_COUNT = 1;
 #endif
+
+namespace TARGET_LANGUAGE {
+namespace depparser {
 
 #include "action.h"
 }
 }
 
 typedef CBigram< CTaggedWord<TARGET_LANGUAGE::CTag, TARGET_LANGUAGE::TAG_SEPARATOR> > CTwoTaggedWords; 
+#include "cfg.h"
 
+namespace TARGET_LANGUAGE{
+#include "transferrule.h"
+}
 
 
 
