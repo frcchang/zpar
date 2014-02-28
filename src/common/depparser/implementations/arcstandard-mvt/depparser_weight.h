@@ -173,6 +173,9 @@
   left(S1tS0C)right;/*154*/\
   left(S1wtS0C)right;/*155*/\
   left(S1wS0dS0C)right;/*156*/\
+  left(S1S0PCFG)right;/*157*/\
+  left(S1wS0tPCFG)right;/*158*/\
+  left(S0wS1tPCFG)right;/*159*/\
 } while (0);
 
 namespace TARGET_LANGUAGE {
@@ -255,6 +258,10 @@ typedef CPackedScoreMap<CTuple3<CWord, unsigned long, unsigned long>, SCORE_TYPE
   CWordULongULongMap;
 typedef CPackedScoreMap<CTuple3<CWord, unsigned, unsigned long>, SCORE_TYPE, action::kMax> \
   CWordUULongMap;
+typedef CPackedScoreMap<CTuple3<CWord, CWord, unsigned long>, SCORE_TYPE, action::kMax> \
+  CWordWordULongMap;
+typedef CPackedScoreMap<CTuple3<CWord, CTag, unsigned long>, SCORE_TYPE, action::kMax> \
+  CWordTagULongMap;
 
 
 
@@ -456,6 +463,10 @@ public:
   CTagULongMap S1tS0C;/*154*/\
   CTaggedWordULongMap S1wtS0C;/*155*/\
   CWordUULongMap S1wS0dS0C;/*156*/\
+  CWordWordULongMap S1S0PCFG;/*157*/\
+  CWordTagULongMap S1wS0tPCFG;/*158*/\
+  CWordTagULongMap S0wS1tPCFG;/*159*/\
+
 
 public:
   CWeight(const std::string &sPath, bool bTrain)
@@ -618,7 +629,10 @@ public:
     S1wS0C("153 - S1w + S0c", DEP_TABLE_SIZE),
     S1tS0C("154 - S1t +S0c", DEP_TABLE_SIZE),
     S1wtS0C("155 - S1wt + S0c", DEP_TABLE_SIZE),
-    S1wS0dS0C("156 - S1w +S0d +S0c", DEP_TABLE_SIZE)
+    S1wS0dS0C("156 - S1w +S0d +S0c", DEP_TABLE_SIZE),
+    S1S0PCFG("157 - S1wS0wPCFG",DEP_TABLE_SIZE),
+    S1wS0tPCFG("158 - S1wS0tPCFG",DEP_TABLE_SIZE),
+    S0wS1tPCFG("159 - S0tS1wPCFG",DEP_TABLE_SIZE)
    {
       loadScores();
   }

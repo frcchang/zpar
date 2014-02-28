@@ -38,6 +38,13 @@ const int kAgendaSize = AGENDA_SIZE;
     x.allocate(o1, o2, o3); \
   } \
 } while (0);
+#define refer_or_allocate_tuple5(x, o1, o2, o3, o4, o5) do { \
+  if (amount == 0) { \
+    x.refer(o1, o2, o3, o4, o5); \
+  } else { \
+    x.allocate(o1, o2, o3, o4, o5); \
+  } \
+} while (0);
 
 #define _conll_or_empty(x) (x == "_" ? "" : x)
 
@@ -133,6 +140,8 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   CTuple3<CWord,CWord, int>       wwi;
   CTuple3<CTag,CTag, int>       tti;
   CTuple3<CWord,CTag, int>       wti;
+  CTuple3<CWord,CWord, unsigned long>       wwu;
+  CTuple3<CWord,CTag, unsigned long>       wtu;
   CTuple3<CTag, int, int>       tii;
   CTuple2<CTag, int>        ti;
   CTuple2< CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR> > aa;
@@ -616,14 +625,14 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
      refer_or_allocate_tuple2(tl, &S0wt.tag, &item->constituent(S1id));
      __GET_OR_UPDATE_SCORE(S0tS1C, tl);//150
-     refer_or_allocate_tuple2(al, &S0wt, &item->constituent(S1id));
-     __GET_OR_UPDATE_SCORE(S0wtS1C, al);//151
+     //refer_or_allocate_tuple2(al, &S0wt, &item->constituent(S1id));
+     //__GET_OR_UPDATE_SCORE(S0wtS1C, al);//151
      refer_or_allocate_tuple2(wl, &S1wt.word, &item->constituent(S0id));
      __GET_OR_UPDATE_SCORE(S1wS0C, wl);//153
      refer_or_allocate_tuple2(tl, &S1wt.tag, &item->constituent(S0id));
      __GET_OR_UPDATE_SCORE(S1tS0C, tl);//154
-     refer_or_allocate_tuple2(al, &S1wt, &item->constituent(S0id));
-     __GET_OR_UPDATE_SCORE(S1wtS0C, al);//155
+     //refer_or_allocate_tuple2(al, &S1wt, &item->constituent(S0id));
+     //__GET_OR_UPDATE_SCORE(S1wtS0C, al);//155
      
   }
 
@@ -638,9 +647,15 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
           transfer(hpos, mpos, label,item->constituent(S0id), false, con);
           refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
-          cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
-
-          //__GET_OR_UPDATE_SCORE(m_mapCFG,int_int_int);
+         /cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
+	  
+          unsigned long sum=item->constituent(S1id)*1600+item->constituent(S0id)*40+con;
+           refer_or_allocate_tuple3(wwu, &S1wt.word, &S0wt.word, &sum);
+          __GET_OR_UPDATE_SCORE(S1S0PCFG, wwu);//157
+          refer_or_allocate_tuple3(wtu, &S1wt.word, &S0wt.tag, &sum);
+           __GET_OR_UPDATE_SCORE(S1wS0tPCFG, wtu);//158
+           refer_or_allocate_tuple3(wtu, &S0wt.word, &S1wt.tag, &sum);
+           __GET_OR_UPDATE_SCORE(S0wS1tPCFG, wtu);//159
 		
           refer_or_allocate_tuple3(wll, &S0wt.word,
                                    &label,
@@ -662,9 +677,16 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
            label = action::getLabel(action);
            //std::cout <<"hpos="<<hpos<<" mpos"<<mpos<< " con"<< con << std::endl ;
            transfer(hpos, mpos, label,item->constituent(S1id), true, con);
-           refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
+           //refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
            cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
-           //__GET_OR_UPDATE_SCORE(m_mapCFG,int_int_int);
+           __GET_OR_UPDATE_SCORE(m_mapCFG,int_int_int);
+           unsigned long sum=item->constituent(S1id)*1600+item->constituent(S0id)*40+con;
+           refer_or_allocate_tuple3(wwu, &S1wt.word, &S0wt.word, &sum);
+           __GET_OR_UPDATE_SCORE(S1S0PCFG, wwu);//157
+           refer_or_allocate_tuple3(wtu, &S1wt.word, &S0wt.tag, &sum);
+           __GET_OR_UPDATE_SCORE(S1wS0tPCFG, wtu);//158
+           refer_or_allocate_tuple3(wtu, &S0wt.word, &S1wt.tag, &sum);
+           __GET_OR_UPDATE_SCORE(S0wS1tPCFG, wtu);//159
 
            refer_or_allocate_tuple3(wll,
                                     &S0wt.word,
