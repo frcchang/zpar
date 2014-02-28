@@ -646,16 +646,16 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
           //std::cout <<"hpos="<<hpos<<" "<<S0wt.tag<<" mpos"<<mpos<<" "<<S1wt.tag<< " con"<< con << std::endl ;
 
           transfer(hpos, mpos, label,item->constituent(S0id), false, con);
-          refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
-         /cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
+          //refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
+         //cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
 	  
-          unsigned long sum=item->constituent(S1id)*1600+item->constituent(S0id)*40+con;
+          unsigned long sum=item->constituent(S1id)*10000+item->constituent(S0id)*100+con;
            refer_or_allocate_tuple3(wwu, &S1wt.word, &S0wt.word, &sum);
           __GET_OR_UPDATE_SCORE(S1S0PCFG, wwu);//157
-          refer_or_allocate_tuple3(wtu, &S1wt.word, &S0wt.tag, &sum);
-           __GET_OR_UPDATE_SCORE(S1wS0tPCFG, wtu);//158
-           refer_or_allocate_tuple3(wtu, &S0wt.word, &S1wt.tag, &sum);
-           __GET_OR_UPDATE_SCORE(S0wS1tPCFG, wtu);//159
+          //refer_or_allocate_tuple3(wtu, &S1wt.word, &S0wt.tag, &sum);
+           //__GET_OR_UPDATE_SCORE(S1wS0tPCFG, wtu);//158
+           //refer_or_allocate_tuple3(wtu, &S0wt.word, &S1wt.tag, &sum);
+           //__GET_OR_UPDATE_SCORE(S0wS1tPCFG, wtu);//159
 		
           refer_or_allocate_tuple3(wll, &S0wt.word,
                                    &label,
@@ -678,15 +678,15 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
            //std::cout <<"hpos="<<hpos<<" mpos"<<mpos<< " con"<< con << std::endl ;
            transfer(hpos, mpos, label,item->constituent(S1id), true, con);
            //refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
-           cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
-           __GET_OR_UPDATE_SCORE(m_mapCFG,int_int_int);
-           unsigned long sum=item->constituent(S1id)*1600+item->constituent(S0id)*40+con;
+           //cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
+           
+           unsigned long sum=item->constituent(S1id)*10000+item->constituent(S0id)*100+con;
            refer_or_allocate_tuple3(wwu, &S1wt.word, &S0wt.word, &sum);
            __GET_OR_UPDATE_SCORE(S1S0PCFG, wwu);//157
-           refer_or_allocate_tuple3(wtu, &S1wt.word, &S0wt.tag, &sum);
-           __GET_OR_UPDATE_SCORE(S1wS0tPCFG, wtu);//158
-           refer_or_allocate_tuple3(wtu, &S0wt.word, &S1wt.tag, &sum);
-           __GET_OR_UPDATE_SCORE(S0wS1tPCFG, wtu);//159
+           //refer_or_allocate_tuple3(wtu, &S1wt.word, &S0wt.tag, &sum);
+           //__GET_OR_UPDATE_SCORE(S1wS0tPCFG, wtu);//158
+           //refer_or_allocate_tuple3(wtu, &S0wt.word, &S1wt.tag, &sum);
+           //__GET_OR_UPDATE_SCORE(S0wS1tPCFG, wtu);//159
 
            refer_or_allocate_tuple3(wll,
                                     &S0wt.word,
