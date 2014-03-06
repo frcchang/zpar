@@ -549,7 +549,7 @@ bool work(CSegmentor *segmentor, const CStringVector &sentence, CStringVector *v
          temp = best[index];
          while (!temp->empty()) {
             for (temp_index=temp->getWordStart(); temp_index<=temp->getWordEnd(); ++temp_index) {
-               vReturn->at(count) += sentence.at(temp_index);
+               vReturn[index].at(count) += sentence.at(temp_index);
             }
             --count;
             temp = temp->prev();
