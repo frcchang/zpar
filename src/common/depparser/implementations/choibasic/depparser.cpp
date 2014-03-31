@@ -944,12 +944,12 @@ void CDepParser::ArcRight(
 #endif
 }
 
+
 /*---------------------------------------------------------------
  *
  * shift - help function
  *
  *--------------------------------------------------------------*/
-
 inline
 void CDepParser::Shift(
     const CStateItem *item,
@@ -959,6 +959,7 @@ void CDepParser::Shift(
   scored_action.score  = item->score + scores[scored_action.action];
   m_Beam->insertItem(&scored_action);
 }
+
 
 /*---------------------------------------------------------------
  *
@@ -975,6 +976,7 @@ void CDepParser::PopRoot(
   m_Beam->insertItem(&scored_action);
 }
 
+
 /* --------------------------------------------------------------
  *
  * nopass - help function
@@ -989,6 +991,7 @@ void CDepParser::NoPass(
   scored_action.score  = item->score + scores[scored_action.action];
   m_Beam->insertItem(&scored_action);
 }
+
 
 /* -------------------------------------------------------------
  *
@@ -1014,6 +1017,7 @@ void CDepParser::LeftPass(
 #endif  //  end for LABELED
 }
 
+
 /* -------------------------------------------------------------
  *
  * arcright - the helper function
@@ -1038,26 +1042,29 @@ void CDepParser::RightPass(
 #endif  //  end for LABELED
 }
 
-bool StateHeapMore(const CStateItem & x, const CStateItem & y) {
-  return x.score > y.score;
+
+bool StateHeapMore(const CStateItem * x, const CStateItem * y) {
+  return x->score > y->score;
 }
 
-int CDepParser::InsertIntoBeam(
-    CStateItem *       beam,
-    const CStateItem * item,
-    const int          current_beam_size,
-    const int          max_beam_size) {
+int
+CDepParser::InsertIntoBeam(CStateItem ** beam_wrapper,
+                           const CStateItem * item,
+                           const int current_beam_size,
+                           const int max_beam_size) {
   if (current_beam_size == max_beam_size) {
-    if (*item > *beam) {
-      std::pop_heap(beam, beam + max_beam_size, StateHeapMore);
-      *(beam + max_beam_size - 1) = *item;
-      std::push_heap(beam, beam + max_beam_size, StateHeapMore);
+    if (*item > **beam_wrapper) {
+      CStateItem * p = beam_wrapper[0];
+      std::pop_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
+      (*p) = (*item);
+      beam_wrapper[max_beam_size - 1] = p;
+      std::push_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
     }
     return 0;
   }
 
-  *(beam + current_beam_size) = *(item);
-  std::push_heap(beam, beam + current_beam_size + 1, StateHeapMore);
+  **(beam_wrapper + current_beam_size) = *(item);
+  std::push_heap(beam_wrapper, beam_wrapper + current_beam_size + 1, StateHeapMore);
   return 1;
 }
 
@@ -1188,27 +1195,29 @@ int CDepParser::Work(CDependencyParse       * retval,
 #endif  // end for DEBUG
 
   const int length           = sentence.size();
-  const int max_round        = (length + 1) * (length + 1) / 2;
+  const int max_round        = (length + 1) * (length + 1) / 4;
   const int max_lattice_size = (kAgendaSize + 1) * max_round;
 
   ASSERT(length < kMaxSentenceSize,
       "The size of the sentence is larger than the system configuration.");
 
   CStateItem * lattice = GetLattice(max_lattice_size);
-    //new CStateItem[max_lattice_size];     // allocate the memory pool
-  CStateItem * lattice_index[max_round];  // specify states of certain round
-  const CStateItem * correct_state;       // point to the correct state's
-                                          // position in the lattice
+  CStateItem * lattice_wrapper[max_lattice_size];
+  CStateItem ** lattice_index[max_round];               // specify states of certain round
+  CStateItem * correct_state;                           // point to the correct state's
+                                                        // position in the lattice
 
   for (int i = 0; i < max_lattice_size; ++ i) {
+    lattice_wrapper[i] = lattice + i;
     lattice[i].len_ = length;
+    lattice[i].score = 0.;
   }
 
   // initialize first round lattice
   // clear the start state.
   lattice[0].clear();
   correct_state = lattice;
-  lattice_index[0] = lattice;
+  lattice_index[0] = lattice_wrapper;
   lattice_index[1] = lattice_index[0] + 1;
 
   static CPackedScoreType<SCORE_TYPE, action::kMax> packed_scores;
@@ -1261,10 +1270,8 @@ int CDepParser::Work(CDependencyParse       * retval,
     int current_beam_size = 0;
     // loop over the generator states
     // std::cout << "round : " << round << std::endl;
-    for (const CStateItem * generator = lattice_index[round - 1];
-        generator != lattice_index[round];
-        ++ generator) {
-
+    for (CStateItem ** q = lattice_index[round - 1]; q != lattice_index[round]; ++ q) {
+      const CStateItem * generator = (*q);
       m_Beam->clear();  packed_scores.reset();
       GetOrUpdateStackScore(generator, packed_scores, action::kNoAction);
       Transit(generator, packed_scores);
@@ -1286,8 +1293,8 @@ int CDepParser::Work(CDependencyParse       * retval,
     lattice_index[round + 1] = lattice_index[round] + current_beam_size;
 
     bool all_finished = (true && current_beam_size > 0);
-    for (const CStateItem * p = lattice_index[round];
-        p != lattice_index[round + 1]; ++ p) {
+    for (CStateItem ** q = lattice_index[round]; q != lattice_index[round + 1]; ++ q) {
+      const CStateItem * p = (*q);
       if (false == p->terminated()) { all_finished = false; }
     }
 
@@ -1307,9 +1314,8 @@ int CDepParser::Work(CDependencyParse       * retval,
 
       // correct_state = NULL;
       is_correct = false;
-      for (CStateItem * p = lattice_index[round];
-          p != lattice_index[round + 1];
-          ++ p) {
+      for (CStateItem ** q = lattice_index[round]; q != lattice_index[round + 1]; ++ q) {
+        CStateItem * p = (*q);
         if (next_correct_state.last_action == p->last_action &&
             p->previous_ == correct_state) {
           correct_state = p;
@@ -1321,25 +1327,39 @@ int CDepParser::Work(CDependencyParse       * retval,
       if (!is_correct) {
         TRACE("ERROR at the " << next_correct_state.size() << "th word;"
             << " Total is " << oracle_tree.size());
-        CStateItem * best_generator = lattice_index[round];
-        for (CStateItem * p = lattice_index[round];
-            p != lattice_index[round + 1];
-            ++ p) {
+        CStateItem * best_generator = (*lattice_index[round]);
+        for (CStateItem ** q = lattice_index[round]; q != lattice_index[round + 1]; ++ q) {
+          CStateItem * p = (*q);
           if (best_generator->score < p->score) {
             best_generator = p;
           }
         }
 
         UpdateScoresForStates(best_generator, &next_correct_state, 1, -1);
-
         return -1;
       }
 #endif  //  end for EARLY_UPDATE
 
       if (correct_state->terminated()) {
+        round += 1;
         break;
       }
     }
+  }
+
+  if (is_train) {
+    CStateItem * best_generator = (*lattice_index[round-1]);
+
+    for (CStateItem ** q = lattice_index[round-1]; q != lattice_index[round]; ++ q) {
+      CStateItem * p = (*q);
+      if (best_generator->score < p->score) {
+        best_generator = p;
+      }
+    }
+    if (best_generator != correct_state) {
+      UpdateScoresForStates(best_generator, correct_state, 1, -1);
+    }
+    return -1;
   }
 
   if (!retval) {
@@ -1348,11 +1368,12 @@ int CDepParser::Work(CDependencyParse       * retval,
   }
 
   TRACE("Output sentence");
-  std::sort(lattice_index[round - 1], lattice_index[round], std::greater<CStateItem>());
+  std::sort(lattice_index[round - 1], lattice_index[round], StateHeapMore);
   num_results = lattice_index[round] - lattice_index[round - 1];
+
   for (int i = 0; i < std::min(num_results, nbest); ++ i) {
-    (lattice_index[round - 1] + i)->GenerateTree(sentence, retval[i]);
-    if (scores) { scores[i] = (lattice_index[round - 1] + i)->score; }
+    (*(lattice_index[round - 1] + i))->GenerateTree(sentence, retval[i]);
+    if (scores) { scores[i] = (*(lattice_index[round - 1] + i))->score; }
   }
 
   TRACE("Done, total time spent: " << double(clock() - total_start_time) / CLOCKS_PER_SEC);

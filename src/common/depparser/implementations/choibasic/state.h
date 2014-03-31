@@ -185,10 +185,11 @@ public:
   }
 
   inline bool complete() const {
-    return (deque_.empty()
+    return next_word == len_;
+    /*return (deque_.empty()
             && next_word == len_
             && stack_.size() == 1
-            && DEPENDENCY_LINK_NO_HEAD == heads[stack_.back()]);
+            && DEPENDENCY_LINK_NO_HEAD == heads[stack_.back()]);*/
   }
 
   inline bool terminated() const {
@@ -298,18 +299,12 @@ public:
 
   // this is used for the convenience of scoring and updating
   void PopRoot() {
-    assert(
-#ifndef FRAGMENTED_TREE
-        stack_.size() == 1 &&
-#endif  //  end for FRAGMENTED_TREE
-        heads[stack_.back()] == DEPENDENCY_LINK_NO_HEAD);
-
 #ifdef LABELED
     labels[stack_.back()] = CDependencyLabel::ROOT;
 #endif  //  end for LABELED
 
     last_action = action::EncodeAction(action::kPopRoot);
-    // stack_.pop_back();  // pop it
+    // stack_.pop_back();  // should not pop it, extract features for idle
   }
 
   // perform the no-pass action, this action pop a word from the stack, push
@@ -598,13 +593,7 @@ public:
     }
 
     if (next_word == len) {
-      if (stack_.size() == 1) {
-        PopRoot();
-      } else if (is_gold_reduce) {
-        Reduce();
-      } else {
-        NoPass();
-      }
+      PopRoot();
       return;
     }
 
