@@ -230,11 +230,11 @@ private:
    *  @param[in]      max_beam_size       the max volumn of beam
    *  @return         int                 1 if the beam increased otherwise 0
    */
-  int InsertIntoBeam(
-      depparser::CStateItem *       beam,
-      const depparser::CStateItem * item,
-      const int                     current_beam_size,
-      const int                     max_beam_size);
+  int InsertIntoBeam(depparser::CStateItem ** beam,
+                     const depparser::CStateItem * item,
+                     const int current_beam_size,
+                     const int max_beam_size);
+
 
   // helper method
   inline void Transit(
