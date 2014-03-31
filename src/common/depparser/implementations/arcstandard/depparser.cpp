@@ -568,8 +568,10 @@ CDepParser::InsertIntoBeam(CStateItem ** beam_wrapper,
                            const int max_beam_size) {
   if (current_beam_size == max_beam_size) {
     if (*item > **beam_wrapper) {
+      CStateItem * p = beam_wrapper[0];
       std::pop_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
-      **(beam_wrapper + max_beam_size - 1) = *item;
+      (*p) = (*item);
+      beam_wrapper[max_beam_size - 1] = p;
       std::push_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
     }
     return 0;
@@ -741,6 +743,7 @@ CDepParser::work(const bool is_train,
             && p->previous_ == correct_state) {
           correct_state = p;
           is_correct = true;
+          break;
         }
       }
 
@@ -763,6 +766,21 @@ CDepParser::work(const bool is_train,
       }
 #endif // end for EARLY_UPDATE
     }
+  }
+
+  if (is_train) {
+    CStateItem * best_generator = (*lattice_index[round-1]);
+
+    for (CStateItem ** q = lattice_index[round-1]; q != lattice_index[round]; ++ q) {
+      CStateItem * p = (*q);
+      if (best_generator->score < p->score) {
+        best_generator = p;
+      }
+    }
+    if (best_generator != correct_state) {
+      UpdateScoresForStates(best_generator, correct_state, 1, -1);
+    }
+    return -1;
   }
 
   if (!retval) {
