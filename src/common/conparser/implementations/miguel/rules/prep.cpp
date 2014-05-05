@@ -92,6 +92,7 @@ inline const bool & prep3(const unsigned long &cons){
    			 }
    			 childsSSinv=childsSSinv->next;
    		 }
+   		 if (secCondition) {
    		 childsSSinv=node.m_umbinarizedSubNodes;
    		 while(childsSSinv!=0){
    			 const CStateNode* ppTarg=childsSSinv->node;
@@ -113,6 +114,7 @@ inline const bool & prep3(const unsigned long &cons){
    				 }
    			 }
    			 childsSSinv=childsSSinv->next;
+   		 }
    		 }
    	 }
     }
