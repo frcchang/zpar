@@ -83,38 +83,41 @@ inline const bool & prep2(const unsigned long &cons){
 
 //"S|SINV < (PP|PP-TMP=target !< SBAR) < VP|S",
 inline const bool & prep3(const unsigned long &cons){
+	 //std::cout<<"prep3 \n";
    	 if (cons==PENN_CON_S ||cons==PENN_CON_SINV){
    		 CStateNodeList* childsSSinv=node.m_umbinarizedSubNodes;
    		 bool secCondition=false;
    		 while(childsSSinv!=0){
    			 if (CConstituent::clearTmp(childsSSinv->node->constituent.code())==PENN_CON_VP||CConstituent::clearTmp(childsSSinv->node->constituent.code())==PENN_CON_S){
    				 secCondition=true;
+   				 //std::cout<<"prep3 \n";
+   				// std::cout<<((*words)[childsSSinv->node->lexical_head].word)<<"\n";
    			 }
    			 childsSSinv=childsSSinv->next;
    		 }
    		 if (secCondition) {
-   		 childsSSinv=node.m_umbinarizedSubNodes;
-   		 while(childsSSinv!=0){
-   			 const CStateNode* ppTarg=childsSSinv->node;
-   			 if (CConstituent::clearTmp(ppTarg->constituent.code())==PENN_CON_PP && !(isLinked(&node,ppTarg))){
-   				 bool inCond=true;
-   				 CStateNodeList* childsPP=ppTarg->m_umbinarizedSubNodes;
-   				 while(childsPP!=0){
-   					 if (CConstituent::clearTmp(childsPP->node->constituent.code())==PENN_CON_SBAR){
-   						 inCond=false;
-   					 }
-   					 childsPP=childsPP->next;
-   				 }
-   				 if (inCond){
-//   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
-   					 if (buildStanfordLink(STANFORD_DEP_PREP, ppTarg->lexical_head, node.lexical_head)) {
-   						 addLinked(&node,ppTarg);
-   					     return true;
-   					 }
-   				 }
-   			 }
-   			 childsSSinv=childsSSinv->next;
-   		 }
+			 childsSSinv=node.m_umbinarizedSubNodes;
+			 while(childsSSinv!=0){
+				 const CStateNode* ppTarg=childsSSinv->node;
+				 if (CConstituent::clearTmp(ppTarg->constituent.code())==PENN_CON_PP && !(isLinked(&node,ppTarg))){
+					 bool inCond=true;
+					 CStateNodeList* childsPP=ppTarg->m_umbinarizedSubNodes;
+					 while(childsPP!=0){
+						 if (CConstituent::clearTmp(childsPP->node->constituent.code())==PENN_CON_SBAR){
+							 inCond=false;
+						 }
+						 childsPP=childsPP->next;
+					 }
+					 if (inCond){
+	//   					 CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_PREP);
+						 if (buildStanfordLink(STANFORD_DEP_PREP, ppTarg->lexical_head, node.lexical_head)) {
+							 addLinked(&node,ppTarg);
+							 return true;
+						 }
+					 }
+				 }
+				 childsSSinv=childsSSinv->next;
+			 }
    		 }
    	 }
     }
