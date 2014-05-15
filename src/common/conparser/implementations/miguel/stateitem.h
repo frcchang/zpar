@@ -1119,11 +1119,11 @@ public:
            //S < (NP=target $+ NP|ADJP) > VP
            //std::cout<<"Rule 1 \n";
            buildNsubj1(cons);
-          //std::cerr<<"Nsubj1 \n";
+           std::cerr<<"Nsubj1 \n";
            //SQ|PRN < (NP=target !< EX $++ VP)
            //std::cout<<"Rule 2 \n";
            buildNsubj2(cons);
-          //std::cerr<<"Nsubj2 \n";
+           std::cerr<<"Nsubj2 \n";
            //"S < ((NP|WHNP=target !< EX !<# (/^NN/ < (" + timeWordRegex + "))) $++ VP)"
            //std::cout<<"Rule 3 \n";
            buildNsubj3(cons);
