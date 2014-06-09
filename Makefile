@@ -68,7 +68,7 @@ ENGLISH_DEPPARSER_LABELED = true
 ENGLISH_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
-ENGLISH_CONPARSER_IMPL = miguel
+ENGLISH_CONPARSER_IMPL = muhua
 
 # Spanish pos tagger
 SPANISH_TAGGER_IMPL = collins
