@@ -1,0 +1,27 @@
+:: lines start with :: will be ignored
+:: config file used to train a standard Penn Treebank tagger
+
+trainPath     /home/sutd/Ji/Tagger/wsj/train.gen
+devPath       /home/sutd/Ji/Tagger/wsj/dev.gen
+testPath      /home/sutd/Ji/Tagger/wsj/test.gen
+
+nRound        20
+
+prefix        STD_WSJ_WORD_CH	
+nFixLen       10	
+strLogDir     ../TWeb/logsEn/
+strModelPath  ../TWeb/modelsEn/
+::templatePath  templates/tempGFNoOP1.2.txt
+templatePath  templates/tempNoOP.txt
+::strRBMPrefix    wrrbms/1_3NoWSJ_h300c17e38
+
+bEnTagger     true	
+bEarlyUpdate  true	
+bTagVerbose   false	
+fMargin       0.05
+fRate         0.01
+bCharacterFeatureFromWord true
+
+vIHSize       20 
+vIHType       linear	
+

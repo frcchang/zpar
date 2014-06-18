@@ -215,6 +215,9 @@ OBJECT_ENGLISH_CONPARSER = $(OBJECT_DIR)/english.conparser
 include Makefile.zpar
 include Makefile.zpar.en
 include Makefile.zpar.ge
+#XXX Make sure to add Makefile.tweb after Makefile.zpar.ge
+#XXX A trick to override the rules
+include Makefile.tweb
 include Makefile.zpar.es
 
 #----------------------------------------------------------------

@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>TWeb Wrapper: ZPar Support for the Neural Network Tagger</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=gbk"> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)"> 
+<!-- html --> 
+<meta name="src" content="tweb_tagger.tex"> 
+<meta name="date" content="2014-06-18 15:01:00"> 
+<link rel="stylesheet" type="text/css" href="tweb_tagger.css"> 
+</head><body 
+>
+   <div class="maketitle">
+                                                                          
+
+                                                                          
+                                                                          
+
+                                                                          
+
+<h2 class="titleHead">TWeb Wrapper: ZPar Support for the Neural
+Network Tagger</h2>
+<div class="author" ></div><br />
+<div class="date" ><span 
+class="ptmr7t-x-x-144">June 18, 2014</span></div>
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">1    </span> <a 
+ id="x1-10001"></a>Overview</h3>
+<!--l. 16--><p class="noindent" >This is the zpar wrapper for <a 
+href="https://github.com/majineu/TWeb" >TWeb</a>, the robust web tagger using neural network.
+<!--l. 18--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">2    </span> <a 
+ id="x1-20002"></a>How to compile</h3>
+<!--l. 19--><p class="noindent" >Suppose that ZPar has been downloaded to the directory <span 
+class="ptmri7t-x-x-120">zpar</span>. The TWeb source is
+already inlcuded and located in <span 
+class="ptmri7t-x-x-120">zpar/src/common/tagger/implementations/tweb/TWeb</span>.
+To make a POS tagging system using TWeb, change the GENERIC_TAGGER_IMPL
+macro defined in <span 
+class="ptmri7t-x-x-120">Makefile </span>into <span 
+class="ptmri7t-x-x-120">tweb</span>, and type <span 
+class="ptmri7t-x-x-120">make postagger</span>. This will create a
+directory <span 
+class="ptmri7t-x-x-120">zpar/dist/postagger</span>, in which there are two files: <span 
+class="ptmri7t-x-x-120">train </span>and <span 
+class="ptmri7t-x-x-120">tagger</span>. The file
+<span 
+class="ptmri7t-x-x-120">train </span>is used to train a tagging model,and the file <span 
+class="ptmri7t-x-x-120">tagger </span>is used to tag new texts using a
+trained tagging model.
+                                                                          
+
+                                                                          
+<!--l. 27--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">3    </span> <a 
+ id="x1-30003"></a>Format of inputs and outputs</h3>
+<!--l. 28--><p class="noindent" >The input files to the <span 
+class="ptmri7t-x-x-120">tagger </span>executable are formatted as a sequence of tokenized
+English sentences. An example input is: <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             Ms. Haag plays Elianti . <br 
+class="newline" /><br 
+class="newline" />The output files contain space-separated words: <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             Ms./NNP Haag/NNP plays/VBZ Elianti/NNP ./. <br 
+class="newline" /><br 
+class="newline" />The format of training files for the <span 
+class="ptmri7t-x-x-120">train </span>executable is <span 
+class="ptmb7t-x-x-120">quite different </span>from other tagger
+implementations in zpar, the details will be given in the next section.
+<!--l. 43--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">4    </span> <a 
+ id="x1-40004"></a>How to train a model</h3>
+<!--l. 45--><p class="noindent" >To train a model, use <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                              zpar/dist/postagger/train training <span 
+class="cmmi-12">&#x003C;</span>configureFile<span 
+class="cmmi-12">&#x003E;</span>
+<br 
+class="newline" /><br 
+class="newline" />Which is the same with the original TWeb. For details about configureFile and
+training data format, please refer to the <a 
+href="https://raw.githubusercontent.com/majineu/TWeb/master/readme.txt" >TWeb README</a>. A copy is included as
+follows.
+                                                                          
+
+                                                                          
+   <div class="verbatim" id="verbatim-1">
+==TWEB&#x00A0;README==
+&#x00A0;<br />1.&#x00A0;Build.
+&#x00A0;<br />Go&#x00A0;into&#x00A0;the&#x00A0;src&#x00A0;dir&#x00A0;then&#x00A0;make.
+&#x00A0;<br />&#x00A0;&#x00A0;a.&#x00A0;cd&#x00A0;src
+&#x00A0;<br />&#x00A0;&#x00A0;b.&#x00A0;make&#x00A0;-f&#x00A0;Makefile
+&#x00A0;<br />After&#x00A0;make,&#x00A0;an&#x00A0;executable&#x00A0;named&#x00A0;Tagger&#x00A0;would&#x00A0;be&#x00A0;created&#x00A0;in&#x00A0;src/
+&#x00A0;<br />
+&#x00A0;<br />
+&#x00A0;<br />2.&#x00A0;Training.
+&#x00A0;<br />You&#x00A0;can&#x00A0;train&#x00A0;your&#x00A0;own&#x00A0;model&#x00A0;with&#x00A0;the&#x00A0;following&#x00A0;command:
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;src/Tagger&#x00A0;&#x00A0;&#x00A0;training&#x00A0;&#x00A0;&#x00A0;configureFile
+&#x00A0;<br />for&#x00A0;example:
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;src/Tagger&#x00A0;&#x00A0;training&#x00A0;&#x00A0;config/conf_sample.txt
+&#x00A0;<br />where&#x00A0;configFile&#x00A0;specify&#x00A0;some&#x00A0;of&#x00A0;the&#x00A0;parameters&#x00A0;used&#x00A0;during&#x00A0;training.
+&#x00A0;<br />There&#x00A0;are&#x00A0;some&#x00A0;examples&#x00A0;of&#x00A0;the&#x00A0;configureFile&#x00A0;in&#x00A0;config/
+&#x00A0;<br />(When&#x00A0;training&#x00A0;your&#x00A0;own&#x00A0;model,&#x00A0;you&#x00A0;just&#x00A0;need&#x00A0;to&#x00A0;specify&#x00A0;the&#x00A0;path&#x00A0;of&#x00A0;the&#x00A0;training&#x00A0;set,
+&#x00A0;<br />&#x00A0;development&#x00A0;set&#x00A0;and&#x00A0;the&#x00A0;path&#x00A0;of&#x00A0;the&#x00A0;trained&#x00A0;model.
+&#x00A0;<br />&#x00A0;For&#x00A0;others&#x00A0;parameters,&#x00A0;use&#x00A0;their&#x00A0;default&#x00A0;value&#x00A0;is&#x00A0;OK)
+&#x00A0;<br />
+&#x00A0;<br />lines&#x00A0;start&#x00A0;with&#x00A0;::&#x00A0;will&#x00A0;be&#x00A0;ignored
+&#x00A0;<br />Take&#x00A0;conf/conf.txt&#x00A0;as&#x00A0;an&#x00A0;example:
+&#x00A0;<br />trainPath&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;specify&#x00A0;the&#x00A0;training&#x00A0;data
+&#x00A0;<br />devPath&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;specify&#x00A0;the&#x00A0;development&#x00A0;set,&#x00A0;you&#x00A0;can&#x00A0;specify&#x00A0;several&#x00A0;development&#x00A0;set
+&#x00A0;<br />testPath&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;similar&#x00A0;as&#x00A0;devPath.
+&#x00A0;<br />strLogDir&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;a&#x00A0;log&#x00A0;file&#x00A0;will&#x00A0;be&#x00A0;generated&#x00A0;during&#x00A0;the&#x00A0;training&#x00A0;process,
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;the&#x00A0;log&#x00A0;file&#x00A0;records&#x00A0;tagging&#x00A0;accuracy&#x00A0;of&#x00A0;each&#x00A0;epoch&#x00A0;on&#x00A0;development&#x00A0;and&#x00A0;test&#x00A0;sets.
+&#x00A0;<br />strModelPath&#x00A0;:&#x00A0;specify&#x00A0;the&#x00A0;directory&#x00A0;where&#x00A0;the&#x00A0;model&#x00A0;will&#x00A0;be&#x00A0;generated
+&#x00A0;<br />nRound&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;number&#x00A0;of&#x00A0;maximum&#x00A0;training&#x00A0;epoch.
+&#x00A0;<br />prefix&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;the&#x00A0;prefix&#x00A0;of&#x00A0;the&#x00A0;name&#x00A0;of&#x00A0;the&#x00A0;trained&#x00A0;model
+&#x00A0;<br />strRBMPrefix&#x00A0;:&#x00A0;specify&#x00A0;the&#x00A0;"common&#x00A0;prefix"&#x00A0;of&#x00A0;the&#x00A0;word-representation&#x00A0;RBM,
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;which&#x00A0;is&#x00A0;used&#x00A0;as&#x00A0;features&#x00A0;to&#x00A0;improve&#x00A0;tagging&#x00A0;accuracy.
+&#x00A0;<br />
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;Example&#x00A0;of&#x00A0;"common&#x00A0;Prefix":
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;WRRBM&#x00A0;contains&#x00A0;several&#x00A0;modules,&#x00A0;for&#x00A0;example:
+                                                                          
+
+                                                                          
+&#x00A0;<br />&#x00A0;&#x00A0;wrrbm_abc.dict&#x00A0;&#x00A0;wrrbm_abc.model&#x00A0;&#x00A0;wrrbm_abc.random
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;the&#x00A0;common&#x00A0;prefix&#x00A0;is&#x00A0;"wrrbm_abc".
+&#x00A0;<br />&#x00A0;using&#x00A0;WRRBM&#x00A0;will&#x00A0;cause&#x00A0;both&#x00A0;training&#x00A0;and&#x00A0;testing&#x00A0;slow,
+&#x00A0;<br />&#x00A0;but&#x00A0;the&#x00A0;model&#x00A0;will&#x00A0;improve&#x00A0;web-domain&#x00A0;tagging&#x00A0;accuracy.
+&#x00A0;<br />
+&#x00A0;<br />&#x00A0;if&#x00A0;you&#x00A0;want&#x00A0;to&#x00A0;train&#x00A0;a&#x00A0;tagger&#x00A0;on&#x00A0;standard&#x00A0;WSJ&#x00A0;data&#x00A0;set,
+&#x00A0;<br />&#x00A0;you&#x00A0;can&#x00A0;choose&#x00A0;to&#x00A0;ignore&#x00A0;wrrbm&#x00A0;by&#x00A0;add&#x00A0;"::"&#x00A0;at&#x00A0;the&#x00A0;begining
+&#x00A0;<br />&#x00A0;of&#x00A0;the&#x00A0;line&#x00A0;of&#x00A0;this&#x00A0;parameter.
+&#x00A0;<br />
+&#x00A0;<br />bEnTagger&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;"true"&#x00A0;denotes&#x00A0;English&#x00A0;tagger,
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;"false"&#x00A0;means&#x00A0;Chinese&#x00A0;tagger(currently&#x00A0;not&#x00A0;supported)
+&#x00A0;<br />bEarlyUpdate&#x00A0;:&#x00A0;"true"&#x00A0;denotes&#x00A0;whenever&#x00A0;a&#x00A0;word&#x00A0;is&#x00A0;incorrectly&#x00A0;tagged,
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;parameters&#x00A0;will&#x00A0;be&#x00A0;updated&#x00A0;and&#x00A0;the&#x00A0;rest&#x00A0;of&#x00A0;the&#x00A0;sentence&#x00A0;is&#x00A0;ignored.
+&#x00A0;<br />
+&#x00A0;<br />fMargin&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;since&#x00A0;we&#x00A0;use&#x00A0;a&#x00A0;margin&#x00A0;loss&#x00A0;(Ma&#x00A0;et&#x00A0;al.,&#x00A0;2014)&#x00A0;to&#x00A0;train&#x00A0;the&#x00A0;model,
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;this&#x00A0;parameter&#x00A0;specify&#x00A0;the&#x00A0;value&#x00A0;of&#x00A0;the&#x00A0;margin
+&#x00A0;<br />fRate&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;learning&#x00A0;rate,&#x00A0;currently,&#x00A0;we&#x00A0;do&#x00A0;not&#x00A0;use&#x00A0;weight&#x00A0;decay.
+&#x00A0;<br />vIHSize&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;size&#x00A0;of&#x00A0;the&#x00A0;feature&#x00A0;embedding,&#x00A0;corresponding&#x00A0;to&#x00A0;the&#x00A0;deminsion&#x00A0;of&#x00A0;the&#x00A0;hidden&#x00A0;layer&#x00A0;size&#x00A0;of
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;the&#x00A0;sparse&#x00A0;feature&#x00A0;module&#x00A0;described&#x00A0;in&#x00A0;section&#x00A0;3.2&#x00A0;of&#x00A0;(Ma&#x00A0;et&#x00A0;al.,&#x00A0;2014)
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;vIHType&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;:&#x00A0;"linear",&#x00A0;linear&#x00A0;projection&#x00A0;layer
+&#x00A0;<br />
+&#x00A0;<br />
+&#x00A0;<br />3.&#x00A0;Tagging
+&#x00A0;<br />src/Tagger&#x00A0;&#x00A0;tagging&#x00A0;&#x00A0;modelPrefix&#x00A0;&#x00A0;inputFile&#x00A0;&#x00A0;outputFile
+&#x00A0;<br />
+&#x00A0;<br />After&#x00A0;training,&#x00A0;several&#x00A0;files&#x00A0;will&#x00A0;be&#x00A0;generated&#x00A0;at&#x00A0;the&#x00A0;location&#x00A0;specified&#x00A0;by
+&#x00A0;<br />"strModelPath",&#x00A0;these&#x00A0;files&#x00A0;share&#x00A0;a&#x00A0;common&#x00A0;prefix,&#x00A0;for&#x00A0;example:
+&#x00A0;<br />
+&#x00A0;<br />WebTagger_AvgParam.confg&#x00A0;&#x00A0;&#x00A0;WebTagger_AvgParam.model&#x00A0;&#x00A0;....
+&#x00A0;<br />the&#x00A0;common&#x00A0;prefix&#x00A0;is&#x00A0;"WebTagger_AvgParam"
+&#x00A0;<br />
+&#x00A0;<br />"modelPrefix"&#x00A0;is&#x00A0;that&#x00A0;common&#x00A0;prefix.
+&#x00A0;<br />
+&#x00A0;<br />
+&#x00A0;<br />Data&#x00A0;format:
+&#x00A0;<br />&#x00A0;&#x00A0;See&#x00A0;the&#x00A0;sample&#x00A0;data&#x00A0;provided&#x00A0;at&#x00A0;sampleData/.
+&#x00A0;<br />
+&#x00A0;<br />Each&#x00A0;line&#x00A0;of&#x00A0;the&#x00A0;data&#x00A0;file&#x00A0;is&#x00A0;a&#x00A0;token&#x00A0;which&#x00A0;contains&#x00A0;three&#x00A0;columns,
+                                                                          
+
+                                                                          
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;Word&#x00A0;&#x00A0;generalizedForm&#x00A0;&#x00A0;POS
+&#x00A0;<br />Word:&#x00A0;word&#x00A0;form
+&#x00A0;<br />generalizedForm:&#x00A0;lower&#x00A0;cased&#x00A0;Word,&#x00A0;digit&#x00A0;are&#x00A0;converted&#x00A0;to&#x00A0;#DIG...
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;scripts&#x00A0;for&#x00A0;such&#x00A0;processing&#x00A0;will&#x00A0;coming&#x00A0;soon.
+&#x00A0;<br />POS:&#x00A0;part&#x00A0;of&#x00A0;speech,&#x00A0;when&#x00A0;tagging&#x00A0;new&#x00A0;data,&#x00A0;this&#x00A0;column&#x00A0;would&#x00A0;be&#x00A0;ignored&#x00A0;by&#x00A0;the&#x00A0;tagger
+&#x00A0;<br />A&#x00A0;sentence&#x00A0;contains&#x00A0;several&#x00A0;tokens.
+Sentences&#x00A0;are&#x00A0;separated&#x00A0;by&#x00A0;empty&#x00A0;line.
+&#x00A0;<br />
+&#x00A0;<br />
+&#x00A0;<br />How&#x00A0;to&#x00A0;cite:
+&#x00A0;<br />&#x00A0;&#x00A0;Either&#x00A0;cite&#x00A0;the&#x00A0;URL&#x00A0;or&#x00A0;the&#x00A0;paper
+&#x00A0;<br />"Tagging&#x00A0;the&#x00A0;web:&#x00A0;building&#x00A0;robust&#x00A0;web&#x00A0;tagger&#x00A0;using&#x00A0;neural&#x00A0;network"
+&#x00A0;<br />is&#x00A0;OK.
+&#x00A0;<br />
+&#x00A0;<br />==END&#x00A0;OF&#x00A0;TWEB&#x00A0;README==
+</div>
+<!--l. 141--><p class="nopar" >
+<!--l. 143--><p class="indent" >   Example configuration files and data set can be found in <span 
+class="ptmri7t-x-x-120">config </span>and <span 
+class="ptmri7t-x-x-120">sampleData</span>
+under <span 
+class="ptmri7t-x-x-120">zpar/src/common/tagger/implementations/tweb/TWeb</span>.
+<!--l. 146--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">5    </span> <a 
+ id="x1-50005"></a>How to tag new texts</h3>
+<!--l. 147--><p class="noindent" >To apply an existing model to tag new texts, use <br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/dist/postagger/tagger <span 
+class="cmmi-12">&#x003C;</span>modelPrefix<span 
+class="cmmi-12">&#x003E; &#x003C;</span>input-file<span 
+class="cmmi-12">&#x003E;</span>
+<span 
+class="cmmi-12">&#x003C;</span>output-file<span 
+class="cmmi-12">&#x003E; </span><br 
+class="newline" /><br 
+class="newline" />The modelPrefix is the same as described in TWeb README.
+<!--l. 155--><p class="indent" >   For example, using the model we just trained, we can tag <a 
+href="eng_pos_files/input.txt" >an example input</a> by
+<br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                             zpar/dist/postagger/tagger modelPrefix input.txt output.txt
+<br 
+class="newline" /><br 
+class="newline" />The output file contains automatically tagged sentences.
+                                                                          
+
+                                                                          
+<!--l. 163--><p class="noindent" >
+   <h3 class="likesectionHead"><a 
+ id="x1-60005"></a>References</h3>
+<!--l. 163--><p class="noindent" >
+     <div class="thebibliography">
+     <p class="bibitem" ><span class="biblabel">
+  [1]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xbib-1"></a>Ji Ma, Yue Zhang and Jingbo Zhu. 2014. Tagging The Web: Building
+     A Robust Web Tagger with Neural Network. <span 
+class="ptmri7t-x-x-120">Association for Computational</span>
+     <span 
+class="ptmri7t-x-x-120">Linguistics</span>, 144&#8211;154.</p></div>
+    
+</body></html> 
+
+                                                                          
+
+

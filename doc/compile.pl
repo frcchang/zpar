@@ -40,3 +40,7 @@ system($command);
 $command = "$compiler ccg";
 print "$command\n";
 system($command);
+
+$command = "$compiler tweb_tagger";
+print "$command\n";
+system($command);
