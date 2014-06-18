@@ -1,0 +1,168 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage{CJK}
+\usepackage{times}
+\makeindex
+\title{TWeb Wrapper: ZPar Support for the Neural Network Tagger}
+\begin{document}
+\begin{CJK}{GBK}{song}
+\maketitle
+
+\section{Overview}
+\label{sec:overview}
+This is the zpar wrapper for \href{https://github.com/majineu/TWeb}{TWeb}, the robust web tagger using neural network.
+
+\section{How to compile}
+Suppose that ZPar has been downloaded to the directory \textit{zpar}. 
+The TWeb source is already inlcuded and located in \textit{zpar/src/common/tagger/implementations/tweb/TWeb}.
+To make a POS tagging system using TWeb, 
+change the GENERIC\_TAGGER\_IMPL macro defined in \textit{Makefile} into \textit{tweb},
+and type \textit{make postagger}. 
+This will create a directory \textit{zpar/dist/postagger}, in which there are two files: \textit{train} and \textit{tagger}. 
+The file \textit{train} is used to train a tagging model,and the file \textit{tagger} is used to tag new texts using a trained tagging model.
+
+\section{Format of inputs and outputs}
+The input files to the \textit{tagger} executable are formatted as a sequence of tokenized English sentences. An example input is:
+\\
+\\
+\hspace{3cm} Ms. Haag plays Elianti .
+\\
+\\
+The output files contain space-separated words:
+\\
+\\
+\hspace{3cm} Ms./NNP Haag/NNP plays/VBZ Elianti/NNP ./.
+\\
+\\
+The format of training files for the \textit{train} executable is \textbf{quite different} from other tagger implementations in zpar,
+the details will be given in the next section.
+
+\section{How to train a model}
+\label{sec:how-train-model}
+To train a model, use
+\\
+\\
+\hspace{3cm} zpar/dist/postagger/train training $<$configureFile$>$ \\
+\\
+Which is the same with the original TWeb.
+For details about configureFile and training data format, please refer to
+the \href{https://raw.githubusercontent.com/majineu/TWeb/master/readme.txt}{TWeb README}.
+A copy is included as follows.
+\begin{verbatim}
+==TWEB README==
+1. Build.
+	Go into the src dir then make.
+	  a. cd src
+	  b. make -f Makefile
+	After make, an executable named Tagger would be created in src/
+
+
+2. Training.
+	You can train your own model with the following command:
+	   src/Tagger   training   configureFile
+	for example:
+	   src/Tagger  training  config/conf_sample.txt	 
+	where configFile specify some of the parameters used during training.
+	There are some examples of the configureFile in config/
+	(When training your own model, you just need to specify the path of the training set, 
+	 development set and the path of the trained model.
+	 For others parameters, use their default value is OK)
+
+	lines start with :: will be ignored
+	Take conf/conf.txt as an example:
+		trainPath    : specify the training data
+		devPath      : specify the development set, you can specify several development set
+		testPath     : similar as devPath.
+		strLogDir    : a log file will be generated during the training process,
+		                 the log file records tagging accuracy of each epoch on development and test sets.
+		strModelPath : specify the directory where the model will be generated
+		nRound       : number of maximum training epoch.
+		prefix       : the prefix of the name of the trained model
+		strRBMPrefix : specify the "common prefix" of the word-representation RBM, 
+									   which is used as features to improve tagging accuracy.
+									 
+									   Example of "common Prefix":
+									   WRRBM contains several modules, for example:
+										  wrrbm_abc.dict  wrrbm_abc.model  wrrbm_abc.random
+									   the common prefix is "wrrbm_abc".
+									 using WRRBM will cause both training and testing slow,
+									 but the model will improve web-domain tagging accuracy.
+
+									 if you want to train a tagger on standard WSJ data set,
+									 you can choose to ignore wrrbm by add "::" at the begining
+									 of the line of this parameter.
+
+		bEnTagger    : "true" denotes English tagger, 
+		               "false" means Chinese tagger(currently not supported)
+		bEarlyUpdate : "true" denotes whenever a word is incorrectly tagged,
+		                parameters will be updated and the rest of the sentence is ignored.
+		
+		fMargin      : since we use a margin loss (Ma et al., 2014) to train the model, 
+		               this parameter specify the value of the margin
+		fRate        : learning rate, currently, we do not use weight decay.
+		vIHSize      : size of the feature embedding, corresponding to the deminsion of the hidden layer size of
+		               the sparse feature module described in section 3.2 of (Ma et al., 2014)
+    vIHType      : "linear", linear projection layer
+
+
+3. Tagging
+		src/Tagger  tagging  modelPrefix  inputFile  outputFile
+		
+		After training, several files will be generated at the location specified by
+		"strModelPath", these files share a common prefix, for example:
+		
+		WebTagger_AvgParam.confg   WebTagger_AvgParam.model  ....
+		the common prefix is "WebTagger_AvgParam"
+
+		"modelPrefix" is that common prefix.
+
+
+Data format:
+  See the sample data provided at sampleData/.
+
+	Each line of the data file is a token which contains three columns, 
+	   Word  generalizedForm  POS
+	Word: word form
+	generalizedForm: lower cased Word, digit are converted to #DIG...
+	                 scripts for such processing will coming soon.
+	POS: part of speech, when tagging new data, this column would be ignored by the tagger  
+	A sentence contains several tokens.	Sentences are separated by empty line.
+	
+
+How to cite:
+  Either cite the URL or the paper 
+	"Tagging the web: building robust web tagger using neural network"
+	is OK.
+
+==END OF TWEB README==
+\end{verbatim}
+
+Example configuration files and data set can be found in \textit{config} and \textit{sampleData}
+under \textit{zpar/src/common/tagger/implementations/tweb/TWeb}.
+
+\section{How to tag new texts}
+To apply an existing model to tag new texts, use
+\\
+\\
+\hspace{3cm} zpar/dist/postagger/tagger $<$modelPrefix$>$ $<$input-file$>$ $<$output-file$>$
+\\
+\\
+The modelPrefix is the same as described in TWeb README.
+
+For example, using the model we just trained, we can tag \href{eng_pos_files/input.txt}{an example input} by
+\\
+\\
+\hspace{3cm} zpar/dist/postagger/tagger modelPrefix input.txt output.txt
+\\
+\\
+The output file contains automatically tagged sentences.
+
+\begin{thebibliography}{99}
+\bibitem{bib-1}
+ Ji Ma, Yue Zhang and Jingbo Zhu. 2014. Tagging The Web: Building A Robust Web Tagger with Neural Network. \textit{Association for Computational Linguistics}, 144--154.
+\end{thebibliography}
+\end{CJK}
+\end{document}

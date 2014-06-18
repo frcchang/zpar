@@ -1,0 +1,30 @@
+:: lines start with :: will be ignored
+
+trainPath       sampleData/wsj_train.pos.gen2.300
+devPath         sampleData/wsj_dev.pos.gen2.300
+devPath         sampleData/email_dev.pos.gen.nor2.300
+devPath         sampleData/weblog_dev.pos.gen.nor2.300
+testPath        sampleData/wsj_test.pos.gen2.300
+testPath        sampleData/answer_test.pos.gen.nor2.300
+testPath        sampleData/review_test.pos.gen.nor2.300
+testPath        sampleData/newsgroup_test.pos.gen.nor2.300
+strLogDir       ../TWeb/logsEn/
+strModelPath    ../TWeb/modelsEn/
+
+nRound          15
+
+prefix          WebTagger	
+nFixLen         4	
+strRBMPrefix    wrrbms/1_3NoWSJ_h300c17e38
+templatePath    templates/tempGFNoOP1.2.txt
+
+bEnTagger       true	
+bEarlyUpdate    true
+
+bTagVerbose     false	
+fMargin         0.05
+fRate           0.01
+
+vIHSize         20 
+vIHType         linear	
+

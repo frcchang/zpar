@@ -1,0 +1,68 @@
+:: jun's pos with goldberg dep templates
+window size:2 2
+
+::---------- 'dynamic_' is used to denote dynamic kernels
+$kernels
+dynamic_t
+::dynamic_tagged
+
+::---------- static kernel 
+w
+num
+:: upper case
+uc
+:: hyphen '-'
+hp
+
+
+$posTemplate
+
+::Ratnaparkhi
+pl0_w 0 0
+pl0_num 0 0
+pl0_uc 0 0
+pl0_hp 0 0
+
+pl1_w 0 0
+pl2_w 0 0
+pr1_w 0 0
+pr2_w 0 0
+
+pl1_t 0 0
+pl1_t@pl2_t 0 0
+
+::bidirectional  B
+pr1_t 0 0
+pr1_t@pl1_t 0 0
+pr1_t@pr2_t 0 0
+
+:: C
+pl2_t 0 0
+pr2_t 0 0
+
+pl2_t@pl0_w 0 0
+pl1_t@pl0_w 0 0
+pr2_t@pl0_w 0 0
+pr1_t@pl0_w 0 0
+
+pl2_t@pl1_t@pl0_w 0 0
+pl1_t@pr1_t@pl0_w 0 0
+pr1_t@pr2_t@pl0_w 0 0
+
+::D
+pl1_w@pl0_w 0 0
+pr1_w@pl0_w 0 0
+
+pl1_w@pl2_w 0 0
+pr1_w@pr2_w 0 0
+
+
+::pl0_w@pl1_tagged@pl2_tagged  0  0
+::pl0_w@pl1_tagged@pr1_tagged  0  0
+::pl0_w@pr1_tagged@pr2_tagged  0  0
+
+::pl0_w@pr1_tagged  0   0
+::pl0_w@pl1_tagged  0   0
+
+::pl0_w@pl2_tagged  0   0
+::pl0_w@pr2_tagged  0   0

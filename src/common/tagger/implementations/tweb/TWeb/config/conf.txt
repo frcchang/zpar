@@ -1,0 +1,31 @@
+:: lines start with :: will be ignored
+
+trainPath       /home/sutd/Ji/Data/TaggingTheWeb/train/wsj_train.pos.gen2
+devPath         /home/sutd/Ji/Data/TaggingTheWeb/dev/wsj_dev.pos.gen2
+devPath         /home/sutd/Ji/Data/TaggingTheWeb/dev/email_dev.pos.gen.nor2
+devPath         /home/sutd/Ji/Data/TaggingTheWeb/dev/weblog_dev.pos.gen.nor2
+testPath        /home/sutd/Ji/Data/TaggingTheWeb/test/wsj_test.pos.gen2
+testPath        /home/sutd/Ji/Data/TaggingTheWeb/test/answer_test.pos.gen.nor2
+testPath        /home/sutd/Ji/Data/TaggingTheWeb/test/review_test.pos.gen.nor2
+testPath        /home/sutd/Ji/Data/TaggingTheWeb/test/newsgroup_test.pos.gen.nor2
+strLogDir       ../TWeb/logsEn/
+strModelPath    ../TWeb/modelsEn/
+
+nRound          30
+
+prefix          WebTagger_AvgParam	
+nFixLen         4	
+strRBMPrefix    wrrbms/1_3NoWSJ_h300c17e38
+templatePath    templates/tempGFNoOP1.2.txt
+
+
+bEnTagger       true	
+bEarlyUpdate    true
+
+bTagVerbose     false	
+fMargin         0.005
+fRate           0.001
+
+vIHSize         20 
+vIHType         linear	
+
