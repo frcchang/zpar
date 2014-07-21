@@ -28,7 +28,7 @@
 TAGGER_IMPL = collins
 
 # the generic depparser
-DEPPARSER_IMPL = miguel
+DEPPARSER_IMPL = arceager
 
 # the generic conparser
 CONPARSER_IMPL = srnew
@@ -212,12 +212,71 @@ OBJECT_ENGLISH_CONPARSER = $(OBJECT_DIR)/english.conparser
 #
 #----------------------------------------------------------------
 
+
+ifeq ($(CHINESE_CONPARSER_IMPL), jcad)
+	OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/jointconstituent.o
+else
+	OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o
+endif
+
+$(DIST_CONPARSER):
+	mkdir -p $(DIST_CONPARSER)
+$(OBJECT_CONPARSER):
+	mkdir -p $(OBJECT_CONPARSER)
+
+$(DIST_DEPLABELER):
+	mkdir $(DIST_DEPLABELER)
+$(OBJECT_DEPLABELER):
+	mkdir $(OBJECT_DEPLABELER)
+
+# the flags for train
+ifeq ($(CHINESE_TAGGER_IMPL), segmented) # if segmented	
+	TAGGER_TRAIN_FLAGS = -DSEGMENTED
+	TAGGER_TEST_FLAGS = -DSEGMENTED
+else 
+	ifeq ($(CHINESE_TAGGER_IMPL), bidirectional) # else if bidirectional
+		TAGGER_TRAIN_FLAGS = -DSEGMENTED -DAUTO
+		TAGGER_TEST_FLAGS = -DSEGMENTED
+	endif
+endif
+
+
+ifeq ($(CHINESE_DEPPARSER_LABELED), true)
+	CHINESE_DEPPARSER_D = -DLABELED
+endif
+
+ifeq ($(ENGLISH_DEPPARSER_LABELED), true)
+	ENGLISH_DEPPARSER_D = -DLABELED
+endif
+
+ifeq ($(CHINESE_DEPPARSER_IMPL), combined)
+	CHINESE_DEPPARSER_D := $(CHINESE_DEPPARSER_D) -DCOMBINED
+	CHINESE_DEPPARSER_IMPL = nivre
+endif
+
+ifeq ($(ENGLISH_DEPPARSER_IMPL), combined)
+	ENGLISH_DEPPARSER_D := $(ENGLISH_DEPPARSER_D) -DCOMBINED
+	ENGLISH_DEPPARSER_IMPL = nivre
+endif
+
+#====================================================
+
+$(DIST_DEPPARSER):
+	mkdir $(DIST_DEPPARSER)
+$(OBJECT_DEPPARSER):
+	mkdir $(OBJECT_DEPPARSER)
+
+SRC_SEGMENTOR = $(SRC_CHINESE)/segmentor
+DIST_SEGMENTOR = $(DIST_DIR)/segmentor
+OBJECT_SEGMENTOR = $(OBJECT_DIR)/segmentor
+$(DIST_SEGMENTOR):
+	mkdir $(DIST_SEGMENTOR)
+$(OBJECT_SEGMENTOR):
+	mkdir $(OBJECT_SEGMENTOR)
+
 include Makefile.zpar
 include Makefile.zpar.en
 include Makefile.zpar.ge
-#XXX Make sure to add Makefile.tweb after Makefile.zpar.ge
-#XXX A trick to override the rules
-include Makefile.tweb
 include Makefile.zpar.es
 
 #----------------------------------------------------------------
@@ -227,44 +286,6 @@ include Makefile.zpar.es
 #----------------------------------------------------------------
 
 include Makefile.doc2snt
-
-#----------------------------------------------------------------
-#
-# The segmentor
-#
-#----------------------------------------------------------------
-
-include Makefile.segmentor
-
-#----------------------------------------------------------------
-#
-# The pos taggers (Chinese and English)
-#
-#----------------------------------------------------------------
-
-include Makefile.postagger
-
-#----------------------------------------------------------------
-#
-# The depparsers (Chinese and English)
-#
-#----------------------------------------------------------------
-
-ifeq ($(ENGLISH_DEPPARSER_IMPL),morphparser)
-include Makefile.depparser.morph
-else
-include Makefile.depparser
-endif
-
-include Makefile.deplabeler
-
-#----------------------------------------------------------------
-#
-# The conparser
-#
-#----------------------------------------------------------------
-
-include Makefile.conparser
 
 #----------------------------------------------------------------
 #
