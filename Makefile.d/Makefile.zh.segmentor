@@ -1,12 +1,5 @@
 
 
-SRC_SEGMENTOR = $(SRC_CHINESE)/segmentor
-DIST_SEGMENTOR = $(DIST_DIR)/segmentor
-OBJECT_SEGMENTOR = $(OBJECT_DIR)/segmentor
-$(DIST_SEGMENTOR):
-	mkdir $(DIST_SEGMENTOR)
-$(OBJECT_SEGMENTOR):
-	mkdir $(OBJECT_SEGMENTOR)
 segmentor: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_SEGMENTOR) $(DIST_SEGMENTOR) $(DIST_SEGMENTOR)/segmentor $(DIST_SEGMENTOR)/train
 	@echo The Chinese word segmentor system is compiled successfully into $(DIST_SEGMENTOR).
 
