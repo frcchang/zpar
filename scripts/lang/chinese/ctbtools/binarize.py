@@ -239,14 +239,14 @@ class CBinarizer(object):
             else: 
                if lRuleSet[0] in ("ld","rd"): #position then category /MIguel
                   for srcchild in lTemp:
-                     if srcchild.name.split("-")[0] in lRuleSet[1:]:
+                     if srcchild.name.split("-")[0] in lRuleSet[1:] and self.not_empty(srcchild):
                         headchild=srcchild
                         bFound=True
                         break
                else: 
                   assert lRuleSet[0] in ("le", "re")
                   for srcchild in lTemp:
-                     if not srcchild.name.split("-")[0] in lRuleSet[1:]:
+                     if not srcchild.name.split("-")[0] in lRuleSet[1:] and self.not_empty(srcchild):
                         headchild = srcchild
                         bFound = True
                         break
@@ -316,7 +316,7 @@ class CBinarizer(object):
          return False
 #      if srcnode.name != '-NONE-':
       if not (srcnode.name[0]=='-' and srcnode.name[-1]=='-'):
-          srcname = srcnode.name.split("-")[0].split("=")[0]
+          srcname = srcnode.name.split("-")[0].split("=")[0].split("|")[0]
       else:
 #          srcname = '-NONE-'
           srcname = srcnode.name
