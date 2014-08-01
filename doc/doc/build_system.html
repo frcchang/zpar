@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Introduction for ZPar build system</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=gbk"> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)"> 
+<!-- html --> 
+<meta name="src" content="build_system.tex"> 
+<meta name="date" content="2014-08-01 19:47:00"> 
+<link rel="stylesheet" type="text/css" href="build_system.css"> 
+</head><body 
+>
+   <div class="maketitle">
+                                                                          
+
+                                                                          
+                                                                          
+
+                                                                          
+
+<h2 class="titleHead">Introduction for ZPar build system</h2>
+<div class="author" ></div><br />
+<div class="date" ><span 
+class="ptmr7t-x-x-144">August 1, 2014</span></div>
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">1    </span> <a 
+ id="x1-10001"></a>Overview</h3>
+<!--l. 16--><p class="noindent" >ZPar is built using the <a 
+href="http://www.gnu.org/software/make/" >make</a> build system by providing a set of predefined rules and
+compilation actions. You may easily customize ZPar or contribute third-party code by
+adapting the Makefiles.
+<!--l. 21--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">2    </span> <a 
+ id="x1-20002"></a>How to compile ZPar</h3>
+<!--l. 22--><p class="noindent" >Suppose that ZPar has been downloaded to the directory <span 
+class="ptmri7t-x-x-120">zpar</span>. To make a POS tagging
+system for English, type <span 
+class="ptmri7t-x-x-120">make english.postagger</span>. This will create a directory
+<span 
+class="ptmri7t-x-x-120">zpar/dist/english.postagger</span>, in which there are two files: <span 
+class="ptmri7t-x-x-120">train </span>and <span 
+class="ptmri7t-x-x-120">tagger</span>. The file <span 
+class="ptmri7t-x-x-120">train</span>
+is used to train a tagging model, and the file <span 
+class="ptmri7t-x-x-120">tagger </span>is used to tag new texts using a
+trained parsing model. <br 
+class="newline" /><br 
+class="newline" />Parsers and POS taggers for other languages can be built in similar ways, please refer to
+specific manuals for detailed instructions.
+                                                                          
+
+                                                                          
+<!--l. 34--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">3    </span> <a 
+ id="x1-30003"></a>How to change implementations</h3>
+<!--l. 37--><p class="noindent" >ZPar provides various implementations for parsers and POS taggers for all the
+supported languages. To change the implementations, simply edit the different
+<span 
+class="pcrr7t-x-x-120">&#x22C6;</span><span 
+class="pcrr7t-x-x-120">_IMPL </span>macro in <span 
+class="ptmri7t-x-x-120">zpar/Makefile</span>. For example, to use TWeb as POS tagger
+for generic language, just make the following change to the <span 
+class="ptmri7t-x-x-120">zpar/Makefile</span>:
+<br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                            <span 
+class="pcrr7t-x-x-120">GENERIC_TAGGER_IMPL = tweb</span><br 
+class="newline" /><br 
+class="newline" />Then build the generic POS tagger as usual. <br 
+class="newline" /><br 
+class="newline" />To examine which implementations are support for a specific task, please consult into
+the sub-folders under: <br 
+class="newline" /><br 
+class="newline" /><span 
+class="pcrr7t-x-x-120">zpar/src/</span><span 
+class="pcrro7t-x-x-120">&#x003C;LANGUAGE&#x003E;</span><span 
+class="pcrr7t-x-x-120">/</span><span 
+class="pcrro7t-x-x-120">&#x003C;TASK&#x003E;</span><span 
+class="pcrr7t-x-x-120">/implementations/</span><br 
+class="newline" /><br 
+class="newline" />The name of the sub-folder is also that of the implementation.
+<!--l. 57--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">4    </span> <a 
+ id="x1-40004"></a>How to contribute code</h3>
+<!--l. 60--><p class="noindent" >You may add a new implementation for a specific task by creating a sub-folder as
+described in Section&#x00A0;<a 
+href="#x1-30003">How to change implementations<!--tex4ht:ref: sec:how-change-impl --></a>. <br 
+class="newline" /><br 
+class="newline" />ZPar provides a framework of transition based system and requires all the
+implementations compatible with ZPar APIs and source/object file naming conventions.
+You should look into an existing implementation for details. <br 
+class="newline" /><br 
+class="newline" />If the custom implementation is based on the framework of transition based system of
+ZPar, there&#8217;s nothing special to do. Simple change the different <span 
+class="pcrr7t-x-x-120">&#x22C6;</span><span 
+class="pcrr7t-x-x-120">_IMPL </span>macro in
+<span 
+class="ptmri7t-x-x-120">zpar/Makefile </span>into the name of the custom implementation and build as usual. The build
+system will automatically detect the implementation, compile it and link it into ZPar.
+<br 
+class="newline" /><br 
+class="newline" />Furthermore, ZPar also support integrating implementations that do not use
+the framework of transition based system. In such situation, make a copy the
+                                                                          
+
+                                                                          
+corresponding Makefile template for the task and language in <span 
+class="ptmri7t-x-x-120">zpar/Makefile.d/ </span>folder:
+<br 
+class="newline" /><br 
+class="newline" />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;                            <span 
+class="pcrr7t-x-x-120">cp Makefile.</span><span 
+class="pcrro7t-x-x-120">&#x003C;LANGUAGE&#x003E;</span><span 
+class="pcrr7t-x-x-120">.</span><span 
+class="pcrro7t-x-x-120">&#x003C;TASK&#x003E; </span><span 
+class="cmsy-10x-x-120">\</span><br 
+class="newline" /><span 
+class="pcrr7t-x-x-120">&#x00A0;</span><span 
+class="pcrr7t-x-x-120">&#x00A0;</span><span 
+class="pcrr7t-x-x-120">&#x00A0;</span><span 
+class="pcrr7t-x-x-120">&#x00A0;</span><span 
+class="pcrr7t-x-x-120">&#x00A0;              Makefile.</span><span 
+class="pcrro7t-x-x-120">&#x003C;LANGUAGE&#x003E;</span><span 
+class="pcrr7t-x-x-120">.</span><span 
+class="pcrro7t-x-x-120">&#x003C;TASK&#x003E;</span><span 
+class="pcrr7t-x-x-120">.</span><span 
+class="pcrro7t-x-x-120">&#x003C;IMPL_NAME&#x003E;</span>
+<br 
+class="newline" /><br 
+class="newline" />And change the rules in it to compile the custom implementation. Note that the object
+file name conventions must be strictly followed to link the new implementation into
+ZPar. You should link all the required objects of your own into one with proper name.
+For details, <span 
+class="ptmri7t-x-x-120">zpar/Makefile.d/Makefile.ge.postagger.tweb </span>can be taken as an
+example.
+    
+</body></html> 
+
+                                                                          
+
+
