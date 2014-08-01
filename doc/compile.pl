@@ -44,3 +44,7 @@ system($command);
 $command = "$compiler tweb_tagger";
 print "$command\n";
 system($command);
+
+$command = "$compiler build_system";
+print "$command\n";
+system($command);

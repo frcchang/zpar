@@ -1,0 +1,97 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{hyperref}
+\usepackage{CJK}
+\usepackage{times}
+\makeindex
+\title{Introduction for ZPar build system}
+\begin{document}
+\begin{CJK}{GBK}{song}
+\maketitle
+
+\section{Overview}
+\label{sec:overview}
+ZPar is built using the \href{http://www.gnu.org/software/make/}{make} build system
+by providing a set of predefined rules and compilation actions.
+You may easily customize ZPar or contribute third-party code
+by adapting the Makefiles.
+
+\section{How to compile ZPar}
+Suppose that ZPar has been downloaded to the directory \textit{zpar}. 
+To make a POS tagging system for English, 
+type \textit{make english.postagger}. 
+This will create a directory \textit{zpar/dist/english.postagger}, 
+in which there are two files: \textit{train} and \textit{tagger}. 
+The file \textit{train} is used to train a tagging model,
+and the file \textit{tagger} is used to tag new texts using a trained parsing model.
+\\
+\\
+Parsers and POS taggers for other languages can be built in similar ways,
+please refer to specific manuals for detailed instructions.
+
+\section{How to change implementations}
+\label{sec:how-change-impl}
+
+ZPar provides various implementations for parsers and POS taggers for all the supported languages.
+To change the implementations, simply edit the different \texttt{*\_IMPL} macro in \textit{zpar/Makefile}.
+For example, to use TWeb as POS tagger for generic language, just make the following change to the \textit{zpar/Makefile}:
+\\
+\\
+\hspace{3cm}\texttt{GENERIC_TAGGER_IMPL = tweb}
+\\
+\\
+Then build the generic POS tagger as usual.
+\\
+\\
+To examine which implementations are support for a specific task,
+please consult into the sub-folders under:
+\\
+\\
+\texttt{zpar/src/\textit{<LANGUAGE>}/\textit{<TASK>}/implementations/}
+\\
+\\
+The name of the sub-folder is also that of the implementation.
+
+\section{How to contribute code}
+\label{sec:customizing-zpar}
+
+You may add a new implementation for a specific task
+by creating a sub-folder as described in Section~\nameref{sec:how-change-impl}.
+\\
+\\
+ZPar provides a framework of transition based system
+and requires all the implementations compatible with
+ZPar APIs and source/object file naming conventions.
+You should look into an existing implementation for details.
+\\
+\\
+If the custom implementation is based on the framework
+of transition based system of ZPar, 
+there's nothing special to do.
+Simple change the different \texttt{*\_IMPL} macro in \textit{zpar/Makefile}
+into the name of the custom implementation and build as usual.
+The build system will automatically detect the implementation,
+compile it and link it into ZPar.
+\\
+\\
+Furthermore, ZPar also support integrating implementations
+that do not use the framework of transition based system.
+In such situation, make a copy the corresponding Makefile template
+for the task and language 
+in \textit{zpar/Makefile.d/} folder:
+\\
+\\
+\hspace{3cm}\texttt{cp Makefile.\textit{<LANGUAGE>}.\textit{<TASK>} \textbackslash \\
+\hspace{3cm}\quad Makefile.\textit{<LANGUAGE>}.\textit{<TASK>}.\textit{<IMPL_NAME>}}
+\\
+\\
+And change the rules in it to compile the custom implementation.
+Note that the object file name conventions must be strictly followed
+to link the new implementation into ZPar.
+You should link all the required objects of your own into one with proper name.
+For details, \textit{zpar/Makefile.d/Makefile.ge.postagger.tweb} can be taken as an example.
+
+\end{CJK}
+\end{document}
