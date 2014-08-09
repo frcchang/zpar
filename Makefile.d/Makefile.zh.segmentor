@@ -21,3 +21,4 @@ $(DIST_SEGMENTOR)/train: $(SRC_SEGMENTOR)/train.cpp $(OBJECT_DIR)/segmentor.o $(
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/train.cpp -o $(OBJECT_SEGMENTOR)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/train $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
+clean.zh.segmentor:

@@ -10,37 +10,57 @@ endif
 ifneq ("$(wildcard Makefile.d/Makefile.zh.postagger.$(CHINESE_TAGGER_IMPL))","")
 include Makefile.d/Makefile.zh.postagger.$(CHINESE_TAGGER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/Makefile)","")
+include $(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.zh.postagger
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.zh.depparser.$(CHINESE_DEPPARSER_IMPL))","")
 include Makefile.d/Makefile.zh.depparser.$(CHINESE_DEPPARSER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/Makefile)","")
+include $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.zh.depparser
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.zh.deplabeler.$(CHINESE_DEPLABELER_IMPL))","")
 include Makefile.d/Makefile.zh.deplabeler.$(CHINESE_DEPLABELER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/Makefile)","")
+include $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.zh.deplabeler
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.zh.conparser.$(CHINESE_CONPARSER_IMPL))","")
 include Makefile.d/Makefile.zh.conparser.$(CHINESE_CONPARSER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/Makefile)","")
+include $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.zh.conparser
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.zh.segmentor.$(SEGMENTOR_IMPL))","")
 include Makefile.d/Makefile.zh.segmentor.$(SEGMENTOR_IMPL)
 else
+ifneq ("$(wildcard $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/Makefile)","")
+include $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/Makefile
+else
 include Makefile.d/Makefile.zh.segmentor
+endif
 endif
 
 
-zpar: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS)
+zpar.zh: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese $(CHINESE_DEPPARSER_D) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_DOC2SNT) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE)/zpar.cpp -o $(OBJECT_DIR)/zpar.o
 	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar $(OBJECT_DIR)/zpar.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECTS)
 	@echo The Chinese zpar system compiled successfully into $(DIST_DIR).
 
-zh.zpar.clean: zh.clean.postagger zh.clean.conparser zh.clean.depparser
+clean.zh: clean.zh.postagger clean.zh.conparser clean.zh.depparser clean.zh.deplabeler

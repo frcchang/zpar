@@ -32,3 +32,4 @@ $(DIST_SPANISH_DEPPARSER)/unit_test: $(SRC_COMMON_DEPPARSER)/test.cpp $(OBJECT_D
 	$(LD) $(LDFLAGS) -o $(DIST_SPANISH_DEPPARSER)/unit_test $(OBJECT_DIR)/spanish.depparser.o $(OBJECT_SPANISH_DEPPARSER)/weight.o $(OBJECT_SPANISH_DEPPARSER)/test.o $(OBJECTS)
 
 
+clean.es.depparser:

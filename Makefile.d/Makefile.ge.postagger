@@ -36,5 +36,4 @@ $(DIST_GENERIC_TAGGER)/train: $(SRC_GENERIC_TAGGER)/train.cpp $(OBJECT_DIR)/gene
 
 #===================================================================
 
-generic.clean.postagger:
-
+clean.ge.postagger:
