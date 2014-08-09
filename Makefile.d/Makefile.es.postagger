@@ -21,5 +21,4 @@ $(DIST_SPANISH_TAGGER)/train: $(SRC_SPANISH_TAGGER)/train.cpp $(OBJECT_DIR)/span
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=spanish -D$(SPANISH_ANNOTATION) -I$(SRC_SPANISH) -I$(SRC_SPANISH_TAGGER) -I$(SRC_SPANISH_TAGGER)/implementations/$(SPANISH_TAGGER_IMPL) -c $(SRC_SPANISH_TAGGER)/train.cpp -o $(OBJECT_SPANISH_TAGGER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_SPANISH_TAGGER)/train $(OBJECT_DIR)/spanish.postagger.o $(OBJECT_SPANISH_TAGGER)/weight.o $(OBJECT_SPANISH_TAGGER)/train.o $(OBJECTS)
 
-clean:
-
+clean.es.postagger:

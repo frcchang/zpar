@@ -10,13 +10,21 @@ endif
 ifneq ("$(wildcard Makefile.d/Makefile.english.postagger.$(ENGLISH_TAGGER_IMPL))","")
 include Makefile.d/Makefile.en.postagger.$(ENGLISH_TAGGER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/Makefile)","")
+include $(SRC_ENGLISH_TAGGER)/implementations/$(ENGLISH_TAGGER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.en.postagger
 endif
+endif
 
-ifneq ("$(wildcard Makefile.d/Makefile.en.depparser.$(ENGLISH_DEPLABELER_IMPL))","")
+ifneq ("$(wildcard Makefile.d/Makefile.en.deplabeler.$(ENGLISH_DEPLABELER_IMPL))","")
 include Makefile.d/Makefile.en.deplabeler.$(ENGLISH_DEPLABELER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/Makefile)","")
+include $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.en.deplabeler
+endif
 endif
 
 ifeq ($(ENGLISH_DEPPARSER_IMPL),morphparser)
@@ -25,14 +33,22 @@ else
 ifneq ("$(wildcard Makefile.d/Makefile.en.depparser.$(ENGLISH_DEPPARSER_IMPL))","")
 include Makefile.d/Makefile.en.depparser.$(ENGLISH_DEPPARSER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/Makefile)","")
+include $(SRC_COMMON_DEPPARSER)/implementations/$(ENGLISH_DEPPARSER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.en.depparser
+endif
 endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.en.conparser.$(ENGLISH_CONPARSER_IMPL))","")
 include Makefile.d/Makefile.en.conparser.$(ENGLISH_CONPARSER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/Makefile)","")
+include $(SRC_COMMON_CONPARSER)/implementations/$(ENGLISH_CONPARSER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.en.conparser
+endif
 endif
 
 zpar.en: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_DIR)/english.conparser.o $(OBJECT_ENGLISH_CONPARSER)/constituent.o $(OBJECT_ENGLISH_CONPARSER)/weight.o $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECTS)
@@ -40,4 +56,4 @@ zpar.en: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
 	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar.en $(OBJECT_DIR)/zpar.en.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_DIR)/english.postagger.o $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECT_DIR)/english.conparser.o $(OBJECT_ENGLISH_CONPARSER)/constituent.o $(OBJECT_ENGLISH_CONPARSER)/weight.o $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECTS)
 	@echo The English zpar.en system compiled successfully into $(DIST_DIR).
 
-en.zpar.clean: en.clean.postagger en.clean.conparser en.clean.depparser
+clean.en: clean.en.postagger clean.en.conparser clean.en.depparser clean.en.deplabeler

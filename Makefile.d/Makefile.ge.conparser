@@ -40,5 +40,4 @@ $(DIST_GENERIC_CONPARSER)/train: $(SRC_GENERIC_CONPARSER)/train.cpp $(OBJECT_DIR
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/train.cpp -o $(OBJECT_GENERIC_CONPARSER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
 
-generic.clean.conparser:
-
+clean.ge.conparser:

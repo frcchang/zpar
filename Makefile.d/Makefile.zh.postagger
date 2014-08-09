@@ -19,3 +19,4 @@ $(DIST_TAGGER)/train: $(SRC_TAGGER)/train.cpp $(OBJECT_TAGGER)/weight.o $(OBJECT
 	$(CXX) $(TAGGER_TEST_FLAGS) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_TAGGER)/train.cpp -o $(OBJECT_TAGGER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/train $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_TAGGER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/learning/dbn.o
 
+clean.zh.postagger:

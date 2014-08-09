@@ -274,10 +274,12 @@ $(DIST_SEGMENTOR):
 $(OBJECT_SEGMENTOR):
 	mkdir $(OBJECT_SEGMENTOR)
 
-include Makefile.zpar
+include Makefile.zpar.zh
 include Makefile.zpar.en
 include Makefile.zpar.ge
 include Makefile.zpar.es
+
+zpar: zpar.ge
 
 #----------------------------------------------------------------
 #

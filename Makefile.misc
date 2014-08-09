@@ -37,11 +37,22 @@ test: $(SRC_DIR)/test.cpp $(OBJECT_DIR) $(DIST_DIR) $(SRC_INCLUDES)/bitarray.h $
 
 #----------------------------------------------------------------
 #
+# make docs
+#
+#----------------------------------------------------------------
+docs:
+	$(MAKE) -C doc/
+
+clean.docs:
+	$(MAKE) -C doc/ clean
+
+#----------------------------------------------------------------
+#
 # make clean
 #
 #----------------------------------------------------------------
 
-clean: generic.clean
+clean: clean.ge clean.en clean.es clean.zh
 	rm -rf $(OBJECT_DIR)
 	rm -f test.o
 	rm -f test.exe

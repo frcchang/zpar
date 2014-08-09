@@ -47,19 +47,41 @@ OBJECT_GENERIC_DEPLABELER = $(OBJECT_DIR)/generic.deplabeler
 ifneq ("$(wildcard Makefile.d/Makefile.ge.conparser.$(TAGGER_IMPL))","")
 include Makefile.d/Makefile.ge.conparser.$(CONPARSER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/Makefile)","")
+include $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.ge.conparser
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.ge.depparser.$(TAGGER_IMPL))","")
 include Makefile.d/Makefile.ge.depparser.$(DEPPARSER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/Makefile)","")
+include $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.ge.depparser
+endif
+endif
+
+ifneq ("$(wildcard Makefile.d/Makefile.ge.deplabeler.$(TAGGER_IMPL))","")
+include Makefile.d/Makefile.ge.deplabeler.$(DEPPARSER_IMPL)
+else
+ifneq ("$(wildcard $(SRC_COMMON_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL)/Makefile)","")
+include $(SRC_COMMON_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL)/Makefile
+else
+include Makefile.d/Makefile.ge.deplabeler
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.ge.postagger.$(TAGGER_IMPL))","")
 include Makefile.d/Makefile.ge.postagger.$(TAGGER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/Makefile)","")
+include $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.ge.postagger
+endif
 endif
 
 zpar.ge: $(OBJECT_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(DIST_DIR) $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECTS)
@@ -67,4 +89,4 @@ zpar.ge: $(OBJECT_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DI
 	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar.ge $(OBJECT_DIR)/zpar.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 	@echo The generic zpar.ge system compiled successfully into $(DIST_DIR).
 
-generic.clean: generic.clean.postagger generic.clean.conparser generic.clean.depparser
+clean.ge: clean.ge.postagger clean.ge.conparser clean.ge.depparser clean.ge.deplabeler

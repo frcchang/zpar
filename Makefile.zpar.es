@@ -11,19 +11,31 @@ endif
 ifneq ("$(wildcard Makefile.d/Makefile.es.deplabeler.$(SPANISH_DEPLABELER_IMPL))","")
 include Makefile.d/Makefile.es.deplabeler.$(SPANISH_DEPLABELER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_COMMON_DEPLABELER)/implementations/$(SPANISH_DEPLABELER_IMPL)/Makefile)","")
+include $(SRC_COMMON_DEPLABELER)/implementations/$(SPANISH_DEPLABELER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.es.deplabeler
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.es.depparser.$(SPANISH_DEPPARSER_IMPL))","")
 include Makefile.d/Makefile.es.depparser.$(SPANISH_DEPPARSER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_COMMON_DEPPARSER)/implementations/$(SPANISH_DEPPARSER_IMPL)/Makefile)","")
+include $(SRC_COMMON_DEPPARSER)/implementations/$(SPANISH_DEPPARSER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.es.depparser
+endif
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.es.postagger.$(SPANISH_TAGGER_IMPL))","")
 include Makefile.d/Makefile.es.postagger.$(SPANISH_TAGGER_IMPL)
 else
+ifneq ("$(wildcard $(SRC_SPANISH_TAGGER)/implementations/$(SPANISH_TAGGER_IMPL)/Makefile)","")
+include $(SRC_SPANISH_TAGGER)/implementations/$(SPANISH_TAGGER_IMPL)/Makefile
+else
 include Makefile.d/Makefile.es.postagger
+endif
 endif
 
 zpar.es: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/spanish.postagger.o $(OBJECT_SPANISH_TAGGER)/weight.o $(OBJECT_DIR)/spanish.depparser.o $(OBJECT_SPANISH_DEPPARSER)/weight.o $(OBJECT_DIR)/spanish.deplabeler.o $(OBJECT_SPANISH_DEPLABELER)/weight.o $(OBJECTS)
@@ -31,4 +43,4 @@ zpar.es: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o
 	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar.es $(OBJECT_DIR)/zpar.es.o $(OBJECT_SPANISH_TAGGER)/weight.o $(OBJECT_DIR)/spanish.postagger.o $(OBJECT_DIR)/spanish.depparser.o $(OBJECT_SPANISH_DEPPARSER)/weight.o  $(OBJECT_DIR)/spanish.deplabeler.o $(OBJECT_SPANISH_DEPLABELER)/weight.o $(OBJECTS)
 	@echo The Spanish zpar.es system compiled - configured with annotation type $(SPANISH_ANNOTATION) - successfully into $(DIST_DIR).
 
-es.zpar.clean: es.clean.postagger es.clean.conparser es.clean.depparser
+clean.es: clean.es.postagger clean.es.conparser clean.es.depparser clean.es.deplabeler

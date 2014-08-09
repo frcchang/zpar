@@ -33,3 +33,4 @@ $(DIST_CONPARSER)/train: $(SRC_CHINESE_CONPARSER)/train.cpp $(OBJECT_DIR)/chines
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/train.cpp -o $(OBJECT_CONPARSER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_CONPARSER)/train $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_CONPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJ_CHINESE_CONSTITUENT)
 
+clean.zh.conparser:
