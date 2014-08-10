@@ -18,7 +18,7 @@ by providing a set of predefined rules and compilation actions.
 You may easily customize ZPar or contribute third-party code
 by adapting the Makefiles.
 
-\section{How to compile ZPar}
+\section{How to compile ZPar using default implementations}
 Suppose that ZPar has been downloaded to the directory \textit{zpar}. 
 To make a POS tagging system for English, 
 type \textit{make english.postagger}. 
@@ -28,21 +28,27 @@ The file \textit{train} is used to train a tagging model,
 and the file \textit{tagger} is used to tag new texts using a trained parsing model.
 \\
 \\
-Parsers and POS taggers for other languages can be built in similar ways,
-please refer to specific manuals for detailed instructions.
+Parsers and POS taggers for other languages can be built in similar ways.
+Please refer to specific manuals for detailed instructions.
 
-\section{How to change implementations}
+\section{How to change the implementation for a existing task}
 \label{sec:how-change-impl}
 
 ZPar provides various implementations for parsers and POS taggers for all the supported languages.
-To change the implementations, simply edit the different \texttt{*\_IMPL} macro in \textit{zpar/Makefile}.
-For example, to use TWeb as POS tagger for generic language, just make the following change to the \textit{zpar/Makefile}:
+To choose a specific implementation
+from existing ones provided by ZPar,
+simply edit \textit{zpar/Makefile}
+and change the corresponding \texttt{*\_IMPL} macro
+where \texttt{*} represents \texttt{\textit{<LANGUAGE>\_<TASK>}}.
+For example, to use the `Tweb' implementation 
+of the POS tagger for generic language,
+make the following change to the \textit{zpar/Makefile}:
 \\
 \\
 \hspace{3cm}\texttt{GENERIC\_TAGGER\_IMPL = tweb}
 \\
 \\
-Then build the generic POS tagger as usual.
+Then build the generic POS tagger as usual by typing \texttt{make generic.postagger}.
 \\
 \\
 To examine which implementations are supported for a specific task,
@@ -52,13 +58,18 @@ please consult the sub-folders under:
 \texttt{zpar/src/\textit{<LANGUAGE>}/\textit{<TASK>}/implementations/}
 \\
 \\
-The name of the sub-folder is also the name of the implementation.
+For example, the supported Chinese word segmentors are,
+\begin{verbatim}
+$ ls zpar/src/chinese/segmentor/implementations/
+acl07  action  agenda  agendachart  agendaplus  viterbi
+\end{verbatim}
+The name of a sub-folder is also the name of the implementation.
 The \texttt{\textit{<LANGUAGE>}} can be:
 \begin{itemize}
 \item \texttt{\textit{chinese}}: for Chinese only;
 \item \texttt{\textit{english}}: for English only;
 \item \texttt{\textit{spanish}}: for Spanish only;
-\item \texttt{\textit{common}}: for all of Chinese, English, Spanish and geniric languages.
+\item \texttt{\textit{common}}: for all of Chinese, English, Spanish and other languages.
 \end{itemize}
 The \texttt{\textit{<TASK>}}can be:
 \begin{itemize}
@@ -68,19 +79,23 @@ The \texttt{\textit{<TASK>}}can be:
 \item \texttt{\textit{deplabeler}}: for dependency labeling;
 \item \texttt{\textit{segmentor}}: for word segmentation, Chinese only.
 \end{itemize}
+When the implementation of a specific task is changed,
+the corresponding component of ZPar will be updated accordingly,
+when ZPar is compiled again.
 
-\section{How to contribute code}
+\section{How to contribute code by writing a new implementation for a task}
 \label{sec:customizing-zpar}
 
 You may add a new implementation for a specific task
-by creating a sub-folder as described in Section~\nameref{sec:how-change-impl}.
+by creating a sub-folder as described in the previous Section~(\nameref{sec:how-change-impl}).
 \\
 \\
 ZPar requires all the implementations compatible with
 ZPar APIs and source/object file naming conventions.
-For example, for a new generic language POS tagger,
-the implementation must provide
-such a class in source file \texttt{tagger.h} and \texttt{tagger.cpp}:
+For example, to write a new generic language POS tagger,
+one must provide
+the following class in the source file \texttt{tagger.h}
+in \texttt{zpar/src/generic/tagger/implementations/\textit{<NEW\_TAGGER>}},
 \begin{verbatim}
 namespace TARGET_LANGUAGE {
   class CTagger {
@@ -94,28 +109,32 @@ namespace TARGET_LANGUAGE {
   }
 }
 \end{verbatim}
-and \texttt{tagger.cpp} should be compiled into \texttt{generic.postagger.o}.
-Furthermore, a POS tagger implementation should provide
-\texttt{tagger\_weight.h}, \texttt{tagger\_weight.cpp}
+A \texttt{tagger.cpp} file should contain the implementations 
+of the methods,
+and be saved into the same directory.
+It should be compiled into \texttt{generic.postagger.o}.
+In addition, the new POS tagger implementation should provide two files, 
+\texttt{tagger\_weight.h} and \texttt{tagger\_weight.cpp}, 
 which should be compiled into \texttt{weight.o}.
-For other tasks and languages, you may look into an existing implementations
+For other tasks and languages, you may look into an existing implementation
 and Makefile template for details.
 \\
 \\
-If the custom implementation can be contained 
-in those source and object files,
-there's nothing special to do.
-Simple change the different \texttt{*\_IMPL} macro in \textit{zpar/Makefile}
+If the custom implementation contains all the
+source and object files according to the specifications above,
+there is nothing further to do.
+Simply change the corresponding \texttt{*\_IMPL} macro in \textit{zpar/Makefile}
 into the name of the custom implementation and build as usual.
 The build system will automatically detect the implementation,
 compile it and link it into ZPar.
 \\
 \\
-However, if it isn't sufficient to accomplish
+However, if it is not sufficient to accomplish
 the custom implementation in those files,
+and additional objects are necessary,
 you have to provide your own rules and actions
 to compile and link the additional objects.
-In such situation, make a copy the corresponding Makefile template
+In such a situation, make a copy of the corresponding Makefile template
 for the task and language 
 from \textit{zpar/Makefile.d/} folder
 to your custom implementation folder:
@@ -125,10 +144,21 @@ to your custom implementation folder:
 \hspace{3cm}\quad src/\textit{<LANGUAGE>}/\textit{<TASK>}/implementations/\textit{<IMPL\_NAME>}/Makefile}
 \\
 \\
+For example, to write a new generic language POS tagger,
+\\
+\\
+\hspace{3cm}\texttt{cp Makefile.d/Makefile.ge.postagger \textbackslash \\
+\hspace{3cm}\quad src/common/postagger/implementations/\textit{<NEW\_TAGGER>}/Makefile}
+\\
+\\
 And change the rules in it to compile the custom implementation.
 Note that the object file naming must strictly follow
 the conventions described above.
 You should link all the required objects of your own into one with proper name.
+For example, to write a new generic language POS tagger,
+one should make sure that
+all the necessary object files
+are linked into \texttt{generic.postagger.o}.
 For details, \textit{zpar/Makefile.d/Makefile.ge.postagger.tweb} can be taken as an example.
 
 \end{CJK}
