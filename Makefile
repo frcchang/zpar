@@ -47,17 +47,17 @@ SEGMENTOR_IMPL = agenda
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = dbn
+CHINESE_TAGGER_IMPL = agenda_mvt
 
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = arceager-mvt
+CHINESE_DEPPARSER_IMPL = arceager-mvt-origin
 CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
-CHINESE_CONPARSER_IMPL = jcad
+CHINESE_CONPARSER_IMPL = cad-mvt
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = collins
@@ -278,6 +278,7 @@ include Makefile.zpar.zh
 include Makefile.zpar.en
 include Makefile.zpar.ge
 include Makefile.zpar.es
+include Makefile.zpar.mvt
 
 zpar: zpar.ge
 
