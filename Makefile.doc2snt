@@ -12,6 +12,9 @@ chinese.doc2snt: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DOC2SNT) $(DIST_DOC2SNT) $(D
 $(OBJECT_DIR)/chinese.doc2snt.o:$(SRC_INCLUDES)/buffer.h $(SRC_CHINESE)/charcat.h $(SRC_DOC2SNT)/doc2snt.h $(SRC_DOC2SNT)/include.h $(SRC_DOC2SNT)/doc2snt.cpp ./Makefile
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -c $(SRC_DOC2SNT)/doc2snt.cpp -o $(OBJECT_DIR)/chinese.doc2snt.o
 
+$(OBJECT_DIR)/mvt.doc2snt.o:$(SRC_INCLUDES)/buffer.h $(SRC_CHINESE)/charcat.h $(SRC_DOC2SNT)/doc2snt.h $(SRC_DOC2SNT)/include.h $(SRC_DOC2SNT)/doc2snt.cpp ./Makefile
+	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -c $(SRC_DOC2SNT)/doc2snt.cpp -o $(OBJECT_DIR)/mvt.doc2snt.o
+
 # the doc2snt executable
 $(DIST_DOC2SNT)/doc2snt: $(SRC_DOC2SNT)/main.cpp $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -c $(SRC_DOC2SNT)/main.cpp -o $(OBJECT_DOC2SNT)/main.o
