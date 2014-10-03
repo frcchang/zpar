@@ -32,16 +32,17 @@ blockquote p { font-size: 14px; }
 <p>
 Par for Chinese (Penn Chinese Treebank), English (Penn Treebank) and ZPar generic (language-independent)
 are compiled separately into three independent programs:
-zpar.zh, zpar.en and zpar, respectively <a href="#note">[1]</a>.
+<code>zpar.zh</code>, <code>zpar.en</code> and <code>zpar</code>, respectively <a href="#note-1">[1]</a>.
 Each program needs to be executed
 with a set of corresponding statistical models.
 Some example sets of models are released together with ZPar source so that the public release can be used off-the-shelf.
 </p>
 
 <p>
-The current version of ZPar is 0.5.
-Its release contains a model set for zpar.en,
-which supports labeled dependency parsing and context-free-grammar parsing.
+The current version of ZPar is 0.7.
+Its release contains a set of models for <code>zpar.en</code>,
+and a set of models for <code>zpar.zh</code>,
+which support labeled dependency parsing and context-free-grammar parsing.
 </p>
 
 <h2><a id="Download-and-installation">Download and installation</a></h2>
@@ -49,18 +50,45 @@ which supports labeled dependency parsing and context-free-grammar parsing.
 <p>The source code and models can be downloaded from <a
 href=http://www.sourceforge.net/projects/zpar>sourceforge</a>. Unzip the source zip file into the source directory and the corresponding model files each into a model directory. To compile ZPar,
 type <code>make</code> in the zpar source directory. The binary file <code>zpar</code> will placed
-in the <code>dist</code> folder. Type <code>make zpar.en</code> and <code>make
-zpar.ge</code> to make ZPar for English and ZPar generic. </p>
+in the <code>dist</code> folder. Type <code>make zpar</code>, <code>make zpar.en</code> and
+<code>make zpar.zh</code> to make ZPar for ZPar generic, English and Chinese, respectively. </p>
+
+<h2><a id="Usage-of-ZPar-for-generic">Usage of the generic ZPar</a></h2>
+
+<p>Suppose that the source files are saved in the folder <code>zpar</code> and the models are saved in <code>models</code>. To run zpar, type <code>zpar/dist/zpar models</code>, and wait for the models to be loaded. After all models are loaded, type in sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zparmodels.en input output</code> to read sentences from the <code>input</code> and write the corresponding parses to <code>output</code>.</p>
+
+<p>Run <code>zpar</code> without command-line arguments to show options. In particular, the <code>-o</code> option controls the type of output. Use <code>-ot</code> to produce POS-tagged sentences, and <code>-oc</code> to produce constituent structures (brackets). The default option is <code>-od</code>, which produces dependency structures.</p>
+
+<p>
+In the following example, inputs were shown in red and outputs were shown in blue.
+</p>
+<pre>
+<code>
+bash$ <span style="color:red">zpar/dist/zpar -oc models</span>
+<span style="color:blue">Parsing started</span>
+<span style="color:blue">[tagger] Loading scores ... done.</span>
+<span style="color:blue">[parser] Loading scores... done.</span>
+<span style="color:red">ZPar is a parser . </span>
+<span style="color:blue">(S (NP (NNP ZPar)) (VP (VBZ is) (NP (DT a) (NN parser))) (. .)) </span>
+<span style="color:red">Given a natural language sentence, ZPar produces its syntactic structure .  </span>
+<span style="color:blue">(S (VP (VBN Given) (NP (NP (DT a) (JJ natural) (NN language)) (SBAR (S (NP (VBN sentence,) (NNP ZPar)) (VP (VBZ produces) (NP (PRP$ its) (NN syntactic) (NN structure))))))) (. .)) </span>
+<span style="color:red">ZPar works by training a model from annotated data , and making analysis using the model .  </span>
+<span style="color:blue">(S (NP (NNP ZPar)) (VP (VBZ works) (PP (IN by) (S (VP (VP (VBG training) (NP (DT a) (NN model)) (PP (IN from) (NP (VBN annotated) (NNS data)))) (, ,) (CC and) (VP (VBG making) (NP (NP (NN analysis)) (VP (VBG using) (NP (DT the) (NN model))))))))) (. .)) </span>
+<span style="color:red">^D</span>
+<span style="color:blue">Parsing has finished successfully. </span>
+</code>
+</pre>
+
 
 <h2><a id="Usage-of-ZPar-for-Chinese">Usage of ZPar for Chinese</a></h2>
 
-<p>Suppose that the source files are saved in the folder <code>zpar</code> and the models are saved in <code>models</code>. To run zpar, type <code>zpar/dist/zpar models</code>, and wait for the models to be loaded. After all models are loaded, type in Chinese sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zpar models input output</code> to read Chinese sentences from the input and write the corresponding parses to output. </p>
+<p>Suppose that the source files are saved in the folder <code>zpar.zh</code> and the models are saved in <code>models.zh</code>. To run zpar, type <code>zpar/dist/zpar.zh models.zh</code>, and wait for the models to be loaded. After all models are loaded, type in Chinese sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zpar.zh models.zh input output</code> to read Chinese sentences from the <code>input</code> and write the corresponding parses to <code>output</code>.</p>
 
 <p>In the following example, inputs are shown in red and outputs are shown in blue.
 </p>
 <pre>
 <code>
-bash$ <span style="color:red">zpar/dist/zpar models</span>
+bash$ <span style="color:red">zpar/dist/zpar.zh models.zh</span>
 <span style="color:blue">Parsing started</span>
 <span style="color:blue">Loading scores ... done.</span>
 <span style="color:blue">Loading scores... done.</span>
@@ -78,7 +106,7 @@ bash$ <span style="color:red">zpar/dist/zpar models</span>
 
 <h2><a id="Usage-of-ZPar-for-English">Usage of ZPar for English</a></h2>
 
-<p>Suppose that the source files are saved in the folder <code>zpar</code> and the models are saved in <code>models.en</code>. To run zpar, type <code>zpar/dist/zpar.en models.en</code>, and wait for the models to be loaded. After all models are loaded, type in English sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zpar.en models.en input output</code> to read English sentences from the input and write the corresponding parses to output. </p>
+<p>Suppose that the source files are saved in the folder <code>zpar</code> and the models are saved in <code>models.en</code>. To run zpar, type <code>zpar/dist/zpar.en models.en</code>, and wait for the models to be loaded. After all models are loaded, type in English sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zpar.en models.en input output</code> to read English sentences from the <code>input</code> and write the corresponding parses to <code>output</code>.</p>
 
 <p>Run <code>zpar.en</code> without command-line arguments to show options. In particular, the <code>-o</code> option controls the type of output. Use <code>-ot</code> to produce POS-tagged sentences, and <code>-oc</code> to produce constituent structures (brackets). The default option is <code>-od</code>, which produces dependency structures.</p>
 
@@ -121,7 +149,7 @@ the segmentor. The corresponding code can be found at
 </p>
 
 <h2><a id="note">Notes on versions before 0.7</a></h2>
-For ZPar versions before 0.7,
+<a id="note-1">[1]</a> For ZPar versions before 0.7,
 the default target <code>zpar</code>
 is Chinese and the generic ZPar is <code>zpar.ge</code>.
 

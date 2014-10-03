@@ -1,0 +1,130 @@
+#!Introduction to the ZPar Source Structure
+
+<h2><a id="root">The <code>ROOT</code> folder</a></h2>
+<pre><code>
+zpar
+├── dist/               ... Folder for compiled binary excutables
+├── doc/                ... Folder for HTML documents
+├── Makefile            ... Main Makefile
+├── Makefile.ccg        ... Makefile rules for CCG Parser
+├── Makefile.common     ... Common Makefile rules
+├── Makefile.d/         ... Makefile rules for different tasks
+├── Makefile.doc2snt    ... Makefile rules for doc2snt
+├── Makefile.misc       ... Miscellaneous Makefile rules
+├── Makefile.zpar.en    ... Makefile rules for English
+├── Makefile.zpar.es    ... Makefile rules for Spanish
+├── Makefile.zpar.ge    ... Makefile rules for generic ZPar
+├── Makefile.zpar.zh    ... Makefile rules for Chinese
+├── obj/                ... Folder for compiled binary excutables
+├── README              ... Readme file
+├── scripts/            ... Folder for miscellaneous scripts
+└── src/                ... Folder for source codes
+</code></pre>
+
+<h2><a id="src">The <code>src</code> folder</a></h2>
+<pre><code>
+zpar/src/
+├── chinese/
+├── common/
+├── english/
+├── generic/
+├── include/
+├── libs/
+├── spanish/
+└── test.cpp
+</code></pre>
+
+<h2><a id="src-include">The <code>src/include</code> folder</a></h2>
+<pre><code>
+zpar/src/include
+├── agendachart.h
+├── agenda.h
+├── base64.h
+├── bigram.h
+├── bitarray.h
+├── buffer.h
+├── chart.h
+├── definitions.h
+├── file_utils.h
+├── hash_combined.h
+├── hash.h
+├── hash_simple.h
+├── hash_small.h
+├── hash_stream.h
+├── hash_utils.h
+├── knowledge/
+├── learning/
+├── linguistics/
+├── linkedlist.h
+├── options.h
+├── pair_stream.h
+├── pool.h
+├── reader.h
+├── set.h
+├── stack.h
+├── table2.h
+├── tokenizer.h
+├── tuple2.h
+├── tuple3.h
+├── tuple4.h
+├── utf.h
+├── utils.h
+├── vector_stream.h
+└── writer.h
+</code></pre>
+
+<h2><a id="src-common">The <code>src/common</code> folder</a></h2>
+<pre><code>
+zpar/src/common
+├── conparser/
+├── deplabeler/
+├── depparser/
+└── tagger/
+</code></pre>
+
+<h2><a id="src-chinese">The <code>src/chinese</code> folder</a></h2>
+<pre><code>
+zpar/src/chinese
+├── cfg/
+├── cfg.h
+├── charcat.h
+├── conparser/
+├── dependency/
+├── dep.h
+├── doc2snt/
+├── joint/
+├── pos/
+├── segmentor/
+├── tagger/
+├── tags.h
+├── utfword.h
+└── zpar.cpp
+</code></pre>
+
+<h2><a id="src-english">The <code>src/english</code> folder</a></h2>
+<pre><code>
+zpar/src/english
+├── cfg/
+├── cfg.h
+├── charcat.h
+├── dependency/
+├── dep.h
+├── morph/
+├── pos/
+├── tags.h
+└── zpar.en.cpp
+</code></pre>
+
+
+<h2><a id="scripts">The <code>scripts</code> folder</a></h2>
+<pre><code>
+zpar/scripts/
+├── ccg/
+├── cfg/
+├── dep/
+├── lang/
+├── ml/
+├── pos/
+├── tools/
+└── var/
+</code></pre>
