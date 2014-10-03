@@ -1,16 +1,6 @@
 // Copyright (C) University of Oxford 2010
-/****************************************************************
- *                                                              *
- * depparser.h - the definitions for the dependency parser.     *
- *                                                              *
- * Author: Yue Zhang                                            *
- *                                                              *
- * Computing Laboratory, Oxford. 2007.8                         *
- *                                                              *
- ****************************************************************/
-
-#ifndef _DEPPARSER_IMPL_H
-#define _DEPPARSER_IMPL_H
+#ifndef COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_DEPPARSER_H
+#define COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_DEPPARSER_H
 
 #include "depparser_base.h"
 
@@ -39,11 +29,19 @@ namespace TARGET_LANGUAGE {
 
 class CDepParser : public CDepParserBase {
 private:
-  static depparser::CStateItem * lattice_;
-  static int                     max_lattice_size_;
-private:
-  CAgendaSimple<depparser::action::CScoredAction> *m_Beam;
-  // input
+  //! The lattice.
+  depparser::CStateItem * lattice_;
+  //! The beam for storing scord transition.
+  depparser::CScoredTransition * m_Beam;
+
+  //! The current beam size.
+  int current_beam_size_;
+  //! The maximum beam size.
+  int max_beam_size_;
+  //! The lattice size.
+  int max_lattice_size_;
+
+  //! input
   std::vector< CTaggedWord<CTag, TAG_SEPARATOR> > m_lCache;
   std::vector< CLemma >                           m_lCacheCoNLLLemma; // conll
   std::vector< CCoNLLCPOS >                       m_lCacheCoNLLCPOS;  // conll
@@ -59,25 +57,14 @@ private:
   bool  m_bScoreModified;
 
 public:
-  // constructor and destructor
+  //! constructor and destructor
   CDepParser(
       const std::string & sFeatureDBPath,
       bool                bTrain,
       bool                bCoNLL = false);
 
-  ~CDepParser() {
-    delete m_Beam;
-    delete m_weights;
-    if (lattice_) {
-      delete [] lattice_;
-      lattice_ = 0;
-    }
-  }
-
-  CDepParser( CDepParser &depparser) : CDepParserBase(depparser) {
-    assert(1==0);
-  }
-
+  //!
+  ~CDepParser();
 public:
   void parse(
       const CTwoStringVector & sentence,
@@ -121,6 +108,8 @@ public:
       int round=0);
 
 private:
+  CDepParser( CDepParser &depparser);
+
   enum SCORE_UPDATE {
     eAdd = 0,
     eSubtract
@@ -222,19 +211,10 @@ private:
       const depparser::SCORE_TYPE   amount_add,
       const depparser::SCORE_TYPE   amount_subtract);
 
-  /* Insert the state into beam, perform some heap operation
-   *
-   *  @param[in/out]  beam                the beam
-   *  @param[in]      item                the item to be inserted
-   *  @param[in]      current_beam_size   the current beam size
-   *  @param[in]      max_beam_size       the max volumn of beam
-   *  @return         int                 1 if the beam increased otherwise 0
+  /**
+   * Insert the state into beam, perform some heap operation
    */
-  int InsertIntoBeam(depparser::CStateItem ** beam,
-                     const depparser::CStateItem * item,
-                     const int current_beam_size,
-                     const int max_beam_size);
-
+  int InsertIntoBeam(const depparser::CScoredTransition& transition);
 
   // helper method
   inline void Transit(
@@ -283,4 +263,4 @@ public:
 
 }; // namespace TARGET_LANGUAGE
 
-#endif
+#endif  //  end for COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_DEPPARSER_H

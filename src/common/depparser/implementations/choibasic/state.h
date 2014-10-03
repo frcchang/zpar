@@ -1,23 +1,23 @@
 // Copyright (C) University of Oxford 2010
-#ifndef SRC_COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H_
-#define SRC_COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H_
+#ifndef COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H
+#define COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H
 
 class CStateItem {
 protected:
-  std::vector<int> stack_;                    // the stack
-  std::vector<int> deque_;                    // the deque
-  int next_word;                              // index for the next word
-  int heads[MAX_SENTENCE_SIZE];               // the lexical head for each word
-  int left_most_child[MAX_SENTENCE_SIZE];     // the leftmost dependency for
-                                              // each word (just for cache,
-                                              // temporary info)
-  int left_2most_child[MAX_SENTENCE_SIZE];    // the second leftmost dependency
-  int right_most_child[MAX_SENTENCE_SIZE];    // the rightmost dependency for
-                                              // each word (just for cache,
-                                              // temporary info)
-  int right_2most_child[MAX_SENTENCE_SIZE];   // the second rightmost dependency
-  int num_left_children[MAX_SENTENCE_SIZE];   // the number of left dependencies
-  int num_right_children[MAX_SENTENCE_SIZE];  // the number of right dependencies
+  std::vector<int> stack_;                    //! the stack
+  std::vector<int> deque_;                    //! the deque
+  int next_word;                              //! index for the next word
+  int heads[MAX_SENTENCE_SIZE];               //! the lexical head for each word
+  int left_most_child[MAX_SENTENCE_SIZE];     //! the leftmost dependency for
+                                              //! each word (just for cache,
+                                              //! temporary info)
+  int left_2most_child[MAX_SENTENCE_SIZE];    //! the second leftmost dependency
+  int right_most_child[MAX_SENTENCE_SIZE];    //! the rightmost dependency for
+                                              //! each word (just for cache,
+                                              //! temporary info)
+  int right_2most_child[MAX_SENTENCE_SIZE];   //! the second rightmost dependency
+  int num_left_children[MAX_SENTENCE_SIZE];   //! the number of left dependencies
+  int num_right_children[MAX_SENTENCE_SIZE];  //! the number of right dependencies
 
 #ifdef LABELED
   CSetOfTags<CDependencyLabel> left_dep_tagset[MAX_SENTENCE_SIZE];  // the set of left tags
@@ -26,11 +26,11 @@ protected:
 #endif
 
 public:
-  SCORE_TYPE score;               /* score of stack - predicting how potentially
-                                     this is the correct one */
-  const CStateItem *  previous_;   /* use to link the states in matrix */
-  unsigned long       last_action;      // the last stack action
-  int                 len_;
+  //! score of state - predicting how potentially this is the correct one
+  SCORE_TYPE score;
+  const CStateItem * previous_;   //! the link to the previous state.
+  unsigned long      last_action; //! the last stack action
+  int                len_;
 
 public:
   // constructors and destructor
@@ -689,4 +689,13 @@ public:
   }
 };
 
-#endif  // SRC_COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H_
+struct CScoredTransition {
+  //! The source state.
+  const CStateItem* source;
+  //! The action.
+  unsigned long action;
+  //! The score.
+  SCORE_TYPE score;
+};
+
+#endif  // COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H
