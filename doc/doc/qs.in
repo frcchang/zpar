@@ -3,7 +3,7 @@
 <h2><a id="Overview">Overview</a></h2>
 
 <p>
-Par for Chinese (Penn Chinese Treebank), English (Penn Treebank) and ZPar generic (language-independent)
+ZPar for Chinese (Penn Chinese Treebank), English (Penn Treebank) and ZPar generic (language-independent)
 are compiled separately into three independent programs:
 <code>zpar.zh</code>, <code>zpar.en</code> and <code>zpar</code>, respectively <a href="#note-1">[1]</a>.
 Each program needs to be executed
@@ -12,7 +12,7 @@ Some example sets of models are released together with ZPar source so that the p
 </p>
 
 <p>
-The current version of ZPar is 0.7.
+The current version of ZPar is <RELEASEVER>.
 Its release contains a set of models for <code>zpar.en</code>,
 and a set of models for <code>zpar.zh</code>,
 which support labeled dependency parsing and context-free-grammar parsing.
@@ -21,19 +21,60 @@ which support labeled dependency parsing and context-free-grammar parsing.
 <h2><a id="Download-and-installation">Download and installation</a></h2>
 
 <p>The source code and models can be downloaded from <a
-href=http://www.sourceforge.net/projects/zpar>sourceforge</a>. Unzip the source zip file into the source directory and the corresponding model files each into a model directory. To compile ZPar,
+href=http://www.sourceforge.net/projects/zpar>sourceforge</a>. Unzip the source zip file into the source directory and the corresponding model files each into a model directory.
+</p>
+
+To download the models:
+<ul>
+<li>
+Click "Files" on the sourceforge project page.
+<br/>
+<img src="enter.png" alt="Click Files on the sourceforge project page"> 
+<br/>
+<br/>
+</li>
+<li>
+Then select the proper version.
+<br/>
+<img src="version.png" alt="Select the proper version"> 
+<br/>
+<br/>
+</li>
+<li>
+And download model file for English or Chinese.
+<br/>
+<img src="model.png" alt="Download model file for English or Chinese"> 
+<br/>
+<br/>
+</li>
+</ul>
+
+<p>
+To compile ZPar,
 type <code>make</code> in the zpar source directory. The binary file <code>zpar</code> will placed
 in the <code>dist</code> folder. Type <code>make zpar</code>, <code>make zpar.en</code> and
 <code>make zpar.zh</code> to make ZPar for ZPar generic, English and Chinese, respectively. </p>
 
 <h2><a id="Usage-of-ZPar-for-generic">Usage of the generic ZPar</a></h2>
+<p>
+ZPar is a statistical language analyzer,
+which works by using a statistical model.
+As a result,
+a ZPar binary executable file
+must run with a model file.
+</p>
 
-<p>Suppose that the source files are saved in the folder <code>zpar</code> and the models are saved in <code>models</code>. To run zpar, type <code>zpar/dist/zpar models</code>, and wait for the models to be loaded. After all models are loaded, type in sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zparmodels.en input output</code> to read sentences from the <code>input</code> and write the corresponding parses to <code>output</code>.</p>
+<p>Suppose that the source files are saved in the folder <code>zpar</code> and the models are saved in <code>models</code>. To run zpar, type <code>zpar/dist/zpar models</code>, and wait for the models to be loaded. After all models are loaded, type in sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zpar models.en input output</code> to read sentences from the <code>input</code> and write the corresponding parses to <code>output</code>.</p>
 
-<p>Run <code>zpar</code> without command-line arguments to show options. In particular, the <code>-o</code> option controls the type of output. Use <code>-ot</code> to produce POS-tagged sentences, and <code>-oc</code> to produce constituent structures (brackets). The default option is <code>-od</code>, which produces dependency structures.</p>
+<p>Run <code>zpar</code> without command-line arguments to show options. In particular, the <code>-o</code> option controls the type of output. Use <code>-ot</code> to produce POS-tagged sentences,
+and
+<code>-od</code> to produce dependency structures.
+The default option is
+<code>-oc</code> which produces constituent structures (brackets).
+</p>
 
 <p>
-In the following example, inputs were shown in red and outputs were shown in blue.
+In the following example, inputs were shown in <span style="color:red">red</span> and outputs were shown in <span style="color:blue">blue</span>.
 </p>
 <pre>
 <code>
@@ -57,7 +98,7 @@ bash$ <span style="color:red">zpar/dist/zpar -oc models</span>
 
 <p>Suppose that the source files are saved in the folder <code>zpar.zh</code> and the models are saved in <code>models.zh</code>. To run zpar, type <code>zpar/dist/zpar.zh models.zh</code>, and wait for the models to be loaded. After all models are loaded, type in Chinese sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zpar.zh models.zh input output</code> to read Chinese sentences from the <code>input</code> and write the corresponding parses to <code>output</code>.</p>
 
-<p>In the following example, inputs are shown in red and outputs are shown in blue.
+<p>In the following example, inputs are shown in <span style="color:red">red</span> and outputs are shown in <span style="color:blue">blue</span>.
 </p>
 <pre>
 <code>
@@ -81,7 +122,12 @@ bash$ <span style="color:red">zpar/dist/zpar.zh models.zh</span>
 
 <p>Suppose that the source files are saved in the folder <code>zpar</code> and the models are saved in <code>models.en</code>. To run zpar, type <code>zpar/dist/zpar.en models.en</code>, and wait for the models to be loaded. After all models are loaded, type in English sentences, and the parses will be printed out on the screen. Alternatively, type <code>zpar/dist/zpar.en models.en input output</code> to read English sentences from the <code>input</code> and write the corresponding parses to <code>output</code>.</p>
 
-<p>Run <code>zpar.en</code> without command-line arguments to show options. In particular, the <code>-o</code> option controls the type of output. Use <code>-ot</code> to produce POS-tagged sentences, and <code>-oc</code> to produce constituent structures (brackets). The default option is <code>-od</code>, which produces dependency structures.</p>
+<p>Run <code>zpar.en</code> without command-line arguments to show options. In particular, the <code>-o</code> option controls the type of output. Use <code>-ot</code> to produce POS-tagged sentences,
+and
+<code>-od</code> to produce dependency structures.
+The default option is
+<code>-oc</code> which produces constituent structures (brackets).
+</p>
 
 <p>
 In the following example, inputs were shown in red and outputs were shown in blue.

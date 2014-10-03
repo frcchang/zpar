@@ -2,7 +2,7 @@
 
 <h2><a id="How-to-compile">How to compile</a></h2>
 <p>
-Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make a POS tagging system for English, type <code>make english.postagger</code>. This will create a directory <code>zpar/dist/english.postagger</code>, in which there are two files: <code>train</code> and <code>tagger</code>. The file <code>train</code> is used to train a tagging model,and the file <code>tagger</code> is used to tag new texts using a trained parsing model.
+Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make a POS tagging system for English, type <code>make english.postagger</code>. This will create a directory <code>zpar/dist/english.postagger</code>, in which there are two files: <code>train</code> and <code>tagger</code>. The file <code>train</code> is used to train a tagging model,and the file <code>tagger</code> is used to tag new texts using a trained tagging model.
 </p>
 
 <h2><a id="Format-of-inputs-and-outputs">Format of inputs and outputs</a></h2>

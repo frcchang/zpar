@@ -24,14 +24,14 @@ zpar
 <h2><a id="src">The <code>src</code> folder</a></h2>
 <pre><code>
 zpar/src/
-├── chinese/
-├── common/
-├── english/
-├── generic/
-├── include/
-├── libs/
-├── spanish/
-└── test.cpp
+├── chinese/    ... Chinese treebanks and systems (e.g segmentor)
+├── common/     ... language independent systems (e.g parsers)
+├── english/    ... Egnlish treebanks and systems
+├── generic/    ... language independent linguistics
+├── include/    ... all header files
+├── libs/       ... cpp for header
+├── spanish/    ... Spanish treebanks
+└── test.cpp    ... sandbox
 </code></pre>
 
 <h2><a id="src-include">The <code>src/include</code> folder</a></h2>
@@ -52,9 +52,9 @@ zpar/src/include
 ├── hash_small.h
 ├── hash_stream.h
 ├── hash_utils.h
-├── knowledge/
-├── learning/
-├── linguistics/
+├── knowledge/      ... rules
+├── learning/       ... machine learning
+├── linguistics/    ... linguistic structures
 ├── linkedlist.h
 ├── options.h
 ├── pair_stream.h
@@ -76,10 +76,10 @@ zpar/src/include
 <h2><a id="src-common">The <code>src/common</code> folder</a></h2>
 <pre><code>
 zpar/src/common
-├── conparser/
+├── conparser/    ... constituent parsers
 ├── deplabeler/
-├── depparser/
-└── tagger/
+├── depparser/    ... dependency parsers
+└── tagger/       ... POS taggers
 </code></pre>
 
 <h2><a id="src-chinese">The <code>src/chinese</code> folder</a></h2>
@@ -88,14 +88,14 @@ zpar/src/chinese
 ├── cfg/
 ├── cfg.h
 ├── charcat.h
-├── conparser/
-├── dependency/
+├── conparser/      ... Chinese constituency parser (joint word segmentor)
+├── dependency/     ... Chinese dependency parser (joint word segmentor)
 ├── dep.h
-├── doc2snt/
+├── doc2snt/        ... Chinese sentence segmentor
 ├── joint/
 ├── pos/
-├── segmentor/
-├── tagger/
+├── segmentor/      ... Chinese word segmentor
+├── tagger/         ... Chinese POS tagger (joint word segmentor)
 ├── tags.h
 ├── utfword.h
 └── zpar.cpp
@@ -107,7 +107,7 @@ zpar/src/english
 ├── cfg/
 ├── cfg.h
 ├── charcat.h
-├── dependency/
+├── dependency/     ... Egnlish dependency parser
 ├── dep.h
 ├── morph/
 ├── pos/
@@ -117,14 +117,18 @@ zpar/src/english
 
 
 <h2><a id="scripts">The <code>scripts</code> folder</a></h2>
+<p>
+The <code>scripts</code> folder contains
+the script files mentioned in the other documents
+in this manual.
 <pre><code>
 zpar/scripts/
-├── ccg/
-├── cfg/
-├── dep/
-├── lang/
+├── ccg/      ... CCG
+├── cfg/      ... constituent grammar tools
+├── dep/      ... dependency grammar tools
+├── lang/     ... includes treebank binairzers
 ├── ml/
-├── pos/
-├── tools/
+├── pos/      ... POS tagger tools
+├── tools/    ... includes encoding switch
 └── var/
 </code></pre>

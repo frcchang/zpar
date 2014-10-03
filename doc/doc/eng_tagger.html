@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-responsive.min.css">
 
@@ -15,21 +17,22 @@ body { background-color: #eeeeee; }
 header { width: 100%; }
 blockquote p { font-size: 14px; }
 </style>
-
 <title>ZPar | English POS Tagging</title>
 </head>
+
 <body>
+<div class="table-bordered container">
+<div class="content">
+
 <header>
 <div class="page-header text-center">
 <h1>English POS Tagging</h1>
 </div>
 </header>
-<div class="table-bordered container">
-<div class="content">
 
 <h2><a id="How-to-compile">How to compile</a></h2>
 <p>
-Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make a POS tagging system for English, type <code>make english.postagger</code>. This will create a directory <code>zpar/dist/english.postagger</code>, in which there are two files: <code>train</code> and <code>tagger</code>. The file <code>train</code> is used to train a tagging model,and the file <code>tagger</code> is used to tag new texts using a trained parsing model.
+Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make a POS tagging system for English, type <code>make english.postagger</code>. This will create a directory <code>zpar/dist/english.postagger</code>, in which there are two files: <code>train</code> and <code>tagger</code>. The file <code>train</code> is used to train a tagging model,and the file <code>tagger</code> is used to tag new texts using a trained tagging model.
 </p>
 
 <h2><a id="Format-of-inputs-and-outputs">Format of inputs and outputs</a></h2>
