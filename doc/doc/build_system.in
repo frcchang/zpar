@@ -1,31 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-responsive.min.css">
-
-<style type="text/css">
-.nav { }
-.nav li { float: left; width: 110px; }
-.container { background-color: #ffffff; padding: 30px; }
-.content { padding: 30px; }
-body, h1, h2, h3, h4 { font-family: "Trebuchet MS","Helvetica Neue",Arial,Helvetica,sans-serif,"Georgia";}
-body { background-color: #eeeeee; }
-header { width: 100%; }
-blockquote p { font-size: 14px; }
-</style>
-
-<title>ZPar | Introduction to the ZPar build system</title>
-</head>
-<body>
-<header>
-<div class="page-header text-center">
-<h1>Introduction to the ZPar build system</h1>
-</div>
-</header>
-<div class="table-bordered container">
-<div class="content">
+#!Introduction to the ZPar build system
 
 <div class="alert alert-danger" role="alert">
 <p>
@@ -212,12 +185,3 @@ all the necessary object files
 are linked into <code>generic.postagger.o</code>.
 For details, <code>zpar/Makefile.d/Makefile.ge.postagger.tweb</code> can be taken as an example.
 </p>
-</div>
-</div>
-<footer class="text-center">
-<p>
-ZPar Release 0.7
-</p>
-</footer>
-</body>
-</html>

@@ -1,10 +1,10 @@
-DOC_TEX+=$(wildcard *.tex)
-DOC_HTML=$(patsubst %.tex, %.html, $(DOC_TEX))
+DOC_TEX+=$(wildcard *.in)
+DOC_HTML=$(patsubst %.in, %.html, $(DOC_TEX))
 
 all: $(DOC_HTML)
 
-%.html: %.tex
-	htlatex $<
+%.html: %.in
+	../htmlfy.pl < $< >$@
 
 clean:
 	rm $(DOC_HTML)
