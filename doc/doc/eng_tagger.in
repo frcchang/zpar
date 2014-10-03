@@ -1,31 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-responsive.min.css">
-
-<style type="text/css">
-.nav { }
-.nav li { float: left; width: 110px; }
-.container { background-color: #ffffff; padding: 30px; }
-.content { padding: 30px; }
-body, h1, h2, h3, h4 { font-family: "Trebuchet MS","Helvetica Neue",Arial,Helvetica,sans-serif,"Georgia";}
-body { background-color: #eeeeee; }
-header { width: 100%; }
-blockquote p { font-size: 14px; }
-</style>
-
-<title>ZPar | English POS Tagging</title>
-</head>
-<body>
-<header>
-<div class="page-header text-center">
-<h1>English POS Tagging</h1>
-</div>
-</header>
-<div class="table-bordered container">
-<div class="content">
+#!English POS Tagging
 
 <h2><a id="How-to-compile">How to compile</a></h2>
 <p>
@@ -109,12 +82,3 @@ The source code for the English POS tagger can be found at
 where <code>ENGLISH_TAGGER_IMPL</code> is a macro defined in <code>Makefile</code>, and specifies a specific implementation for the English POS tagger.
 </p>
 
-</div>
-</div>
-<footer class="text-center">
-<p>
-ZPar Release 0.7
-</p>
-</footer>
-</body>
-</html>

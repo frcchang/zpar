@@ -1,14 +1,14 @@
-DOC_TEX+=$(wildcard *.tex)
-DOC_HTML=$(patsubst %.tex, %.html, $(DOC_TEX))
+DOC_TEX=$(wildcard doc/*.in)
+DOC_HTML=$(patsubst %.in, %.html, $(DOC_TEX))
 
-all: $(DOC_HTML) details
+all: index.html details
 
 details:
 	$(MAKE) -C doc/
 
-%.html: %.tex
-	htlatex $<
+index.html: index.in
+	./htmlfy.pl < $< >$@
 
 clean:
-	rm $(DOC_HTML)
+	rm index.html
 	$(MAKE) -C doc/ clean

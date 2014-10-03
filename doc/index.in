@@ -1,31 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-responsive.min.css">
-
-<style type="text/css">
-.nav { }
-.nav li { float: left; width: 110px; }
-.container { background-color: #ffffff; padding: 30px; }
-.content { padding: 30px; }
-body, h1, h2, h3, h4 { font-family: "Trebuchet MS","Helvetica Neue",Arial,Helvetica,sans-serif,"Georgia";}
-body { background-color: #eeeeee; }
-header { width: 100%; }
-blockquote p { font-size: 14px; }
-</style>
-
-<title>ZPar | User Manual of ZPar</title>
-</head>
-<body>
-<header>
-<div class="page-header text-center">
-<h1>User Manual of ZPar</h1>
-</div>
-</header>
-<div class="table-bordered container">
-<div class="content">
+#!User Manual of ZPar
 
 <h2><a id="Overview">Overview</a></h2>
 <p>
@@ -143,12 +116,3 @@ Zhongye Jia <a href="mailto:jia.zhongye@gmail.com">(Email)</a>
 Yue Zhang and Stephen Clark. 2011. Syntactic Processing Using the Generalized Perceptron and Beam Search. <em>Computational Linguistics</em>, 37(1):105-151.
 </li>
 </ul>
-</div>
-</div>
-<footer class="text-center">
-<p>
-ZPar Release 0.7
-</p>
-</footer>
-</body>
-</html>
