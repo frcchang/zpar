@@ -31,7 +31,7 @@ Parsers and POS taggers for other languages can be built in similar ways.
 Please refer to specific manuals for detailed instructions.
 </p>
 
-<h2><a id="sec:how-change-impl">How to change the implementation for a existing task</a></h2>
+<h2><a id="sec:how-change-impl">How to change the implementation for an existing task</a></h2>
 
 <p>
 ZPar provides various implementations for parsers and POS taggers for all the supported languages.
@@ -107,7 +107,8 @@ when ZPar is compiled again.
 
 <p>
 You may add a new implementation for a specific task
-by creating a sub-folder as described in the previous Section~().
+by creating a sub-folder as described in
+<a href="#sec:how-change-impl">How to change the implementation for an existing task</a>.
 </p>
 
 <p>

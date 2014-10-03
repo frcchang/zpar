@@ -3,7 +3,7 @@
 
 <h2><a id="How-to-compile">How to compile</a></h2>
 <p>
-Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make a dependency parsing system for English, type <code>make english.depparser</code>. This will create a directory <code>zpar/dist/english.depparser</code>, in which there are two files: <code>train</code> and <code>depparser</code>. The file <code>train</code> is used to train a parsing model,and the file <code>depparser</code> is used to parse new texts using a trained parsing model. Similarly, we can make a dependency parsing system for Chinese by typing <code>make chinese.depparser</code>. The <code>train</code> and <code>depparser</code> files are created under the directory of <code>zpar/dist/chinese.depparser</code>.
+Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make a dependency parsing system for English, type <code>make english.depparser</code>. This will create a directory <code>zpar/dist/english.depparser</code>, in which there are two files: <code>train</code> and <code>depparser</code>. The file <code>train</code> is used to train a parsing model, and the file <code>depparser</code> is used to parse new texts using a trained parsing model. Similarly, we can make a dependency parsing system for Chinese by typing <code>make chinese.depparser</code>. The <code>train</code> and <code>depparser</code> files are created under the directory of <code>zpar/dist/chinese.depparser</code>.
 </p>
 
 <h2><a id="Format-of-inputs-and-outputs">Format of inputs and outputs</a></h2>
@@ -82,7 +82,7 @@ You can find the precision, recall, and f-score here. See the explanation of the
 </p>
 <h2><a id="tuning">How to tune the performance of a system</a></h2>
 <p>
-The performance of the system after one training iteration may not be optimal. You can try training a model for another few iterations, after each you compare the performance. You can choose the model that gives the highest f-score on your test data. We conventionally call this test file the development test data, because you develop a parsing model using this. Here is a <a href="eng_dep_files/test.sh">a shell script</a> that automatically trains the parser for 30 iterations, and after the ith iteration, stores the model file to model.i. You can compare the f-score of all 30 iterations and choose model.k, which gives the best f-score, as the final model. In this file, this is a variable called <code>zpar</code>. You need to set this variable to the relative directory of <code>zpar/dist/english.depparsr</code> or <code>zpar/dist/chinese.depparser</code>.
+The performance of the system after one training iteration may not be optimal. You can try training a model for another few iterations, after each you compare the performance. You can choose the model that gives the highest f-score on your test data. We conventionally call this test file the development test data, because you develop a parsing model using this. Here is a <a href="eng_dep_files/test.sh">a shell script</a> that automatically trains the parser for 30 iterations, and after the ith iteration, stores the model file to model.i. You can compare the f-score of all 30 iterations and choose model.k, which gives the best f-score, as the final model. In this file, this is a variable called <code>zpar</code>. You need to set this variable to the relative directory of <code>zpar/dist/english.depparser</code> or <code>zpar/dist/chinese.depparser</code>.
 </p>
 <h2><a id="Source-code">Source code</a></h2>
 <p>

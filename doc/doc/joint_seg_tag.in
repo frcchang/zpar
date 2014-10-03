@@ -2,7 +2,7 @@
 
 <h2><a id="How-to-compile">How to compile</a></h2>
 <p>
-Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make the joint Chinese word segmentor and POS tagger, type <code>make chinese.postagger</code>. This will create a directory <code>zpar/dist/chinese.postagger</code>, in which there are two files: <code>train</code> and <em>tagger</em>. The file <code>train</code> is used to train a joint model of Chinese word segmentation and POS tagging,and the file <code>tagger</code> is used to segment and assign POS tags to new texts using a trained joint model.
+Suppose that ZPar has been downloaded to the directory <code>zpar</code>. To make the joint Chinese word segmentor and POS tagger, type <code>make chinese.postagger</code>. This will create a directory <code>zpar/dist/chinese.postagger</code>, in which there are two files: <code>train</code> and <code>tagger</code>. The file <code>train</code> is used to train a joint model of Chinese word segmentation and POS tagging,and the file <code>tagger</code> is used to segment and assign POS tags to new texts using a trained joint model.
 </p>
 
 <h2><a id="Format-of-inputs-and-outputs">Format of inputs and outputs</a></h2>

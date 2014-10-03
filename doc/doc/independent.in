@@ -18,6 +18,7 @@ The generic parsers are used by different languages and treebank formats, for ex
 <p>
 Since ZPar 0.7, the generic ZPar system is the default ZPar.
 Type <code>make zpar</code> to compile.
+Usage of the generic system can be found in the <a href="qs.html">Quick Start Manual</a>.
 </p>
 
 <h2><a id="generic-POS-tagger">The generic POS-tagger</a></h2>

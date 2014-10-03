@@ -1,0 +1,27 @@
+How to Write a New Chapter of Document for ZPar
+
+1. Create a "chaperXXX.in" file in zpar/doc/doc/.
+
+2. Basically, a ".in" file is a partial HTML file.
+
+3. IMPORTANT: the first line of a ".in" file must be a "Shabang line",
+  which contains the title of the chapter. For example, for a chapter
+  with title "This Is a New Chapter", the first line should be:
+#!This Is a New Chapter
+  Note there are NO spaces beforehead.
+
+4. Use "<h2>" for section titles and do place an "<a id=...>" tag for
+  cross reference, such as:
+    <h2><a id="section-title">Section Title</a></h2>.
+
+5. Use "<code></code>" for inline code and "<pre><code></code></pre>"
+  for standalone block code.
+
+6. Don't forget to add a link in "index.in" to your chapter if needed.
+
+7. IMPORTANT: Do NOT hard code the "current version number" in ".in"
+  files, use the "<RELEASEVER>" macro instead, which will be replaced
+  by make doc.
+
+8. When making new releases, change the "$RELEASEVER" in htmlfy.pl
+
