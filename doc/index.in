@@ -39,7 +39,29 @@ At least 500MB of hard disk space (or larger depending on the modules used)
 <h2><a id="Download-and-Installation">Download and Installation</a></h2>
 <p>
 The latest release can be downloaded from <a href="http://sourceforge.net/projects/zpar/">sourceforge</a>.
+ZPar provides functionalities for different languages and treebanks, such as
+<code>zpar</code>,
+<code>zpar.en</code>,
+<code>zpar.zh</code>, and
+<code>zpar.mvt</code>
+for generic language,
+English,
+Chinese,
+and multiview treebank,
+respectively.
+Standalone sub-modules can be built for individual tasks,
+such as
+<code>segmentor</code>,
+<code>postagger</code>,
+<code>conparser</code>, and
+<code>depparser</code>
+for word segmentation,
+POS-tagging,
+phrase-structure parsing,
+and dependency parsing.
+Source codes and binaries are provided for Windows, Linux and Mac.
 </p>
+
 <p>
 ZPar can be used off the shelf by referring to the
 <a href="doc/qs.html">quick start</a>;
