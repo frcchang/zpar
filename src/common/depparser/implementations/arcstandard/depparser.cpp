@@ -1,14 +1,4 @@
 // Copyright (C) University of Oxford 2010
-/****************************************************************
- *                                                              *
- * depparser.cpp - the action based parser implementation       *
- *                                                              *
- * Author: Yue Zhang                                            *
- *                                                              *
- * Computing Laboratory, Oxford. 2007.12                        *
- *                                                              *
- ****************************************************************/
-
 #include "depparser.h"
 #include "depparser_weight.h"
 
@@ -41,15 +31,50 @@ const int kAgendaSize = AGENDA_SIZE;
 
 #define _conll_or_empty(x) (x == "_" ? "" : x)
 
+CDepParser::CDepParser(const std::string &sFeatureDBPath,
+                       bool bTrain,
+                       bool bCoNLL)
+  : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL),
+  lattice_(0),
+  m_kBestTransitions(0),
+  max_beam_size_(0),
+  max_lattice_size_(0) {
+
+  m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain);
+  m_kBestTransitions = new depparser::CScoredTransition[AGENDA_SIZE];
+  m_nTrainingRound = 0;
+
+  m_nTotalErrors = 0;
+
+  max_beam_size_ = AGENDA_SIZE;
+  if (bTrain) {
+    m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage;
+  } else {
+    m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage;
+  }
+}
+
+CDepParser::~CDepParser() {
+  // delete m_Beam;
+  delete m_weights;
+
+  if (m_kBestTransitions) {
+    delete[] m_kBestTransitions;
+  }
+
+  if (lattice_) {
+    delete[] lattice_;
+  }
+}
+
 /*---------------------------------------------------------------
  *
  * getOrUpdateStackScore - manipulate the score from stack
  *
  *---------------------------------------------------------------*/
-
 inline void
 CDepParser::GetOrUpdateStackScore(const CStateItem * item,
-                                  PackedScore & retval,
+                                  CPackedScore& retval,
                                   const unsigned & action,
                                   SCORE_TYPE amount,
                                   int round) {
@@ -382,54 +407,15 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
 /*---------------------------------------------------------------
  *
- * getGlobalScore - get the score of a parse tree
- *
- * Inputs: parse graph
- *
- *---------------------------------------------------------------*/
-
-SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
-  THROW("depparser.cpp: getGlobalScore unsupported");
-}
-
-/*---------------------------------------------------------------
- *
- * updateScores - update the score std::vector
- *
- * This method is different from updateScoreVector in that
- * 1. It is for external call
- * 2. The tagging sequences for parsed and correct may differ
- *
- * Inputs: the parsed and the correct example
- *
- *---------------------------------------------------------------*/
-
-void
-CDepParser::updateScores(const CDependencyParse & parsed,
-                         const CDependencyParse & correct,
-                         int round) {
-  THROW("depparser.cpp: updateScores unsupported");
-}
-
-/*---------------------------------------------------------------
- *
- * updateScoreForState - update a single positive or negative outout
- *
- *--------------------------------------------------------------*/
-
-/*---------------------------------------------------------------
- *
  * updateScoresForStates - update scores for states
  *
  *--------------------------------------------------------------*/
-
 void
-CDepParser::UpdateScoresForStates(const CStateItem * predicated_state,
-                                  const CStateItem * correct_state,
-                                  SCORE_TYPE amount_add,
-                                  SCORE_TYPE amount_subtract) {
-
-  static CPackedScoreType<SCORE_TYPE, action::kMax> empty;
+CDepParser::UpdateScoresForStates(const CStateItem* predicated_state,
+    const CStateItem* correct_state,
+    SCORE_TYPE amount_add,
+    SCORE_TYPE amount_subtract) {
+  static CPackedScore empty;
   // do not update those steps where they are correct
 
   const CStateItem * predicated_state_chain[kMaxSentenceSize * 2];
@@ -479,24 +465,24 @@ CDepParser::UpdateScoresForStates(const CStateItem * predicated_state,
  * arcleft - helping function
  *
  *--------------------------------------------------------------*/
-
 inline void
 CDepParser::arcleft(const CStateItem *item,
-                    const CPackedScoreType<SCORE_TYPE, action::kMax> &scores) {
-  static action::CScoredAction scoredaction;
+                    const CPackedScore& scores) {
+  static CScoredTransition transition;
   static unsigned label;
 
 #ifdef LABELED
   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-    scoredaction.action = action::EncodeAction(action::kArcLeft, label);
-    scoredaction.score = item->score + scores[scoredaction.action];
-    //+scores[action::kArcLeft];
-    m_Beam->insertItem(&scoredaction);
+    transition.source = item;
+    transition.action = action::EncodeAction(action::kArcLeft, label);
+    transition.score = item->score + scores[transition.action];
+    InsertIntoBeam(transition);
   }
 #else
-  scoredaction.action = action::kArcLeft;
-  scoredaction.score = item->score + scores[scoredaction.action];
-  m_Beam->insertItem(&scoredaction);
+  transition.source = item;
+  transition.action = action::kArcLeft;
+  transition.score = item->score + scores[transition.action];
+  InsertIntoBeam(transition);
 #endif
 }
 
@@ -505,23 +491,24 @@ CDepParser::arcleft(const CStateItem *item,
  * arcright - helping function
  *
  *--------------------------------------------------------------*/
-
 inline void
 CDepParser::arcright(const CStateItem * item,
-                     const CPackedScoreType<SCORE_TYPE, action::kMax> &scores) {
-  static action::CScoredAction scoredaction;
+                     const CPackedScore& scores) {
+  static CScoredTransition transition;
   static unsigned label;
+
 #ifdef LABELED
   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; ++label) {
-    scoredaction.action = action::EncodeAction(action::kArcRight, label);
-    scoredaction.score = item->score + scores[scoredaction.action];
-    //+scores[action::kArcRight];
-    m_Beam->insertItem(&scoredaction);
+    transition.source = item;
+    transition.action = action::EncodeAction(action::kArcRight, label);
+    transition.score  = item->score + scores[transition.action];
+    InsertIntoBeam(transition);
   }
 #else
-  scoredaction.action = action::kArcRight;
-  scoredaction.score = item->score + scores[scoredaction.action];
-  m_Beam->insertItem(&scoredaction);
+  transition.source = item;
+  transition.action = action::kArcRight;
+  transition.score = item->score + scores[transition.action];
+  InsertIntoBeam(transition);
 #endif
 }
 
@@ -530,15 +517,15 @@ CDepParser::arcright(const CStateItem * item,
  * shift - help function
  *
  *--------------------------------------------------------------*/
-
 inline void
 CDepParser::shift(const CStateItem * item,
-                  const CPackedScoreType<SCORE_TYPE, action::kMax> &scores) {
-  static action::CScoredAction scoredaction;
+                  const CPackedScore& scores) {
+  static CScoredTransition transition;
   // update stack score
-  scoredaction.action = action::kShift;
-  scoredaction.score = item->score + scores[scoredaction.action];
-  m_Beam->insertItem(&scoredaction);
+  transition.source = item;
+  transition.action = action::kShift;
+  transition.score = item->score + scores[transition.action];
+  InsertIntoBeam(transition);
 }
 
 /*---------------------------------------------------------------
@@ -549,36 +536,42 @@ CDepParser::shift(const CStateItem * item,
 
 inline void
 CDepParser::poproot(const CStateItem *item,
-                    const CPackedScoreType<SCORE_TYPE, action::kMax> &scores) {
-  static action::CScoredAction scoredaction;
+                    const CPackedScore& scores) {
+  static CScoredTransition transition;
   // update stack score
-  scoredaction.action = action::kPopRoot;
-  scoredaction.score = item->score + scores[scoredaction.action];
-  m_Beam->insertItem(&scoredaction);
+  transition.source = item;
+  transition.action = action::kPopRoot;
+  transition.score = item->score + scores[transition.action];
+  InsertIntoBeam(transition);
 }
 
-bool StateHeapMore(const CStateItem * x, const CStateItem * y) {
-  return x->score > y->score;
+bool
+ScoredTransitionMore(const CScoredTransition& x, const CScoredTransition& y) {
+  return x.score > y.score;
+}
+
+bool
+StateMore(const CStateItem& x, const CStateItem& y) {
+  return x.score > y.score;
 }
 
 int
-CDepParser::InsertIntoBeam(CStateItem ** beam_wrapper,
-                           const CStateItem * item,
-                           const int current_beam_size,
-                           const int max_beam_size) {
-  if (current_beam_size == max_beam_size) {
-    if (*item > **beam_wrapper) {
-      CStateItem * p = beam_wrapper[0];
-      std::pop_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
-      (*p) = (*item);
-      beam_wrapper[max_beam_size - 1] = p;
-      std::push_heap(beam_wrapper, beam_wrapper + max_beam_size, StateHeapMore);
+CDepParser::InsertIntoBeam(const CScoredTransition & transition) {
+  if (current_beam_size_ == max_beam_size_) {
+    if (transition.score > m_kBestTransitions[0].score) {
+      std::pop_heap(m_kBestTransitions, m_kBestTransitions + max_beam_size_,
+          ScoredTransitionMore);
+      m_kBestTransitions[max_beam_size_- 1] = transition;
+      std::push_heap(m_kBestTransitions, m_kBestTransitions+ max_beam_size_,
+          ScoredTransitionMore);
     }
     return 0;
   }
 
-  **(beam_wrapper + current_beam_size) = *(item);
-  std::push_heap(beam_wrapper, beam_wrapper + current_beam_size + 1, StateHeapMore);
+  m_kBestTransitions[current_beam_size_] = transition;
+  std::push_heap(m_kBestTransitions, m_kBestTransitions+ current_beam_size_+ 1,
+      ScoredTransitionMore);
+  ++ current_beam_size_;
   return 1;
 }
 
@@ -599,7 +592,7 @@ CDepParser::GetLattice(int max_lattice_size) {
 
 void
 CDepParser::Transit(const CStateItem * item,
-                    const CPackedScoreType<SCORE_TYPE, action::kMax> & scores) {
+                    const CPackedScore & scores) {
   int L = m_lCache.size();
   if (item->terminated()) {
     return;
@@ -607,15 +600,13 @@ CDepParser::Transit(const CStateItem * item,
 
   if (item->stacksize() == 0 && item->size() < L) {
     shift(item, scores);
-  }
-  else if (item->stacksize() == 1) {
+  } else if (item->stacksize() == 1) {
     if (item->size() == L) {
       poproot(item, scores);
     } else if (item->size() < L) {
       shift(item, scores);
     }
-  }
-  else {
+  } else {
     if (item->size() < L) { shift(item, scores); }
     arcleft(item, scores);
     arcright(item, scores);
@@ -629,7 +620,6 @@ CDepParser::Transit(const CStateItem * item,
  * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
-
 int
 CDepParser::work(const bool is_train,
                  const CTwoStringVector & sentence,
@@ -637,7 +627,6 @@ CDepParser::work(const bool is_train,
                  const CDependencyParse & oracle_tree,
                  int nbest,
                  SCORE_TYPE *scores) {
-
 #ifdef DEBUG
   clock_t total_start_time = clock();
 #endif
@@ -650,21 +639,19 @@ CDepParser::work(const bool is_train,
          "The size of sentence is too long.");
 
   CStateItem * lattice = GetLattice(max_lattice_size);
-  CStateItem * lattice_wrapper[max_lattice_size];
-  CStateItem ** lattice_index[max_round];
+  CStateItem * lattice_index[max_round];
   CStateItem * correct_state = lattice;
 
   for (int i = 0; i < max_lattice_size; ++ i) {
-    lattice_wrapper[i] = lattice + i;
     lattice[i].len_ = length;
   }
 
   lattice[0].clear();
   correct_state = lattice;
-  lattice_index[0] = lattice_wrapper;
+  lattice_index[0] = lattice;
   lattice_index[1] = lattice_index[0] + 1;
 
-  static CPackedScoreType<SCORE_TYPE, action::kMax> packed_scores;
+  static CPackedScore packed_scores;
   TRACE("Initialising the decoding process ...");
 
   m_lCache.clear();
@@ -683,45 +670,41 @@ CDepParser::work(const bool is_train,
   int round = 0;
   bool is_correct; // used for training to specify correct state in lattice
 
-  // loop with the next word to process in the sentence,
-  // `round` represent the generators, and the condidates should be inserted
-  // into the `round + 1`
+  // loop with the next word to process in the sentence, 'round' represent the
+  // generators, and the condidates should be inserted into the 'round + 1'
   for (round = 1; round < max_round; ++ round) {
     if (lattice_index[round - 1] == lattice_index[round]) {
-      // there is nothing in generators, the proning has cut all legel
-      // generator. actually, in this kind of case, we should raise a
-      // exception. however to achieve a parsing tree, an alternative
+      // There is nothing in generators, the proning has cut all legel
+      // generator. Actually, in this kind of case, we should raise a
+      // exception. However to achieve a parsing tree, an alternative
       // solution is go back to the previous round
       WARNING("Parsing Failed!");
       -- round;
       break;
     }
 
-    int current_beam_size = 0;
+    current_beam_size_ = 0;
     // loop over the generator states
     // std::cout << "round : " << round << std::endl;
-    for (CStateItem ** q = lattice_index[round - 1];
-        q != lattice_index[round];
+    for (CStateItem * q = lattice_index[round - 1]; q != lattice_index[round];
         ++ q) {
-      const CStateItem * generator = (*q);
-      m_Beam->clear(); packed_scores.reset();
+      const CStateItem * generator = q;
+      packed_scores.reset();
       GetOrUpdateStackScore(generator, packed_scores, action::kNoAction);
       Transit(generator, packed_scores);
-
-      for (unsigned i = 0; i < m_Beam->size(); ++ i) {
-        CStateItem candidate; candidate = (*generator);
-        // generate candidate state according to the states in beam
-        candidate.Move(m_Beam->item(i)->action);
-        candidate.score = m_Beam->item(i)->score;
-        candidate.previous_ = generator;
-        current_beam_size += InsertIntoBeam(lattice_index[round],
-                                            &candidate,
-                                            current_beam_size,
-                                            kAgendaSize);
-      }
     }
 
-    lattice_index[round + 1] = lattice_index[round] + current_beam_size;
+    for (unsigned i = 0; i < current_beam_size_; ++ i) {
+      const CScoredTransition& transition = m_kBestTransitions[i];
+      CStateItem* target = lattice_index[round]+ i;
+      (*target) = (*transition.source);
+      // generate candidate state according to the states in beam
+      target->Move(transition.action);
+      target->score = transition.score;
+      target->previous_ = transition.source;
+    }
+
+    lattice_index[round + 1] = lattice_index[round] + current_beam_size_;
 
     if (is_train) {
       CStateItem next_correct_state(*correct_state);
@@ -734,11 +717,8 @@ CDepParser::work(const bool is_train,
       next_correct_state.previous_ = correct_state;
       is_correct = false;
 
-      for (CStateItem ** q = lattice_index[round];
-          q != lattice_index[round + 1];
-          ++ q) {
-
-        CStateItem * p = *q;
+      for (CStateItem *p = lattice_index[round]; p != lattice_index[round + 1];
+          ++ p) {
         if (next_correct_state.last_action == p->last_action
             && p->previous_ == correct_state) {
           correct_state = p;
@@ -752,11 +732,9 @@ CDepParser::work(const bool is_train,
         TRACE("ERROR at the " << next_correct_state.size() << "th word;"
               << " Total is " << oracle_tree.size());
 
-        CStateItem * best_generator = (*lattice_index[round]);
-        for (CStateItem ** q = lattice_index[round];
-             q != lattice_index[round + 1];
-             ++ q) {
-          CStateItem * p = (*q);
+        CStateItem * best_generator = lattice_index[round];
+        for (CStateItem * p = lattice_index[round]; p != lattice_index[round + 1];
+            ++ p) {
           if (best_generator->score < p->score) {
             best_generator = p;
           }
@@ -769,10 +747,9 @@ CDepParser::work(const bool is_train,
   }
 
   if (is_train) {
-    CStateItem * best_generator = (*lattice_index[round-1]);
+    CStateItem * best_generator = lattice_index[round-1];
 
-    for (CStateItem ** q = lattice_index[round-1]; q != lattice_index[round]; ++ q) {
-      CStateItem * p = (*q);
+    for (CStateItem * p = lattice_index[round-1]; p != lattice_index[round]; ++ p) {
       if (best_generator->score < p->score) {
         best_generator = p;
       }
@@ -788,13 +765,15 @@ CDepParser::work(const bool is_train,
   }
 
   TRACE("Output sentence");
-  std::sort(lattice_index[round - 1], lattice_index[round], StateHeapMore);
+  std::sort(lattice_index[round - 1], lattice_index[round], StateMore);
   num_results = lattice_index[round] - lattice_index[round - 1];
 
   for (int i = 0; i < std::min(num_results, nbest); ++ i) {
-    assert( (*(lattice_index[round - 1] + i))->size() == m_lCache.size());
-    (*(lattice_index[round - 1] + i))->GenerateTree(sentence, retval[i]);
-    if (scores) { scores[i] = (*(lattice_index[round - 1] + i))->score; }
+    assert( (lattice_index[round - 1] + i)->size() == m_lCache.size());
+    (lattice_index[round - 1] + i)->GenerateTree(sentence, retval[i]);
+    if (scores) {
+      scores[i] = (lattice_index[round - 1] + i)->score;
+    }
   }
   TRACE("Done, total time spent: " << double(clock() - total_start_time) / CLOCKS_PER_SEC);
   return num_results;
@@ -807,7 +786,6 @@ CDepParser::work(const bool is_train,
  * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
-
 void
 CDepParser::parse(const CTwoStringVector & sentence,
                   CDependencyParse * retval,
@@ -830,21 +808,18 @@ CDepParser::parse(const CTwoStringVector & sentence,
  * train - train the models with an example
  *
  *---------------------------------------------------------------*/
+void
+CDepParser::train(const CDependencyParse &correct , int round) {
+  static CTwoStringVector sentence;
+  static CDependencyParse outout;
 
-void CDepParser::train(const CDependencyParse &correct , int round) {
-
-   static CTwoStringVector sentence;
-   static CDependencyParse outout;
-
-   assert(!m_bCoNLL);
-   assert(IsProjectiveDependencyTree(correct));
-   UnparseSentence(&correct, &sentence);
-
-   // The following code does update for each processing stage
-   ++m_nTrainingRound;
-   ASSERT(m_nTrainingRound == round, "Training round error");
-
-   work(true, sentence, NULL, correct , 1 , 0);
+  assert(!m_bCoNLL);
+  assert(IsProjectiveDependencyTree(correct));
+  UnparseSentence(&correct, &sentence);
+  // The following code does update for each processing stage
+  ++m_nTrainingRound;
+  ASSERT(m_nTrainingRound == round, "Training round error");
+  work(true, sentence, NULL, correct , 1 , 0);
 };
 
 /*---------------------------------------------------------------
@@ -853,7 +828,6 @@ void CDepParser::train(const CDependencyParse &correct , int round) {
  * recorded to parser model as weights)
  *
  *---------------------------------------------------------------*/
-
 void
 CDepParser::extract_features(const CDependencyParse &input) {
   CStateItem item;
@@ -894,7 +868,6 @@ CDepParser::extract_features(const CDependencyParse &input) {
  * initCoNLLCache
  *
  *---------------------------------------------------------------*/
-
 template<typename CCoNLLInputOrOutput>
 void CDepParser::initCoNLLCache(const CCoNLLInputOrOutput &sentence) {
   m_lCacheCoNLLLemma.resize(sentence.size());
@@ -917,7 +890,6 @@ void CDepParser::initCoNLLCache(const CCoNLLInputOrOutput &sentence) {
  * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
-
 void
 CDepParser::parse_conll(const CCoNLLInput & sentence,
                         CCoNLLOutput * retval,

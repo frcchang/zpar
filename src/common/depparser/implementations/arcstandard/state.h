@@ -4,56 +4,56 @@
 
 class CStateItem {
 protected:
+  //! stack of words that are currently processed
   std::vector<int> m_Stack;
-  // stack of words that are currently processed
 
+  //! index for the next word
   int m_nNextWord;
-  // index for the next word
 
+  //! the lexical head for each word
   int m_lHeads[MAX_SENTENCE_SIZE];
-  // the lexical head for each word
 
+  //! the leftmost dependency for each word (just for cache, temporary info)
   int m_lDepsL[MAX_SENTENCE_SIZE];
-  // the leftmost dependency for each word (just for cache, temporary info)
 
+  //! the rightmost dependency for each word (just for cache, temporary info)
   int m_lDepsR[MAX_SENTENCE_SIZE];
-  // the rightmost dependency for each word (just for cache, temporary info)
 
+  //! the second-leftmost dependency for each word
   int m_lDepsL2[MAX_SENTENCE_SIZE];
-  // the second-leftmost dependency for each word
 
+  //! the second-rightmost dependency for each word
   int m_lDepsR2[MAX_SENTENCE_SIZE];
-  // the second-rightmost dependency for each word
 
+  //! the number of left dependencies
   int m_lDepNumL[MAX_SENTENCE_SIZE];
-  // the number of left dependencies
 
+  //! the number of right dependencies
   int m_lDepNumR[MAX_SENTENCE_SIZE];
-  // the number of right dependencies
 
+  //! the set of left tags
   CSetOfTags<CDependencyLabel> m_lDepTagL[MAX_SENTENCE_SIZE];
-  // the set of left tags
 
+  //! the set of right tags
   CSetOfTags<CDependencyLabel> m_lDepTagR[MAX_SENTENCE_SIZE];
-  // the set of right tags
 
 #ifdef LABELED
+  //! the label of each dependency link
   unsigned long m_lLabels[MAX_SENTENCE_SIZE];
-  // the label of each dependency link
 #endif
 
 public:
+  //! score of stack - predicting how potentially this is the correct one
   SCORE_TYPE score;
-  // score of stack - predicting how potentially this is the correct one
 
+  //! the length of the sentence, it's set manually.
   int len_;
-  // the length of the sentence, it's set manually.
 
+  //! Previous state of the current state
   const CStateItem * previous_;
-  // Previous state of the current state
 
+  //! the last stack action
   unsigned long last_action;
-  // the last stack action
 
 public:
   // constructors and destructor
@@ -63,7 +63,7 @@ public:
 
   ~CStateItem() { }
 public:
-  // comparison
+  //! comparison
   inline bool operator < (const CStateItem &item) const {
     return score < item.score;
   }
@@ -445,6 +445,15 @@ public:
     out << item.m_nNextWord << std::endl;
     return out;
   }
+};
+
+struct CScoredTransition {
+  //! The pointer to the source state;
+  const CStateItem* source;
+  //! The compile action applied to the source state;
+  unsigned action;
+  //! The resulted in score.
+  SCORE_TYPE score;
 };
 
 #endif  //  end for DEPPARSER_ARC_STANDARD_STATE_H
