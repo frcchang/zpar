@@ -14,8 +14,8 @@ const Word        EmptyWord("");
 const Tag         NoneTag(CTag::NONE);
 const TaggedWord  EmptyTaggedWord;
 
-const int         kMaxSentenceSize  = MAX_SENTENCE_SIZE;
-const int         kAgendaSize       = AGENDA_SIZE;
+//const int         kMaxSentenceSize  = MAX_SENTENCE_SIZE;
+//const int         kAgendaSize       = AGENDA_SIZE;
 
 #define cast_weights static_cast<CWeight*>(m_weights)
 #define refer_or_allocate_tuple2(x, o1, o2) do { \
@@ -52,7 +52,6 @@ CDepParser::CDepParser(
     bool                is_train,
     bool                is_conll)
   : CDepParserBase(feature_database_path, is_train, is_conll),
-  lattice_(0),
   m_nTrainingRound(0),
   m_nTotalErrors(0),
   max_beam_size_(AGENDA_SIZE),
@@ -72,23 +71,8 @@ CDepParser::CDepParser(
 CDepParser::~CDepParser() {
   delete [] m_Beam;
   delete m_weights;
-  if (lattice_) {
-    delete [] lattice_;
-    lattice_ = 0;
-  }
 }
 
-/*===============================================================
- *
- * CDepParser - the depparser for TARGET_LANGUAGE
- *
- *==============================================================*/
-
-/*---------------------------------------------------------------
- *
- * getOrUpdateStackScore - manipulate the score from stack
- *
- *---------------------------------------------------------------*/
 inline
 void CDepParser::GetOrUpdateStackScore(
     const CStateItem                           *  item,
@@ -101,7 +85,7 @@ void CDepParser::GetOrUpdateStackScore(
   //  (m_bCoNLL && (m_lCacheCoNLLCPOS[1] != CCoNLLCPOS()));
   bool enable_ext_dep = false;
 
-  const std::vector<CCoNLLCPOS> & CPS 
+  const std::vector<CCoNLLCPOS> & CPS
     = m_lCacheCoNLLCPOS;
   const int len       = m_lCache.size();
 
@@ -696,7 +680,7 @@ void CDepParser::GetOrUpdateStackScore(
 
     if (-1 != N0h_id && -1 != N0_id) {
       dd.allocate(&N0h_d, &N0h_d);
-      __GET_OR_UPDATE_SCORE(N0h_d_N0_d, dd);  //  207 
+      __GET_OR_UPDATE_SCORE(N0h_d_N0_d, dd);  //  207
     }
   }
 
@@ -1049,7 +1033,7 @@ CDepParser::Transit(const CStateItem * generator,
                         );
   bool right_linkable = ((!generator->stackempty())
                         && (!generator->bufferempty())
-                        && !generator->hashead(generator->bufferfront()) 
+                        && !generator->hashead(generator->bufferfront())
                         && !generator->is_descendant(generator->stacktop(),
                                                      generator->bufferfront())
                         );
@@ -1063,7 +1047,7 @@ CDepParser::Transit(const CStateItem * generator,
   // link arc (left <- right)
   // precondition:
   //  - 1. stack is not empty
-  //  - 2. stack top is not pseudo root 
+  //  - 2. stack top is not pseudo root
   //  - 3. buffer is not empty
   if (left_linkable
       // && (generator->stacktop())
@@ -1085,7 +1069,7 @@ CDepParser::Transit(const CStateItem * generator,
   //  - 1. stack is not empty
   //  - 2. stack top is not pseudo root
   //  - 3. buffer is not empty
-  if (left_linkable 
+  if (left_linkable
       // && (generator->stacktop())
       ) {
     LeftPass(generator, packed_scores);
@@ -1096,20 +1080,6 @@ CDepParser::Transit(const CStateItem * generator,
   if (right_linkable) {
     RightPass(generator, packed_scores);
   }
-}
-
-CStateItem *
-CDepParser::GetLattice(int max_lattice_size) {
-  if (0 == lattice_) {
-    max_lattice_size_ = max_lattice_size;
-    lattice_ = new CStateItem[max_lattice_size];
-  } else if (max_lattice_size_ < max_lattice_size) {
-    delete [] lattice_;
-    max_lattice_size_ = max_lattice_size;
-    lattice_ = new CStateItem[max_lattice_size];
-  }
-
-  return lattice_;
 }
 
 /*---------------------------------------------------------------
@@ -1137,23 +1107,14 @@ int CDepParser::Work(CDependencyParse       * retval,
   ASSERT(length < kMaxSentenceSize,
       "The size of the sentence is larger than the system configuration.");
 
-  CStateItem * lattice = GetLattice(max_lattice_size);
-  CStateItem * lattice_index[max_round];                // specify states of certain round
-  CStateItem * correct_state;                           // point to the correct state's
-                                                        // position in the lattice
+  ctx_.malloc(0, 1);
+  ctx_.lattice_index[0][0].clear();
+  ctx_.lattice_index[0][0].len_ = length;
 
-  for (int i = 0; i < max_lattice_size; ++ i) {
-    lattice[i].len_ = length;
-    lattice[i].score = 0.;
-  }
+  CStateItem* correct_state = ctx_.lattice_index[0];
 
   // initialize first round lattice
   // clear the start state.
-  lattice[0].clear();
-  correct_state = lattice;
-  lattice_index[0] = lattice;
-  lattice_index[1] = lattice_index[0] + 1;
-
   static CPackedScoreType<SCORE_TYPE, action::kMax> packed_scores;
 
   // TRACE("Initialising the decoding process...");
@@ -1190,9 +1151,9 @@ int CDepParser::Work(CDependencyParse       * retval,
       is_correct = false;
     }
 
-    if (lattice_index[round - 1] == lattice_index[round]) {
+    if (ctx_.lattice_size[round- 1] == 0) {
       // there is nothing in generators, the proning has cut all legel
-      // generator. actually, in this kind of case, we should raise a 
+      // generator. actually, in this kind of case, we should raise a
       // exception. however to achieve a parsing tree, an alternative
       // solution is go back to the previous round
       WARNING("Parsing Failed!");
@@ -1204,16 +1165,17 @@ int CDepParser::Work(CDependencyParse       * retval,
     current_beam_size_ = 0;
     // loop over the generator states
     // std::cout << "round : " << round << std::endl;
-    for (CStateItem * p = lattice_index[round - 1]; p != lattice_index[round];
-        ++ p) {
-      const CStateItem * generator = p;
+    for (unsigned i = 0; i < ctx_.lattice_size[round- 1]; ++ i) {
+      const CStateItem* generator = ctx_.lattice_index[round- 1] + i;
       packed_scores.reset();
       GetOrUpdateStackScore(generator, packed_scores, action::kNoAction);
       Transit(generator, packed_scores);
     }
 
+    ctx_.malloc(round, current_beam_size_);
+
     for (unsigned i = 0; i < current_beam_size_; ++ i) {
-      CStateItem* candidate = lattice_index[round] + i;
+      CStateItem* candidate = ctx_.lattice_index[round] + i;
       (*candidate) = (*(m_Beam[i].source));
       // generate candidate state according to the states in beam
       candidate->score     = m_Beam[i].score;
@@ -1221,12 +1183,12 @@ int CDepParser::Work(CDependencyParse       * retval,
       candidate->Move(m_Beam[i].action);
     }
 
-    lattice_index[round + 1] = lattice_index[round] + current_beam_size_;
-
     bool all_finished = (true && current_beam_size_ > 0);
-    for (const CStateItem * p = lattice_index[round]; p != lattice_index[round + 1];
-        ++ p) {
-      if (false == p->terminated()) { all_finished = false; }
+    for (unsigned i = 0; i < ctx_.lattice_size[round]; ++ i) {
+      const CStateItem* p = (ctx_.lattice_index[round]+ i);
+      if (false == p->terminated()) {
+        all_finished = false;
+      }
     }
 
     if (all_finished) {
@@ -1243,10 +1205,9 @@ int CDepParser::Work(CDependencyParse       * retval,
           );
       next_correct_state.previous_ = correct_state;
 
-      // correct_state = NULL;
       is_correct = false;
-      for (CStateItem * p = lattice_index[round]; p != lattice_index[round + 1];
-          ++ p) {
+      for (unsigned i = 0; i < ctx_.lattice_size[round]; ++ i) {
+        CStateItem* p = ctx_.lattice_index[round]+ i;
         if (next_correct_state.last_action == p->last_action &&
             p->previous_ == correct_state) {
           correct_state = p;
@@ -1258,9 +1219,9 @@ int CDepParser::Work(CDependencyParse       * retval,
       if (!is_correct) {
         TRACE("ERROR at the " << next_correct_state.size() << "th word;"
             << " Total is " << oracle_tree.size());
-        CStateItem * best_generator = lattice_index[round];
-        for (CStateItem * p = lattice_index[round]; p != lattice_index[round + 1];
-            ++ p) {
+        CStateItem* best_generator = ctx_.lattice_index[round];
+        for (unsigned i = 1; i < ctx_.lattice_size[round]; ++ i) {
+          CStateItem* p = (ctx_.lattice_index[round]+ i);
           if (best_generator->score < p->score) {
             best_generator = p;
           }
@@ -1279,10 +1240,9 @@ int CDepParser::Work(CDependencyParse       * retval,
   }
 
   if (is_train) {
-    CStateItem * best_generator = lattice_index[round-1];
-
-    for (CStateItem * p = lattice_index[round-1]; p != lattice_index[round]; 
-        ++ p) {
+    CStateItem* best_generator = ctx_.lattice_index[round-1];
+    for (unsigned i = 1; i < ctx_.lattice_size[round- 1]; ++ i) {
+      CStateItem* p = (ctx_.lattice_index[round-1]+ i);
       if (best_generator->score < p->score) {
         best_generator = p;
       }
@@ -1299,12 +1259,14 @@ int CDepParser::Work(CDependencyParse       * retval,
   }
 
   TRACE("Output sentence");
-  std::sort(lattice_index[round - 1], lattice_index[round], StateHeapMore);
-  num_results = lattice_index[round] - lattice_index[round - 1];
+  std::sort(ctx_.lattice_index[round- 1],
+      ctx_.lattice_index[round- 1] + ctx_.lattice_size[round- 1],
+      StateHeapMore);
+  num_results = ctx_.lattice_size[round- 1];
 
   for (int i = 0; i < std::min(num_results, nbest); ++ i) {
-    (lattice_index[round - 1] + i)->GenerateTree(sentence, retval[i]);
-    if (scores) { scores[i] = (lattice_index[round - 1] + i)->score; }
+    ctx_.lattice_index[round- 1][i].GenerateTree(sentence, retval[i]);
+    if (scores) { scores[i] = ctx_.lattice_index[round- 1][i].score; }
   }
 
   TRACE("Done, total time spent: " << double(clock() - total_start_time) / CLOCKS_PER_SEC);
