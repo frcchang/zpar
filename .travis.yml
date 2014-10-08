@@ -1,0 +1,10 @@
+language:
+    - cpp
+
+compiler:
+    - g++
+
+script:
+    - make zpar
+    - make zpar.zh
+    - make zpar.en
