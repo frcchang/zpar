@@ -1,14 +1,6 @@
 // Copyright (C) University of Oxford 2010
-/***************************************************************
- *
- * weight.h - the dependency parser weights 
- *
- * Yue Zhang, 2007.8 - 2008.1
- *
- ***************************************************************/
-
-#ifndef _DEPPARSER_WEIGHTS_H
-#define _DEPPARSER_WEIGHTS_H
+#ifndef COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_DEPPARSER_WEIGHT_H
+#define COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_DEPPARSER_WEIGHT_H
 
 #include "depparser_weight_base.h"
 
@@ -18,10 +10,7 @@ namespace depparser {
 
 const static unsigned DEP_TABLE_SIZE = (1<<17);//1000121;
 
-//
-// TYPE DEFINITIONS
-//
-
+//! TYPE DEFINITIONS
 typedef CPackedScoreMap<CWord, \
   SCORE_TYPE, action::kMax> CWordMap;
 typedef CPackedScoreMap<CTag, \
@@ -589,8 +578,8 @@ public:
   SCORE_TYPE    dotProduct(const CWeight &w);
 };
 
-};
-};
+}
+}
 
 
-#endif    //
+#endif  // end for COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_DEPPARSER_WEIGHT_H

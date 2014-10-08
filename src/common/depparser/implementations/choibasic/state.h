@@ -2,38 +2,54 @@
 #ifndef COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H
 #define COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H
 
+const int kMaxSentenceSize = MAX_SENTENCE_SIZE;
+const int kMaxSteps = kMaxSentenceSize* kMaxSentenceSize / 2;
+const int kAgendaSize = AGENDA_SIZE;
+
 class CStateItem {
 protected:
-  std::vector<int> stack_;                    //! the stack
-  std::vector<int> deque_;                    //! the deque
-  int next_word;                              //! index for the next word
-  int heads[MAX_SENTENCE_SIZE];               //! the lexical head for each word
-  int left_most_child[MAX_SENTENCE_SIZE];     //! the leftmost dependency for
-                                              //! each word (just for cache,
-                                              //! temporary info)
-  int left_2most_child[MAX_SENTENCE_SIZE];    //! the second leftmost dependency
-  int right_most_child[MAX_SENTENCE_SIZE];    //! the rightmost dependency for
-                                              //! each word (just for cache,
-                                              //! temporary info)
-  int right_2most_child[MAX_SENTENCE_SIZE];   //! the second rightmost dependency
-  int num_left_children[MAX_SENTENCE_SIZE];   //! the number of left dependencies
-  int num_right_children[MAX_SENTENCE_SIZE];  //! the number of right dependencies
+  //! the stack
+  std::vector<int> stack_;
+  //! the deque
+  std::vector<int> deque_;
+  //! index for the next word
+  int next_word;
+  //! the lexical head for each word
+  int heads[kMaxSentenceSize];
+  //! the leftmost dependency for each word (just for cache, temporary info)
+  int left_most_child[kMaxSentenceSize];
+  //! the second leftmost dependency
+  int left_2most_child[kMaxSentenceSize];
+  //! the rightmost dependency for each word (just for cache, temporary info)
+  int right_most_child[kMaxSentenceSize];
+  //! the second rightmost dependency
+  int right_2most_child[kMaxSentenceSize];
+  //! the number of left dependencies
+  int num_left_children[kMaxSentenceSize];
+  //! the number of right dependencies
+  int num_right_children[kMaxSentenceSize];
 
 #ifdef LABELED
-  CSetOfTags<CDependencyLabel> left_dep_tagset[MAX_SENTENCE_SIZE];  // the set of left tags
-  CSetOfTags<CDependencyLabel> right_dep_tagset[MAX_SENTENCE_SIZE]; // the set of right tags
-  unsigned long labels[MAX_SENTENCE_SIZE];   // the label of each dependency link
+  //! the set of left tags
+  CSetOfTags<CDependencyLabel> left_dep_tagset[kMaxSentenceSize];
+  //! the set of right tags
+  CSetOfTags<CDependencyLabel> right_dep_tagset[kMaxSentenceSize];
+  //! the label of each dependency link
+  unsigned long labels[kMaxSentenceSize];
 #endif
 
 public:
   //! score of state - predicting how potentially this is the correct one
   SCORE_TYPE score;
-  const CStateItem * previous_;   //! the link to the previous state.
-  unsigned long      last_action; //! the last stack action
-  int                len_;
+  //! the link to the previous state.
+  const CStateItem * previous_;
+  //! the last stack action
+  unsigned long last_action;
+  //! the length of the input data.
+  int len_;
 
 public:
-  // constructors and destructor
+  //! constructors and destructor
   CStateItem() : len_(-1) {
     clear();
   }
@@ -50,39 +66,10 @@ public:
     return score > item.score;
   }
 
-  // judging if the two state item equal
-  inline bool operator == (const CStateItem &item) const {
-    // check the buffer front word
-    if (next_word != item.next_word) {
-      return false;
-    }
+  //! judging if the two state item equal
+  inline bool operator == (const CStateItem &item) const;
 
-    // check the stack top
-    if ((stack_.size() != item.stack_.size()) ||
-        (stack_.size() > 0 && stack_.back() != item.stack_.back())) {
-      return false;
-    }
-
-    // check the structure of tree
-    for (int i = 0; i <= next_word; ++i) {
-      if (heads[i] != item.heads[i]
-#ifdef LABELED
-          || labels[i] != item.labels[i]
-#endif
-          ) {
-        return false;
-      }
-    }
-    if (stack_ != item.stack_)            { return false; }
-    if (deque_ != item.deque_)            { return false; }
-    // I think that the stacks don't have to be compared
-    // might be proved by translating tree to stack
-    return true;
-  }
-
-  inline bool operator != (const CStateItem &item) const {
-    return !((*this) == item);
-  }
+  inline bool operator != (const CStateItem &item) const;
 
   // propty
   inline int stacksize() const {
@@ -145,7 +132,7 @@ public:
     assert(to <= next_word);
     int current = heads[from];
     while (current != DEPENDENCY_LINK_NO_HEAD) {
-      if (current == to) return true; 
+      if (current == to) return true;
       current = heads[current];
     }
     return false;
@@ -268,12 +255,14 @@ public:
     last_action = action::kIdle;
   }
 
-  // perform the shift action, the shift action does pushing. the algorithm
-  // can be described as below.
-  //
-  //  1.loop over the deque from tail to head
-  //    1.1 push the element into the stack
-  //  2. push the next word into the deque
+  /**
+   * Performing the shift action, the shift action does pushing. the algorithm
+   * can be described as below.
+   *
+   * 1.loop over the deque from tail to head
+   *  - 1.1 push the element into the stack
+   * 2. push the next word into the deque
+   */
   void Shift() {
     while (!deque_.empty()) {
       int word = deque_.back();
@@ -466,7 +455,7 @@ public:
         next_word > right_most_child[left]) {
       right_2most_child[left] = right_most_child[left];
       right_most_child[left]  = next_word;
-    } else if (DEPENDENCY_LINK_NO_HEAD == right_2most_child[left] || 
+    } else if (DEPENDENCY_LINK_NO_HEAD == right_2most_child[left] ||
         next_word > right_2most_child[left]) {
       right_2most_child[left] = next_word;
     }
@@ -644,9 +633,6 @@ public:
     assert( stack_.size() == 0 );
   }
 
-  unsigned FollowMove( const CStateItem * item ) {
-  }
-
   void GenerateTree(
       const CTwoStringVector & input,
       CDependencyParse       & output) const {
@@ -671,7 +657,7 @@ public:
   friend std::ostream & operator << (std::ostream& out, const CStateItem & item) {
     out << action::DecodeUnlabeledAction(item.last_action)
       << "-" << action::DecodeLabel(item.last_action)
-      << " (" << item.score 
+      << " (" << item.score
       << "): (";
     for (int i = 0; i < item.stack_.size(); ++ i) {
       out << item.stack_[i];
@@ -696,6 +682,39 @@ struct CScoredTransition {
   unsigned long action;
   //! The score.
   SCORE_TYPE score;
+};
+
+struct CDecodeContext {
+  //!
+  CStateItem* lattice_index[kMaxSteps];
+  //!
+  unsigned lattice_size[kMaxSteps];
+
+  CDecodeContext() {
+    memset(lattice_index, 0, sizeof(lattice_index));
+    memset(lattice_size, 0, sizeof(lattice_size));
+  }
+
+  ~CDecodeContext() {
+    for (int i = 0; i < kMaxSteps; ++ i) {
+      if (lattice_index[i]) {
+        delete [](lattice_index[i]);
+      }
+    }
+  }
+
+  CStateItem* malloc(int id, unsigned size) {
+    assert(id < kMaxSteps);
+    assert(size <= kAgendaSize);
+
+    if (lattice_index[id] == 0) {
+      //! One for out-of-beam correct state.
+      lattice_index[id] = new CStateItem[kAgendaSize];
+    }
+
+    lattice_size[id] = size;
+    return lattice_index[id];
+  }
 };
 
 #endif  // COMMON_DEPPARSER_IMPLEMENTATIONS_CHOIBASIC_STATE_H

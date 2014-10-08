@@ -1,15 +1,4 @@
 // Copyright (C) University of Oxford 2010
-/****************************************************************
- *                                                              *
- * weight.cpp - the weight definition method                    *
- *                                                              *
- * Part of the dependency parser of english                     *
- *                                                              *
- * Yue Zhang                                                    *
- * 2007.8                                                       *
- *                                                              *
- ****************************************************************/
-
 #include "depparser_weight.h"
 
 using namespace TARGET_LANGUAGE;
@@ -20,7 +9,7 @@ using namespace TARGET_LANGUAGE::depparser;
  * loadScores - load scores from the file specified at constructor
  *              currently this uses database, but it can be modified
  *
- * Affects: m_bScoreModified, clearing it. 
+ * Affects: m_bScoreModified, clearing it.
  *
  *--------------------------------------------------------------*/
 
@@ -41,15 +30,14 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
 
 #ifdef LABELED
   getline(file, s);
-  ASSERT(s == "Dependency labels:", 
+  ASSERT(s == "Dependency labels:",
       "Dependency labels not found in model file");
   getline(file, s);
   std::istringstream iss(s);
   CDependencyLabel label;
   while(iss >> label);
   getline(file, s);
-  ASSERT(s == "", 
-      "No empty line after the dependency labels");
+  ASSERT(s == "", "No empty line after the dependency labels");
 #endif
   iterate_templates(file >>,;);
 

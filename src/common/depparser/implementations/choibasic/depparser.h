@@ -9,8 +9,7 @@
  * Global items
  *
  *==============================================================*/
-
-// guard the state with certain namespace
+//! guard the state with certain namespace
 namespace TARGET_LANGUAGE {
 namespace depparser {
 #include "state.h"
@@ -30,7 +29,7 @@ namespace TARGET_LANGUAGE {
 class CDepParser : public CDepParserBase {
 private:
   //! The lattice.
-  depparser::CStateItem * lattice_;
+  depparser::CDecodeContext ctx_;
   //! The beam for storing scord transition.
   depparser::CScoredTransition * m_Beam;
 
@@ -103,7 +102,7 @@ public:
   depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
 
   void updateScores(
-      const CDependencyParse &parse, 
+      const CDependencyParse &parse,
       const CDependencyParse &correct,
       int round=0);
 
@@ -202,7 +201,7 @@ private:
    *
    *  @param[in]  predicated_state    the predicated state
    *  @param[in]  correct_state       the correct state
-   *  @param[in]  amount_add          the 
+   *  @param[in]  amount_add          the
    *  @param[in]  amount_substract    the punishment on wrong state
    */
   void UpdateScoresForStates(
@@ -216,7 +215,7 @@ private:
    */
   int InsertIntoBeam(const depparser::CScoredTransition& transition);
 
-  // helper method
+  //! helper method
   inline void Transit(
       const depparser::CStateItem * item,
       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
@@ -256,9 +255,6 @@ private:
   inline void RightPass(
       const depparser::CStateItem * item,
       const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::kMax> & scores);
-
-public:
-   void TestSuite1();
 };
 
 }; // namespace TARGET_LANGUAGE
