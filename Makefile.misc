@@ -57,6 +57,5 @@ clean: clean.ge clean.en clean.es clean.zh
 	rm -f test.o
 	rm -f test.exe
 	rm -rf $(DIST_DIR)
-	rm -f *~
 	$(MKDIR) dist
 	$(MKDIR) obj
