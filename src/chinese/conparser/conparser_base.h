@@ -14,7 +14,7 @@
 
 #include "base_include.h"
 
-#include "weight.h"
+#include "weight_base.h"
 
 namespace TARGET_LANGUAGE {
 
@@ -30,7 +30,7 @@ class CConParserBase {
 
 protected:
 
-   conparser::CWeight *m_weights;
+   conparser::CWeightBase *m_weights;
 
    bool m_bTrain ; // the system runs either at training mode or decoding mode
    std::string m_sFeatureDB;
