@@ -102,11 +102,10 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static unsigned long long last_char_cat_n2;
    static unsigned long long last_char_cat_n3;
 
-   conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(this->m_weights);
-   last_char_cat_n0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n0z);
-	last_char_cat_n1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n1z);
-	last_char_cat_n2 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n2z);
-	last_char_cat_n3 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n3z);
+   last_char_cat_n0 = static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.lookup(m_Context.n0z);
+	last_char_cat_n1 = static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.lookup(m_Context.n1z);
+	last_char_cat_n2 = static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.lookup(m_Context.n2z);
+	last_char_cat_n3 = static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.lookup(m_Context.n3z);
 
    static unsigned long long s0type;
    static unsigned long long s1type;
@@ -125,9 +124,9 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
    static unsigned long long s0s1headchartype;
    s0s1headchartype = 0;
-   if(m_weights->m_Knowledge && m_Context.s1z.hash() != 0 && m_Context.s0z.hash() != 0)
+   if(static_cast<conparser::CWeight*>(m_weights)->m_Knowledge && m_Context.s1z.hash() != 0 && m_Context.s0z.hash() != 0)
    {
-   	s0s1headchartype = (m_weights->m_Knowledge->isFWorCD(m_Context.s0z.str()) ? 1: 0) * 10 +  (m_weights->m_Knowledge->isFWorCD(m_Context.s1z.str()) ? 1: 0);
+   	s0s1headchartype = (static_cast<conparser::CWeight*>(m_weights)->m_Knowledge->isFWorCD(m_Context.s0z.str()) ? 1: 0) * 10 +  (static_cast<conparser::CWeight*>(m_weights)->m_Knowledge->isFWorCD(m_Context.s1z.str()) ? 1: 0);
    }
 
    static unsigned long long s0s1headcharequal;
@@ -820,14 +819,14 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 			cast_weights->m_mapWSLengthByLastWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_2, m_Context.length_1) , action.code(), m_nScoreIndex , amount , round ) ;
 			cast_weights->m_mapWSLastLengthByWord.getOrUpdateScore(retval, std::make_pair(m_Context.word_1, m_Context.length_2), action.code(), m_nScoreIndex , amount , round ) ;
 
-			if(m_weights->m_mapPartWordFrequency.find(m_Context.twoword, 0) >= (m_weights->m_nMaxWordFrequency/5000+10))
+			if(static_cast<conparser::CWeight*>(m_weights)->m_mapPartWordFrequency.find(m_Context.twoword, 0) >= (static_cast<conparser::CWeight*>(m_weights)->m_nMaxWordFrequency/5000+10))
 			{
 				subwordlength = m_Context.end_1-m_Context.start_2 +1;
 				//cast_weights->m_mapInSubWordDictionary.getOrUpdateScore(retval, subwordlength, action.code(), m_nScoreIndex , amount , round ) ;
 				refer_or_allocate_tuple2(tagint, &(m_Context.tag_1), &(subwordlength));
 				cast_weights->m_mapInSubWordDictionaryTag.getOrUpdateScore(retval, tagint, action.code(), m_nScoreIndex , amount , round ) ;
 
-				if(m_weights->m_mapSubTagDictionary.lookup(m_Context.twoword, m_Context.tag_1))
+				if(static_cast<conparser::CWeight*>(m_weights)->m_mapSubTagDictionary.lookup(m_Context.twoword, m_Context.tag_1))
 				{
 					//cast_weights->m_mapInSubWordTagDictionary.getOrUpdateScore(retval, subwordlength , action.code(), m_nScoreIndex , amount , round ) ;
 					refer_or_allocate_tuple2(tagint, &(m_Context.tag_1), &(subwordlength));
@@ -875,7 +874,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 			if (m_Context.start_0 >= 0) {
 				refer_or_allocate_tuple2(wordtag, &(m_Context.first_char_0), &(tag_0));
 				cast_weights->m_mapTagByFirstChar.getOrUpdateScore(retval, wordtag ,  action.code(), m_nScoreIndex , amount , round ) ;
-				first_char_cat_0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.first_char_0);
+				first_char_cat_0 = static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.lookup(m_Context.first_char_0);
 				refer_or_allocate_tuple2(tagint, &(tag_0) , &(first_char_cat_0));
 				cast_weights->m_mapTagByFirstCharCat.getOrUpdateScore(retval, tagint ,  action.code(), m_nScoreIndex , amount , round ) ;
 
@@ -929,15 +928,15 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
 		if( m_Context.stacksize> 0 && (actionType.code == CActionType::NO_ACTION || actionType.code == CActionType::WORD_T))// || actionType.code == CActionType::WORD_XYZ))
 		{
-			last_char_cat_1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.last_char_1);
+			last_char_cat_1 = static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.lookup(m_Context.last_char_1);
 			cast_weights->m_mapSeenWords.getOrUpdateScore(retval, m_Context.word_1 , action.code(), m_nScoreIndex , amount , round ) ;
 			cast_weights->m_mapLastWordByWord.getOrUpdateScore(retval, m_Context.word_2_word_1 , action.code(), m_nScoreIndex , amount , round ) ;
 			/*
-			if(m_weights->m_mapWordFrequency.find(m_Context.word_1, 0) >= 8)
+			if(static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency.find(m_Context.word_1, 0) >= 8)
 			{
 				cast_weights->m_mapInWordDictionary.getOrUpdateScore(retval, 1 , action.code(), m_nScoreIndex , amount , round ) ;
 
-				if(m_weights->m_mapTagDictionary.lookup(m_Context.word_1, m_Context.tag_1))
+				if(static_cast<conparser::CWeight*>(m_weights)->m_mapTagDictionary.lookup(m_Context.word_1, m_Context.tag_1))
 				{
 					cast_weights->m_mapInWordTagDictionary.getOrUpdateScore(retval, 1 , action.code(), m_nScoreIndex , amount , round ) ;
 				}
@@ -1201,7 +1200,7 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CString
    double tou = (F+outout->score-correct->score)/(m_delta->squareNorm());
    m_delta->scaleCurrent(tou, m_nTrainingRound);
 #endif
-   static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
+   static_cast<CWeight*>(static_cast<conparser::CWeight*>(m_weights))->addCurrent(m_delta, m_nTrainingRound);
    m_delta->clear();
 
    m_nTotalErrors++;
@@ -1334,7 +1333,7 @@ void CConParser::updateScoresByLoss( const CStateItem *output , const CStateItem
 //         tou = (std::sqrt(L)+oscore-cscore)/m_delta->squareNorm();
          tou = (L+oscore-cscore)/m_delta->squareNorm();
          m_delta->scaleCurrent(tou, m_nTrainingRound);
-         static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
+         static_cast<CWeight*>(static_cast<conparser::CWeight*>(m_weights))->addCurrent(m_delta, m_nTrainingRound);
       }
       // next round
       --oi;
@@ -1450,7 +1449,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 
 #ifndef EARLY_UPDATE
          if (bTrain && bSkipLast && pGenerator == lattice_index[index]-1) {
-            getOrUpdateStackScore(static_cast<CWeight*>(m_weights), packedscores, pGenerator);
+            getOrUpdateStackScore(static_cast<CWeight*>(static_cast<conparser::CWeight*>(m_weights)), packedscores, pGenerator);
             scored_correct_action.load(correct_action, pGenerator, packedscores[correct_action.code()]);
             correct_action_scored = true;
             break;
@@ -1476,7 +1475,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 
 
          if (actions.size() > 0)
-            getOrUpdateStackScore(static_cast<CWeight*>(m_weights), packedscores, pGenerator);
+            getOrUpdateStackScore(static_cast<CWeight*>(static_cast<conparser::CWeight*>(m_weights)), packedscores, pGenerator);
          
          for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
             scored_action.load(actions[tmp_j], pGenerator, packedscores[actions[tmp_j].code()]);
@@ -1699,28 +1698,27 @@ void CConParser::train( const CSentenceParsed &correct , int round) {
       getCharactersFromUTF8String(wordtags.at(i).first, &chars);
       local_size = chars.size();
 
-      conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(this->m_weights);
-      m_weights->m_mapWordFrequency[word]++;
-      if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency)
-         m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
+      static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency[word]++;
+      if (static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency[word]>static_cast<conparser::CWeight*>(m_weights)->m_nMaxWordFrequency)
+         static_cast<conparser::CWeight*>(m_weights)->m_nMaxWordFrequency = static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency[word];
 
-      m_weights->m_mapTagDictionary.add(word, tag);
+      static_cast<conparser::CWeight*>(m_weights)->m_mapTagDictionary.add(word, tag);
       for ( j=0 ; j<local_size; ++j ) {
-         m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
+         static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.add(chars[j], tag) ;
       }
 
       if ( PENN_TAG_CLOSED[tag] || tag==PENN_TAG_CD ) {
-           m_weights->m_mapCanStart.add(chars[0], tag);
+           static_cast<conparser::CWeight*>(m_weights)->m_mapCanStart.add(chars[0], tag);
       }
 
-//      if ( !m_weights->m_Knowledge ||
-//          (!m_weights->m_Knowledge->isFWorCD(chars[0])&&
-//           !m_weights->m_Knowledge->isFWorCD(chars[chars.size()-1])))
+//      if ( !static_cast<conparser::CWeight*>(m_weights)->m_Knowledge ||
+//          (!static_cast<conparser::CWeight*>(m_weights)->m_Knowledge->isFWorCD(chars[0])&&
+//           !static_cast<conparser::CWeight*>(m_weights)->m_Knowledge->isFWorCD(chars[chars.size()-1])))
       bool bNoSep=false;
       for ( j=total_size+1; j<total_size+local_size; ++j)
          if (!m_rule->canSeparate(j)) bNoSep = true;
       //if (!bNoSep)
-         m_weights->setMaxLengthByTag( tag , local_size ) ;
+         static_cast<conparser::CWeight*>(m_weights)->setMaxLengthByTag( tag , local_size ) ;
 
       total_size += chars.size();
    }
@@ -1748,17 +1746,15 @@ void CConParser::train( const CSentenceParsed &correct , int round) {
       	return;
       }
 
-      conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(this->m_weights);
-      m_weights->m_mapPartWordFrequency[word]++;
-      m_weights->m_mapWordHeadDictionary[word] = m_weights->m_mapWordHeadDictionary[word] | intWordType;
+      static_cast<conparser::CWeight*>(m_weights)->m_mapPartWordFrequency[word]++;
+      static_cast<conparser::CWeight*>(m_weights)->m_mapWordHeadDictionary[word] = static_cast<conparser::CWeight*>(m_weights)->m_mapWordHeadDictionary[word] | intWordType;
 
    }
 
    for ( unsigned i=0; i<subwords.size(); ++i ) {
       const CWord &word = subwords.at(i).first ;
       unsigned long tag = CTag( subwords.at(i).second ).code() ;
-      conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(this->m_weights);
-      m_weights->m_mapSubTagDictionary.add(word, tag);
+      static_cast<conparser::CWeight*>(m_weights)->m_mapSubTagDictionary.add(word, tag);
 
    }
 
@@ -1836,27 +1832,27 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
       getCharactersFromUTF8String(wordtags.at(i).first, &chars);
       local_size = chars.size();
 
-      m_weights->m_mapWordFrequency[word]++;
-      if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency)
-         m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
+      static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency[word]++;
+      if (static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency[word]>static_cast<conparser::CWeight*>(m_weights)->m_nMaxWordFrequency)
+         static_cast<conparser::CWeight*>(m_weights)->m_nMaxWordFrequency = static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency[word];
 
-      m_weights->m_mapTagDictionary.add(word, tag);
+      static_cast<conparser::CWeight*>(m_weights)->m_mapTagDictionary.add(word, tag);
       for ( j=0 ; j<local_size; ++j ) {
-         m_weights->m_mapCharTagDictionary.add(chars[j], tag) ;
+         static_cast<conparser::CWeight*>(m_weights)->m_mapCharTagDictionary.add(chars[j], tag) ;
       }
 
       if ( PENN_TAG_CLOSED[tag] || tag==PENN_TAG_CD ) {
-           m_weights->m_mapCanStart.add(chars[0], tag);
+           static_cast<conparser::CWeight*>(m_weights)->m_mapCanStart.add(chars[0], tag);
       }
 
-//      if ( !m_weights->m_Knowledge ||
-//          (!m_weights->m_Knowledge->isFWorCD(chars[0])&&
-//           !m_weights->m_Knowledge->isFWorCD(chars[chars.size()-1])))
+//      if ( !static_cast<conparser::CWeight*>(m_weights)->m_Knowledge ||
+//          (!static_cast<conparser::CWeight*>(m_weights)->m_Knowledge->isFWorCD(chars[0])&&
+//           !static_cast<conparser::CWeight*>(m_weights)->m_Knowledge->isFWorCD(chars[chars.size()-1])))
       bool bNoSep=false;
       for ( j=total_size+1; j<total_size+local_size; ++j)
          if (!m_rule->canSeparate(j)) bNoSep = true;
       //if (!bNoSep)
-         m_weights->setMaxLengthByTag( tag , local_size ) ;
+         static_cast<conparser::CWeight*>(m_weights)->setMaxLengthByTag( tag , local_size ) ;
 
       total_size += chars.size();
    }
@@ -1884,8 +1880,8 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
       	return;
       }
 
-      m_weights->m_mapPartWordFrequency[word]++;
-      m_weights->m_mapWordHeadDictionary[word] = m_weights->m_mapWordHeadDictionary[word] | intWordType;
+      static_cast<conparser::CWeight*>(m_weights)->m_mapPartWordFrequency[word]++;
+      static_cast<conparser::CWeight*>(m_weights)->m_mapWordHeadDictionary[word] = static_cast<conparser::CWeight*>(m_weights)->m_mapWordHeadDictionary[word] | intWordType;
 
    }
 
@@ -1898,7 +1894,7 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
       states[current].StandardMove(correct, action);
 //std::cout << action << std::endl;
       m_Context.load(states+current, m_lCache, sentence, true);
-      getOrUpdateStackScore(static_cast<CWeight*>(m_weights), scores, states+current, action, 1, -1);
+      getOrUpdateStackScore(static_cast<conparser::CWeight*>(m_weights), scores, states+current, action, 1, -1);
       states[current].Move(states+current+1, action);
       ++current;
    }
