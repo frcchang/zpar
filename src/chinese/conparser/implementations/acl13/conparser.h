@@ -48,9 +48,8 @@ public:
    CConParser( const std::string &sFeatureDBPath, unsigned long nMaxSentSize , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_lCache(nMaxSentSize) {
       // and initialize the weith module loading content
       m_weights = new conparser :: CWeight( bTrain );
-      conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(this->m_weights);
-      m_rule = new conparser::CRule(m_weights->m_maxlengthByTag, &(m_weights->m_nMaxWordFrequency), &(m_weights->m_mapTagDictionary), &(m_weights->m_mapWordFrequency), &(m_weights->m_mapCanStart)
-      		, &(m_lCache), m_weights->m_Knowledge, &(m_weights->m_mapPartWordFrequency), &(m_weights->m_mapWordHeadDictionary));
+      m_rule = new conparser::CRule(static_cast<conparser::CWeight*>(m_weights)->m_maxlengthByTag, &(static_cast<conparser::CWeight*>(m_weights)->m_nMaxWordFrequency), &(static_cast<conparser::CWeight*>(m_weights)->m_mapTagDictionary), &(static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency), &(static_cast<conparser::CWeight*>(m_weights)->m_mapCanStart)
+      		, &(m_lCache), static_cast<conparser::CWeight*>(m_weights)->m_Knowledge, &(static_cast<conparser::CWeight*>(m_weights)->m_mapPartWordFrequency), &(static_cast<conparser::CWeight*>(m_weights)->m_mapWordHeadDictionary));
       if (bTrain) {
 
 #ifdef TRAIN_MULTI //===
@@ -85,12 +84,12 @@ public:
 
       std::ifstream file;
       file.open(sFeatureDBPath.c_str());
-      m_weights->loadScores(file);
+      static_cast<conparser::CWeight*>(m_weights)->loadScores(file);
       // load rules
       CConstituent c;
       file.close();
       // initialize 
-      if (!bTrain && m_weights->empty()) { // when decoding, model must be found
+      if (!bTrain && static_cast<conparser::CWeight*>(m_weights)->empty()) { // when decoding, model must be found
          THROW("The model file " << sFeatureDBPath<< " is not found.")
       }
       m_nTrainingRound = 0; 
@@ -117,8 +116,8 @@ public:
    /*
    CConParser( CConParser &conparser) : CConParserBase(conparser){
       assert(1==0);
-      //m_weights = new conparser :: CWeight( bTrain );
-      //m_rule = new conparser::CRule(m_weights->m_maxlengthByTag,&m_weights->m_mapWordFrequency, &m_weights->m_mapTagDictionary, &m_weights->m_mapWordFrequency, &m_weights->m_mapCanStart, &m_lCache);
+      //static_cast<conparser::CWeight*>(m_weights) = new conparser :: CWeight( bTrain );
+      //m_rule = new conparser::CRule(static_cast<conparser::CWeight*>(m_weights)->m_maxlengthByTag,&static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency, &static_cast<conparser::CWeight*>(m_weights)->m_mapTagDictionary, &static_cast<conparser::CWeight*>(m_weights)->m_mapWordFrequency, &static_cast<conparser::CWeight*>(m_weights)->m_mapCanStart, &m_lCache);
 
    }
 */
