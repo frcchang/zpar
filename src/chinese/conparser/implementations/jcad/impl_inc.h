@@ -47,7 +47,8 @@ namespace TARGET_LANGUAGE {
 
 namespace conparser { 
 
-typedef long SCORE_TYPE ;
+#include "zinttypes.h"
+typedef int64_t SCORE_TYPE ;
 
 // labeled brackets
 typedef CTuple3<int, int, CConstituent> CBracketTuple;
