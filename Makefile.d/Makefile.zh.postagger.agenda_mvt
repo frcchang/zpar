@@ -1,0 +1,7 @@
+include Makefile.d/Makefile.zh.postagger
+
+tagger-jni:$(DIST_TAGGER)/libcn_nlp_Tagger.so
+
+$(DIST_TAGGER)/libcn_nlp_Tagger.so: src/jni/cn_nlp_Tagger.cpp $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECTS) $(DIST_TAGGER)
+	$(CXX) $(TAGGER_TRAIN_FLAGS) $(CXXFLAGS) -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux  -I$(SRC_CHINESE) -I$(SRC_TAGGER) -I$(SRC_TAGGER)/implementations/$(CHINESE_TAGGER_IMPL) -c $(SRC_JNI)/cn_nlp_Tagger.cpp -o $(OBJECT_TAGGER)/cn_nlp_Tagger.o
+	$(LD) $(LDFLAGS) -o $(DIST_TAGGER)/libcn_nlp_Tagger.so -shared -Wl,-soname,cn_nlp_Tagger.so $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/cn_nlp_Tagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/learning/dbn.o
