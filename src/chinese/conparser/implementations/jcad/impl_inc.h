@@ -47,7 +47,6 @@ namespace TARGET_LANGUAGE {
 
 namespace conparser { 
 
-#include "zinttypes.h"
 typedef int64_t SCORE_TYPE ;
 
 // labeled brackets

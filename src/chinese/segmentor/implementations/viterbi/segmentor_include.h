@@ -3,7 +3,6 @@
 #include "learning/perceptron/hashmap_score.h"
 #include "pair_stream.h"
 
-#include "zinttypes.h"
 typedef int64_t SCORE_TYPE;
 
 /*===============================================================

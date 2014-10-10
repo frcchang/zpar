@@ -2,7 +2,6 @@
 #ifndef _TAGGER_MACROS_H
 #define _TAGGER_MACROS_H
 #define SIMPLE_HASH
-
 #include "zinttypes.h"
 namespace TARGET_LANGUAGE {
 

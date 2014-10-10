@@ -18,7 +18,6 @@
 #define AGENDA_SIZE 64
 
 //label
-#include "zinttypes.h"
 typedef int64_t SCORE_TYPE ;
 
 // supertag

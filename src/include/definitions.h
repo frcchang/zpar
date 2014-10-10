@@ -81,6 +81,7 @@
  *==============================================================*/
 
 #include "linguistics/sentence_string.h"
+#include "zinttypes.h"
 
 #endif
 
