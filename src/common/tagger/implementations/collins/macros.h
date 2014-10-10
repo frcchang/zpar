@@ -3,11 +3,12 @@
 #define _TAGGER_MACROS_H
 #define SIMPLE_HASH
 
+#include "zinttypes.h"
 namespace TARGET_LANGUAGE {
 
 namespace tagger {
 
-typedef long SCORE_TYPE ;
+typedef int64_t SCORE_TYPE ;
 
 //
 // Specific global

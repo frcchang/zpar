@@ -4,7 +4,8 @@
 #include "learning/perceptron/hashmap_score.h"
 #include "pair_stream.h"
 
-typedef int SCORE_TYPE;
+#include "zinttypes.h"
+typedef int64_t SCORE_TYPE;
 
 /*===============================================================
  *
