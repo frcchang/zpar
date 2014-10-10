@@ -1,0 +1,7 @@
+include Makefile.d/Makefile.zh.depparser
+
+parser-jni:$(DIST_DEPPARSER)/libcn_nlp_Parser.so
+
+$(DIST_DEPPARSER)/libcn_nlp_Parser.so: src/jni/cn_nlp_Parser.cpp $(OBJECT_DIR)/chinese.depparser.dec.o $(OBJECT_DEPPARSER)/weight.dec.o $(OBJECTS) $(DIST_DEPPARSER)
+	$(CXX) $(CXXFLAGS) -DPERCEPTRON_FOR_DECODING $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_JNI)/cn_nlp_Parser.cpp -o $(OBJECT_DEPPARSER)/cn_nlp_Parser.o
+	$(LD) $(LDFLAGS) -o $(DIST_DEPPARSER)/libcn_nlp_Parser.so -shared -Wl,-soname,cn_nlp_Parser.so $(OBJECT_DIR)/chinese.depparser.dec.o $(OBJECT_DEPPARSER)/weight.dec.o $(OBJECT_DEPPARSER)/cn_nlp_Parser.o $(OBJECTS)

@@ -216,7 +216,7 @@ public:
 
    void newKnowledge() {
       std::cout << "set character knowledge... " << std::endl;
-      ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
+      //ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
       m_Knowledge = new CCharCatDictionary();
       m_rules.setKnowledge(m_Knowledge);
    }

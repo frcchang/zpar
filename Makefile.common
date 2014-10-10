@@ -21,6 +21,7 @@ SRC_COMMON = $(SRC_DIR)/common
 SRC_CHINESE = $(SRC_DIR)/chinese
 SRC_ENGLISH = $(SRC_DIR)/english
 SRC_SPANISH = $(SRC_DIR)/spanish
+SRC_JNI = $(SRC_DIR)/jni
 OBJECT_DIR = $(BASE_DIR)/obj
 DIST_DIR = $(BASE_DIR)/dist
 
