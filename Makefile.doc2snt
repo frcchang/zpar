@@ -2,9 +2,9 @@ SRC_DOC2SNT = $(SRC_CHINESE)/doc2snt
 DIST_DOC2SNT = $(DIST_DIR)/chinese.doc2snt
 OBJECT_DOC2SNT = $(OBJECT_DIR)/chinese.doc2snt
 $(DIST_DOC2SNT):
-	mkdir -p $(DIST_DOC2SNT)
+	$(MKDIR) $(DIST_DOC2SNT)
 $(OBJECT_DOC2SNT):
-	mkdir $(OBJECT_DOC2SNT)
+	$(MKDIR) $(OBJECT_DOC2SNT)
 chinese.doc2snt: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DOC2SNT) $(DIST_DOC2SNT) $(DIST_DOC2SNT)/doc2snt 
 	@echo The Chinese word doc2snt system is compiled successfully into $(DIST_DOC2SNT).
 

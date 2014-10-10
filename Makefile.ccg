@@ -11,9 +11,9 @@ OBJECT_GENERIC_CCGPARSER = $(OBJECT_DIR)/generic.ccgparser
 #===================================================================
 
 $(DIST_GENERIC_CCGPARSER):
-	mkdir $(DIST_GENERIC_CCGPARSER)
+	$(MKDIR) $(DIST_GENERIC_CCGPARSER)
 $(OBJECT_GENERIC_CCGPARSER):
-	mkdir $(OBJECT_GENERIC_CCGPARSER)
+	$(MKDIR) $(OBJECT_GENERIC_CCGPARSER)
 generic.ccgparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_GENERIC_CCGPARSER) $(DIST_GENERIC_CCGPARSER) $(DIST_GENERIC_CCGPARSER)/conparser $(DIST_GENERIC_CCGPARSER)/train 
 	@echo The generic CCG parser system is compiled successfully into $(DIST_GENERIC_CCGPARSER).
 

@@ -3,14 +3,14 @@ SRC_JOINT = $(SRC_CHINESE)/joint
 DIST_JOINT = $(DIST_DIR)/joint
 OBJECT_JOINT = $(OBJECT_DIR)/joint
 $(OBJECT_JOINT):
-	mkdir -p $(OBJECT_JOINT)
+	$(MKDIR) $(OBJECT_JOINT)
 $(DIST_JOINT):
-	mkdir -p $(DIST_JOINT)
+	$(MKDIR) $(DIST_JOINT)
 
 $(OBJECT_JOINT)/postagger: $(OBJECT_JOINT)
-	mkdir -p $(OBJECT_JOINT)/postagger
+	$(MKDIR) $(OBJECT_JOINT)/postagger
 $(DIST_JOINT)/postagger: $(DIST_JOINT)
-	mkdir -p $(DIST_JOINT)/postagger
+	$(MKDIR) $(DIST_JOINT)/postagger
 joint.postagger: $(OBJECT_DIR) $(DIST_DIR) $(DIST_JOINT)/postagger $(OBJECT_JOINT)/postagger $(DIST_JOINT)/postagger/postagger $(DIST_JOINT)/postagger/train
 	@echo The joint segmentor postagger is successfully compiled into $(DIST_JOINT)/postagger 
 
@@ -58,5 +58,5 @@ clean: clean.ge clean.en clean.es clean.zh
 	rm -f test.exe
 	rm -rf $(DIST_DIR)
 	rm -f *~
-	mkdir dist
-	mkdir obj
+	$(MKDIR) dist
+	$(MKDIR) obj

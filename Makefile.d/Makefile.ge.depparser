@@ -6,9 +6,9 @@ depparser: generic.depparser
 #===================================================================
 
 $(DIST_GENERIC_DEPPARSER):
-	mkdir $(DIST_GENERIC_DEPPARSER)
+	$(MKDIR) $(DIST_GENERIC_DEPPARSER)
 $(OBJECT_GENERIC_DEPPARSER):
-	mkdir $(OBJECT_GENERIC_DEPPARSER)
+	$(MKDIR) $(OBJECT_GENERIC_DEPPARSER)
 generic.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_GENERIC_DEPPARSER) $(DIST_GENERIC_DEPPARSER) $(DIST_GENERIC_DEPPARSER)/depparser $(DIST_GENERIC_DEPPARSER)/train
 	@echo The generic dependency parser system is compiled successfully into $(DIST_GENERIC_DEPPARSER).
 
