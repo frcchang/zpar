@@ -16,9 +16,9 @@ $(OBJECT_DIR)/constituent.ge.o: $(OBJECT_GENERIC_CONPARSER) $(SRC_GENERIC)/cfg.h
 #===================================================================
 
 $(DIST_GENERIC_CONPARSER):
-	mkdir $(DIST_GENERIC_CONPARSER)
+	$(MKDIR) $(DIST_GENERIC_CONPARSER)
 $(OBJECT_GENERIC_CONPARSER):
-	mkdir $(OBJECT_GENERIC_CONPARSER)
+	$(MKDIR) $(OBJECT_GENERIC_CONPARSER)
 generic.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_GENERIC_CONPARSER) $(DIST_GENERIC_CONPARSER) $(DIST_GENERIC_CONPARSER)/conparser $(DIST_GENERIC_CONPARSER)/train 
 	@echo The generic constituent parser system is compiled successfully into $(DIST_GENERIC_CONPARSER).
 

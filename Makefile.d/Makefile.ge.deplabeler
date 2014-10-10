@@ -5,9 +5,9 @@ $(OBJECT_DIR)/deplabel.ge.o: $(SRC_GENERIC)/dependency/label/generic.h $(SRC_GEN
 #===================================================================
 
 $(DIST_GENERIC_DEPLABELER):
-	mkdir $(DIST_GENERIC_DEPLABELER)
+	$(MKDIR) $(DIST_GENERIC_DEPLABELER)
 $(OBJECT_GENERIC_DEPLABELER):
-	mkdir $(OBJECT_GENERIC_DEPLABELER)
+	$(MKDIR) $(OBJECT_GENERIC_DEPLABELER)
 generic.deplabeler: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_GENERIC_DEPLABELER) $(DIST_GENERIC_DEPLABELER) $(DIST_GENERIC_DEPLABELER)/deplabeler $(DIST_GENERIC_DEPLABELER)/train
 	@echo The generic dependency labeler system is compiled successfully into $(DIST_GENERIC_DEPLABELER).
 

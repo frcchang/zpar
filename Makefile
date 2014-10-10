@@ -104,6 +104,19 @@ include Makefile.common
 
 #================================================================
 #
+# cross platform configurations
+# 
+#================================================================
+
+ifeq ($(OS),Windows_NT)
+#use good old GNU mkdir instead of MSDOS mkdir on Windows
+MKDIR=gmkdir -p
+else
+MKDIR=mkdir -p
+endif
+
+#================================================================
+#
 # compiler commands
 # 
 #================================================================
@@ -133,43 +146,43 @@ LEARNING_OBJECTS = $(OBJECT_DIR)/learning/dbn.o
 OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS) $(LEARNING_OBJECTS)
 
 $(OBJECT_DIR)/%.o: $(SRC_LIBS)/%.cpp $(SRC_INCLUDES)/%.h
-	mkdir -p $(OBJECT_DIR)
-	mkdir -p $(OBJECT_DIR)/linguistics
-	mkdir -p $(OBJECT_DIR)/learning
+	$(MKDIR) $(OBJECT_DIR)
+	$(MKDIR) $(OBJECT_DIR)/linguistics
+	$(MKDIR) $(OBJECT_DIR)/learning
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all: zpar
 
 # the directories
 $(OBJECT_DIR):
-	mkdir -p $(OBJECT_DIR)
+	$(MKDIR) $(OBJECT_DIR)
 $(DIST_DIR):
-	mkdir -p $(DIST_DIR)
+	$(MKDIR) $(DIST_DIR)
 
 #  tagger
 SRC_TAGGER = $(SRC_CHINESE)/tagger
 DIST_TAGGER = $(DIST_DIR)/chinese.postagger
 OBJECT_TAGGER = $(OBJECT_DIR)/chinese.postagger
 $(DIST_TAGGER):
-	mkdir $(DIST_TAGGER)
+	$(MKDIR) $(DIST_TAGGER)
 $(OBJECT_TAGGER):
-	mkdir $(OBJECT_TAGGER)
+	$(MKDIR) $(OBJECT_TAGGER)
 
 SRC_ENGLISH_TAGGER = $(SRC_COMMON)/tagger
 DIST_ENGLISH_TAGGER = $(DIST_DIR)/english.postagger
 OBJECT_ENGLISH_TAGGER = $(OBJECT_DIR)/english.postagger
 $(DIST_ENGLISH_TAGGER):
-	mkdir $(DIST_ENGLISH_TAGGER)
+	$(MKDIR) $(DIST_ENGLISH_TAGGER)
 $(OBJECT_ENGLISH_TAGGER):
-	mkdir $(OBJECT_ENGLISH_TAGGER)
+	$(MKDIR) $(OBJECT_ENGLISH_TAGGER)
 	
 SRC_SPANISH_TAGGER = $(SRC_COMMON)/tagger
 DIST_SPANISH_TAGGER = $(DIST_DIR)/spanish.postagger
 OBJECT_SPANISH_TAGGER = $(OBJECT_DIR)/spanish.postagger
 $(DIST_SPANISH_TAGGER):
-	mkdir $(DIST_SPANISH_TAGGER)
+	$(MKDIR) $(DIST_SPANISH_TAGGER)
 $(OBJECT_SPANISH_TAGGER):
-	mkdir $(OBJECT_SPANISH_TAGGER)
+	$(MKDIR) $(OBJECT_SPANISH_TAGGER)
 
 #  depparser
 SRC_COMMON_DEPPARSER = $(SRC_COMMON)/depparser
@@ -226,14 +239,14 @@ else
 endif
 
 $(DIST_CONPARSER):
-	mkdir -p $(DIST_CONPARSER)
+	$(MKDIR) $(DIST_CONPARSER)
 $(OBJECT_CONPARSER):
-	mkdir -p $(OBJECT_CONPARSER)
+	$(MKDIR) $(OBJECT_CONPARSER)
 
 $(DIST_DEPLABELER):
-	mkdir $(DIST_DEPLABELER)
+	$(MKDIR) $(DIST_DEPLABELER)
 $(OBJECT_DEPLABELER):
-	mkdir $(OBJECT_DEPLABELER)
+	$(MKDIR) $(OBJECT_DEPLABELER)
 
 # the flags for train
 ifeq ($(CHINESE_TAGGER_IMPL), segmented) # if segmented	
@@ -268,17 +281,17 @@ endif
 #====================================================
 
 $(DIST_DEPPARSER):
-	mkdir $(DIST_DEPPARSER)
+	$(MKDIR) $(DIST_DEPPARSER)
 $(OBJECT_DEPPARSER):
-	mkdir $(OBJECT_DEPPARSER)
+	$(MKDIR) $(OBJECT_DEPPARSER)
 
 SRC_SEGMENTOR = $(SRC_CHINESE)/segmentor
 DIST_SEGMENTOR = $(DIST_DIR)/segmentor
 OBJECT_SEGMENTOR = $(OBJECT_DIR)/segmentor
 $(DIST_SEGMENTOR):
-	mkdir $(DIST_SEGMENTOR)
+	$(MKDIR) $(DIST_SEGMENTOR)
 $(OBJECT_SEGMENTOR):
-	mkdir $(OBJECT_SEGMENTOR)
+	$(MKDIR) $(OBJECT_SEGMENTOR)
 
 include Makefile.zpar.zh
 include Makefile.zpar.en
