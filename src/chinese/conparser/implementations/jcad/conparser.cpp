@@ -102,6 +102,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static unsigned long long last_char_cat_n2;
    static unsigned long long last_char_cat_n3;
 
+   conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(m_weights);
    last_char_cat_n0 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n0z);
 	last_char_cat_n1 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n1z);
 	last_char_cat_n2 = m_weights->m_mapCharTagDictionary.lookup(m_Context.n2z);
@@ -1698,6 +1699,7 @@ void CConParser::train( const CSentenceParsed &correct , int round) {
       getCharactersFromUTF8String(wordtags.at(i).first, &chars);
       local_size = chars.size();
 
+      conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(m_weights);
       m_weights->m_mapWordFrequency[word]++;
       if (m_weights->m_mapWordFrequency[word]>m_weights->m_nMaxWordFrequency)
          m_weights->m_nMaxWordFrequency = m_weights->m_mapWordFrequency[word];
@@ -1746,6 +1748,7 @@ void CConParser::train( const CSentenceParsed &correct , int round) {
       	return;
       }
 
+      conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(m_weights);
       m_weights->m_mapPartWordFrequency[word]++;
       m_weights->m_mapWordHeadDictionary[word] = m_weights->m_mapWordHeadDictionary[word] | intWordType;
 
@@ -1754,6 +1757,7 @@ void CConParser::train( const CSentenceParsed &correct , int round) {
    for ( unsigned i=0; i<subwords.size(); ++i ) {
       const CWord &word = subwords.at(i).first ;
       unsigned long tag = CTag( subwords.at(i).second ).code() ;
+      conparser :: CWeight * m_weights = dynamic_cast<conparser :: CWeight*>(m_weights);
       m_weights->m_mapSubTagDictionary.add(word, tag);
 
    }

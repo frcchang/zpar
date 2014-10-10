@@ -47,17 +47,18 @@ SEGMENTOR_IMPL = agenda
 # 
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
-CHINESE_TAGGER_IMPL = agenda_mvt
+CHINESE_TAGGER_IMPL = agenda
 
 # Chinese dependency parser
 #
 # currently support eisner, covington, nivre, combined and joint implementations 
-CHINESE_DEPPARSER_IMPL = arceager-mvt-origin
+CHINESE_DEPPARSER_IMPL = arceager
 CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 
 # currently support sr implementations 
-CHINESE_CONPARSER_IMPL = cad-mvt
+CHINESE_CONPARSER_IMPL = jcad
+CHINESE_CONPARSER_JOINT_OR_CASCADE = JOINT_CONPARSER
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = collins
@@ -123,6 +124,11 @@ LDFLAGS =
 
 # the objects
 LINGUISTICS_OBJECTS = $(OBJECT_DIR)/linguistics/lemma.o $(OBJECT_DIR)/linguistics/conll.o
+ifeq ($(CHINESE_CONPARSER_JOINT_OR_CASCADE), JOINT_CONPARSER) # if using JOINT_CONPARSER for Chinese
+	LINGUISTICS_OBJECTS += $(OBJECT_CONPARSER)/jointconstituent.o
+$(OBJECT_CONPARSER)/jointconstituent.o: $(OBJECT_CONPARSER) $(SRC_CHINESE)/cfg.h $(SRC_LIBS)/linguistics/jointconstituent.cpp
+	$(CXX)  $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -c $(SRC_LIBS)/linguistics/jointconstituent.cpp -o $@
+endif
 LEARNING_OBJECTS = $(OBJECT_DIR)/learning/dbn.o
 OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS) $(LEARNING_OBJECTS)
 
