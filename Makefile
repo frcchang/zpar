@@ -137,11 +137,6 @@ LDFLAGS =
 
 # the objects
 LINGUISTICS_OBJECTS = $(OBJECT_DIR)/linguistics/lemma.o $(OBJECT_DIR)/linguistics/conll.o
-ifeq ($(CHINESE_CONPARSER_JOINT_OR_CASCADE), JOINT_CONPARSER) # if using JOINT_CONPARSER for Chinese
-	LINGUISTICS_OBJECTS += $(OBJECT_CONPARSER)/jointconstituent.o
-$(OBJECT_CONPARSER)/jointconstituent.o: $(OBJECT_CONPARSER) $(SRC_CHINESE)/cfg.h $(SRC_LIBS)/linguistics/jointconstituent.cpp
-	$(CXX)  $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -c $(SRC_LIBS)/linguistics/jointconstituent.cpp -o $@
-endif
 LEARNING_OBJECTS = $(OBJECT_DIR)/learning/dbn.o
 OBJECTS = $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(LINGUISTICS_OBJECTS) $(LEARNING_OBJECTS)
 
@@ -239,7 +234,11 @@ OBJECT_ENGLISH_CONPARSER = $(OBJECT_DIR)/english.conparser
 ifeq ($(CHINESE_CONPARSER_IMPL), jcad)
 	OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/jointconstituent.o
 else
-	OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o
+	ifeq ($(CHINESE_CONPARSER_IMPL), acl13)
+		OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/jointconstituent.o
+	else
+		OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o
+	endif
 endif
 
 $(DIST_CONPARSER):
