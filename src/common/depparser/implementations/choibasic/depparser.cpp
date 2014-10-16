@@ -14,9 +14,6 @@ const Word        EmptyWord("");
 const Tag         NoneTag(CTag::NONE);
 const TaggedWord  EmptyTaggedWord;
 
-//const int         kMaxSentenceSize  = MAX_SENTENCE_SIZE;
-//const int         kAgendaSize       = AGENDA_SIZE;
-
 #define cast_weights static_cast<CWeight*>(m_weights)
 #define refer_or_allocate_tuple2(x, o1, o2) do { \
   if (amount == 0) { \
@@ -492,7 +489,6 @@ void CDepParser::GetOrUpdateStackScore(
     __GET_OR_UPDATE_SCORE(S0lm_w, S0lm.word); // 49
     __GET_OR_UPDATE_SCORE(S0lm_p, S0lm.tag);  // 54
     __GET_OR_UPDATE_SCORE(S0lm_d, S0lm_d);    // 59
-
   }
 
   if (-1 != S0rm_id) {
@@ -1139,7 +1135,7 @@ int CDepParser::Work(CDependencyParse       * retval,
 #endif
 
   // TRACE("Decoding started");
-  int num_results = 0;
+  int nr_results = 0;
   int round = 0;
   bool is_correct;    // used for training to specify correct state in lattice
 
@@ -1262,16 +1258,32 @@ int CDepParser::Work(CDependencyParse       * retval,
   std::sort(ctx_.lattice_index[round- 1],
       ctx_.lattice_index[round- 1] + ctx_.lattice_size[round- 1],
       StateHeapMore);
-  num_results = ctx_.lattice_size[round- 1];
+  nr_results = ctx_.lattice_size[round- 1];
 
-  for (int i = 0; i < std::min(num_results, nbest); ++ i) {
-    ctx_.lattice_index[round- 1][i].GenerateTree(sentence, retval[i]);
-    if (scores) { scores[i] = ctx_.lattice_index[round- 1][i].score; }
+  int i = 0, j = 0;
+  for (; i < ctx_.lattice_size[round- 1]&& j < std::min(nr_results, nbest);
+      ++ i) {
+    if (ctx_.lattice_index[round- 1][i].terminated()) {
+      ctx_.lattice_index[round- 1][i].GenerateTree(sentence, retval[j]);
+      ++ j;
+    }
+    if (scores) {
+      scores[j] = ctx_.lattice_index[round- 1][i].score;
+    }
+  }
+
+  if (j < std::min(nr_results, nbest)) {
+    for (i = 0; i < std::min(nr_results, nbest); ++ i) {
+      ctx_.lattice_index[round- 1][i].GenerateTree(sentence, retval[i]);
+      if (scores) {
+        scores[i] = ctx_.lattice_index[round- 1][i].score;
+      }
+    }
   }
 
   TRACE("Done, total time spent: " << double(clock() - total_start_time) / CLOCKS_PER_SEC);
   // delete [] lattice;
-  return num_results;
+  return nr_results;
 }
 
 /*---------------------------------------------------------------
