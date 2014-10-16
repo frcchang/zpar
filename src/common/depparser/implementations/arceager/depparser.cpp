@@ -765,7 +765,10 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    assert( !m_bCoNLL );
 #ifndef FRAGMENTED_TREE
-   assert( IsProjectiveDependencyTree(correct) ) ;
+   if( false == IsProjectiveDependencyTree(correct) ) {
+     std::cerr << "ERROR: Non-projective sentence found, skipped."
+       << std::endl;
+   }
 #endif
    UnparseSentence( &correct, &sentence ) ;
 
@@ -895,7 +898,10 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
 //todo: is this ifndef correct?
 #ifndef FRAGMENTED_TREE
-   assert( IsProjectiveDependencyTree(correct) ) ;
+   if ( false == IsProjectiveDependencyTree(correct) ) {
+     std::cerr << "ERROR: Non-projective sentence found, skipped."
+       << std::endl;
+   }
 #endif
 
    initCoNLLCache(correct);
@@ -914,7 +920,6 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
  * extract_features_conll - extract features from an example
  *
  *---------------------------------------------------------------*/
-
 void CDepParser::extract_features_conll( const CCoNLLOutput &input) {
 
    CDependencyParse dep;
