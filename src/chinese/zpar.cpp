@@ -131,7 +131,7 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
  *
  *==============================================================*/
 
-void jointparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath, bool bSegmented, bool bTagged) {
+void jointparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath, bool bSegmented, bool bTagged, bool bCharTag) {
    std::cout << "Initializing ZPar..." << std::endl;
    int time_start = clock();
    std::ostream *outs;
@@ -172,7 +172,12 @@ void jointparse(const std::string sInputFile, const std::string sOutputFile, con
       // Ouptut sent
       if(!bSegmented && !bTagged)
       {
-    	  (*outs) << outout_sent->str_unbinarizedall() << std::endl;
+         // Output Character Tag or Not
+         if ( bCharTag ) {
+    	      (*outs) << outout_sent->str_unbinarizedall() << std::endl;
+         } else {
+    	      (*outs) << outout_sent->str_unbinarized() << std::endl;
+         }
       }
       else if(bTagged)
       {
@@ -287,8 +292,10 @@ int main(int argc, char* argv[]) {
       if (sOutFormat == "c" )
           parse(sInputFile, sToFile, options.args[1]);
 #else
-      if(sOutFormat == "t" || sOutFormat == "td" || sOutFormat == "s" || sOutFormat == "c")
-         jointparse(sInputFile, sToFile, options.args[1], bSegmented, bTagged);
+      if(sOutFormat == "t" || sOutFormat == "td" || sOutFormat == "s" || sOutFormat == "c" || sOutFormat == "z") {
+         bool bCharTag = (sOutFormat=="z");
+         jointparse(sInputFile, sToFile, options.args[1], bSegmented, bTagged, bCharTag);
+      }
 #endif
       if (sOutFormat == "d" )
           depparse(sInputFile, sToFile, options.args[1]);

@@ -147,6 +147,12 @@ public:
    std::string writeNode(int node) const;
    std::string writeNodeUnbin(int node) const;
    std::string writeNodeUnbinAll(int node) const;
+   void updateWords(int node);
+   void unparse() {
+      if ( root == -1 ) { return; }
+      words.clear();
+      updateWords(root);
+   }
    bool nodesEqual(const CJointTree &tree, int i, int tree_i) const ;
    std::string str() const {
       if (root == -1)

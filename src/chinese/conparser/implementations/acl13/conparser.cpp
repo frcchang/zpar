@@ -1639,7 +1639,12 @@ bool CConParser::parse( const CStringVector &sentence_input , CSentenceParsed *r
 		m_rule->setsegboundary(&sentence_input, &sentence);
 	}
 
-   return work(false, sentence, retval, empty, nBest, scores, charcandpos ) ;
+   bool ret = work(false, sentence, retval, empty, nBest, scores, charcandpos ) ;
+   if ( ret ) {
+      retval->unparse();
+   }
+   return ret;
+
 
 }
 
