@@ -129,6 +129,38 @@ std::string CJointTree::writeNode(int node) const {
 
       return "( " + name + " " + stype + " " + cont + " )";
 }
+void CJointTree::updateWords(int node) {
+
+   const CJointTreeNode &nd = nodes[node] ;
+   char type = nd.type;
+   if (type == 'l' || type == 'r' || type == 's' || type == 't') {
+      if ( type == 't' ) {
+         std::string pos_tag = nd.label;
+         words.push_back(std::make_pair("", pos_tag));
+      }
+      // do not write node label for temp nodes and NONE nodes (fragmented tree)
+      if (nd.is_temporary() ) {
+         updateWords(nd.left_child);
+         updateWords(nd.right_child);
+      }
+      else {
+         if (nd.single_child()) {
+            updateWords(nd.left_child);
+         } else {
+            updateWords(nd.left_child);
+            updateWords(nd.right_child);
+         }
+      }
+   }
+   else if (type == 'x' || type == 'y' || type == 'z') {
+      updateWords(nd.left_child);
+      updateWords(nd.right_child);
+   }
+   else { // [2] token
+      std::string & word = words.back().first;
+      word += chars[nd.token];
+   }
+}
 
 //this output doesn't contain any word strucutre information
 std::string CJointTree::writeNodeUnbin(int node) const {
