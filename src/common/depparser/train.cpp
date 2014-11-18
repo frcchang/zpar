@@ -73,7 +73,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 #endif
       }
       else {
-        if ( (bCoNLL && input_conll.size() > depparser::MAX_SENTENCE_SIZE) ||
+       if ( (bCoNLL && input_conll.size() > depparser::MAX_SENTENCE_SIZE) ||
             (!bCoNLL && input_sent.size() > depparser::MAX_SENTENCE_SIZE) ) {
           WARNING("The sentence is longer than system limitation, skipping it.");
         } else {
