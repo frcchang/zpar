@@ -234,6 +234,18 @@ public:
       m_nLastAction=action::encodeAction(action::REDUCE);
    }
 
+
+   //collapse stack[0] node into input[0] node.
+   void RightCollapse() {
+
+      }
+
+   //collapse input[0] node into stack[0] node.
+   void LeftCollapse() {
+
+      }
+
+
    // this is used for the convenience of scoring and updating
    void PopRoot() {
 #ifndef FRAGMENTED_TREE
