@@ -237,12 +237,29 @@ public:
 
    //collapse stack[0] node into input[0] node.
    void RightCollapse() {
+	   assert( m_Stack.size() > 0 ) ;
+	   static int left ;
+	   left = m_Stack.back() ;
+	   m_Stack.push_back( m_nNextWord ) ;
 
+
+	   //THINGS MISSING! make the collapse.
+
+	   m_nLastAction=action::encodeAction(action::RIGHT_COLLAPSE);
       }
 
    //collapse input[0] node into stack[0] node.
    void LeftCollapse() {
 
+	   assert( m_Stack.size() > 0 ) ;
+	   //assert( m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ;
+	   static int left ;
+	   left = m_Stack.back() ;
+	   m_Stack.pop_back() ;
+
+	   //THINGS MISSING!
+
+	  	m_nLastAction=action::encodeAction(action::LEFT_COLLAPSE);
       }
 
 

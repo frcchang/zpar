@@ -475,6 +475,35 @@ inline void CDepParser::arcright( const CStateItem *item, const CPackedScoreType
 
 /*---------------------------------------------------------------
  *
+ * rightcollapse - (miguel)
+ *
+ ---------------------------------------------------------------*/
+inline void CDepParser::rightcollapse( const CStateItem *item, const CPackedScoreType<SCORE_TYPE, action::MAX> &scores ) {
+   static action::CScoredAction scoredaction;
+   // update stack score
+   scoredaction.action = action::RIGHT_COLLAPSE;
+   scoredaction.score = item->score + scores[scoredaction.action];
+   m_Beam->insertItem(&scoredaction);
+}
+
+
+/*---------------------------------------------------------------
+ *
+ * leftcollapse - (miguel)
+ *
+ ---------------------------------------------------------------*/
+
+inline void CDepParser::leftcollapse( const CStateItem *item, const CPackedScoreType<SCORE_TYPE, action::MAX> &scores ) {
+   static action::CScoredAction scoredaction;
+   // update stack score
+   scoredaction.action = action::LEFT_COLLAPSE;
+   scoredaction.score = item->score + scores[scoredaction.action];
+   m_Beam->insertItem(&scoredaction);
+}
+
+
+/*---------------------------------------------------------------
+ *
  * shift - help function
  *
  *--------------------------------------------------------------*/
