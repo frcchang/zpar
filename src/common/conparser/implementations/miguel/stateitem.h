@@ -1115,7 +1115,7 @@ public:
       // remove temporary sign
       unsigned long cons = CConstituent::clearTmp(node.constituent.code());
       
-      //nsubj
+      	  //nsubj
            //S < (NP=target $+ NP|ADJP) > VP
            //std::cout<<"Rule 1 \n";
            buildNsubj1(cons);
@@ -1453,7 +1453,7 @@ public:
            npadvmod2(cons);
           std::cerr<<"npadvmod2 \n";
            //npadvmod3(cons);
-           //npadvmod4(cons);
+           npadvmod4(cons);
           std::cerr<<"npadvmod4 \n";
            //npadvmod5(cons);
 

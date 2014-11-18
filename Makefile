@@ -28,7 +28,7 @@
 TAGGER_IMPL = collins
 
 # the generic depparser
-DEPPARSER_IMPL = arceager
+DEPPARSER_IMPL = deep-syntactic
 
 # the generic conparser
 CONPARSER_IMPL = srnew
