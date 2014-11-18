@@ -48,6 +48,9 @@ protected:
    int m_lDepsR[MAX_SENTENCE_SIZE];         // the rightmost dependency for each word (just for cache, temporary info)
    int m_lDepNumL[MAX_SENTENCE_SIZE];       // the number of left dependencies
    int m_lDepNumR[MAX_SENTENCE_SIZE];       // the number of right dependencies
+
+   bool m_lCollapse[MAX_SENTENCE_SIZE][MAX_SENTENCE_SIZE]; //the list of collapsed "surface" nodes for each node
+
    CSetOfTags<CDependencyLabel> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
    CSetOfTags<CDependencyLabel> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
    int m_lSibling[MAX_SENTENCE_SIZE];       // the sibling towards head
@@ -241,7 +244,7 @@ public:
 	   static int left ;
 	   left = m_Stack.back() ;
 	   m_Stack.push_back( m_nNextWord ) ;
-
+	   m_lHeads[m_nNextWord,left] = true ;
 
 	   //THINGS MISSING! make the collapse.
 
@@ -256,6 +259,8 @@ public:
 	   static int left ;
 	   left = m_Stack.back() ;
 	   m_Stack.pop_back() ;
+
+	   m_lHeads[left,m_nNextWord] = true ;
 
 	   //THINGS MISSING!
 
