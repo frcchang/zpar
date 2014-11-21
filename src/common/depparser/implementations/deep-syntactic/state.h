@@ -49,7 +49,9 @@ protected:
    int m_lDepNumL[MAX_SENTENCE_SIZE];       // the number of left dependencies
    int m_lDepNumR[MAX_SENTENCE_SIZE];       // the number of right dependencies
 
-   bool m_lCollapse[MAX_SENTENCE_SIZE][MAX_SENTENCE_SIZE]; //the list of collapsed "surface" nodes for each node
+   //the list of collapsed "surface" nodes for each node
+   int m_lFirstCollapsed[MAX_SENTENCE_SIZE]; //parents..(I.e. Those which nodes are collapsed into)
+   int m_lNextCollapsed[MAX_SENTENCE_SIZE]; //children (I.e. Those nodes the collapse into some other nodes)
 
    CSetOfTags<CDependencyLabel> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
    CSetOfTags<CDependencyLabel> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
@@ -244,7 +246,6 @@ public:
 	   static int left ;
 	   left = m_Stack.back() ;
 	   m_Stack.push_back( m_nNextWord ) ;
-	   m_lHeads[m_nNextWord,left] = true ;
 
 	   //THINGS MISSING! make the collapse.
 
@@ -260,9 +261,8 @@ public:
 	   left = m_Stack.back() ;
 	   m_Stack.pop_back() ;
 
-	   m_lHeads[left,m_nNextWord] = true ;
 
-	   //THINGS MISSING!
+	   //THINGS MISSING! make the collapse.
 
 	  	m_nLastAction=action::encodeAction(action::LEFT_COLLAPSE);
       }
@@ -292,6 +292,10 @@ public:
       m_lDepNumR[m_nNextWord] = 0 ;
       m_lDepTagR[m_nNextWord].clear() ;
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
+
+      //Miguel: is this correct?
+      m_lFirstCollapsed[m_nNextWord]=DEPENDENCY_LINK_NO_HEAD;
+      m_lNextCollapsed[m_nNextWord]=DEPENDENCY_LINK_NO_HEAD;
 #ifdef LABELED
       m_lLabels[m_nNextWord] = CDependencyLabel::NONE;
 #endif
@@ -312,6 +316,12 @@ public:
       case action::REDUCE:
          Reduce();
          return;
+      case action::LEFT_COLLAPSE:
+    	  LeftCollapse();
+          return;
+      case action::RIGHT_COLLAPSE:
+          RightCollapse();
+          return;
       case action::ARC_LEFT:
 #ifdef LABELED
          ArcLeft(action::getLabel(ac));
