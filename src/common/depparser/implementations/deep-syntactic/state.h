@@ -247,8 +247,9 @@ public:
 	   left = m_Stack.back() ;
 	   m_Stack.push_back( m_nNextWord ) ;
 
-	   m_lFirstCollapsed[left]=m_nNextWord; //parents..(I.e. Those which nodes are collapsed into)
-	   m_lNextCollapsed[m_nNextWord]=left; //children (I.e. Those nodes the collapse into some other nodes)
+	   m_lFirstCollapsed[m_nNextWord]=left; //parents..(I.e. Those which nodes are collapsed into)
+	   m_lNextCollapsed[left]=m_nNextWord;
+
 
 	   //THINGS MISSING! make the collapse.
 
@@ -264,8 +265,8 @@ public:
 	   left = m_Stack.back() ;
 	   m_Stack.pop_back() ;
 
-	   m_lFirstCollapsed[m_nNextWord]=left; //parents..(I.e. Those which nodes are collapsed into)
-	   m_lNextCollapsed[left]=m_nNextWord;
+	   m_lFirstCollapsed[left]=m_nNextWord; //parents..(I.e. Those which nodes are collapsed into)
+	   m_lNextCollapsed[m_nNextWord]=left; //children (I.e. Those nodes the collapse into some other nodes)
 
 	   //THINGS MISSING! make the collapse.
 
