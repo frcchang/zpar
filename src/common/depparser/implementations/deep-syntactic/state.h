@@ -50,8 +50,8 @@ protected:
    int m_lDepNumR[MAX_SENTENCE_SIZE];       // the number of right dependencies
 
    //the list of collapsed "surface" nodes for each node
-   int m_lFirstCollapsed[MAX_SENTENCE_SIZE]; //parents..(I.e. Those which nodes are collapsed into)
-   int m_lNextCollapsed[MAX_SENTENCE_SIZE]; //children (I.e. Those nodes the collapse into some other nodes)
+   bool m_lFirstCollapsed[MAX_SENTENCE_SIZE]; //parents..(I.e. Those which nodes are collapsed into)
+   int m_lNextCollapsed[MAX_SENTENCE_SIZE]; //children (I.e. Those nodes the collapse into some other nodes) (this list would refer to the parent) m_lNextCollapsed[4]=2 (the node 4 is collapsed in the node 2)
 
    CSetOfTags<CDependencyLabel> m_lDepTagL[MAX_SENTENCE_SIZE]; // the set of left tags
    CSetOfTags<CDependencyLabel> m_lDepTagR[MAX_SENTENCE_SIZE]; // the set of right tags
@@ -247,10 +247,9 @@ public:
 	   left = m_Stack.back() ;
 	   m_Stack.push_back( m_nNextWord ) ;
 
-	   m_lFirstCollapsed[m_nNextWord]=left; //parents..(I.e. Those which nodes are collapsed into)
-	   m_lNextCollapsed[left]=m_nNextWord;
-
-
+	   m_lFirstCollapsed[left]=true; //parents..(I.e. Those which nodes are collapsed into)
+	   m_lNextCollapsed[m_nNextWord]=left; //children (I.e. Those nodes the collapse into some other nodes)
+	   //m_nNextWord is collapsed in left. And left is part of the output.
 	   //THINGS MISSING! make the collapse.
 
 	   m_nLastAction=action::encodeAction(action::RIGHT_COLLAPSE);
@@ -265,9 +264,9 @@ public:
 	   left = m_Stack.back() ;
 	   m_Stack.pop_back() ;
 
-	   m_lFirstCollapsed[left]=m_nNextWord; //parents..(I.e. Those which nodes are collapsed into)
-	   m_lNextCollapsed[m_nNextWord]=left; //children (I.e. Those nodes the collapse into some other nodes)
-
+	   m_lFirstCollapsed[m_nNextWord]=true; //parents..(I.e. Those which nodes are collapsed into)
+	   m_lNextCollapsed[left]=m_nNextWord;
+	   //left is collapsed in m_nNextWord. And m_nNextWord is part of the output.
 	   //THINGS MISSING! make the collapse.
 
 	  	m_nLastAction=action::encodeAction(action::LEFT_COLLAPSE);
