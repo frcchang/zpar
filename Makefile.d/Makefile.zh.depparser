@@ -2,26 +2,26 @@ chinese.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DEPPARSER) $(DIST_DEPPARSE
 	@echo The Chinese dependency parser system is compiled successfully into $(DIST_DEPPARSER).
 
 # the weight modules
-$(OBJECT_DEPPARSER)/weight.o: $(OBJECT_DEPPARSER) $(SRC_CHINESE_DEPPARSER)/depparser_weight_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile
+$(OBJECT_DEPPARSER)/weight.o: $(SRC_CHINESE_DEPPARSER)/depparser_weight_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile | $(OBJECT_DEPPARSER)
 	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.cpp -o $(OBJECT_DEPPARSER)/weight.o
 
-$(OBJECT_DEPPARSER)/weight.dec.o: $(OBJECT_DEPPARSER) $(SRC_CHINESE_DEPPARSER)/depparser_weight_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile
+$(OBJECT_DEPPARSER)/weight.dec.o: $(SRC_CHINESE_DEPPARSER)/depparser_weight_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile | $(OBJECT_DEPPARSER)
 	$(CXX) $(CXXFLAGS) -DPERCEPTRON_FOR_DECODING $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_weight.cpp -o $(OBJECT_DEPPARSER)/weight.dec.o
 
 # the depparser objects
-$(OBJECT_DIR)/chinese.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE)/dep.h $(SRC_CHINESE_DEPPARSER)/depparser_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/state.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_macros.h $(SRC_CHINESE_DEPPARSER)/supertag.h ./Makefile
+$(OBJECT_DIR)/chinese.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE)/dep.h $(SRC_CHINESE_DEPPARSER)/depparser_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/state.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_macros.h $(SRC_CHINESE_DEPPARSER)/supertag.h ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/chinese.depparser.o
 
-$(OBJECT_DIR)/chinese.depparser.dec.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE)/dep.h $(SRC_CHINESE_DEPPARSER)/depparser_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/state.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_macros.h $(SRC_CHINESE_DEPPARSER)/supertag.h ./Makefile
+$(OBJECT_DIR)/chinese.depparser.dec.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE)/dep.h $(SRC_CHINESE_DEPPARSER)/depparser_base.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/state.h $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser_macros.h $(SRC_CHINESE_DEPPARSER)/supertag.h ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -DPERCEPTRON_FOR_DECODING $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/chinese.depparser.dec.o
 
 # the main executable
-$(DIST_DEPPARSER)/depparser: $(SRC_CHINESE_DEPPARSER)/main.cpp $(OBJECT_DIR)/chinese.depparser.dec.o $(OBJECT_DEPPARSER)/weight.dec.o $(OBJECTS)
+$(DIST_DEPPARSER)/depparser: $(SRC_CHINESE_DEPPARSER)/main.cpp $(OBJECT_DIR)/chinese.depparser.dec.o $(OBJECT_DEPPARSER)/weight.dec.o $(OBJECTS) | $(DIST_DEPPARSER)
 	$(CXX) $(CXXFLAGS) -DPERCEPTRON_FOR_DECODING $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/main.cpp -o $(OBJECT_DEPPARSER)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_DEPPARSER)/depparser $(OBJECT_DIR)/chinese.depparser.dec.o $(OBJECT_DEPPARSER)/weight.dec.o $(OBJECT_DEPPARSER)/main.o $(OBJECTS)
 
 # the trainer for depparser
-$(DIST_DEPPARSER)/train: $(SRC_CHINESE_DEPPARSER)/train.cpp $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS)
+$(DIST_DEPPARSER)/train: $(SRC_CHINESE_DEPPARSER)/train.cpp $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS) | $(DIST_DEPPARSER)
 	$(CXX) $(CXXFLAGS) $(CHINESE_DEPPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPPARSER) -I$(SRC_CHINESE_DEPPARSER)/implementations/$(CHINESE_DEPPARSER_IMPL) -c $(SRC_CHINESE_DEPPARSER)/train.cpp -o $(OBJECT_DEPPARSER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_DEPPARSER)/train $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECT_DEPPARSER)/train.o $(OBJECTS)
 

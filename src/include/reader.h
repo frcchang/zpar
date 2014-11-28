@@ -36,6 +36,7 @@ class CSentenceReader {
    protected:
       std::istream *m_iStream;
       int m_nLine;
+      bool m_needFree;
    public:
       // constructor and destructor method
       CSentenceReader(const std::string &sFileName="") { 
@@ -44,11 +45,17 @@ class CSentenceReader {
          else {
             if (!FileExists(sFileName)) THROW("File " << sFileName << " not found.");
             m_iStream=new std::ifstream(sFileName.c_str());
+            m_needFree = true;
          }
          m_nLine = 0;
       };
+      CSentenceReader(std::istream *is) { 
+        m_iStream = is;
+        m_nLine = 0;
+        m_needFree = false;
+      }
       virtual ~CSentenceReader() {
-         if (m_iStream != &std::cin) {
+         if (m_needFree) {
             ((std::ifstream*)m_iStream)->close(); 
             delete m_iStream;
          }

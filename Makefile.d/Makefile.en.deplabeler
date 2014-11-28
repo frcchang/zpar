@@ -9,20 +9,20 @@ english.deplabeler: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_ENGLISH_DEPLABELER) $(DIS
 	@echo The English dependency labeler system is compiled successfully into $(DIST_ENGLISH_DEPLABELER).
 
 # the weight module
-$(OBJECT_ENGLISH_DEPLABELER)/weight.o: $(OBJECT_ENGLISH_DEPLABELER) $(SRC_COMMON_DEPLABELER)/weight_base.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/weight.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/weight.cpp ./Makefile
+$(OBJECT_ENGLISH_DEPLABELER)/weight.o: $(SRC_COMMON_DEPLABELER)/weight_base.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/weight.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/weight.cpp ./Makefile | $(OBJECT_ENGLISH_DEPLABELER)
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPLABELER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPLABELER) -I$(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL) -c $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/weight.cpp -o $(OBJECT_ENGLISH_DEPLABELER)/weight.o
 
 # the deplabeler object
-$(OBJECT_DIR)/english.deplabeler.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPLABELER)/deplabeler_base.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/deplabeler.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/deplabeler.cpp ./Makefile
+$(OBJECT_DIR)/english.deplabeler.o: $(SRC_INCLUDES)/hash.h $(SRC_COMMON_DEPLABELER)/deplabeler_base.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/deplabeler.h $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/deplabeler.cpp ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPLABELER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPLABELER) -I$(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL) -c $(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL)/deplabeler.cpp -o $(OBJECT_DIR)/english.deplabeler.o
 
 # the main executable
-$(DIST_ENGLISH_DEPLABELER)/deplabeler: $(SRC_COMMON_DEPLABELER)/main.cpp $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECTS)
+$(DIST_ENGLISH_DEPLABELER)/deplabeler: $(SRC_COMMON_DEPLABELER)/main.cpp $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECTS) | $(DIST_ENGLISH_DEPLABELER)
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPLABELER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPLABELER) -I$(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL) -c $(SRC_COMMON_DEPLABELER)/main.cpp -o $(OBJECT_ENGLISH_DEPLABELER)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_DEPLABELER)/deplabeler $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECT_ENGLISH_DEPLABELER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 # the trainer for deplabeler
-$(DIST_ENGLISH_DEPLABELER)/train: $(SRC_COMMON_DEPLABELER)/train.cpp $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECTS)
+$(DIST_ENGLISH_DEPLABELER)/train: $(SRC_COMMON_DEPLABELER)/train.cpp $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECTS) | $(DIST_ENGLISH_DEPLABELER)
 	$(CXX) $(CXXFLAGS) $(ENGLISH_DEPLABELER_D) -DTARGET_LANGUAGE=english -I$(SRC_ENGLISH) -I$(SRC_COMMON_DEPLABELER) -I$(SRC_COMMON_DEPLABELER)/implementations/$(ENGLISH_DEPLABELER_IMPL) -c $(SRC_COMMON_DEPLABELER)/train.cpp -o $(OBJECT_ENGLISH_DEPLABELER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_ENGLISH_DEPLABELER)/train $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECT_ENGLISH_DEPLABELER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 

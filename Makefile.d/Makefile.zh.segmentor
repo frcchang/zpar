@@ -8,16 +8,16 @@ segmentor: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_SEGMENTOR) $(DIST_SEGMENTOR) $(DIS
 # SEGMENTOR_IMPL is used in two places:
 # I. it is used when for implementation file of segmentor - agenda.cpp or chart.cpp
 # II. it is used to include impl.h from implementations/agenda or chart subdir
-$(OBJECT_DIR)/segmentor.o: $(SRC_INCLUDES)/linguistics/word_tokenized.h $(SRC_INCLUDES)/learning/perceptron/hashmap_score.h $(SRC_INCLUDES)/knowledge/worddict.h $(SRC_INCLUDES)/hash.h $(SRC_SEGMENTOR)/segmentor.h $(SRC_SEGMENTOR)/feature.h $(SRC_SEGMENTOR)/base_include.h $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/segmentor_include.h $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/segmentor_impl.h $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/stateitem.h ./Makefile
+$(OBJECT_DIR)/segmentor.o: $(SRC_INCLUDES)/linguistics/word_tokenized.h $(SRC_INCLUDES)/learning/perceptron/hashmap_score.h $(SRC_INCLUDES)/knowledge/worddict.h $(SRC_INCLUDES)/hash.h $(SRC_SEGMENTOR)/segmentor.h $(SRC_SEGMENTOR)/feature.h $(SRC_SEGMENTOR)/base_include.h $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/segmentor_include.h $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/segmentor_impl.h $(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL)/stateitem.h ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/$(SEGMENTOR_IMPL).cpp -o $(OBJECT_DIR)/segmentor.o
 
 # the segmentor executable
-$(DIST_SEGMENTOR)/segmentor: $(SRC_SEGMENTOR)/main.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS)
+$(DIST_SEGMENTOR)/segmentor: $(SRC_SEGMENTOR)/main.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS) | $(DIST_SEGMENTOR)
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/main.cpp -o $(OBJECT_SEGMENTOR)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/segmentor $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 # the trainer for segmentor
-$(DIST_SEGMENTOR)/train: $(SRC_SEGMENTOR)/train.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS)
+$(DIST_SEGMENTOR)/train: $(SRC_SEGMENTOR)/train.cpp $(OBJECT_DIR)/segmentor.o $(OBJECTS) | $(DIST_SEGMENTOR)
 	$(CXX) $(CXXFLAGS) -I$(SRC_CHINESE) -I$(SRC_CHINESE) -I$(SRC_SEGMENTOR)/implementations/$(SEGMENTOR_IMPL) -c $(SRC_SEGMENTOR)/train.cpp -o $(OBJECT_SEGMENTOR)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_SEGMENTOR)/train $(OBJECT_DIR)/segmentor.o $(OBJECT_SEGMENTOR)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 

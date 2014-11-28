@@ -26,12 +26,12 @@ SRC_GENERIC_DEPPARSER = $(SRC_COMMON)/depparser
 DIST_GENERIC_DEPPARSER = $(DIST_DIR)/generic.depparser
 OBJECT_GENERIC_DEPPARSER = $(OBJECT_DIR)/generic.depparser
 ifeq ($(GENERIC_DEPPARSER_LABELED), true)
-	GENERIC_DEPPARSER_D = -DLABELED
+  GENERIC_DEPPARSER_D = -DLABELED
 endif
 
 ifeq ($(GENERIC_DEPPARSER_IMPL), combined)
-	GENERIC_DEPPARSER_D := $(GENERIC_DEPPARSER_D) -DCOMBINED
-	GENERIC_DEPPARSER_IMPL = nivre
+  GENERIC_DEPPARSER_D := $(GENERIC_DEPPARSER_D) -DCOMBINED
+  GENERIC_DEPPARSER_IMPL = nivre
 endif
 
 SRC_GENERIC_CONPARSER = $(SRC_COMMON_CONPARSER)
@@ -84,9 +84,18 @@ include Makefile.d/Makefile.ge.postagger
 endif
 endif
 
-zpar.ge: $(OBJECT_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(DIST_DIR) $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic $(GENERIC_DEPPARSER_D) -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -I$(SRC_GENERIC_DEPLABELER) -I$(SRC_GENERIC_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL) -c $(SRC_GENERIC)/zpar.ge.cpp -o $(OBJECT_DIR)/zpar.ge.o
-	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar $(OBJECT_DIR)/zpar.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
+$(OBJECT_DIR)/libzpar-ge.o: $(SRC_LIBS)/libzpar/libzpar.cpp | $(OBJECT_DIR)
+	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic $(GENERIC_DEPPARSER_D) -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -I$(SRC_GENERIC_DEPLABELER) -I$(SRC_GENERIC_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL) -c $< -o $@
+
+.PHONY: zpar.ge clean.ge
+
+zpar.ge:$(DIST_DIR)/zpar
+
+$(DIST_DIR)/zpar: $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECTS) $(OBJECT_DIR)/libzpar-ge.o $(OBJECT_DIR)/zpar.ge.o | $(DIST_DIR)
+	$(LD) $(LDFLAGS) -o $(DIST_DIR)/zpar $(OBJECT_DIR)/zpar.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS) $(OBJECT_DIR)/libzpar-ge.o
 	@echo The generic zpar.ge system compiled successfully into $(DIST_DIR).
+
+$(OBJECT_DIR)/zpar.ge.o: $(SRC_GENERIC)/zpar.ge.cpp | $(OBJECT_DIR)
+	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic $(GENERIC_DEPPARSER_D) -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -I$(SRC_GENERIC_DEPLABELER) -I$(SRC_GENERIC_DEPLABELER)/implementations/$(GENERIC_DEPLABELER_IMPL) -c $(SRC_GENERIC)/zpar.ge.cpp -o $(OBJECT_DIR)/zpar.ge.o
 
 clean.ge: clean.ge.postagger clean.ge.conparser clean.ge.depparser clean.ge.deplabeler
