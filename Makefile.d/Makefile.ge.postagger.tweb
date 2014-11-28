@@ -17,7 +17,7 @@ generic.postagger.objs: $(GE_POSTAGGER_OBJS)
 
 #===================================================================
 
-$(OBJECT_DIR)/pos.ge.o: $(SRC_GENERIC)/tags.h $(SRC_GENERIC)/pos/generic.h $(SRC_GENERIC)/pos/generic.cpp
+$(OBJECT_DIR)/pos.ge.o: $(SRC_GENERIC)/tags.h $(SRC_GENERIC)/pos/generic.h $(SRC_GENERIC)/pos/generic.cpp | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_GENERIC)/pos/generic.cpp -o $@
 
 #===================================================================
@@ -26,29 +26,29 @@ generic.postagger: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_GENERIC_TAGGER) $(DIST_GEN
 	@echo The generic part-of-speech tagging system is compiled successfully into $(DIST_GENERIC_TAGGER).
 
 # the weight module
-$(OBJECT_GENERIC_TAGGER)/weight.o: $(OBJECT_GENERIC_TAGGER) $(OBJECT_DIR)/pos.ge.o $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
+$(OBJECT_GENERIC_TAGGER)/weight.o: $(OBJECT_DIR)/pos.ge.o $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp ./Makefile |$(OBJECT_GENERIC_TAGGER)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -c $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp -o $(OBJECT_GENERIC_TAGGER)/weight.o
 
 # the tagging object
-$(OBJECT_DIR)/generic.postagger.o: $(OBJECT_DIR)/generic.postagger.tweborig.o tweb.objs $(OBJECT_DIR)/tweb_wrapper.o
+$(OBJECT_DIR)/generic.postagger.o: $(OBJECT_DIR)/generic.postagger.tweborig.o tweb.objs $(OBJECT_DIR)/tweb_wrapper.o | $(OBJECT_DIR)
 	ld -r $(OBJECT_DIR)/generic.postagger.tweborig.o $(TWEB_OBJ) $(OBJECT_DIR)/tweb_wrapper.o -o $@
 
-$(OBJECT_DIR)/generic.postagger.tweborig.o: $(OBJECT_DIR)/pos.ge.o $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.cpp $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp ./Makefile
+$(OBJECT_DIR)/generic.postagger.tweborig.o: $(OBJECT_DIR)/pos.ge.o $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.cpp $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger_weight.cpp ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -c $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tagger.cpp -o $(OBJECT_DIR)/generic.postagger.tweborig.o
 
 # the main executable file
-$(DIST_GENERIC_TAGGER)/tagger: $(SRC_GENERIC_TAGGER)/main.cpp $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECTS) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o
+$(DIST_GENERIC_TAGGER)/tagger: $(SRC_GENERIC_TAGGER)/main.cpp $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECTS) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o | $(DIST_GENERIC_TAGGER)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -c $(SRC_GENERIC_TAGGER)/main.cpp -o $(OBJECT_GENERIC_TAGGER)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_TAGGER)/tagger $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_GENERIC_TAGGER)/main.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECTS)
 
 # the trainer for generic pos tagging
-$(DIST_GENERIC_TAGGER)/train: $(TWEB_SRC_DIR)/Tagger
+$(DIST_GENERIC_TAGGER)/train: $(TWEB_SRC_DIR)/Tagger | $(DIST_GENERIC_TAGGER)
 	/bin/cp $(TWEB_SRC_DIR)/Tagger $(DIST_GENERIC_TAGGER)/train
 
 #===================================================================
 
 # TWeb Wrapper Rules
-$(OBJECT_DIR)/tweb_wrapper.o: $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tweb_wrapper.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tweb_wrapper.cpp ./Makefile
+$(OBJECT_DIR)/tweb_wrapper.o: $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tweb_wrapper.h $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tweb_wrapper.cpp ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -std=c++11 -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_TAGGER) -I$(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL) -c $(SRC_GENERIC_TAGGER)/implementations/$(GENERIC_TAGGER_IMPL)/tweb_wrapper.cpp -o $(OBJECT_DIR)/tweb_wrapper.o
 
 #===================================================================

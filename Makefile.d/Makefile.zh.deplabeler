@@ -2,20 +2,20 @@ chinese.deplabeler: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DEPLABELER) $(DIST_DEPLAB
 	@echo The Chinese dependency labeler system is compiled successfully into $(DIST_DEPLABELER).
 
 # the weight module
-$(OBJECT_DEPLABELER)/weight.o: $(OBJECT_DEPLABELER) $(SRC_CHINESE_DEPLABELER)/weight_base.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/weight.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/weight.cpp ./Makefile
+$(OBJECT_DEPLABELER)/weight.o: $(SRC_CHINESE_DEPLABELER)/weight_base.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/weight.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/weight.cpp ./Makefile | $(OBJECT_DEPLABELER)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPLABELER) -I$(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL) -c $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/weight.cpp -o $(OBJECT_DEPLABELER)/weight.o
 
 # the deplabeler object
-$(OBJECT_DIR)/chinese.deplabeler.o: $(SRC_CHINESE)/deplabel.h $(SRC_CHINESE_DEPLABELER)/deplabeler_base.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.cpp ./Makefile
+$(OBJECT_DIR)/chinese.deplabeler.o: $(SRC_CHINESE)/dep.h $(SRC_CHINESE_DEPLABELER)/deplabeler_base.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.h $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.cpp ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPLABELER) -I$(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL) -c $(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL)/deplabeler.cpp -o $(OBJECT_DIR)/chinese.deplabeler.o
 
 # the main executable
-$(DIST_DEPLABELER)/deplabeler: $(SRC_CHINESE_DEPLABELER)/main.cpp $(OBJECT_DIR)/chinese.deplabeler.o $(OBJECT_DEPLABELER)/weight.o $(OBJECTS)
+$(DIST_DEPLABELER)/deplabeler: $(SRC_CHINESE_DEPLABELER)/main.cpp $(OBJECT_DIR)/chinese.deplabeler.o $(OBJECT_DEPLABELER)/weight.o $(OBJECTS) | $(DIST_DEPLABELER)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPLABELER) -I$(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL) -c $(SRC_CHINESE_DEPLABELER)/main.cpp -o $(OBJECT_DEPLABELER)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_DEPLABELER)/deplabeler $(OBJECT_DIR)/chinese.deplabeler.o $(OBJECT_DEPLABELER)/weight.o $(OBJECT_DEPLABELER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 
 # the trainer for deplabeler
-$(DIST_DEPLABELER)/train: $(SRC_CHINESE_DEPLABELER)/train.cpp $(OBJECT_DIR)/chinese.deplabeler.o $(OBJECT_DEPLABELER)/weight.o $(OBJECTS)
+$(DIST_DEPLABELER)/train: $(SRC_CHINESE_DEPLABELER)/train.cpp $(OBJECT_DIR)/chinese.deplabeler.o $(OBJECT_DEPLABELER)/weight.o $(OBJECTS) | $(DIST_DEPLABELER)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_DEPLABELER) -I$(SRC_CHINESE_DEPLABELER)/implementations/$(CHINESE_DEPLABELER_IMPL) -c $(SRC_CHINESE_DEPLABELER)/train.cpp -o $(OBJECT_DEPLABELER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_DEPLABELER)/train $(OBJECT_DIR)/chinese.deplabeler.o $(OBJECT_DEPLABELER)/weight.o $(OBJECT_DEPLABELER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o
 

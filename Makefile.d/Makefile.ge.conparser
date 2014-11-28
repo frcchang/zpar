@@ -6,11 +6,11 @@ conparser: generic.conparser
 #===================================================================
 
 # the constituent label
-$(OBJECT_DIR)/cfg.ge.o: $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/cfg/generic.h $(SRC_LIBS)/linguistics/cfg/generic.cpp
+$(OBJECT_DIR)/cfg.ge.o: $(SRC_GENERIC)/tags.h $(SRC_INCLUDES)/linguistics/cfg/generic.h $(SRC_LIBS)/linguistics/cfg/generic.cpp | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/cfg/generic.cpp -o $@
 
 # the constituent
-$(OBJECT_DIR)/constituent.ge.o: $(OBJECT_GENERIC_CONPARSER) $(SRC_GENERIC)/cfg.h $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_LIBS)/linguistics/constituent.cpp
+$(OBJECT_DIR)/constituent.ge.o: $(SRC_GENERIC)/cfg.h $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_LIBS)/linguistics/constituent.cpp | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -c $(SRC_LIBS)/linguistics/constituent.cpp -o $@
 
 #===================================================================
@@ -23,20 +23,20 @@ generic.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR
 	@echo The generic constituent parser system is compiled successfully into $(DIST_GENERIC_CONPARSER).
 
 # the weight module
-$(OBJECT_GENERIC_CONPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/weight_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.cpp ./Makefile
+$(OBJECT_GENERIC_CONPARSER)/weight.o: $(SRC_COMMON_CONPARSER)/weight_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.cpp ./Makefile | $(OBJECT_GENERIC_CONPARSER)
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/weight.cpp -o $(OBJECT_GENERIC_CONPARSER)/weight.o
 
 # the conparser object
-$(OBJECT_DIR)/generic.conparser.o: $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER)/conparser_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.cpp $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/stateitem.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/rule.h ./Makefile
+$(OBJECT_DIR)/generic.conparser.o: $(SRC_INCLUDES)/linguistics/constituent.h $(SRC_INCLUDES)/hash.h $(SRC_COMMON_CONPARSER)/conparser_base.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.cpp $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/stateitem.h $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/rule.h ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_COMMON_CONPARSER) -I$(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_COMMON_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/generic.conparser.o
 
 # the main executable
-$(DIST_GENERIC_CONPARSER)/conparser: $(SRC_GENERIC_CONPARSER)/main.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/constituent.ge.o $(OBJECTS)
+$(DIST_GENERIC_CONPARSER)/conparser: $(SRC_GENERIC_CONPARSER)/main.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/constituent.ge.o $(OBJECTS) | $(DIST_GENERIC_CONPARSER)
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/main.cpp -o $(OBJECT_GENERIC_CONPARSER)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/conparser $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/main.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
 
 # the trainer for conparser
-$(DIST_GENERIC_CONPARSER)/train: $(SRC_GENERIC_CONPARSER)/train.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECTS) $(OBJECT_DIR)/constituent.ge.o
+$(DIST_GENERIC_CONPARSER)/train: $(SRC_GENERIC_CONPARSER)/train.cpp $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECTS) $(OBJECT_DIR)/constituent.ge.o | $(DIST_GENERIC_CONPARSER)
 	$(CXX) $(CXXFLAGS) $(GENERIC_CONPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_CONPARSER) -I$(SRC_GENERIC_CONPARSER)/implementations/$(GENERIC_CONPARSER_IMPL) -c $(SRC_GENERIC_CONPARSER)/train.cpp -o $(OBJECT_GENERIC_CONPARSER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_CONPARSER)/train $(OBJECT_DIR)/generic.conparser.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_GENERIC_CONPARSER)/train.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECTS)
 

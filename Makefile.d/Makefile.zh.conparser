@@ -2,34 +2,34 @@ chinese.conparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_CONPARSER) $(DIST_CONPARSE
 	@echo The Chinese constituent parser system is compiled successfully into $(DIST_CONPARSER).
 
 # the constituent
-$(OBJECT_CONPARSER)/constituent.o: $(OBJECT_CONPARSER) $(SRC_CHINESE)/cfg.h $(SRC_LIBS)/linguistics/constituent.cpp
+$(OBJECT_CONPARSER)/constituent.o: $(SRC_CHINESE)/cfg.h $(SRC_LIBS)/linguistics/constituent.cpp | $(OBJECT_CONPARSER)
 	$(CXX) $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -c $(SRC_LIBS)/linguistics/constituent.cpp -o $@
 
 # the joint constituent
-$(OBJECT_CONPARSER)/jointconstituent.o: $(OBJECT_CONPARSER) $(SRC_CHINESE)/cfg.h $(SRC_LIBS)/linguistics/jointconstituent.cpp
+$(OBJECT_CONPARSER)/jointconstituent.o: $(SRC_CHINESE)/cfg.h $(SRC_LIBS)/linguistics/jointconstituent.cpp | $(OBJECT_CONPARSER)
 	 $(CXX)  $(CXXFLAGS) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -c $(SRC_LIBS)/linguistics/jointconstituent.cpp -o $@
 
 # the weight modules
-$(OBJECT_CONPARSER)/weight.o: $(SRC_CHINESE_CONPARSER)/weight_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h $(OBJ_CHINESE_CONSTITUENT) ./Makefile
+$(OBJECT_CONPARSER)/weight.o: $(SRC_CHINESE_CONPARSER)/weight_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h ./Makefile | $(OBJECT_CONPARSER)
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp -o $(OBJECT_CONPARSER)/weight.o
 
-$(OBJECT_CONPARSER)/weight.dec.o: $(SRC_CHINESE_CONPARSER)/weight_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h $(OBJ_CHINESE_CONSTITUENT) ./Makefile
+$(OBJECT_CONPARSER)/weight.dec.o: $(SRC_CHINESE_CONPARSER)/weight_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h ./Makefile | $(OBJECT_CONPARSER)
 	$(CXX) $(CXXFLAGS) -DPERCEPTRON_FOR_DECODING $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/weight.cpp -o $(OBJECT_CONPARSER)/weight.dec.o
 
 # the conparser objects
-$(OBJECT_DIR)/chinese.conparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_CONPARSER)/conparser_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/stateitem.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/action.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/context.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h $(OBJ_CHINESE_CONSTITUENT) ./Makefile
+$(OBJECT_DIR)/chinese.conparser.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_CONPARSER)/conparser_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/stateitem.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/action.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/context.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/chinese.conparser.o
 
-$(OBJECT_DIR)/chinese.conparser.dec.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_CONPARSER)/conparser_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/stateitem.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/action.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/context.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h $(OBJ_CHINESE_CONSTITUENT) ./Makefile
+$(OBJECT_DIR)/chinese.conparser.dec.o: $(SRC_INCLUDES)/hash.h $(SRC_CHINESE_CONPARSER)/conparser_base.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/stateitem.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/action.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/context.h $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser_macros.h ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) -DPERCEPTRON_FOR_DECODING $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL)/conparser.cpp -o $(OBJECT_DIR)/chinese.conparser.dec.o
 
 # the main executable
-$(DIST_CONPARSER)/conparser: $(SRC_CHINESE_CONPARSER)/main.cpp $(OBJECT_DIR)/chinese.conparser.dec.o $(OBJECT_CONPARSER)/weight.dec.o $(OBJ_CHINESE_CONSTITUENT)
+$(DIST_CONPARSER)/conparser: $(SRC_CHINESE_CONPARSER)/main.cpp $(OBJECT_DIR)/chinese.conparser.dec.o $(OBJECT_CONPARSER)/weight.dec.o $(OBJ_CHINESE_CONSTITUENT) | $(DIST_CONPARSER)
 	$(CXX) $(CXXFLAGS) -DPERCEPTRON_FOR_DECODING $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/main.cpp -o $(OBJECT_CONPARSER)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_CONPARSER)/conparser $(OBJECT_DIR)/chinese.conparser.dec.o $(OBJECT_CONPARSER)/weight.dec.o $(OBJECT_CONPARSER)/main.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJ_CHINESE_CONSTITUENT)
 
 # the trainer for conparser
-$(DIST_CONPARSER)/train: $(SRC_CHINESE_CONPARSER)/train.cpp $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECTS) $(OBJ_CHINESE_CONSTITUENT)
+$(DIST_CONPARSER)/train: $(SRC_CHINESE_CONPARSER)/train.cpp $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECTS) $(OBJ_CHINESE_CONSTITUENT) | $(DIST_CONPARSER)
 	$(CXX) $(CXXFLAGS) $(CHINESE_CONPARSER_D) -DTARGET_LANGUAGE=chinese -I$(SRC_CHINESE) -I$(SRC_CHINESE_CONPARSER) -I$(SRC_CHINESE_CONPARSER)/implementations/$(CHINESE_CONPARSER_IMPL) -c $(SRC_CHINESE_CONPARSER)/train.cpp -o $(OBJECT_CONPARSER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_CONPARSER)/train $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_CONPARSER)/train.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJ_CHINESE_CONSTITUENT)
 

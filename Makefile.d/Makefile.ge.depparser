@@ -13,20 +13,20 @@ generic.depparser: $(OBJECT_DIR) $(DIST_DIR) $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR
 	@echo The generic dependency parser system is compiled successfully into $(DIST_GENERIC_DEPPARSER).
 
 # the weight module
-$(OBJECT_GENERIC_DEPPARSER)/weight.o: $(OBJECT_GENERIC_DEPPARSER) $(SRC_GENERIC_DEPPARSER)/depparser_weight_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile
+$(OBJECT_GENERIC_DEPPARSER)/weight.o: $(SRC_GENERIC_DEPPARSER)/depparser_weight_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.cpp ./Makefile | $(OBJECT_GENERIC_DEPPARSER)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_weight.cpp -o $(OBJECT_GENERIC_DEPPARSER)/weight.o
 
 # the depparser object
-$(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_macros.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile
+$(OBJECT_DIR)/generic.depparser.o: $(SRC_INCLUDES)/hash.h $(SRC_GENERIC_DEPPARSER)/depparser_base.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser_macros.h $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/state.h ./Makefile | $(OBJECT_DIR)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL)/depparser.cpp -o $(OBJECT_DIR)/generic.depparser.o
 
 # the main executable
-$(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
+$(DIST_GENERIC_DEPPARSER)/depparser: $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(SRC_GENERIC_DEPPARSER)/main.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS) | $(DIST_GENERIC_DEPPARSER)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/main.cpp -o $(OBJECT_GENERIC_DEPPARSER)/main.o
 	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/depparser $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/main.o $(OBJECTS)
 
 # the trainer for depparser
-$(DIST_GENERIC_DEPPARSER)/train: $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS)
+$(DIST_GENERIC_DEPPARSER)/train: $(SRC_GENERIC_DEPPARSER)/train.cpp $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECTS) | $(DIST_GENERIC_DEPPARSER)
 	$(CXX) $(CXXFLAGS) $(GENERIC_DEPPARSER_D) -DTARGET_LANGUAGE=generic -I$(SRC_GENERIC) -I$(SRC_GENERIC_DEPPARSER) -I$(SRC_GENERIC_DEPPARSER)/implementations/$(GENERIC_DEPPARSER_IMPL) -c $(SRC_GENERIC_DEPPARSER)/train.cpp -o $(OBJECT_GENERIC_DEPPARSER)/train.o
 	$(LD) $(LDFLAGS) -o $(DIST_GENERIC_DEPPARSER)/train $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_GENERIC_DEPPARSER)/train.o $(OBJECTS)
 

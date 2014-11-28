@@ -125,6 +125,7 @@ INCLUDES = -I$(SRC_INCLUDES)
 
 CXX = g++
 CXXFLAGS = -w -W -O3 $(INCLUDES) $(DEBUG)
+CXXFLAGS += -fPIC
 
 LD=$(CXX)
 LDFLAGS =
@@ -210,13 +211,13 @@ OBJECT_SPANISH_DEPLABELER = $(OBJECT_DIR)/spanish.deplabeler
 SRC_COMMON_CONPARSER = $(SRC_COMMON)/conparser
 SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
 ifeq ($(CHINESE_CONPARSER_IMPL), jcad)
-	SRC_CHINESE_CONPARSER = $(SRC_CHINESE)/conparser
+  SRC_CHINESE_CONPARSER = $(SRC_CHINESE)/conparser
 else
-	ifeq ($(CHINESE_CONPARSER_IMPL), acl13)
-		SRC_CHINESE_CONPARSER = $(SRC_CHINESE)/conparser
-	else
-		SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
-	endif
+  ifeq ($(CHINESE_CONPARSER_IMPL), acl13)
+    SRC_CHINESE_CONPARSER = $(SRC_CHINESE)/conparser
+  else
+    SRC_CHINESE_CONPARSER = $(SRC_COMMON_CONPARSER)
+  endif
 endif
 SRC_ENGLISH_CONPARSER = $(SRC_COMMON_CONPARSER)
 DIST_CONPARSER = $(DIST_DIR)/chinese.conparser
@@ -232,13 +233,13 @@ OBJECT_ENGLISH_CONPARSER = $(OBJECT_DIR)/english.conparser
 
 
 ifeq ($(CHINESE_CONPARSER_IMPL), jcad)
-	OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/jointconstituent.o
+  OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/jointconstituent.o
 else
-	ifeq ($(CHINESE_CONPARSER_IMPL), acl13)
-		OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/jointconstituent.o
-	else
-		OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o
-	endif
+  ifeq ($(CHINESE_CONPARSER_IMPL), acl13)
+    OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/jointconstituent.o
+  else
+    OBJ_CHINESE_CONSTITUENT = $(OBJECT_CONPARSER)/constituent.o
+  endif
 endif
 
 $(DIST_CONPARSER):
@@ -253,32 +254,32 @@ $(OBJECT_DEPLABELER):
 
 # the flags for train
 ifeq ($(CHINESE_TAGGER_IMPL), segmented) # if segmented	
-	TAGGER_TRAIN_FLAGS = -DSEGMENTED
-	TAGGER_TEST_FLAGS = -DSEGMENTED
+  TAGGER_TRAIN_FLAGS = -DSEGMENTED
+  TAGGER_TEST_FLAGS = -DSEGMENTED
 else 
-	ifeq ($(CHINESE_TAGGER_IMPL), bidirectional) # else if bidirectional
-		TAGGER_TRAIN_FLAGS = -DSEGMENTED -DAUTO
-		TAGGER_TEST_FLAGS = -DSEGMENTED
-	endif
+  ifeq ($(CHINESE_TAGGER_IMPL), bidirectional) # else if bidirectional
+    TAGGER_TRAIN_FLAGS = -DSEGMENTED -DAUTO
+    TAGGER_TEST_FLAGS = -DSEGMENTED
+  endif
 endif
 
 
 ifeq ($(CHINESE_DEPPARSER_LABELED), true)
-	CHINESE_DEPPARSER_D = -DLABELED
+  CHINESE_DEPPARSER_D = -DLABELED
 endif
 
 ifeq ($(ENGLISH_DEPPARSER_LABELED), true)
-	ENGLISH_DEPPARSER_D = -DLABELED
+  ENGLISH_DEPPARSER_D = -DLABELED
 endif
 
 ifeq ($(CHINESE_DEPPARSER_IMPL), combined)
-	CHINESE_DEPPARSER_D := $(CHINESE_DEPPARSER_D) -DCOMBINED
-	CHINESE_DEPPARSER_IMPL = nivre
+  CHINESE_DEPPARSER_D := $(CHINESE_DEPPARSER_D) -DCOMBINED
+  CHINESE_DEPPARSER_IMPL = nivre
 endif
 
 ifeq ($(ENGLISH_DEPPARSER_IMPL), combined)
-	ENGLISH_DEPPARSER_D := $(ENGLISH_DEPPARSER_D) -DCOMBINED
-	ENGLISH_DEPPARSER_IMPL = nivre
+  ENGLISH_DEPPARSER_D := $(ENGLISH_DEPPARSER_D) -DCOMBINED
+  ENGLISH_DEPPARSER_IMPL = nivre
 endif
 
 #====================================================
@@ -329,3 +330,7 @@ include Makefile.ccg
 include Makefile.misc
 #include Makefile.rr
 
+libzpar:$(DIST_DIR)/libzpar.so
+
+$(DIST_DIR)/libzpar.so: $(OBJECT_DIR)/pos.ge.o $(OBJECT_DIR)/cfg.ge.o $(OBJECT_DIR)/deplabel.ge.o $(OBJECT_DIR)/generic.postagger.o $(OBJECT_GENERIC_TAGGER)/weight.o $(OBJECT_DIR)/generic.conparser.o $(OBJECT_DIR)/constituent.ge.o $(OBJECT_GENERIC_CONPARSER)/weight.o $(OBJECT_DIR)/generic.depparser.o $(OBJECT_GENERIC_DEPPARSER)/weight.o $(OBJECT_DIR)/generic.deplabeler.o  $(OBJECT_GENERIC_DEPLABELER)/weight.o $(OBJECTS) $(OBJECT_DIR)/libzpar-ge.o $(OBJECT_DIR)/chinese.doc2snt.o $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/chinese.postagger.o $(OBJECT_TAGGER)/weight.o $(OBJECT_DIR)/chinese.conparser.o $(OBJECT_CONPARSER)/constituent.o $(OBJECT_CONPARSER)/weight.o $(OBJECT_DIR)/chinese.depparser.o $(OBJECT_DEPPARSER)/weight.o $(OBJECTS) $(OBJECT_DIR)/libzpar-zh.o $(OBJ_CHINESE_CONSTITUENT) $(OBJECT_DIR)/reader.o $(OBJECT_DIR)/writer.o $(OBJECT_DIR)/options.o $(OBJECT_DIR)/english.postagger.o $(OBJECT_ENGLISH_TAGGER)/weight.o $(OBJECT_DIR)/english.conparser.o $(OBJECT_ENGLISH_CONPARSER)/constituent.o $(OBJECT_ENGLISH_CONPARSER)/weight.o $(OBJECT_DIR)/english.depparser.o $(OBJECT_ENGLISH_DEPPARSER)/weight.o $(OBJECT_DIR)/english.deplabeler.o $(OBJECT_ENGLISH_DEPLABELER)/weight.o $(OBJECTS) $(OBJECT_DIR)/libzpar-en.o | $(DIST_DIR)
+	$(LD) $(LDFLAGS) -o $@ -shared -Wl,-soname,libzpar.so $^

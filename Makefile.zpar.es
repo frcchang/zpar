@@ -1,5 +1,5 @@
 ifeq ($(SPANISH_DEPPARSER_LABELED), true)
-	SPANISH_DEPPARSER_D = -DLABELED
+  SPANISH_DEPPARSER_D = -DLABELED
 endif
 
 ifneq ("$(wildcard Makefile.d/Makefile.es.conparser.$(SPANISH_CONPARSER_IMPL))","")
