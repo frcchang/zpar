@@ -73,16 +73,16 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 #endif
       }
       else {
-       /*if ( (bCoNLL && input_conll.size() > depparser::MAX_SENTENCE_SIZE) ||
-            (!bCoNLL && input_sent.size() > depparser::MAX_SENTENCE_SIZE) ) {
+       if ( (bCoNLL && ref_conll.size() > depparser::MAX_SENTENCE_SIZE) ||
+            (!bCoNLL && ref_sent.size() > depparser::MAX_SENTENCE_SIZE) ) {
           WARNING("The sentence is longer than system limitation, skipping it.");
-        } else {*/
+        } else {
           if (bCoNLL) {
             parser.train_conll( ref_conll, nCount );
           } else {
             parser.train( ref_sent, nCount );
           }
-        //}
+        }
       }
    }
 
