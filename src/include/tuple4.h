@@ -88,10 +88,10 @@ public:
 
 public:
    // getting members
-   const CClass1 *first() const { return m_object1; };
-   const CClass2 *second() const { return m_object2; }
-   const CClass3 *third() const { return m_object3; }
-   const CClass4 *fourth() const { return m_object4; }
+   const CClass1 * _ZPAR_DEPRECATED(first() const) { return m_object1; };
+   const CClass2 * _ZPAR_DEPRECATED(second() const) { return m_object2; }
+   const CClass3 * _ZPAR_DEPRECATED(third() const) { return m_object3; }
+   const CClass4 * _ZPAR_DEPRECATED(fourth() const) { return m_object4; }
 
    // getting hash
    inline const unsigned long int &hash() const { return m_nHash; }
@@ -135,6 +135,8 @@ protected:
    inline void computehash() { 
       m_nHash = ( ( ::hash(*m_object1) * 31 + ::hash(*m_object2) ) * 29 + ::hash(*m_object3) ) * 23 + ::hash(*m_object4); 
    }
+template <class T1, class T2, class T3, class T4>
+friend std::ostream & operator << (std::ostream &os, const CTuple4<T1, T2, T3, T4> &tuple4);
 };
 
 //===============================================================
@@ -166,7 +168,7 @@ std::istream & operator >> (std::istream &is, CTuple4<CClass1, CClass2, CClass3,
 
 template <class CClass1, class CClass2, class CClass3, class CClass4>
 std::ostream & operator << (std::ostream &os, const CTuple4<CClass1, CClass2, CClass3, CClass4> &tuple4) {
-   os << *(tuple4.first()) << " , " << *(tuple4.second()) << " , " << *(tuple4.third()) << " , " << *(tuple4.fourth());
+   os << *(tuple4.m_object1) << " , " << *(tuple4.m_object2) << " , " << *(tuple4.m_object3) << " , " << *(tuple4.m_object4);
    return os ;
 }
 

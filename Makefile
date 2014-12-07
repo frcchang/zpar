@@ -44,31 +44,31 @@ SEGMENTOR_IMPL = agenda
 #
 # joint taggers include the following implementations
 # agendachart: combining agenda and chart, this is the best system - reproduce paper
-# 
+#
 # taggers on segmented sentences include the following implementations
 # segmented: the unidirectional trigram tagger
 CHINESE_TAGGER_IMPL = agenda
 
 # Chinese dependency parser
 #
-# currently support eisner, covington, nivre, combined and joint implementations 
+# currently support eisner, covington, nivre, combined and joint implementations
 CHINESE_DEPPARSER_IMPL = arceager
 CHINESE_DEPPARSER_LABELED = true
 CHINESE_DEPLABELER_IMPL = naive
 
-# currently support sr implementations 
+# currently support sr implementations
 CHINESE_CONPARSER_IMPL = acl13
 CHINESE_CONPARSER_JOINT_OR_CASCADE = JOINT_CONPARSER
 
 # currently support only agenda
 ENGLISH_TAGGER_IMPL = collins
 
-# currently support eisner, covington, nivre, combined implementations 
+# currently support eisner, covington, nivre, combined implementations
 ENGLISH_DEPPARSER_IMPL = arceager
 ENGLISH_DEPPARSER_LABELED = true
 ENGLISH_DEPLABELER_IMPL = naive
 
-# currently support sr implementations 
+# currently support sr implementations
 ENGLISH_CONPARSER_IMPL = muhua
 
 # Spanish pos tagger
@@ -105,7 +105,7 @@ include Makefile.common
 #================================================================
 #
 # cross platform configurations
-# 
+#
 #================================================================
 
 ifeq ($(OS),Windows_NT)
@@ -118,13 +118,14 @@ endif
 #================================================================
 #
 # compiler commands
-# 
+#
 #================================================================
 
 INCLUDES = -I$(SRC_INCLUDES)
 
 CXX = g++
-CXXFLAGS = -w -W -O3 $(INCLUDES) $(DEBUG)
+CXXFLAGS = -O3 $(INCLUDES) $(DEBUG)
+CXXFLAGS += -fPIC
 
 LD=$(CXX)
 LDFLAGS =
@@ -170,7 +171,7 @@ $(DIST_ENGLISH_TAGGER):
 	$(MKDIR) $(DIST_ENGLISH_TAGGER)
 $(OBJECT_ENGLISH_TAGGER):
 	$(MKDIR) $(OBJECT_ENGLISH_TAGGER)
-	
+
 SRC_SPANISH_TAGGER = $(SRC_COMMON)/tagger
 DIST_SPANISH_TAGGER = $(DIST_DIR)/spanish.postagger
 OBJECT_SPANISH_TAGGER = $(OBJECT_DIR)/spanish.postagger
@@ -252,10 +253,10 @@ $(OBJECT_DEPLABELER):
 	$(MKDIR) $(OBJECT_DEPLABELER)
 
 # the flags for train
-ifeq ($(CHINESE_TAGGER_IMPL), segmented) # if segmented	
+ifeq ($(CHINESE_TAGGER_IMPL), segmented) # if segmented
 	TAGGER_TRAIN_FLAGS = -DSEGMENTED
 	TAGGER_TEST_FLAGS = -DSEGMENTED
-else 
+else
 	ifeq ($(CHINESE_TAGGER_IMPL), bidirectional) # else if bidirectional
 		TAGGER_TRAIN_FLAGS = -DSEGMENTED -DAUTO
 		TAGGER_TEST_FLAGS = -DSEGMENTED
