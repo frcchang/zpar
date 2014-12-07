@@ -47,6 +47,7 @@ public:
       m_bAllocated = true; 
    }
    void refer(const CUnigram *s1, const CUnigram *s2) { 
+      clear(); 
       m_unigram1 = s1; 
       m_unigram2 = s2; 
       computehash(); 
@@ -66,8 +67,8 @@ public:
 
 public:
    // getting members
-   const CUnigram *first() const { return m_unigram1; };
-   const CUnigram *second() const { return m_unigram2; }
+   const CUnigram * _ZPAR_DEPRECATED(first() const) { return m_unigram1; }
+   const CUnigram * _ZPAR_DEPRECATED(second() const) { return m_unigram2; }
 
    // getting hash
    inline unsigned long int hash() const { return m_nHash; }
@@ -94,6 +95,8 @@ public:
 
 protected:
    inline void computehash() { m_nHash = m_unigram1->hash() * 31 + m_unigram2->hash(); }
+template <class T>
+friend std::ostream & operator << (std::ostream &os, const CBigram<T> &bigram);
 };
 
 //===============================================================
@@ -116,7 +119,7 @@ std::istream & operator >> (std::istream &is, CBigram<CUnigram> &bigram) {
 
 template <class CUnigram>
 std::ostream & operator << (std::ostream &os, const CBigram<CUnigram> &bigram) {
-   os << *(bigram.first()) << " , " << *(bigram.second()) ;
+   os << *(bigram.m_unigram1) << " , " << *(bigram.m_unigram2) ;
    return os ;
 }
 

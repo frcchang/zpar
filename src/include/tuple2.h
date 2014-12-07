@@ -76,8 +76,8 @@ public:
 
 public:
    // getting members
-   const CClass1 *first() const { return m_object1; };
-   const CClass2 *second() const { return m_object2; }
+   const CClass1 * _ZPAR_DEPRECATED(first() const) { return m_object1; };
+   const CClass2 * _ZPAR_DEPRECATED(second() const) { return m_object2; }
 
    // getting hash
    inline const unsigned long &hash() const { return m_nHash; }
@@ -112,6 +112,8 @@ protected:
    inline void computehash() { 
       m_nHash = ( ::hash(*m_object1) * 31 + ::hash(*m_object2) ); 
    }
+template <class T1, class T2>
+friend std::ostream & operator << (std::ostream &os, const CTuple2<T1, T2> &tuple2);
 };
 
 //===============================================================
@@ -132,7 +134,7 @@ std::istream & operator >> (std::istream &is, CTuple2<CClass1, CClass2> &tuple2)
 
 template <class CClass1, class CClass2>
 std::ostream & operator << (std::ostream &os, const CTuple2<CClass1, CClass2> &tuple2) {
-   os << *(tuple2.first()) << " , " << *(tuple2.second());
+   os << *(tuple2.m_object1) << " , " << *(tuple2.m_object2);
    return os ;
 }
 

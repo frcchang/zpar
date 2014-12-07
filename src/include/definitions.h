@@ -83,5 +83,13 @@
 #include "linguistics/sentence_string.h"
 #include "zinttypes.h"
 
+#ifdef __GNUC__
+#define _ZPAR_DEPRECATED(func) func __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define _ZPAR_DEPRECATED(func) __declspec(deprecated) func
+#else
+#define _ZPAR_DEPRECATED(func) func
+#endif
+
 #endif
 

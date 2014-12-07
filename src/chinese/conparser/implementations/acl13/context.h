@@ -402,29 +402,33 @@ public:
 
 	   first_char_1_last_char_2 = start_2>=0 ? find_or_replace_word_cache( end_2, start_1 ) : g_emptyWord;
 
-		if (!modify&&start_1>=0) {
-			word_2_word_1.refer( &word_1 , &word_2 ) ;
-			first_char_1_last_char_1.refer( &first_char_1 , &last_char_1 ) ;
-			first_char_0_first_char_1.refer( &first_char_0 , &first_char_1 ) ;
+    if (start_1 >= 0 ) {
+		  if (!modify) {
+		  	word_2_word_1.refer( &word_1 , &word_2 ) ;
+		  	first_char_1_last_char_1.refer( &first_char_1 , &last_char_1 ) ;
+		  	first_char_0_first_char_1.refer( &first_char_0 , &first_char_1 ) ;
 
-			last_char_1_last_char_2.refer( &last_char_1 , &last_char_2 ) ;
-		}
-		else {
-			word_2_word_1.allocate( word_1, word_2 ) ;
-			first_char_1_last_char_1.allocate( first_char_1, last_char_1 ) ;
-			first_char_0_first_char_1.allocate( first_char_0, first_char_1 ) ;
+		  	last_char_1_last_char_2.refer( &last_char_1 , &last_char_2 ) ;
+		  }
+		  else {
+		  	word_2_word_1.allocate( word_1, word_2 ) ;
+		  	first_char_1_last_char_1.allocate( first_char_1, last_char_1 ) ;
+		  	first_char_0_first_char_1.allocate( first_char_0, first_char_1 ) ;
 
-			last_char_1_last_char_2.allocate( last_char_1, last_char_2 ) ;
-		}
+		  	last_char_1_last_char_2.allocate( last_char_1, last_char_2 ) ;
+		  }
+    }
 
-		if (!modify&&start_2>=0)
-		{
-			first_char_1_first_char_2.refer( &first_char_1 , &first_char_2 ) ;
-		}
-		else
-		{
-			first_char_1_first_char_2.allocate( first_char_1, first_char_2 ) ;
-		}
+    if (start_2 >= 0 ) {
+		  if (!modify)
+		  {
+		  	first_char_1_first_char_2.refer( &first_char_1 , &first_char_2 ) ;
+		  }
+		  else
+		  {
+		  	first_char_1_first_char_2.allocate( first_char_1, first_char_2 ) ;
+		  }
+    }
 
 	      // about::cout the tags
 		tag_1.load(p0word_state == 0 ? g_beginTag.code() : p0word_state->pos);
