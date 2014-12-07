@@ -57,7 +57,7 @@ public:
       return word == w.word ? tag < w.tag : word < w.word ; 
    }
    inline bool empty() { return word.empty() && tag.empty(); }
-   inline void clear() { CWord::clear(); tag.clear(); }
+   inline void clear() { word.clear(); tag.clear(); }
    inline unsigned long hash() const { return (word.code()<<CTag::SIZE)|tag.code(); }
    // assign value
    inline void operator = (const CTaggedWord &tw) {
