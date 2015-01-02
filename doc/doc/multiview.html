@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-responsive.min.css">
+
+<style type="text/css">
+.nav { }
+.nav li { float: left; width: 110px; }
+.container { background-color: #ffffff; padding: 30px; }
+.content { padding: 30px; }
+body, h1, h2, h3, h4 { font-family: "Trebuchet MS","Helvetica Neue",Arial,Helvetica,sans-serif,"Georgia";}
+body { background-color: #eeeeee; }
+header { width: 100%; }
+blockquote p { font-size: 14px; }
+</style>
+<title>ZPar | Using ZPar-MVT Off-the-Shelf</title>
+</head>
+
+<body>
+<div class="table-bordered container">
+<div class="content">
+
+<header>
+<div class="page-header text-center">
+<h1>Using ZPar-MVT Off-the-Shelf</h1>
+</div>
+</header>
+
+<h2><a id="Overview">Overview</a></h2>
+<p>
+ZPar for MVT (Peking University Multi-view Chinese Treebank) is compiled into a program: <code>zpar.mvt</code>. This program needs to be executed with a set of corresponding statistical models. Some example sets of models are released together with ZPar source so that the public release can be used off-the-shelf.
+</p>
+<p>
+The current version of ZPar is 0.7. Its release contains a set of models for <code>zpar.mvt</code>, which support joint Chinese word segmentation and POS tagging, and labeled dependency parsing.
+</p>
+
+<h2><a id="Download-and-installation">Download and installation</a></h2>
+<p>
+The source code and models can be downloaded from <a href="http://sourceforge.net/projects/zpar/files/0.7/">sourceforge</a>. Unzip the source zip file into the source directory and the corresponding model files each into a model directory.
+</p>
+<p>
+Download the models for ZPar-MVT:
+<br/>
+<img src="mvt-model.png" alt="Download the models for ZPar-MVT.">
+</p>
+ 
+<p>
+ To compile ZPar-PMT, type <code>make zpar.mvt</code> in the zpar source directory. The binary file <code>zpar.mvt</code> will placed in the <code>dist</code> folder. 
+</p>
+
+<h2><a id="Usage-of-ZPar-for-Chinese-MVT">Usage of ZPar for Chinese-MVT</a></h2>
+<p>
+ Suppose that the executable files are saved in the folder  <code>zpar/dist/zpar.mvt</code> and the models are saved in <code>chinese.mvt</code>. To run <code>zpar</code>, type 
+</p>
+<pre><code>zpar/dist/zpar.mvt chinese.mvt input output</code></pre>
+<p>
+to read Chinese sentences from the <code>input</code> and write the corresponding parses to <code>output</code>. In the file input, each line should contain only one sentence.
+</p>
+
+<h2><a id="Annotation-Schema">Annotation Schema</a></h2>
+<p>
+ The annotation schema for word segmentation, POS tagging and dependency parsing is described in our COLING2014 paper (see in Reference). It is based on the annotated corpus of People' Daily of Peking University and quite different from CTB. For details, please refer to our paper.
+</p>
+
+<h2><a id="Reference">Reference</a></h2>
+<ul>
+<li>
+ Likun Qiu, Yue Zhang, Peng Jin, and Houfeng Wang. 2014. Multi-view chinese treebanking. In <em>Proc of COLING</em>, pages 257–268.
+</li>
+<li>
+ Yue Zhang and Stephen Clark. 2011. Syntactic Processing Using the Generalized Perceptron and Beam Search. <em>Computational Linguistics</em>, 37(1), March.
+</li>
+</ul>
+</div>
+</div>
+<footer class="text-center">
+<p>
+ZPar Release 0.7
+</p>
+</footer>
+</body>
+</html>
