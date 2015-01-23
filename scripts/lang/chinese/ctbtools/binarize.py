@@ -212,7 +212,7 @@ class CBinarizer(object):
       return ''.join(retval)
 
    def find_head(self, srcnode):
-      sLabel = srcnode.name.split('-')[0]
+      sLabel = srcnode.name.split('-')[0].split("=")[0]
       for lRuleSet in self.m_dRules.get(sLabel, []):
          assert lRuleSet[0] in ("l", "r", "ld", "rd", "le", "re")
          lTemp = srcnode.children[:]
@@ -230,7 +230,7 @@ class CBinarizer(object):
             if lRuleSet[0] in ("l","r"): #category then position
                for sHead in lRuleSet[1:]:
                   for srcchild in lTemp:
-                     if srcchild.name.split("-")[0] == sHead and self.not_empty(srcchild):
+                     if srcchild.name.split("-")[0].split("=")[0] == sHead and self.not_empty(srcchild):
                         headchild = srcchild
                         bFound = True
                         break
@@ -239,14 +239,14 @@ class CBinarizer(object):
             else: 
                if lRuleSet[0] in ("ld","rd"): #position then category /MIguel
                   for srcchild in lTemp:
-                     if srcchild.name.split("-")[0] in lRuleSet[1:] and self.not_empty(srcchild):
+                     if srcchild.name.split("-")[0].split("=")[0] in lRuleSet[1:] and self.not_empty(srcchild):
                         headchild=srcchild
                         bFound=True
                         break
                else: 
                   assert lRuleSet[0] in ("le", "re")
                   for srcchild in lTemp:
-                     if not srcchild.name.split("-")[0] in lRuleSet[1:] and self.not_empty(srcchild):
+                     if not srcchild.name.split("-")[0].split("=")[0] in lRuleSet[1:] and self.not_empty(srcchild):
                         headchild = srcchild
                         bFound = True
                         break
