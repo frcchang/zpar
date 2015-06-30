@@ -36,8 +36,8 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
    std::ifstream is(sOutputFile.c_str());
    assert(is.is_open());
 
-   CDependencyParse ref_sent; 
-   CCoNLLOutput ref_conll; 
+   CDependencyParse ref_sent;
+   CCoNLLOutput ref_conll;
 
    depparser::CSuperTag *supertags;
    std::ifstream *is_supertags=0;
@@ -50,11 +50,11 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
    }
 
    int nCount=0;
- 
+
    while( bCoNLL ? is>>ref_conll : is>>ref_sent ) {
 
       TRACE("Sentence " << nCount);
-      ++ nCount ; 
+      ++ nCount ;
 
       if (supertags) {
          supertags->setSentenceSize( bCoNLL ? ref_conll.size() : ref_sent.size() );
@@ -73,8 +73,8 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 #endif
       }
       else {
-        if ( (bCoNLL && input_conll.size() > depparser::MAX_SENTENCE_SIZE) ||
-            (!bCoNLL && input_sent.size() > depparser::MAX_SENTENCE_SIZE) ) {
+       if ( (bCoNLL && ref_conll.size() > depparser::MAX_SENTENCE_SIZE) ||
+            (!bCoNLL && ref_sent.size() > depparser::MAX_SENTENCE_SIZE) ) {
           WARNING("The sentence is longer than system limitation, skipping it.");
         } else {
           if (bCoNLL) {
@@ -131,15 +131,15 @@ int main(int argc, char* argv[]) {
          std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
          std::cout << configurations.message() << std::endl;
          return 1;
-      } 
+      }
       configurations.loadConfigurations(options.opts);
-   
+
       int training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
          std::cerr << "Error: the number of training iterations must be an integer." << std::endl;
          return 1;
       }
-   
+
       bool bCoNLL = configurations.getConfiguration("c").empty() ? false : true;
       std::string sSuperPath = configurations.getConfiguration("p");
       bool bRules = configurations.getConfiguration("r").empty() ? false : true;
@@ -154,10 +154,10 @@ int main(int argc, char* argv[]) {
 
       std::cout << "Training started" << std::endl;
       int time_start = clock();
-      for (int i=0; i<training_rounds; ++i) 
+      for (int i=0; i<training_rounds; ++i)
          auto_train(options.args[1], options.args[2], bRules, sSuperPath, bCoNLL, bExtract, sMetaPath);
       std::cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
-   
+
       return 0;
    } catch (const std::string &e) {
       std::cerr << std::endl << "Error: " << e << std::endl;
