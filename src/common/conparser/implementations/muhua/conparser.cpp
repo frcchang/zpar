@@ -36,7 +36,6 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    if (m_Context.stacksize==0) return;
 
    static unsigned long j;
-
    static CCFGSet s0ts1tbt;
    s0ts1tbt.copy(m_Context.s0ts1tbt);
 
@@ -319,7 +318,6 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
        cast_weights->m_mapS0UUwc.getOrUpdateScore(retval, word_constituent, action.code(), m_nScoreIndex, amount, round);
    }
 
-
    //! S1LL
    if(m_Context.s1ll != 0)
    {
@@ -587,7 +585,6 @@ SCORE_TYPE CConParser::getGlobalScore(const CSentenceParsed &parsed) {
  *---------------------------------------------------------------*/
 
 void CConParser::updateScores(const CSentenceParsed & parsed , const CSentenceParsed & correct , int round ) {
-
    THROW("Unsupported method");
 }
 
@@ -1047,7 +1044,6 @@ void CConParser::work( const bool bTrain , const CTwoStringVector &sentence , CS
                correct_action_scored = true;
             }
          }
-
       } // done iterating generator item
 
 #ifdef SCALE
