@@ -151,7 +151,7 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
 
    // If we read segmented sentence, we will ignore spaces from input.
    while( input_reader.readSegmentedSentenceAndTokenize(input_sent) ) {
-//      TRACE("Sentence " << nCount);
+      TRACE("Sentence " << nCount);
       ++ nCount;
       time_one = clock();
       if ( !input_sent->empty() && input_sent->back()=="\n" ) {
@@ -160,7 +160,6 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
       tagger.tag(input_sent, tagged_sent, 1, NULL);
       depparser.parse(*tagged_sent, parsed_sent, 1, NULL);
       (*outs) << *parsed_sent;
-      std::cout << "Sentence " << nCount << " processed in " << double(clock()-time_one)/CLOCKS_PER_SEC << " sec." << std::endl;
    }
    delete input_sent;
    delete tagged_sent;
