@@ -229,6 +229,7 @@ protected:
 #endif
       }
       else {
+
          static unsigned long fullconst;
          assert(stacksize()>=2);
          r = &node;

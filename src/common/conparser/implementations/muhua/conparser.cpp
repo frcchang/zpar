@@ -36,6 +36,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    if (m_Context.stacksize==0) return;
 
    static unsigned long j;
+
    static CCFGSet s0ts1tbt;
    s0ts1tbt.copy(m_Context.s0ts1tbt);
 
@@ -585,6 +586,7 @@ SCORE_TYPE CConParser::getGlobalScore(const CSentenceParsed &parsed) {
  *---------------------------------------------------------------*/
 
 void CConParser::updateScores(const CSentenceParsed & parsed , const CSentenceParsed & correct , int round ) {
+
    THROW("Unsupported method");
 }
 

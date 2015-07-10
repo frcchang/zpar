@@ -24,26 +24,26 @@ void TARGET_LANGUAGE::CTagger::getOrUpdateToptags( CPackedScoreType<SCORE_TYPE, 
       const CTag &toptag_r_1 = index+1<m_CacheTopTags.size() ? m_CacheTopTags[index+1] : g_noneTag;
       const CTag &toptag_r_2 = index+2<m_CacheTopTags.size() ? m_CacheTopTags[index+2] : g_noneTag;
       if (toptag_0!=g_noneTag) {
-         m_weights->m_mapTagByTopTag0.getOrUpdateScore(retval, toptag_0, tag, m_nScoreIndex, amount, round) ; 
+         m_weights->m_mapTagByTopTag0.getOrUpdateScore(retval, toptag_0, tag, m_nScoreIndex, amount, round) ;
          // left
 //         if (toptag_l_1!=g_noneTag) {
-//            m_weights->m_mapTagByTopTag0L1.getOrUpdateScore(retval, CTagSet<CTag, 2>(encodeTags(toptag_0, toptag_l_1)), tag, m_nScoreIndex, amount, round) ; 
-//            if (toptag_l_2!=g_noneTag) 
-//               m_weights->m_mapTagByTopTag0L1L2.getOrUpdateScore(retval, CTagSet<CTag, 3>(encodeTags(toptag_0, toptag_l_1, toptag_l_2)), tag, m_nScoreIndex, amount, round) ; 
+//            m_weights->m_mapTagByTopTag0L1.getOrUpdateScore(retval, CTagSet<CTag, 2>(encodeTags(toptag_0, toptag_l_1)), tag, m_nScoreIndex, amount, round) ;
+//            if (toptag_l_2!=g_noneTag)
+//               m_weights->m_mapTagByTopTag0L1L2.getOrUpdateScore(retval, CTagSet<CTag, 3>(encodeTags(toptag_0, toptag_l_1, toptag_l_2)), tag, m_nScoreIndex, amount, round) ;
 //         }
          // right
          if (toptag_r_1!=g_noneTag) {
-            m_weights->m_mapTagByTopTag0R1.getOrUpdateScore(retval, CTagSet<CTag, 2>(encodeTags(toptag_0, toptag_r_1)), tag, m_nScoreIndex, amount, round) ; 
-            if (toptag_r_2!=g_noneTag) 
-               m_weights->m_mapTagByTopTag0R1R2.getOrUpdateScore(retval, CTagSet<CTag, 3>(encodeTags(toptag_0, toptag_r_1, toptag_r_2)), tag, m_nScoreIndex, amount, round) ; 
+            m_weights->m_mapTagByTopTag0R1.getOrUpdateScore(retval, CTagSet<CTag, 2>(encodeTags(toptag_0, toptag_r_1)), tag, m_nScoreIndex, amount, round) ;
+            if (toptag_r_2!=g_noneTag)
+               m_weights->m_mapTagByTopTag0R1R2.getOrUpdateScore(retval, CTagSet<CTag, 3>(encodeTags(toptag_0, toptag_r_1, toptag_r_2)), tag, m_nScoreIndex, amount, round) ;
          }
          // both
 //         if (toptag_l_1!=g_noneTag && toptag_r_1!=g_noneTag) {
-//            m_weights->m_mapTagByTopTag0L1R1.getOrUpdateScore(retval, CTagSet<CTag, 3>(encodeTags(toptag_0, toptag_l_1, toptag_r_1)), tag, m_nScoreIndex, amount, round) ; 
+//            m_weights->m_mapTagByTopTag0L1R1.getOrUpdateScore(retval, CTagSet<CTag, 3>(encodeTags(toptag_0, toptag_l_1, toptag_r_1)), tag, m_nScoreIndex, amount, round) ;
 //         }
       }
       if (toptag_r_1!=g_noneTag) {
-         m_weights->m_mapTagByTopTagR1.getOrUpdateScore(retval, toptag_r_1, tag, m_nScoreIndex, amount, round) ; 
+         m_weights->m_mapTagByTopTagR1.getOrUpdateScore(retval, toptag_r_1, tag, m_nScoreIndex, amount, round) ;
       }
    }
 }
@@ -53,21 +53,21 @@ void TARGET_LANGUAGE::CTagger::getOrUpdateToptags( CPackedScoreType<SCORE_TYPE, 
  * getLocalScore - get the local score for a word in sentence
  *
  * When bigram is needed from the beginning of sentence, the
- * -SENTENCE_BEGIN- tag and the empty word are used. 
+ * -SENTENCE_BEGIN- tag and the empty word are used.
  *
- * This implies that empty words should not be used in other 
- * situations. 
+ * This implies that empty words should not be used in other
+ * situations.
  *
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::CTagger::getLocalScore( CPackedScoreType<SCORE_TYPE, CTag::MAX_COUNT> &retval, const CStringVector *sentence, const CStateItem *item , const unsigned long &index ) {
    const static CWord g_emptyWord("");
    const static CScore<SCORE_TYPE> g_zeroScore;
-   const CWord &word = m_Cache[index]; 
-   const CWord &prev_word = index>0 ? m_Cache[index-1] : g_emptyWord; 
+   const CWord &word = m_Cache[index];
+   const CWord &prev_word = index>0 ? m_Cache[index-1] : g_emptyWord;
    const CWord &second_prev_word = index>1 ? m_Cache[index-2] : g_emptyWord;
    const CWord &next_word = index<m_CacheSize-1 ? m_Cache[index+1] : g_emptyWord;
-   const CWord &second_next_word = index<m_CacheSize-2 ? m_Cache[index+2] : g_emptyWord;
+   const CWord &second_next_word = m_CacheSize>2 && index<m_CacheSize-2 ? m_Cache[index+2] : g_emptyWord;
    CTag prev_tag = item ? item->tag : CTag::SENTENCE_BEGIN;
    CTag second_prev_tag = (item && item->prev) ?  item->prev->tag : CTag::SENTENCE_BEGIN;
 
@@ -79,14 +79,14 @@ void TARGET_LANGUAGE::CTagger::getLocalScore( CPackedScoreType<SCORE_TYPE, CTag:
    static bool bContainCapitalLetter;
    static std::string prefix, suffix;
 
-   m_weights->m_mapCurrentTag.getScore(retval, word, m_nScoreIndex) ; 
-   m_weights->m_mapLastTagByTag.getScore(retval, prev_tag, m_nScoreIndex) ; 
-   m_weights->m_mapLastTwoTagsByTag.getScore(retval, CTagSet<CTag, 2>(encodeTags(prev_tag, second_prev_tag)), m_nScoreIndex) ; 
+   m_weights->m_mapCurrentTag.getScore(retval, word, m_nScoreIndex) ;
+   m_weights->m_mapLastTagByTag.getScore(retval, prev_tag, m_nScoreIndex) ;
+   m_weights->m_mapLastTwoTagsByTag.getScore(retval, CTagSet<CTag, 2>(encodeTags(prev_tag, second_prev_tag)), m_nScoreIndex) ;
 
-   if (index>0) m_weights->m_mapTagByPrevWord.getScore(retval, prev_word, m_nScoreIndex) ; 
-   if (index<m_CacheSize-1) m_weights->m_mapTagByNextWord.getScore(retval, next_word, m_nScoreIndex) ; 
-   if (index>1) m_weights->m_mapTagBySecondPrevWord.getScore(retval, second_prev_word, m_nScoreIndex) ; 
-   if (index<m_CacheSize-2) m_weights->m_mapTagBySecondNextWord.getScore(retval, second_next_word, m_nScoreIndex) ; 
+   if (index>0) m_weights->m_mapTagByPrevWord.getScore(retval, prev_word, m_nScoreIndex) ;
+   if (index<m_CacheSize-1) m_weights->m_mapTagByNextWord.getScore(retval, next_word, m_nScoreIndex) ;
+   if (index>1) m_weights->m_mapTagBySecondPrevWord.getScore(retval, second_prev_word, m_nScoreIndex) ;
+   if (m_CacheSize>2 && index<m_CacheSize-2) m_weights->m_mapTagBySecondNextWord.getScore(retval, second_next_word, m_nScoreIndex) ;
 
    bContainHyphen = false;
    bContainNumber = false;
@@ -137,20 +137,20 @@ void TARGET_LANGUAGE::CTagger::updateScoreVector(const CTwoStringVector* tagged,
  *
  * updateLocalFeatureVector - update the given feature vector with
  *                            the local feature vector for a given
- *                            sentence. This is a private member only 
+ *                            sentence. This is a private member only
  *                            used by updateGlobalFeatureVector and is
- *                            only used for training. 
+ *                            only used for training.
  *
  *--------------------------------------------------------------*/
 
-void TARGET_LANGUAGE::CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoStringVector * sentence , int index , int round ) { 
+void TARGET_LANGUAGE::CTagger :: updateLocalFeatureVector( SCORE_UPDATE method , const CTwoStringVector * sentence , int index , int round ) {
    const CWord g_emptyWord("");
    const CScore<SCORE_TYPE> g_zeroScore;
-   const CWord &word = m_Cache[index]; 
-   const CWord &prev_word = index>0 ? m_Cache[index-1] : g_emptyWord; 
+   const CWord &word = m_Cache[index];
+   const CWord &prev_word = index>0 ? m_Cache[index-1] : g_emptyWord;
    const CWord &second_prev_word = index>1 ? m_Cache[index-2] : g_emptyWord;
    const CWord &next_word = index<m_CacheSize-1 ? m_Cache[index+1] : g_emptyWord;
-   const CWord &second_next_word = index<m_CacheSize-2 ? m_Cache[index+2] : g_emptyWord;
+   const CWord &second_next_word = m_CacheSize>2 && index<m_CacheSize-2 ? m_Cache[index+2] : g_emptyWord;
    unsigned tag = CTag(sentence->at(index).second).code();
    CTag prev_tag = index>0 ? CTag(sentence->at(index-1).second) : CTag::SENTENCE_BEGIN;
    CTag second_prev_tag = index>1 ? CTag(sentence->at(index-2).second) : CTag::SENTENCE_BEGIN;
@@ -172,7 +172,7 @@ void TARGET_LANGUAGE::CTagger :: updateLocalFeatureVector( SCORE_UPDATE method ,
    if (index>0) m_weights->m_mapTagByPrevWord.updateScore( prev_word, tag, amount, round ) ;
    if (index<m_CacheSize-1) m_weights->m_mapTagByNextWord.updateScore( next_word, tag, amount, round ) ;
    if (index>1) m_weights->m_mapTagBySecondPrevWord.updateScore( second_prev_word, tag, amount, round ) ;
-   if (index<m_CacheSize-2) m_weights->m_mapTagBySecondNextWord.updateScore( second_next_word, tag, amount, round ) ;
+   if (m_CacheSize>2 && index<m_CacheSize-2) m_weights->m_mapTagBySecondNextWord.updateScore( second_next_word, tag, amount, round ) ;
 
    bContainHyphen = false;
    bContainNumber = false;
@@ -210,8 +210,8 @@ void TARGET_LANGUAGE::CTagger :: updateLocalFeatureVector( SCORE_UPDATE method ,
  *
  * loadScores - load scores from the file specified at constructor
  *              currently this uses database, but it can be modified
- *         
- * Affects: m_bScoreModified, clearing it. 
+ *
+ * Affects: m_bScoreModified, clearing it.
  *
  *--------------------------------------------------------------*/
 
@@ -247,7 +247,7 @@ void TARGET_LANGUAGE::CTagger::finishTraining() {
 
 /*===============================================================
  *
- * CTagger - the tagger for Chinese 
+ * CTagger - the tagger for Chinese
  *
  *==============================================================*/
 
@@ -323,7 +323,7 @@ bool TARGET_LANGUAGE::CTagger::train( const CTwoStringVector * correct ) {
  *
  * tag - assign POS tags to a sentence
  *
- * Returns: makes a new instance of CTwoStringVector 
+ * Returns: makes a new instance of CTwoStringVector
  *
  *--------------------------------------------------------------*/
 
@@ -341,7 +341,7 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
 
    m_CacheSize = sentence->size();
 
-   assert(vReturn!=NULL); 
+   assert(vReturn!=NULL);
    vReturn->clear();
 
    if (m_CacheSize+3>m_nMaxSentenceSize) {
@@ -373,12 +373,12 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
    }
    for (index=0; index<m_CacheSize; ++index) {
       m_possibletags[index] = getPossibleTagsForWord(m_Cache[index]);
-      if (m_bTrain) 
+      if (m_bTrain)
          m_possibletags[index] |= (1LL<<m_CacheTags[index]);
    }
 
    // start tag
-   TRACE("Tagging started"); 
+   TRACE("Tagging started");
    m_Agenda->clear();
 
    // the first step
@@ -422,8 +422,8 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
          for ( tag=CTag::FIRST; tag<CTag::COUNT; ++tag ) {
             if ( m_possibletags[index] & (1LL<<tag) ) {
                temp.prev = pGenerator; temp.tag = tag;
-//               temp.m_nScore = pGenerator->m_nScore + getLocalScore(sentence, &temp, index); 
-               temp.m_nScore = pGenerator->m_nScore + scores[tag]; 
+//               temp.m_nScore = pGenerator->m_nScore + getLocalScore(sentence, &temp, index);
+               temp.m_nScore = pGenerator->m_nScore + scores[tag];
                if (nBest==1) {
                   if ( done_bigram[last_tag][tag] != index || temp.m_nScore > best_bigram[last_tag][tag].m_nScore ) {
                      done_bigram[last_tag][tag] = index;
@@ -456,13 +456,13 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
 //      TRACE("The time for iteration" << index << ":was " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
    }
 
-   // outout 
+   // outout
    TRACE("Outputing sentence");
    m_Agenda->sortItems();
    for ( temp_index = 0 ; temp_index < std::min(nBest, m_Agenda->size()) ; ++ temp_index ) {
-      vReturn[temp_index].resize(m_CacheSize); 
+      vReturn[temp_index].resize(m_CacheSize);
       pGenerator = m_Agenda->item(temp_index);
-      for (j=0; j<m_CacheSize; ++j) { 
+      for (j=0; j<m_CacheSize; ++j) {
          vReturn[temp_index][m_CacheSize-j-1].first = sentence->at(m_CacheSize-j-1);
          vReturn[temp_index][m_CacheSize-j-1].second = CTag(pGenerator->tag).str();
          pGenerator = pGenerator->prev;
