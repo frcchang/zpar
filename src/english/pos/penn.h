@@ -16,11 +16,11 @@ namespace english {
 
 /*===============================================================
  *
- * definitions abstd::cout tags 
+ * definitions about tags
  *
  * CTag is defined as unsigned long integer, which is easier to store.
  * The value of CTag is defined by the index in PENN_TAG_STRINGS + 1.
- *  
+ *
  *==============================================================*/
 
 // the penn tag set
@@ -29,50 +29,50 @@ const std::string PENN_TAG_STRINGS[] = {
    "-NONE-",
    "-BEGIN-",
    "-END-",
-   "$", "``", "''", 
+   "$", "``", "''",
    "-LRB-", "-RRB-", ",", // note that brackets can sometimes be ( and )
-   ".", ":", "#", 
-   "CC", "CD", "DT", "EX", "FW", 
-   "IN", "JJ", "JJR", "JJS", "LS", 
-   "MD", "NN", "NNP", "NNPS", "NNS", 
-   "PDT", "POS", "PRP", "PRP$", 
-   "RB", "RBR", "RBS", "RP", 
-   "SYM", "TO", "UH", 
-   "VB", "VBD", "VBG", "VBN", "VBP", "VBZ",  
-   "WDT", "WP", "WP$", "WRB" 
+   ".", ":", "#",
+   "CC", "CD", "DT", "EX", "FW",
+   "IN", "JJ", "JJR", "JJS", "LS",
+   "MD", "NN", "NNP", "NNPS", "NNS",
+   "PDT", "POS", "PRP", "PRP$",
+   "RB", "RBR", "RBS", "RP",
+   "SYM", "TO", "UH",
+   "VB", "VBD", "VBG", "VBN", "VBP", "VBZ",
+   "WDT", "WP", "WP$", "WRB"
 };
 
 enum PENN_TAG_CONSTANTS {
-   PENN_TAG_NONE=0, 
+   PENN_TAG_NONE=0,
    PENN_TAG_BEGIN,
    PENN_TAG_END,
-   PENN_TAG_DOLLAR, PENN_TAG_L_QUOTE, PENN_TAG_R_QUOTE, 
-   PENN_TAG_L_BRACKET, PENN_TAG_R_BRACKET, PENN_TAG_COMMA, 
+   PENN_TAG_DOLLAR, PENN_TAG_L_QUOTE, PENN_TAG_R_QUOTE,
+   PENN_TAG_L_BRACKET, PENN_TAG_R_BRACKET, PENN_TAG_COMMA,
    PENN_TAG_PERIOD, PENN_TAG_COLUM, PENN_TAG_SHART,
    PENN_TAG_CC, PENN_TAG_CD, PENN_TAG_DT, PENN_TAG_EX, PENN_TAG_FW,
-   PENN_TAG_IN, PENN_TAG_ADJECTIVE, PENN_TAG_ADJECTIVE_COMPARATIVE, PENN_TAG_ADJECTIVE_SUPERLATIVE, PENN_TAG_LS, 
-   PENN_TAG_MD, PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL, 
+   PENN_TAG_IN, PENN_TAG_ADJECTIVE, PENN_TAG_ADJECTIVE_COMPARATIVE, PENN_TAG_ADJECTIVE_SUPERLATIVE, PENN_TAG_LS,
+   PENN_TAG_MD, PENN_TAG_NOUN, PENN_TAG_NOUN_PROPER, PENN_TAG_NOUN_PROPER_PLURAL, PENN_TAG_NOUN_PLURAL,
    PENN_TAG_PDT, PENN_TAG_POS, PENN_TAG_PRP, PENN_TAG_PRP_DOLLAR,
    PENN_TAG_ADVERB, PENN_TAG_ADVERB_COMPARATIVE, PENN_TAG_ADVERB_SUPERLATIVE, PENN_TAG_RP,
-   PENN_TAG_SYM, PENN_TAG_TO, PENN_TAG_UH, 
+   PENN_TAG_SYM, PENN_TAG_TO, PENN_TAG_UH,
    PENN_TAG_VERB, PENN_TAG_VERB_PAST, PENN_TAG_VERB_PROG, PENN_TAG_VERB_PAST_PARTICIPATE, PENN_TAG_VERB_PRES, PENN_TAG_VERB_THIRD_SINGLE,
-   PENN_TAG_WDT, PENN_TAG_WP, PENN_TAG_WP_DOLLAR, PENN_TAG_WRB, 
+   PENN_TAG_WDT, PENN_TAG_WP, PENN_TAG_WP_DOLLAR, PENN_TAG_WRB,
    PENN_TAG_COUNT
 };
 
 const bool PENN_TAG_CLOSED[] = {
-   false, 
+   false,
    true,
    true,
-   true, true, true, 
-   true, true, true, 
+   true, true, true,
+   true, true, true,
    true, true, true,
    true, false, true, true, false,
-   true, false, false, false, false, 
-   true, false, false, false, false, 
+   true, false, false, false, false,
+   true, false, false, false, false,
    true, true, true, true,
    false, false, false, false,
-   false, true, false, 
+   false, true, false,
    false, false, false, false, false, false,
    true, true, true, true
 };

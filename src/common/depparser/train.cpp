@@ -24,7 +24,7 @@ using namespace TARGET_LANGUAGE;
 
 void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile, const bool &bRules, const std::string &sSuperPath, const bool &bCoNLL, const bool &bExtract, const std::string &sMetaPath) {
 
-   std::cout << "Training iteration is started..." << std::endl ; std::cout.flush();
+   std::cerr << "Training iteration is started..." << std::endl ; std::cerr.flush();
 
    CDepParser parser(sFeatureFile, true, bCoNLL);
    parser.setRules(bRules);
@@ -94,7 +94,7 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
       delete is_supertags;
    }
 
-   std::cout << "Done. " << std::endl;
+   std::cerr << "Done. " << std::endl;
 
 }
 
@@ -108,11 +108,11 @@ int main(int argc, char* argv[]) {
 
 //TODO This is temporary! Allow user to enter their own lexicons.
 #ifdef JOINT_MORPH
-	std::cout << "Loading lexicons...\n";
+	std::cerr << "Loading lexicons...\n";
 	bool bSuccess = TARGET_LANGUAGE::initLexicon("/home/cgomezr/en/train.conll",true);
-	std::cout << "Successfully loaded primary lexicon? " << bSuccess << "\n";
+	std::cerr << "Successfully loaded primary lexicon? " << bSuccess << "\n";
 	bSuccess = english::initLemmaLexicon("/home/cgomezr/multext-lexicons/en/wordform-improved.txt");
-	std::cout << "Successfully loaded the lemma lexicon? " << bSuccess << "\n";
+	std::cerr << "Successfully loaded the lemma lexicon? " << bSuccess << "\n";
 #endif
 
    try {
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
 
       int training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
-         std::cerr << "Error: the number of training iterations must be an integer." << std::endl;
+         std::cout << "Error: the number of training iterations must be an integer." << std::endl;
          return 1;
       }
 

@@ -28,8 +28,8 @@ public:
       m_nNextWord = item.m_nNextWord;
       m_nLinkScore = item.m_nLinkScore;
       for ( int i=0; i<=m_nNextWord; ++i ){ // only copy active word (including m_nNext)
-         m_lHeads[i] = item.m_lHeads[i];  
-         m_lDepsL[i] = item.m_lDepsL[i]; 
+         m_lHeads[i] = item.m_lHeads[i];
+         m_lDepsL[i] = item.m_lDepsL[i];
          m_lDepsR[i] = item.m_lDepsR[i];
          m_lSibling[i] = item.m_lSibling[i];
       }
@@ -43,8 +43,8 @@ public:
    inline int sibling( const unsigned long int &index ) const { assert(index<=m_nNextWord); return m_lSibling[index]; }
    inline int size( ) const { return m_nNextWord ; }
 
-   inline int leftarity( const int &index ) const { 
-      assert(index<=m_nNextWord); 
+   inline int leftarity( const int &index ) const {
+      assert(index<=m_nNextWord);
       static int retval;
       retval = 0;
       static int dep;
@@ -53,10 +53,10 @@ public:
          retval++;
          dep = sibling( dep );
       }
-      return retval; 
+      return retval;
    }
-   inline int rightarity( const int &index ) const { 
-      assert(index<=m_nNextWord); 
+   inline int rightarity( const int &index ) const {
+      assert(index<=m_nNextWord);
       static int retval;
       retval = 0;
       static int dep;
@@ -65,17 +65,17 @@ public:
          retval++;
          dep = sibling( dep );
       }
-      return retval; 
+      return retval;
    }
 
    inline SCORE_TYPE &score() { return m_nLinkScore; }
    inline SCORE_TYPE const_score() const { return m_nLinkScore; }
 
 public:
-   void clear() { 
-      m_nNextWord = -1; 
+   void clear() {
+      m_nNextWord = -1;
       Move();
-      m_nLinkScore = 0; 
+      m_nLinkScore = 0;
    }
 
    void addLink( const int &head, const int &dep ) {
@@ -104,11 +104,11 @@ public:
          // if head on the right of current
          if ( m_lHeads[retval]>retval ) {
             // if it is the leaf node then return its left
-            if ( m_lDepsL[retval] == DEPENDENCY_LINK_NO_HEAD ) 
+            if ( m_lDepsL[retval] == DEPENDENCY_LINK_NO_HEAD )
                return retval-1;
             // otherwise look for leaf node on the left
             assert(m_lDepsL[retval]<retval);
-            retval = m_lDepsL[retval]; 
+            retval = m_lDepsL[retval];
             assert(m_lHeads[retval]>retval);
             continue;
          }
@@ -117,7 +117,7 @@ public:
             assert(m_lDepsL[retval]==DEPENDENCY_LINK_NO_HEAD||m_lHeads[retval]<m_lDepsL[retval]);
             return m_lHeads[retval];
          }
-      } 
+      }
       THROW("depparser::CStateItem findPreviousLinkPoint: the code should not have reached here");
    }
 
@@ -134,9 +134,9 @@ public:
 public:
    void Move() {
       m_nNextWord ++ ;
-      m_lHeads[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD; 
-      m_lDepsL[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD; 
-      m_lDepsR[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD; 
+      m_lHeads[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
+      m_lDepsL[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
+      m_lDepsR[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD;
       m_lSibling[m_nNextWord] = DEPENDENCY_LINK_NO_HEAD ;
    }
 
@@ -152,9 +152,9 @@ public:
             assert(!bLinked);
          }
          else if (tree[m_nNextWord].head==i) {
-            addLink(i, m_nNextWord); 
+            addLink(i, m_nNextWord);
 #ifdef DEBUG
-            bLinked=true; 
+            bLinked=true;
 #endif
          }
       }
@@ -187,10 +187,10 @@ public:
 
 public:
 
-   void GenerateTree( const CTwoStringVector &input, CDependencyParse &outout ) const {
-      outout.clear();
-      for ( int i=0; i<size(); ++i ) 
-         outout.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] ) ) ;
+   void GenerateTree( const CTwoStringVector &input, CDependencyParse &output ) const {
+      output.clear();
+      for ( int i=0; i<size(); ++i )
+         output.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , m_lHeads[i] ) ) ;
    }
 
 };

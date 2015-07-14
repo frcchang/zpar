@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /***************************************************************
  *
- * The tagger's agenda n chart implementation 
+ * The tagger's agenda n chart implementation
  *
  * Yue Zhang, 2007
  *
@@ -32,16 +32,16 @@ public:
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
    virtual ~CTagger() {}
-   
+
 protected:
    void loadKnowledge(const std::string &sKnowledgePath) {
-      std::cout << "Loading knowledge ... ";
+      std::cerr << "Loading knowledge ... ";
       m_weights->newKnowledge();
       std::ifstream ifs(sKnowledgePath.c_str());
       if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
-      ifs >> (*m_weights->m_Knowledge); 
+      ifs >> (*m_weights->m_Knowledge);
       ifs.close();
-      std::cout << "done." << std::endl;
+      std::cerr << "done." << std::endl;
    }
 
 public:
@@ -56,9 +56,9 @@ public:
 
    tagger::SCORE_TYPE getOrUpdateLocalScore(const CStringVector *tagged, const tagger::CStateItem *item, unsigned long index, tagger::SCORE_TYPE amount=0, unsigned long round=0);
 
-   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
+   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) {
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);
-      m_weights->saveScores(); 
+      m_weights->saveScores();
    }
 };
 

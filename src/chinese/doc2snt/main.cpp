@@ -48,16 +48,16 @@ int main(int argc, char* argv[]) {
 
       // check arguments
       if (options.args.size() > 3) {
-         std::cout << "Usage: " << argv[0] << " input_file outout_file" << std::endl;
+         std::cout << "Usage: " << argv[0] << " input_file output_file" << std::endl;
          std::cout << configurations.message();
          return 1;
       }
       configurations.loadConfigurations(options.opts);
-   
+
       unsigned long nMaxSentSize;
       std::string s = configurations.getConfiguration("m");
       if (!fromString(nMaxSentSize, s)) {
-         std::cerr << "Error: the maximum sentence size must be an integer." << std::endl;
+         std::cout << "Error: the maximum sentence size must be an integer." << std::endl;
          exit(1);
       }
       std::string sInputFile = options.args.size()>1 ? options.args[1] : "";

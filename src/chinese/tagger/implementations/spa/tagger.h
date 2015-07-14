@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /***************************************************************
  *
- * The tagger's agenda n chart implementation 
+ * The tagger's agenda n chart implementation
  *
  * Yue Zhang, 2007
  *
@@ -40,7 +40,7 @@ public:
          append(last_character+1, gold.getTag(size()).code());
          return;
       }
-//      else { 
+//      else {
 //         const unsigned &last_character = getWordEnd(size()-1);
 //         const unsigned &gold_last = gold.getWordEnd(size()-1);
 //         assert(last_character<gold_last);
@@ -300,21 +300,21 @@ public:
 	   if(m_delta_word) delete m_delta_word;
 	   if(m_delta_tag) delete m_delta_tag;
    }
-   
+
 protected:
    void loadKnowledge(const std::string &sKnowledgePath) {
-      std::cout << "Knowledge is provided but not used." << std::endl;
+      std::cerr << "Knowledge is provided but not used." << std::endl;
 //      std::cout << "Loading knowledge ... ";
 //      m_weights->newKnowledge();
 //      std::ifstream ifs(sKnowledgePath.c_str());
 //      if (!ifs) THROW("Knowledge file " << sKnowledgePath << " is not accessible.");
-//      ifs >> (*m_weights->m_Knowledge); 
+//      ifs >> (*m_weights->m_Knowledge);
 //      ifs.close();
 //      std::cout << "done." << std::endl;
    }
    inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
-      return ( m_weights->m_mapWordFrequency.find( word, 0 ) < 
-                  m_weights->m_nMaxWordFrequency/5000+5 && 
+      return ( m_weights->m_mapWordFrequency.find( word, 0 ) <
+                  m_weights->m_nMaxWordFrequency/5000+5 &&
                PENN_TAG_CLOSED[ tag ] == false  ) ||
              m_weights->m_mapTagDictionary.lookup( word, tag );
    }
@@ -322,12 +322,12 @@ protected:
       if (PENN_TAG_CLOSED[ tag ] || tag == PENN_TAG_CD ) {
          static int tmp_i;
          // if the first character doesn't match, don't search
-         if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index, &sentence ), tag ) == false) 
+         if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index, &sentence ), tag ) == false)
             return false;
          // if it matches, search from the next characters
          if ( tag == PENN_TAG_CD ) return true; // don't search for CD assume correct
          for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
-            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, std::min(index+tmp_i, static_cast<unsigned long>(sentence.size())-1), &sentence ), tag ) ) 
+            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, std::min(index+tmp_i, static_cast<unsigned long>(sentence.size())-1), &sentence ), tag ) )
                return true;
          }
          return false;
@@ -344,9 +344,9 @@ public:
    virtual bool train(const CStringVector *sentence, const CTwoStringVector *correct);
    virtual void tag(const CStringVector *sentence, CTwoStringVector *retval, double *out_scores=NULL, unsigned long nBest=1, const CBitArray *prunes=NULL);
 
-   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
+   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) {
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);
-      m_weights->saveScores(); 
+      m_weights->saveScores();
    }
 
 public:

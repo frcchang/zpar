@@ -73,14 +73,14 @@ using namespace chinese::tagger;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
-   std::cout << "Loading scores ..."; std::cout.flush();
+   std::cerr << "Loading scores ..."; std::cerr.flush();
    clock_t time_start = clock();
    std::string st;
    std::ifstream is(m_sFeatureDB.c_str());
    std::istringstream iss;
 
    if (!is.is_open()) {
-      std::cout << " empty." << std::endl; return;
+      std::cerr << " empty." << std::endl; return;
    }
    // load feature weights
    iterate_templates(is>>,;);
@@ -141,7 +141,7 @@ void CWeight::loadScores() {
       ASSERT(ts=="All", "Maximum word size record failed loading.");
    }
 
-   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
+   std::cerr << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -151,7 +151,7 @@ void CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
-   std::cout << "Saving scores ..."; std::cout.flush();
+   std::cerr << "Saving scores ..."; std::cerr.flush();
 
    std::ofstream os(m_sFeatureDB.c_str());
    ASSERT(os.is_open(), "Can't open "<<m_sFeatureDB<<" for saving model.");
@@ -182,7 +182,7 @@ void CWeight::saveScores() {
    for (int i=0; i<CTag::COUNT; ++i)
       os << CTag(i).str() << "\t" << m_maxLengthByTag[i] << std::endl;
    os << "All\t" << m_maxLengthByTag[CTag::COUNT] << std::endl;
-   std::cout << " done." << std::endl;
+   std::cerr << " done." << std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -192,9 +192,9 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(unsigned long round) {
-   std::cout << "Comuting averaged feature vector ..."; std::cout.flush();
+   std::cerr << "Comuting averaged feature vector ..."; std::cerr.flush();
    iterate_templates(,.computeAverage(round););
-   std::cout << " done." << std::endl;
+   std::cerr << " done." << std::endl;
 }
 
 

@@ -25,9 +25,9 @@ protected:
 public:
    CRule(const std::vector< CTaggedWord<CTag, TAG_SEPARATOR> >*sent) : m_mapBinaryRules(0), m_mapUnaryRules(0), m_LexConstituents(0), m_sent(sent) {}
    virtual ~CRule() {
-      if (m_mapBinaryRules) 
-         delete m_mapBinaryRules; 
-      if (m_mapUnaryRules) 
+      if (m_mapBinaryRules)
+         delete m_mapBinaryRules;
+      if (m_mapUnaryRules)
          delete m_mapUnaryRules;
    }
 
@@ -46,12 +46,12 @@ public:
          return;
       }
       // finish parsing
-      if (item.IsComplete(length)) { 
+      if (item.IsComplete(length)) {
          action.encodeReduceRoot();
          actions.push_back(action);
       }
       // shift
-      if ( item.current_word < length ) { 
+      if ( item.current_word < length ) {
          // do not shift for head right tmp item
 #ifndef NO_TEMP_CONSTITUENT
          if (stack_size>0 && item.node.temp && item.node.head_left()==false) {
@@ -73,7 +73,7 @@ public:
          getBinaryRules(item, actions);
       }
       // reduce unary
-      if ( stack_size && item.unaryreduces()<UNARY_MOVES 
+      if ( stack_size && item.unaryreduces()<UNARY_MOVES
 #ifndef NO_TEMP_CONSTITUENT
            && !item.node.temp
 #endif
@@ -133,7 +133,7 @@ protected:
                      ( !(prev_temp) || (!temporary||head_left) ) &&
                      ( !left.temp || (head_left&&constituent==left.constituent.extractConstituentCode()) ) &&
                      ( !right.temp || (!head_left&&constituent==right.constituent.extractConstituentCode()) ) //&&
-//                     ( !temporary || CConstituent::canBeTemporary(constituent) ) 
+//                     ( !temporary || CConstituent::canBeTemporary(constituent) )
                  ) {
 #endif
                         action.encodeReduce(constituent, false, head_left, temporary);
@@ -163,7 +163,7 @@ protected:
       static CAction action;
       const unsigned stack_size = item.stacksize();
       for (unsigned long constituent=CConstituent::FIRST; constituent<CConstituent::COUNT; ++constituent){
-         if (constituent != child.constituent.code()) { 
+         if (constituent != child.constituent.code()) {
             action.encodeReduce(constituent, true, false, false);
             actions.push_back(action);
          }
@@ -206,7 +206,7 @@ public:
    }
 
    void saveRules(std::ofstream &os) {
-      ASSERT(os.is_open(), "Cannot save rules possibly because the outout file is not accessible.");
+      ASSERT(os.is_open(), "Cannot save rules possibly because the output file is not accessible.");
       if (m_mapBinaryRules) {
          os << "Binary rules" << std::endl;
          os << (*m_mapBinaryRules);

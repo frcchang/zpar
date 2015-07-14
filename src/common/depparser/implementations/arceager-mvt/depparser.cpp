@@ -26,13 +26,13 @@ const CTag g_noneTag = CTag::NONE;
 
 /*===============================================================
  *
- * CDepParser - the depparser for TARGET_LANGUAGE 
+ * CDepParser - the depparser for TARGET_LANGUAGE
  *
  *==============================================================*/
 
 /*---------------------------------------------------------------
- * 
- * getOrUpdateStackScore - manipulate the score from stack 
+ *
+ * getOrUpdateStackScore - manipulate the score from stack
  *
  *---------------------------------------------------------------*/
 
@@ -224,33 +224,33 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
 
    // s0 and n0
    if (st_index != -1) {
-      cast_weights->m_mapSTwtN0wt.getOrUpdateScore( retval, st_word_tag_n0_word_tag, action, m_nScoreIndex, amount, round ); 
+      cast_weights->m_mapSTwtN0wt.getOrUpdateScore( retval, st_word_tag_n0_word_tag, action, m_nScoreIndex, amount, round );
       refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &st_tag);
-      cast_weights->m_mapSTwtN0w.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTwtN0w.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(word_word_tag, &st_word, &n0_word, &n0_tag);
-      cast_weights->m_mapSTwN0wt.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTwN0wt.getOrUpdateScore( retval, word_word_tag, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(word_tag_tag, &st_word, &st_tag, &n0_tag);
-      cast_weights->m_mapSTwtN0t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTwtN0t.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(word_tag_tag, &n0_word, &st_tag, &n0_tag);
       cast_weights->m_mapSTtN0wt.getOrUpdateScore( retval, word_tag_tag, action, m_nScoreIndex, amount, round ) ;
-      cast_weights->m_mapSTwN0w.getOrUpdateScore( retval, st_word_n0_word, action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTwN0w.getOrUpdateScore( retval, st_word_n0_word, action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ;
    }
 
    if (st_index != -1 && n0_index != -1) {
-      cast_weights->m_mapN0tN1t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(n0_tag,n1_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapN0tN0LDtN0L2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n0ld_tag,n0l2d_tag)), action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapN0tN1t.getOrUpdateScore( retval, CTagSet<CTag, 2>(encodeTags(n0_tag,n1_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapN0tN0LDtN0L2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(n0_tag,n0ld_tag,n0l2d_tag)), action, m_nScoreIndex, amount, round ) ;
    }
    if (st_index!=-1) {
-      cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTHHtSTHtSTt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sthh_tag, sth_tag,st_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTLDtSTL2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,stl2d_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ; 
-      cast_weights->m_mapSTtSTRDtSTR2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,str2d_tag)), action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTHHtSTHtSTt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(sthh_tag, sth_tag,st_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTtSTLDtSTL2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,stl2d_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)), action, m_nScoreIndex, amount, round ) ;
+      cast_weights->m_mapSTtSTRDtSTR2Dt.getOrUpdateScore( retval, CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,str2d_tag)), action, m_nScoreIndex, amount, round ) ;
    }
 
    // distance
@@ -264,9 +264,9 @@ inline void CDepParser::getOrUpdateStackScore( const CStateItem *item, CPackedSc
       refer_or_allocate_tuple2(tag_int, &n0_tag, &st_n0_dist);
       cast_weights->m_mapN0td.getOrUpdateScore( retval, tag_int, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(word_word_int, &st_word, &n0_word, &st_n0_dist);
-      cast_weights->m_mapSTwN0wd.getOrUpdateScore( retval, word_word_int, action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTwN0wd.getOrUpdateScore( retval, word_word_int, action, m_nScoreIndex, amount, round ) ;
       refer_or_allocate_tuple3(tag_tag_int, &st_tag, &n0_tag, &st_n0_dist);
-      cast_weights->m_mapSTtN0td.getOrUpdateScore( retval, tag_tag_int, action, m_nScoreIndex, amount, round ) ; 
+      cast_weights->m_mapSTtN0td.getOrUpdateScore( retval, tag_tag_int, action, m_nScoreIndex, amount, round ) ;
    }
 
    // st arity
@@ -369,7 +369,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
 
 /*---------------------------------------------------------------
  *
- * updateScores - update the score std::vector 
+ * updateScores - update the score std::vector
  *
  * This method is different from updateScoreVector in that
  * 1. It is for external call
@@ -385,17 +385,17 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
 /*---------------------------------------------------------------
  *
- * updateScoreForState - update a single positive or negative outout
+ * updateScoreForState - update a single positive or negative output
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::updateScoreForState( const CStateItem &from, const CStateItem *outout , const SCORE_TYPE &amount ) {
+inline void CDepParser::updateScoreForState( const CStateItem &from, const CStateItem *output , const SCORE_TYPE &amount ) {
    static CStateItem item(&m_lCache);
    static unsigned action;
    static CPackedScoreType<SCORE_TYPE, action::MAX> empty;
    item = from;
-   while ( item != *outout ) {
-      action = item.FollowMove( outout );
+   while ( item != *output ) {
+      action = item.FollowMove( output );
       getOrUpdateStackScore( &item, empty, action, amount, m_nTrainingRound );
 #ifdef LABELED
 //      if ( action::getLabel(action) )
@@ -411,23 +411,23 @@ inline void CDepParser::updateScoreForState( const CStateItem &from, const CStat
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
+void CDepParser::updateScoresForStates( const CStateItem *output , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
 
    // do not update those steps where they are correct
    static CStateItem item(&m_lCache);
    static unsigned action, correct_action;
    item.clear();
-   while ( item != *outout ) {
-      action = item.FollowMove( outout );
+   while ( item != *output ) {
+      action = item.FollowMove( output );
       correct_action = item.FollowMove( correct );
       if ( action == correct_action )
          item.Move( action );
       else break;
    }
 
-   // for the necessary information for the correct and outout parsetree
+   // for the necessary information for the correct and output parsetree
    updateScoreForState( item, correct , amount_add ) ;
-   updateScoreForState( item, outout , amount_subtract ) ;
+   updateScoreForState( item, output , amount_subtract ) ;
 
    m_nTotalErrors++;
 }
@@ -442,7 +442,7 @@ inline void CDepParser::reduce( const CStateItem *item, const CPackedScoreType<S
    static action::CScoredAction scoredaction;
    // update stack score
    scoredaction.action = action::REDUCE;
-   scoredaction.score = item->score + scores[scoredaction.action]; 
+   scoredaction.score = item->score + scores[scoredaction.action];
    m_Beam->insertItem(&scoredaction);
 }
 
@@ -521,13 +521,13 @@ inline void CDepParser::poproot( const CStateItem *item, const CPackedScoreType<
    scoredaction.score = item->score + scores[scoredaction.action];
    m_Beam->insertItem(&scoredaction);
 }
-   
+
 
 /*---------------------------------------------------------------
  *
  * work - the working process shared by training and parsing
  *
- * Returns: makes a new instance of CDependencyParse 
+ * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
 
@@ -537,7 +537,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    clock_t total_start_time = clock();
 #endif
    static int index;
-   const int length = sentence.size() ; 
+   const int length = sentence.size() ;
 
    const CStateItem *pGenerator ;
    static CStateItem pCandidate(&m_lCache) ;
@@ -556,7 +556,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    m_lCache.clear();
    for ( index=0; index<length; ++index ) {
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
-      // filter std::cout training examples with rules
+      // filter out training examples with rules
       if (bTrain && m_weights->rules()) {
          // the root
          if ( correct[index].head == DEPENDENCY_LINK_NO_HEAD && canBeRoot(m_lCache[index].tag.code())==false) {
@@ -604,19 +604,19 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 
    // skip the training example if contradicts
    if (bTrain && m_weights->rules() && bContradictsRules) {
-      std::cout << "Skipping training example because it contradicts rules..." <<std::endl;
+      std::cerr << "Skipping training example because it contradicts rules..." <<std::endl;
       return;
    }
 
-   TRACE("Decoding started"); 
+   TRACE("Decoding started");
    // loop with the next word to process in the sentence
    for (index=0; index<length*2; ++index) {
-      
-      if (bTrain) bCorrect = false ; 
+
+      if (bTrain) bCorrect = false ;
 
       // none can this find with pruning ???
       if (m_Agenda->generatorSize() == 0) {
-         WARNING("parsing failed"); 
+         WARNING("parsing failed");
          return;
       }
 
@@ -639,13 +639,13 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                reduce(pGenerator, packed_scores) ;
             }
             else {
-               poproot(pGenerator, packed_scores); 
+               poproot(pGenerator, packed_scores);
             }
          }
          // for the state items that still need more words
-         else {  
-            if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.               
-               if ( 
+         else {
+            if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
+               if (
 #ifndef FRAGMENTED_TREE
                     ( pGenerator->size() < length-1 || pGenerator->stackempty() ) && // keep only one global root
 #endif
@@ -656,13 +656,13 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
                }
             }
             if ( !pGenerator->stackempty() ) {
-               if ( 
+               if (
 #ifndef FRAGMENTED_TREE
                     ( pGenerator->size() < length-1 || pGenerator->headstacksize() == 1 ) && // one root
 #endif
                     ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
                     ( !m_weights->rules() || hasLeftHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
-                  ) { 
+                  ) {
                   arcright(pGenerator, packed_scores) ;
                }
             }
@@ -701,7 +701,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 #ifdef EARLY_UPDATE
          if (!bCorrect) {
             TRACE("Error at the "<<correctState.size()<<"th word; total is "<<correct.size())
-            updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
+            updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ;
 #ifndef LOCAL_LEARNING
             return ;
 #else
@@ -721,8 +721,8 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
 #ifdef LOCAL_LEARNING
          ++m_nTrainingRound; // each training round is one transition-action
 #endif
-      } 
-      
+      }
+
       m_Agenda->nextRound(); // move round
    }
 
@@ -731,17 +731,17 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
       // then make sure that the correct item is stack top finally
       if ( *(m_Agenda->bestGenerator()) != correctState ) {
          TRACE("The best item is not the correct one")
-         updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
+         updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ;
          return ;
       }
-   } 
+   }
 
    TRACE("Outputing sentence");
    m_Agenda->sortGenerators();
    for (int i=0; i<std::min(m_Agenda->generatorSize(), nBest); ++i) {
-      pGenerator = m_Agenda->generator(i) ; 
+      pGenerator = m_Agenda->generator(i) ;
       if (pGenerator) {
-         pGenerator->GenerateTree( sentence , retval[i] ) ; 
+         pGenerator->GenerateTree( sentence , retval[i] ) ;
          if (scores) scores[i] = pGenerator->score;
       }
    }
@@ -753,7 +753,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
  *
  * parse - do dependency parsing to a sentence
  *
- * Returns: makes a new instance of CDependencyParse 
+ * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
 
@@ -764,7 +764,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
    assert( !m_bCoNLL );
 
    for (int i=0; i<nBest; ++i) {
-      // clear the outout sentences
+      // clear the output sentences
       retval[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score;
    }
@@ -782,7 +782,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CDependencyParse outout ; 
+   static CDependencyParse output ;
 
    assert( !m_bCoNLL );
 #ifndef FRAGMENTED_TREE
@@ -795,7 +795,7 @@ void CDepParser::train( const CDependencyParse &correct , int round ) {
    ++m_nTrainingRound;
    ASSERT(m_nTrainingRound == round, "Training round error") ;
 #endif
-   work( true , sentence , &outout , correct , 1 , 0 ) ; 
+   work( true , sentence , &output , correct , 1 , 0 ) ;
 
 };
 
@@ -867,7 +867,7 @@ void CDepParser::initCoNLLCache( const CCoNLLInputOrOutput &sentence ) {
  *
  * parse_conll - do dependency parsing to a sentence
  *
- * Returns: makes a new instance of CDependencyParse 
+ * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
 
@@ -875,7 +875,7 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
 
    static CDependencyParse empty ;
    static CTwoStringVector input ;
-   static CDependencyParse outout[AGENDA_SIZE] ;
+   static CDependencyParse output[AGENDA_SIZE] ;
 
    assert( m_bCoNLL ) ;
 
@@ -884,18 +884,18 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
    sentence.toTwoStringVector(input);
 
    for (int i=0; i<nBest; ++i) {
-      // clear the outout sentences
+      // clear the output sentences
       retval[i].clear();
-      outout[i].clear();
+      output[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score;
    }
 
-   work(false, input, outout, empty, nBest, scores ) ;
+   work(false, input, output, empty, nBest, scores ) ;
 
    for (int i=0; i<std::min(nBest, m_Agenda->generatorSize()); ++i) {
-      // now make the conll format stype outout
+      // now make the conll format stype output
       retval[i].fromCoNLLInput(sentence);
-      retval[i].copyDependencyHeads(outout[i]);
+      retval[i].copyDependencyHeads(output[i]);
    }
 
 }
@@ -909,7 +909,7 @@ void CDepParser::parse_conll( const CCoNLLInput &sentence , CCoNLLOutput *retval
 void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CDependencyParse outout ; 
+   static CDependencyParse output ;
    static CDependencyParse reference ;
 
    assert( m_bCoNLL ) ;
@@ -926,7 +926,7 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-   work( true , sentence , &outout , reference , 1 , 0 ) ; 
+   work( true , sentence , &output , reference , 1 , 0 ) ;
 
 }
 

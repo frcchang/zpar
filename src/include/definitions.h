@@ -17,8 +17,8 @@
 
 /*===============================================================
  *
- * The things that should be included 
- *  
+ * The things that should be included
+ *
  *==============================================================*/
 
 #include <cstdlib>                              // define NULL
@@ -43,7 +43,7 @@
 /*===============================================================
  *
  * debugging utilities
- *  
+ *
  *==============================================================*/
 
 // throw
@@ -57,12 +57,12 @@
 #define WARNING(x) { std::cerr << "Warning:" << " " << x << std::endl; std::cerr.flush(); }
 
 // trace tool
-#ifdef DEBUG 
-#define TRACE(x) { std::cout << x << std::endl; std::cout.flush(); }
-#define TRACE_WORD(x) { std::cout << x; std::cout.flush(); }
-#define TRACE_IF(x, y) { if (x) { std::cout << y << std::endl; std::cout.flush(); } }
+#ifdef DEBUG
+#define TRACE(x) { std::cerr << x << std::endl; std::cerr.flush(); }
+#define TRACE_WORD(x) { std::cerr << x; std::cerr.flush(); }
+#define TRACE_IF(x, y) { if (x) { std::cerr << y << std::endl; std::cerr.flush(); } }
 #else
-#define TRACE(x) 
+#define TRACE(x)
 #define TRACE_WORD(x)
 #define TRACE_IF(x, y)
 #endif
@@ -71,13 +71,13 @@
 #ifdef DEBUG
 #define WHEN_DEBUGGING(x) x
 #else
-#define WHEN_DEBUGGING(x) 
+#define WHEN_DEBUGGING(x)
 #endif
 
 /*===============================================================
  *
- * definitions abstd::cout sentence structures 
- *  
+ * definitions about sentence structures
+ *
  *==============================================================*/
 
 #include "linguistics/sentence_string.h"

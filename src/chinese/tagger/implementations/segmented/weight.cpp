@@ -34,7 +34,7 @@ using namespace chinese::tagger;
    left(m_mapTagBySeparateChars)right \
    left(m_mapTaggedCharByFirstChar)right \
    left(m_mapTaggedCharByLastChar)right \
-   left(m_mapTagByFirstCharCat)right 
+   left(m_mapTagByFirstCharCat)right
 
 /*---------------------------------------------------------------
  *
@@ -44,14 +44,14 @@ using namespace chinese::tagger;
  *--------------------------------------------------------------*/
 
 void CWeight::loadScores() {
-   std::cout << "Loading scores...";
+   std::cerr << "Loading scores...";
    clock_t time_start = clock();
    std::string st;
    std::ifstream is(m_sFeatureDB.c_str());
    std::istringstream iss;
 
    if (!is.is_open()) {
-      std::cout << " empty." << std::endl; return;
+      std::cerr << " empty." << std::endl; return;
    }
    // load feature weights
    iterate_templates(is>>,;);
@@ -72,7 +72,7 @@ void CWeight::loadScores() {
    iss.str(st);
    iss >> m_nMaxWordFrequency;
 
-   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
+   std::cerr << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -82,7 +82,7 @@ void CWeight::loadScores() {
  *--------------------------------------------------------------*/
 
 void CWeight::saveScores() {
-   std::cout << "Saving scores...";
+   std::cerr << "Saving scores...";
    std::ofstream os(m_sFeatureDB.c_str());
    assert(os.is_open());
    iterate_templates(os<<,;);
@@ -94,7 +94,7 @@ void CWeight::saveScores() {
    os << m_mapWordFrequency;
    os << "Maximum frequency" << std::endl;
    os << m_nMaxWordFrequency << std::endl;
-   std::cout << " done." << std::endl;
+   std::cerr << " done." << std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -104,9 +104,9 @@ void CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void CWeight::computeAverageFeatureWeights(const unsigned long round) {
-   std::cout << ("Adding total feature vector... ");
+   std::cerr << ("Adding total feature vector... ");
    iterate_templates(,.computeAverage(round););
-   std::cout <<("Done") << std::endl;
+   std::cerr <<("Done") << std::endl;
 }
 
 

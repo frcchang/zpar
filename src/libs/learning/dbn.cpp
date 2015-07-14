@@ -526,7 +526,7 @@ void DBN::train(const std::string &path)
     N=training_data.size();
     int vsize=training_data[0].size();
     double ***training_v=new double **[N];
-    for(int i=0;i<N;i++){ 
+    for(int i=0;i<N;i++){
      training_v[i]=new double *[vsize];
     	for(int j=0;j<vsize;j++) training_v[i][j]=new double[2];
     }
@@ -553,16 +553,16 @@ void DBN::pretrain(double ***input,double lr,int iterations,int N)
                 {   //for(t=0; t<n_inputs; t++)
 		    temp=rbm_layers[l].v_samples;
                     rbm_layers[l].v_samples = input[k];
-		    	
+
                 }
                 else
-                {   
+                {
                     rbm_layers[l-1].sample_h_given_v(0);
-		    rbm_layers[l-1].v_samples=temp;	
+		    rbm_layers[l-1].v_samples=temp;
                     //for(t=0; t<vsize; t++)
 		    temp=rbm_layers[l].v_samples;
                     rbm_layers[l].v_samples = rbm_layers[l-1].h_samples;
-		    	
+
                 }
 
                 }
@@ -632,7 +632,7 @@ void DBN::logistic_regression_train(double lr,int index,int N)
 void DBN::forward_propagation(double *x)
 {
    assert (n_layers);
-   for(int j=0; j<rbm_layers[0].getvsize(); j++)  
+   for(int j=0; j<rbm_layers[0].getvsize(); j++)
       rbm_layers[0].v_samples[j][0] = x[j];
    forward_propagation();
 }

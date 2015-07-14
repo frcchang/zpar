@@ -41,15 +41,15 @@ int CFeatureHandle::getGlobalScore(const CStringVector* sentence, const CStateIt
  *
  * getLocalScore - get the local score for a word in sentence
  *
- * When bigram is needed from the beginning of sentence, the empty word are used. 
+ * When bigram is needed from the beginning of sentence, the empty word are used.
  *
- * This implies that empty words should not be used in other 
- * situations. 
+ * This implies that empty words should not be used in other
+ * situations.
  *
  *--------------------------------------------------------------*/
 
 int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateItem* item, int index){
-   static int nReturn; 
+   static int nReturn;
    static int score_index;
    static int tmp_i, tmp_j;
    static int length, last_length, word_length;
@@ -57,17 +57,17 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
    score_index = m_bTrain ? CScore<SCORE_TYPE>::eNonAverage : CScore<SCORE_TYPE>::eAverage ;
    start = item->getWordStart(index);
    end = item->getWordEnd(index);
-   length = item->getWordLength(index); 
+   length = item->getWordLength(index);
    last_start = index>0 ? item->getWordStart(index-1) : 0; // make sure that this is only used when index>0
    last_end = index>0 ? item->getWordEnd(index-1) : 0; // make sure that this is only used when index>0
    last_length = index>0 ? item->getWordLength(index-1) : 0;  // similar to the above
-   word_length = length ; 
-   // abstd::cout the words
-   const CWord &word=m_parent->findWordFromCache(start, length, sentence); 
-   const CWord &last_word = index>0 ? m_parent->findWordFromCache(last_start, last_length, sentence) : g_emptyWord; // use empty word for sentence beginners. 
+   word_length = length ;
+   // about the words
+   const CWord &word=m_parent->findWordFromCache(start, length, sentence);
+   const CWord &last_word = index>0 ? m_parent->findWordFromCache(last_start, last_length, sentence) : g_emptyWord; // use empty word for sentence beginners.
    static CTwoWords two_word;
    two_word.refer(&word, &last_word);
-   // abstd::cout the chars
+   // about the chars
    const CWord &first_char=m_parent->findWordFromCache(start, 1, sentence);
    const CWord &last_char=m_parent->findWordFromCache(end, 1, sentence);
    const CWord &first_char_last_word = index>0 ? m_parent->findWordFromCache(last_start, 1, sentence) : g_emptyWord;
@@ -81,32 +81,32 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
       firstcharlastword_word.refer(&first_char_last_word, &first_char);
       lastword_lastchar.refer(&last_char_last_word, &last_char);
    }
-   // abstd::cout the length
+   // about the length
    if(length>LENGTH_MAX-1)length=LENGTH_MAX-1;
    if(last_length>LENGTH_MAX-1)last_length=LENGTH_MAX-1;
    //
    // adding scores with features
    //
-   nReturn = m_weights.m_mapSeenWords.getScore(word, score_index); 
+   nReturn = m_weights.m_mapSeenWords.getScore(word, score_index);
    nReturn += m_weights.m_mapLastWordByWord.getScore(two_word, score_index);
-   if (length==1) 
+   if (length==1)
       nReturn += m_weights.m_mapOneCharWord.getScore(word, score_index);
    else {
       nReturn += m_weights.m_mapFirstAndLastChars.getScore(first_and_last_char, score_index);
-      for (int j=0; j<word_length-1; j++) 
+      for (int j=0; j<word_length-1; j++)
          nReturn += m_weights.m_mapConsecutiveChars.getScore(m_parent->findWordFromCache(start+j, 2, sentence), score_index);
 
       nReturn += m_weights.m_mapLengthByFirstChar.getScore(std::make_pair(first_char, length), score_index);
       nReturn += m_weights.m_mapLengthByLastChar.getScore(std::make_pair(last_char, length), score_index);
    }
    if (index>0) {
-      nReturn += m_weights.m_mapSeparateChars.getScore(two_char, score_index); 
-      
+      nReturn += m_weights.m_mapSeparateChars.getScore(two_char, score_index);
+
       nReturn += m_weights.m_mapLastWordFirstChar.getScore(lastword_firstchar, score_index);
       nReturn += m_weights.m_mapCurrentWordLastChar.getScore(currentword_lastchar, score_index);
       nReturn += m_weights.m_mapFirstCharLastWordByWord.getScore(firstcharlastword_word, score_index);
       nReturn += m_weights.m_mapLastWordByLastChar.getScore(lastword_lastchar, score_index);
-      
+
       nReturn += m_weights.m_mapLengthByLastWord.getScore(std::make_pair(last_word, length), score_index);
       nReturn += m_weights.m_mapLastLengthByWord.getScore(std::make_pair(word, last_length), score_index);
    }
@@ -119,16 +119,16 @@ int CFeatureHandle::getLocalScore(const CStringVector* sentence, const CStateIte
  * updateScoreVector - update the score std::vector by input
  *                     this is used in training to adjust params
  *
- * Inputs: the outout and the correct examples
+ * Inputs: the output and the correct examples
  *
  * Affects: m_bScoreModified, which leads to saveScores on destructor
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateScoreVector(const CStringVector* outout, const CStringVector* correct, int round) {
-   if ( *outout == *correct ) return;
-   for (int i=0; i<outout->size(); ++i)
-      updateLocalFeatureVector(eSubtract, outout, i, round);
+void CFeatureHandle::updateScoreVector(const CStringVector* output, const CStringVector* correct, int round) {
+   if ( *output == *correct ) return;
+   for (int i=0; i<output->size(); ++i)
+      updateLocalFeatureVector(eSubtract, output, i, round);
    for (int j=0; j<correct->size(); ++j)
       updateLocalFeatureVector(eAdd, correct, j, round);
    m_bScoreModified = true;
@@ -138,24 +138,24 @@ void CFeatureHandle::updateScoreVector(const CStringVector* outout, const CStrin
  *
  * updateLocalFeatureVector - update the given feature vector with
  *                            the local feature vector for a given
- *                            sentence. This is a private member only 
+ *                            sentence. This is a private member only
  *                            used by updateGlobalFeatureVector and is
- *                            only used for training. 
+ *                            only used for training.
  *
  *--------------------------------------------------------------*/
 
-void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* outout, int index, int round) { 
-   // abstd::cout words              
-   CWord word = outout->at(index);
-   CWord last_word = index>0 ? outout->at(index-1) : g_emptyWord;
+void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CStringVector* output, int index, int round) {
+   // about words
+   CWord word = output->at(index);
+   CWord last_word = index>0 ? output->at(index-1) : g_emptyWord;
    CTwoWords two_word;
    two_word.allocate(word.str(), last_word.str());
    CStringVector chars;
    chars.clear(); getCharactersFromUTF8String(word.str(), &chars);
-   // abstd::cout length
+   // about length
    int length = getUTF8StringLength(word.str()); if (length > LENGTH_MAX-1) length = LENGTH_MAX-1;
    int last_length = getUTF8StringLength(last_word.str()); if (last_length > LENGTH_MAX-1) last_length = LENGTH_MAX-1;
-   // abstd::cout chars  
+   // about chars
    CWord first_char = getFirstCharFromUTF8String(word.str());
    CWord last_char = getLastCharFromUTF8String(word.str());
    CWord first_char_last_word = index>0 ? getFirstCharFromUTF8String(last_word.str()) : g_emptyWord;
@@ -169,7 +169,7 @@ void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CString
       firstcharlastword_word.allocate(first_char_last_word.str(), first_char.str());
       lastword_lastchar.allocate(last_char_last_word.str(), last_char.str());
    }
-   
+
    SCORE_TYPE amount = ( (method==eAdd) ? 1 : -1 ) ;
 
    m_weights.m_mapSeenWords.updateScore(word, amount, round);
@@ -182,13 +182,13 @@ void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CString
       }
       m_weights.m_mapLengthByFirstChar.updateScore(std::make_pair(first_char, length), amount, round);
       m_weights.m_mapLengthByLastChar.updateScore(std::make_pair(last_char, length), amount, round);
-   } 
+   }
    if (index>0) {
       m_weights.m_mapSeparateChars.updateScore(two_char, amount, round);
-      
+
       m_weights.m_mapLastWordFirstChar.updateScore(lastword_firstchar, amount, round);
       m_weights.m_mapCurrentWordLastChar.updateScore(currentword_lastchar, amount, round);
-      
+
       m_weights.m_mapFirstCharLastWordByWord.updateScore(firstcharlastword_word, amount, round);
       m_weights.m_mapLastWordByLastChar.updateScore(lastword_lastchar, amount, round);
 
@@ -199,7 +199,7 @@ void CFeatureHandle::updateLocalFeatureVector(SCORE_UPDATE method, const CString
 
 /*===============================================================
  *
- * CSegmentor - the segmentor for Chinese 
+ * CSegmentor - the segmentor for Chinese
  *
  *==============================================================*/
 
@@ -243,7 +243,7 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
    //clock_t start_time = clock();
    TRACE("Initialising the segmentation process...");
    vReturn->clear();
-   clearWordCache(); 
+   clearWordCache();
    m_Agenda->clear();
    pCandidate = m_Agenda->candidateItem();      // make the first item
    pCandidate->clear();                         // restore state using clean
@@ -258,16 +258,16 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
       // generate new state itmes for each character
       pGenerator = m_Agenda->generatorStart();
       for (j=0; j<m_Agenda->generatorSize(); ++j) {
-         // 1. generate new items according to each previous item. 
+         // 1. generate new items according to each previous item.
          if (pGenerator->m_nLength>0) k = pGenerator->getWordStart(pGenerator->m_nLength-1);
          // If we only ask 1-best, then we take only the best among those with the last word
-         if ( ( nBest > 1 || pGenerator->m_nLength==0 || doneLastWord[k]<index+1 ) && 
-              rules.canSeparate( index ) 
-            ) {  
+         if ( ( nBest > 1 || pGenerator->m_nLength==0 || doneLastWord[k]<index+1 ) &&
+              rules.canSeparate( index )
+            ) {
             pCandidate = m_Agenda->candidateItem();
             pCandidate->copy(pGenerator);
             pCandidate->append(index);
-            pCandidate->m_nScore += m_Feature->getLocalScore(&sentence, pCandidate, pCandidate->m_nLength-1); 
+            pCandidate->m_nScore += m_Feature->getLocalScore(&sentence, pCandidate, pCandidate->m_nLength-1);
             m_Agenda->pushCandidate();
             if (nBest == 1 && pGenerator->m_nLength>0) doneLastWord[k] = index+1;
          }
@@ -285,14 +285,14 @@ void CSegmentor::segment(const CStringVector* sentence_input, CStringVector *vRe
       }
       m_Agenda->nextRound(); // move round
    }
-   // now generate outout sentence
+   // now generate output sentence
    // n-best list will be stored in array
    // from the addr vReturn
    TRACE("Outputing sentence");
    for (k=0; k<nBest; ++k) {
       // clear
       vReturn[k].clear();
-      if (out_scores!=NULL) 
+      if (out_scores!=NULL)
          out_scores[k] = 0;
       // assign retval
       if (k<m_Agenda->generatorSize()) {

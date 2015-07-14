@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /***************************************************************
  *
- * The tagger's chart implementation 
+ * The tagger's chart implementation
  *
  * Yue Zhang, 2007
  *
@@ -44,7 +44,7 @@ typedef CHashMap< CWord, CBitArray > CWordToBitArrayMap;
 
 class CWeight : public CWeightBase {
 
-public: 
+public:
    unsigned long m_maxLengthByTag[CTag::COUNT+1];
    CWordToBitArrayMap *m_Knowledge;
    std::ofstream *m_dump;
@@ -92,7 +92,7 @@ public:
    CWordIntMap m_mapLengthByLastChar;
    CWordIntMap m_mapLengthByLastWord;
    CWordIntMap m_mapLastLengthByWord;
-   
+
    // feature templates tag
    CWordTagMap m_mapCurrentTag;
    CTagSet2Map m_mapLastTagByTag;
@@ -145,13 +145,13 @@ public:
    CTagDict<CWord, CTag> m_mapCanStart;
 
 public:
-   CWeight(const std::string &sFeatureDB, bool bTrain, bool bFWorCD, int hash_table_size) : 
+   CWeight(const std::string &sFeatureDB, bool bTrain, bool bFWorCD, int hash_table_size) :
             CWeightBase(sFeatureDB, bTrain) ,
             m_dump(0) ,
             m_Knowledge(0) ,
-            m_rules(bFWorCD), 
-            m_bitnone(BIT_CHAR_COUNT), 
-            m_bitunknown(BIT_CHAR_COUNT) , 
+            m_rules(bFWorCD),
+            m_bitnone(BIT_CHAR_COUNT),
+            m_bitunknown(BIT_CHAR_COUNT) ,
             m_emptyWord("") ,
             m_dbn(0), // DBN
             m_bKnowledge(false),
@@ -162,16 +162,16 @@ public:
             m_mapCharTrigram("CharacterTrigram", 65537) ,
             m_mapSeenWords("WordDictionary", 65537) ,
             m_mapLastWordByWord("LastWordByWord", 65537) ,
-            m_mapCurrentWordLastChar("CurrentWordLastChar", 65537) , 
+            m_mapCurrentWordLastChar("CurrentWordLastChar", 65537) ,
             m_mapLastWordFirstChar("LastWordFirstChar", 65537) ,
             m_mapFirstCharLastWordByWord("FirstCharLastWordByWord", 65537) ,
             m_mapLastWordByLastChar("LastWordByLastChar", 65537) ,
-            m_mapSeparateChars("SeparateChars", 65537) , 
-            m_mapConsecutiveChars("ConsecutiveChars", 65537) , 
+            m_mapSeparateChars("SeparateChars", 65537) ,
+            m_mapConsecutiveChars("ConsecutiveChars", 65537) ,
             m_mapFirstAndLastChars("FirstAndLastChars", 65537) ,
             m_mapOneCharWord("OneCharWord", 65537) ,
-            m_mapLengthByFirstChar("LengthByFirstChar", 65537) , 
-            m_mapLengthByLastChar("LengthByLastChar", 65537) , 
+            m_mapLengthByFirstChar("LengthByFirstChar", 65537) ,
+            m_mapLengthByLastChar("LengthByLastChar", 65537) ,
             m_mapLengthByLastWord("LengthByLastWord", 65537) ,
             m_mapLastLengthByWord("LastLengthByWord", 65537) ,
 
@@ -190,18 +190,18 @@ public:
             m_mapTaggedCharByFirstChar("TaggedCharByFirstChar", 65537) ,
             m_mapTaggedCharByLastChar("TaggedCharByLastChar", 65537) ,
             m_mapTagByFirstCharCat("TagByFirstCharCat", 65537) ,
-            m_mapTagByLastCharCat("TagByLastCharCat", 65537) , 
+            m_mapTagByLastCharCat("TagByLastCharCat", 65537) ,
 
-            m_mapSeparateCharCat("SeparateCharCat", 16381) , 
+            m_mapSeparateCharCat("SeparateCharCat", 16381) ,
             m_mapConsecutiveCharCat("ConsecutiveCharCat", 16381) ,
 
             m_mapTagDictionary(CTag::COUNT),
-            m_mapCharTagDictionary(CTag::COUNT), 
-            m_mapCanStart(CTag::COUNT), 
+            m_mapCharTagDictionary(CTag::COUNT),
+            m_mapCanStart(CTag::COUNT),
             m_mapWordFrequency(65537),
 
-            m_mapTaggedSeparateChars("TaggedSeparateChars", 65537) , 
-            m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", 65537), 
+            m_mapTaggedSeparateChars("TaggedSeparateChars", 65537) ,
+            m_mapTaggedConsecutiveChars("TaggedConsecutiveChars", 65537),
 
             m_mapWordTagTag("WordByTheNextTwoTag", 65537),
             m_mapTagWordTag("TagByNextWordSecondNextTag", 65537),
@@ -212,14 +212,14 @@ public:
             m_mapAppCharAndNextChar("AppendedCharAndNextChar", 65537),
             m_mapPartialWord("PartialWord", 65537),
             m_mapPartialLengthByFirstChar("PartialLengthByFirstChar", 65537),
-            m_mapLengthByTagAndFirstChar("LengthByTagAndFirstChar", 65537) , 
-            m_mapLengthByTagAndLastChar("LengthByTagAndLastChar", 65537) , 
+            m_mapLengthByTagAndFirstChar("LengthByTagAndFirstChar", 65537) ,
+            m_mapLengthByTagAndLastChar("LengthByTagAndLastChar", 65537) ,
             m_mapTag0Tag1Size1("Tag0Tag1Size1", 65537),
             m_mapTag1Tag2Size1("Tag1Tag2Size1", 65537),
             m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", 65537),
             m_mapNonLinear("NoneLinear", 65537)
-   { 
-      for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
+   {
+      for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1;
       m_nMaxWordFrequency=0;
       m_bitnone.setsize(BIT_CHAR_COUNT);
       m_bitunknown.setsize(BIT_CHAR_COUNT);
@@ -228,22 +228,22 @@ public:
       loadScores();
    }
 
-   virtual ~CWeight() { 
-      if (m_Knowledge) 
-         delete m_Knowledge; 
+   virtual ~CWeight() {
+      if (m_Knowledge)
+         delete m_Knowledge;
       if (m_dbn)
          delete m_dbn;
    }
 
 public:
-  
+
    void loadScores();
    void saveScores();
    void computeAverageFeatureWeights(unsigned long round);
    void dumpFeature(const std::string &s);
 
    void newKnowledge() {
-      std::cout << "set character knowledge... " << std::endl;
+      std::cerr << "set character knowledge... " << std::endl;
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
       m_Knowledge = new CWordToBitArrayMap(65537);
       (*m_Knowledge)[m_emptyWord] = m_bitnone;

@@ -23,12 +23,12 @@ const CTag g_noneTag = CTag::NONE;
 
 /*===============================================================
  *
- * CDepParser - the depparser for English 
+ * CDepParser - the depparser for English
  *
  *==============================================================*/
 
 /*---------------------------------------------------------------
- * 
+ *
  * getCrossLinkScore - get the score from a single dependency link
  *
  *---------------------------------------------------------------*/
@@ -48,14 +48,14 @@ SCORE_TYPE CDepParser::getCrossLinkScore( const CSpan *span ) {
 }
 
 /*---------------------------------------------------------------
- * 
+ *
  * getCrossLinkScore - get the score from a single dependency link
  *
  *---------------------------------------------------------------*/
 
 SCORE_TYPE CDepParser::getCrossLinkScore( int head_index, int dep_index ) {
 
-   SCORE_TYPE retval = 0 ; 
+   SCORE_TYPE retval = 0 ;
 #include "templates/shared.cpp"
 #include "templates/get.cpp"
 
@@ -82,7 +82,7 @@ SCORE_TYPE CDepParser::getCrossLinkScore( int head_index, int dep_index ) {
 }
 
 /*---------------------------------------------------------------
- * 
+ *
  * updateCrossLinkScore - update the score from a dependency link
  *
  *---------------------------------------------------------------*/
@@ -128,7 +128,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse & parsed) {
    SCORE_TYPE retval=0;
 
    m_lCache.clear();
-   for ( int index=0; index<parsed.size(); index++ ) 
+   for ( int index=0; index<parsed.size(); index++ )
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word , CTag(parsed[index].tag)) );
 
    for ( int i=0; i<parsed.size(); ++i ) {
@@ -150,7 +150,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse & parsed) {
  *---------------------------------------------------------------*/
 
 void CDepParser::updateScoreVector(const CDependencyParse & parsed , const CDependencyParse & correct , int round ) {
-   
+
    static bool bCorrect;
    bCorrect = true;
 
@@ -158,8 +158,8 @@ void CDepParser::updateScoreVector(const CDependencyParse & parsed , const CDepe
 
    for ( int i=0; i<correct.size(); ++i ) {
       if ( parsed[i].head != correct[i].head ) {
-         if ( correct[i].head != DEPENDENCY_LINK_NO_HEAD ) 
-            updateCrossLinkScore( correct[i].head, i, correct, eAdd, round ); 
+         if ( correct[i].head != DEPENDENCY_LINK_NO_HEAD )
+            updateCrossLinkScore( correct[i].head, i, correct, eAdd, round );
          if ( parsed[i].head != DEPENDENCY_LINK_NO_HEAD )
             updateCrossLinkScore( parsed[i].head, i, parsed, eSubtract, round );
          bCorrect = false;
@@ -178,7 +178,7 @@ void CDepParser::updateScoreVector(const CDependencyParse & parsed , const CDepe
 
 /*---------------------------------------------------------------
  *
- * updateScores - update the score std::vector 
+ * updateScores - update the score std::vector
  *
  * This method is different from updateScoreVector in that
  * 1. It is for external call
@@ -189,21 +189,21 @@ void CDepParser::updateScoreVector(const CDependencyParse & parsed , const CDepe
  *---------------------------------------------------------------*/
 
 void CDepParser::updateScores(const CDependencyParse & parsed , const CDependencyParse & correct , int round ) {
-   
+
    assert( m_bTrain );
 
    if ( round > m_nTrainingRound )
       m_nTrainingRound = round ;
 
-   if ( parsed == correct ) 
+   if ( parsed == correct )
       return;
 
    m_lCache.clear();
-   for ( int index=0; index<correct.size(); index++ ) 
+   for ( int index=0; index<correct.size(); index++ )
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(correct[index].word , CTag(correct[index].tag)) );
    m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", CTag(CTag::SENTENCE_END).str() ) ); // EOS is appended to the tail of sentence
-   for ( int i=0; i<correct.size(); ++i) 
-      if (correct[i].head != DEPENDENCY_LINK_NO_HEAD) updateCrossLinkScore( correct[i].head, i, correct, eAdd, round ); 
+   for ( int i=0; i<correct.size(); ++i)
+      if (correct[i].head != DEPENDENCY_LINK_NO_HEAD) updateCrossLinkScore( correct[i].head, i, correct, eAdd, round );
 
    m_lCache.clear();
    for ( int index=0; index<parsed.size(); index++ )
@@ -218,17 +218,17 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
 /*---------------------------------------------------------------
  *
- * generate - helper function that generates parsed outout
+ * generate - helper function that generates parsed output
  *
  *---------------------------------------------------------------*/
 
 void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *depparser, CDependencyParse &retval) {
-   retval.clear() ; 
+   retval.clear() ;
    if (!span.isActive()) return;
    assert ( span.getLeftBoundary() == 0 && span.getRightBoundary() == sentence.size() ) ;
    bool bFoundHead = false;
    for ( int i=0; i<sentence.size(); ++i ) {
-      int head = span.getLink(i); 
+      int head = span.getLink(i);
       if (head==sentence.size()) {
          head = DEPENDENCY_LINK_NO_HEAD;
          assert( !bFoundHead );
@@ -242,7 +242,7 @@ void generate(const CSpan &span, const CTwoStringVector &sentence, CDepParser *d
  *
  * parse - do dependency parsing to a sentence
  *
- * Returns: makes a new instance of CDependencyParse 
+ * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
 
@@ -263,8 +263,8 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
    assert(nBest==1);
 
    TRACE("Initialising the decoding process...");
-   // clear all spans from length 3 to sentence len + 1 
-   // note that the end of sentence is extended with the special EOS token; therefore length+1 
+   // clear all spans from length 3 to sentence len + 1
+   // note that the end of sentence is extended with the special EOS token; therefore length+1
    for ( span_length = 3; span_length <= length + 1; ++span_length )
       for ( span_starting_index = 0; span_starting_index <= length + 1 - span_length; ++span_starting_index ) {
       chart[span_starting_index][span_length][CSpan::LF].clear();
@@ -278,7 +278,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first , sentence[index].second) );
    m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>( "", CTag(CTag::SENTENCE_END).str() ) ); // EOS is appended to the tail of sentence
 
-   TRACE("Decoding started"); 
+   TRACE("Decoding started");
 
    // initialise binary
    // note that because of the special EOS token, span_start reaches length-1
@@ -291,7 +291,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
       else
          total_span->clear();
 
-      total_span = &(chart[span_starting_index][2][CSpan::RF]) ;    
+      total_span = &(chart[span_starting_index][2][CSpan::RF]) ;
       if ( span_starting_index+1 == length || m_supertags == 0 || m_supertags->getSuperTag(span_starting_index+1, span_starting_index) ) {
          total_span->setBinarySpan(span_starting_index, CSpan::RF);
          total_span->score() = getCrossLinkScore(total_span);
@@ -324,13 +324,13 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 
             if ( left_span->isActive() && right_span->isActive() && left_span->isMinimal() ) {
                if ( !total_span->isActive() || left_span->score() + right_span->score() > total_span->score() ) {
-                  total_span->setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
+                  total_span->setCombinedSpan(*left_span, *right_span, CSpan::LF) ;
                   total_span->score() = left_span->score() + right_span->score() ;
                }
             }
 
             // LF + BF = LF / BF / RF for the spans that do not include EOS
-            //           RF for the cover EOS span 
+            //           RF for the cover EOS span
             left_span = &(chart[span_starting_index][left_length][CSpan::LF]) ;
             right_span = &(chart[span_starting_index+left_length-1][span_length-left_length+1][CSpan::BF]) ;
 
@@ -341,31 +341,31 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 
                   // LF
                   if ( m_supertags == 0 || m_supertags->getSuperTag(span_starting_index, span_ending_index) ) {
-                     total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
-                     temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
-                     temp_span.score() = left_span->score() + right_span->score() ; 
+                     total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ;
+                     temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ;
+                     temp_span.score() = left_span->score() + right_span->score() ;
                      temp_span.score() += getCrossLinkScore(&temp_span) ;
                      if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
                         total_span->copy( temp_span ) ;
                      }
                   }
                }
-   
+
                // BF
-               total_span = &(chart[span_starting_index][span_length][CSpan::BF]) ; 
+               total_span = &(chart[span_starting_index][span_length][CSpan::BF]) ;
                if ( !total_span->isActive() || left_span->score() + right_span->score() > total_span->score() ) {
-                  total_span->setCombinedSpan(*left_span, *right_span, CSpan::BF) ; 
+                  total_span->setCombinedSpan(*left_span, *right_span, CSpan::BF) ;
                   total_span->score() = left_span->score() + right_span->score() ;
                }
-        
+
                // RF
                // When adding right link to EOS, make sure on one has linked to it.
                if ( ( span_ending_index < length || !right_span->isRightLinkedTo() ) &&
                     ( span_ending_index == length || m_supertags == 0 || m_supertags->getSuperTag(span_ending_index, span_starting_index) )
                   ) {
-                  total_span = &(chart[span_starting_index][span_length][CSpan::RF]) ; 
-                  temp_span.setCombinedSpan(*left_span, *right_span, CSpan::RF) ; 
-                  temp_span.score() = left_span->score() + right_span->score() ; 
+                  total_span = &(chart[span_starting_index][span_length][CSpan::RF]) ;
+                  temp_span.setCombinedSpan(*left_span, *right_span, CSpan::RF) ;
+                  temp_span.score() = left_span->score() + right_span->score() ;
                   temp_span.score() += getCrossLinkScore(&temp_span) ;
                   if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
                      total_span->copy( temp_span ) ;
@@ -374,7 +374,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
             }
 
             // BF + RF = LF / BF / RF for the spans that do not include EOS
-            //           RF for the cover EOS span 
+            //           RF for the cover EOS span
             left_span = &(chart[span_starting_index][left_length][CSpan::BF]) ;
             right_span = &(chart[span_starting_index+left_length-1][span_length-left_length+1][CSpan::RF]) ;
             //           for a span that does not include the end of the sentence
@@ -385,31 +385,31 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 
                   // LF
                   if ( m_supertags == 0 || m_supertags->getSuperTag(span_starting_index, span_ending_index) ) {
-                     total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ; 
-                     temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ; 
-                     temp_span.score() = left_span->score() + right_span->score() ; 
+                     total_span = &(chart[span_starting_index][span_length][CSpan::LF]) ;
+                     temp_span.setCombinedSpan(*left_span, *right_span, CSpan::LF) ;
+                     temp_span.score() = left_span->score() + right_span->score() ;
                      temp_span.score() += getCrossLinkScore(&temp_span) ;
                      if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
                         total_span->copy( temp_span ) ;
                      }
                   }
-   
+
                   // BF
-                  total_span = &(chart[span_starting_index][span_length][CSpan::BF]) ; 
+                  total_span = &(chart[span_starting_index][span_length][CSpan::BF]) ;
                   if ( !total_span->isActive() || left_span->score() + right_span->score() > total_span->score() ) {
-                     total_span->setCombinedSpan(*left_span, *right_span, CSpan::BF) ; 
+                     total_span->setCombinedSpan(*left_span, *right_span, CSpan::BF) ;
                      total_span->score() = left_span->score() + right_span->score() ;
                   }
                }
-        
+
                // RF
                // When adding right link to EOS, make sure on one has linked to it.
                if ( ( span_ending_index < length || !right_span->isRightLinkedTo() ) &&
-                    ( span_ending_index == length || m_supertags == 0 || m_supertags->getSuperTag(span_ending_index, span_starting_index) ) 
+                    ( span_ending_index == length || m_supertags == 0 || m_supertags->getSuperTag(span_ending_index, span_starting_index) )
                   ) {
-                  total_span = &(chart[span_starting_index][span_length][CSpan::RF]) ; 
-                  temp_span.setCombinedSpan(*left_span, *right_span, CSpan::RF) ; 
-                  temp_span.score() = left_span->score() + right_span->score() ; 
+                  total_span = &(chart[span_starting_index][span_length][CSpan::RF]) ;
+                  temp_span.setCombinedSpan(*left_span, *right_span, CSpan::RF) ;
+                  temp_span.score() = left_span->score() + right_span->score() ;
                   temp_span.score() += getCrossLinkScore(&temp_span) ;
                   if ( !total_span->isActive() || temp_span.score() > total_span->score() ) {
                      total_span->copy( temp_span ) ;
@@ -424,7 +424,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 
             if ( left_span->isActive() && right_span->isActive() && left_span->isMinimal() ) {
                if ( !total_span->isActive() || left_span->score() + right_span->score() > total_span->score() ) {
-                  total_span->setCombinedSpan(*left_span, *right_span, CSpan::RF) ; 
+                  total_span->setCombinedSpan(*left_span, *right_span, CSpan::RF) ;
                   total_span->score() = left_span->score() + right_span->score() ;
                }
             }
@@ -435,7 +435,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
    } // for span_length
 
    TRACE("Outputing sentence");
-   generate( chart[ 0 ][ length+1 ][ CSpan::RF ] , sentence , this , *retval ) ; 
+   generate( chart[ 0 ][ length+1 ][ CSpan::RF ] , sentence , this , *retval ) ;
    if (scores) scores[ 0 ] = chart[ 0 ][ length+1 ][ CSpan::RF ].score() ;
    TRACE("Done, the highest score is: " << chart[ 0 ][ length ][ CSpan::RF ].score() ) ;
    TRACE("The total time spent: " << double(clock() - total_start_time)/CLOCKS_PER_SEC) ;
@@ -450,14 +450,14 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CDependencyParse outout ; 
+   static CDependencyParse output ;
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;
 
-   // now update the feature vector when the outout doesn't match
-   parse( sentence , &outout ) ; 
-   updateScoreVector( outout, correct , round ) ;
+   // now update the feature vector when the output doesn't match
+   parse( sentence , &output ) ;
+   updateScoreVector( output, correct , round ) ;
 
 };
 

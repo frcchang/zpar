@@ -20,15 +20,15 @@ using namespace chinese;
 /*----------------------------------------------------------------
  *
  * recordSegmentation - record a segmented sentence with bitarr.
- * 
+ *
  * Input raw is the raw format of input tagged, it is provided
  * here because the caller already did UntagAndDesegmentSent
- * 
+ *
  *---------------------------------------------------------------*/
 
 void recordSegmentation(const CStringVector *raw, const CTwoStringVector* tagged, CBitArray &retval) {
    std::vector<unsigned> indice;
-   indice.clear(); 
+   indice.clear();
    for (unsigned i=0; i<raw->size(); ++i) {
       for (unsigned j=0; j<raw->at(i).size(); ++j)
          indice.push_back(i);
@@ -54,9 +54,9 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
 
    CTagger decoder(sFeatureFile, true, nMaxSentSize, bFWCDRule);
    if (!sKnowledgePath.empty()) decoder.loadKnowledge(sKnowledgePath);
-   CSentenceReader outout_reader(sOutputFile);
+   CSentenceReader output_reader(sOutputFile);
    CStringVector *input_sent = new CStringVector;
-   CTwoStringVector *outout_sent = new CTwoStringVector; 
+   CTwoStringVector *output_sent = new CTwoStringVector;
 
    unsigned nCount=0;
    unsigned nErrorCount=0;
@@ -64,31 +64,31 @@ void auto_train(const std::string &sOutputFile, const std::string &sFeatureFile,
    CBitArray word_ends(tagger::MAX_SENTENCE_SIZE);
 
 #ifdef DEBUG
-   CSentenceWriter outout_writer("");
+   CSentenceWriter output_writer("");
 #endif
    //
    // Read the next sentence
    //
-   while( outout_reader.readTaggedSentence(outout_sent) ) {
+   while( output_reader.readTaggedSentence(output_sent) ) {
       if (bFWCDRule)
-         UntagAndDesegmentSentence(outout_sent, input_sent, charcat);
+         UntagAndDesegmentSentence(output_sent, input_sent, charcat);
       else
-         UntagAndDesegmentSentence(outout_sent, input_sent);
+         UntagAndDesegmentSentence(output_sent, input_sent);
       TRACE("Sentence " << nCount);
 #ifdef DEBUG
-      outout_writer.writeSentence(input_sent);
+      output_writer.writeSentence(input_sent);
 #endif
       ++nCount;
       //
-      // Find the decoder outout
+      // Find the decoder output
       //
-      if (decoder.train(input_sent, outout_sent)) ++nErrorCount;
+      if (decoder.train(input_sent, output_sent)) ++nErrorCount;
    }
    delete input_sent;
-   delete outout_sent;
-   std::cout << "Completing the training process." << std::endl;
+   delete output_sent;
+   std::cerr << "Completing the training process." << std::endl;
    decoder.finishTraining(nCount);
-   std::cout << "Done. Total errors: " << nErrorCount << std::endl;
+   std::cerr << "Done. Total errors: " << nErrorCount << std::endl;
 }
 
 /*===============================================================
@@ -102,9 +102,9 @@ void dumpfeatures(const std::string &sOutputFile, const std::string &sFeatureFil
 
    CTagger decoder(sFeatureFile, true, nMaxSentSize, bFWCDRule);
    if (!sKnowledgePath.empty()) decoder.loadKnowledge(sKnowledgePath);
-   CSentenceReader outout_reader(sOutputFile);
+   CSentenceReader output_reader(sOutputFile);
    CStringVector *input_sent = new CStringVector;
-   CTwoStringVector *outout_sent = new CTwoStringVector; 
+   CTwoStringVector *output_sent = new CTwoStringVector;
 
    unsigned nCount=0;
    unsigned nErrorCount=0;
@@ -112,21 +112,21 @@ void dumpfeatures(const std::string &sOutputFile, const std::string &sFeatureFil
    //
    // Read the next sentence
    //
-   while( outout_reader.readTaggedSentence(outout_sent) ) {
+   while( output_reader.readTaggedSentence(output_sent) ) {
       if (bFWCDRule)
-         UntagAndDesegmentSentence(outout_sent, input_sent, charcat);
+         UntagAndDesegmentSentence(output_sent, input_sent, charcat);
       else
-         UntagAndDesegmentSentence(outout_sent, input_sent);
+         UntagAndDesegmentSentence(output_sent, input_sent);
       TRACE("Sentence " << nCount);
       ++nCount;
       //
       // Dump features now
       //
-      decoder.dumpfeatures(input_sent, outout_sent);
+      decoder.dumpfeatures(input_sent, output_sent);
    }
    delete input_sent;
    decoder.finishTraining(nCount);
-   std::cout << "Done. " << std::endl;
+   std::cerr << "Done. " << std::endl;
 }
 
 /*===============================================================
@@ -139,14 +139,14 @@ void train(const std::string &sOutputFile, const std::string &sFeatureFile, cons
    static CCharCatDictionary charcat ; // don't know why there is a segmentation fault when this is put as a global variable. The error happens when charcat.h CCharcat() is called and in particular when (*this)[CWord(letters[i])] = eFW is executed (if an empty CWord(letters[i]) line is put before this line then everything is okay. Is it static initialization fiasco? Not sure really.
 
    CTagger decoder(sFeatureFile, true, nMaxSentSize, bFWCDRule);
-   CSentenceReader outout_reader(sOutputFile);
+   CSentenceReader output_reader(sOutputFile);
 #ifdef DEBUG
-   CSentenceWriter outout_writer("");
+   CSentenceWriter output_writer("");
    CSentenceWriter tagged_writer("");
 #endif
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *tagged_sent = new CTwoStringVector[nBest];
-   CTwoStringVector *outout_sent = new CTwoStringVector; 
+   CTwoStringVector *output_sent = new CTwoStringVector;
 
    unsigned nCount=0;
    unsigned nErrorCount=0;
@@ -157,18 +157,18 @@ void train(const std::string &sOutputFile, const std::string &sFeatureFile, cons
    //
    // Read the next sentence
    //
-   while( outout_reader.readTaggedSentence(outout_sent) ) {
+   while( output_reader.readTaggedSentence(output_sent) ) {
       if (bFWCDRule && !bSegmented)
-         UntagAndDesegmentSentence(outout_sent, input_sent, charcat);
+         UntagAndDesegmentSentence(output_sent, input_sent, charcat);
       else
-         UntagAndDesegmentSentence(outout_sent, input_sent);
+         UntagAndDesegmentSentence(output_sent, input_sent);
       TRACE("Sentence " << nCount);
       ++nCount;
       //
-      // Find the decoder outout
+      // Find the decoder output
       //
       if (bSegmented) {
-         recordSegmentation( input_sent, outout_sent, word_ends );
+         recordSegmentation( input_sent, output_sent, word_ends );
          decoder.tag(input_sent, tagged_sent, NULL, nBest, &word_ends);
       }
       else {
@@ -180,33 +180,33 @@ void train(const std::string &sOutputFile, const std::string &sFeatureFile, cons
       // Early update
       //
       //------------------------------------------------
-         if ( *tagged_sent != *outout_sent ) 
+         if ( *tagged_sent != *output_sent )
             ++nErrorCount;
 
          nEarlyUpdateRepeat = 0;
-         while ( *tagged_sent != *outout_sent && nEarlyUpdateRepeat < 200 ) {
+         while ( *tagged_sent != *output_sent && nEarlyUpdateRepeat < 200 ) {
             //
-            // Debug outout
+            // Debug output
             //
 #ifdef DEBUG
-            outout_writer.writeSentence(outout_sent);
+            output_writer.writeSentence(output_sent);
 #endif
             TRACE("------");
-            for (unsigned i=0; i<nBest; ++i) if (*(tagged_sent+i)!=*outout_sent)
+            for (unsigned i=0; i<nBest; ++i) if (*(tagged_sent+i)!=*output_sent)
             {
 #ifdef DEBUG
                tagged_writer.writeSentence(tagged_sent+i);
 #endif
-               decoder.updateScores(tagged_sent+i, outout_sent, nCount);
+               decoder.updateScores(tagged_sent+i, output_sent, nCount);
             }
             //
-            // Find the decoder outout
+            // Find the decoder output
             //
             if (bSegmented) {
-               recordSegmentation( input_sent, outout_sent, word_ends );
+               recordSegmentation( input_sent, output_sent, word_ends );
                decoder.tag(input_sent, tagged_sent, NULL, nBest, &word_ends);
             }
-            else 
+            else
                decoder.tag(input_sent, tagged_sent, NULL, nBest);
 
             nEarlyUpdateRepeat ++ ;
@@ -218,29 +218,29 @@ void train(const std::string &sOutputFile, const std::string &sFeatureFile, cons
       // Normal update
       //
       //------------------------------------------------
-         if (*tagged_sent!=*outout_sent) {
+         if (*tagged_sent!=*output_sent) {
 #ifdef DEBUG
-            outout_writer.writeSentence(input_sent);
-            outout_writer.writeSentence(outout_sent);
+            output_writer.writeSentence(input_sent);
+            output_writer.writeSentence(output_sent);
 #endif
-            TRACE("------");  
+            TRACE("------");
             ++nErrorCount;
          }
-         for (unsigned i=0; i<nBest; ++i) 
+         for (unsigned i=0; i<nBest; ++i)
          {
 #ifdef DEBUG
-            if (*(tagged_sent+i)!=*outout_sent) tagged_writer.writeSentence(tagged_sent+i);
+            if (*(tagged_sent+i)!=*output_sent) tagged_writer.writeSentence(tagged_sent+i);
 #endif
-            decoder.updateScores(tagged_sent+i, outout_sent, nCount);
+            decoder.updateScores(tagged_sent+i, output_sent, nCount);
          }
       }
    }
    delete input_sent;
-   delete outout_sent;
+   delete output_sent;
    delete [] tagged_sent;
-   std::cout << "Completing the training process." << std::endl;
+   std::cerr << "Completing the training process." << std::endl;
    decoder.finishTraining(nCount);
-   std::cout << "Done. Total errors: " << nErrorCount << std::endl;
+   std::cerr << "Done. Total errors: " << nErrorCount << std::endl;
 }
 
 /*===============================================================
@@ -265,7 +265,7 @@ int main(int argc, char* argv[]) {
          std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
          std::cout << configurations.message() << std::endl;
          return 1;
-      } 
+      }
       std::string warning = configurations.loadConfigurations(options.opts);
       if (!warning.empty()) {
          std::cout << "Warning: " << warning << std::endl;
@@ -273,11 +273,11 @@ int main(int argc, char* argv[]) {
 
       unsigned long nBest, nMaxSentSize;
       if (!fromString(nMaxSentSize, configurations.getConfiguration("m"))) {
-         std::cerr<<"Error: the max size of sentence is not integer." << std::endl; return 1;
+         std::cout <<"Error: the max size of sentence is not integer." << std::endl; return 1;
       }
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
-         std::cerr<<"Error: the number of N best is not integer." << std::endl; return 1;
-      }  
+         std::cout <<"Error: the number of N best is not integer." << std::endl; return 1;
+      }
       bool bEarlyUpdate = configurations.getConfiguration("u").empty() ? false : true;
       bool bFWCDRule = configurations.getConfiguration("r").empty() ? true : false;
       std::string sKnowledgePath = configurations.getConfiguration("k");
@@ -289,14 +289,14 @@ int main(int argc, char* argv[]) {
 
       unsigned training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
-         std::cerr << "Error: the number of training iterations must be an integer." << std::endl;
+         std::cout << "Error: the number of training iterations must be an integer." << std::endl;
          return 1;
       }
-      std::cout << "Training started." << std::endl;
+      std::cerr << "Training started." << std::endl;
       unsigned time_start = clock();
    if (bDumpFeatures) {
          // one single iteration: load knowledge
-      std::cout << "Dumping features; only one iteration; no early update." << std::endl;
+      std::cerr << "Dumping features; only one iteration; no early update." << std::endl;
          dumpfeatures(argv[1], argv[2], nMaxSentSize, sKnowledgePath, bFWCDRule);
    }
       else if (bSegmented) {
@@ -315,7 +315,7 @@ int main(int argc, char* argv[]) {
          for (unsigned i=1; i<training_rounds; ++i)
             auto_train(argv[1], argv[2], nBest, nMaxSentSize, "", bFWCDRule);
       }
-      std::cout << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+      std::cerr << "Training has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
       return 0;
    } catch (const std::string &e) {
       std::cerr << "Error: " << e << std::endl;

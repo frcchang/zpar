@@ -10,7 +10,7 @@
  ****************************************************************/
 
 #ifndef _CONPARSER_IMPL_H
-#define _CONPARSER_IMPL_H 
+#define _CONPARSER_IMPL_H
 
 #include "conparser_base.h"
 #include "weight.h"
@@ -88,11 +88,11 @@ public:
       // load rules
       CConstituent c;
       file.close();
-      // initialize 
+      // initialize
       if (!bTrain && static_cast<conparser::CWeight*>(m_weights)->empty()) { // when decoding, model must be found
          THROW("The model file " << sFeatureDBPath<< " is not found.")
       }
-      m_nTrainingRound = 0; 
+      m_nTrainingRound = 0;
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
 //      ASSERT(conparser::CAction::MAX<=(1LL<<(sizeof(unsigned)*8)), "conparser.h: The size of action is too big for the packed scoretype");
@@ -137,7 +137,7 @@ public:
       file.open(m_sFeatureDB.c_str()) ;
       static_cast<conparser::CWeight*>(m_weights)->saveScores(file);
       // save rules
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+      std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    conparser::SCORE_TYPE getGlobalScore(const CSentenceParsed &parsed);
    void updateScores(const CSentenceParsed &parse, const CSentenceParsed &correct, int round=0);
@@ -152,15 +152,15 @@ private:
    inline void getOrUpdateScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem &item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight vector for this feature object specifically
-   void updateScoresForState( conparser::CWeight *cast_weights , const conparser::CStateItem *outout , const CStringVector &sentence , SCORE_UPDATE update) ;
+   void updateScoresForState( conparser::CWeight *cast_weights , const conparser::CStateItem *output , const CStringVector &sentence , SCORE_UPDATE update) ;
 
-   void updateScoresForStates( const conparser::CStateItem *outout , const CStringVector &sentence , const conparser::CStateItem *correct ) ;
+   void updateScoresForStates( const conparser::CStateItem *output , const CStringVector &sentence , const conparser::CStateItem *correct ) ;
 
 #ifdef TRAIN_LOSS
    // loss functions
 //   double computeLossF(const conparser::CStateItem* item);
    void getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CLabeledBracket> &brackets);
-void updateScoresByLoss( const conparser::CStateItem *outout , const conparser::CStateItem *correct );
+void updateScoresByLoss( const conparser::CStateItem *output , const conparser::CStateItem *correct );
 #endif
 
 };

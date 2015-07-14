@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * reranker.cpp - the reranker for segmented and tagged outouts *
+ * reranker.cpp - the reranker for segmented and tagged outputs *
  *                                                              *
  * It updates the segmentor and tagger in a unified manner      *
  *                                                              *
@@ -18,7 +18,7 @@ using namespace chinese;
 /*----------------------------------------------------------------
  *
  * recordSegmentation - record a segmented sentence with bitarr.
- * 
+ *
  *---------------------------------------------------------------*/
 
 void recordSegmentation(const CStringVector* raw, const CStringVector* segmented, CBitArray &retval) {
@@ -41,7 +41,7 @@ void recordSegmentation(const CStringVector* raw, const CStringVector* segmented
  *
  * findBest - find the best segmented and tagged sequence given
  *            raw input. Stored at scratch_seg and scratch_tag [best_index] respectively
- * 
+ *
  *---------------------------------------------------------------*/
 
 int CReranker::findBest(const CStringVector &raw) {
@@ -52,7 +52,7 @@ int CReranker::findBest(const CStringVector &raw) {
    m_segmentor->segment(&raw, m_scratch_seg, m_scores_seg, m_nBest);
    for (int i=0; i<m_nBest; ++i) {
       recordSegmentation(&raw, m_scratch_seg+i, wds);
-      m_tagger->tag(&raw, m_scratch_tag+i, m_scores_tag+i, 1, &wds); 
+      m_tagger->tag(&raw, m_scratch_tag+i, m_scores_tag+i, 1, &wds);
       if (m_scratch_tag[i].empty()) continue;
       if (i!=0) ranking_score = m_bRankIncludeSeg ? m_scores_seg[i] + m_scores_tag[i] : m_scores_tag[i];
       if (i==0 || ranking_score>best_score) {best_score=ranking_score; best_index=i;}
@@ -63,7 +63,7 @@ int CReranker::findBest(const CStringVector &raw) {
 /*----------------------------------------------------------------
  *
  * decode - decoding interface
- * 
+ *
  *---------------------------------------------------------------*/
 
 void CReranker::decode(const CStringVector &raw, CTwoStringVector &tagged) {
@@ -75,7 +75,7 @@ void CReranker::decode(const CStringVector &raw, CTwoStringVector &tagged) {
 /*----------------------------------------------------------------
  *
  * train - training interface
- * 
+ *
  *---------------------------------------------------------------*/
 
 void CReranker::train(const CTwoStringVector &correct) {
@@ -88,7 +88,7 @@ void CReranker::train(const CTwoStringVector &correct) {
    assert(m_scratch_seg[best_index].empty()==false);
    assert(m_scratch_tag[best_index].empty()==false);
    if ( m_scratch_seg[best_index] != segmented ) {
-      std::cout << "Segmentation error" << std::endl;
+      std::cerr << "Segmentation error" << std::endl;
       m_segmentor->updateScores(m_scratch_seg+best_index, &segmented, m_nTrainingRound);
       ++m_nTrainingErrors;
    }
@@ -104,7 +104,7 @@ void CReranker::train(const CTwoStringVector &correct) {
 /*----------------------------------------------------------------
  *
  * train - training interface
- * 
+ *
  *---------------------------------------------------------------*/
 
 void CReranker::train_separate(const CTwoStringVector &correct) {
@@ -112,21 +112,21 @@ void CReranker::train_separate(const CTwoStringVector &correct) {
    ++m_nTrainingRound;
    CStringVector raw; CStringVector segmented;
    static CBitArray wds(MAX_SENTENCE_SIZE);
-   UntagAndDesegmentSentence(&correct, &raw); 
+   UntagAndDesegmentSentence(&correct, &raw);
    UntagSentence(&correct, &segmented);
    CSentenceWriter writer("");
 
    m_segmentor->segment(&raw, m_scratch_seg);
    if ( m_scratch_seg[0] != segmented ) {
-      std::cout << "Segmentation error" << std::endl;
+      std::cerr << "Segmentation error" << std::endl;
       m_segmentor->updateScores(m_scratch_seg, &segmented, m_nTrainingRound);
       ++m_nTrainingErrors;
    }
 
    recordSegmentation(&raw, &segmented, wds);
-   m_tagger->tag(&raw, m_scratch_tag, NULL, 1, &wds); 
+   m_tagger->tag(&raw, m_scratch_tag, NULL, 1, &wds);
    if ( m_scratch_tag[0] != correct ) {
-      std::cout << "Tagging error" << std::endl;
+      std::cerr << "Tagging error" << std::endl;
       ++m_nTrainingErrort;
    }
    // have to update the tagger anyway because it maintains useful info
@@ -136,12 +136,12 @@ void CReranker::train_separate(const CTwoStringVector &correct) {
 /*----------------------------------------------------------------
  *
  * finishTraining - must_call
- * 
+ *
  *---------------------------------------------------------------*/
 
 void CReranker::finishTraining() {
    m_segmentor->finishTraining(m_nTrainingRound);
    m_tagger->finishTraining(m_nTrainingRound);
-   std::cout << m_nTrainingRound << " training sentences in total have been processed; " << m_nTrainingErrors << " segmentation mistakes and  " << m_nTrainingErrort << " tagging mistakes." << std::endl;
+   std::cerr << m_nTrainingRound << " training sentences in total have been processed; " << m_nTrainingErrors << " segmentation mistakes and  " << m_nTrainingErrort << " tagging mistakes." << std::endl;
 }
 

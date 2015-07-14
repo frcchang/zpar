@@ -12,7 +12,7 @@
 
 /*===============================================================
  *
- * definitions abstd::cout tmp 
+ * definitions about tmp
  *
  *==============================================================*/
 
@@ -50,7 +50,7 @@ public:
       }
    }
    void load(const unsigned long &code) {CConstituentLabel::m_code=code;}
-   const std::string &str() const { 
+   const std::string &str() const {
       static std::string tmp;
       tmp = CConstituentLabel(clearTmp(CConstituentLabel::m_code)).str();
       if (getTemporary()) {
@@ -59,7 +59,7 @@ public:
       return tmp;
    }
 
-   void setTemporary(const bool &temporary) { 
+   void setTemporary(const bool &temporary) {
       if (temporary)
          CConstituentLabel::m_code |= (1L << CConstituentLabel::SIZE);
       else
@@ -79,7 +79,7 @@ public:
    static unsigned long clearTmp(const unsigned long &constituent) {
       return constituent&(~(1L<<CConstituentLabel::SIZE));
    }
-}; 
+};
 
 //===============================================================
 

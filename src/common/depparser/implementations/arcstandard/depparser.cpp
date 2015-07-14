@@ -297,7 +297,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r1dwt.tag);
       __GET_OR_UPDATE_SCORE(S0tS1tS1r1dt, ttt);          //  55
     }
- 
+
     if (-1 != S1r2did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r2dwt.tag);
       __GET_OR_UPDATE_SCORE(S0tS1tS1r2dt, ttt);          //  85
@@ -795,7 +795,7 @@ CDepParser::parse(const CTwoStringVector & sentence,
   assert(!m_bCoNLL);
 
   for (int i=0; i<nBest; ++i) {
-    // clear the outout sentences
+    // clear the output sentences
     retval[i].clear();
     if (scores) scores[i] = 0; //pGenerator->score;
   }
@@ -811,7 +811,7 @@ CDepParser::parse(const CTwoStringVector & sentence,
 void
 CDepParser::train(const CDependencyParse &correct , int round) {
   static CTwoStringVector sentence;
-  static CDependencyParse outout;
+  static CDependencyParse output;
 
   assert(!m_bCoNLL);
   assert(IsProjectiveDependencyTree(correct));
@@ -898,7 +898,7 @@ CDepParser::parse_conll(const CCoNLLInput & sentence,
 
   static CDependencyParse empty;
   static CTwoStringVector input;
-  static CDependencyParse outout[AGENDA_SIZE];
+  static CDependencyParse output[AGENDA_SIZE];
 
   assert(m_bCoNLL);
 
@@ -906,18 +906,18 @@ CDepParser::parse_conll(const CCoNLLInput & sentence,
   sentence.toTwoStringVector(input);
 
   for (int i=0; i<nBest; ++i) {
-    // clear the outout sentences
+    // clear the output sentences
     retval[i].clear();
-    outout[i].clear();
+    output[i].clear();
     if (scores) scores[i] = 0; //pGenerator->score;
   }
 
-  int nr_results = work(false, input, outout, empty, nBest, scores);
+  int nr_results = work(false, input, output, empty, nBest, scores);
 
   for (int i=0; i<std::min(nBest, nr_results); ++i) {
-    // now make the conll format stype outout
+    // now make the conll format stype output
     retval[i].fromCoNLLInput(sentence);
-    retval[i].copyDependencyHeads(outout[i]);
+    retval[i].copyDependencyHeads(output[i]);
   }
 }
 
@@ -931,7 +931,7 @@ CDepParser::train_conll(const CCoNLLOutput &correct,
                         int round) {
 
   static CTwoStringVector sentence;
-  static CDependencyParse outout;
+  static CDependencyParse output;
   static CDependencyParse reference;
 
   assert(m_bCoNLL);
@@ -948,7 +948,7 @@ CDepParser::train_conll(const CCoNLLOutput &correct,
 
   // The following code does update for each processing stage
   m_nTrainingRound = round;
-  work(true , sentence , &outout , reference , 1 , 0);
+  work(true , sentence , &output , reference , 1 , 0);
 }
 
 /*---------------------------------------------------------------

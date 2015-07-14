@@ -20,7 +20,7 @@
 
 /*===============================================================
  *
- * definitions abstd::cout tagged word 
+ * definitions about tagged word
  *
  *==============================================================*/
 
@@ -44,17 +44,17 @@ public:
    virtual ~CTaggedWord() {}
 
 public:
-   inline bool operator == (const CTaggedWord &w) const { 
-      return word == w.word && tag == w.tag ; 
+   inline bool operator == (const CTaggedWord &w) const {
+      return word == w.word && tag == w.tag ;
    }
-   inline bool operator != (const CTaggedWord &w) const { 
-      return !(*this == w); 
+   inline bool operator != (const CTaggedWord &w) const {
+      return !(*this == w);
    }
    // the ordering of words are defined:
    // when the hash are not equal, order is defined by hash
    // when the hash are equal, order is defined by char-value
-   inline bool operator < (const CTaggedWord &w) const { 
-      return word == w.word ? tag < w.tag : word < w.word ; 
+   inline bool operator < (const CTaggedWord &w) const {
+      return word == w.word ? tag < w.tag : word < w.word ;
    }
    inline bool empty() { return word.empty() && tag.empty(); }
    inline void clear() { word.clear(); tag.clear(); }
@@ -69,7 +69,7 @@ public:
       tag = tt ;
    }
 };
-   
+
 //===============================================================
 
 template <typename CTag, char sTagSep>
@@ -88,7 +88,7 @@ template <typename CTag, char sTagSep>
 std::ostream & operator << (std::ostream &os, const CTaggedWord<CTag, sTagSep> &tw) {
    os << tw.word.str() ;
    os << sTagSep ;
-   os << tw.tag.str() ; 
+   os << tw.tag.str() ;
    return os ;
 }
 

@@ -19,19 +19,19 @@ using namespace TARGET_LANGUAGE::conparser;
  *
  * loadScores - load scores from the file specified at constructor
  *              currently this uses database, but it can be modified
- *         
- * Affects: m_bScoreModified, clearing it. 
+ *
+ * Affects: m_bScoreModified, clearing it.
  *
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
    clock_t time_start = clock();
-   std::cout<<"Loading scores..."; std::cout.flush();
-//   std::ifstream file ; 
+   std::cerr<<"Loading scores..."; std::cerr.flush();
+//   std::ifstream file ;
 //   file.open(m_sRecordPath.c_str()) ;
 
    if (!file.is_open()) {
-      std::cout << " empty." << std::endl; return;
+      std::cerr << " empty." << std::endl; return;
    }
    m_bEmpty = false;
 
@@ -59,7 +59,7 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
    iss_f >> m_nMaxWordFrequency;
 
 //   file.close() ;
-   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
+   std::cerr << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -72,7 +72,7 @@ void TARGET_LANGUAGE::conparser::CWeight::loadScores(std::ifstream &file) {
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
-   std::cout<<"Saving scores..."; std::cout.flush();
+   std::cerr<<"Saving scores..."; std::cerr.flush();
 //   std::ofstream file ;
 //   file.open(m_sRecordPath.c_str()) ;
 
@@ -84,13 +84,13 @@ void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
 
    iterate_templates(file<<,;)
 
-   file << "Word frequency" << std::endl; 
+   file << "Word frequency" << std::endl;
    file << m_mapWordFrequency;
-   file << "Maximum frequency" << std::endl; 
+   file << "Maximum frequency" << std::endl;
    file << m_nMaxWordFrequency << std::endl;
 
 //   file.close();
-   std::cout<<" done."<<std::endl;
+   std::cerr<<" done."<<std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -100,11 +100,11 @@ void TARGET_LANGUAGE::conparser::CWeight::saveScores(std::ofstream &file) {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::conparser::CWeight::computeAverageFeatureWeights(int round) {
-   std::cout<<"Computing averaged (total) feature vector..."; std::cout.flush();
-   
+   std::cerr<<"Computing averaged (total) feature vector..."; std::cerr.flush();
+
    iterate_templates(,.computeAverage(round);) ;
-   
-   std::cout<<"done."<<std::endl;
+
+   std::cerr<<"done."<<std::endl;
 }
 
 void TARGET_LANGUAGE::conparser::CWeight::addCurrent(CWeight*w, int round) {

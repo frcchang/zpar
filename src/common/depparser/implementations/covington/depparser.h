@@ -10,7 +10,7 @@
  ****************************************************************/
 
 #ifndef _DEPPARSER_IMPL_H
-#define _DEPPARSER_IMPL_H 
+#define _DEPPARSER_IMPL_H
 
 #include "depparser_base.h"
 
@@ -35,7 +35,7 @@ namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
- * CDepParser - the dependency parser for English 
+ * CDepParser - the dependency parser for English
  *
  *==============================================================*/
 
@@ -52,10 +52,10 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
+   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) {
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(depparser::AGENDA_SIZE);
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
-      m_nTrainingRound = 0; 
+      m_nTrainingRound = 0;
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage ;
       assert(DEPENDENCY_LINK_NO_HEAD==-1); // used in the decoder
@@ -64,7 +64,7 @@ public:
       delete m_Agenda;
       delete m_weights;
    }
-   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) { 
+   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) {
       assert(1==0);
    }
 
@@ -75,13 +75,13 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+      std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
 
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ;
 
    inline void addLink( depparser::CStateItem *item , const int &head , const int &dep ) ;
    inline void finishWord( depparser::CStateItem *item ) ;
@@ -93,9 +93,9 @@ private:
    inline depparser::SCORE_TYPE getOrUpdateArityScore(const depparser::CStateItem *item, const int &word_index, const int &arity_direction, depparser::SCORE_TYPE amount=0, int round=0 ) ;
    inline depparser::SCORE_TYPE getOrUpdateTwoArcScore(const int &head_index, const int &dep_index, const int &parent_index, depparser::SCORE_TYPE amount=0, int round=0);
 
-   void updateScoresForStates(const depparser::CStateItem *outout , const depparser::CStateItem *correct , 
+   void updateScoresForStates(const depparser::CStateItem *output , const depparser::CStateItem *correct ,
                               const bool &bCompleteSentence ) ;
-   inline void updateScoreForState(const depparser::CStateItem *outout , const bool &bCompleteSentence , 
+   inline void updateScoreForState(const depparser::CStateItem *output , const bool &bCompleteSentence ,
                                    const depparser::SCORE_TYPE &amount) ;
 
 };

@@ -146,7 +146,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   CTuple2<CTag, int>        ti;
   CTuple2< CTaggedWord<CTag, TAG_SEPARATOR>,CTaggedWord<CTag, TAG_SEPARATOR> > aa;
   //CTwoTaggedWords aa;
-  
+
   CTuple2<CTaggedWord<CTag, TAG_SEPARATOR>,CWord> aw;
   CTuple2<CTaggedWord<CTag, TAG_SEPARATOR>,CTag> at;
   CTuple2<CWord, CSetOfTags<CDependencyLabel> > wset;
@@ -318,7 +318,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
     refer_or_allocate_tuple3(wtt, &S1wt.word, &S1r1dwt.tag, &S1r2dwt.tag);
     __GET_OR_UPDATE_SCORE(S1wS1r1dtS1r2dt, wtt);//101
-    
+
   }
 
   if (-1 != S0id && -1 != S1id) {
@@ -356,12 +356,12 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r1dwt.tag);
       __GET_OR_UPDATE_SCORE(S0tS1tS1r1dt, ttt);          //  52
     }
- 
+
     if (-1 != S1r2did) {
       refer_or_allocate_tuple3(ttt, &S0wt.tag, &S1wt.tag, &S1r2dwt.tag);
       __GET_OR_UPDATE_SCORE(S0tS1tS1r2dt, ttt);          //  82
     }
-    
+
     if (-1 != S0l1did) {
       refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S0l1dwt.tag);
       __GET_OR_UPDATE_SCORE(S0wS1tS0l1dt, wtt);         //  103
@@ -386,7 +386,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
       refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S1l1dwt.tag);
       __GET_OR_UPDATE_SCORE(S0wS1tS1l1dt, wtt);          //  104
     }
-   
+
 
     if (-1 != S1r1did) {
       refer_or_allocate_tuple3(wtt, &S0wt.word, &S1wt.tag, &S1r2dwt.tag);
@@ -397,12 +397,12 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
       //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1l1dwt.tag);
       //__GET_OR_UPDATE_SCORE(S1wS0tS1l1dt, wtt);          //  108
     }
-    
+
     if (-1 != S1r1did) {
       //refer_or_allocate_tuple3(wtt, &S1wt.word, &S0wt.tag, &S1r1dwt.tag);
       //__GET_OR_UPDATE_SCORE(S1wS0tS1r1dt, wtt);          //  106
-    } 
-    
+    }
+
   }
 
   if (-1 != S0id) {
@@ -417,7 +417,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
 
     refer_or_allocate_tuple2(ti, &S0wt.tag, &S0la);
     __GET_OR_UPDATE_SCORE(S0tS0la, ti);//59
-   
+
     refer_or_allocate_tuple3(wii, &S0wt.word, &S0ra, &S0la);
     __GET_OR_UPDATE_SCORE(S0wS0raS0la, wii);//135
 
@@ -607,7 +607,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   }
 
   if(-1!=S0id) {
-     __GET_OR_UPDATE_SCORE(S0C, item->constituent(S0id)); //  146    
+     __GET_OR_UPDATE_SCORE(S0C, item->constituent(S0id)); //  146
   }
 
   if(-1 != S1id) {
@@ -617,7 +617,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
   if (-1 != S0id && -1 != S1id) {
       int CS0id = item->constituent(S0id);
       int CS1id = item->constituent(S1id);
-     
+
       refer_or_allocate_tuple2(int_int, &item->constituent(S0id), &item->constituent(S1id));
      __GET_OR_UPDATE_SCORE(S0CS1C, int_int);//148
      refer_or_allocate_tuple2(wl, &S0wt.word, &item->constituent(S1id));
@@ -633,7 +633,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
      __GET_OR_UPDATE_SCORE(S1tS0C, tl);//154
      //refer_or_allocate_tuple2(al, &S1wt, &item->constituent(S0id));
      //__GET_OR_UPDATE_SCORE(S1wtS0C, al);//155
-     
+
   }
 
 
@@ -648,7 +648,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
           transfer(hpos, mpos, label,item->constituent(S0id), false, con);
           //refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
          //cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
-	  
+
           unsigned long sum=item->constituent(S1id)*10000+item->constituent(S0id)*100+con;
            refer_or_allocate_tuple3(wwu, &S1wt.word, &S0wt.word, &sum);
           __GET_OR_UPDATE_SCORE(S1S0PCFG, wwu);//157
@@ -656,7 +656,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
            //__GET_OR_UPDATE_SCORE(S1wS0tPCFG, wtu);//158
            //refer_or_allocate_tuple3(wtu, &S0wt.word, &S1wt.tag, &sum);
            //__GET_OR_UPDATE_SCORE(S0wS1tPCFG, wtu);//159
-		
+
           refer_or_allocate_tuple3(wll, &S0wt.word,
                                    &label,
                                    &item->constituent(S1id));
@@ -679,7 +679,7 @@ CDepParser::GetOrUpdateStackScore(const CStateItem * item,
            transfer(hpos, mpos, label,item->constituent(S1id), true, con);
            //refer_or_allocate_tuple3(int_int_int, &(item->constituent(S1id)), &(item->constituent(S0id)), &con);
            //cast_weights->m_mapCFG.getOrUpdateScore( retval, int_int_int, action, m_nScoreIndex, amount, round ) ;//145
-           
+
            unsigned long sum=item->constituent(S1id)*10000+item->constituent(S0id)*100+con;
            refer_or_allocate_tuple3(wwu, &S1wt.word, &S0wt.word, &sum);
            __GET_OR_UPDATE_SCORE(S1S0PCFG, wwu);//157
@@ -737,7 +737,7 @@ CDepParser::updateScores(const CDependencyParse & parsed,
 
 /*---------------------------------------------------------------
  *
- * updateScoreForState - update a single positive or negative outout
+ * updateScoreForState - update a single positive or negative output
  *
  *--------------------------------------------------------------*/
 
@@ -1124,7 +1124,7 @@ CDepParser::parse(const CTwoStringVector & sentence,
   assert(!m_bCoNLL);
 
   for (int i=0; i<nBest; ++i) {
-    // clear the outout sentences
+    // clear the output sentences
     retval[i].clear();
     if (scores) scores[i] = 0; //pGenerator->score;
   }
@@ -1141,7 +1141,7 @@ CDepParser::parse(const CTwoStringVector & sentence,
 void CDepParser::train(const CDependencyParse &correct , int round) {
 
    static CTwoStringVector sentence;
-   static CDependencyParse outout;
+   static CDependencyParse output;
 
    assert(!m_bCoNLL);
    assert(IsProjectiveDependencyTree(correct));
@@ -1233,7 +1233,7 @@ CDepParser::parse_conll(const CCoNLLInput & sentence,
 
   static CDependencyParse empty;
   static CTwoStringVector input;
-  static CDependencyParse outout[AGENDA_SIZE];
+  static CDependencyParse output[AGENDA_SIZE];
 
   assert(m_bCoNLL);
 
@@ -1241,18 +1241,18 @@ CDepParser::parse_conll(const CCoNLLInput & sentence,
   sentence.toTwoStringVector(input);
 
   for (int i=0; i<nBest; ++i) {
-    // clear the outout sentences
+    // clear the output sentences
     retval[i].clear();
-    outout[i].clear();
+    output[i].clear();
     if (scores) scores[i] = 0; //pGenerator->score;
   }
 
-  int nr_results = work(false, input, outout, empty, nBest, scores);
+  int nr_results = work(false, input, output, empty, nBest, scores);
 
   for (int i=0; i<std::min(nBest, nr_results); ++i) {
-    // now make the conll format stype outout
+    // now make the conll format stype output
     retval[i].fromCoNLLInput(sentence);
-    retval[i].copyDependencyHeads(outout[i]);
+    retval[i].copyDependencyHeads(output[i]);
   }
 }
 
@@ -1266,7 +1266,7 @@ CDepParser::train_conll(const CCoNLLOutput &correct,
                         int round) {
 
   static CTwoStringVector sentence;
-  static CDependencyParse outout;
+  static CDependencyParse output;
   static CDependencyParse reference;
 
   assert(m_bCoNLL);
@@ -1283,7 +1283,7 @@ CDepParser::train_conll(const CCoNLLOutput &correct,
 
   // The following code does update for each processing stage
   m_nTrainingRound = round;
-  work(true , sentence , &outout , reference , 1 , 0);
+  work(true , sentence , &output , reference , 1 , 0);
 }
 
 /*---------------------------------------------------------------

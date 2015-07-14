@@ -1,10 +1,10 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
- *                                                         
- * test.cpp 
- *                                                          
- * Author: Yue Zhang                                         
- *                                                      
+ *
+ * test.cpp
+ *
+ * Author: Yue Zhang
+ *
  ****************************************************************/
 
 #define SIMPLE_HASH
@@ -58,11 +58,11 @@ void testreader() {
 void testconllio() {
    // io
    CCoNLLInput input;
-   CCoNLLOutput outout;
+   CCoNLLOutput output;
    while (std::cin >> input)
       std::cout << input;
-   while (std::cin >> outout) {
-      std::cout << outout;
+   while (std::cin >> output) {
+      std::cout << output;
    }
 }
 
@@ -89,7 +89,7 @@ void testconllfeats() {
    std::cin >> s;
    readCoNLLFeats(feats, s);
    for (unsigned i=0; i<feats.size(); ++i)
-      std::cout << feats[i] << ' '; 
+      std::cout << feats[i] << ' ';
    std::cout << std::endl;
    return;
 

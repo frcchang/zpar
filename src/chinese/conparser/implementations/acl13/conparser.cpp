@@ -22,13 +22,13 @@ using namespace TARGET_LANGUAGE::conparser;
 
 /*===============================================================
  *
- * CConParser - the conparser for TARGET_LANGUAGE 
+ * CConParser - the conparser for TARGET_LANGUAGE
  *
  *==============================================================*/
 
 /*---------------------------------------------------------------
- * 
- * getOrUpdateStackScore - manipulate the score from stack 
+ *
+ * getOrUpdateStackScore - manipulate the score from stack
  *
  *---------------------------------------------------------------*/
 
@@ -41,7 +41,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
    static unsigned long j;
 
 
-   static CTuple2<CWord, CConstituent> word_constituent; 
+   static CTuple2<CWord, CConstituent> word_constituent;
    static CTuple2<CTag, CConstituent> tag_constituent;
    static CTuple2<CTwoWords, CCFGSet> twoword_cfgset;
    static CTuple2<CWord, CCFGSet> word_cfgset;
@@ -63,7 +63,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 
    static CTuple3<CWord, CWord, CConstituent> biword_constituent;
    static CTuple3<CWord, CTag, CConstituent> wordtag_constituent;
-   
+
    static CTuple3<CWord, CTag, unsigned long long> wordtagint;
 
    static CTuple3<CTag, CTag, int> bitag_int;
@@ -250,7 +250,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 	      cast_weights->m_mapSYNN123w.getOrUpdateScore(retval, triword, action.code(), m_nScoreIndex, amount, round);
 	      cast_weights->m_mapSYNN3t.getOrUpdateScore(retval, last_char_cat_n3, action.code(), m_nScoreIndex, amount, round);
 	   }
-      
+
       if(!m_Context.s0->is_constituent())
       {
          // S0L
@@ -836,7 +836,7 @@ inline void CConParser::getOrUpdateStackScore( CWeight *cast_weights, CPackedSco
 		}
 
    }
-   
+
 
 
 
@@ -1098,7 +1098,7 @@ SCORE_TYPE CConParser::getGlobalScore(const CSentenceParsed &parsed) {
 
 /*---------------------------------------------------------------
  *
- * updateScores - update the score std::vector 
+ * updateScores - update the score std::vector
  *
  * This method is different from updateScoreVector in that
  * 1. It is for external call
@@ -1109,7 +1109,7 @@ SCORE_TYPE CConParser::getGlobalScore(const CSentenceParsed &parsed) {
  *---------------------------------------------------------------*/
 
 void CConParser::updateScores(const CSentenceParsed & parsed , const CSentenceParsed & correct , int round ) {
-   
+
    THROW("Unsupported method");
 }
 
@@ -1175,7 +1175,7 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForStates( const CStateItem *outout , const CStringVector &sentence , const CStateItem *correct ) {
+void CConParser::updateScoresForStates( const CStateItem *output , const CStringVector &sentence , const CStateItem *correct ) {
 
    //TRACE_WORD( "updating parameters ... ") ;
 
@@ -1185,19 +1185,19 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CString
    F = correct->HammingLoss();
    ASSERT(F==0,"correct"<<F);
 
-//   F = outout->FLoss(); 
-   F = outout->HammingLoss(); 
+//   F = output->FLoss();
+   F = output->HammingLoss();
    updateScoresForState( m_delta, correct, sentence, eAdd );
-   updateScoresForState( m_delta, outout, sentence, eSubtract );
+   updateScoresForState( m_delta, output, sentence, eSubtract );
 #else
    F = 1.0;
    updateScoresForState( m_delta, correct, sentence, eAdd );
-   updateScoresForState( m_delta, outout, sentence, eSubtract );
+   updateScoresForState( m_delta, output, sentence, eSubtract );
 #endif
 
 #ifdef TRAIN_MARGIN
-//   double tou = (std::sqrt(F)+outout->score-correct->score)/(m_delta->squareNorm());
-   double tou = (F+outout->score-correct->score)/(m_delta->squareNorm());
+//   double tou = (std::sqrt(F)+output->score-correct->score)/(m_delta->squareNorm());
+   double tou = (F+output->score-correct->score)/(m_delta->squareNorm());
    m_delta->scaleCurrent(tou, m_nTrainingRound);
 #endif
    static_cast<CWeight*>(static_cast<conparser::CWeight*>(m_weights))->addCurrent(m_delta, m_nTrainingRound);
@@ -1258,14 +1258,14 @@ void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CL
       constituent = CConstituent::encodeTmp(node.constituent.code(), node.temp);
 #endif
       vec.push_back(CLabeledBracket(begin, end, constituent));
-      if (node.is_constituent) 
+      if (node.is_constituent)
          brackets.push(vec.back());
    } //for
 }
 
 /*---------------------------------------------------------------
  *
- * updateScoresByLoss - update scores 
+ * updateScoresByLoss - update scores
  *
  *--------------------------------------------------------------*/
 
@@ -1311,7 +1311,7 @@ void CConParser::updateScoresByLoss( const CStateItem *output , const CStateItem
    ++oi;
 
    // now the main loop updating pair of action
-   // note that output must contain a smaller 
+   // note that output must contain a smaller
    // number of actions, due to early-update
    while (oi > 0 && ci > 0) {
       m_delta->clear();
@@ -1359,7 +1359,7 @@ void CConParser::getOrUpdateScore( CPackedScoreType<SCORE_TYPE, CAction::MAX> &r
  *
  * work - the working process shared by training and parsing
  *
- * Returns: makes a new instance of CSentenceParsed 
+ * Returns: makes a new instance of CSentenceParsed
  *
  *--------------------------------------------------------------*/
 
@@ -1371,7 +1371,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 #ifdef DEBUG
    clock_t total_start_time = clock();
 #endif
-   const int length = sentence.size() ; 
+   const int length = sentence.size() ;
 
    const static CStateItem *pGenerator ;
    const static CStateItem *pBestGen;
@@ -1412,7 +1412,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
    if (bTrain) bSkipLast = false;
 #endif
    lattice_index[1] = lattice+1;
-   if (bTrain) { 
+   if (bTrain) {
       correctState = lattice_index[0];
    }
    index=0;
@@ -1458,7 +1458,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 
          // load context
          m_Context.load(pGenerator, m_lCache, sentence, false);
-   
+
          //pGenerator->trace();
          // get actions
          m_rule->getActions(*pGenerator, &sentence, actions, charcandpos);
@@ -1476,7 +1476,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 
          if (actions.size() > 0)
             getOrUpdateStackScore(static_cast<CWeight*>(static_cast<conparser::CWeight*>(m_weights)), packedscores, pGenerator);
-         
+
          for (tmp_j=0; tmp_j<actions.size(); ++tmp_j) {
             scored_action.load(actions[tmp_j], pGenerator, packedscores[actions[tmp_j].code()]);
             beam.insertItem(&scored_action);
@@ -1485,7 +1485,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
                correct_action_scored = true;
             }
          }
-   
+
       } // done iterating generator item
 
 #ifdef SCALE
@@ -1519,7 +1519,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
          if (bTrain) {
             if ( pGenerator == correctState && beam.item(tmp_j)->action == correct_action ) {
                correctState = lattice_index[index+1];
-               assert (correctState->unaryreduces()<=UNARY_MOVES) ; 
+               assert (correctState->unaryreduces()<=UNARY_MOVES) ;
                bCorrect = true;
             }
          }
@@ -1535,12 +1535,12 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 #endif
 
       // update items if correct item jump out of the agenda
-      if (bTrain) { 
+      if (bTrain) {
          if (!bCorrect ) {
-            // note that if bCorrect == true then the correct state has 
+            // note that if bCorrect == true then the correct state has
             // already been updated, and the new value is one of the new states
             // among the newly produced from lattice[index+1].
-            correctState->Move(lattice_index[index+1], correct_action); 
+            correctState->Move(lattice_index[index+1], correct_action);
             correctState = lattice_index[index+1];
             lattice_index[index+1]->score = scored_correct_action.score;
             ++lattice_index[index+1];
@@ -1564,7 +1564,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
       // make sure that the correct item is stack top finally
       if ( pBestGen != correctState ) {
          if (!bCorrect) {
-            correctState->Move(lattice_index[index+1], correct_action); 
+            correctState->Move(lattice_index[index+1], correct_action);
             correctState = lattice_index[index+1];
             lattice_index[index+1]->score = scored_correct_action.score;
             assert(correct_action_scored); // scored_correct_act valid
@@ -1577,11 +1577,11 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
 
          updateScoresForStates(pBestGen, sentence, correctState) ;
 
-         //CSentenceParsed outout_sent;
+         //CSentenceParsed output_sent;
 
-         //pBestGen->GenerateTree( sentence, outout_sent );
+         //pBestGen->GenerateTree( sentence, output_sent );
 
-         //std::cout << outout_sent  << std::endl;
+         //std::cout << output_sent  << std::endl;
 
          //std::cout << pBestGen->score << std::endl;
 
@@ -1595,9 +1595,9 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
          //correctState->trace(&sentence);
          //pBestGen->trace(&sentence);
       }
-   } 
+   }
 
-   if (!retval) 
+   if (!retval)
       return true;
 
    //TRACE("Outputing sentence");
@@ -1613,7 +1613,7 @@ bool CConParser::work( const bool bTrain , const CStringVector &sentence , CSent
  *
  * parse - do constituent parsing to a sentence
  *
- * Returns: makes a new instance of CSentenceParsed 
+ * Returns: makes a new instance of CSentenceParsed
  *
  *--------------------------------------------------------------*/
 
@@ -1663,7 +1663,7 @@ void CConParser::train( const CSentenceParsed &correct , int round) {
    static CTwoStringVector wordtags;
    static CTwoStringVector partwords;
    static CTwoStringVector subwords;
-//   static CSentenceParsed outout ; 
+//   static CSentenceParsed output ;
 
    UnparseSentence( &correct, &sentence_input ) ;
    UnparseSentence( &correct, &wordtags ) ;
@@ -1770,8 +1770,8 @@ void CConParser::train( const CSentenceParsed &correct , int round) {
    	TRACE("error training data");
    	return;
    }
-//   work( true , sentence , &outout , correct , 1 , 0 ) ; 
-   work( true , sentence , 0 , correct , 1 , 0 ) ; 
+//   work( true , sentence , &output , correct , 1 , 0 ) ;
+   work( true , sentence , 0 , correct , 1 , 0 ) ;
 
 };
 /*---------------------------------------------------------------
@@ -1800,7 +1800,7 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
    //static CStringVector sentence;
    static CTwoStringVector wordtags;
    static CTwoStringVector partwords;
-//   static CSentenceParsed outout ;
+//   static CSentenceParsed output ;
 
    UnparseSentence( &correct, &sentence_input ) ;
    UnparseSentence( &correct, &wordtags ) ;

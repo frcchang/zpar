@@ -25,7 +25,7 @@ using namespace TARGET_LANGUAGE;
 
 void process(const std::string sInputFile, const std::string sOutputFile, const std::string sFeatureFile, unsigned long nBest, const bool bScores, const std::string &sSuperPath, bool bCoNLL, const std::string &sMetaPath) {
 
-   std::cout << "Parsing started" << std::endl;
+   std::cerr << "Parsing started" << std::endl;
 
    int time_start = clock();
 
@@ -46,7 +46,7 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    CTwoStringVector input_sent;
 #endif
    CCoNLLInput input_conll;
-   CDependencyParse *outout_sent; 
+   CDependencyParse *output_sent;
    CCoNLLOutput *output_conll;
    depparser::CSuperTag *supertags;
    std::ifstream *is_supertags = 0;
@@ -74,12 +74,12 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    }
 
    output_conll = 0;
-   outout_sent = 0;
+   output_sent = 0;
    if (bCoNLL)
       output_conll = new CCoNLLOutput[nBest];
    else
-      outout_sent = new CDependencyParse[nBest];
- 
+      output_sent = new CDependencyParse[nBest];
+
    // Read the next example
    if (bCoNLL)
       bReadSuccessful = ( (*is) >> input_conll );
@@ -99,16 +99,16 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
            (!bCoNLL && input_sent.size() > depparser::MAX_SENTENCE_SIZE) ) {
          WARNING("The sentence is longer than system limitation, skipping it.");
          for (unsigned i=0; i<nBest; ++i) {
-            if (bCoNLL) 
+            if (bCoNLL)
                output_conll[i].clear();
             else
-               outout_sent[i].clear();
+               output_sent[i].clear();
             if (bScores) scores[i]=0;
          }
       }
       else {
 
-         // Find decoder outout
+         // Find decoder output
          if (supertags) {
             if (bCoNLL)
                supertags->setSentenceSize( input_conll.size() );
@@ -120,19 +120,19 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
          if (bCoNLL)
             parser.parse_conll( input_conll , output_conll , nBest , scores );
          else
-            parser.parse( input_sent , outout_sent , nBest , scores ) ;
+            parser.parse( input_sent , output_sent , nBest , scores ) ;
 
       }
-      
+
       // Ouptut sent
       for (unsigned i=0; i<nBest; ++i) {
          if (bCoNLL)
             os << output_conll[i];
          else
-            os << outout_sent[i] ;
+            os << output_sent[i] ;
          if (bScores) *os_scores << scores[i] << std::endl;
       }
-      
+
       // Read the next example
       if (bCoNLL)
          bReadSuccessful = ( (*is) >> input_conll );
@@ -147,7 +147,7 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
    if (bCoNLL)
       delete [] output_conll;
    else
-      delete [] outout_sent ;
+      delete [] output_sent ;
    os.close();
 
    if (bScores) {
@@ -167,7 +167,7 @@ void process(const std::string sInputFile, const std::string sOutputFile, const 
       delete is_supertags;
    }
 
-   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+   std::cerr << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -180,31 +180,31 @@ int main(int argc, char* argv[]) {
 
 	//TODO This is temporary! Allow user to enter their own lexicons.
 #ifdef JOINT_MORPH
-	std::cout << "Loading lexicons...\n";
+	std::cerr << "Loading lexicons...\n";
 	bool bSuccess = TARGET_LANGUAGE::initLexicon("/home/cgomezr/en/train.conll",true);
-	std::cout << "Successfully loaded primary lexicon? " << bSuccess << "\n";
+	std::cerr << "Successfully loaded primary lexicon? " << bSuccess << "\n";
 	bSuccess = english::initLemmaLexicon("/home/cgomezr/multext-lexicons/en/wordform-improved.txt");
-	std::cout << "Successfully loaded the lemma lexicon? " << bSuccess << "\n";
+	std::cerr << "Successfully loaded the lemma lexicon? " << bSuccess << "\n";
 #endif
 
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("c", "", "process CoNLL format", "");
-      configurations.defineConfiguration("n", "N", "N best list outout", "1");
-      configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
+      configurations.defineConfiguration("n", "N", "N best list output", "1");
+      configurations.defineConfiguration("s", "", "output scores to output_file.scores", "");
       configurations.defineConfiguration("p", "path", "supertags", "");
 #ifdef SUPPORT_META_FEATURE_DEFINITION
       configurations.defineConfiguration("t", "path", "meta feature types", "");
 #endif
       // check arguments
       if (options.args.size() != 4) {
-         std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
+         std::cout << "Usage: " << argv[0] << " input_file output_file model_file" << std::endl;
          std::cout << configurations.message() << std::endl;
          return 1;
       }
       configurations.loadConfigurations(options.opts);
-   
+
       unsigned long nBest = 1;
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
          std::cout << "The N best specification must be an integer." << std::endl;
@@ -217,7 +217,7 @@ int main(int argc, char* argv[]) {
 #ifdef SUPPORT_META_FEATURE_DEFINITION
       sMetaPath = configurations.getConfiguration("t");
 #endif
-   
+
 //      if (bCoNLL)
 //         process_conll(options.args[1], options.args[2], options.args[3], nBest, bScores, sSuperPath);
 //      else

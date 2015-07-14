@@ -10,7 +10,7 @@
  ****************************************************************/
 
 #ifndef _DEPPARSER_IMPL_H
-#define _DEPPARSER_IMPL_H 
+#define _DEPPARSER_IMPL_H
 
 #include "depparser_base.h"
 
@@ -35,7 +35,7 @@ namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
- * CDepParser - the dependency parser for English 
+ * CDepParser - the dependency parser for English
  *
  *==============================================================*/
 
@@ -51,9 +51,9 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
+   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) {
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
-      m_nTrainingRound = 0; 
+      m_nTrainingRound = 0;
       m_nTotalErrors = 0;
       m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage;
       if (bTrain==false) m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage;
@@ -61,7 +61,7 @@ public:
    ~CDepParser() {
       delete m_weights;
    }
-   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) { 
+   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) {
       THROW("CDepParser: copy constructor Not supported!");
    }
 
@@ -72,7 +72,7 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+      std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
 
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);

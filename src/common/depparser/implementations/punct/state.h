@@ -5,30 +5,30 @@
 /*===============================================================
  *
  * CStateItem - the search state item, representing a partial
- *              candidate with shift reduce. 
+ *              candidate with shift reduce.
  *
- * Note abstd::cout members: there are two types of item properties;
- * The first is the stack, which changes during the process; 
- * The second is the incoming sentence, including m_lHeads, 
- * m_lDepsL and m_lDepsR, m_lDepNumL, m_lDepNumR etc, which 
+ * Note about members: there are two types of item properties;
+ * The first is the stack, which changes during the process;
+ * The second is the incoming sentence, including m_lHeads,
+ * m_lDepsL and m_lDepsR, m_lDepNumL, m_lDepNumR etc, which
  * records the properties of each input word so far.
  *
- * A state item is partial and do not include information abstd::cout
- * all words from the input sentence. Though m_lHeads, m_lDepsL 
- * and m_lDepsR are fixed arrays with MAX_SENTENCE_SIZE length, 
- * not all the elements from the arrays are used. The ACTIVE 
- * elements are from the input index 0 to m_nNextWord, inclusive. 
- * And a state item only captures information abstd::cout the active 
+ * A state item is partial and do not include information about
+ * all words from the input sentence. Though m_lHeads, m_lDepsL
+ * and m_lDepsR are fixed arrays with MAX_SENTENCE_SIZE length,
+ * not all the elements from the arrays are used. The ACTIVE
+ * elements are from the input index 0 to m_nNextWord, inclusive.
+ * And a state item only captures information about the active
  * sub section from input.
  *
- * The property for each input word need to be initialised. 
- * m_lHeads m_lDepsL etc could be initialised within the 
+ * The property for each input word need to be initialised.
+ * m_lHeads m_lDepsL etc could be initialised within the
  * clear() method. However, because the parsing process is
- * incremental, they can also be initialised lasily. 
- * Apart from the avoidance of unecessary assignments, one 
+ * incremental, they can also be initialised lasily.
+ * Apart from the avoidance of unecessary assignments, one
  * benefit of lazy initialisation is that we only need to copy
- * the active indexies when doing a copy operation. Therefore, 
- * this implementation takes the approach. 
+ * the active indexies when doing a copy operation. Therefore,
+ * this implementation takes the approach.
  * The initialisation of these values are in clear(), shift()
  * and arcright()
  *
@@ -115,7 +115,7 @@ public:
             return false;
       }
 #ifdef LABELED
-      for ( i=0; i<m_nNextWord; ++i ) 
+      for ( i=0; i<m_nNextWord; ++i )
          if ( m_lLabels[i] != item.m_lLabels[i] )
             return false;
 #endif
@@ -140,17 +140,17 @@ public:
    inline int stackitem( const int &index ) const { assert(index<m_Stack.size()); return m_Stack[index]; }
 
    inline int numberoflocalheads() const { return m_nLocalHeads; }
-   inline int lastlocalhead() const { 
-      for (int i=m_Stack.size()-1; i>-1; i--) 
-         if (m_lHeads[m_Stack.at(i)]==DEPENDENCY_LINK_NO_HEAD) 
-            return m_Stack.at(i); 
-      assert(0==1); 
+   inline int lastlocalhead() const {
+      for (int i=m_Stack.size()-1; i>-1; i--)
+         if (m_lHeads[m_Stack.at(i)]==DEPENDENCY_LINK_NO_HEAD)
+            return m_Stack.at(i);
+      assert(0==1);
    }
-   inline bool afterreduce() const { 
+   inline bool afterreduce() const {
 #ifdef LABELED
       return getAction(m_nLastAction)==REDUCE;
 #else
-      return m_nLastAction==REDUCE; 
+      return m_nLastAction==REDUCE;
 #endif
 }
 
@@ -178,9 +178,9 @@ public:
    inline SCORE_TYPE &stackscore() { return m_nStackScore; }
    inline SCORE_TYPE score() const { return m_nStackScore + m_nLinkScore; }
 
-   void clear() { 
-      m_nNextWord = 0; m_Stack.clear(); 
-      m_nLinkScore = 0; m_nStackScore = 0; 
+   void clear() {
+      m_nNextWord = 0; m_Stack.clear();
+      m_nLinkScore = 0; m_nStackScore = 0;
       m_nLocalHeads = 0; m_nLastAction = NO_ACTION;
       ClearNext();
    }
@@ -191,10 +191,10 @@ public:
       m_nLocalHeads = item.m_nLocalHeads;
       m_nLastAction = item.m_nLastAction;
       m_nLinkScore = item.m_nLinkScore;
-      m_nStackScore = item.m_nStackScore; 
+      m_nStackScore = item.m_nStackScore;
       for ( int i=0; i<=m_nNextWord; ++i ){ // only copy active word (including m_nNext)
-         m_lHeads[i] = item.m_lHeads[i];  
-         m_lDepsL[i] = item.m_lDepsL[i]; 
+         m_lHeads[i] = item.m_lHeads[i];
+         m_lDepsL[i] = item.m_lDepsL[i];
          m_lDepsR[i] = item.m_lDepsR[i];
          m_lDepNumL[i] = item.m_lDepNumL[i];
          m_lDepNumR[i] = item.m_lDepNumR[i];
@@ -219,13 +219,13 @@ public:
 #ifdef LABELED
    void ArcLeft(unsigned long lab, const std::vector<unsigned> &lPunct) {
 #else
-   void ArcLeft(const std::vector<unsigned> &lPunct) { 
+   void ArcLeft(const std::vector<unsigned> &lPunct) {
 #endif
 #else // PUNCT
 #ifdef LABELED
    void ArcLeft(unsigned long lab) {
 #else
-   void ArcLeft() { 
+   void ArcLeft() {
 #endif
 #endif // PUNCT
       assert( m_Stack.size() > 0 ) ;
@@ -259,13 +259,13 @@ public:
 #ifdef LABELED
    void ArcRight(unsigned long lab, const std::vector<unsigned> &lPunct) {
 #else
-   void ArcRight(const std::vector<unsigned> &lPunct) { 
+   void ArcRight(const std::vector<unsigned> &lPunct) {
 #endif
 #else // PUNCT
 #ifdef LABELED
    void ArcRight(unsigned long lab) {
 #else
-   void ArcRight() { 
+   void ArcRight() {
 #endif
 #endif // PUNCT
       assert( m_Stack.size() > 0 ) ;
@@ -307,7 +307,7 @@ public:
       m_nLastAction=SHIFT;
 #endif
    }
- 
+
    // the reduce action does popping
    void Reduce() {
       assert( m_lHeads[m_Stack.back()] != DEPENDENCY_LINK_NO_HEAD ) ;
@@ -324,7 +324,7 @@ public:
 
    // this is used for the convenience of scoring and updating
    void PopRoot() {
-      assert( m_Stack.size() == 1 && m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ; // make sure only one root item in stack 
+      assert( m_Stack.size() == 1 && m_lHeads[m_Stack.back()] == DEPENDENCY_LINK_NO_HEAD ) ; // make sure only one root item in stack
 #ifdef LABELED
       m_lLabels[m_Stack.back()] = CDependencyLabel::ROOT;
       m_nLastAction = encodeAction(POP_ROOT, CDependencyLabel::ROOT);
@@ -414,7 +414,7 @@ public:
 
 public:
 
-   // returns true is the next word advances -- by shift or arcright. 
+   // returns true is the next word advances -- by shift or arcright.
 #ifdef PUNCT
 #ifdef LABELED
    bool StandardMoveStep( const CDependencyParse &tree, const std::vector<CDependencyLabel>&m_lCacheLabel, const std::vector<unsigned> &lPunct ) {
@@ -474,28 +474,28 @@ public:
       // the second case is that no words on the stack links nextword, and nextword does not link to stack word
       if ( tree[m_nNextWord].head == DEPENDENCY_LINK_NO_HEAD || // the root or
            tree[m_nNextWord].head > m_nNextWord ) { // head on the right
-         Shift(); 
+         Shift();
          return true;
       }
       // the last case is that the next words links to stack word
-      else {                                        // head on the left 
+      else {                                        // head on the left
          assert( m_Stack.size() > 0 );
-         top = m_Stack.back(); 
+         top = m_Stack.back();
          if ( tree[m_nNextWord].head == top ) {     // the next word deps on stack top
 #ifdef PUNCT
 #ifdef LABELED
             assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
             ArcRight(m_lCacheLabel[m_nNextWord].code(), lPunct);
-#else            
+#else
             ArcRight(lPunct);
-#endif            
+#endif
 #else // PUNCT
 #ifdef LABELED
             assert(m_lCacheLabel[m_nNextWord].str()==tree[m_nNextWord].label);
             ArcRight(m_lCacheLabel[m_nNextWord].code());
-#else            
+#else
             ArcRight();
-#endif            
+#endif
 #endif // PUNCT
             return true;
          }
@@ -521,19 +521,19 @@ public:
 //for (int i=0; i<item->m_Stack.size(); ++i) std::cout << item->m_Stack[i] << " "; std::cout << std::endl;
          assert( m_Stack.size() > item->m_Stack.size() );
          top = m_Stack.back();
-         if ( item->m_lHeads[top] == m_nNextWord ) 
+         if ( item->m_lHeads[top] == m_nNextWord )
 #ifdef LABELED
             return encodeAction(ARC_LEFT, item->m_lLabels[top]);
 #else
             return ARC_LEFT;
 #endif
-         else if ( item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD ) 
+         else if ( item->m_lHeads[top] != DEPENDENCY_LINK_NO_HEAD )
 #ifdef LABELED
             return encodeAction(REDUCE, CDependencyLabel::NONE);
 #else
             return REDUCE;
 #endif
-         else 
+         else
 #ifdef LABELED
             return encodeAction(POP_ROOT, CDependencyLabel::ROOT);
 #else
@@ -572,9 +572,9 @@ public:
 #endif
       }
       // the last case is that the next words links to stack word
-      else {                                        // head on the left 
+      else {                                        // head on the left
          assert( m_Stack.size() > 0 );
-         top = m_Stack.back(); 
+         top = m_Stack.back();
          if ( item->head(m_nNextWord) == top ) {    // the next word deps on stack top
 #ifdef LABELED
             return encodeAction(ARC_RIGHT, item->m_lLabels[m_nNextWord]);
@@ -593,42 +593,42 @@ public:
    }
 
 #ifdef PUNCT
-   void GenerateTree( const CTwoStringVector &input, const std::vector<unsigned> &lOriginalIndex, CDependencyParse &outout ) const {
+   void GenerateTree( const CTwoStringVector &input, const std::vector<unsigned> &lOriginalIndex, CDependencyParse &output ) const {
 #else
-   void GenerateTree( const CTwoStringVector &input, CDependencyParse &outout ) const {
+   void GenerateTree( const CTwoStringVector &input, CDependencyParse &output ) const {
 #endif
 #ifdef PUNCT
-      unsigned std::coutindex=0;
+      unsigned outindex=0;
 #endif
       unsigned nextindex;
-      outout.clear();
+      output.clear();
       for ( int i=0; i<size(); ++i ) {
 #ifdef PUNCT
          nextindex=lOriginalIndex[i];
-         std::coutindex = outout.size();
-         assert(nextindex>=std::coutindex);
+         outindex = output.size();
+         assert(nextindex>=outindex);
          // append punctuations
-         for (int j=std::coutindex; j<nextindex; ++j)
+         for (int j=outindex; j<nextindex; ++j)
 #ifdef LABELED
-            outout.push_back( CLabeledDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
+            output.push_back( CLabeledDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
 #else
-            outout.push_back( CDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
+            output.push_back( CDependencyTreeNode( input.at(j).first , input.at(j).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
 #endif
 #else
          nextindex=i;
 #endif
          // append
 #ifdef LABELED
-         outout.push_back( CLabeledDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i] == DEPENDENCY_LINK_NO_HEAD?DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
+         output.push_back( CLabeledDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i] == DEPENDENCY_LINK_NO_HEAD?DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] , CDependencyLabel(m_lLabels[i]).str() ) ) ;
 #else
-         outout.push_back( CDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i]==DEPENDENCY_LINK_NO_HEAD ? DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] ) ) ;
+         output.push_back( CDependencyTreeNode( input.at(nextindex).first , input.at(nextindex).second , m_lHeads[i]==DEPENDENCY_LINK_NO_HEAD ? DEPENDENCY_LINK_NO_HEAD:lOriginalIndex[m_lHeads[i]] ) ) ;
 #endif
       }
-      for (int i=outout.size(); i<input.size(); ++i) {
+      for (int i=output.size(); i<input.size(); ++i) {
 #ifdef LABELED
-         outout.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
+         output.push_back( CLabeledDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD , "PUNC" ) ) ;
 #else
-         outout.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
+         output.push_back( CDependencyTreeNode( input.at(i).first , input.at(i).second , DEPENDENCY_LINK_NO_HEAD ) ) ;
 #endif
       }
    }

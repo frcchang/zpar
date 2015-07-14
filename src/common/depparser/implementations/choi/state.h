@@ -698,8 +698,8 @@ public:
 #endif  //  end for LABELED
                                             ); return; }
       default: {
-                 std::cout << ac << std::endl;
-                 std::cout << action::DecodeUnlabeledAction(ac) << std::endl;
+                 std::cerr << ac << std::endl;
+                 std::cerr << action::DecodeUnlabeledAction(ac) << std::endl;
                  assert(0==1);
                }
     }

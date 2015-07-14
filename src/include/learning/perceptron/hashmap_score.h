@@ -39,7 +39,7 @@ public:
 
 public:
 //   CScoreMap(std::string input_name) : name(input_name) , m_zero() {}
-   CScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) , m_zero() , name(input_name) , initialized(bInitMap) , count(0) 
+   CScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : CHashMap<K,CScore<SCORE_TYPE> >(TABLE_SIZE, bInitMap) , m_zero() , name(input_name) , initialized(bInitMap) , count(0)
 #ifdef NO_NEG_FEATURE
 , m_positive(this)
 #endif
@@ -62,7 +62,7 @@ public:
 
    virtual inline void updateScore( const K &key , const SCORE_TYPE &amount , const int &round ) {
 #ifdef NO_NEG_FEATURE
-      if (m_positive->element(key)) 
+      if (m_positive->element(key))
 #endif // update can only happen with defined features
 			{
 //				fprintf(stderr, "update feature by %.2f\n", amount);
@@ -156,7 +156,7 @@ public:
 #ifdef DEBUG
 public:
    void trace() {
-      std::cout << name << ": ";
+      std::cerr << name << ": ";
       CHashMap< K , CScore<SCORE_TYPE> >::trace();
    }
 #endif

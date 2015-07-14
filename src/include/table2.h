@@ -53,9 +53,9 @@ public:
       os << std::endl;
       for (index2 = 0; index2 < j.size2;  ++index2) {
          for (index1 = 0; index1 < j.size1; ++index1) {
-            std::cout << j.table[index1*j.size2+index2] << " ";
+            std::cerr << j.table[index1*j.size2+index2] << " ";
          }
-         std::cout << std::endl;
+         std::cerr << std::endl;
       }
       return os;
    }

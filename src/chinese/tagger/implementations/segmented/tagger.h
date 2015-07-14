@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /***************************************************************
  *
- * The tagger's agenda n chart implementation 
+ * The tagger's agenda n chart implementation
  *
  * Yue Zhang, 2007
  *
@@ -28,11 +28,11 @@ protected:
    int m_nScoreIndex;
 
 public:
-   CTagger(std::string sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , m_WordCache(nMaxSentSize) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, bSegmentationRules) { 
+   CTagger(std::string sFeatureDBPath, bool bTrain, unsigned long nMaxSentSize, bool bSegmentationRules) : m_Agenda(tagger::AGENDA_SIZE) , m_WordCache(nMaxSentSize) , CTaggerBase(sFeatureDBPath, bTrain, nMaxSentSize, bSegmentationRules) {
       if (bTrain) m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eNonAverage; else m_nScoreIndex = CScore<tagger::SCORE_TYPE>::eAverage;
    }
    virtual ~CTagger() {}
-   
+
 public:
    void loadKnowledge(const std::string &sKnowledgePath) {
       THROW("The segmented pos tagger does not support knowledges.");
@@ -46,11 +46,11 @@ public:
    tagger::SCORE_TYPE getLocalScore(const CStringVector*, tagger::CStateItem*, unsigned long);
 
    void updateScores(const CTwoStringVector* tagged, const CTwoStringVector* correct, unsigned long round);
-   void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* outout, unsigned long index, unsigned long round);
+   void updateLocalFeatureVector(SCORE_UPDATE method, const CTwoStringVector* output, unsigned long index, unsigned long round);
 
-   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
+   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) {
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);
-      m_weights->saveScores(); 
+      m_weights->saveScores();
    }
 };
 

@@ -14,11 +14,11 @@ namespace spanish {
 
 /*===============================================================
  *
- * definitions abstd::cout tags 
+ * definitions about tags
  *
  * CTag is defined as unsigned long integer, which is easier to store.
  * The value of CTag is defined by the index in ES09_TAG_STRINGS + 1.
- *  
+ *
  *==============================================================*/
 
 // the tag set
@@ -65,7 +65,7 @@ enum ES09_TAG_CONSTANTS {
 };
 
 const bool ES09_TAG_CLOSED[] = {
-   false, 
+   false,
    true,
    true,
 
