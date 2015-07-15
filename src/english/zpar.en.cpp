@@ -31,7 +31,7 @@ using namespace english;
  *==============================================================*/
 
 void tag(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
-   std::cout << "Tagging started" << std::endl;
+   std::cerr << "Tagging started" << std::endl;
    int time_start = clock();
    std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
    CTagger *tagger;
@@ -39,34 +39,34 @@ void tag(const std::string sInputFile, const std::string sOutputFile, const std:
 //   if (sKnowledgeBase.size())
 //      tagger.loadTagDictionary(sKnowledgeBase);
    CSentenceReader input_reader(sInputFile);
-   CSentenceWriter outout_writer(sOutputFile);
+   CSentenceWriter output_writer(sOutputFile);
    CStringVector *input_sent = new CStringVector;
-   CTwoStringVector *outout_sent;
+   CTwoStringVector *output_sent;
 
    int nCount=0;
 
    const unsigned nBest = 1;
-   outout_sent = new CTwoStringVector[nBest];
+   output_sent = new CTwoStringVector[nBest];
 
    while( input_reader.readSegmentedSentenceAndTokenize(input_sent) ) {
       TRACE("Sentence " << nCount);
       ++ nCount;
       //
-      // Find decoder outout
+      // Find decoder output
       //
-      tagger->tag(input_sent, outout_sent, nBest, NULL);
+      tagger->tag(input_sent, output_sent, nBest, NULL);
       //
       // Ouptut sent
       //
       for (int i=0; i<nBest; ++i)
-         outout_writer.writeSentence(outout_sent+i, '/');
+         output_writer.writeSentence(output_sent+i, '/');
    }
    delete input_sent;
-   delete [] outout_sent;
+   delete [] output_sent;
 
    delete tagger;
 
-   std::cout << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+   std::cerr << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -76,7 +76,7 @@ void tag(const std::string sInputFile, const std::string sOutputFile, const std:
  *==============================================================*/
 
 void parse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
-   std::cout << "Parsing started" << std::endl;
+   std::cerr << "Parsing started" << std::endl;
    int time_start = clock();
    std::ostream *outs; if (sOutputFile=="") outs=&std::cout; else outs = new std::ofstream(sOutputFile.c_str());
    std::string sTaggerFeatureFile = sFeaturePath + "/tagger";
@@ -85,14 +85,14 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/conparser");
-   std::cout << "[tagger] ";
+   std::cerr << "[tagger] ";
    CTagger tagger(sTaggerFeatureFile, false);
-   std::cout << "[parser] ";
+   std::cerr << "[parser] ";
    CConParser conparser(sParserFeatureFile, false);
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
    CTwoStringVector *tagged_sent = new CTwoStringVector;
-   english::CCFGTree *outout_sent = new english::CCFGTree;
+   english::CCFGTree *output_sent = new english::CCFGTree;
 
    unsigned nCount=0;
 
@@ -106,16 +106,16 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
          input_sent->pop_back();
       }
       tagger.tag(input_sent, tagged_sent, 1, NULL);
-      conparser.parse(*tagged_sent, outout_sent);
+      conparser.parse(*tagged_sent, output_sent);
       // Ouptut sent
-      (*outs) << outout_sent->str_unbinarized() << std::endl;
+      (*outs) << output_sent->str_unbinarized() << std::endl;
    }
    delete input_sent;
    delete tagged_sent;
-   delete outout_sent;
+   delete output_sent;
 
    if (sOutputFile!="") delete outs;
-   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+   std::cerr << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -125,7 +125,7 @@ void parse(const std::string sInputFile, const std::string sOutputFile, const st
  *==============================================================*/
 
 void depparse(const std::string sInputFile, const std::string sOutputFile, const std::string sFeaturePath) {
-   std::cout << "Parsing started" << std::endl;
+   std::cerr << "Parsing started" << std::endl;
    int time_start = clock();
    int time_one;
    std::ostream *outs; if (sOutputFile=="") outs=&std::cout; else outs = new std::ofstream(sOutputFile.c_str());
@@ -135,9 +135,9 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
       THROW("Tagger model does not exists. It should be put at model_path/tagger");
    if (!FileExists(sParserFeatureFile))
       THROW("Parser model does not exists. It should be put at model_path/depparser");
-   std::cout << "[tagger] ";
+   std::cerr << "[tagger] ";
    CTagger tagger(sTaggerFeatureFile, false);
-   std::cout << "[parser] ";
+   std::cerr << "[parser] ";
    CDepParser depparser(sParserFeatureFile, false);
    CSentenceReader input_reader(sInputFile);
    CStringVector *input_sent = new CStringVector;
@@ -166,7 +166,7 @@ void depparse(const std::string sInputFile, const std::string sOutputFile, const
    delete parsed_sent;
 
    if (sOutputFile!="") delete outs;
-   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+   std::cerr << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -179,10 +179,10 @@ int main(int argc, char* argv[]) {
    try {
       COptions options(argc, argv);
       CConfigurations configurations;
-      configurations.defineConfiguration("o", "{t|d|c}", "outout format; 't' pos-tagged format in sentences, 'd' refers to dependency parse tree format, and 'c' refers to constituent parse tree format", "d");
+      configurations.defineConfiguration("o", "{t|d|c}", "output format; 't' pos-tagged format in sentences, 'd' refers to dependency parse tree format, and 'c' refers to constituent parse tree format", "d");
 
       if (options.args.size() < 2 || options.args.size() > 4) {
-         std::cout << "\nUsage: " << argv[0] << " feature_path [input_file [outout_file]]" << std::endl;
+         std::cout << "\nUsage: " << argv[0] << " feature_path [input_file [output_file]]" << std::endl;
          std::cout << configurations.message() << std::endl;
          return 1;
       }

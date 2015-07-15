@@ -18,7 +18,7 @@ class CScore;
 template<typename SCORE_TYPE>
 std::istream & operator >> (std::istream &is, CScore<SCORE_TYPE> &score) {
    char c ;
-   ASSERT(is >> score[0], "The first element of CScore cannot be read."); 
+   ASSERT(is >> score[0], "The first element of CScore cannot be read.");
    ASSERT((is >> c) && c=='/', "The separator CScore cannot be read");
    ASSERT(is >> score[1], "The second element of CScore cannot be read");
    return is ;
@@ -63,7 +63,7 @@ public:
    void scaleCurrent(const SCORE_TYPE &scale, const int &round=0) {assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}total-=current;current*=scale;total+=current;}
    //void updateCurrent(SCORE_TYPE added, int round=0) {if (round>=lastupdate){updateAverage(round);total+=added;lastupdate=round;}current+=added; }
    void updateAverage(const int &round=0) {if (round>lastupdate)total += current*(round-lastupdate);
-   else if (round<lastupdate) std::cout << "Round is: "<<round<<"<"<<lastupdate<<std::endl;}
+   else if (round<lastupdate) std::cerr << "Round is: "<<round<<"<"<<lastupdate<<std::endl;}
 };
 
 #endif

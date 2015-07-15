@@ -65,14 +65,14 @@ public:
       void validate() {
          // when the next item is at the end of the bucket, move on
          assert(m_nBucket < TABLE_SIZE);
-         while (m_entry == 0) { 
-            if (m_nBucket == TABLE_SIZE-1) 
-               return; 
-            else { 
-               m_entry = m_parent->m_buckets[++m_nBucket]; 
-               continue; 
-            } 
-         } 
+         while (m_entry == 0) {
+            if (m_nBucket == TABLE_SIZE-1)
+               return;
+            else {
+               m_entry = m_parent->m_buckets[++m_nBucket];
+               continue;
+            }
+         }
       }
 
    public:
@@ -84,16 +84,16 @@ public:
       bool operator != (const iterator &it) const { return !((*this)==it);}
       bool operator == (const iterator &it) const { return m_parent == it.m_parent && m_nBucket == it.m_nBucket && m_entry == it.m_entry; }
       // move to next places
-      void operator ++ () { 
+      void operator ++ () {
          assert(m_entry != 0);
-         m_entry=m_entry->m_next ;  
+         m_entry=m_entry->m_next ;
          validate();
       }
       bool valid() const { if (m_nBucket < 0 || m_nBucket > TABLE_SIZE-1 || m_entry == 0) return false; return true; }
 
       const K &first() { return m_entry->m_key; }
       V &second() { return m_entry->m_value; }
-   }; 
+   };
 
    //===============================================================
    //
@@ -112,14 +112,14 @@ public:
       void validate() {
          // when the next item is at the end of the bucket, move on
          assert(m_nBucket < TABLE_SIZE);
-         while (m_entry == 0) { 
-            if (m_nBucket == TABLE_SIZE-1) 
-               return; 
-            else { 
-               m_entry = m_parent->m_buckets[++m_nBucket]; 
-               continue; 
-            } 
-         } 
+         while (m_entry == 0) {
+            if (m_nBucket == TABLE_SIZE-1)
+               return;
+            else {
+               m_entry = m_parent->m_buckets[++m_nBucket];
+               continue;
+            }
+         }
       }
 
    public:
@@ -129,16 +129,16 @@ public:
       bool operator != (const const_iterator &it) const { return !((*this)==it);}
       bool operator == (const const_iterator &it) const { return m_parent == it.m_parent && m_nBucket == it.m_nBucket && m_entry == it.m_entry; }
       // move to next places
-      void operator ++ () { 
+      void operator ++ () {
          assert(m_entry != 0);
-         m_entry=m_entry->m_next ;  
+         m_entry=m_entry->m_next ;
          validate();
       }
       bool valid() const { if (m_nBucket < 0 || m_nBucket > TABLE_SIZE-1 || m_entry == 0) return false; return true; }
 
       const K &first() { return m_entry->m_key; }
       const V &second() { return m_entry->m_value; }
-   }; 
+   };
 
    //===============================================================
 
@@ -146,9 +146,9 @@ protected:
    CEntry* m_buckets[TABLE_SIZE];
 public:
    CSmallHashMap() { memset(m_buckets, 0, TABLE_SIZE*sizeof(CEntry*)); }
-      
-   CSmallHashMap(const CSmallHashMap& wordmap) { 
-      THROW("CSmallHashMap does not support copy constructor!"); 
+
+   CSmallHashMap(const CSmallHashMap& wordmap) {
+      THROW("CSmallHashMap does not support copy constructor!");
    }
    virtual ~CSmallHashMap() { }
 
@@ -159,10 +159,10 @@ protected:
    static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
 
 public:
-   V &operator[] (const K &key) { 
-      CEntry* entry = getEntry(key); 
+   V &operator[] (const K &key) {
+      CEntry* entry = getEntry(key);
       if (entry==0) {
-         entry = getEntry(key) = getPool().allocate(); 
+         entry = getEntry(key) = getPool().allocate();
          entry->m_key = key;
          return entry->m_value;
       }
@@ -177,12 +177,12 @@ public:
          }
       }
       entry->m_next = getPool().allocate();
-      entry->m_next->m_key = key;   
+      entry->m_next->m_key = key;
       return entry->m_next->m_value;
    }
    void insert (const K &key, const V &val) { (*this)[key] = val; }
-   const V &find (const K &key, const V &val) const { 
-      const CEntry*entry=getEntry(key); 
+   const V &find (const K &key, const V &val) const {
+      const CEntry*entry=getEntry(key);
       while (entry) {
          if (entry->m_key == key)
             return entry->m_value;
@@ -191,22 +191,22 @@ public:
       }
       return val;
    }
-   bool findorinsert (const K &key, const V &val, V &retval) { 
-      CEntry*entry=getEntry(key); 
-      if (entry == 0) { 
-         retval = val; 
-         entry= getEntry(key) =getPool().allocate(); 
+   bool findorinsert (const K &key, const V &val, V &retval) {
+      CEntry*entry=getEntry(key);
+      if (entry == 0) {
+         retval = val;
+         entry= getEntry(key) =getPool().allocate();
          entry->m_key = key;
-         entry->m_value = val; 
-         return true; 
-       } 
+         entry->m_value = val;
+         return true;
+       }
        while (true) {
           assert (entry);
           if (entry->m_key == key) {
              retval = entry->m_value;
              return false;
           }
-          else if (entry->m_next==0) 
+          else if (entry->m_next==0)
              break;
           else
              entry = entry->m_next;
@@ -218,8 +218,8 @@ public:
        retval = val;
        return true;
    }
-   bool element (const K &key) const { 
-      CEntry*entry=getEntry(key); 
+   bool element (const K &key) const {
+      CEntry*entry=getEntry(key);
       while (entry) {
          if (entry->m_key == key)
             return true;
@@ -230,29 +230,29 @@ public:
    }
 
 public:
-   iterator begin() { 
-      return iterator(this, 0, m_buckets[0]); 
+   iterator begin() {
+      return iterator(this, 0, m_buckets[0]);
    }
-   iterator end() { 
-      return iterator(this, TABLE_SIZE-1, 0); 
+   iterator end() {
+      return iterator(this, TABLE_SIZE-1, 0);
    }
-   const_iterator begin() const { 
-      return const_iterator(this, 0, m_buckets[0]); 
+   const_iterator begin() const {
+      return const_iterator(this, 0, m_buckets[0]);
    }
-   const_iterator end() const { 
-      return const_iterator(this, TABLE_SIZE-1, 0); 
+   const_iterator end() const {
+      return const_iterator(this, TABLE_SIZE-1, 0);
    }
 
 public:
-   void operator = (const CSmallHashMap& wordmap) { 
-      THROW("CSmallHashMap does not support copy constructor!"); 
+   void operator = (const CSmallHashMap& wordmap) {
+      THROW("CSmallHashMap does not support copy constructor!");
    }
 
 public:
    bool empty() const { for (unsigned i=0; i<TABLE_SIZE; ++i) if (getEntry(i)) return false; return true;}
-#ifdef DEBUG 
-   void trace() { 
-      std::cout << "tracing size:amount" << std::endl;
+#ifdef DEBUG
+   void trace() {
+      std::cerr << "tracing size:amount" << std::endl;
       std::map<unsigned, unsigned> statistic;
       for (unsigned i=0; i<TABLE_SIZE; ++i) {
          unsigned size = 0;
@@ -266,8 +266,8 @@ public:
       std::map<unsigned, unsigned>::iterator it;
       for (it=statistic.begin(); it!=statistic.end(); ++it)
          if (it->second != 0)
-            std::cout << it->first << ':' << it->second << " (" << float(it->second)/TABLE_SIZE << ")" << std::endl;
-      std::cout << "done" << std::endl;
+            std::cerr << it->first << ':' << it->second << " (" << float(it->second)/TABLE_SIZE << ")" << std::endl;
+      std::cerr << "done" << std::endl;
    }
 #endif
 
@@ -315,7 +315,7 @@ std::ostream & operator << (std::ostream &os, const CSmallHashMap<K, V, TABLE_SI
    else
       os << " "; // non-empty { a , b , c }
    while (it!=score_map.end()) {
-      if (it!=score_map.begin()) 
+      if (it!=score_map.begin())
          os << " , ";
       os << it.first() << " : " << it.second();
       ++it;

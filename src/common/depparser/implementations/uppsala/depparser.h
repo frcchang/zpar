@@ -10,7 +10,7 @@
  ****************************************************************/
 
 #ifndef _DEPPARSER_IMPL_H
-#define _DEPPARSER_IMPL_H 
+#define _DEPPARSER_IMPL_H
 
 #include "depparser_base.h"
 
@@ -35,7 +35,7 @@ namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
- * CDepParser - the dependency parser for English 
+ * CDepParser - the dependency parser for English
  *
  *==============================================================*/
 
@@ -62,10 +62,10 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
+   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) {
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(depparser::AGENDA_SIZE);
       m_weights = new depparser :: CWeight(sFeatureDBPath, bTrain );
-      m_nTrainingRound = 0; 
+      m_nTrainingRound = 0;
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage ;
    }
@@ -73,7 +73,7 @@ public:
       delete m_Agenda;
       delete m_weights;
    }
-   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) { 
+   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) {
       assert(1==0);
    }
 
@@ -87,7 +87,7 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+      std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
    void updateScores(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
@@ -96,9 +96,9 @@ private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
    template<typename CCoNLLInputOrOutput>
-   void initCoNLLCache( const CCoNLLInputOrOutput &sentence ) ; 
+   void initCoNLLCache( const CCoNLLInputOrOutput &sentence ) ;
 
-   void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ;
 
    // get the global score for a parsed sentence or section
    inline depparser::SCORE_TYPE getOrUpdateArcScore( const int &head_index, const int &dep_index, const int &sibling_index, depparser::SCORE_TYPE amount=0, int round=0 );
@@ -110,9 +110,9 @@ private:
 #endif
 
    // update the built-in weight std::vector for this feature object specifically
-   void updateScoresForStates( const depparser::CStateItem *outout , const depparser::CStateItem *correct , 
+   void updateScoresForStates( const depparser::CStateItem *output , const depparser::CStateItem *correct ,
                                depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;
-   inline void updateScoreForState( const depparser::CStateItem *outout , const depparser::SCORE_TYPE &amount ) ;
+   inline void updateScoreForState( const depparser::CStateItem *output , const depparser::SCORE_TYPE &amount ) ;
 
 
    // helper method
@@ -125,7 +125,7 @@ private:
    inline void arcleft( depparser::CStateItem *item ) ;
    inline void arcright( depparser::CStateItem *item ) ;
 #endif
-   inline void poproot( depparser::CStateItem *item ) ;  
+   inline void poproot( depparser::CStateItem *item ) ;
 
 };
 

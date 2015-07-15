@@ -17,7 +17,7 @@
 
 /*===============================================================
  *
- * definitions abstd::cout tag 
+ * definitions about tag
  *
  *==============================================================*/
 
@@ -29,13 +29,13 @@ private:
     * the tokenizer
     *
     *==============================================================*/
-   
+
    class CDependencyLabelTokenizer : public CTokenizer<std::string, 256> {
-      public: 
+      public:
          CDependencyLabelTokenizer() : CTokenizer<std::string, 256>(0) {
             lookup("-NONE-");
             lookup("-ROOT-");
-         } 
+         }
          virtual ~CDependencyLabelTokenizer() {}
    };
 
@@ -78,7 +78,7 @@ public:
          m_code = NONE;
          return;
       }
-      m_code=getTokenizer().lookup(s); 
+      m_code=getTokenizer().lookup(s);
       COUNT = getTokenizer().count();
       TRACE_IF(COUNT>LAST+1, "New label:"<<this->str());
       LAST = COUNT-1;
@@ -87,12 +87,12 @@ public:
    void load(const unsigned long &u) {
       m_code = u;
    }
-   const std::string &str() const { 
-      return getTokenizer().key(m_code); 
+   const std::string &str() const {
+      return getTokenizer().key(m_code);
    }
 
    void clear() { m_code=NONE; }
-}; 
+};
 inline std::istream & operator >> (std::istream &is, CDependencyLabel &label) {
    std::string s;
    is >> s;

@@ -6,7 +6,7 @@
 
 /*===============================================================
  *
- * CStateNode - tree nodes 
+ * CStateNode - tree nodes
  *
  *==============================================================*/
 
@@ -43,14 +43,14 @@ public:
    virtual ~CStateNode() {}
 public:
    bool valid() const { return id!=-1; }
-   void clear() { 
+   void clear() {
       this->id = -1;
       this->type = CHAR_B;
-      this->temp = 0; 
+      this->temp = 0;
       this->constituent.clear();
       this->pos = CTag::NONE;
-      this->left_child = 0; 
-      this->right_child = 0; 
+      this->left_child = 0;
+      this->right_child = 0;
       this->word_head = 0;
       this->word_prev = 0;
       this->word_last = 0;
@@ -60,11 +60,11 @@ public:
    }
    void set(const int &id, const NODE_TYPE &type, const bool &temp, const unsigned long &constituent, const unsigned &pos, const CStateNode *left_child, const CStateNode *right_child, const CStateNode *word_prev, const CStateNode *word_last, const CStateNode *word_head, const unsigned &begin_c, const unsigned &end_c, const unsigned &head_c) {
       this->id = id;
-      this->type = type; 
-      this->temp = temp; 
-      this->constituent = constituent; 
-      this->left_child = left_child; 
-      this->right_child = right_child; 
+      this->type = type;
+      this->temp = temp;
+      this->constituent = constituent;
+      this->left_child = left_child;
+      this->right_child = right_child;
       this->pos = pos;
       this->word_head = word_head;
       this->word_prev = word_prev;
@@ -75,11 +75,11 @@ public:
    }//{}
    bool operator == (const CStateNode &nd) const {
       return id == nd.id &&
-             type == nd.type && 
-             temp == nd.temp && 
-             constituent == nd.constituent && 
+             type == nd.type &&
+             temp == nd.temp &&
+             constituent == nd.constituent &&
              pos == nd.pos &&
-             left_child == nd.left_child && 
+             left_child == nd.left_child &&
              right_child == nd.right_child &&
              word_head == nd.word_head &&
              word_prev == nd.word_prev &&
@@ -162,7 +162,7 @@ public:
 /*===============================================================
  *
  * CStateItem - the search state item, representing a partial
- *              candidate with shift reduce. 
+ *              candidate with shift reduce.
  *
  *==============================================================*/
 
@@ -179,13 +179,13 @@ public:
 #ifdef SCALE
    unsigned size;
 #endif
-   
+
 public:
-#define LOSS_CON 
+#define LOSS_CON
 #ifdef SCALE
 #define SCALE_CON , size(0)
 #else
-#define SCALE_CON 
+#define SCALE_CON
 #endif
    CStateItem() : current_word(0), score(0), action(), stackPtr(0), statePtr(0), node() LOSS_CON SCALE_CON {}
    virtual ~CStateItem() {}
@@ -248,7 +248,7 @@ protected:
       assert(stacksize() == 0 || !node.is_partial());
       retval->node.set(node.id+1, CStateNode::CHAR_B, false, CConstituent::NONE, pos, 0, 0, ( (stackPtr != 0 && stackPtr->node.valid())?stackPtr->node.word_last:0), &(retval->node), &(retval->node), current_word, current_word, current_word);
       retval->current_word = current_word+1;
-      retval->stackPtr = this; ///  
+      retval->stackPtr = this; ///
       assert(!retval->IsTerminated());
 
    }
@@ -276,7 +276,7 @@ protected:
          retval->stackPtr = stackPtr;
       }
       else {
-         static unsigned long fullconst; 
+         static unsigned long fullconst;
          assert(stacksize()>=2);
          r = &node;
          l = &(stackPtr->node);
@@ -413,7 +413,7 @@ public:
    }
 
    void Move(CStateItem *retval, const CAction &action) const {
-      retval->action = action; // this makes it necessary for the actions to 
+      retval->action = action; // this makes it necessary for the actions to
       retval->statePtr = this; // be called by Move
 
       if (action.isIdle()) {
@@ -448,7 +448,7 @@ public:
 #endif
       }
    }
-   
+
    bool IsComplete(const int &nWords) const {
 #ifdef FRAGMENTED_TREE
       return current_word == nWords; // allow multiple-rt.
@@ -458,11 +458,11 @@ public:
    }
 
    bool IsTerminated() const {
-      return action.type() == CActionType::POP_ROOT or action.type() == CActionType::IDLE; 
+      return action.type() == CActionType::POP_ROOT or action.type() == CActionType::IDLE;
    }
 
    bool IsIdle() const {
-      return action.type() == CActionType::IDLE; 
+      return action.type() == CActionType::IDLE;
    }
 
    void GenerateTree(const CStringVector &sent, CSentenceParsed &out) const {
@@ -483,7 +483,7 @@ public:
          action.encodeReduce(CConstituent::NONE, false, false, false);
          while (item->stacksize()>1) {
             // form NONE nodes
-            item->Move(current, action); 
+            item->Move(current, action);
             item = current;
             ++ current;
          }
@@ -513,7 +513,7 @@ public:
       while (current) {
          if (!current->IsTerminated() && current->node.valid()) {
             nodes[count] = &current->node;
-            ++count; 
+            ++count;
          }
          current = current->statePtr;
       }
@@ -567,7 +567,7 @@ public:
          ++count ; //updating
          current = current->statePtr;
       }
-      std::cout << "State item score == " << score << std::endl;
+      std::cerr << "State item score == " << score << std::endl;
       //TRACE("State item size == " << size);
       --count;
       while (count>=0) {
@@ -575,7 +575,7 @@ public:
          //   //TRACE(states[count]->action.str()<<" ["<<(states[count]->stacksize()>0?s->at(states[count]->node.lexical_head).first:"")<<"]");
          //}
          //else {
-            std::cout << states[count]->action.str() <<" " << states[count]->score << std::endl;
+            std::cerr << states[count]->action.str() <<" " << states[count]->score << std::endl;
          //}
          --count;
       }
@@ -602,13 +602,13 @@ public:
    CScoredStateAction() : item(0), action(), score(0) {}
    void load(const CAction &action, const CStateItem *item, const SCORE_TYPE &score) {
       SCORE_TYPE item_sc;
-      this->action = action; 
+      this->action = action;
       this->item = item;
       item_sc = item->score;
 #ifdef SCALE
       item_sc *= item->size;
 #endif
-#define LOSS_ADD 
+#define LOSS_ADD
       this->score = item_sc + score LOSS_ADD;
 #ifdef SCALE
       this->score /= (item->size + 1);

@@ -10,7 +10,7 @@
  ****************************************************************/
 
 #ifndef _DEPPARSER_IMPL_H
-#define _DEPPARSER_IMPL_H 
+#define _DEPPARSER_IMPL_H
 
 #include "depparser_base.h"
 
@@ -35,7 +35,7 @@ namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
- * CDepParser - the dependency parser for English 
+ * CDepParser - the dependency parser for English
  *
  *==============================================================*/
 
@@ -64,15 +64,15 @@ private:
 
 public:
    // constructor and destructor
-   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) { 
+   CDepParser( const std::string &sFeatureDBPath , bool bTrain , bool bCoNLL=false ) : CDepParserBase(sFeatureDBPath, bTrain, bCoNLL) {
       m_Agenda = new CAgendaBeam<depparser::CStateItem>(AGENDA_SIZE);
       m_Beam = new CAgendaSimple<depparser::action::CScoredAction>(AGENDA_SIZE);
       m_weights = new depparser :: CWeightPlusMeta(sFeatureDBPath, bTrain);
       m_weights->loadScores();
       m_freq = 0;
-      m_nTrainingRound = 0; 
+      m_nTrainingRound = 0;
       m_nTotalErrors = 0;
-//      m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; 
+//      m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ;
       if (bTrain) m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<depparser::SCORE_TYPE>::eAverage ;
    }
    ~CDepParser() {
@@ -81,7 +81,7 @@ public:
       delete m_weights;
       if (m_freq) delete m_freq;
    }
-   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) { 
+   CDepParser( CDepParser &depparser) : CDepParserBase(depparser) {
       assert(1==0);
    }
 
@@ -103,7 +103,7 @@ public:
    void finishtraining() {
       static_cast<depparser::CWeightPlusMeta*>(m_weights)->computeAverageFeatureWeights(m_nTrainingRound);
       static_cast<depparser::CWeightPlusMeta*>(m_weights)->saveScores();
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+      std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
    void updateScores(const CDependencyParse &parse, const CDependencyParse &correct, int round=0);
@@ -112,15 +112,15 @@ private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
    template<typename CCoNLLInputOrOutput>
-   void initCoNLLCache( const CCoNLLInputOrOutput &sentence ) ; 
+   void initCoNLLCache( const CCoNLLInputOrOutput &sentence ) ;
 
-   void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CTwoStringVector &sentence , CDependencyParse *retval, const CDependencyParse &correct, int nBest, depparser::SCORE_TYPE *scores ) ;
 
    inline void getOrUpdateStackScore( const depparser::CStateItem *item, CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &retval, const unsigned &action, depparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight std::vector for this feature object specifically
-   void updateScoresForStates( const depparser::CStateItem *outout , const depparser::CStateItem *correct , depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;
-   inline void updateScoreForState( const depparser::CStateItem &from, const depparser::CStateItem *outout , const depparser::SCORE_TYPE &amount ) ;
+   void updateScoresForStates( const depparser::CStateItem *output , const depparser::CStateItem *correct , depparser::SCORE_TYPE amount_add , depparser::SCORE_TYPE amount_subtract ) ;
+   inline void updateScoreForState( const depparser::CStateItem &from, const depparser::CStateItem *output , const depparser::SCORE_TYPE &amount ) ;
 
 
    // helper method
@@ -128,7 +128,7 @@ private:
    inline void shift( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
    inline void arcleft( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
    inline void arcright( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
-   inline void poproot( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;  
+   inline void poproot( const depparser::CStateItem *item, const CPackedScoreType<depparser::SCORE_TYPE, depparser::action::MAX> &scores) ;
 
 };
 

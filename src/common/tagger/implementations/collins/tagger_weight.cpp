@@ -22,11 +22,11 @@ using namespace TARGET_LANGUAGE::tagger;
  *------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
-   std::cout << "Loading model..."; std::cout.flush();
+   std::cerr << "Loading model..."; std::cerr.flush();
    std::ifstream is(m_sFeatureDB.c_str());
 
    if (!is.is_open()) {
-      std::cout << " empty." << std::endl; return;
+      std::cerr << " empty." << std::endl; return;
    }
 
    static std::string s;
@@ -44,7 +44,7 @@ void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
    iterate_templates(,.trace(););
 #endif
    is.close();
-   std::cout << " done." << std::endl ;
+   std::cerr << " done." << std::endl ;
 }
 
 /*--------------------------------------------------------------
@@ -54,7 +54,7 @@ void TARGET_LANGUAGE::tagger::CWeight::loadScores() {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::tagger::CWeight::saveScores() {
-   std::cout << "Saving model..."; std::cout.flush();
+   std::cerr << "Saving model..."; std::cerr.flush();
    std::ofstream os(m_sFeatureDB.c_str());
    assert(os.is_open());
 
@@ -65,7 +65,7 @@ void TARGET_LANGUAGE::tagger::CWeight::saveScores() {
 
    iterate_templates(os<<,;);
    os.close();
-   std::cout << " done." << std::endl ;
+   std::cerr << " done." << std::endl ;
 }
 
 /*--------------------------------------------------------------
@@ -75,9 +75,9 @@ void TARGET_LANGUAGE::tagger::CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::tagger::CWeight::computeAverageFeatureWeights(int round) {
-   std::cout << "Computing averaged feature scores...";
+   std::cerr << "Computing averaged feature scores...";
    iterate_templates(,.computeAverage(round););
-   std::cout << " Done" << std::endl;
+   std::cerr << " Done" << std::endl;
 }
 
 

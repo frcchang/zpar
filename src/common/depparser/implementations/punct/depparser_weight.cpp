@@ -137,19 +137,19 @@ using namespace TARGET_LANGUAGE::depparser;
  *
  * loadScores - load scores from the file specified at constructor
  *              currently this uses database, but it can be modified
- *         
- * Affects: m_bScoreModified, clearing it. 
+ *
+ * Affects: m_bScoreModified, clearing it.
  *
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
    clock_t time_start = clock();
-   std::cout<<"Loading scores..."; std::cout.flush();
-   std::ifstream file ; 
+   std::cerr<<"Loading scores..."; std::cerr.flush();
+   std::ifstream file ;
    file.open(m_sRecordPath.c_str()) ;
 
    if (!file.is_open()) {
-      std::cout << " empty." << std::endl; return;
+      std::cerr << " empty." << std::endl; return;
    }
 
    iterate_templates(file >>,;);
@@ -165,7 +165,7 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
    }
 
    file.close() ;
-   std::cout << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
+   std::cerr << " done. (" << double(clock()-time_start)/CLOCKS_PER_SEC << "s)" << std::endl;
 }
 
 /*---------------------------------------------------------------
@@ -174,12 +174,12 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
  *
  * This method is called by the destructor is m_bScoreModified
  * is true.
-   std::cout<<"done."<<std::endl;
+   std::cerr<<"done."<<std::endl;
  *
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
-   std::cout<<"Saving scores..."; std::cout.flush();
+   std::cerr<<"Saving scores..."; std::cerr.flush();
    std::ofstream file ;
    file.open(m_sRecordPath.c_str()) ;
 
@@ -191,7 +191,7 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
    else file << "Rules=0" << std::endl;
 
    file.close();
-   std::cout<<" done."<<std::endl;
+   std::cerr<<" done."<<std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -201,9 +201,9 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::depparser::CWeight::computeAverageFeatureWeights(int round) {
-   std::cout<<"Computing averaged (total) feature vector..."; std::cout.flush();
+   std::cerr<<"Computing averaged (total) feature vector..."; std::cerr.flush();
    iterate_templates(,.computeAverage(round);) ;
 
-   std::cout<<"done."<<std::endl;
+   std::cerr<<"done."<<std::endl;
 }
 

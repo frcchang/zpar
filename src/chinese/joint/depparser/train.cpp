@@ -1,10 +1,10 @@
 // Copyright (C) University of Oxford 2010
-/**************************************************************** 
- *                                                              * 
- * train.cpp - the training for the joint depparser.            * 
- *                                                              * 
- * The module does decoding via combining the best outout for a * 
- * tagger with a depparser.                                     * 
+/****************************************************************
+ *                                                              *
+ * train.cpp - the training for the joint depparser.            *
+ *                                                              *
+ * The module does decoding via combining the best output for a *
+ * tagger with a depparser.                                     *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -21,8 +21,8 @@ using namespace chinese;
 
 /*----------------------------------------------------------------
  *
- * train - the training process 
- * 
+ * train - the training process
+ *
  *---------------------------------------------------------------*/
 
 void train(std::string sInputFile, std::string sReferenceFile, std::string sFeatureDB) {
@@ -41,7 +41,7 @@ void train(std::string sInputFile, std::string sReferenceFile, std::string sFeat
    CSentenceParsed correct;
 
    double *prior_scores;
-   
+
    input_file >> nTagAll >> nParseAll;
    input_file >> nTagNeeded >> nParseNeeded;
    std::string line;
@@ -54,14 +54,14 @@ void train(std::string sInputFile, std::string sReferenceFile, std::string sFeat
    double tmp_priors[2];
 
    int nBest = nTagNeeded*nParseNeeded;
-   
+
    nbest = new CSentenceParsed[nBest];
    prior_scores = new double[nBest*2];
 
    nCount = 0;
    reference_file >> correct;
    while( !(correct.empty()) ) {
-      std::cout << "Sentence " << ++nCount << std::endl;
+      std::cerr << "Sentence " << ++nCount << std::endl;
       int index=0;
       for (int i=0; i<nTagAll; ++i) {
          for (int j=0; j<nParseAll; j++) {
@@ -98,14 +98,14 @@ void train(std::string sInputFile, std::string sReferenceFile, std::string sFeat
 int main(int argc, char* argv[]) {
    const std::string hint = " n_best_file reference_file feature_file numer_of_iterations\n\n\
 The N-best file must contain two header lines, the first specifying how\n\
-many tagging and parsing outouts are contained in the file, and the \n\
-second specifying how many tagging and parsing outouts are used in the \n\
+many tagging and parsing outputs are contained in the file, and the \n\
+second specifying how many tagging and parsing outputs are used in the \n\
 reranking system. \n\
 For example, the file might start with the heading\n\
 10 10\n\
 5 5\n\
-which means that there are 100 outouts per input, organised by 10 tag \n\
-outouts, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
+which means that there are 100 outputs per input, organised by 10 tag \n\
+outputs, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
 ";
    if (argc < 5) {
       std::cout << "Usage: " << argv[0] << hint << std::endl;

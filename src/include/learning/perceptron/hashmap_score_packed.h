@@ -111,7 +111,7 @@ public:
    unsigned count ;
 
 public:
-   CPackedScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CPackedScore<SCORE_TYPE, PACKED_SIZE> >(TABLE_SIZE, bInitMap) 
+   CPackedScoreMap(std::string input_name, int TABLE_SIZE, bool bInitMap=true) : name(input_name) , initialized(bInitMap) , count(0) , m_zero() , CHashMap<K,CPackedScore<SCORE_TYPE, PACKED_SIZE> >(TABLE_SIZE, bInitMap)
 #ifdef NO_NEG_FEATURE
 , m_positive(this)
 #endif
@@ -237,7 +237,7 @@ public:
 #ifdef DEBUG
 public:
    void trace() {
-      std::cout << name << ": ";
+      std::cerr << name << ": ";
       CHashMap< K , CPackedScore<SCORE_TYPE, PACKED_SIZE> >::trace();
    }
 #endif
@@ -295,7 +295,7 @@ std::ostream & operator << (std::ostream &os, CPackedScoreMap<K, SCORE_TYPE, PAC
    typename CHashMap< K, CPackedScore<SCORE_TYPE, PACKED_SIZE> >::iterator it = score_map.begin() ;
    while ( it != score_map.end() ) {
 #ifndef NO_NEG_FEATURE
-      if ( !it.second().empty() ) 
+      if ( !it.second().empty() )
 #endif // do not write zero scores if allow negative scores
          os << it.first() << "\t:\t" << it.second() << std::endl ;
       ++ it;

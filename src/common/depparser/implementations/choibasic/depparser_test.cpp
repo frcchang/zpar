@@ -21,7 +21,7 @@ void CDepParser::TestSuite1() {
   for (int i = 0; i < 10; ++ i) {
     buffer += train_conll_context[i];
   }
-  std::cout << buffer << std::endl;
+  std::cerr << buffer << std::endl;
 
   std::stringstream S(buffer);
   CDependencyParse oracle_tree;

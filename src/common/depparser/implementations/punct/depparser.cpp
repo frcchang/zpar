@@ -26,7 +26,7 @@ const CTag g_noneTag = CTag::NONE;
 
 /*===============================================================
  *
- * CDepParser - the depparser for TARGET_LANGUAGE 
+ * CDepParser - the depparser for TARGET_LANGUAGE
  *
  *==============================================================*/
 
@@ -70,19 +70,19 @@ SCORE_TYPE CDepParser::getOrUpdateArcScore( const int &head_index , const int &d
 }
 
 /*---------------------------------------------------------------
- * 
+ *
  * getOrUpdateTwoArcScore - the score from two linked arcs
  *
  * this score is computed and updated in a special method because
- * it can't be computed together with an arc all the time. 
+ * it can't be computed together with an arc all the time.
  * the score is only computed when a node is popped off the stack
  * and therefore its leftmost and rightmost children are clear.
  * not all cases with parent, child and grandchild are scored,
- * but only those with the parent, child and left/right most 
- * grandchild. this is for the easiness of computation. 
+ * but only those with the parent, child and left/right most
+ * grandchild. this is for the easiness of computation.
  *
  * the definition of this score is like this:
- *         \          /          \               / 
+ *         \          /          \               /
  *         /    or   /     or     \      or      \
  *
  *---------------------------------------------------------------*/
@@ -95,8 +95,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateTwoArcScore( const int &head_index , co
 
    static int tags;
    static int dir;
-   tags = ( m_lCache[head_index].tag.code()<<(CTag::SIZE*2) ) + 
-          ( m_lCache[parent_index].tag.code()<<CTag::SIZE ) + 
+   tags = ( m_lCache[head_index].tag.code()<<(CTag::SIZE*2) ) +
+          ( m_lCache[parent_index].tag.code()<<CTag::SIZE ) +
           m_lCache[dep_index].tag.code() ;
    dir = (getLinkDirection(parent_index, head_index)<<1) + getLinkDirection(head_index, dep_index) ;
 
@@ -110,7 +110,7 @@ inline SCORE_TYPE CDepParser::getOrUpdateTwoArcScore( const int &head_index , co
 }
 
 /*---------------------------------------------------------------
- * 
+ *
  * getOrUpdateArityScore - get or udpate the score from word tag arity
  *
  *---------------------------------------------------------------*/
@@ -121,9 +121,9 @@ inline SCORE_TYPE CDepParser::getOrUpdateArityScore( const int &word_index , con
    static int arity_combined ;
    arity_combined = arity_direction == ARITY_DIRECTION_LEFT ? arity : -arity-1 ; // -1 for arity=0 right
 
-   std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity = 
+   std::pair<CTaggedWord<CTag, TAG_SEPARATOR>, int> taggedword_arity =
       std::make_pair( static_cast<const CTaggedWord<CTag, TAG_SEPARATOR>&>(m_lCache[word_index]) , arity_combined );
-   std::pair<CTag, int> tag_arity = 
+   std::pair<CTag, int> tag_arity =
       std::make_pair( m_lCache[word_index].tag , arity_combined );
 
    static SCORE_TYPE retval;
@@ -184,8 +184,8 @@ inline SCORE_TYPE CDepParser::getOrUpdateArcLabelScore( const int &head_index, c
 #endif
 
 /*---------------------------------------------------------------
- * 
- * getOrUpdateStackScore - manipulate the score from stack 
+ *
+ * getOrUpdateStackScore - manipulate the score from stack
  *
  *---------------------------------------------------------------*/
 
@@ -273,47 +273,47 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
    if (n1_index > -1) retval += cast_weights->m_mapN1w.getOrUpdateScore( std::make_pair(n1_word, action), m_nScoreIndex, amount, round ) ;
    if (n1_index > -1) retval += cast_weights->m_mapN1t.getOrUpdateScore( std::make_pair(n1_tag, action), m_nScoreIndex, amount, round ) ;
 
-   retval += cast_weights->m_mapSTwtN0wt.getOrUpdateScore( std::make_pair(st_word_tag_n0_word_tag,action), m_nScoreIndex, amount, round ); 
-   retval += cast_weights->m_mapSTwtN0w.getOrUpdateScore( std::make_pair(st_word_tag_n0_word,action), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTwN0wt.getOrUpdateScore( std::make_pair(st_word_n0_word_tag,action), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTwtN0t.getOrUpdateScore( std::make_pair(st_word_tag_n0_tag,action), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTwtN0wt.getOrUpdateScore( std::make_pair(st_word_tag_n0_word_tag,action), m_nScoreIndex, amount, round );
+   retval += cast_weights->m_mapSTwtN0w.getOrUpdateScore( std::make_pair(st_word_tag_n0_word,action), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapSTwN0wt.getOrUpdateScore( std::make_pair(st_word_n0_word_tag,action), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapSTwtN0t.getOrUpdateScore( std::make_pair(st_word_tag_n0_tag,action), m_nScoreIndex, amount, round ) ;
    retval += cast_weights->m_mapSTtN0wt.getOrUpdateScore( std::make_pair(st_tag_n0_word_tag,action), m_nScoreIndex, amount, round ) ;
-   retval += cast_weights->m_mapSTwN0w.getOrUpdateScore( std::make_pair(st_word_n0_word,action), m_nScoreIndex, amount, round ) ; 
-   retval += cast_weights->m_mapSTtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTwN0w.getOrUpdateScore( std::make_pair(st_word_n0_word,action), m_nScoreIndex, amount, round ) ;
+   retval += cast_weights->m_mapSTtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ;
 
-   if (n1_index>-1) retval += cast_weights->m_mapN0tN1t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (n2_index>-1) retval += cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (n1_index>-1) retval += cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (n0ld_index!=-1) retval += cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (sth_index!=-1) retval += cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (stld_index!=-1) retval += cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
-   if (strd_index!=-1) retval += cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ; 
+   if (n1_index>-1) retval += cast_weights->m_mapN0tN1t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ;
+   if (n2_index>-1) retval += cast_weights->m_mapN0tN1tN2t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(n0_tag,n1_tag,n2_tag)),action), m_nScoreIndex, amount, round ) ;
+   if (n1_index>-1) retval += cast_weights->m_mapSTtN0tN1t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n1_tag)),action), m_nScoreIndex, amount, round ) ;
+   if (n0ld_index!=-1) retval += cast_weights->m_mapSTtN0tN0LDt.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,n0_tag,n0ld_tag)),action), m_nScoreIndex, amount, round ) ;
+   if (sth_index!=-1) retval += cast_weights->m_mapSTHtSTtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(sth_tag,st_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ;
+   if (stld_index!=-1) retval += cast_weights->m_mapSTtSTLDtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,stld_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ;
+   if (strd_index!=-1) retval += cast_weights->m_mapSTtSTRDtN0t.getOrUpdateScore( std::make_pair(CTagSet<CTag, 3>(encodeTags(st_tag,strd_tag,n0_tag)),action), m_nScoreIndex, amount, round ) ;
 
    if (n1_index!=-1) {
       refer_or_allocate_tuple3(word_tag_int, &n0_word, &n1_tag, &action);
-      retval += cast_weights->m_mapN0wN1t.getOrUpdateScore( word_tag_int, m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapN0wN1t.getOrUpdateScore( word_tag_int, m_nScoreIndex, amount, round ) ;
    }
    if (n2_index!=-1) {
       refer_or_allocate_tuple4(word_tag_tag_int, &n0_word, &n1_tag, &n2_tag, &action);
-      retval += cast_weights->m_mapN0wN1tN2t.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapN0wN1tN2t.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ;
    }
    refer_or_allocate_tuple4(word_tag_tag_int, &n0_word, &st_tag, &n1_tag, &action);
-   retval += cast_weights->m_mapSTtN0wN1t.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
+   retval += cast_weights->m_mapSTtN0wN1t.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ;
    if (n0ld_index!=-1) {
       refer_or_allocate_tuple4(word_tag_tag_int, &n0_word, &st_tag, &n0ld_tag, &action);
-      retval += cast_weights->m_mapSTtN0wN0LDt.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTtN0wN0LDt.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ;
    }
    if (sth_index!=-1) {
       refer_or_allocate_tuple4(word_tag_tag_int, &n0_word, &sth_tag, &st_tag, &action);
-      retval += cast_weights->m_mapSTHtSTtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTHtSTtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ;
    }
    if (stld_index!=-1) {
       refer_or_allocate_tuple4(word_tag_tag_int, &n0_word, &st_tag, &stld_tag, &action);
-      retval += cast_weights->m_mapSTtSTLDtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTtSTLDtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ;
    }
    if (strd_index!=-1) {
       refer_or_allocate_tuple4(word_tag_tag_int, &n0_word, &st_tag, &strd_tag, &action);
-      retval += cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ; 
+      retval += cast_weights->m_mapSTtSTRDtN0w.getOrUpdateScore( word_tag_tag_int, m_nScoreIndex, amount, round ) ;
    }
 
 #ifdef PUNCT
@@ -366,14 +366,14 @@ inline SCORE_TYPE CDepParser::getOrUpdateStackScore( const CStateItem *item, con
 //      const unsigned punct = m_lRightPunct[item->rightbound(st_index)];
 //      if (n0_index!=-1) { assert(punct ==m_lLeftPunct[item->leftbound(n0_index)] );
 //      assert(item->rightbound(st_index)+1==item->leftbound(n0_index)); }
-//   
-//      retval += cast_weights->m_mapSTwtN0wtp.getOrUpdateScore( std::make_pair(st_word_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ); 
-//      retval += cast_weights->m_mapSTwtN0wp.getOrUpdateScore( std::make_pair(st_word_tag_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
-//      retval += cast_weights->m_mapSTwN0wtp.getOrUpdateScore( std::make_pair(st_word_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
-//      retval += cast_weights->m_mapSTwtN0tp.getOrUpdateScore( std::make_pair(st_word_tag_n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+//
+//      retval += cast_weights->m_mapSTwtN0wtp.getOrUpdateScore( std::make_pair(st_word_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round );
+//      retval += cast_weights->m_mapSTwtN0wp.getOrUpdateScore( std::make_pair(st_word_tag_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+//      retval += cast_weights->m_mapSTwN0wtp.getOrUpdateScore( std::make_pair(st_word_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+//      retval += cast_weights->m_mapSTwtN0tp.getOrUpdateScore( std::make_pair(st_word_tag_n0_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
 //      retval += cast_weights->m_mapSTtN0wtp.getOrUpdateScore( std::make_pair(st_tag_n0_word_tag, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
-//      retval += cast_weights->m_mapSTwN0wp.getOrUpdateScore( std::make_pair(st_word_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
-//      retval += cast_weights->m_mapSTtN0tp.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), (punct<<3)|action), m_nScoreIndex, amount, round ) ; 
+//      retval += cast_weights->m_mapSTwN0wp.getOrUpdateScore( std::make_pair(st_word_n0_word, (punct<<3)|action), m_nScoreIndex, amount, round ) ;
+//      retval += cast_weights->m_mapSTtN0tp.getOrUpdateScore( std::make_pair(CTagSet<CTag, 2>(encodeTags(st_tag,n0_tag)), (punct<<3)|action), m_nScoreIndex, amount, round ) ;
 //   }
 #endif
 
@@ -393,7 +393,7 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
    static int index;
    // read cache
    m_lCache.clear();
-   for ( index=0; index<parsed.size(); ++index ) 
+   for ( index=0; index<parsed.size(); ++index )
       m_lCache.push_back( CTaggedWord<CTag, TAG_SEPARATOR>(parsed[index].word , CTag(parsed[index].tag)) );
 #ifdef LABELED
    m_lCacheLabel.clear();
@@ -405,15 +405,15 @@ SCORE_TYPE CDepParser::getGlobalScore(const CDependencyParse &parsed) {
    for (index=0; index<parsed.size()*2; ++index) {
 #ifdef PUNCT
 #ifdef LABELED
-      item.StandardMoveStep(parsed, m_lCacheLabel, m_lRightPunct); 
+      item.StandardMoveStep(parsed, m_lCacheLabel, m_lRightPunct);
 #else
-      item.StandardMoveStep(parsed, m_lRightPunct); 
+      item.StandardMoveStep(parsed, m_lRightPunct);
 #endif
 #else // PUNCT
 #ifdef LABELED
-      item.StandardMoveStep(parsed, m_lCacheLabel); 
+      item.StandardMoveStep(parsed, m_lCacheLabel);
 #else
-      item.StandardMoveStep(parsed); 
+      item.StandardMoveStep(parsed);
 #endif
 #endif // PUNCT
    }
@@ -481,7 +481,7 @@ inline int find_information( const CStateItem *item, int *stack ) {
 
 /*---------------------------------------------------------------
  *
- * updateScores - update the score std::vector 
+ * updateScores - update the score std::vector
  *
  * This method is different from updateScoreVector in that
  * 1. It is for external call
@@ -492,7 +492,7 @@ inline int find_information( const CStateItem *item, int *stack ) {
  *---------------------------------------------------------------*/
 
 void CDepParser::updateScores(const CDependencyParse & parsed , const CDependencyParse & correct , int round ) {
-   
+
    assert( m_bTrain );
 #ifdef LABELED
    std::vector<CDependencyLabel> lCacheLabel;
@@ -501,7 +501,7 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
    if ( round > m_nTrainingRound )
       m_nTrainingRound = round ;
 
-   if ( parsed == correct ) 
+   if ( parsed == correct )
       return;
 
    CStateItem state;
@@ -526,15 +526,15 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
    for (index=0; index<correct.size()*2; ++index) {
 #ifdef PUNCT
 #ifdef LABELED
-      state.StandardMoveStep(correct, lCacheLabel, m_lRightPunct); 
+      state.StandardMoveStep(correct, lCacheLabel, m_lRightPunct);
 #else
-      state.StandardMoveStep(correct, m_lRightPunct); 
+      state.StandardMoveStep(correct, m_lRightPunct);
 #endif
 #else // PUNCT
 #ifdef LABELED
-      state.StandardMoveStep(correct, lCacheLabel); 
+      state.StandardMoveStep(correct, lCacheLabel);
 #else
-      state.StandardMoveStep(correct); 
+      state.StandardMoveStep(correct);
 #endif
 #endif // PUNCT
 }
@@ -554,13 +554,13 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
    for (index=0; index<parsed.size()*2; ++index) {
 #ifdef PUNCT
 #ifdef LABELED
-      state.StandardMoveStep(parsed, lCacheLabel, m_lRightPunct); 
+      state.StandardMoveStep(parsed, lCacheLabel, m_lRightPunct);
 #else
       state.StandardMoveStep(parsed, m_lRightPunct);
 #endif
 #else //PUNCT
 #ifdef LABELED
-      state.StandardMoveStep(parsed, lCacheLabel); 
+      state.StandardMoveStep(parsed, lCacheLabel);
 #else
       state.StandardMoveStep(parsed);
 #endif
@@ -575,52 +575,52 @@ void CDepParser::updateScores(const CDependencyParse & parsed , const CDependenc
 
 /*---------------------------------------------------------------
  *
- * updateScoreForState - update a single positive or negative outout
+ * updateScoreForState - update a single positive or negative output
  *
  *--------------------------------------------------------------*/
 
-inline void CDepParser::updateScoreForState( const CStateItem *outout , const SCORE_TYPE &amount ) {
-   static int outout_stackstatus[MAX_SENTENCE_SIZE] ;
+inline void CDepParser::updateScoreForState( const CStateItem *output , const SCORE_TYPE &amount ) {
+   static int output_stackstatus[MAX_SENTENCE_SIZE] ;
    static int child_index ;
 
-   find_information( outout, outout_stackstatus ) ;
-   // update scores for the outouts parsetree
-   for ( int i=0; i<outout->size(); ++i ) {
-      if ( outout->head(i) != DEPENDENCY_LINK_NO_HEAD ) {
+   find_information( output, output_stackstatus ) ;
+   // update scores for the outputs parsetree
+   for ( int i=0; i<output->size(); ++i ) {
+      if ( output->head(i) != DEPENDENCY_LINK_NO_HEAD ) {
          // link score
-         getOrUpdateArcScore( outout->head(i), i, outout->sibling(i), amount, m_nTrainingRound ) ;
+         getOrUpdateArcScore( output->head(i), i, output->sibling(i), amount, m_nTrainingRound ) ;
 #ifdef LABELED
-         getOrUpdateArcLabelScore( outout->head(i), i, outout->label(i), amount, m_nTrainingRound );
+         getOrUpdateArcLabelScore( output->head(i), i, output->label(i), amount, m_nTrainingRound );
 #endif
          // left dependencies are available when the word is off stack or on stack by arc right
-         child_index = outout->leftdep(i) ;
+         child_index = output->leftdep(i) ;
          while ( child_index != DEPENDENCY_LINK_NO_HEAD ) {
-            getOrUpdateTwoArcScore( i , child_index , outout->head(i) , amount , m_nTrainingRound ) ; break;
-            child_index = outout->sibling(child_index) ;
+            getOrUpdateTwoArcScore( i , child_index , output->head(i) , amount , m_nTrainingRound ) ; break;
+            child_index = output->sibling(child_index) ;
          }
          // right dependencies are fixed only after the item is popped off stack
-         if ( outout_stackstatus[i] == CStateItem::OFF_STACK ) {
-            child_index = outout->rightdep(i) ;
+         if ( output_stackstatus[i] == CStateItem::OFF_STACK ) {
+            child_index = output->rightdep(i) ;
             while ( child_index != DEPENDENCY_LINK_NO_HEAD ) {
-               getOrUpdateTwoArcScore( i , child_index , outout->head(i) , amount , m_nTrainingRound ) ; break;
-               child_index = outout->sibling(child_index) ;
-                
+               getOrUpdateTwoArcScore( i , child_index , output->head(i) , amount , m_nTrainingRound ) ; break;
+               child_index = output->sibling(child_index) ;
+
             }
          }
       }
       // left arity have been fixed for any word that is pushed on
-      getOrUpdateArityScore( i , outout->leftarity(i) , ARITY_DIRECTION_LEFT , amount , m_nTrainingRound ) ;
+      getOrUpdateArityScore( i , output->leftarity(i) , ARITY_DIRECTION_LEFT , amount , m_nTrainingRound ) ;
       // right arity are fixed only when the item is popped off stack
-      if ( outout_stackstatus[i] == CStateItem::OFF_STACK ) {
-         getOrUpdateArityScore( i , outout->rightarity(i) , ARITY_DIRECTION_RIGHT , amount , m_nTrainingRound ) ;
+      if ( output_stackstatus[i] == CStateItem::OFF_STACK ) {
+         getOrUpdateArityScore( i , output->rightarity(i) , ARITY_DIRECTION_RIGHT , amount , m_nTrainingRound ) ;
       }
    }
 
    static CStateItem item;
    static unsigned long action;
    item.clear();
-   while ( item != *outout ) {
-      action = item.FollowMove( outout );
+   while ( item != *output ) {
+      action = item.FollowMove( output );
       TRACE_WORD(CStateItem::printAction(action));
 #ifdef LABELED
       if ( CStateItem::getAction(action) != CStateItem::POP_ROOT ) {
@@ -647,14 +647,14 @@ inline void CDepParser::updateScoreForState( const CStateItem *outout , const SC
  *
  *--------------------------------------------------------------*/
 
-void CDepParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
+void CDepParser::updateScoresForStates( const CStateItem *output , const CStateItem *correct , SCORE_TYPE amount_add, SCORE_TYPE amount_subtract ) {
 
-   //assert( outout->size() == correct->size() );
-   // for the necessary information for the correct and outout parsetree
+   //assert( output->size() == correct->size() );
+   // for the necessary information for the correct and output parsetree
    TRACE("the correct state");
    updateScoreForState( correct , amount_add ) ;
    TRACE("\nthe correct state");
-   updateScoreForState( outout , amount_subtract ) ;
+   updateScoreForState( output , amount_subtract ) ;
    TRACE("\n");
 
    m_nTotalErrors++;
@@ -699,12 +699,12 @@ inline void CDepParser::arcleft( CStateItem *item, const unsigned long &label ) 
 inline void CDepParser::arcleft( CStateItem *item ) {
 #endif
    const int &word_index = item->stacktop() ;
-   const int &next_index = item->size() ; // the last active item 
+   const int &next_index = item->size() ; // the last active item
    static int child_index ;
    static int sibling_index ;
    // add score for the link info
    sibling_index = item->leftdep(next_index) ;
-   item->linkscore() += getOrUpdateArcScore( next_index, word_index, sibling_index ) ; 
+   item->linkscore() += getOrUpdateArcScore( next_index, word_index, sibling_index ) ;
 #ifdef LABELED
    item->linkscore() += getOrUpdateArcLabelScore( next_index, word_index, label ) ;
 #endif
@@ -720,7 +720,7 @@ inline void CDepParser::arcleft( CStateItem *item ) {
       child_index = item->sibling(child_index) ;
    }
    // add right arity score for it is fixed now, but left arity added (by shifting)
-   item->linkscore() += getOrUpdateArityScore( word_index , item->rightarity(word_index) , ARITY_DIRECTION_RIGHT ) ;           
+   item->linkscore() += getOrUpdateArityScore( word_index , item->rightarity(word_index) , ARITY_DIRECTION_RIGHT ) ;
 #ifdef LABELED
    // update stack score
    item->stackscore() += getOrUpdateStackScore( item, CStateItem::encodeAction(CStateItem::ARC_LEFT, label) );
@@ -757,10 +757,10 @@ inline void CDepParser::arcright( CStateItem *item ) {
    const int &word_index = item->stacktop() ;
    const int &next_index = item->size() ;
    static int child_index ;
-   static int sibling_index ; 
-   // add score abstd::cout the dependency
+   static int sibling_index ;
+   // add score about the dependency
    sibling_index = item->rightdep(word_index) ;
-   item->linkscore() += getOrUpdateArcScore( word_index, next_index, sibling_index ) ; 
+   item->linkscore() += getOrUpdateArcScore( word_index, next_index, sibling_index ) ;
 #ifdef LABELED
    item->linkscore() += getOrUpdateArcLabelScore( word_index, next_index, label ) ;
 #endif
@@ -819,16 +819,16 @@ inline void CDepParser::shift( CStateItem *item ) {
 
 inline void CDepParser::poproot( CStateItem *item ) {
    const int &word_index = item->stacktop() ;
-   item->linkscore() += getOrUpdateArityScore( word_index , item->rightarity(word_index) , ARITY_DIRECTION_RIGHT ) ;           
+   item->linkscore() += getOrUpdateArityScore( word_index , item->rightarity(word_index) , ARITY_DIRECTION_RIGHT ) ;
    item->PopRoot() ;
 }
-   
+
 
 /*---------------------------------------------------------------
  *
  * work - the working process shared by training and parsing
  *
- * Returns: makes a new instance of CDependencyParse 
+ * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
 
@@ -838,7 +838,7 @@ void CDepParser::work( const bool bTrain , const CTwoStringVector &sentence , CD
    clock_t total_start_time = clock();
 #endif
    static int index;
-   const int length = sentence.size() ; 
+   const int length = sentence.size() ;
 
    const CStateItem *pGenerator ;
    static CStateItem pCandidate ;
@@ -863,7 +863,7 @@ static unsigned punct;
    m_lRightPunct.clear();
    m_lOriginalInex.clear();
    m_lDerivedIndex.clear();
-   m_lLeftPunct.push_back(0); 
+   m_lLeftPunct.push_back(0);
    m_lRightPunct.push_back(0);
 #endif
    for ( index=0; index<length; ++index ) {
@@ -893,7 +893,7 @@ static unsigned punct;
    }
    if (bTrain) {
       for ( index=0; index<m_lCache.size(); ++index ) {
-         static int headindex; 
+         static int headindex;
          headindex=correct[m_lOriginalInex[index]].head;
          assert(headindex==DEPENDENCY_LINK_NO_HEAD||m_lDerivedIndex[headindex]!=DEPENDENCY_LINK_NO_HEAD); // a punctuation shouldnot have been head
 #ifdef LABELED
@@ -906,7 +906,7 @@ static unsigned punct;
    //for (index=0; index<m_lCache.size(); ++index) std::cout << m_lCache[index] << ' '; std::cout << std::endl;
   // std::cout << cachecorrect << std::endl;
    for ( index=0; index<m_lCache.size(); ++index ) {
-      // filter std::cout training examples with rules
+      // filter out training examples with rules
       if (bTrain && m_weights->rules()) {
          // the root
          if ( cachecorrect[index].head == DEPENDENCY_LINK_NO_HEAD && canBeRoot(m_lCache[index].tag.code())==false) {
@@ -956,19 +956,19 @@ static unsigned punct;
 
    // skip the training example if contradicts
    if (bTrain && m_weights->rules() && bContradictsRules) {
-      std::cout << "Skipping training example because it contradicts rules..." <<std::endl;
+      std::cerr << "Skipping training example because it contradicts rules..." <<std::endl;
       return;
    }
 
-   TRACE("Decoding started"); 
+   TRACE("Decoding started");
    // loop with the next word to process in the sentence
    for (index=0; index<cachelength*2; ++index) {
-      
-      if (bTrain) bCorrect = false ; 
+
+      if (bTrain) bCorrect = false ;
 
       // none can this find with pruning ???
       if (m_Agenda->generatorSize() == 0) {
-         WARNING("parsing failed"); 
+         WARNING("parsing failed");
          return;
       }
 
@@ -983,15 +983,15 @@ static unsigned punct;
             assert( pGenerator->stacksize() != 0 );
             //pCandidate = m_Agenda->candidateItem() ;
             pCandidate = *pGenerator ;
-            if ( pCandidate.stacksize()>1 ) 
+            if ( pCandidate.stacksize()>1 )
                reduce(&pCandidate) ;
             else
-               poproot(&pCandidate); 
+               poproot(&pCandidate);
             m_Agenda->pushCandidate(&pCandidate) ;
          }
          // for the state items that still need more words
-         else {  
-            if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.               
+         else {
+            if ( !pGenerator->afterreduce() ) { // there are many ways when there are many arcrighted items on the stack and the root need arcleft. force this.
                if ( ( pGenerator->size() < cachelength-1 || pGenerator->stackempty() ) && // keep only one global root
                     ( pGenerator->stackempty() || m_supertags == 0 || m_supertags->canShift( pGenerator->size() ) ) && // supertags
                     ( pGenerator->stackempty() || !m_weights->rules() || canBeRoot( m_lCache[pGenerator->size()].tag.code() ) || hasRightHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
@@ -1005,7 +1005,7 @@ static unsigned punct;
                if ( ( pGenerator->size() < cachelength-1 || pGenerator->numberoflocalheads() == 1 ) && // one root
                     ( m_supertags == 0 || m_supertags->canArcRight(pGenerator->stacktop(), pGenerator->size()) ) && // supertags conform to this action
                     ( !m_weights->rules() || hasLeftHead(m_lCache[pGenerator->size()].tag.code()) ) // rules
-                  ) { 
+                  ) {
 #ifdef LABELED
                   for (label=CDependencyLabel::FIRST; label<CDependencyLabel::COUNT; label++) {
                      if ( !m_weights->rules() || canAssignLabel(m_lCache, pGenerator->stacktop(), pGenerator->size(), label) ) {
@@ -1060,7 +1060,7 @@ static unsigned punct;
 #ifdef EARLY_UPDATE
          if (!bCorrect) {
             TRACE("Error at the "<<correctState.size()<<"th word; total is "<<cachecorrect.size())
-            updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
+            updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ;
             return ;
          }
 #endif
@@ -1078,8 +1078,8 @@ static unsigned punct;
          correctState.StandardMoveStep(cachecorrect);
 #endif
 #endif
-      } 
-      
+      }
+
       m_Agenda->nextRound(); // move round
    }
 
@@ -1088,20 +1088,20 @@ static unsigned punct;
       // then make sure that the correct item is stack top finally
       if ( *(m_Agenda->bestGenerator()) != correctState ) {
          TRACE("The best item is not the correct one")
-         updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ; 
+         updateScoresForStates(m_Agenda->bestGenerator(), &correctState, 1, -1) ;
          return ;
       }
-   } 
+   }
 
    TRACE("Outputing sentence");
    m_Agenda->sortGenerators();
    for (int i=0; i<nBest; ++i) {
-      pGenerator = m_Agenda->generator(i) ; 
+      pGenerator = m_Agenda->generator(i) ;
       if (pGenerator) {
 #ifdef PUNCT
-         pGenerator->GenerateTree( sentence , m_lOriginalInex , retval[i] ) ; 
+         pGenerator->GenerateTree( sentence , m_lOriginalInex , retval[i] ) ;
 #else
-         pGenerator->GenerateTree( sentence , retval[i] ) ; 
+         pGenerator->GenerateTree( sentence , retval[i] ) ;
 #endif
          if (scores) scores[i] = pGenerator->score();
       }
@@ -1114,7 +1114,7 @@ static unsigned punct;
  *
  * parse - do dependency parsing to a sentence
  *
- * Returns: makes a new instance of CDependencyParse 
+ * Returns: makes a new instance of CDependencyParse
  *
  *--------------------------------------------------------------*/
 
@@ -1123,7 +1123,7 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
    static CDependencyParse empty ;
 
    for (int i=0; i<nBest; ++i) {
-      // clear the outout sentences
+      // clear the output sentences
       retval[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score();
    }
@@ -1141,14 +1141,14 @@ void CDepParser::parse( const CTwoStringVector &sentence , CDependencyParse *ret
 void CDepParser::train( const CDependencyParse &correct , int round ) {
 
    static CTwoStringVector sentence ;
-   static CDependencyParse outout ; 
+   static CDependencyParse output ;
 
    assert( IsProjectiveDependencyTree(correct) ) ;
    UnparseSentence( &correct, &sentence ) ;
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-   work( true , sentence , &outout , correct , 1 , 0 ) ; 
+   work( true , sentence , &output , correct , 1 , 0 ) ;
 
 };
 

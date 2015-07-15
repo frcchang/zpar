@@ -6,12 +6,12 @@ namespace chinese {
 namespace tagger{
 /*===============================================================
  *
- * CStateItem - the search state item, representing a tagged sentence 
- *              or a part of a complete tagged sentence. 
+ * CStateItem - the search state item, representing a tagged sentence
+ *              or a part of a complete tagged sentence.
  *
- * m_lWords stores the ending positions of each word. 
+ * m_lWords stores the ending positions of each word.
  *
- * For example: suppose that a sentence 
+ * For example: suppose that a sentence
  *              A B C D E F
  *              is segmented into
  *              A B C | D E | F
@@ -24,7 +24,7 @@ class CStateItem {
 
 protected:
    // words and tags
-   unsigned long *m_lWords; 
+   unsigned long *m_lWords;
    CTag *m_lTags;
    unsigned long m_nLength; // the length of the sentence means the number of words it contains
 
@@ -41,18 +41,18 @@ public:
 
    // constructor and destructor
 
-   CStateItem() { 
-      m_lWords = new unsigned long [MAX_SENTENCE_SIZE]; 
-      m_lTags = new CTag[MAX_SENTENCE_SIZE]; 
-      clear(); 
+   CStateItem() {
+      m_lWords = new unsigned long [MAX_SENTENCE_SIZE];
+      m_lTags = new CTag[MAX_SENTENCE_SIZE];
+      clear();
    }
-   ~CStateItem() { 
-      delete[] m_lWords; 
-      delete[] m_lTags; 
+   ~CStateItem() {
+      delete[] m_lWords;
+      delete[] m_lTags;
    }
-      
-   CStateItem(CStateItem& item) { 
-      THROW("CStateItem does not support copy constructor!"); 
+
+   CStateItem(CStateItem& item) {
+      THROW("CStateItem does not support copy constructor!");
    }
 
 public:
@@ -94,7 +94,7 @@ public:
 
 public:
 
-   // information abstd::cout segmentation
+   // information about segmentation
 
    inline const unsigned long getWordStart(const unsigned long &i) const { return i>0?m_lWords[i-1]+1:0; }
 
@@ -131,15 +131,15 @@ public:
 
 public:
 
-   // action based - appending / separating ? 
+   // action based - appending / separating ?
 
    const CTag &getLastTag() const {
       const static CTag begin(CTag::SENTENCE_BEGIN);
       const static CTag none(CTag::NONE);
       if ( m_nLength == 0 ) return begin ;
       if ( m_lTags[m_nLength-1] == none ) {
-         assert( m_nAction == eAppend ) ; 
-         if ( m_nLength == 1 ) return begin ; 
+         assert( m_nAction == eAppend ) ;
+         if ( m_nLength == 1 ) return begin ;
          assert( m_lTags[m_nLength-2] != none ) ;
          return m_lTags[m_nLength-2] ;
       }
@@ -164,7 +164,7 @@ public:
 
 public:
 
-   // this is comparing a correct item with others 
+   // this is comparing a correct item with others
 
    bool isCompatibleWith(const CStateItem *item) const {
       if (item->m_nLength==0) return true;

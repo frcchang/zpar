@@ -93,7 +93,7 @@ JNIEXPORT jstring JNICALL Java_cn_nlp_Parser_parseSentence
       bool bScores=false;
       unsigned long nBest=1;
       CTwoStringVector input_sent;
-       CDependencyParse *outout_sent = new CDependencyParse[nBest];
+       CDependencyParse *output_sent = new CDependencyParse[nBest];
        depparser::SCORE_TYPE *scores=0;
 
 
@@ -106,18 +106,18 @@ JNIEXPORT jstring JNICALL Java_cn_nlp_Parser_parseSentence
       if ( input_sent.size() >= depparser::MAX_SENTENCE_SIZE ) {
             std::cerr << "The size of the sentence is larger than the limit (" << depparser::MAX_SENTENCE_SIZE << "), skipping." << std::endl;
             for (int i=0; i<nBest; ++i) {
-               outout_sent[i].clear();
+               output_sent[i].clear();
             }
          }
          else
          {
-             parser->parse( input_sent , outout_sent , nBest , scores ) ;
+             parser->parse( input_sent , output_sent , nBest , scores ) ;
          }
-        std::string str_output_sen=CDependencyParse2string(outout_sent[0],"\t");
+        std::string str_output_sen=CDependencyParse2string(output_sent[0],"\t");
         for (int i=0; i<nBest; ++i) {
-               outout_sent[i].clear();
+               output_sent[i].clear();
         }
-        delete [] outout_sent;
+        delete [] output_sent;
         delete[]scores;
       return env->NewStringUTF(str_output_sen.c_str());
   }
@@ -132,7 +132,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_init
   {
       const char *strMsgPtr = env->GetStringUTFChars( sModelFile , 0);
       std::string sFeatureDBPath=strMsgPtr;
-      std::cout<<"sFeatureDBPath="<<sFeatureDBPath<<std::endl;
+      std::cerr<<"sFeatureDBPath="<<sFeatureDBPath<<std::endl;
       parser=new CDepParser(sFeatureDBPath, false, false);
       env->ReleaseStringUTFChars( sModelFile, strMsgPtr);
       return 1;
@@ -146,7 +146,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_init
 JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
   (JNIEnv *env, jobject obj, jstring sInputFile, jstring sOutputFile)
   {
-      std::cout << "Parsing started" << std::endl;
+      std::cerr << "Parsing started" << std::endl;
       int time_start = clock();
 
       bool bSegmented=false;
@@ -174,7 +174,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
    CTwoStringVector input_sent;
 #endif
    CCoNLLInput input_conll;
-   CDependencyParse *outout_sent;
+   CDependencyParse *output_sent;
    CCoNLLOutput *output_conll;
    depparser::CSuperTag *supertags;
    std::ifstream *is_supertags = 0;
@@ -203,11 +203,11 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
    }
 
    output_conll = 0;
-   outout_sent = 0;
+   output_sent = 0;
    if (bCoNLL)
       output_conll = new CCoNLLOutput[nBest];
    else
-      outout_sent = new CDependencyParse[nBest];
+      output_sent = new CDependencyParse[nBest];
 
    // Read the next example
    if (bCoNLL)
@@ -220,7 +220,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
 #endif
    while( bReadSuccessful ) {
       if(nCount%100==0)
-        std::cout<<"Sentence " << nCount<<std::endl;
+        std::cerr<<"Sentence " << nCount<<std::endl;
       TRACE("Sentence " << nCount);
       ++ nCount;
 
@@ -232,13 +232,13 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
             if (bCoNLL)
                output_conll[i].clear();
             else
-               outout_sent[i].clear();
+               output_sent[i].clear();
             if (bScores) scores[i]=0;
          }
       }
       else {
 
-         // Find decoder outout
+         // Find decoder output
          if (supertags) {
             if (bCoNLL)
                supertags->setSentenceSize( input_conll.size() );
@@ -250,7 +250,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
          if (bCoNLL)
             parser->parse_conll( input_conll , output_conll , nBest , scores );
          else
-            parser->parse( input_sent , outout_sent , nBest , scores ) ;
+            parser->parse( input_sent , output_sent , nBest , scores ) ;
 
       }
 
@@ -259,7 +259,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
          if (bCoNLL)
             os << output_conll[i];
          else
-            os << outout_sent[i] ;
+            os << output_sent[i] ;
          if (bScores) *os_scores << scores[i] << std::endl;
       }
 
@@ -277,7 +277,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
    if (bCoNLL)
       delete [] output_conll;
    else
-      delete [] outout_sent ;
+      delete [] output_sent ;
    os.close();
 
    if (bScores) {
@@ -297,7 +297,7 @@ JNIEXPORT jint JNICALL Java_cn_nlp_Parser_parseFile
       delete is_supertags;
    }
 
-   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+   std::cerr << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
       return 1;
   }
 //int main(int argc, char* argv[]) {

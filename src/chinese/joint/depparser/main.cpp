@@ -1,8 +1,8 @@
 // Copyright (C) University of Oxford 2010
-/**************************************************************** 
- *                                                              * 
- * main.cpp - the decoder for the joint depparser.              * 
- *                                                              * 
+/****************************************************************
+ *                                                              *
+ * main.cpp - the decoder for the joint depparser.              *
+ *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
  * Computing Laboratory, Oxford. 2008.10                        *
@@ -18,8 +18,8 @@ using namespace chinese;
 
 /*----------------------------------------------------------------
  *
- * process - the training process 
- * 
+ * process - the training process
+ *
  *---------------------------------------------------------------*/
 
 void process(std::string sInputFile, std::string sOutputFile, std::string sFeatureDB) {
@@ -27,7 +27,7 @@ void process(std::string sInputFile, std::string sOutputFile, std::string sFeatu
    int time_start = clock();
    CReranker reranker(sFeatureDB, false);
    std::ifstream input_file(sInputFile.c_str());
-   std::ofstream outout_file(sOutputFile.c_str());
+   std::ofstream output_file(sOutputFile.c_str());
    std::ifstream tagging_prior_file(std::string(sInputFile+".scores.tagging").c_str());
    std::ifstream parsing_prior_file(std::string(sInputFile+".scores.parsing").c_str());
 
@@ -35,18 +35,18 @@ void process(std::string sInputFile, std::string sOutputFile, std::string sFeatu
    int nTagNeeded, nParseNeeded;
 
    CSentenceParsed *nbest;
-   CSentenceParsed outout;
+   CSentenceParsed output;
 
    double *prior_scores;
-   
+
    input_file >> nTagAll >> nParseAll;
-   input_file >> nTagNeeded >> nParseNeeded; 
+   input_file >> nTagNeeded >> nParseNeeded;
    std::string line; getline(input_file, line);
    TRACE("Reranking "<<nTagNeeded<<"/"<<nParseNeeded<<" from "<<nTagAll<<"/"<<nParseAll);
 
    int nCount;
    int nBest = nTagNeeded*nParseNeeded;
-   
+
    nbest = new CSentenceParsed[nBest];
    prior_scores = new double[nBest*2];
 
@@ -55,7 +55,7 @@ void process(std::string sInputFile, std::string sOutputFile, std::string sFeatu
 
    nCount = 0;
    while( input_file ) {
-      std::cout << "Sentence " << ++nCount << std::endl;
+      std::cerr << "Sentence " << ++nCount << std::endl;
       int index=0;
       for (int i=0; i<nTagAll; ++i) {
          for (int j=0; j<nParseAll; j++) {
@@ -71,13 +71,13 @@ void process(std::string sInputFile, std::string sOutputFile, std::string sFeatu
             }
          }
       }
-      reranker.rerank(nbest, &outout, nBest, prior_scores);
-      outout_file << outout;
+      reranker.rerank(nbest, &output, nBest, prior_scores);
+      output_file << output;
    }
    delete[] nbest;
    delete[] prior_scores;
    input_file.close();
-   outout_file.close();
+   output_file.close();
    tagging_prior_file.close();
    parsing_prior_file.close();
    TRACE("Decoding has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC);
@@ -90,16 +90,16 @@ void process(std::string sInputFile, std::string sOutputFile, std::string sFeatu
  *==============================================================*/
 
 int main(int argc, char* argv[]) {
-   const std::string hint = " n_best_file outout_file feature_file\n\n\
+   const std::string hint = " n_best_file output_file feature_file\n\n\
 The N-best file must contain two header lines, the first specifying how\n\
-many tagging and parsing outouts are contained in the file, and the \n\
-second specifying how many tagging and parsing outouts are used in the \n\
+many tagging and parsing outputs are contained in the file, and the \n\
+second specifying how many tagging and parsing outputs are used in the \n\
 reranking system. \n\
 For example, the file might start with the heading\n\
 10 10\n\
 5 5\n\
-which means that there are 100 outouts per input, organised by 10 tag \n\
-outouts, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
+which means that there are 100 outputs per input, organised by 10 tag \n\
+outputs, each with 10 parses. We use the best 5 tag 5 parse for reranking\n\
 ";
    if (argc < 4) {
       std::cout << "Usage: " << argv[0] << hint << std::endl;

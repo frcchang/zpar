@@ -14,7 +14,7 @@
 
 /*===============================================================
  *
- * definitions abstd::cout lemma 
+ * definitions about lemma
  *
  *==============================================================*/
 
@@ -26,13 +26,13 @@ private:
     * the tokenizer
     *
     *==============================================================*/
-   
+
    class CStringTokenizer : public CTokenizer<std::string, 65537> {
-      public: 
-         CStringTokenizer() : CTokenizer<std::string, 65537>(1/*reserve for the other unknown */) {lookup("");} 
+      public:
+         CStringTokenizer() : CTokenizer<std::string, 65537>(1/*reserve for the other unknown */) {lookup("");}
          virtual ~CStringTokenizer() {}
    };
-   
+
 protected:
    unsigned long m_nHash;
 
@@ -65,7 +65,7 @@ public:
    bool empty() { return m_nHash==EMPTY; }
    bool none() { return m_nHash==NONE; }
    void clear() { m_nHash=EMPTY; }
-}; 
+};
 
 //===============================================================
 

@@ -67,14 +67,14 @@ public:
       void validate() {
          // when the next item is at the end of the bucket, move on
          assert(m_nBucket < m_parent->m_nTableSize);
-         while (m_entry == 0) { 
-            if (m_nBucket == m_parent->m_nTableSize-1) 
-               return; 
-            else { 
-               m_entry = m_parent->m_buckets[++m_nBucket]; 
-               continue; 
-            } 
-         } 
+         while (m_entry == 0) {
+            if (m_nBucket == m_parent->m_nTableSize-1)
+               return;
+            else {
+               m_entry = m_parent->m_buckets[++m_nBucket];
+               continue;
+            }
+         }
       }
 
    public:
@@ -86,16 +86,16 @@ public:
       bool operator != (const iterator &it) const { return !((*this)==it);}
       bool operator == (const iterator &it) const { return m_parent == it.m_parent && m_nBucket == it.m_nBucket && m_entry == it.m_entry; }
       // move to next places
-      void operator ++ () { 
+      void operator ++ () {
          assert(m_entry != 0);
-         m_entry=m_entry->m_next ;  
+         m_entry=m_entry->m_next ;
          validate();
       }
       bool valid() const { if (m_nBucket < 0 || m_nBucket > m_parent->m_nTableSize-1 || m_entry == 0) return false; return true; }
 
       const K &first() { return m_entry->m_key; }
       V &second() { return m_entry->m_value; }
-   }; 
+   };
 
    //===============================================================
 
@@ -104,15 +104,15 @@ protected:
    CEntry **m_buckets;
    CMemoryPool<CEntry> * m_pool;
 public:
-   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0), c_free(0) { 
+   CHashMap(unsigned long TABLE_SIZE, bool initialize=true) : m_nTableSize(TABLE_SIZE), m_buckets(0), c_free(0) {
       // m_pool = new CMemoryPool<CEntry>(TABLE_SIZE);
       // getPool(); // ensure that the pool is constructed.
       if (initialize) init();
    }
-   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0) { 
-      THROW("CHashMap does not support copy constructor!"); 
+   CHashMap(const CHashMap<K, V>& wordmap) : m_nTableSize(0) {
+      THROW("CHashMap does not support copy constructor!");
    }
-   virtual ~CHashMap() { 
+   virtual ~CHashMap() {
       clear();
       delete [] m_buckets; m_buckets = 0;
       delete m_pool; m_pool = 0;
@@ -126,7 +126,7 @@ public:
       ASSERT(m_buckets==0, "Cannot initialize hashmap after initialization");
       m_pool = new CMemoryPool<CEntry>(m_nTableSize);
       m_buckets = new CEntry*[m_nTableSize] ;
-//      for (int i=0; i<m_nTableSize; ++i) 
+//      for (int i=0; i<m_nTableSize; ++i)
 //         m_buckets[i]=0;
       memset(m_buckets, 0, m_nTableSize*sizeof(CEntry*));
    }
@@ -136,7 +136,7 @@ protected:
    CEntry * const &getEntry(const K &key) const { return m_buckets[hash(key)%m_nTableSize]; }
 
    // static CMemoryPool<CEntry> &getPool() { static CMemoryPool<CEntry> pool(POOL_BLOCK_SIZE); return pool; }
-   
+
    CEntry *allocate() {
       static CEntry *retval;
       CEntry* &c_freed = c_free;
@@ -153,10 +153,10 @@ protected:
    }
 
 public:
-   V &operator[] (const K &key) { 
-      CEntry* entry = getEntry(key); 
+   V &operator[] (const K &key) {
+      CEntry* entry = getEntry(key);
       if (entry==0) {
-         entry = getEntry(key) = allocate(); 
+         entry = getEntry(key) = allocate();
          entry->m_key = key;
          return entry->m_value;
       }
@@ -173,11 +173,11 @@ public:
       }
       assert(entry);
       entry->m_next = allocate();
-      entry->m_next->m_key = key;   
+      entry->m_next->m_key = key;
       return entry->m_next->m_value;
    }
-   const V &operator [] (const K &key) const { 
-      const CEntry*entry=getEntry(key); 
+   const V &operator [] (const K &key) const {
+      const CEntry*entry=getEntry(key);
       while (entry) {
          if (entry->m_key == key)
             return entry->m_value;
@@ -187,8 +187,8 @@ public:
       THROW("const[]: Cannot find key in hashmap.");
    }
    void insert (const K &key, const V &val) { (*this)[key] = val; }
-   const V &find (const K &key, const V &val) const { 
-      const CEntry*entry=getEntry(key); 
+   const V &find (const K &key, const V &val) const {
+      const CEntry*entry=getEntry(key);
       while (entry) {
          if (entry->m_key == key)
             return entry->m_value;
@@ -197,22 +197,22 @@ public:
       }
       return val;
    }
-   bool findorinsert (const K &key, const V &val, V &retval) { 
-      CEntry*entry=getEntry(key); 
-      if (entry == 0) { 
-         retval = val; 
-         entry= getEntry(key) =allocate(); 
+   bool findorinsert (const K &key, const V &val, V &retval) {
+      CEntry*entry=getEntry(key);
+      if (entry == 0) {
+         retval = val;
+         entry= getEntry(key) =allocate();
          entry->m_key = key;
-         entry->m_value = val; 
-         return true; 
-       } 
+         entry->m_value = val;
+         return true;
+       }
        while (true) {
           assert (entry);
           if (entry->m_key == key) {
              retval = entry->m_value;
              return false;
           }
-          else if (entry->m_next==0) 
+          else if (entry->m_next==0)
              break;
           else
              entry = entry->m_next;
@@ -224,8 +224,8 @@ public:
        retval = val;
        return true;
    }
-   bool element (const K &key) const { 
-      CEntry*entry=getEntry(key); 
+   bool element (const K &key) const {
+      CEntry*entry=getEntry(key);
       while (entry) {
          if (entry->m_key == key)
             return true;
@@ -254,17 +254,17 @@ public:
    }
 
 public:
-   iterator begin() { 
-      return iterator(this, 0, m_buckets[0]); 
+   iterator begin() {
+      return iterator(this, 0, m_buckets[0]);
    }
-   iterator end() { 
-      return iterator(this, m_nTableSize-1, 0); 
+   iterator end() {
+      return iterator(this, m_nTableSize-1, 0);
    }
 
 public:
-#ifdef DEBUG 
-   void trace() { 
-      std::cout << "tracing size:amount" << std::endl;
+#ifdef DEBUG
+   void trace() {
+      std::cerr << "tracing size:amount" << std::endl;
       std::map<unsigned, unsigned> statistic;
       for (unsigned i=0; i<m_nTableSize; ++i) {
          unsigned size = 0;
@@ -278,8 +278,8 @@ public:
       std::map<unsigned, unsigned>::iterator it;
       for (it=statistic.begin(); it!=statistic.end(); ++it)
          if (it->second != 0)
-            std::cout << it->first << ':' << it->second << " (" << float(it->second)/m_nTableSize << ")" << std::endl;
-      std::cout << "done" << std::endl;
+            std::cerr << it->first << ':' << it->second << " (" << float(it->second)/m_nTableSize << ")" << std::endl;
+      std::cerr << "done" << std::endl;
    }
 #endif
 

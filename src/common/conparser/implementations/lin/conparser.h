@@ -10,7 +10,7 @@
  ****************************************************************/
 
 #ifndef _CONPARSER_IMPL_H
-#define _CONPARSER_IMPL_H 
+#define _CONPARSER_IMPL_H
 
 #include "conparser_base.h"
 
@@ -35,7 +35,7 @@ namespace TARGET_LANGUAGE {
 
 /*===============================================================
  *
- * CConParser - the constituent parser for English 
+ * CConParser - the constituent parser for English
  *
  *==============================================================*/
 
@@ -57,7 +57,7 @@ private:
 
 public:
    // constructor and destructor
-   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache), m_mapClusterV(1<<16), m_mapClusterN(1<<16) { 
+   CConParser( const std::string &sFeatureDBPath , bool bTrain ) : CConParserBase(sFeatureDBPath, bTrain), m_rule(&m_lCache), m_mapClusterV(1<<16), m_mapClusterN(1<<16) {
       // initialize agenda
 //      m_Agenda = new CAgendaBeam<conparser::CStateItem>(conparser::AGENDA_SIZE);
       // and initialize the weith module laoding content
@@ -69,7 +69,7 @@ public:
       CConstituent c;
       m_rule.loadRules(file);
       file.close();
-      // initialize 
+      // initialize
       if (!bTrain && m_weights->empty()) { // when decoding, model must be found
          THROW("The model file " << sFeatureDBPath<< " is not found.")
       }
@@ -82,7 +82,7 @@ public:
       ifsn >> m_mapClusterN;
       ifsn.close();
 
-      m_nTrainingRound = 0; 
+      m_nTrainingRound = 0;
       m_nTotalErrors = 0;
       if (bTrain) m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eNonAverage ; else m_nScoreIndex = CScore<conparser::SCORE_TYPE>::eAverage ;
       ASSERT(conparser::CAction::MAX<=(1L<<(sizeof(unsigned)*8)), "conparser.h: The size of action is too big for the packed scoretype");
@@ -91,7 +91,7 @@ public:
 //      delete m_Agenda;
       delete m_weights;
    }
-   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache), m_mapClusterV(1), m_mapClusterN(1) { 
+   CConParser( CConParser &conparser) : CConParserBase(conparser), m_rule(&m_lCache), m_mapClusterV(1), m_mapClusterN(1) {
       THROW("Copy constructor called");
    }
 
@@ -101,8 +101,8 @@ public:
       if (!m_weights->empty() || m_nTrainingRound !=0 ) {
          WARNING("Ignored binary rules from " << sBinaryRulePath << " because it was not loaded when the model is empty and before any training sentence is read");
       }
-      // load rule from the specified file 
-      std::ifstream file ; 
+      // load rule from the specified file
+      std::ifstream file ;
       file.open(sBinaryRulePath.c_str()) ;
       m_rule.LoadBinaryRules(file);
       file.close();
@@ -135,7 +135,7 @@ public:
       // save rules
       m_rule.saveRules(file);
       file.close();
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+      std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
    }
    conparser::SCORE_TYPE getGlobalScore(const CSentenceParsed &parsed);
    void updateScores(const CSentenceParsed &parse, const CSentenceParsed &correct, int round=0);
@@ -143,15 +143,15 @@ public:
 private:
    enum SCORE_UPDATE {eAdd=0, eSubtract};
 
-   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ; 
+   void work( const bool bTrain, const CTwoStringVector &sentence , CSentenceParsed *retval, const CSentenceParsed &correct, int nBest, conparser::SCORE_TYPE *scores ) ;
 
    // get the global score for a parsed sentence or section
    inline void getOrUpdateStackScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem *item, const conparser::CAction &action, conparser::SCORE_TYPE amount=0, int round=0 );
    inline void getOrUpdateScore( CPackedScoreType<conparser::SCORE_TYPE, conparser::CAction::MAX> &retval, const conparser::CStateItem &item, const conparser::CAction &action=conparser::CAction(), conparser::SCORE_TYPE amount=0, int round=0 );
 
    // update the built-in weight std::vector for this feature object specifically
-   void updateScoresForStates( const conparser::CStateItem *outout , const conparser::CStateItem *correct ) ;
-   void updateScoresForState( const conparser::CStateItem *outout , SCORE_UPDATE update ) ;
+   void updateScoresForStates( const conparser::CStateItem *output , const conparser::CStateItem *correct ) ;
+   void updateScoresForState( const conparser::CStateItem *output , SCORE_UPDATE update ) ;
 
 };
 

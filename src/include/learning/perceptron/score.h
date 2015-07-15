@@ -20,9 +20,9 @@ std::istream & operator >> (std::istream &is, CScore<SCORE_TYPE> &score) {
    char c ;
 #ifdef PERCEPTRON_FOR_DECODING
    SCORE_TYPE tmp;
-   ASSERT(is >> tmp, "The first element of CScore cannot be read."); 
+   ASSERT(is >> tmp, "The first element of CScore cannot be read.");
 #else
-   ASSERT(is >> score[0], "The first element of CScore cannot be read."); 
+   ASSERT(is >> score[0], "The first element of CScore cannot be read.");
 #endif
    ASSERT((is >> c) && c=='/', "The separator CScore cannot be read");
    ASSERT(is >> score[1], "The second element of CScore cannot be read");
@@ -52,7 +52,7 @@ public:
    enum SCORE_AVERAGE { eNonAverage=0 , eAverage=1 } ;
 
 protected:
-  
+
    SCORE_TYPE total;
 
 #ifndef PERCEPTRON_FOR_DECODING
@@ -63,30 +63,30 @@ protected:
 public:
    CScore() : total(0)
 #ifndef PERCEPTRON_FOR_DECODING
-               , current(0) 
-               , lastupdate(0) 
+               , current(0)
+               , lastupdate(0)
 #endif
    {/*current=0; total=0; lastupdate=0;*/}
 
    CScore(const CScore &s1) : total(s1.total)
 #ifndef PERCEPTRON_FOR_DECODING
                               , current(s1.current)
-                              , lastupdate(s1.lastupdate) 
+                              , lastupdate(s1.lastupdate)
 #endif
    {/*current=s1.current; total=s1.total; lastupdate=s1.lastupdate;*/}
 
    virtual ~CScore() {};
 
    void reset() {
-      total=0; 
+      total=0;
 #ifndef PERCEPTRON_FOR_DECODING
-      current=0; 
+      current=0;
       lastupdate=0;
 #endif
    }
 
-   bool empty() const { 
-      return total==0 
+   bool empty() const {
+      return total==0
 #ifdef PERCEPTRON_FOR_DECODING
              ;
 #else
@@ -94,12 +94,12 @@ public:
 #endif
    }
 
-   bool zero() const { 
+   bool zero() const {
       return total == 0
 #ifdef PERCEPTRON_FOR_DECODING
              ;
 #else
-             && current==0; 
+             && current==0;
 #endif
 }
 
@@ -144,7 +144,7 @@ public:
 #ifdef PERCEPTRON_FOR_DECODING
       THROW("Internal error: score.h; cannot modify the content of score in decoding mode.");
 #else
-      assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added; 
+      assert(round>=lastupdate); if(round>lastupdate){updateAverage(round);lastupdate=round;}current+=added;total+=added;
 #endif
    }
 
@@ -161,7 +161,7 @@ public:
       THROW("Internal error: score.h; cannot modify the content of score in decoding mode.");
 #else
       if (round>lastupdate)total += current*(round-lastupdate) ;
-      else if (round<lastupdate) std::cout << "Round is: "<<round<<"<"<<lastupdate<<std::endl;
+      else if (round<lastupdate) std::cerr << "Round is: "<<round<<"<"<<lastupdate<<std::endl;
 #endif
    }
 

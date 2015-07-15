@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /***************************************************************
  *
- * The tagger's agenda n chart implementation 
+ * The tagger's agenda n chart implementation
  *
  * Yue Zhang, 2007
  *
@@ -67,11 +67,11 @@ public:
       ASSERT(sizeof(unsigned long long)>=CTag::SIZE, "The tagger requires the size of unsigned-long greater than" << CTag::SIZE); // tag dict
    }
    virtual ~CTagger() {}
-   
+
 protected:
    inline bool canAssignTag(const CWord &word, const unsigned long &tag) {
-      return ( m_weights->m_mapWordFrequency.find( word, 0 ) < 
-                  m_weights->m_nMaxWordFrequency/5000+5 && 
+      return ( m_weights->m_mapWordFrequency.find( word, 0 ) <
+                  m_weights->m_nMaxWordFrequency/5000+5 &&
                PENN_TAG_CLOSED[ tag ] == false  ) ||
              m_weights->m_mapTagDictionary.lookup( word, tag );
    }
@@ -79,12 +79,12 @@ protected:
       if (PENN_TAG_CLOSED[ tag ] || tag == PENN_TAG_CD ) {
          static int tmp_i;
          // if the first character doesn't match, don't search
-         if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index, &sentence ), tag ) == false) 
+         if ( m_weights->m_mapCanStart.lookup( m_WordCache.find( index, index, &sentence ), tag ) == false)
             return false;
          // if it matches, search from the next characters
          if ( tag == PENN_TAG_CD ) return true; // don't search for CD assume correct
          for (tmp_i=0; tmp_i<m_weights->m_maxLengthByTag[tag]; ++tmp_i) {
-            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, std::min(index+tmp_i, static_cast<unsigned long>(sentence.size())-1), &sentence ), tag ) ) 
+            if ( m_weights->m_mapTagDictionary.lookup( m_WordCache.find( index, std::min(index+tmp_i, static_cast<unsigned long>(sentence.size())-1), &sentence ), tag ) )
                return true;
          }
          return false;
@@ -123,14 +123,14 @@ public:
       }
    }
 
-   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) { 
+   void finishTraining(unsigned long nTotalNumberOfTrainingExamples) {
       m_weights->computeAverageFeatureWeights(nTotalNumberOfTrainingExamples);
-      m_weights->saveScores(); 
+      m_weights->saveScores();
    }
 
 public:
    virtual void loadKnowledge(const std::string &sKnowledgePath) {
-      std::cout << "Loading knowledge ... ";
+      std::cerr << "Loading knowledge ... ";
 
       if (!m_bTrain) {
          // when decoding
@@ -145,17 +145,17 @@ public:
       std::string sCharacterPath = sKnowledgePath + ".chr";
       std::ifstream ifs(sCharacterPath.c_str());
       if (!ifs) THROW("Knowledge file " << sCharacterPath << " is not accessible.");
-      ifs >> (*m_weights->m_Knowledge); 
+      ifs >> (*m_weights->m_Knowledge);
       ifs.close();
 
       std::string sDBNPath = sKnowledgePath + ".dbn";
       std::ifstream ids(sDBNPath.c_str());
       if (!ids) THROW("Knowledge file " << sDBNPath << " is not accessible.");
-      ids >> (*m_weights->m_dbn); 
+      ids >> (*m_weights->m_dbn);
       ids.close();
       m_weights->m_bKnowledge = true;
 
-      std::cout << "done." << std::endl;
+      std::cerr << "done." << std::endl;
    }
 
    tagger::SCORE_TYPE getGlobalScore(const CTwoStringVector* tagged) {

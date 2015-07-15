@@ -32,8 +32,8 @@ void auto_train(std::string sOutputFile, std::string sFeatureFile, const std::st
       decoder.loadTagDictionary(sTagDict);
    if (sKnowledge.size())
       decoder.loadKnowledge(sKnowledge);
-   CSentenceReader outout_reader(sOutputFile);
-   CTwoStringVector *outout_sent = new CTwoStringVector; 
+   CSentenceReader output_reader(sOutputFile);
+   CTwoStringVector *output_sent = new CTwoStringVector;
 
    int nErrorCount=0;
    int nCount=0;
@@ -41,17 +41,17 @@ void auto_train(std::string sOutputFile, std::string sFeatureFile, const std::st
    //
    // Read the next sentence
    //
-   while( outout_reader.readTaggedSentence(outout_sent, false, TAG_SEPARATOR) ) {
+   while( output_reader.readTaggedSentence(output_sent, false, TAG_SEPARATOR) ) {
       TRACE("Sentence " << ++nCount);
       //
-      // Find the decoder outout
+      // Find the decoder output
       //
-      if (decoder.train(outout_sent)) ++nErrorCount;
+      if (decoder.train(output_sent)) ++nErrorCount;
    }
-   delete outout_sent;
-   std::cout << "Completing the training process" << std::endl;
+   delete output_sent;
+   std::cerr << "Completing the training process" << std::endl;
    decoder.finishTraining();
-   std::cout << "Done. Total errors: " << nErrorCount << std::endl;
+   std::cerr << "Done. Total errors: " << nErrorCount << std::endl;
 }
 
 /*===============================================================
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
          std::cout << "\nUsage: " << argv[0] << " training_data model num_iterations" << std::endl ;
          std::cout << configurations.message() << std::endl;
          return 1;
-      } 
+      }
       std::string warning = configurations.loadConfigurations(options.opts);
       if (!warning.empty()) {
          std::cout << "Warning: " << warning << std::endl;
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 
       unsigned training_rounds;
       if (!fromString(training_rounds, options.args[3])) {
-         std::cerr << "Error: the number of training iterations must be an integer." << std::endl;
+         std::cout << "Error: the number of training iterations must be an integer." << std::endl;
          return 1;
       }
       std::cout << "Training started" << std::endl;

@@ -621,7 +621,7 @@ void CDepParser::updateScores(
 
 /*---------------------------------------------------------------
  *
- * updateScoreForState - update a single positive or negative outout
+ * updateScoreForState - update a single positive or negative output
  *
  *--------------------------------------------------------------*/
 /*
@@ -957,7 +957,7 @@ int CDepParser::work(const bool bTrain,
     m_lCache.push_back(CTaggedWord<CTag, TAG_SEPARATOR>(sentence[index].first,
                                                         sentence[index].second));
 
-    // filter std::cout training examples with rules
+    // filter out training examples with rules
     if (bTrain && m_weights->rules()) {
       // the root
       if (correct[index].head == DEPENDENCY_LINK_NO_HEAD &&
@@ -1020,7 +1020,7 @@ int CDepParser::work(const bool bTrain,
 
   // skip the training example if contradicts
   if (bTrain && m_weights->rules() && bContradictsRules) {
-    std::cout << "Skipping training example"
+    std::cerr << "Skipping training example"
               << " because it contradicts rules..."
               << std::endl;
     return 0;
@@ -1172,7 +1172,7 @@ void CDepParser::parse(
   assert( !m_bCoNLL );
 
   for (int i=0; i<nBest; ++i) {
-      // clear the outout sentences
+      // clear the output sentences
       retval[i].clear();
       if (scores) scores[i] = 0; //pGenerator->score;
   }
@@ -1188,7 +1188,7 @@ void CDepParser::parse(
 
 void CDepParser::train(const CDependencyParse &correct , int round) {
   static CTwoStringVector sentence ;
-  static CDependencyParse outout ;
+  static CDependencyParse output ;
 
   assert( !m_bCoNLL );
 
@@ -1204,7 +1204,7 @@ void CDepParser::train(const CDependencyParse &correct , int round) {
   ASSERT(m_nTrainingRound == round, "Training round error") ;
 #endif
 
-  work(true, sentence, &outout, correct, 1, 0);
+  work(true, sentence, &output, correct, 1, 0);
 };
 
 /*---------------------------------------------------------------
@@ -1255,7 +1255,7 @@ void CDepParser::parse_conll(
 
   static CDependencyParse empty ;
   static CTwoStringVector input ;
-  static CDependencyParse outout[AGENDA_SIZE] ;
+  static CDependencyParse output[AGENDA_SIZE] ;
 
   assert( m_bCoNLL ) ;
 
@@ -1263,18 +1263,18 @@ void CDepParser::parse_conll(
   sentence.toTwoStringVector(input);
 
   for (int i=0; i<nBest; ++i) {
-    // clear the outout sentences
+    // clear the output sentences
     retval[i].clear();
-    outout[i].clear();
+    output[i].clear();
     if (scores) scores[i] = 0; //pGenerator->score;
   }
 
-  int nr_result = work(false, input, outout, empty, nBest, scores);
+  int nr_result = work(false, input, output, empty, nBest, scores);
 
   for (int i = 0; i < std::min(nBest, nr_result); ++i) {
-    // now make the conll format stype outout
+    // now make the conll format stype output
     retval[i].fromCoNLLInput(sentence);
-    retval[i].copyDependencyHeads(outout[i]);
+    retval[i].copyDependencyHeads(output[i]);
   }
 }
 
@@ -1286,7 +1286,7 @@ void CDepParser::parse_conll(
 
 void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
   static CTwoStringVector sentence ;
-  static CDependencyParse outout ;
+  static CDependencyParse output ;
   static CDependencyParse reference ;
 
   assert( m_bCoNLL ) ;
@@ -1299,7 +1299,7 @@ void CDepParser::train_conll( const CCoNLLOutput &correct , int round ) {
 
   // The following code does update for each processing stage
   m_nTrainingRound = round ;
-  work( true , sentence , &outout , reference , 1 , 0 ) ;
+  work( true , sentence , &output , reference , 1 , 0 ) ;
 }
 
 /*---------------------------------------------------------------

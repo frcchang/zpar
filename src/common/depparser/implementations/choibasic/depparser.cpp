@@ -38,7 +38,7 @@ const TaggedWord  EmptyTaggedWord;
     __deb ++; \
     __p = __p->previous_;\
   } \
-  std::cout << __deb << std::endl; \
+  std::cerr << __deb << std::endl; \
 } while (0);
 
 #define _conll_or_empty(x) (x == "_" ? "" : x)
@@ -1504,7 +1504,7 @@ void CDepParser::parse_conll(
   CTwoStringVector sentence_startswith_dummy_root;
   CTwoStringVector sentence_endswith_dummy_root;
   CCoNLLInput conll_tree_endswith_dummy_root;
-  CDependencyParse outout[AGENDA_SIZE];
+  CDependencyParse output[AGENDA_SIZE];
 
   MoveDummyRootToTail (conll_tree_startswith_dummy_root,
                        conll_tree_endswith_dummy_root);
@@ -1518,13 +1518,13 @@ void CDepParser::parse_conll(
                                 sentence_endswith_dummy_root);
 
   for (int i = 0; i < nbest; ++ i) {
-     // clear the outout sentences
+     // clear the output sentences
      retval[i].clear();
-     outout[i].clear();
+     output[i].clear();
      if (scores) scores[i] = 0; //pGenerator->score;
   }
 
-  int num_results = Work(outout,
+  int num_results = Work(output,
                          scores,
                          sentence_endswith_dummy_root,
                          empty,
@@ -1533,10 +1533,10 @@ void CDepParser::parse_conll(
 
   for (int i = 0; i < std::min(nbest, num_results); ++ i) {
     CDependencyParse tmp;
-    MoveDummyRootToFront(outout[i], tmp);
-    // now make the conll format stype outout
+    MoveDummyRootToFront(output[i], tmp);
+    // now make the conll format stype output
     retval[i].fromCoNLLInput(conll_tree_startswith_dummy_root);
-    // std::cout << conll_tree.size() << " " << outout[i].size() << std::endl;
+    // std::cout << conll_tree.size() << " " << output[i].size() << std::endl;
     retval[i].copyDependencyHeads(tmp);
   }
 }
@@ -1597,7 +1597,7 @@ void CDepParser::finishtraining() {
   static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(
       m_nTrainingRound);
   static_cast<depparser::CWeight*>(m_weights)->saveScores();
-  std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+  std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
 }
 
 

@@ -7,30 +7,30 @@ inline const bool & buildXComp1(const unsigned long &cons) {
     			const CStateNode* sTarg=childsVp->node;
     			if (CConstituent::clearTmp(sTarg->constituent.code())==PENN_CON_S && (!isLinked(&node,sTarg))){
     				//A $- B: A is the immediate right sister of B
-    				std::cout<<"S"<<((*words)[sTarg->lexical_head].word)<<"\n";
+    				std::cerr<<"S"<<((*words)[sTarg->lexical_head].word)<<"\n";
     				bool sisterCondition=false;
     				if (childsVp->previous!=0){
     					const CStateNode* leftSisterS=childsVp->previous->node;
     					if (((*words)[leftSisterS->lexical_head].tag.code()==PENN_TAG_NOUN)) {
     							if ((*words)[leftSisterS->lexical_head].word==g_word_order){
     								sisterCondition=true;
-    								std::cout<<"NN order"<<((*words)[leftSisterS->lexical_head].word)<<"\n";
+    								std::cerr<<"NN order"<<((*words)[leftSisterS->lexical_head].word)<<"\n";
     							}
-    						
+
     					}
     				}
-    				std::cout<<"-->"<<sisterCondition<<"\n";
+    				std::cerr<<"-->"<<sisterCondition<<"\n";
     				if (!sisterCondition){
     					CStateNodeList* childsS=sTarg->m_umbinarizedSubNodes;
     					while(childsS!=0){
     						const CStateNode* vpChild=childsS->node;
     						if (CConstituent::clearTmp(vpChild->constituent.code())==PENN_CON_VP){
-    							std::cout<<"VP"<<((*words)[vpChild->lexical_head].word)<<"\n";
+    							std::cerr<<"VP"<<((*words)[vpChild->lexical_head].word)<<"\n";
     							CStateNodeList* childsVps=vpChild->m_umbinarizedSubNodes;
     							while(childsVps!=0){
     								if ((*words)[childsVps->node->lexical_head].tag.code()==PENN_TAG_TO) {
 //    									CDependencyLabel* label=new CDependencyLabel(STANFORD_DEP_XCOMP);
-    									std::cout<<"TO"<<((*words)[childsVps->node->lexical_head].word)<<"\n";
+    									std::cerr<<"TO"<<((*words)[childsVps->node->lexical_head].word)<<"\n";
     									if (buildStanfordLink(STANFORD_DEP_XCOMP, sTarg->lexical_head, node.lexical_head)) {
     										addLinked(&node,sTarg);
     									    return true;

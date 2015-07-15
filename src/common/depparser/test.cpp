@@ -24,13 +24,13 @@ using namespace TARGET_LANGUAGE; //not only English now
 
 void test_weight(const std::string &sFeatureFile) {
 
-   std::cout << "Testing weights..." << std::endl ; std::cout.flush();
+   std::cerr << "Testing weights..." << std::endl ; std::cerr.flush();
 
    CDepParser parser(sFeatureFile, true);
 
    parser.finishtraining();
 
-   std::cout << "Done. " << std::endl;
+   std::cerr << "Done. " << std::endl;
 
 }
 

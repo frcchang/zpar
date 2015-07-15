@@ -15,15 +15,15 @@ using namespace TARGET_LANGUAGE::depparser;
 
 void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
   clock_t time_start = clock();
-  std::cout<<"Loading scores...";
-  std::cout.flush();
+  std::cerr<<"Loading scores...";
+  std::cerr.flush();
   std::ifstream file ;
   std::string s;
   file.open(m_sRecordPath.c_str()) ;
 
   if (!file.is_open()) {
     // the model file is not exist. manually init the models
-    std::cout << " empty." << std::endl;
+    std::cerr << " empty." << std::endl;
     iterate_templates(, .init());
     return;
   }
@@ -50,7 +50,7 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
   }
 
   file.close();
-  std::cout << " done. ("
+  std::cerr << " done. ("
     << double(clock()-time_start)/CLOCKS_PER_SEC << "s)"
     << std::endl;
 }
@@ -61,13 +61,13 @@ void TARGET_LANGUAGE::depparser::CWeight::loadScores() {
  *
  * This method is called by the destructor is m_bScoreModified
  * is true.
-   std::cout<<"done."<<std::endl;
+   std::cerr<<"done."<<std::endl;
  *
  *--------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
-  std::cout<<"Saving scores...";
-  std::cout.flush();
+  std::cerr<<"Saving scores...";
+  std::cerr.flush();
 
   std::ofstream ofs;
   ofs.open(m_sRecordPath.c_str());
@@ -94,7 +94,7 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
   }
 
   ofs.close();
-  std::cout<<" done."<<std::endl;
+  std::cerr<<" done."<<std::endl;
 }
 
 /*--------------------------------------------------------------
@@ -104,9 +104,9 @@ void TARGET_LANGUAGE::depparser::CWeight::saveScores() {
  *-------------------------------------------------------------*/
 
 void TARGET_LANGUAGE::depparser::CWeight::computeAverageFeatureWeights(int round) {
-  std::cout << "Computing averaged (total) feature vector...";
-  std::cout.flush();
+  std::cerr << "Computing averaged (total) feature vector...";
+  std::cerr.flush();
   iterate_templates(,.computeAverage(round););
-  std::cout << "done." <<std::endl;
+  std::cerr << "done." <<std::endl;
 }
 

@@ -32,20 +32,20 @@ namespace segmentor {
 
 /*===============================================================
  *
- * CSegmentor - the segmentor for Chinese 
+ * CSegmentor - the segmentor for Chinese
  *
  * Segment a sentence character by character, generating possible
- * outout sentences into a beam agenda. 
+ * output sentences into a beam agenda.
  *
  * Given an input sentence, m_lWordCache caches the std::string words
- * in certain positions. 
+ * in certain positions.
  * For example: suppose that a sentence is
  *              A B C D E F
  *              m_lWordCache[0][0] = A
  *              m_lWordCache[0][4] = A B C D E
  *              m_lWordCache[1][5] = B C D E F
  * Note: there are space wastes, but this seem to be the most time
- *       efficient. 
+ *       efficient.
  *
  *==============================================================*/
 
@@ -59,9 +59,9 @@ private:
 //-------------------------------------------------------------
 // Constructor destructor
 public:
-   CSegmentor(const std::string &sFeatureDBPath, bool bTrain=false, const std::string &sCharCatFile="", const std::string &sLexiconFile="", bool bRule=false) : segmentor::CSegmentorImpl(), m_bTrain(bTrain) { 
+   CSegmentor(const std::string &sFeatureDBPath, bool bTrain=false, const std::string &sCharCatFile="", const std::string &sLexiconFile="", bool bRule=false) : segmentor::CSegmentorImpl(), m_bTrain(bTrain) {
       // load features
-      m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain, bRule); 
+      m_Feature = new segmentor::CFeatureHandle(this, sFeatureDBPath, bTrain, bRule);
       // initialize word cache
       m_lWordCache = new unsigned long[segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_SENTENCE_SIZE];
       // load knowledge
@@ -86,8 +86,8 @@ public:
          }
       }
    }
-   virtual ~CSegmentor() { 
-      delete m_Feature; 
+   virtual ~CSegmentor() {
+      delete m_Feature;
       delete [] m_lWordCache;
    }
    CSegmentor(CSegmentor& segmentor) { THROW("CSegmentor does not support copy constructor!"); }
@@ -108,8 +108,8 @@ public:
 
 #endif
 
-   void updateScores(const CStringVector* outout, const CStringVector* correct, int round) {
-      m_Feature->updateScoreVector(outout, correct, round);
+   void updateScores(const CStringVector* output, const CStringVector* correct, int round) {
+      m_Feature->updateScoreVector(output, correct, round);
    }
    void finishTraining(int round) {
       m_Feature->computeAverageFeatureWeights(round);
@@ -119,7 +119,7 @@ public:
    segmentor::CWeight &getWeights() { return m_Feature->getWeights(); }
 
 //-------------------------------------------------------------
-// Knowledge related 
+// Knowledge related
 public:
    void loadCharCat(const std::string &sFile) {
       if (m_Feature->m_CharCat==0) {
@@ -162,11 +162,11 @@ public:
 public:
    const unsigned long& findWordFromCache(const int &start, const int &length, const CStringVector* sentence) {
       if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L) { // empty std::string
-         static std::string temp; 
-         static unsigned long int i; 
+         static std::string temp;
+         static unsigned long int i;
          temp.clear();
-         for ( i = start; i < start+length ; ++i ) 
-            temp += sentence->at(i) ; 
+         for ( i = start; i < start+length ; ++i )
+            temp += sentence->at(i) ;
          m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] = CWord(temp, false).code();
       }
       return m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ];
@@ -174,11 +174,11 @@ public:
    const unsigned long& replaceWordToCache(const int &start, const int &length, const CStringVector* sentence) {
       assert(start+length<=sentence->size());
       if (m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == ~0L || m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] == CWord::UNKNOWN) { // empty std::string
-         static std::string temp; 
-         static unsigned long int i; 
+         static std::string temp;
+         static unsigned long int i;
          temp.clear();
-         for ( i = start; i < start+length ; ++i ) 
-            temp += sentence->at(i) ; 
+         for ( i = start; i < start+length ; ++i )
+            temp += sentence->at(i) ;
          m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ] = CWord(temp).code();
       }
       return m_lWordCache[ start * segmentor::MAX_SENTENCE_SIZE + length - 1 ];
@@ -186,7 +186,7 @@ public:
    void clearWordCache() {
       memset(m_lWordCache, 255, sizeof(m_lWordCache[0])*segmentor::MAX_SENTENCE_SIZE*segmentor::MAX_SENTENCE_SIZE);
 //      for (int i=0; i<segmentor::MAX_SENTENCE_SIZE; ++i)
-//         for (int j=0; j<segmentor::MAX_SENTENCE_SIZE; j++) 
+//         for (int j=0; j<segmentor::MAX_SENTENCE_SIZE; j++)
 //            m_lWordCache[i*segmentor::MAX_SENTENCE_SIZE+j].clear();
    }
 };

@@ -112,7 +112,7 @@ public:
     static_cast<depparser::CWeight*>(m_weights)->computeAverageFeatureWeights(
                                                  m_nTrainingRound);
     static_cast<depparser::CWeight*>(m_weights)->saveScores();
-      std::cout << "Total number of training errors are: " << m_nTotalErrors << std::endl;
+      std::cerr << "Total number of training errors are: " << m_nTotalErrors << std::endl;
   }
 
   depparser::SCORE_TYPE getGlobalScore(const CDependencyParse &parsed);
@@ -154,7 +154,7 @@ private:
                                     int round=0);
 
   // update the built-in weight std::vector for this feature object specifically
-  void UpdateScoresForStates(const depparser::CStateItem * outout,
+  void UpdateScoresForStates(const depparser::CStateItem * output,
                              const depparser::CStateItem * correct,
                              depparser::SCORE_TYPE amount_add,
                              depparser::SCORE_TYPE amount_subtract);

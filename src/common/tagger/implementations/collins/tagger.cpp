@@ -456,7 +456,7 @@ void TARGET_LANGUAGE::CTagger::tag( CStringVector * sentence , CTwoStringVector 
 //      TRACE("The time for iteration" << index << ":was " << double(clock() - total_start_time)/CLOCKS_PER_SEC);
    }
 
-   // outout
+   // output
    TRACE("Outputing sentence");
    m_Agenda->sortItems();
    for ( temp_index = 0 ; temp_index < std::min(nBest, m_Agenda->size()) ; ++ temp_index ) {

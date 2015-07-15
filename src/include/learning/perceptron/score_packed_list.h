@@ -65,7 +65,7 @@ std::ostream & operator << (std::ostream &os, const CPackedScore<SCORE_TYPE, PAC
 #ifndef NO_NEG_FEATURE
       if (!it.second().zero()) {
 #endif // do not print zero scores when allow negative feature
-         if (bBegin) 
+         if (bBegin)
             os << ' ';
          else
             os << " , ";
@@ -134,10 +134,10 @@ public:
       typename CLinkedList< unsigned, CScore<SCORE_TYPE> >::const_iterator it;
       it = scores.begin();
       while (it != scores.end()) {
-         (std::cout) << it.first();
-         std::cout << ' ';
-         (std::cout) << (it.second());
-         std::cout << std::endl;
+         (std::cerr) << it.first();
+         std::cerr << ' ';
+         (std::cerr) << (it.second());
+         std::cerr << std::endl;
          ++it;
       }
    }

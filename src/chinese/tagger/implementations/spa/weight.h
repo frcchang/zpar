@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /***************************************************************
  *
- * The tagger's chart implementation 
+ * The tagger's chart implementation
  *
  * Yue Zhang, 2007
  *
@@ -49,7 +49,7 @@ typedef CScoreMap< std::pair<CTagSet<CTag, 3>, int>, SCORE_TYPE > CTagSet3IntMap
 
 class CWeight : public CWeightBase {
 
-public: 
+public:
    unsigned long m_maxLengthByTag[CTag::COUNT+1];
    CCharCatDictionary *m_Knowledge;
    unsigned long m_nMaxWordFrequency;
@@ -65,12 +65,12 @@ public:
          m_maxLengthByTag[CTag::COUNT]=length;
    }
 
-   // feature templates abstd::cout characters
+   // feature templates about characters
    CWordIntMap m_mapCharUnigram;
    CWordIntMap m_mapCharBigram;
    CWordIntMap m_mapCharTrigram;
 
-   // feature templates abstd::cout words
+   // feature templates about words
    CWordMap m_mapSeenWords;
    CTwoWordsMap m_mapLastWordByWord;
    CWordMap m_mapCurrentWordLastChar;
@@ -85,7 +85,7 @@ public:
    CWordIntMap m_mapLengthByLastChar;
    CWordIntMap m_mapLengthByLastWord;
    CWordIntMap m_mapLastLengthByWord;
-   
+
    // feature templates tag
    CWordTagMap m_mapCurrentTag;
    CTagSet2Map m_mapLastTagByTag;
@@ -183,8 +183,8 @@ public:
             m_mapConsecutiveCharCat("ConsecutiveCharCat", size) ,
 
             m_mapTagDictionary(CTag::COUNT),
-            m_mapCharTagDictionary(CTag::COUNT), 
-            m_mapCanStart(CTag::COUNT), 
+            m_mapCharTagDictionary(CTag::COUNT),
+            m_mapCanStart(CTag::COUNT),
             m_mapWordFrequency(65537),
 
             m_mapTaggedSeparateChars("TaggedSeparateChars", size) ,
@@ -204,8 +204,8 @@ public:
             m_mapTag0Tag1Size1("Tag0Tag1Size1", size),
             m_mapTag1Tag2Size1("Tag1Tag2Size1", size),
             m_mapTag0Tag1Tag2Size1("Tag0Tag1Tag2Size1", size)
-   { 
-      for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1; 
+   {
+      for (unsigned i=0; i<=CTag::COUNT; ++i) m_maxLengthByTag[i] = 1;
       m_nMaxWordFrequency=0;
       if(bSegmentationRules)newKnowledge();
       loadScores();
@@ -214,7 +214,7 @@ public:
    virtual ~CWeight() { if (m_Knowledge) delete m_Knowledge; }
 
 public:
-  
+
    void loadScores();
    void saveScores();
    void computeAverageFeatureWeights(unsigned long round);
@@ -226,7 +226,7 @@ public:
    void clear();
 
    void newKnowledge() {
-      std::cout << "set character knowledge... " << std::endl;
+      std::cerr << "set character knowledge... " << std::endl;
       ASSERT(m_Knowledge==0, "CTagger::loadKnowledge: knowledge already loaded.");
       m_Knowledge = new CCharCatDictionary();
       m_rules.setKnowledge(m_Knowledge);

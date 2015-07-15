@@ -22,7 +22,7 @@
 
 /*---------------------------------------------------------------
  *
- * clearArray - clear an arbitrary two-dimenstional array x 
+ * clearArray - clear an arbitrary two-dimenstional array x
  *
  *--------------------------------------------------------------*/
 
@@ -30,7 +30,7 @@ template <typename T>
 inline void clearArray(T *x, const int X, const int Y) {
    for (int __temp_i=0; __temp_i<X; ++__temp_i)
       for (int __temp_j=0; __temp_j<Y; ++__temp_j)
-         x[__temp_i*Y+__temp_j] = 0; 
+         x[__temp_i*Y+__temp_j] = 0;
 }
 
 /*---------------------------------------------------------------
@@ -43,8 +43,8 @@ template<typename T>
 inline
 void printArray(T *array, const int &size) {
    for (int i=0; i<size; ++i)
-      std::cout<<array[i]<<"\t";
-   std::cout<<std::endl;
+      std::cerr<<array[i]<<"\t";
+   std::cerr<<std::endl;
 }
 
 /*===============================================================
@@ -62,7 +62,7 @@ void printArray(T *array, const int &size) {
 
 template<typename VE, typename V>
 inline
-void insertNoduplicateIntoVector(VE &vector, const V &value) { 
+void insertNoduplicateIntoVector(VE &vector, const V &value) {
    typename VE::iterator it;
    for(it=vector.begin(); it!=vector.end(); it++)
       if ((*it) == value)
@@ -101,8 +101,8 @@ std::string toString(const std::vector<VE> &v) {
  *--------------------------------------------------------------*/
 
 template <class T>
-bool fromString(T& t, 
-                 const std::string& s, 
+bool fromString(T& t,
+                 const std::string& s,
                  std::ios_base& (*f)(std::ios_base&)=std::dec)
 {
   std::istringstream iss(s);

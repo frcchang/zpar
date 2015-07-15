@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * reranker.h - the reranker for segmented and tagged outouts   *
+ * reranker.h - the reranker for segmented and tagged outputs   *
  *                                                              *
  * It updates the segmentor and tagger in a unified manner      *
  *                                                              *

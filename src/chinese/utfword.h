@@ -4,7 +4,7 @@
  * utfword.h - the definitions for utf chinese words            *
  *                                                              *
  * This module provides the facility of recording the Chinese   *
- * word and information abstd::cout its characters.                   *
+ * word and information about its characters.                   *
  *                                                              *
  * A utf word is a std::vector of CWord, while each item in the list *
  * represents a character in the word. Since the definition of  *
@@ -28,7 +28,7 @@
 
 /*===============================================================
  *
- * definitions abstd::cout UTF word 
+ * definitions about UTF word
  *
  *==============================================================*/
 
@@ -62,7 +62,7 @@ public:
 
 /*===============================================================
  *
- * definitions abstd::cout tagged UTF word 
+ * definitions about tagged UTF word
  *
  *==============================================================*/
 

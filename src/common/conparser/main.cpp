@@ -23,14 +23,14 @@ using namespace TARGET_LANGUAGE;
  *
  *==============================================================*/
 
-void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile, 
-const char cInputFormat, 
+void process(const std::string &sInputFile, const std::string &sOutputFile, const std::string &sFeatureFile,
+const char cInputFormat,
 #ifdef CONLL_OUTPUT
 const char cOutputFormat,
 #endif
 int nBest, const bool bScores, const bool bBinary) {
 
-   std::cout << "Parsing started" << std::endl;
+   std::cerr << "Parsing started" << std::endl;
 
    int time_start = clock();
 
@@ -47,7 +47,7 @@ int nBest, const bool bScores, const bool bBinary) {
    assert(os.is_open());
    static CTwoStringVector raw_input;
    static CSentenceMultiCon<CConstituent> con_input;
-   CSentenceParsed *outout_sent; 
+   CSentenceParsed *output_sent;
 #ifdef CONLL_OUTPUT
    CCoNLLOutput o_conll;
 #endif
@@ -60,8 +60,8 @@ int nBest, const bool bScores, const bool bBinary) {
       os_scores = new std::ofstream(std::string(sOutputFile+".scores").c_str());
    }
 
-   outout_sent = new CSentenceParsed[nBest];
- 
+   output_sent = new CSentenceParsed[nBest];
+
    // Read the next example
    if (cInputFormat=='c')
       bReadSuccessful = ((*is)>>con_input);
@@ -69,31 +69,31 @@ int nBest, const bool bScores, const bool bBinary) {
       bReadSuccessful = input_reader->readTaggedSentence(&raw_input, false, TAG_SEPARATOR);
    while( bReadSuccessful ) {
 
-      std::cout << "Sentence " << nCount << "...";
+      std::cerr << "Sentence " << nCount << "...";
       ++ nCount;
 
-      // Find decoder outout
+      // Find decoder output
 #ifdef CONLL_OUTPUT
       if (cInputFormat=='c')
-         parser.parse( con_input , outout_sent , cOutputFormat=='b'?0:&o_conll , nBest , scores ) ;
+         parser.parse( con_input , output_sent , cOutputFormat=='b'?0:&o_conll , nBest , scores ) ;
       else
-         parser.parse( raw_input , outout_sent , cOutputFormat=='b'?0:&o_conll , nBest , scores ) ;
+         parser.parse( raw_input , output_sent , cOutputFormat=='b'?0:&o_conll , nBest , scores ) ;
 #else
       if (cInputFormat=='c')
-         parser.parse( con_input , outout_sent , nBest , scores ) ;
+         parser.parse( con_input , output_sent , nBest , scores ) ;
       else
-         parser.parse( raw_input , outout_sent , nBest , scores ) ;
+         parser.parse( raw_input , output_sent , nBest , scores ) ;
 #endif
-      
+
       // Ouptut sent
       for (int i=0; i<nBest; ++i) {
 #ifdef CONLL_OUTPUT
          if (cOutputFormat == 'b' || cOutputFormat == 'a') {
 #endif
          if (bBinary)
-            os << outout_sent[i] ;
+            os << output_sent[i] ;
          else
-            os << outout_sent[i].str_unbinarized() << std::endl;
+            os << output_sent[i].str_unbinarized() << std::endl;
 #ifdef CONLL_OUTPUT
          }
          if (cOutputFormat == 'c' || cOutputFormat == 'a')
@@ -102,8 +102,8 @@ int nBest, const bool bScores, const bool bBinary) {
          if (bScores) *os_scores << scores[i] << std::endl;
       }
 
-      std::cout << "done. " << std::endl; 
-      
+      std::cerr << "done. " << std::endl;
+
       // Read the next example
       if (cInputFormat=='c')
          bReadSuccessful = ((*is)>>con_input);
@@ -111,7 +111,7 @@ int nBest, const bool bScores, const bool bBinary) {
          bReadSuccessful = input_reader->readTaggedSentence(&raw_input, false, TAG_SEPARATOR);
    }
 
-   delete [] outout_sent ;
+   delete [] output_sent ;
    if (input_reader) delete input_reader;
    if (is) {is->close(); delete is;}
    os.close();
@@ -122,7 +122,7 @@ int nBest, const bool bScores, const bool bBinary) {
       delete []scores;
    }
 
-   std::cout << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+   std::cerr << "Parsing has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
 }
 
 /*===============================================================
@@ -136,20 +136,20 @@ int main(int argc, char* argv[]) {
       COptions options(argc, argv);
       CConfigurations configurations;
       configurations.defineConfiguration("i", "r/c", "input format: r - pos-tagged sentence; c - pos-tagged and a list of constituents for each word", "r");
-      configurations.defineConfiguration("b", "", "outout binarized parse trees", "");
-      configurations.defineConfiguration("n", "N", "N best list outout", "1");
-      configurations.defineConfiguration("s", "", "outout scores to outout_file.scores", "");
+      configurations.defineConfiguration("b", "", "output binarized parse trees", "");
+      configurations.defineConfiguration("n", "N", "N best list output", "1");
+      configurations.defineConfiguration("s", "", "output scores to output_file.scores", "");
 #ifdef CONLL_OUTPUT
       configurations.defineConfiguration("o", "b/c/a", "output format: b - bracked sentence; c - conll dependencies; a - both", "b");
 #endif
       // check arguments
       if (options.args.size() != 4) {
-         std::cout << "Usage: " << argv[0] << " input_file outout_file model_file" << std::endl;
+         std::cout << "Usage: " << argv[0] << " input_file output_file model_file" << std::endl;
          std::cout << configurations.message() << std::endl;
          return 1;
       }
       configurations.loadConfigurations(options.opts);
-   
+
       unsigned long nBest = 1;
       if (!fromString(nBest, configurations.getConfiguration("n"))) {
          std::cout << "The N best specification must be an integer." << std::endl;
@@ -161,13 +161,13 @@ int main(int argc, char* argv[]) {
 #ifdef CONLL_OUTPUT
       char cOutputFormat = configurations.getConfiguration("o").at(0);
 #endif
-      process(options.args[1], options.args[2], options.args[3], 
-              cInputFormat, 
+      process(options.args[1], options.args[2], options.args[3],
+              cInputFormat,
 #ifdef CONLL_OUTPUT
               cOutputFormat,
 #endif
               nBest, bScores, bBinary);
-   } 
+   }
    catch (const std::string &e) {
       std::cerr << "Error: " << e << std::endl;
       exit(1);

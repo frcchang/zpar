@@ -1,7 +1,7 @@
 // Copyright (C) University of Oxford 2010
 /****************************************************************
  *                                                              *
- * morphology.h - the knowledge abstd::cout word morph.               *
+ * morphology.h - the knowledge about word morph.               *
  *                                                              *
  * Author: Yue Zhang                                            *
  *                                                              *
@@ -20,7 +20,7 @@ namespace english {
 
 /*---------------------------------------------------------------
  *
- * getPossibleTagsByMorphology - get possible tags by morphology 
+ * getPossibleTagsByMorphology - get possible tags by morphology
  *                               information of the word
  *
  *--------------------------------------------------------------*/
@@ -35,9 +35,9 @@ unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tag
 
    // for a word ending with "s"
    if ( word[length-1] == 's' ) {
-      
+
       stem = tagdict.lookup( CWord(word.substr( 0, length-1 )) ) ;
-      if ( stem & (long_1<<PENN_TAG_NOUN) ) 
+      if ( stem & (long_1<<PENN_TAG_NOUN) )
          retval |= (long_1<<PENN_TAG_NOUN_PLURAL) ;
       if ( stem & (long_1<<PENN_TAG_VERB) )
          retval |= (long_1<<PENN_TAG_VERB_THIRD_SINGLE) ;
@@ -53,38 +53,38 @@ unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tag
 
          // for a word ending with "ies"
          if ( word[length-3] == 'i' ) {
-            
+
             stem = tagdict.lookup( CWord(word.substr(0, length-3) + "y") ) ;
             if ( stem & (long_1<<PENN_TAG_NOUN) )
                retval |= (long_1<<PENN_TAG_NOUN_PLURAL) ;
             if ( stem & (long_1<<PENN_TAG_VERB) )
                retval |= (long_1<<PENN_TAG_VERB_THIRD_SINGLE) ;
-            
+
          }
 
       }
    }
    else if ( word[length-1] == 'd' && word[length-2] == 'e'){
-   
+
       // a verb with tailing "e" plus "d"
       stem = tagdict.lookup( CWord(word.substr( 0, length-1 )) ) ;
       if ( stem & (long_1<<PENN_TAG_VERB) ) {
-         retval |= (long_1<<PENN_TAG_VERB_PAST) ; 
-         retval |= (long_1<<PENN_TAG_VERB_PAST_PARTICIPATE) ; 
+         retval |= (long_1<<PENN_TAG_VERB_PAST) ;
+         retval |= (long_1<<PENN_TAG_VERB_PAST_PARTICIPATE) ;
       }
-   
+
       // a verb plus "ed"
       stem = tagdict.lookup( CWord(word.substr( 0, length-2 )) ) ;
       if ( stem & (long_1<<PENN_TAG_VERB) ) {
-         retval |= (long_1<<PENN_TAG_VERB_PAST) ; 
-         retval |= (long_1<<PENN_TAG_VERB_PAST_PARTICIPATE) ; 
+         retval |= (long_1<<PENN_TAG_VERB_PAST) ;
+         retval |= (long_1<<PENN_TAG_VERB_PAST_PARTICIPATE) ;
       }
 
       // a verb with the last letter duplicated plus "ed"
       if ( length>4 && word[length-3] == word[length-4] ) {
          stem = tagdict.lookup( CWord(word.substr( 0, length-3 )) ) ;
          if ( stem & (long_1<<PENN_TAG_VERB) ) {
-            retval |= (long_1<<PENN_TAG_VERB_PAST) ; 
+            retval |= (long_1<<PENN_TAG_VERB_PAST) ;
             retval |= (long_1<<PENN_TAG_VERB_PAST_PARTICIPATE) ;
          }
       }
@@ -94,8 +94,8 @@ unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tag
 
       // a verb plus ing
       stem = tagdict.lookup( CWord(word.substr( 0, length-3 )) ) ;
-      if ( stem & (long_1<<PENN_TAG_VERB) ) 
-         retval |= (long_1<<PENN_TAG_VERB_PROG) ; 
+      if ( stem & (long_1<<PENN_TAG_VERB) )
+         retval |= (long_1<<PENN_TAG_VERB_PROG) ;
 
       // a verb with the last letter repeated when it does ing
       if ( length>5 && word[length-4] == word[length-5] ) {
@@ -106,16 +106,16 @@ unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tag
 
    }
    else if ( word[length-1] == 'r' && word[length-2] == 'e' ) {
-      
+
       // an adjective with tailing "e" plus "r"
       stem = tagdict.lookup( CWord(word.substr( 0, length-1 )) ) ;
-      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) ) 
-         retval |= (long_1<<PENN_TAG_ADJECTIVE_COMPARATIVE) ; 
-   
+      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) )
+         retval |= (long_1<<PENN_TAG_ADJECTIVE_COMPARATIVE) ;
+
       // an adjective plus "er"
       stem = tagdict.lookup( CWord(word.substr( 0, length-2 )) ) ;
-      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) ) 
-         retval |= (long_1<<PENN_TAG_ADJECTIVE_COMPARATIVE) ; 
+      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) )
+         retval |= (long_1<<PENN_TAG_ADJECTIVE_COMPARATIVE) ;
 
       // an adjective with last letter as "y" and switch to "ier"
       stem = tagdict.lookup( CWord(word.substr(0, length-3) + "y") ) ;
@@ -127,13 +127,13 @@ unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tag
 
       // an adjective with tailing "e" plus "st"
       stem = tagdict.lookup( CWord(word.substr( 0, length-2 )) ) ;
-      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) ) 
-         retval |= (long_1<<PENN_TAG_ADJECTIVE_SUPERLATIVE) ; 
-   
+      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) )
+         retval |= (long_1<<PENN_TAG_ADJECTIVE_SUPERLATIVE) ;
+
       // an adjective plus "est"
       stem = tagdict.lookup( CWord(word.substr( 0, length-3 )) ) ;
-      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) ) 
-         retval |= (long_1<<PENN_TAG_ADJECTIVE_SUPERLATIVE) ; 
+      if ( stem & (long_1<<PENN_TAG_ADJECTIVE) )
+         retval |= (long_1<<PENN_TAG_ADJECTIVE_SUPERLATIVE) ;
 
       // an adjective with last letter as "y" and switch to "iest"
       if ( length>4 ) {
@@ -151,7 +151,7 @@ unsigned long long getPossibleTagsByMorphology( const CTagDict<CWord, CTag> &tag
 
 /*---------------------------------------------------------------
  *
- * getPossibleTagsBySuffix - get possible tags by morphology 
+ * getPossibleTagsBySuffix - get possible tags by morphology
  *                           information of the word
  *
  *--------------------------------------------------------------*/
@@ -168,19 +168,19 @@ inline unsigned long long getPossibleTagsBySuffix( const std::string &word ) {
       retval |= (long_1<<PENN_TAG_VERB_THIRD_SINGLE);
    }
    else if ( word[length-2] == 'e' && word[length-1] == 'd'){
-      retval |= (long_1<<PENN_TAG_VERB_PAST) ; 
-      retval |= (long_1<<PENN_TAG_VERB_PAST_PARTICIPATE) ; 
+      retval |= (long_1<<PENN_TAG_VERB_PAST) ;
+      retval |= (long_1<<PENN_TAG_VERB_PAST_PARTICIPATE) ;
    }
    else if ( word[length-3] == 'i' && word[length-2] == 'n' && word[length-1] == 'g' ) {
-      retval |= (long_1<<PENN_TAG_VERB_PROG) ; 
+      retval |= (long_1<<PENN_TAG_VERB_PROG) ;
    }
    else if ( word[length-2] == 'e' && word[length-1] == 'r' ) {
-      retval |= (long_1<<PENN_TAG_ADJECTIVE_COMPARATIVE) ; 
-      retval |= (long_1<<PENN_TAG_ADVERB_COMPARATIVE) ; 
+      retval |= (long_1<<PENN_TAG_ADJECTIVE_COMPARATIVE) ;
+      retval |= (long_1<<PENN_TAG_ADVERB_COMPARATIVE) ;
    }
    else if ( word[length-3] == 'e' && word[length-2] == 's' && word[length-1] == 't' ) {
-      retval |= (long_1<<PENN_TAG_ADJECTIVE_SUPERLATIVE) ; 
-      retval |= (long_1<<PENN_TAG_ADVERB_SUPERLATIVE) ; 
+      retval |= (long_1<<PENN_TAG_ADJECTIVE_SUPERLATIVE) ;
+      retval |= (long_1<<PENN_TAG_ADVERB_SUPERLATIVE) ;
    }
 
    return retval;

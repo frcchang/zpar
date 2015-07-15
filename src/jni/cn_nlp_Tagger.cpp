@@ -21,17 +21,17 @@ CWordDictionary m_Knowledge;
 
 void loadKnowledge(const std::string &sKnowledgePath) {
   //      std::cout << "Knowledge is provided but not used." << std::endl;
-  std::cout << "Loading knowledge from "<<sKnowledgePath<<"... "<<std::endl;
+  std::cerr << "Loading knowledge from "<<sKnowledgePath<<"... "<<std::endl;
   if(sKnowledgePath.length()==0)
   {
-    std::cout<<"Knowledge file is not exist."<<std::endl;
+    std::cerr<<"Knowledge file does not exist."<<std::endl;
     return;
   }
 
   std::ifstream is(sKnowledgePath.c_str());
   if (!is)
   {
-    std::cout<<"Knowledge file "<< sKnowledgePath << " is not exist."<<std::endl;
+    std::cerr<<"Knowledge file "<< sKnowledgePath << " does not exist."<<std::endl;
     return;
   }
   int nWordCount=0;
@@ -57,9 +57,9 @@ void loadKnowledge(const std::string &sKnowledgePath) {
   //          ++it ;
   //       }
 
-  std::cout<<"nWordCount = "<<nWordCount<<std::endl;
+  std::cerr<<"nWordCount = "<<nWordCount<<std::endl;
   is.close();
-  std::cout << "done." << std::endl;
+  std::cerr << "done." << std::endl;
 }
 
 void changePOS(const CTwoStringVector *sentence,CTwoStringVector *new_sentence)
@@ -246,9 +246,9 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
     bool bScores=false;
     unsigned long nBest=1;
     CStringVector *input_sent = new CStringVector;
-    CTwoStringVector *outout_sent = new CTwoStringVector[nBest];
-    CTwoStringVector *outout_sent_new=new CTwoStringVector;
-    tagger::SCORE_TYPE *outout_scores;
+    CTwoStringVector *output_sent = new CTwoStringVector[nBest];
+    CTwoStringVector *output_sent_new=new CTwoStringVector;
+    tagger::SCORE_TYPE *output_scores;
 
 
     const char *strMsgPtr = env->GetStringUTFChars( sSen , 0);
@@ -259,18 +259,18 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
     if ( input_sent->size() >= tagger::MAX_SENTENCE_SIZE ) {
       std::cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << std::endl;
       for (int i=0; i<nBest; ++i) {
-        outout_sent[i].clear();
+        output_sent[i].clear();
       }
     }
     else
     {
-      taggerObj->tag(input_sent, outout_sent, outout_scores, nBest);
-      changePOS(outout_sent,outout_sent_new);
+      taggerObj->tag(input_sent, output_sent, output_scores, nBest);
+      changePOS(output_sent,output_sent_new);
     }
-    std::string str_output_sen=CTwoStringVector2string(outout_sent_new,separator);
+    std::string str_output_sen=CTwoStringVector2string(output_sent_new,separator);
     delete input_sent;
-    delete outout_sent_new;
-    delete [] outout_sent;
+    delete output_sent_new;
+    delete [] output_sent;
     return env->NewStringUTF(str_output_sen.c_str());
   } catch(
       const std::string&e) {std::cerr<<"Error: "<<e<<std::endl;
@@ -293,7 +293,7 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
     std::string sKnowledgePath=strMsgDic;
 
     loadKnowledge(sKnowledgePath);
-    std::cout<<"sFeatureDBPath="<<sFeatureDBPath<<std::endl;
+    std::cerr<<"sFeatureDBPath="<<sFeatureDBPath<<std::endl;
     taggerObj=new CTagger(sFeatureDBPath,false, nMaxSentSize, true);
 
     env->ReleaseStringUTFChars( sModelFile, strMsgPtr);
@@ -311,7 +311,7 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
 (JNIEnv *env, jobject obj, jstring sInputFile, jstring sOutputFile)
 {
   try {
-    std::cout << "Tagging started" << std::endl;
+    std::cerr << "Tagging started" << std::endl;
     int time_start = clock();
 
     bool bSegmented=false;
@@ -330,23 +330,23 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
     //std::cout<<"sInputFile="<<sInputFile_<<std::endl;
 
     CSentenceReader input_reader(sInputFile_);
-    CSentenceWriter outout_writer(sOutputFile_);
+    CSentenceWriter output_writer(sOutputFile_);
     std::ofstream *score_writer;
     CStringVector *input_sent = new CStringVector;
     CStringVector *middle_sent = new CStringVector;
-    CTwoStringVector *outout_sent_new=new CTwoStringVector;
-    CTwoStringVector *outout_sent;
-    tagger::SCORE_TYPE *outout_scores;
+    CTwoStringVector *output_sent_new=new CTwoStringVector;
+    CTwoStringVector *output_sent;
+    tagger::SCORE_TYPE *output_scores;
 
     int nCount=0;
 
-    outout_sent = new CTwoStringVector[nBest];
+    output_sent = new CTwoStringVector[nBest];
     if (bScores) {
-      outout_scores = new tagger::SCORE_TYPE[nBest];
+      output_scores = new tagger::SCORE_TYPE[nBest];
       score_writer = new std::ofstream(std::string(sOutputFile_+".scores").c_str());
     }
     else
-      outout_scores = NULL;
+      output_scores = NULL;
 
     CBitArray prunes(tagger::MAX_SENTENCE_SIZE);
     CStringVector *unsegmented_sent;
@@ -363,11 +363,11 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
     // If we read segmented sentence, we will ignore spaces from input.
     while( bReadSuccessful ) {
       if(nCount%100==0)
-        std::cout<<"Sentence " << nCount<<std::endl;
+        std::cerr<<"Sentence " << nCount<<std::endl;
       TRACE("Sentence " << nCount);
       ++ nCount;
       //
-      // Find decoder outout
+      // Find decoder output
       //
       if (bSegmented) {
         DesegmentSentence(input_sent, unsegmented_sent);
@@ -376,36 +376,36 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
         if ( unsegmented_sent->size() >= tagger::MAX_SENTENCE_SIZE ) {
           std::cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << std::endl;
           for (i=0; i<nBest; ++i) {
-            outout_sent[i].clear();
-            if (bScores) outout_scores[i]=0;
+            output_sent[i].clear();
+            if (bScores) output_scores[i]=0;
           }
         }
         else
-          taggerObj->tag(unsegmented_sent, outout_sent, outout_scores, nBest, &prunes);
+          taggerObj->tag(unsegmented_sent, output_sent, output_scores, nBest, &prunes);
       }
       else {
         if ( input_sent->size() >= tagger::MAX_SENTENCE_SIZE ) {
           std::cerr << "The size of the sentence is larger than the limit (" << tagger::MAX_SENTENCE_SIZE << "), skipping." << std::endl;
           for (i=0; i<nBest; ++i) {
-            outout_sent[i].clear();
-            if (bScores) outout_scores[i]=0;
+            output_sent[i].clear();
+            if (bScores) output_scores[i]=0;
           }
         }
         else
         {
           middle_sent->clear();
           CStringVector2CStringVector(input_sent,middle_sent,false);
-          taggerObj->tag(middle_sent, outout_sent, outout_scores, nBest);
-          changePOS(outout_sent,outout_sent_new);
+          taggerObj->tag(middle_sent, output_sent, output_scores, nBest);
+          changePOS(output_sent,output_sent_new);
         }
       }
       //
       // Ouptut sent
       //
-      outout_writer.writeSentence(outout_sent_new);
+      output_writer.writeSentence(output_sent_new);
       //      for (i=0; i<nBest; ++i) {
-      //         outout_writer.writeSentence(outout_sent_new);
-      //         if (bScores) (*score_writer)<<outout_scores[i]<<std::endl;
+      //         output_writer.writeSentence(output_sent_new);
+      //         if (bScores) (*score_writer)<<output_scores[i]<<std::endl;
       //      }
       if (bSegmented)
         bReadSuccessful = input_reader.readSegmentedSentence(input_sent);
@@ -414,17 +414,17 @@ std::string CTwoStringVector2string(const CTwoStringVector *sentence, std::strin
     }
 
     delete input_sent;
-    delete outout_sent_new;
+    delete output_sent_new;
     delete middle_sent;
-    delete [] outout_sent;
+    delete [] output_sent;
     if (bScores) {
-      delete [] outout_scores;
+      delete [] output_scores;
       score_writer->close(); delete score_writer; // remove file
     }
 
     if (bSegmented) delete unsegmented_sent;
 
-    std::cout << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
+    std::cerr << "Tagging has finished successfully. Total time taken is: " << double(clock()-time_start)/CLOCKS_PER_SEC << std::endl;
     return 1;
   } catch(const std::string&e) {std::cerr<<"Error: "<<e<<std::endl;return 1;}
   return 1;

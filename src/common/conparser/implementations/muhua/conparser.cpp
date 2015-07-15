@@ -643,9 +643,9 @@ void CConParser::updateScoresForState( CWeight *cast_weights , const CStateItem 
  *
  *--------------------------------------------------------------*/
 
-void CConParser::updateScoresForStates( const CStateItem *outout , const CStateItem *correct ) {
+void CConParser::updateScoresForStates( const CStateItem *output , const CStateItem *correct ) {
 
-   std::cout << "updating parameters ... " ;
+   std::cerr << "updating parameters ... " ;
 
    static double F;
 #ifdef TRAIN_LOSS
@@ -653,19 +653,19 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
    F = correct->HammingLoss();
    ASSERT(F==0,"correct"<<F);
 
-//   F = outout->FLoss();
-   F = outout->HammingLoss();
+//   F = output->FLoss();
+   F = output->HammingLoss();
    updateScoresForState( m_delta, correct, eAdd );
-   updateScoresForState( m_delta, outout, eSubtract );
+   updateScoresForState( m_delta, output, eSubtract );
 #else
    F = 1.0;
    updateScoresForState( m_delta, correct, eAdd );
-   updateScoresForState( m_delta, outout, eSubtract );
+   updateScoresForState( m_delta, output, eSubtract );
 #endif
 
 #ifdef TRAIN_MARGIN
-//   double tou = (std::sqrt(F)+outout->score-correct->score)/(m_delta->squareNorm());
-   double tou = (F+outout->score-correct->score)/(m_delta->squareNorm());
+//   double tou = (std::sqrt(F)+output->score-correct->score)/(m_delta->squareNorm());
+   double tou = (F+output->score-correct->score)/(m_delta->squareNorm());
    m_delta->scaleCurrent(tou, m_nTrainingRound);
 #endif
    static_cast<CWeight*>(m_weights)->addCurrent(m_delta, m_nTrainingRound);
@@ -682,7 +682,7 @@ void CConParser::updateScoresForStates( const CStateItem *outout , const CStateI
  *--------------------------------------------------------------*/
 
 void CConParser::updateScoresForMultipleStates( const CStateItem *output_start , const CStateItem *output_end , const CStateItem  *candidate , const CStateItem *correct ) {
-   std::cout << "updating parameters ... " ;
+   std::cerr << "updating parameters ... " ;
    // computateDeltasDist
    unsigned K = 0;
    updateScoresForState(m_gold, correct, eAdd);
@@ -850,7 +850,7 @@ void CConParser::getLabeledBrackets(const CSentenceParsed &parse_tree, CStack<CL
 
 void CConParser::updateScoresByLoss( const CStateItem *output , const CStateItem *correct ) {
 
-   std::cout << "updating parameters ... " ;
+   std::cerr << "updating parameters ... " ;
 
    // TODO
    const static CStateItem* oitems[MAX_SENTENCE_SIZE*(2+UNARY_MOVES)+2];
@@ -1204,13 +1204,13 @@ void CConParser::parse( const CSentenceMultiCon<CConstituent> &sentence , CSente
 void CConParser::train( const CSentenceParsed &correct , int round ) {
 
    static CTwoStringVector sentence ;
-//   static CSentenceParsed outout ;
+//   static CSentenceParsed output ;
 
    UnparseSentence( &correct, &sentence ) ;
 
    // The following code does update for each processing stage
    m_nTrainingRound = round ;
-//   work( true , sentence , &outout , correct , 1 , 0 ) ;
+//   work( true , sentence , &output , correct , 1 , 0 ) ;
    work( true , sentence , 0 , correct , 1 , 0 ) ;
 
 };
@@ -1258,7 +1258,7 @@ void CConParser::getPositiveFeatures( const CSentenceParsed &correct ) {
 
    while ( !states[current].IsTerminated() ) {
       states[current].StandardMove(correct, action);
-//std::cout << action << std::endl;
+//std::cerr << action << std::endl;
       m_Context.load(states+current, m_lCache, m_lWordLen, true);
       getOrUpdateStackScore(static_cast<CWeight*>(m_weights), scores, states+current, action, 1, -1);
       states[current].Move(states+current+1, action);
