@@ -124,7 +124,7 @@ endif
 INCLUDES = -I$(SRC_INCLUDES)
 
 CXX = g++
-CXXFLAGS = -w -W -O3 $(INCLUDES) $(DEBUG)
+CXXFLAGS = -w -W -Ofast $(INCLUDES) $(DEBUG)
 
 LD=$(CXX)
 LDFLAGS =
